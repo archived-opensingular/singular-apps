@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.opensingular</groupId>
+    <artifactId>singular-server</artifactId>
+
+    <version>1.5.0</version>
+    <name>[projeto-raiz :: singular-server]</name>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>server-libs</module>
+        <module>sso</module>
+    </modules>
+
+    <distributionManagement>
+        <repository>
+            <id>singular-releases</id>
+            <name>singular-releases</name>
+            <url>http://nexus.mirante.net.br/nexus/content/repositories/singular-releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>singular-snapshots</id>
+            <name>singular-snapshots</name>
+            <url>http://nexus.mirante.net.br/nexus/content/repositories/singular-snapshots</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.3</version>
+                <configuration>
+                    <source>${jdk.version}</source>
+                    <target>${jdk.version}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.6</version>
+                <configuration>
+                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <filteringDeploymentDescriptors>true</filteringDeploymentDescriptors>
+                    <archive>
+                        <manifest>
+                            <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+                            <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+                        </manifest>
+                        <manifestEntries>
+                            <!--suppress MavenModelInspection -->
+                            <Implementation-Build>${project.version}.${buildNumber} | ${timestamp}
+                            </Implementation-Build>
+                            <!--suppress MavenModelInspection -->
+                            <Revision-Id>${revisionNumber}</Revision-Id>
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.3</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                        <configuration>
+                            <additionalparam>-Xdoclint:none</additionalparam>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.4</version>
+                <executions>
+                    <execution>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <doUpdate>false</doUpdate>
+                    <shortRevisionLength>7</shortRevisionLength>
+                    <buildNumberPropertyName>revisionNumber</buildNumberPropertyName>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+
+    <scm>
+        <url>${project.scm.url}</url>
+        <connection>${project.scm.connection}</connection>
+        <developerConnection>${project.scm.developerConnection}</developerConnection>
+    </scm>
+
+    <profiles>
+        <profile>
+            <id>test</id>
+            <activation>
+                <property>
+                    <name>UNIT_TEST</name>
+                    <value>TRUE</value>
+                </property>
+            </activation>
+            <properties>
+                <skipTests>false</skipTests>
+            </properties>
+        </profile>
+    </profiles>
+
+    <properties>
+        <project.scm.url>https://github.com/opensingular/singular-server.git</project.scm.url>
+        <project.scm.connection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.connection>
+        <project.scm.developerConnection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.developerConnection>
+        <sonar.exclusions>**/recursos/**</sonar.exclusions>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jdk.version>1.8</jdk.version>
+        <skipTests>false</skipTests>
+        <wicket.version>7.1.0</wicket.version>
+        <singular.version>1.5.0</singular.version>
+        <singular.server.version>1.5.0</singular.server.version>
+        <singular-enterprise.version>1.5.0</singular-enterprise.version>
+        <cas.version>4.0.4</cas.version>
+    </properties>
+
+</project>
