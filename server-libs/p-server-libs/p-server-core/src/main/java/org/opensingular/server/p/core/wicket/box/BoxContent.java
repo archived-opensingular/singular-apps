@@ -172,10 +172,13 @@ public class BoxContent extends AbstractCaixaContent<BoxItemModel> {
             pageParameters.add(Parameters.INSTANCE_ID, boxItem.getProcessInstanceId());
             pageParameters.add(Parameters.PROCESS_GROUP_PARAM_NAME, getProcessGroup().getCod());
         }
-
-        BookmarkablePageLink<?> historiLink = new BookmarkablePageLink<>(id, HistoricoPage.class, pageParameters);
+        BookmarkablePageLink<?> historiLink = new BookmarkablePageLink<>(id, getHistoricoPage(), pageParameters);
         historiLink.setVisible(boxItem.getProcessBeginDate() != null);
         return historiLink;
+    }
+
+    protected Class<? extends HistoricoPage> getHistoricoPage(){
+        return HistoricoPage.class;
     }
 
     @Override
@@ -295,8 +298,9 @@ public class BoxContent extends AbstractCaixaContent<BoxItemModel> {
 
         Model<Actor> model  = new Model<>();
         IModel<List<Actor>>  actorsModel = $m.get(() -> buscarUsuarios(currentModel, confirmation));
-        confirmationModal.addOrReplace(criarDropDown(actorsModel, model))
-            .setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
+        DropDownChoice dropDownChoice = criarDropDown(actorsModel, model);
+        dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
+        confirmationModal.addOrReplace(dropDownChoice);
 
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEl, $m.ofValue(confirmation.getCancelButtonLabel()), new AjaxButton("cancel-delete-btn", confirmationForm) {
             @Override
