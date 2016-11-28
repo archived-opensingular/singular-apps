@@ -27,33 +27,26 @@ import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGen
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.Optional;
 
 @Entity
-@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_PETICAO")
+@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO")
 @GenericGenerator(name = FormPetitionEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
 public class FormPetitionEntity extends BaseEntity<Long> implements Comparable<FormPetitionEntity> {
 
-    public static final String PK_GENERATOR_NAME = "GENERATED_CO_FORMULARIO_PETICAO";
+    public static final String PK_GENERATOR_NAME = "GENERATED_CO_FORMULARIO_REQUISICAO";
 
     @Id
-    @Column(name = "CO_FORMULARIO_PETICAO")
+    @Column(name = "CO_FORMULARIO_REQUISICAO")
     @GeneratedValue(generator = PK_GENERATOR_NAME)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_PETICAO")
+    @JoinColumn(name = "CO_REQUISICAO")
     private PetitionEntity petition;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "CO_FORMULARIO")
     private FormEntity form;
 
@@ -67,6 +60,10 @@ public class FormPetitionEntity extends BaseEntity<Long> implements Comparable<F
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CO_DEFINICAO_TAREFA")
     private TaskDefinitionEntity taskDefinitionEntity;
+
+    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @JoinColumn(name = "CO_RASCUNHO_ATUAL")
+    private DraftEntity currentDraftEntity;
 
     @Override
     public Long getCod() {
@@ -112,5 +109,13 @@ public class FormPetitionEntity extends BaseEntity<Long> implements Comparable<F
     @Override
     public int compareTo(FormPetitionEntity o) {
         return Optional.ofNullable(this.getCod()).orElse(0l).compareTo(Optional.ofNullable(o).map(BaseEntity::getCod).orElse(0l));
+    }
+
+    public DraftEntity getCurrentDraftEntity() {
+        return currentDraftEntity;
+    }
+
+    public void setCurrentDraftEntity(DraftEntity currentDraftEntity) {
+        this.currentDraftEntity = currentDraftEntity;
     }
 }

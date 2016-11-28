@@ -17,10 +17,8 @@
 package org.opensingular.server.core.wicket.historico;
 
 
-import org.opensingular.server.commons.wicket.historico.AbstractHistoricoContent;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.core.wicket.template.ServerTemplate;
-import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.wicketstuff.annotation.mount.MountPath;
 
 
@@ -31,12 +29,7 @@ public class HistoricoPage extends ServerTemplate {
 
     @Override
     protected Content getContent(String id) {
-        return new AbstractHistoricoContent(id) {
-            @Override
-            protected void onCancelar(AjaxRequestTarget t) {
-                t.appendJavaScript("window.history.go(-1);");
-            }
-        };
+        return new HistoricoContent(id);
     }
 
 }

@@ -16,6 +16,8 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
+import org.apache.wicket.markup.html.WebPage;
+import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
@@ -51,6 +53,7 @@ public abstract class Template extends SingularTemplate {
         super.onInitialize();
 
         add(new WebMarkupContainer("pageBody")
+                .add(new SingularJSBehavior())
                 .add($b.attrAppender("class", "page-full-width", " ", $m.ofValue(!withMenu()))));
 //        queue(new HeaderResponseContainer("css", "css"));
         queue(configureHeader("_Header"));
@@ -62,11 +65,11 @@ public abstract class Template extends SingularTemplate {
         queue(configureContent("_Content"));
         queue(new Footer("_Footer"));
 
-        add(new SingularJSBehavior());
     }
 
-    protected WebMarkupContainer configureMenu(String id) {
-        return new Menu(id);
+    @SuppressWarnings("unchecked")
+    protected Menu configureMenu(String id){
+        return new Menu(id, (Class<? extends WebPage>) this.getPageClass());
     }
 
     protected WebMarkupContainer configureHeader(String id) {

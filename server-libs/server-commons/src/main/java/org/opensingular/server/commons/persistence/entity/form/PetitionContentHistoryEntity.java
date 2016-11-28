@@ -29,7 +29,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@Table(schema = Constants.SCHEMA, name = "TB_HISTORICO_CONTEUDO_PETICAO")
+@Table(schema = Constants.SCHEMA, name = "TB_HISTORICO_CONTEUDO_REQUISIC")
 @GenericGenerator(name = PetitionContentHistoryEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
 public class PetitionContentHistoryEntity extends BaseEntity<Long> {
 
@@ -41,7 +41,7 @@ public class PetitionContentHistoryEntity extends BaseEntity<Long> {
     private Long cod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_PETICAO")
+    @JoinColumn(name = "CO_REQUISICAO")
     private PetitionEntity petitionEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -49,7 +49,7 @@ public class PetitionContentHistoryEntity extends BaseEntity<Long> {
     private Date historyDate;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinTable(name = "RL_HIST_CONT_PET_VER_ANOTACAO", schema = Constants.SCHEMA,
+    @JoinTable(name = "RL_HIST_CONT_REQ_VER_ANOTACAO", schema = Constants.SCHEMA,
             joinColumns = @JoinColumn(name = "CO_HISTORICO"),
             inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO"))
     private List<FormAnnotationVersionEntity> formAnnotationsVersions;
@@ -63,7 +63,7 @@ public class PetitionContentHistoryEntity extends BaseEntity<Long> {
     private Actor actor;
 
     @ManyToOne
-    @JoinColumn(name = "CO_PETICIONANTE")
+    @JoinColumn(name = "CO_REQUISITANTE")
     private PetitionerEntity petitionerEntity;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "petitionContentHistory")

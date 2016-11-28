@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-server</artifactId>
 
-    <version>1.5.2</version>
+    <version>1.5.3</version>
     <name>[projeto-raiz :: singular-server]</name>
     <packaging>pom</packaging>
 
@@ -137,17 +137,18 @@
     </profiles>
 
     <properties>
-        <project.scm.url>https://github.com/opensingular/singular-server.git</project.scm.url>
-        <project.scm.connection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.connection>
-        <project.scm.developerConnection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.developerConnection>
-        <sonar.exclusions>**/recursos/**</sonar.exclusions>
+        <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.url>
+        <project.scm.connection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.connection>
+        <project.scm.developerConnection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.developerConnection>
+        <sonar.exclusions>**/*.js, **/*.css</sonar.exclusions>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.1.0</wicket.version>
-        <singular.version>1.5.2</singular.version>
-        <singular.server.version>1.5.2</singular.server.version>
+        <singular.version>1.5.3</singular.version>
+        <singular.server.version>1.5.3</singular.server.version>
         <cas.version>4.0.4</cas.version>
+        <cas.client.version>3.4.1</cas.client.version>
     </properties>
 
 </project>
