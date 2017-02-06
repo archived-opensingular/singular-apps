@@ -62,8 +62,10 @@ public class CurrentTaskPredicate implements Predicate<SInstance>{
     public boolean test(SInstance x) {
         updateCurrentTask(x);
         Boolean result = getCurrentTask()
-                .map(this::matchesReferenceTask).orElse(false);
-        if (negate) return !result;
+                .map(this::matchesReferenceTask).orElse(Boolean.FALSE);
+        if (negate) {
+            return !result;
+        }
         return result ;
     }
 

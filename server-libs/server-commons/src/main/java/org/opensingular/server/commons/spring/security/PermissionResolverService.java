@@ -27,7 +27,7 @@ import org.opensingular.server.commons.flow.rest.ActionDefinition;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.util.SingularCache;
+import org.opensingular.server.commons.util.SingularSessionCache;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -56,7 +56,7 @@ public class PermissionResolverService implements Loggable {
     private Optional<SingularFlowConfigurationBean> singularFlowConfigurationBean;
 
 
-    @SingularCache
+    @SingularSessionCache
     public List<SingularPermission> searchPermissions(String idUsuario) {
         return peticionamentoUserDetailService.searchPermissions(idUsuario);
     }
@@ -86,8 +86,10 @@ public class PermissionResolverService implements Loggable {
     public List<? extends SingularPermission> listAllProcessesPermissions() {
         List<SingularPermission> permissions = new ArrayList<>();
 
-        for (ProcessDefinition pd : singularFlowConfigurationBean.get().getDefinitions()) {
-            permissions.addAll(listPermissions(pd.getClass()));
+        if (singularFlowConfigurationBean.isPresent()) {
+            for (ProcessDefinition pd : singularFlowConfigurationBean.get().getDefinitions()) {
+                permissions.addAll(listPermissions(pd.getClass()));
+            }
         }
 
         return permissions;

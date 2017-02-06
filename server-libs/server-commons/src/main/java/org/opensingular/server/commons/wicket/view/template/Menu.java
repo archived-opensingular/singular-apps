@@ -16,9 +16,7 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
-
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -39,28 +37,28 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
-
-import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.MenuGroup;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.wicket.SingularApplication;
-import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.dto.FormDTO;
+import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.opensingular.server.commons.wicket.SingularSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
+
+import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
 
 public class Menu extends Panel {
 
@@ -73,7 +71,7 @@ public class Menu extends Panel {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(Menu.class);
 
-    protected List<ProcessGroupEntity> categorias;
+    private List<ProcessGroupEntity> categorias;
 
     private Class<? extends WebPage> boxPageClass;
 
@@ -96,14 +94,12 @@ public class Menu extends Panel {
         this.loadMenuGroups();
         this.menu = new MetronicMenu("menu");
         this.buildMenuSelecao();
-        this.getCategorias().forEach((processGroup) -> {
-            this.buildMenuGroup(this.menu, processGroup);
-        });
+        this.getCategorias().forEach((processGroup) -> this.buildMenuGroup(this.menu, processGroup));
         return this.menu;
     }
 
 
-    private void buildMenuSelecao() {
+    protected void buildMenuSelecao() {
         SelecaoMenuItem selecaoMenuItem = new SelecaoMenuItem(categorias);
         menu.addItem(selecaoMenuItem);
     }
@@ -150,16 +146,16 @@ public class Menu extends Panel {
         @Override
         protected void respond(AjaxRequestTarget target) {
             final String        type     = "application/json";
-            final String        encoding = "UTF-8";
+            final String        encoding = StandardCharsets.UTF_8.name();
             final StringBuilder json     = new StringBuilder();
-            json.append("{");
+            json.append('{');
             for (int i = 0; i < itens.size(); i++) {
-                json.append("\"item").append(i).append("\"").append(":").append(itens.get(i).getRight().get());
+                json.append("\"item").append(i).append('\"').append(':').append(itens.get(i).getRight().get());
                 if (i + 1 != itens.size()) {
-                    json.append(",");
+                    json.append(',');
                 }
             }
-            json.append("}");
+            json.append('}');
             RequestCycle.get().scheduleRequestHandlerAfterCurrent(new TextRequestHandler(type, encoding, json.toString()));
         }
     }

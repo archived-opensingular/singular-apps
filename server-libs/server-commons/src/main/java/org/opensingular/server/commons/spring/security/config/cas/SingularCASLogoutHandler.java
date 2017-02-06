@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.spring.security.config.cas;
 
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.spring.security.config.SingularLogoutHandler;
@@ -24,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 public class SingularCASLogoutHandler implements SingularLogoutHandler, Loggable {
 
@@ -41,13 +43,13 @@ public class SingularCASLogoutHandler implements SingularLogoutHandler, Loggable
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) resp;
         try {
-            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : " + request.getRequestURI() + ". A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT");
+            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : {}. A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT", StringEscapeUtils.escapeJava(request.getRequestURI()));
             HttpSession session = request.getSession(false);
             if (session != null) {
                 session.invalidate();
             }
-            String redirect = logoutURL + "?service=" + URLEncoder.encode(extractServiceParam(request), "UTF-8");
-            getLogger().warn(" REDIRECIONANDO PARA: " + redirect);
+            String redirect = logoutURL + "?service=" + URLEncoder.encode(extractServiceParam(request), StandardCharsets.UTF_8.name());
+            getLogger().warn(" REDIRECIONANDO PARA: {}", StringEscapeUtils.escapeJava(redirect));
             response.sendRedirect(redirect);
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);

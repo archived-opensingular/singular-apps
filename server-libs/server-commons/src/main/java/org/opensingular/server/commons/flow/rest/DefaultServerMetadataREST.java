@@ -52,6 +52,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.flow.action.DefaultActions.ASSIGN;
@@ -125,12 +126,15 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
 
     protected void addForms(MenuGroup menuGroup) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
-            SInfoType annotation = formClass.getAnnotation(SInfoType.class);
-            String name = SFormUtil.getTypeName(formClass);
-            SType<?> sType = singularFormConfig.getTypeLoader().loadType(name).get();
-            Class<? extends SType<?>> sTypeClass = (Class<? extends SType<?>>) sType.getClass();
-            String label = sType.asAtr().getLabel();
-            menuGroup.getForms().add(new FormDTO(name, SFormUtil.getTypeSimpleName(sTypeClass), label, annotation.newable()));
+            SInfoType          annotation = formClass.getAnnotation(SInfoType.class);
+            String             name       = SFormUtil.getTypeName(formClass);
+            Optional<SType<?>> sTypeOptional       = singularFormConfig.getTypeLoader().loadType(name);
+            if (sTypeOptional.isPresent()) {
+                SType<?>                  sType      = sTypeOptional.get();
+                Class<? extends SType<?>> sTypeClass = (Class<? extends SType<?>>) sType.getClass();
+                String                    label      = sType.asAtr().getLabel();
+                menuGroup.getForms().add(new FormDTO(name, SFormUtil.getTypeSimpleName(sTypeClass), label, annotation.newable()));
+            }
         }
     }
 
@@ -150,14 +154,14 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
     }
 
 
-    private void criarItemCaixaEntrada(List<ItemBox> itemBoxes) {
+    protected void criarItemCaixaEntrada(List<ItemBox> itemBoxes) {
         final ItemBox caixaEntrada = new ItemBox();
         caixaEntrada.setName("Caixa de Entrada");
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
         caixaEntrada.setSearchEndpoint(SEARCH_TASKS);
         caixaEntrada.setCountEndpoint(COUNT_TASKS);
-        caixaEntrada.setEndedTasks(false);
+        caixaEntrada.setEndedTasks(Boolean.FALSE);
         caixaEntrada.setFieldsDatatable(criarFieldsDatatableWorklist());
         caixaEntrada.addAction(ASSIGN);
         caixaEntrada.addAction(DefaultActions.ANALYSE);
@@ -166,7 +170,7 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
         itemBoxes.add(caixaEntrada);
     }
 
-    private LinkedHashMap<String, String> criarFieldsDatatableWorklist() {
+    protected LinkedHashMap<String, String> criarFieldsDatatableWorklist() {
         LinkedHashMap<String, String> fields = new LinkedHashMap<>(7);
         fields.put("Número", "codPeticao");
         fields.put("Dt. de Entrada", "creationDate");
@@ -178,21 +182,21 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
         return fields;
     }
 
-    private void criarItemConcluidas(List<ItemBox> itemBoxes) {
+    protected void criarItemConcluidas(List<ItemBox> itemBoxes) {
         final ItemBox concluidas = new ItemBox();
         concluidas.setName("Concluídas");
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
         concluidas.setSearchEndpoint(SEARCH_TASKS);
         concluidas.setCountEndpoint(COUNT_TASKS);
-        concluidas.setEndedTasks(true);
+        concluidas.setEndedTasks(Boolean.TRUE);
         concluidas.setFieldsDatatable(criarFieldsDatatableWorklistConcluidas());
         concluidas.addAction(DefaultActions.VIEW);
         itemBoxes.add(concluidas);
     }
 
 
-    private LinkedHashMap<String, String> criarFieldsDatatableWorklistConcluidas() {
+    protected LinkedHashMap<String, String> criarFieldsDatatableWorklistConcluidas() {
         LinkedHashMap<String, String> fields = new LinkedHashMap<>(6);
         fields.put("Número", "codPeticao");
         fields.put("Dt. de Entrada", "creationDate");
