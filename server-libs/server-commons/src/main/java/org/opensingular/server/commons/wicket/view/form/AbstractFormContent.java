@@ -16,6 +16,16 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.form.RefService;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.context.SFormConfig;
@@ -26,21 +36,11 @@ import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
-import org.apache.wicket.Component;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.behavior.Behavior;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.wicket.view.template.Content;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
 import javax.inject.Inject;
@@ -58,8 +58,8 @@ public abstract class AbstractFormContent extends Content {
     private final BSModalBorder  closeModal          = construirCloseModal();
     protected     IModel<String> msgFlowModel        = new Model<>();
     protected     IModel<String> transitionNameModel = new Model<>();
-    protected     ViewMode       viewMode            = ViewMode.EDIT;
-    protected     AnnotationMode annotationMode      = AnnotationMode.NONE;
+    protected final ViewMode       viewMode;
+    protected final AnnotationMode annotationMode;
     protected SingularFormPanel<String> singularFormPanel;
     @Inject
     @Named("formConfigWithDatabase")
@@ -141,15 +141,11 @@ public abstract class AbstractFormContent extends Content {
             }
 
             @Override
-            public ViewMode getViewMode() {
-                return viewMode;
-            }
-
-            @Override
             public AnnotationMode getAnnotationMode() {
                 return annotationMode;
             }
         };
+        singularFormPanel.setViewMode(viewMode);
 
         onBuildSingularFormPanel(singularFormPanel);
 
