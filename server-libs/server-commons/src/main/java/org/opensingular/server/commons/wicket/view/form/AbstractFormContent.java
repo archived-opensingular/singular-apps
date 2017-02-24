@@ -46,7 +46,6 @@ import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureExcep
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -58,30 +57,38 @@ public abstract class AbstractFormContent extends Content {
     private final BSModalBorder  closeModal          = construirCloseModal();
     protected     IModel<String> msgFlowModel        = new Model<>();
     protected     IModel<String> transitionNameModel = new Model<>();
-    protected final ViewMode       viewMode;
-    protected final AnnotationMode annotationMode;
-    protected SingularFormPanel<String> singularFormPanel;
+    protected final SingularFormPanel singularFormPanel;
     @Inject
     @Named("formConfigWithDatabase")
     protected SFormConfig<String>       singularFormConfig;
 
     public AbstractFormContent(String idWicket, String type, ViewMode viewMode, AnnotationMode annotationMode) {
         super(idWicket, false, false);
-        this.viewMode = viewMode;
-        this.annotationMode = annotationMode;
         this.typeName = type;
+        this.singularFormPanel = new SingularFormPanel("singular-panel");
+        this.singularFormPanel.setViewMode(viewMode);
+        this.singularFormPanel.setAnnotationMode(annotationMode);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        add(buildForm());
-    }
 
-    private Form<?> buildForm() {
+        final RefType refType = singularFormConfig.getTypeLoader().loadRefTypeOrException(typeName);
+
+        singularFormPanel.setInstanceCreator(() -> {
+            SDocumentFactory extendedFactory = singularFormConfig.getDocumentFactory().extendAddingSetupStep(
+                    document -> document.bindLocalService("processService", ProcessFormService.class,
+                            RefService.of((ProcessFormService) () -> getProcessInstance())));
+            return AbstractFormContent.this.createInstance(extendedFactory, refType);
+        });
+
+        onBuildSingularFormPanel(singularFormPanel);
+
+
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
-        form.add(buildSingularBasePanel());
+        form.add(singularFormPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
@@ -92,27 +99,30 @@ public abstract class AbstractFormContent extends Content {
         form.add(buildCloseButton());
         form.add(closeModal);
         form.add(buildExtraContent("extra-content"));
-        return form;
+        add(form);
     }
 
     protected Component buildExtraContent(String id) {
         return new WebMarkupContainer(id).setVisible(false);
     }
 
+    public final SInstance getInstance() {
+        return singularFormPanel.getInstance();
+    }
+
+    private final ViewMode getViewMode() { return singularFormPanel.getViewMode(); }
+
+    private final AnnotationMode getAnnotationMode() { return singularFormPanel.getAnnotationMode(); }
 
     private IReadOnlyModel<SInstance> getInstanceModel() {
-        return (IReadOnlyModel<SInstance>) () -> Optional
-                .ofNullable(singularFormPanel)
-                .map(SingularFormPanel::getRootInstance)
-                .map(IModel::getObject)
-                .orElse(null);
+        return (IReadOnlyModel<SInstance>) () -> singularFormPanel.getInstance();
     }
 
     private Component buildFlowButtons() {
         BSContainer<?> buttonContainer = new BSContainer<>("custom-buttons");
         buttonContainer.setVisible(true);
 
-        configureCustomButtons(buttonContainer, modalContainer, viewMode, annotationMode, getFormInstance());
+        configureCustomButtons(buttonContainer, modalContainer, getViewMode(), getAnnotationMode(), getFormInstance());
 
         return buttonContainer;
     }
@@ -125,31 +135,6 @@ public abstract class AbstractFormContent extends Content {
 
     protected void onBuildSingularFormPanel(SingularFormPanel singularFormPanel) {
 
-    }
-
-    private SingularFormPanel<String> buildSingularBasePanel() {
-        singularFormPanel = new SingularFormPanel<String>("singular-panel", singularFormConfig) {
-
-            @Override
-            protected SInstance createInstance(SFormConfig<String> singularFormConfig) {
-                RefType refType = singularFormConfig.getTypeLoader().loadRefTypeOrException(typeName);
-
-                SDocumentFactory extendedFactory = singularFormConfig.getDocumentFactory().extendAddingSetupStep(
-                        document -> document.bindLocalService("processService", ProcessFormService.class,
-                                RefService.of((ProcessFormService) () -> getProcessInstance())));
-                return AbstractFormContent.this.createInstance(extendedFactory, refType);
-            }
-
-            @Override
-            public AnnotationMode getAnnotationMode() {
-                return annotationMode;
-            }
-        };
-        singularFormPanel.setViewMode(viewMode);
-
-        onBuildSingularFormPanel(singularFormPanel);
-
-        return singularFormPanel;
     }
 
     private Component buildSendButton(final BSModalBorder enviarModal) {
@@ -189,7 +174,7 @@ public abstract class AbstractFormContent extends Content {
 
 
     private Component buildSaveAnnotationButton() {
-        final Component button = new SingularValidationButton("save-annotation-btn", singularFormPanel.getRootInstance()) {
+        final Component button = new SingularValidationButton("save-annotation-btn", singularFormPanel.getInstanceModel()) {
 
             protected void save(AjaxRequestTarget target, IModel<? extends SInstance> instanceModel) {
                 saveForm(instanceModel);
@@ -231,7 +216,7 @@ public abstract class AbstractFormContent extends Content {
     }
 
     private boolean isReadOnly() {
-        return viewMode == ViewMode.READ_ONLY && annotationMode != AnnotationMode.EDIT;
+        return getViewMode() == ViewMode.READ_ONLY && getAnnotationMode() != AnnotationMode.EDIT;
     }
 
     protected BSModalBorder construirCloseModal() {
@@ -254,7 +239,7 @@ public abstract class AbstractFormContent extends Content {
     }
 
     protected Component buildValidateButton() {
-        final SingularValidationButton button = new SingularValidationButton("validate-btn", singularFormPanel.getRootInstance()) {
+        final SingularValidationButton button = new SingularValidationButton("validate-btn", singularFormPanel.getInstanceModel()) {
 
             @Override
             protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
@@ -274,19 +259,19 @@ public abstract class AbstractFormContent extends Content {
     protected abstract BSModalBorder buildConfirmationModal(BSContainer<?> modalContainer, IModel<? extends SInstance> instanceModel);
 
     protected Behavior visibleOnlyInEditionBehaviour() {
-        return $b.visibleIf(viewMode::isEdition);
+        return $b.visibleIf(() -> getViewMode().isEdition());
     }
 
     protected Behavior visibleOnlyIfDraftInEditionBehaviour() {
-        return $b.visibleIf(() -> !hasProcess() && viewMode.isEdition());
+        return $b.visibleIf(() -> !hasProcess() && getViewMode().isEdition());
     }
 
     protected Behavior visibleOnlyInAnnotationBehaviour() {
-        return $b.visibleIf(annotationMode::editable);
+        return $b.visibleIf(() -> getAnnotationMode().editable());
     }
 
     protected IModel<? extends SInstance> getFormInstance() {
-        return singularFormPanel.getRootInstance();
+        return singularFormPanel.getInstanceModel();
     }
 
     protected abstract ProcessInstanceEntity getProcessInstance();
@@ -299,7 +284,7 @@ public abstract class AbstractFormContent extends Content {
 
     protected abstract String getIdentifier();
 
-    public SingularFormPanel<String> getSingularFormPanel() {
+    public final SingularFormPanel getSingularFormPanel() {
         return singularFormPanel;
     }
 

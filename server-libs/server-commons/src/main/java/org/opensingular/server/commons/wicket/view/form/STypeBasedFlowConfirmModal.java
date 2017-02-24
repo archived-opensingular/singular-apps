@@ -49,7 +49,7 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     private       String                           transitionName;
     private       boolean                          dirty;
     private       boolean                          validatePageForm;
-    private       SingularFormPanel<String>        singularFormPanel;
+    private SingularFormPanel singularFormPanel;
     private       IModel<SInstance>                rootInstance;
 
     public STypeBasedFlowConfirmModal(AbstractFormPage<T> formPage,
@@ -108,27 +108,28 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
         );
     }
 
-    private SingularFormPanel<String> buildSingularFormPanel() {
-        singularFormPanel = new SingularFormPanel<String>("singular-form-panel", formConfigSupplier.get(), true) {
-            @Override
-            protected SInstance createInstance(SFormConfig singularFormConfig) {
-                SInstance instance;
-                if (formKey != null) {
-                    instance = formServiceSupplier.get().loadSInstance(formKey, refType, singularFormConfig.getDocumentFactory());
-                } else {
-                    instance = singularFormConfig.getDocumentFactory().createInstance(refType);
-                }
-                if (onCreateInstance != null) {
-                    onCreateInstance.accept((SIComposite) instance, transitionName);
-                }
+    private SingularFormPanel buildSingularFormPanel() {
+        singularFormPanel = new SingularFormPanel("singular-form-panel", true);
+        singularFormPanel.setInstanceCreator(this::createInstance);
+        return singularFormPanel;
+    }
+
+    private SInstance createInstance() {
+        SFormConfig<String> singularFormConfig = formConfigSupplier.get();
+        SInstance instance;
+        if (formKey != null) {
+            instance = formServiceSupplier.get().loadSInstance(formKey, refType, singularFormConfig.getDocumentFactory());
+        } else {
+            instance = singularFormConfig.getDocumentFactory().createInstance(refType);
+        }
+        if (onCreateInstance != null) {
+            onCreateInstance.accept((SIComposite) instance, transitionName);
+        }
                 /*
                 deve ser adicionado apos o listener de criar a instancia
                  */
-                appendDirtyListener(instance);
-                return instance;
-            }
-        };
-        return singularFormPanel;
+        appendDirtyListener(instance);
+        return instance;
     }
 
     private void appendDirtyListener(SInstance instance) {
@@ -138,7 +139,7 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     @SuppressWarnings("unchecked")
     public IModel<SInstance> getInstanceModel() {
         if (rootInstance == null) {
-            rootInstance = (IReadOnlyModel<SInstance>) () -> (SInstance) singularFormPanel.getRootInstance().getObject();
+            rootInstance = (IReadOnlyModel<SInstance>) () -> singularFormPanel.getInstance();
         }
         return rootInstance;
     }
