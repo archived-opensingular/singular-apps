@@ -16,11 +16,6 @@
 
 package org.opensingular.server.commons.wicket;
 
-import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.server.commons.wicket.error.Page410;
-import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
@@ -32,14 +27,24 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.wicket.util.application.SkinnableApplication;
+import org.opensingular.lib.wicket.util.page.error.Error403Page;
+import org.opensingular.server.commons.wicket.error.Page410;
+import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.support.WebApplicationContextUtils;
+import org.wicketstuff.annotation.mount.MountPath;
+import org.wicketstuff.annotation.scan.AnnotatedMountList;
 import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 public abstract class SingularApplication extends AuthenticatedWebApplication
         implements ApplicationContextAware, SkinnableApplication {
@@ -52,6 +57,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         return (SingularApplication) WebApplication.get();
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         super.init();
@@ -82,13 +88,15 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
             applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         }
 
-        AnnotatedMountScanner annotatedMountScanner = new AnnotatedMountScanner();
+        new SingularAnnotatedMountScanner()
+                .scanList(
+                        SingularClassPathScanner
+                                .INSTANCE
+                                .findClassesAnnotatedWith(MountPath.class)
+                                .stream()
+                                .collect(Collectors.toList()))
+                .mount(this);
 
-        annotatedMountScanner.scanPackage("org.opensingular").mount(this);
-
-        for (String packageName : getPackagesToScan()) {
-            annotatedMountScanner.scanPackage(packageName).mount(this);
-        }
 
         getDebugSettings().setComponentPathAttributeName("wicketpath");
     }
@@ -127,9 +135,13 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         this.applicationContext = ctx;
     }
 
-    /**
-     * @return Package a ser escaneada pelo {@link AnnotatedMountScanner} para buscar pelos mounts das páginas.
-     */
-    protected abstract String[] getPackagesToScan();
+
+    public static class SingularAnnotatedMountScanner extends AnnotatedMountScanner {
+        @Override
+        public AnnotatedMountList scanList(List<Class<?>> mounts) {
+            return super.scanList(mounts);
+        }
+    }
+
 
 }

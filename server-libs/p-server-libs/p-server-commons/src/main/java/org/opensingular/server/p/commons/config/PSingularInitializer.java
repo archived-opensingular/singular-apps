@@ -27,7 +27,9 @@ public interface PSingularInitializer extends SingularInitializer {
     public PSpringHibernateInitializer springHibernateConfiguration();
 
     @Override
-    public PFormInitializer formConfiguration();
+    default PFormInitializer formConfiguration() {
+        return new PFormInitializer();
+    }
 
     @Override
     public PFlowInitializer flowConfiguration();
