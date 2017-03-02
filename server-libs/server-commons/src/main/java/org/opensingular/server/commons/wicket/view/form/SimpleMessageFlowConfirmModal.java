@@ -16,15 +16,15 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
-import org.opensingular.form.SInstance;
-import org.opensingular.form.wicket.enums.ViewMode;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.wicket.builder.HTMLParameters;
-import org.opensingular.server.commons.wicket.builder.MarkupCreator;
-import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.opensingular.form.SInstance;
+import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.wicket.builder.HTMLParameters;
+import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 
 
 public class SimpleMessageFlowConfirmModal<T extends PetitionEntity> extends AbstractFlowConfirmModal<T> {
@@ -40,7 +40,7 @@ public class SimpleMessageFlowConfirmModal<T extends PetitionEntity> extends Abs
 
     @Override
     public BSModalBorder init(String idSuffix, String tn, IModel<? extends SInstance> im, ViewMode vm) {
-        final BSModalBorder modal = new BSModalBorder("flow-modal" + idSuffix, new StringResourceModel("label.button.confirm", formPage, null));
+        final BSModalBorder modal = new BSModalBorder("flow-modal" + idSuffix, new StringResourceModel("label.button.confirm", getFormPage(), null));
         addDefaultCancelButton(modal);
         addDefaultConfirmButton(tn, im, vm, modal);
         modal.add(new Label("flow-msg", String.format("Tem certeza que deseja %s ?", tn)));

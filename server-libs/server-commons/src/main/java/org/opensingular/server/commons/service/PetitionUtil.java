@@ -1,0 +1,147 @@
+/*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+package org.opensingular.server.commons.service;
+
+import org.opensingular.flow.core.Flow;
+import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SInstance;
+import org.opensingular.form.SType;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.server.commons.exception.PetitionWithoutDefinitionException;
+import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
+import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+
+import javax.annotation.Nonnull;
+import java.util.Objects;
+import java.util.Optional;
+
+/**
+ * Métodos utilitários para manipulação de requerimentos.
+ *
+ * @author Daniel C. Bordin on 01/03/2017.
+ */
+public final class PetitionUtil {
+
+    private PetitionUtil() {}
+
+    /** Recupera a definição de processo associado a petição. */
+    @Nonnull
+    public static ProcessDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
+        if (petition.getProcessDefinitionEntity() == null) {
+            throw new PetitionWithoutDefinitionException();
+        }
+        return Flow.getProcessDefinitionWith(petition.getProcessDefinitionEntity().getKey());
+    }
+
+    /** Retorna a tarefa atual associada a petição ou dispara exception senão houver nenhuma. */
+    @Nonnull
+    public static TaskDefinitionEntity getCurrentTaskDefinition(@Nonnull PetitionEntity petition) {
+        return getCurrentTaskDefinitionOpt(petition).orElseThrow(
+                () -> SingularServerException.rethrow("Não há uma tarefa corrente associada à petição."));
+    }
+
+    /** Retorna a tarefa atual associada a petição se existir. */
+    @Nonnull
+    public static Optional<TaskDefinitionEntity> getCurrentTaskDefinitionOpt(@Nonnull PetitionEntity petition) {
+        final ProcessInstanceEntity processInstanceEntity = petition.getProcessInstanceEntity();
+        if (processInstanceEntity != null) {
+            return Optional.of(processInstanceEntity.getCurrentTask().getTask().getTaskDefinition());
+        }
+        return Optional.empty();
+    }
+
+    /**
+     * If instance have a Task Associated with it, returns it.
+     *
+     * @param x Instance where document contains task instance
+     * @return Task if exists
+     */
+    @Nonnull
+    public static Optional<TaskInstanceEntity> getCurrentTaskEntity(@Nonnull SInstance instance) {
+        return Optional.of(getServiceOrException(instance, ServerSIntanceProcessAwareService.class)).map(
+                ServerSIntanceProcessAwareService::getProcessInstance).map(ProcessInstanceEntity::getCurrentTask);
+
+    }
+
+    @Nonnull
+    public static PetitionService<?> getPetitionServiceOrException(@Nonnull SInstance instance) {
+        return getServiceOrException(instance, PetitionService.class);
+    }
+
+    /** Localiza o serviço associado a instância ou dispara exception senão encontrar. */
+    @Nonnull
+    public static <T> T getServiceOrException(@Nonnull SInstance instance, @Nonnull Class<T> targetClass) {
+        //TODO (Daniel) Essa lógica fica melhor se for transferida para novo metodo SDocument.lookupServiceOrException()
+        T service = Objects.requireNonNull(instance).getDocument().lookupService(targetClass);
+        if (service == null) {
+            throw SingularServerException.rethrow("O serviço " + targetClass.getName() +
+                    " não está configurado na instância (no Document). Provavelmente o DOcumentFactory não foi " +
+                    "configurado corretamente");
+        }
+        return service;
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull PetitionEntity petition) {
+        return getTypeName(petition.getMainForm());
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull DraftEntity draftEntity) {
+        return getTypeName(draftEntity.getForm());
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull FormPetitionEntity formPetitionEntity) {
+        return getTypeName(formPetitionEntity.getForm());
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull FormVersionEntity formVersionEntity) {
+        return getTypeName(formVersionEntity.getFormEntity());
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull FormEntity form) {
+        return getTypeName(form.getFormType());
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull FormTypeEntity ft) {
+        return ft.getAbbreviation();
+    }
+
+    /** Retorna o nome completo do tipo definido pela classe. Veja {@link SFormUtil#getTypeName(Class)}. */
+    @Nonnull
+    public static String getTypeName(@Nonnull Class<? extends SType<?>> typeClass) {
+        return SFormUtil.getTypeName(typeClass);
+    }
+}

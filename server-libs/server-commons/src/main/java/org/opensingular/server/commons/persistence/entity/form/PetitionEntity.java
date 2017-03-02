@@ -19,12 +19,16 @@ package org.opensingular.server.commons.persistence.entity.form;
 import org.hibernate.annotations.GenericGenerator;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
+import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.service.PetitionUtil;
 
+import javax.annotation.Nonnull;
 import javax.persistence.*;
 import java.util.Optional;
 import java.util.SortedSet;
@@ -137,17 +141,16 @@ public class PetitionEntity extends BaseEntity<Long> {
         this.formPetitionEntities = formPetitionEntities;
     }
 
+    @Nonnull
     public FormEntity getMainForm() {
-        if (formPetitionEntities == null) {
-            return null;
-        } else {
-            return formPetitionEntities.stream()
+        FormEntity form = null;
+        if (formPetitionEntities != null) {
+            form = formPetitionEntities.stream()
                     .filter(f -> SimNao.SIM == f.getMainForm())
                     .map(f -> {
                         if (f.getForm() != null) {
                             return f.getForm();
-                        }
-                        if (f.getCurrentDraftEntity() != null) {
+                        } else if (f.getCurrentDraftEntity() != null) {
                             return f.getCurrentDraftEntity().getForm();
                         }
                         return null;
@@ -155,17 +158,26 @@ public class PetitionEntity extends BaseEntity<Long> {
                     .findFirst()
                     .orElse(null);
         }
+        if (form == null) {
+            throw SingularServerException.rethrow("Base incossistente. Não foi encontrado o main form da petição.");
+        }
+        return form;
     }
 
-    public DraftEntity currentEntityDraftByType(String typeName) {
+    @Nonnull
+    public Optional<DraftEntity> currentEntityDraftByType(@Nonnull Class<? extends SType<?>> typeClass) {
+        return currentEntityDraftByType(PetitionUtil.getTypeName(typeClass));
+    }
+
+    @Nonnull
+    public Optional<DraftEntity> currentEntityDraftByType(@Nonnull String typeName) {
         return Optional
                 .ofNullable(formPetitionEntities)
                 .orElse(new TreeSet<>())
                 .stream()
-                .filter(f -> f.getCurrentDraftEntity() != null && f.getCurrentDraftEntity().getForm().getFormType().getAbbreviation().equals(typeName))
+                .filter(f -> f.getCurrentDraftEntity() != null && PetitionUtil.getTypeName(f.getCurrentDraftEntity()).equals(typeName))
                 .findFirst()
-                .map(FormPetitionEntity::getCurrentDraftEntity)
-                .orElse(null);
+                .map(FormPetitionEntity::getCurrentDraftEntity);
 
     }
 

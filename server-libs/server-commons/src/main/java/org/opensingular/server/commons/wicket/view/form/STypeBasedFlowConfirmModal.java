@@ -24,15 +24,12 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.persistence.FormKey;
-import org.opensingular.form.service.IFormService;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.commons.lambda.IBiConsumer;
-import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
@@ -41,10 +38,8 @@ import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 
 public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends AbstractFlowConfirmModal<T> {
 
-    private final ISupplier<SFormConfig<String>>   formConfigSupplier;
-    private final RefType                          refType;
+    private final RefType refType;
     private final FormKey                          formKey;
-    private final ISupplier<IFormService>          formServiceSupplier;
     private final IBiConsumer<SIComposite, String> onCreateInstance;
     private       String                           transitionName;
     private       boolean                          dirty;
@@ -53,17 +48,13 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     private       IModel<SInstance>                rootInstance;
 
     public STypeBasedFlowConfirmModal(AbstractFormPage<T> formPage,
-                                      ISupplier<SFormConfig<String>> formConfigSupplier,
                                       RefType refType,
                                       FormKey formKey,
-                                      ISupplier<IFormService> formServiceSupplier,
                                       IBiConsumer<SIComposite, String> onCreateInstance, boolean validatePageForm) {
         super(formPage);
 
-        this.formConfigSupplier = formConfigSupplier;
         this.refType = refType;
         this.formKey = formKey;
-        this.formServiceSupplier = formServiceSupplier;
         this.onCreateInstance = onCreateInstance;
         this.dirty = false;
         this.validatePageForm = validatePageForm;
@@ -77,7 +68,7 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     @Override
     public BSModalBorder init(String idSuffix, String tn, IModel<? extends SInstance> im, ViewMode vm) {
         this.transitionName = tn;
-        final BSModalBorder modal = new BSModalBorder("flow-modal" + idSuffix, new StringResourceModel("label.button.confirm", formPage, null));
+        final BSModalBorder modal = new BSModalBorder("flow-modal" + idSuffix, new StringResourceModel("label.button.confirm", getFormPage(), null));
         addCloseButton(modal);
         addDefaultConfirmButton(tn, im, vm, modal);
         modal.add(buildSingularFormPanel());
@@ -92,7 +83,7 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
 
     @Override
     protected FlowConfirmButton<T> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<>(tn, "confirm-btn", im, validatePageForm && ViewMode.EDIT == vm, formPage, m);
+        return new FlowConfirmButton<>(tn, "confirm-btn", im, validatePageForm && ViewMode.EDIT == vm, getFormPage(), m);
     }
 
     private void addCloseButton(BSModalBorder modal) {
@@ -115,12 +106,11 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     }
 
     private SInstance createInstance() {
-        SFormConfig<String> singularFormConfig = formConfigSupplier.get();
         SInstance instance;
         if (formKey != null) {
-            instance = formServiceSupplier.get().loadSInstance(formKey, refType, singularFormConfig.getDocumentFactory());
+            instance = getFormPage().getFormPetitionService().getSInstance(formKey, refType);
         } else {
-            instance = singularFormConfig.getDocumentFactory().createInstance(refType);
+            instance = getFormPage().getFormPetitionService().createInstance(refType);
         }
         if (onCreateInstance != null) {
             onCreateInstance.accept((SIComposite) instance, transitionName);

@@ -16,15 +16,6 @@
 
 package org.opensingular.server.module.wicket.view.util.dispatcher;
 
-import java.lang.reflect.Constructor;
-import java.util.Arrays;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -36,15 +27,9 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.string.StringValue;
-import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.ITaskPageStrategy;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTaskUserExecutable;
-import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.*;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
-import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.server.commons.exception.SingularServerException;
@@ -54,6 +39,7 @@ import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -71,6 +57,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.inject.Inject;
+import java.lang.reflect.Constructor;
+import java.util.Arrays;
+import java.util.Optional;
+
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
@@ -82,10 +73,6 @@ public abstract class DispatcherPage extends WebPage {
     protected static final Logger logger = LoggerFactory.getLogger(DispatcherPage.class);
 
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
-
-    @Inject
-    @Named("formConfigWithDatabase")
-    protected SFormConfig<String> singularFormConfig;
 
     @Inject
     private PetitionService<?> petitionService;
@@ -166,8 +153,7 @@ public abstract class DispatcherPage extends WebPage {
         if (config.getFormVersionPK() != null) {
             formVersionPK = config.getFormVersionPK();
         } else if (config.getPetitionId() != null) {
-            PetitionEntity p;
-            p = petitionService.findPetitionByCod(Long.valueOf(config.getPetitionId()));
+            PetitionEntity p = petitionService.getPetitionByCod(config.getPetitionId());
             formVersionPK = p.getMainForm().getCurrentFormVersionEntity().getCod();
         } else {
             formVersionPK = null;
@@ -209,11 +195,7 @@ public abstract class DispatcherPage extends WebPage {
 
     protected boolean hasAccess(FormPageConfig config) {
         SingularUserDetails userDetails = SingularSession.get().getUserDetails();
-        Long                petitionId  = NumberUtils.toLong(config.getPetitionId(), -1);
-        if (petitionId < 0) {
-            petitionId = null;
-        }
-        boolean hasPermission = authorizationService.hasPermission(petitionId, config.getFormType(), String.valueOf(userDetails.getUserPermissionKey()), config.getFormAction().name());
+        boolean hasPermission = authorizationService.hasPermission(config.getPetitionId(), config.getFormType(), String.valueOf(userDetails.getUserPermissionKey()), config.getFormAction().name());
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
@@ -228,12 +210,8 @@ public abstract class DispatcherPage extends WebPage {
 
     private boolean isTaskAssignedToAnotherUser(FormPageConfig config) {
         String username   = SingularSession.get().getUsername();
-        Long   petitionId = NumberUtils.toLong(config.getPetitionId(), -1);
-        if (petitionId < 0) {
-            petitionId = null;
-        }
 
-        TaskInstanceEntity currentTask = petitionService.findCurrentTaskByPetitionId(petitionId);
+        TaskInstanceEntity currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
 
         if (currentTask != null
                 && !currentTask.getTaskHistory().isEmpty()) {
@@ -249,8 +227,8 @@ public abstract class DispatcherPage extends WebPage {
 
     private String loadTypeNameFormFormVersionPK(Long formVersionPK) {
         return Optional.of(formVersionPK)
-                .map(formPetitionService::findFormTypeFromVersion)
-                .map(FormTypeEntity::getAbbreviation)
+                .map(formPetitionService::loadFormVersionEntity)
+                .map(PetitionUtil::getTypeName)
                 .orElseThrow(() -> SingularServerException.rethrow("Não possivel idenfiticar o tipo"));
     }
 
@@ -358,12 +336,11 @@ public abstract class DispatcherPage extends WebPage {
     protected void onDispatch(WebPage destination, FormPageConfig config) {
     }
 
-    protected TaskInstance findCurrentTaskByPetitionId(String petitionId) {
-        if (StringUtils.isBlank(petitionId)) {
+    protected TaskInstance findCurrentTaskByPetitionId(Long petitionId) {
+        if (petitionId == null) {
             return null;
-        } else {
-            return Flow.getTaskInstance(petitionService.findCurrentTaskByPetitionId(Long.valueOf(petitionId)));
         }
+        return Flow.getTaskInstance(petitionService.findCurrentTaskByPetitionId(petitionId));
     }
 
     protected Class<? extends AbstractFormPage> getDefaultFormPageClass() {

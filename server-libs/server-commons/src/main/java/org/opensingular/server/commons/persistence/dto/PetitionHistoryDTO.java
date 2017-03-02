@@ -40,10 +40,7 @@ public class PetitionHistoryDTO implements Serializable {
         return Optional
                 .ofNullable(petitionContentHistory)
                 .map(PetitionContentHistoryEntity::getHistoryDate)
-                .orElse(
-                        Optional
-                                .ofNullable(task.getBeginDate())
-                                .orElse(null));
+                .orElse(task.getBeginDate());
     }
 
 
@@ -56,8 +53,6 @@ public class PetitionHistoryDTO implements Serializable {
     }
 
     public Date getEndDate() {
-        return Optional
-                .ofNullable(task.getEndDate())
-                .orElse(null);
+        return task.getEndDate();
     }
 }

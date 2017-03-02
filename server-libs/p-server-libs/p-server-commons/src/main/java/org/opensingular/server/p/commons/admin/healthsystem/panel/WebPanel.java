@@ -15,32 +15,21 @@
  */
 package org.opensingular.server.p.commons.admin.healthsystem.panel;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.document.RefType;
-import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.opensingular.server.p.commons.admin.healthsystem.stypes.SWebHealth;
 
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
-
 @SuppressWarnings("serial")
 public class WebPanel extends Panel {
-	@Inject
-    @Named("formConfigWithDatabase")
-    private SFormConfig<String> formConfig;
-	
+
 	public WebPanel(String id) {
 		super(id);
 	}
@@ -48,20 +37,9 @@ public class WebPanel extends Panel {
 	@Override
 	protected void onInitialize() {
 		super.onInitialize();
-		
-		SingularFormPanel<String> panelWeb = new SingularFormPanel<String>("panelWeb", formConfig) {
-			@Override
-			protected SInstance createInstance(SFormConfig<String> singularFormConfig) {
-				return SDocumentFactory.empty().createInstance(new RefType() {
-					@Override
-					protected SType<?> retrieve() {
-						return singularFormConfig.getTypeLoader().loadTypeOrException(SWebHealth.TYPE_FULL_NAME);
-					}
-				});
-			}
-		};
-		
-		SingularValidationButton checkButton = new SingularValidationButton("checkButtonWeb", panelWeb.getRootInstance()){
+		SingularFormPanel panelWeb = new SingularFormPanel("panelWeb", SWebHealth.class);
+
+		SingularValidationButton checkButton = new SingularValidationButton("checkButtonWeb", panelWeb.getInstanceModel()){
 			@Override
 			protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form,
 					IModel<? extends SInstance> instanceModel) {
@@ -70,7 +48,7 @@ public class WebPanel extends Panel {
 			}
 		};
 		
-		SingularSaveButton saveButton = new SingularSaveButton("saveButtonWeb", panelWeb.getRootInstance()) {
+		SingularSaveButton saveButton = new SingularSaveButton("saveButtonWeb", panelWeb.getInstanceModel()) {
 			@Override
 			protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form,
 					IModel<? extends SInstance> instanceModel) {

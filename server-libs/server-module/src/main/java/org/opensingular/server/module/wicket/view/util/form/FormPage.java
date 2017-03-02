@@ -16,15 +16,13 @@
 
 package org.opensingular.server.module.wicket.view.util.form;
 
-import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.ResourceModel;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.ResourceModel;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.inject.Inject;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
@@ -44,27 +42,24 @@ public class FormPage extends AbstractFormPage<PetitionEntity> {
 
     @Override
     protected IModel<?> getContentTitleModel() {
-        return $m.get(() -> content.getSingularFormPanel().getRootTypeSubtitle());
+        return $m.get(() -> getSingularFormPanel().getRootTypeSubtitle());
     }
 
     @Override
     protected IModel<?> getContentSubtitleModel() {
         return $m.get(() -> {
-            if (getIdentifier() == null) {
-                return new ResourceModel("label.form.content.title", "Nova Solicitação").getObject();
-            } else {
+            if (getIdentifier().isPresent()) {
 //                return currentModel.getObject().getDescription();
                 return "";
             }
+            return new ResourceModel("label.form.content.title", "Nova Solicitação").getObject();
         });
     }
 
     @Override
-    protected String getIdentifier() {
-        return Optional.ofNullable(currentModel)
-                .map(IModel::getObject)
+    protected Optional<String> getIdentifier() {
+        return getPetitionOptional()
                 .map(PetitionEntity::getCod)
-                .map(Object::toString).orElse(null);
-
+                .map(Object::toString);
     }
 }

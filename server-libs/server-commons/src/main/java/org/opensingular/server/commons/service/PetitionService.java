@@ -17,22 +17,12 @@
 package org.opensingular.server.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTransition;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.SingularFlowException;
-import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.core.*;
 import org.opensingular.flow.core.variable.type.VarTypeString;
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.flow.persistence.entity.*;
+import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.context.SFormConfig;
+import org.opensingular.form.SType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
@@ -52,6 +42,7 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
+import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
@@ -60,28 +51,17 @@ import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.commons.util.PetitionUtil;
 import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_ANALYSE;
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_ASSIGN;
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_DELETE;
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_EDIT;
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_RELOCATE;
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_VIEW;
+import static org.opensingular.server.commons.flow.action.DefaultActions.*;
 import static org.opensingular.server.commons.flow.rest.DefaultServerREST.DELETE;
 import static org.opensingular.server.commons.flow.rest.DefaultServerREST.PATH_BOX_ACTION;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
@@ -108,17 +88,50 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     protected AuthorizationService authorizationService;
 
     @Inject
-    protected FormPetitionService<P> formPetitionService;
+    private FormPetitionService<P> formPetitionService;
 
     @Inject
     protected ActorDAO actorDAO;
 
-    public P findPetitionByCod(Long cod) {
-        return petitionDAO.find(cod);
+    /** Retorna o serviço de formulários da petição. */
+    @Nonnull
+    protected  final FormPetitionService<P> getFormPetitionService() {
+        return Objects.requireNonNull(formPetitionService);
     }
 
-    public P findPetitionByProcessCod(Integer cod) {
+    /** Procura a petição com o código informado. */
+    @Nonnull
+    public Optional<P> findPetitionByCod(@Nonnull Long cod) {
+        Objects.requireNonNull(cod);
+        return Optional.ofNullable(petitionDAO.find(cod));
+    }
+
+    /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
+    @Nonnull
+    public P getPetitionByCod(@Nonnull Long cod) {
+        return findPetitionByCod(cod).orElseThrow(
+                () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
+    }
+
+    /** Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar. */
+    @Nonnull
+    public final P getPetitionByProcessCod(@Nonnull Integer cod) {
+        Objects.requireNonNull(cod);
         return petitionDAO.findByProcessCod(cod);
+    }
+
+    /** Recupera a petição associado ao fluxo informado. */
+    @Nonnull
+    public final P getPetitionByProcess(@Nonnull ProcessInstance processInstance) {
+        Objects.requireNonNull(processInstance);
+        return getPetitionByProcessCod(processInstance.getEntityCod());
+    }
+
+    /** Recupera a petição associada a tarefa informada. */
+    @Nonnull
+    public final P getPetitionByTask(@Nonnull TaskInstance taskInstance) {
+        Objects.requireNonNull(taskInstance);
+        return getPetitionByProcess(taskInstance.getProcessInstance());
     }
 
     public void deletePetition(PetitionDTO peticao) {
@@ -219,38 +232,22 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         return boxItemAction;
     }
 
-    public FormKey saveOrUpdate(P peticao, SInstance instance, boolean mainForm, SFormConfig config) {
-        return saveOrUpdate(peticao, instance, mainForm, config, null);
-    }
-
-    public FormKey saveOrUpdate(P petition,
-                                SInstance instance,
-                                boolean mainForm,
-                                SFormConfig config,
-                                Consumer<P> onSave) {
-
-        if (instance == null) {
-            return null;
-        }
+    @Nonnull
+    public FormKey saveOrUpdate(@Nonnull P petition, @Nonnull SInstance instance, boolean mainForm) {
+        Objects.requireNonNull(petition);
+        Objects.requireNonNull(instance);
 
         petitionDAO.saveOrUpdate(petition);
 
         if (petition.getPetitioner() != null) {
             petitionerDAO.saveOrUpdate(petition.getPetitioner());
         }
-
-        final FormKey key = formPetitionService.saveFormPetition(petition, instance, mainForm, config);
-
-        if (onSave != null) {
-            onSave.accept(petition);
-        }
-
-        return key;
+        return formPetitionService.saveFormPetition(petition, instance, mainForm);
     }
 
-    public void send(P peticao, SInstance instance, String codResponsavel, SFormConfig config) {
+    public void send(P peticao, SInstance instance, String codResponsavel) {
 
-        final List<FormEntity>      consolidatedDrafts = formPetitionService.consolidateDrafts(peticao, config);
+        final List<FormEntity>      consolidatedDrafts = formPetitionService.consolidateDrafts(peticao);
         final ProcessDefinition<?>  processDefinition  = PetitionUtil.getProcessDefinition(peticao);
         final ProcessInstance       processInstance    = processDefinition.newInstance();
         final ProcessInstanceEntity processEntity      = processInstance.saveEntity();
@@ -314,13 +311,13 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
      * @param onTransition listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void executeTransition(String tn, P petition, SFormConfig cfg, BiConsumer<P, String> onTransition, Map<String, String> params) {
+    public void executeTransition(String tn, P petition, BiConsumer<P, String> onTransition, Map<String, String> params) {
         try {
             if (onTransition != null) {
                 onTransition.accept(petition, tn);
             }
 
-            final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition, cfg);
+            final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
 
             savePetitionHistory(petition, consolidatedDrafts);
 
@@ -498,5 +495,46 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         PetitionEntity petitionEntity = petitionDAO.find(codPetition);
         FormEntity     mainForm       = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
+    }
+
+    /** Procura a instância de processo (fluxo) associado ao formulário se o mesmo existir. */
+    public Optional<ProcessInstanceEntity> getFormProcessInstanceEntity(@Nonnull SInstance instance) {
+        return getFormPetitionService().findFormEntity(instance)
+                .map(formEntity -> petitionDAO.findByFormEntity(formEntity))
+                .map(PetitionEntity::getProcessInstanceEntity);
+    }
+
+    /** Verifica se o formulário já foi persistido e possui um processo (fluxo) instanciado e associado. */
+    public boolean formHasProcessInstance(SInstance instance) {
+        return getFormProcessInstanceEntity(instance).isPresent();
+    }
+
+    /** Recupera o formulário {@link SInstance} de abertura do requerimento. */
+    @Nonnull
+    public SIComposite getMainFormAsInstance(@Nonnull PetitionEntity petition) {
+        Objects.requireNonNull(petition);
+        return (SIComposite) getFormPetitionService().getSInstance(petition.getMainForm());
+    }
+
+    /** Recupera o formulário {@link SInstance} de abertura do requerimento e garante que é do tipo inforado. */
+    @Nonnull
+    public <I extends SInstance, K extends SType<? extends I>> I getMainFormAsInstance(@Nonnull PetitionEntity petition,
+            @Nonnull Class<K> expectedType) {
+        Objects.requireNonNull(petition);
+        return getFormPetitionService().getSInstance(petition.getMainForm(), expectedType);
+    }
+
+    /** Procura na petição a versão mais recente do formulário do tipo informado. */
+    @Nonnull
+    protected final Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionEntity petition,
+            @Nonnull Class<? extends SType<?>> typeClass) {
+        return getFormPetitionService().findLastFormPetitionEntityByType(petition.getCod(), typeClass);
+    }
+
+    /** Procura na petição a versão mais recente do formulário do tipo informado. */
+    @Nonnull
+    protected final Optional<SInstance> findLastFormPetitionInstanceByType(@Nonnull PetitionEntity petition,
+            @Nonnull Class<? extends SType<?>> typeClass) {
+        return getFormPetitionService().findLastFormPetitionInstanceByType(petition.getCod(), typeClass);
     }
 }

@@ -15,11 +15,11 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
 
+import java.util.Optional;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +57,7 @@ public class ServerAttachmentPersistenceServiceTest {
 
         when(document.getRoot()).thenReturn(root);
         when(attachmentRef.getId()).thenReturn(String.valueOf(myAttachmenyID));
-        when(formService.findCurrentFormVersion(eq(document))).thenReturn(formVersionEntity);
+        when(formService.findCurrentFormVersion(eq(document))).thenReturn(Optional.of(formVersionEntity));
         when(attachmentDao.find(myAttachmenyID)).thenReturn(attachmentEntity);
 
         AttachmentCopyContext context = serverAttachmentPersistenceService.copy(attachmentRef, document);
@@ -77,7 +77,7 @@ public class ServerAttachmentPersistenceServiceTest {
 
         attachmentEntity.setCod(1L);
 
-        when(formService.findCurrentFormVersion(eq(document))).thenReturn(formVersionEntity);
+        when(formService.findCurrentFormVersion(eq(document))).thenReturn(Optional.of(formVersionEntity));
         when(attachmentDao.find(myAttachmenyID)).thenReturn(attachmentEntity);
 
         serverAttachmentPersistenceService.deleteAttachment(String.valueOf(myAttachmenyID), document);

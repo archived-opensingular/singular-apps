@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.service.attachment;
 
 import org.opensingular.form.document.SDocument;
-import org.opensingular.form.persistence.SingularFormPersistenceException;
 import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
@@ -38,7 +37,7 @@ public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C ex
             return super.copy(ref, sdoc);
         }
         if (sdoc != null && sdoc.getRoot() != null) {
-            formAttachmentService.saveNewFormAttachmentEntity(getAttachmentEntity(ref), formService.findCurrentFormVersion(sdoc));
+            formAttachmentService.saveNewFormAttachmentEntity(getAttachmentEntity(ref), formService.findCurrentFormVersion(sdoc).get());
         }
         return new AttachmentCopyContext<>((AttachmentRef) ref).setDeleteOldFiles(false).setUpdateFileId(false);
     }
@@ -52,7 +51,7 @@ public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C ex
      */
     @Override
     public void deleteAttachment(String id, SDocument document) {
-        formAttachmentService.deleteFormAttachmentEntity(getAttachmentEntity(id), formService.findCurrentFormVersion(document));
+        formAttachmentService.deleteFormAttachmentEntity(getAttachmentEntity(id), formService.findCurrentFormVersion(document).get());
     }
 
     @Override

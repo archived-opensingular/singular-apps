@@ -19,52 +19,34 @@ package org.opensingular.server.commons.wicket.view.form;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.document.RefType;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
-import org.opensingular.form.service.IFormService;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.wicket.view.template.Content;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
 
 public class ReadOnlyFormContent extends Content {
 
-
-    private final IModel<Long>        formVersionEntityPK;
+    private final IModel<Long> formVersionEntityPK;
 
     private SingularFormPanel singularFormPanel;
 
     @Inject
-    private IFormService formService;
-
-    @Inject
-    @Named("formConfigWithDatabase")
-    private SFormConfig<String> formConfig;
+    private FormPetitionService formPetitionService;
 
     public ReadOnlyFormContent(String id, IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
         super(id);
         this.formVersionEntityPK = formVersionEntityPK;
 
-        final FormVersionEntity formVersionEntity = formService.loadFormVersionEntity(formVersionEntityPK.getObject());
-        final FormKey           formKey           = formService.keyFromObject(formVersionEntity.getFormEntity().getCod());
-
-        final RefType refType = new RefType() {
-            @Override
-            protected SType<?> retrieve() {
-                return formConfig.getTypeLoader().loadTypeOrException(formVersionEntity.getFormEntity().getFormType().getAbbreviation());
-            }
-        };
-
         singularFormPanel = new SingularFormPanel("singularFormPanel");
-        singularFormPanel.setInstanceCreator(() -> formService
-                .loadSInstance(formKey, refType, formConfig.getDocumentFactory(), formVersionEntityPK.getObject()));
+        singularFormPanel.setInstanceCreator(() -> {
+            FormVersionEntity formVersionEntity = formPetitionService.loadFormVersionEntity(formVersionEntityPK.getObject());
+            return formPetitionService.getSInstance(formVersionEntity);
+        });
 
         singularFormPanel.setViewMode(ViewMode.READ_ONLY);
         singularFormPanel.setAnnotationMode(

@@ -32,6 +32,7 @@ import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.flow.action.DefaultActions;
 import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaDataValue;
 import org.opensingular.server.commons.service.IServerMetadataREST;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.MenuGroup;
@@ -46,13 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.flow.action.DefaultActions.ASSIGN;
@@ -127,7 +122,7 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
     protected void addForms(MenuGroup menuGroup) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
             SInfoType          annotation = formClass.getAnnotation(SInfoType.class);
-            String             name       = SFormUtil.getTypeName(formClass);
+            String             name       = PetitionUtil.getTypeName(formClass);
             Optional<SType<?>> sTypeOptional       = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {
                 SType<?>                  sType      = sTypeOptional.get();

@@ -17,23 +17,23 @@
 package org.opensingular.server.commons.persistence.dao.form;
 
 
-import org.opensingular.flow.core.TaskType;
-import org.opensingular.form.persistence.entity.FormAttachmentEntity;
-import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.form.persistence.entity.FormVersionEntity;
-import org.opensingular.server.commons.persistence.dto.PetitionDTO;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
-import org.opensingular.server.commons.util.JPAQueryUtil;
-import org.opensingular.lib.support.persistence.BaseDAO;
-import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.opensingular.flow.core.TaskType;
+import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.lib.support.persistence.enums.SimNao;
+import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
+import org.opensingular.server.commons.util.JPAQueryUtil;
 
 import java.util.HashMap;
 import java.util.List;
@@ -255,9 +255,10 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     @Override
     public void delete(T obj) {
         findFormAttachmentByPetitionCod(obj.getCod()).forEach(getSession()::delete);
-        FormVersionEntity formVersionEntity = obj.getMainForm().getCurrentFormVersionEntity();
+        FormEntity mainForm = obj.getMainForm();
+        FormVersionEntity formVersionEntity = mainForm.getCurrentFormVersionEntity();
         getSession().delete(formVersionEntity);
-        obj.getMainForm().setCurrentFormVersionEntity(null);
+        mainForm.setCurrentFormVersionEntity(null);
         getSession().flush();
         super.delete(obj);
     }

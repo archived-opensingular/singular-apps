@@ -25,12 +25,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
-import org.opensingular.form.RefService;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.document.RefType;
-import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
@@ -43,13 +38,11 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.io.Serializable;
+import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
-public abstract class AbstractFormContent extends Content {
+abstract class AbstractFormContent extends Content {
 
 
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
@@ -58,9 +51,6 @@ public abstract class AbstractFormContent extends Content {
     protected     IModel<String> msgFlowModel        = new Model<>();
     protected     IModel<String> transitionNameModel = new Model<>();
     protected final SingularFormPanel singularFormPanel;
-    @Inject
-    @Named("formConfigWithDatabase")
-    protected SFormConfig<String>       singularFormConfig;
 
     public AbstractFormContent(String idWicket, String type, ViewMode viewMode, AnnotationMode annotationMode) {
         super(idWicket, false, false);
@@ -73,18 +63,6 @@ public abstract class AbstractFormContent extends Content {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-
-        final RefType refType = singularFormConfig.getTypeLoader().loadRefTypeOrException(typeName);
-
-        singularFormPanel.setInstanceCreator(() -> {
-            SDocumentFactory extendedFactory = singularFormConfig.getDocumentFactory().extendAddingSetupStep(
-                    document -> document.bindLocalService("processService", ProcessFormService.class,
-                            RefService.of((ProcessFormService) () -> getProcessInstance())));
-            return AbstractFormContent.this.createInstance(extendedFactory, refType);
-        });
-
-        onBuildSingularFormPanel(singularFormPanel);
-
 
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
@@ -106,10 +84,6 @@ public abstract class AbstractFormContent extends Content {
         return new WebMarkupContainer(id).setVisible(false);
     }
 
-    public final SInstance getInstance() {
-        return singularFormPanel.getInstance();
-    }
-
     private final ViewMode getViewMode() { return singularFormPanel.getViewMode(); }
 
     private final AnnotationMode getAnnotationMode() { return singularFormPanel.getAnnotationMode(); }
@@ -128,12 +102,6 @@ public abstract class AbstractFormContent extends Content {
     }
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
-
-    }
-
-    protected abstract SInstance createInstance(SDocumentFactory documentFactory, RefType refType);
-
-    protected void onBuildSingularFormPanel(SingularFormPanel singularFormPanel) {
 
     }
 
@@ -274,22 +242,16 @@ public abstract class AbstractFormContent extends Content {
         return singularFormPanel.getInstanceModel();
     }
 
-    protected abstract ProcessInstanceEntity getProcessInstance();
-
     protected abstract void saveForm(IModel<? extends SInstance> currentInstance);
 
     protected abstract IModel<? extends PetitionEntity> getFormModel();
 
     protected abstract boolean hasProcess();
 
-    protected abstract String getIdentifier();
+    protected abstract Optional<String> getIdentifier();
 
     public final SingularFormPanel getSingularFormPanel() {
         return singularFormPanel;
     }
 
-    @FunctionalInterface
-    public interface ProcessFormService extends Serializable {
-        ProcessInstanceEntity getProcessInstance();
-    }
 }

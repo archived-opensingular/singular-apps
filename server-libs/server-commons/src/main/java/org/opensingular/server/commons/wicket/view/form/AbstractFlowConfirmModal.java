@@ -28,7 +28,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 
 public abstract class AbstractFlowConfirmModal<T extends PetitionEntity> implements FlowConfirmModal<T> {
 
-    protected final AbstractFormPage<T> formPage;
+    private final AbstractFormPage<T> formPage;
 
     public AbstractFlowConfirmModal(AbstractFormPage<T> formPage) {
         this.formPage = formPage;
@@ -73,4 +73,7 @@ public abstract class AbstractFlowConfirmModal<T extends PetitionEntity> impleme
         );
     }
 
+    protected final AbstractFormPage<T> getFormPage() {
+        return formPage;
+    }
 }
