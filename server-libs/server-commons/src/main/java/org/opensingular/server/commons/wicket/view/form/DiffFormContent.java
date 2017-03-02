@@ -110,11 +110,11 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
             List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId());
 
             originalFormVersion = formPetitionEntities.get(1);
-            original = formPetitionService.getSInstance(originalFormVersion.getFormEntity());
+            original = formPetitionService.getSInstance(originalFormVersion);
             originalDate = originalFormVersion.getInclusionDate();
 
             newerFormVersion = formPetitionEntities.get(0);
-            newer = formPetitionService.getSInstance(newerFormVersion.getFormEntity());
+            newer = formPetitionService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
 
         }
