@@ -230,7 +230,7 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
     protected final Content getContent(String id) {
 
         String typeName = getFormType();
-        if (typeName == null || config.getPetitionId() == null) {
+        if (typeName == null && config.getPetitionId() == null) {
             String urlServidorSingular = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
             throw new RedirectToUrlException(urlServidorSingular);
         }

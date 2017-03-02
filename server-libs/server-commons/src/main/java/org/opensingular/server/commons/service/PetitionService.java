@@ -115,21 +115,21 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
     /** Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar. */
     @Nonnull
-    public final P getPetitionByProcessCod(@Nonnull Integer cod) {
+    public P getPetitionByProcessCod(@Nonnull Integer cod) {
         Objects.requireNonNull(cod);
         return petitionDAO.findByProcessCod(cod);
     }
 
     /** Recupera a petição associado ao fluxo informado. */
     @Nonnull
-    public final P getPetitionByProcess(@Nonnull ProcessInstance processInstance) {
+    public P getPetitionByProcess(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
         return getPetitionByProcessCod(processInstance.getEntityCod());
     }
 
     /** Recupera a petição associada a tarefa informada. */
     @Nonnull
-    public final P getPetitionByTask(@Nonnull TaskInstance taskInstance) {
+    public P getPetitionByTask(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
         return getPetitionByProcess(taskInstance.getProcessInstance());
     }

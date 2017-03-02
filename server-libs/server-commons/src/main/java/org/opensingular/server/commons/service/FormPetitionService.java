@@ -174,14 +174,14 @@ public class FormPetitionService<P extends PetitionEntity> {
      * @return Retorna a {@link SInstance} específica associada ao tipo informado.
      */
     @Nonnull
-    public final <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormPetitionEntity f,
+    public <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormPetitionEntity f,
             @Nonnull Class<K> expectedTypeClass) {
         return checkIfExpectedType(getSInstance(f), expectedTypeClass);
     }
 
     /** Recupera a {@link SInstance} associada ao {@link FormVersionEntity} informado. */
     @Nonnull
-    public final SInstance getSInstance(@Nonnull FormPetitionEntity f) {
+    public SInstance getSInstance(@Nonnull FormPetitionEntity f) {
         return getSInstance(f.getForm());
     }
 
@@ -191,14 +191,14 @@ public class FormPetitionService<P extends PetitionEntity> {
      * @return Retorna a {@link SInstance} específica associada ao tipo informado.
      */
     @Nonnull
-    public final <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormVersionEntity version,
+    public <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormVersionEntity version,
             Class<K> expectedTypeClass) {
         return checkIfExpectedType(getSInstance(version), expectedTypeClass);
     }
 
     /** Recupera a {@link SInstance} associada ao {@link FormVersionEntity} informado. */
     @Nonnull
-    public final SInstance getSInstance(@Nonnull FormVersionEntity version) {
+    public SInstance getSInstance(@Nonnull FormVersionEntity version) {
         FormEntity formEntity = version.getFormEntity();
         FormKey formKey = formKeyFromFormEntity(formEntity);
         RefType refType = loadRefType(PetitionUtil.getTypeName(formEntity));
@@ -211,14 +211,14 @@ public class FormPetitionService<P extends PetitionEntity> {
      * @return Retorna a {@link SInstance} específica associada ao tipo informado.
      */
     @Nonnull
-    public final <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormEntity f,
+    public <I extends SInstance, K extends SType<? extends I>> I getSInstance(@Nonnull FormEntity f,
             @Nonnull Class<K> expectedTypeClass) {
         return checkIfExpectedType(getSInstance(f), expectedTypeClass);
     }
 
     /** Recupera a {@link SInstance} associada a {@link FormEntity} informada.*/
     @Nonnull
-    public final SInstance getSInstance(@Nonnull FormEntity f) {
+    public SInstance getSInstance(@Nonnull FormEntity f) {
         FormKey formKey = formKeyFromFormEntity(f);
         RefType refType = loadRefType(PetitionUtil.getTypeName(f));
         return getSInstance(formKey, refType, null);
@@ -336,7 +336,7 @@ public class FormPetitionService<P extends PetitionEntity> {
         return petition.getFormPetitionEntities()
                 .stream()
                 .filter(formPetitionEntity -> formPetitionEntity.getCurrentDraftEntity() != null)
-                .map(formPetitionEntity -> consolidadeDraft(formPetitionEntity))
+                .map(this::consolidadeDraft)
                 .collect(Collectors.toList());
     }
 
