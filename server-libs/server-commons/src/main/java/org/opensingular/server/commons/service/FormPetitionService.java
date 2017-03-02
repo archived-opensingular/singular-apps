@@ -10,7 +10,7 @@ import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.document.SDocumentFactory;
-import org.opensingular.form.io.MformPersistenciaXML;
+import org.opensingular.form.io.SFormXMLUtil;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.SPackageFormPersistence;
 import org.opensingular.form.persistence.dao.*;
@@ -576,11 +576,11 @@ public class FormPetitionService<P extends PetitionEntity> {
 
     /**
      * Gera o contéudo XML para a instância informada. Se a instância não possui dados, retorna um XML vazio. Veja
-     * {@link MformPersistenciaXML#toStringXMLOrEmptyXML(SInstance)}.
+     * {@link SFormXMLUtil#toStringXMLOrEmptyXML(SInstance)}.
      */
     @Nonnull
     public String extractContentXml(@Nonnull SInstance instance) {
-        return MformPersistenciaXML.toStringXMLOrEmptyXML(instance);
+        return SFormXMLUtil.toStringXMLOrEmptyXML(instance);
     }
 
     /** Encontra a {@link FormVersionEntity} correspondente ao id informado ou dispara Exception senão encontrar. */
