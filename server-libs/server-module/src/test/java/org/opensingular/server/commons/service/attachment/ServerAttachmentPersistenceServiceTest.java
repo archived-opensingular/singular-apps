@@ -58,7 +58,7 @@ public class ServerAttachmentPersistenceServiceTest {
         when(document.getRoot()).thenReturn(root);
         when(attachmentRef.getId()).thenReturn(String.valueOf(myAttachmenyID));
         when(formService.findCurrentFormVersion(eq(document))).thenReturn(Optional.of(formVersionEntity));
-        when(attachmentDao.find(myAttachmenyID)).thenReturn(attachmentEntity);
+        when(attachmentDao.findOrException(myAttachmenyID)).thenReturn(attachmentEntity);
 
         AttachmentCopyContext context = serverAttachmentPersistenceService.copy(attachmentRef, document);
 
@@ -78,7 +78,7 @@ public class ServerAttachmentPersistenceServiceTest {
         attachmentEntity.setCod(1L);
 
         when(formService.findCurrentFormVersion(eq(document))).thenReturn(Optional.of(formVersionEntity));
-        when(attachmentDao.find(myAttachmenyID)).thenReturn(attachmentEntity);
+        when(attachmentDao.findOrException(myAttachmenyID)).thenReturn(attachmentEntity);
 
         serverAttachmentPersistenceService.deleteAttachment(String.valueOf(myAttachmenyID), document);
 

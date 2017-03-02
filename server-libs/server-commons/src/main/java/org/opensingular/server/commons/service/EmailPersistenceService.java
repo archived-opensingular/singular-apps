@@ -15,14 +15,6 @@
  */
 package org.opensingular.server.commons.service;
 
-import java.util.Date;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.transaction.Transactional;
-
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
@@ -36,6 +28,13 @@ import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEn
 import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.server.commons.service.dto.Email;
 import org.opensingular.server.commons.service.dto.Email.Addressee;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.util.Date;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Transactional(Transactional.TxType.MANDATORY)
 public class EmailPersistenceService implements IEmailService<Email>{
@@ -88,7 +87,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
     public void markAsSent(Addressee addressee){
-        EmailAddresseeEntity entity = emailAddresseeDao.find(addressee.getCod());
+        EmailAddresseeEntity entity = emailAddresseeDao.findOrException(addressee.getCod());
         entity.setSentDate(new Date());
         emailAddresseeDao.saveOrUpdate(entity);
         

@@ -68,8 +68,9 @@ public class FormPetitionService<P extends PetitionEntity> {
     private Optional<SFormConfig<String>> singularFormConfig;
     //TODO (Daniel) Tirar o optional a cima assim que o teste for ajustado
 
-    public FormPetitionEntity findFormPetitionEntityByCod(Long cod) {
-        return formPetitionDAO.find(cod);
+    @Nonnull
+    public FormPetitionEntity findFormPetitionEntityByCod(@Nonnull Long cod) {
+        return formPetitionDAO.findOrException(cod);
     }
 
     @Nonnull
@@ -352,7 +353,7 @@ public class FormPetitionService<P extends PetitionEntity> {
         final FormKey     key;
         final Integer     userCod;
 
-        draft = draftDAO.get(formPetitionEntity.getCurrentDraftEntity().getCod());
+        draft = draftDAO.getOrException(formPetitionEntity.getCurrentDraftEntity().getCod());
 
         draftInstance = getSInstance(draft.getForm());
 

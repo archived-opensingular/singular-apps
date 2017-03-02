@@ -103,7 +103,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     @Nonnull
     public Optional<P> findPetitionByCod(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
-        return Optional.ofNullable(petitionDAO.find(cod));
+        return petitionDAO.find(cod);
     }
 
     /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
@@ -135,11 +135,14 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     public void deletePetition(PetitionDTO peticao) {
-        petitionDAO.delete(petitionDAO.find(peticao.getCodPeticao()));
+        deletePetition(peticao.getCodPeticao());
     }
 
-    public void deletePetition(Long idPeticao) {
-        petitionDAO.delete(petitionDAO.find(idPeticao));
+    public void deletePetition(@Nonnull Long idPeticao) {
+        Optional<P> pp = petitionDAO.find(idPeticao);
+        if (pp.isPresent()) {
+            petitionDAO.delete(pp.get());
+        }
     }
 
     public Long countQuickSearch(QuickFilter filter) {
@@ -436,7 +439,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     public ProcessGroupEntity findByProcessGroupCod(String cod) {
-        return grupoProcessoDAO.get(cod);
+        return grupoProcessoDAO.get(cod).orElse(null);
     }
 
     public P createNewPetitionWithoutSave(Class<P> petitionClass, FormPageConfig config, BiConsumer<P, FormPageConfig> creationListener) {
@@ -468,7 +471,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     public List<PetitionHistoryDTO> listPetitionContentHistoryByPetitionCod(long petitionCod, String menu, boolean filter) {
-        P petition = petitionDAO.find(petitionCod);
+        P petition = petitionDAO.findOrException(petitionCod);
         return petitionContentHistoryDAO.listPetitionContentHistoryByPetitionCod(petition, menu, filter);
     }
 
@@ -491,8 +494,8 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         return petitionDAO.findPetitionAuthMetadata(petitionId);
     }
 
-    public List<FormVersionEntity> buscarDuasUltimasVersoesForm(final Long codPetition) {
-        PetitionEntity petitionEntity = petitionDAO.find(codPetition);
+    public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
+        PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
         FormEntity     mainForm       = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
