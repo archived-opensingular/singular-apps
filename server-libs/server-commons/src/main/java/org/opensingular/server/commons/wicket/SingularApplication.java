@@ -31,6 +31,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
 import org.springframework.beans.BeansException;
@@ -42,8 +43,12 @@ import org.wicketstuff.annotation.scan.AnnotatedMountList;
 import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 public abstract class SingularApplication extends AuthenticatedWebApplication
@@ -88,16 +93,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
             applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         }
 
-        new SingularAnnotatedMountScanner()
-                .scanList(
-                        SingularClassPathScanner
-                                .INSTANCE
-                                .findClassesAnnotatedWith(MountPath.class)
-                                .stream()
-                                .collect(Collectors.toList()))
-                .mount(this);
-
-
+        mountPages();
         getDebugSettings().setComponentPathAttributeName("wicketpath");
     }
 
@@ -126,6 +122,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         }
     }
 
+
     public ApplicationContext getApplicationContext() {
         return applicationContext;
     }
@@ -135,13 +132,43 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         this.applicationContext = ctx;
     }
 
+    private void mountPages() {
+        List<Class<?>> classes = SingularClassPathScanner
+                .INSTANCE
+                .findClassesAnnotatedWith(MountPath.class)
+                .stream()
+                .collect(Collectors.toList());
 
-    public static class SingularAnnotatedMountScanner extends AnnotatedMountScanner {
+        Map<String, Class<?>> mountPaths = new HashMap<>();
+        for (Class<?> clazz : classes) {
+            List<String> paths = new ArrayList<>();
+            paths.add(clazz.getAnnotation(MountPath.class).value());
+            paths.addAll(Arrays.asList(clazz.getAnnotation(MountPath.class).alt()));
+            for (String path : paths) {
+                if (mountPaths.containsKey(path)) {
+                    throw SingularServerException
+                            .rethrow(
+                                    String
+                                            .format("Duas ou mais classes possuem o mesmo valor ou valor alternativo de @MountPath. Classes %s  e %s",
+                                                    clazz.getName(),
+                                                    mountPaths.get(path).getName()));
+                }
+            }
+        }
+
+        new SingularAnnotatedMountScanner()
+                .scanList(classes)
+                .mount(this);
+
+
+    }
+
+
+    private static class SingularAnnotatedMountScanner extends AnnotatedMountScanner {
         @Override
         public AnnotatedMountList scanList(List<Class<?>> mounts) {
             return super.scanList(mounts);
         }
     }
-
 
 }

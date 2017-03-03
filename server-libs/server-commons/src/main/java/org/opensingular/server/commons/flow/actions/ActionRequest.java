@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.flow.actions;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;

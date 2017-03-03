@@ -14,12 +14,13 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.flow.actions;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
 
 import javax.xml.ws.WebServiceException;
 
+import org.opensingular.server.commons.flow.controllers.IController;
 import org.springframework.stereotype.Controller;
 
 import org.opensingular.lib.commons.util.Loggable;

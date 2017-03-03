@@ -3,22 +3,21 @@
  * Singular PROPRIETARY/CONFIDENTIAL. Use is subject to license terms.
  */
 
-package org.opensingular.server.commons.flow.rest.actions;
+package org.opensingular.server.commons.flow.controllers;
 
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.MUser;
 import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.server.commons.flow.rest.ActionRequest;
-import org.opensingular.server.commons.flow.rest.ActionResponse;
-import org.opensingular.server.commons.flow.rest.IController;
+import org.opensingular.server.commons.flow.actions.ActionRequest;
+import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.springframework.stereotype.Controller;
 
 import javax.xml.ws.WebServiceException;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
 
 @AutoScanDisabled
 @Controller

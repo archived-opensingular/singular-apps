@@ -14,10 +14,12 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.flow.controllers;
 
 import javax.inject.Inject;
 
+import org.opensingular.server.commons.flow.actions.ActionRequest;
+import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 

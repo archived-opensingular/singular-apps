@@ -22,8 +22,9 @@ import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.flow.rest.ActionConfig;
-import org.opensingular.server.commons.flow.rest.ActionDefinition;
+
+import org.opensingular.server.commons.flow.actions.ActionConfig;
+import org.opensingular.server.commons.flow.actions.ActionDefinition;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionService;
@@ -97,7 +98,7 @@ public class PermissionResolverService implements Loggable {
 
     private List<? extends SingularPermission> listPermissions(Class<? extends ProcessDefinition> clazz) {
         ProcessDefinition processDefinition = Flow.getProcessDefinition(clazz);
-        ActionConfig      actionConfig      = (ActionConfig) processDefinition.getMetaDataValue(ActionConfig.KEY);
+        ActionConfig actionConfig      = (ActionConfig) processDefinition.getMetaDataValue(ActionConfig.KEY);
 
         if (actionConfig == null) {
             return Collections.emptyList();

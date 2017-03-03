@@ -47,6 +47,7 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionContentHisto
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
@@ -70,10 +71,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 @SuppressWarnings("rawtypes")
@@ -273,6 +270,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IAttachmentPersistenceHelper serverAttachmentPersistenceHelper(IFormService formService, IFormAttachmentService attachmentService) {
         return new ServerAttachmentPersistenceHelper(formService, attachmentService);
+    }
+
+    @Bean
+    public DefaultServerREST serverRest(){
+        return new DefaultServerREST();
     }
 
 }

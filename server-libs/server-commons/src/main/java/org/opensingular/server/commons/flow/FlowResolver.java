@@ -25,7 +25,7 @@ import java.io.Serializable;
 import java.util.Optional;
 
 @FunctionalInterface
-public interface LazyFlowDefinitionResolver extends Serializable {
+public interface FlowResolver extends Serializable {
 
     Optional<Class<? extends ProcessDefinition>> resolve(FormPageConfig cfg, SIComposite iRoot);
 

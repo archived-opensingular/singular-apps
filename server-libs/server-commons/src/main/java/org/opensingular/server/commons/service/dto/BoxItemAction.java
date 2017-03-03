@@ -16,18 +16,18 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import static org.opensingular.server.commons.flow.rest.DefaultServerREST.EXECUTE;
-import static org.opensingular.server.commons.flow.rest.DefaultServerREST.PATH_BOX_ACTION;
+import org.opensingular.server.commons.form.FormActions;
 
 import java.io.Serializable;
 import java.util.Map;
 
-import org.opensingular.server.commons.form.FormActions;
+import static org.opensingular.server.commons.rest.DefaultServerREST.EXECUTE;
+import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
 
 public class BoxItemAction implements Serializable {
 
-    private String name;
-    private String endpoint;
+    private String      name;
+    private String      endpoint;
     private FormActions formAction;
     private boolean useExecute = false;
 
