@@ -67,6 +67,7 @@ import org.opensingular.server.commons.wicket.view.template.Template;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.function.BiConsumer;
@@ -84,13 +85,19 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
 
     private final Class<T>            petitionClass;
     private final FormPageConfig      config;
+    private final Class<? extends SType<?>> formType; //Essa informação têm precedência sobre config.getFormType()
     private        IModel<T>          currentModel;
     private final IModel<FormKey>     formKeyModel;
     private final IModel<FormKey>     parentPetitionformModel;
     private       AbstractFormContent content;
 
 
-    public AbstractFormPage(Class<T> petitionClass, FormPageConfig config) {
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config) {
+        this(petitionClass, config, null);
+    }
+
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config,
+            @Nullable Class<? extends SType<?>> formType) {
         if (config == null) {
             throw new RedirectToUrlException("/singular");
         }
@@ -98,7 +105,12 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
         this.config = Objects.requireNonNull(config);
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformModel = $m.ofValue();
-        Objects.requireNonNull(getFormType());
+        this.formType = formType;
+        if (formType != null) {
+            config.setFormType(PetitionUtil.getTypeName(formType));
+        } else if (getFormType() == null) {
+            throw SingularServerException.rethrow("Tipo do formulário da página nao foi definido");
+        }
     }
 
     /** Retorna o serviço de petição. */
@@ -726,11 +738,11 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
         return new SimpleMessageFlowConfirmModal<>(this);
     }
 
-    protected boolean isMainForm() {
-        return true;
+    private boolean isMainForm() {
+        return formType != null;
     }
 
-    protected String getFormType() {
+    private String getFormType() {
         return config.getFormType();
     }
 
