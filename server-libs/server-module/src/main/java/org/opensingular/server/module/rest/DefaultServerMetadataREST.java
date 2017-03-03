@@ -23,7 +23,6 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
-import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaDataValue;
@@ -33,7 +32,6 @@ import org.opensingular.server.commons.service.dto.MenuGroup;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -87,7 +85,7 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
         final List<MenuGroup> groups = new ArrayList<>();
         getDefinitionsMap().forEach((category, definitions) -> {
             MenuGroup menuGroup = new MenuGroup();
-            menuGroup.setId("BOX_" + SingularUtil.normalize(category).toUpperCase());
+            menuGroup.setId(permissionResolverService.buildCategoryPermission(category).getSingularId());
             menuGroup.setLabel(category);
             menuGroup.setProcesses(new ArrayList<>());
             menuGroup.setForms(new ArrayList<>());
@@ -116,6 +114,7 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
         return definitionMap;
     }
 
+    @SuppressWarnings("unchecked")
     protected void addForms(MenuGroup menuGroup) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
             SInfoType annotation = formClass.getAnnotation(SInfoType.class);
@@ -141,26 +140,4 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
     }
 
 
-    @Override
-    @RequestMapping(value = PATH_LIST_PERMISSIONS, method = RequestMethod.GET)
-    public List<SingularPermission> listAllPermissions() {
-        List<SingularPermission> permissions = new ArrayList<>();
-
-        // Coleta permissões de caixa
-        List<SingularPermission> menuPermissions = listMenuGroups().stream()
-                .map(menuGroup -> new SingularPermission(menuGroup.getId(), null))
-                .collect(Collectors.toList());
-
-        //Agrupa permissoes do Form e do Flow
-        permissions.addAll(menuPermissions);
-        permissions.addAll(permissionResolverService.listAllTypePermissions());
-        permissions.addAll(permissionResolverService.listAllProcessesPermissions());
-
-        // Limpa o internal id por questão de segurança
-        for (SingularPermission permission : permissions) {
-            permission.setInternalId(null);
-        }
-
-        return permissions;
-    }
 }
