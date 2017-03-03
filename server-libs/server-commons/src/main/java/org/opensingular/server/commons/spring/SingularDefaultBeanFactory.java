@@ -60,8 +60,10 @@ import org.opensingular.server.commons.service.attachment.ServerAttachmentPersis
 import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.server.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
+import org.opensingular.server.commons.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
+import org.opensingular.server.commons.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -275,6 +277,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public DefaultServerREST serverRest(){
         return new DefaultServerREST();
+    }
+
+    @Bean
+    public RestUserDetailsService restUserDetailsService(){
+        return new DefaultRestUserDetailsService();
     }
 
 }

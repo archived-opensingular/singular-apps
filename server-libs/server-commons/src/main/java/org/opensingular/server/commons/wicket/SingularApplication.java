@@ -16,6 +16,11 @@
 
 package org.opensingular.server.commons.wicket;
 
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.server.commons.wicket.error.Page410;
+import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
+import org.opensingular.lib.wicket.util.application.SkinnableApplication;
+import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
@@ -27,13 +32,6 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
-import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.wicket.error.Page410;
-import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -62,7 +60,6 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         return (SingularApplication) WebApplication.get();
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void init() {
         super.init();
@@ -95,6 +92,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
 
         mountPages();
         getDebugSettings().setComponentPathAttributeName("wicketpath");
+        WicketSerializationDebugUtil.configurePageSerializationDebugIfInDevelopmentMode(this, this.getClass());
     }
 
     @Override
