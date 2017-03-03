@@ -160,7 +160,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     public List<Map<String, Object>> quickSearchMap(QuickFilter filter) {
         final List<Map<String, Object>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
         parseResultsPetition(list);
-        list.forEach(this::checkItemActions);
+        list.forEach(this::addLineActions);
         for (Map<String, Object> map : list) {
             authorizationService.filterActions((String) map.get("type"), (Long) map.get("codPeticao"), (List<BoxItemAction>) map.get("actions"), filter.getIdUsuarioLogado());
         }
@@ -171,16 +171,16 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
     }
 
-    private void checkItemActions(Map<String, Object> item) {
+    private void addLineActions(Map<String, Object> line) {
         List<BoxItemAction> actions = new ArrayList<>();
-        actions.add(createPopupBoxItemAction(item, FormActions.FORM_FILL, ACTION_EDIT.getName()));
-        actions.add(createPopupBoxItemAction(item, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
-        actions.add(createDeleteAction(item));
-        actions.add(BoxItemAction.newExecuteInstante(item.get("codPeticao"), ACTION_ASSIGN.getName()));
+        actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
+        actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
+        actions.add(createDeleteAction(line));
+        actions.add(BoxItemAction.newExecuteInstante(line.get("codPeticao"), ACTION_ASSIGN.getName()));
 
-        appendItemActions(item, actions);
+        appendLineActions(line, actions);
 
-        String processKey = (String) item.get("processType");
+        String processKey = (String) line.get("processType");
 
 
         ActionConfig tryConfig = null;
@@ -199,14 +199,18 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
                     .collect(Collectors.toList());
         }
 
-        item.put("actions", actions);
+        line.put("actions", actions);
     }
 
-    protected void appendItemActions(Map<String, Object> item, List<BoxItemAction> actions) {
+    /**
+     * Dado um linha de dados (line), permite ao serviço adicionar quais as ações possiveis associadas a essa linha em
+     * particular. Esse método deve ser sobrescrito pelos serviços derivados.
+     */
+    protected void appendLineActions(@Nonnull Map<String, Object> line, @Nonnull List<BoxItemAction> lineActions) {
     }
 
-    private BoxItemAction createDeleteAction(Map<String, Object> item) {
-        String endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + item.get("codPeticao");
+    private BoxItemAction createDeleteAction(Map<String, Object> line) {
+        String endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
 
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
@@ -214,13 +218,13 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         return boxItemAction;
     }
 
-    protected BoxItemAction createPopupBoxItemAction(Map<String, Object> item, FormActions formAction, String actionName) {
-        Object cod  = item.get("codPeticao");
-        Object type = item.get("type");
+    protected final static BoxItemAction createPopupBoxItemAction(Map<String, Object> line, FormActions formAction, String actionName) {
+        Object cod  = line.get("codPeticao");
+        Object type = line.get("type");
         return createPopupBoxItemAction(cod, type, formAction, actionName);
     }
 
-    private BoxItemAction createPopupBoxItemAction(Object cod, Object type, FormActions formAction, String actionName) {
+    private static BoxItemAction createPopupBoxItemAction(Object cod, Object type, FormActions formAction, String actionName) {
         String endpoint = DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
