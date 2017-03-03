@@ -316,7 +316,7 @@ public abstract class DispatcherPage extends WebPage {
         }
     }
 
-    private boolean isMandatoryParam(String name) {
+    private static boolean isMandatoryParam(String name) {
         return Arrays.asList(ACTION,
                 PETITION_ID,
                 FORM_VERSION_KEY,
