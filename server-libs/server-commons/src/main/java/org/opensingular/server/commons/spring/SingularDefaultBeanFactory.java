@@ -32,6 +32,8 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
+import org.opensingular.server.commons.auth.AdminCredentialChecker;
+import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
@@ -282,6 +284,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public RestUserDetailsService restUserDetailsService(){
         return new DefaultRestUserDetailsService();
+    }
+
+    @Bean
+    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
+        return new DatabaseAdminCredentialChecker(parameterService, null);
     }
 
 }
