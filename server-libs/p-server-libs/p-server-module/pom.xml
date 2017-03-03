@@ -36,6 +36,11 @@
     <dependencies>
         <dependency>
             <groupId>org.opensingular</groupId>
+            <artifactId>singular-p-server-commons</artifactId>
+            <version>${singular.server.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensingular</groupId>
             <artifactId>singular-server-module</artifactId>
             <version>${singular.server.version}</version>
         </dependency>
