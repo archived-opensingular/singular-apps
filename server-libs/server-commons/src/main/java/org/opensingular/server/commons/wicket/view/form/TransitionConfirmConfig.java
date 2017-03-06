@@ -20,20 +20,29 @@ import org.opensingular.form.SType;
 
 import java.io.Serializable;
 
-public class TransitionConfirmConfig implements Serializable {
+public class TransitionConfirmConfig<T extends SType<?>> implements Serializable {
 
-    private Class<? extends SType<?>> type;
-    private boolean                   validatePageForm;
+    private Class<T> type;
+    private boolean  validatePageForm;
 
-    public TransitionConfirmConfig() {
-        this.validatePageForm = true;
+    private TransitionConfirmConfig(Class<T> type, boolean validatePageForm) {
+        this.type = type;
+        this.validatePageForm = validatePageForm;
     }
 
-    public Class<? extends SType<?>> getType() {
+    public static <T extends SType<?>> TransitionConfirmConfig<T> newConfigWithoutValidation(Class<T> type){
+        return new TransitionConfirmConfig<T>(type, false);
+    }
+
+    public static <T extends SType<?>> TransitionConfirmConfig<T> newConfigWithValidation(Class<T> type){
+        return new TransitionConfirmConfig<T>(type, true);
+    }
+
+    public Class<T> getType() {
         return type;
     }
 
-    public TransitionConfirmConfig setType(Class<? extends SType<?>> type) {
+    public TransitionConfirmConfig setType(Class<T> type) {
         this.type = type;
         return this;
     }
@@ -46,4 +55,5 @@ public class TransitionConfirmConfig implements Serializable {
         this.validatePageForm = validatePageForm;
         return this;
     }
+
 }

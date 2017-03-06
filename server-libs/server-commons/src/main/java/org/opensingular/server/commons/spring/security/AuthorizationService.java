@@ -29,6 +29,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.MenuGroup;
@@ -230,8 +231,7 @@ public class AuthorizationService implements Loggable {
         if (formType == null) {
             return null;
         }
-        String formTypeName = formType.getAbbreviation();
-        return getFormSimpleName(formTypeName);
+        return getFormSimpleName(PetitionUtil.getTypeName(formType));
     }
 
     protected String getFormSimpleName(String formTypeName) {

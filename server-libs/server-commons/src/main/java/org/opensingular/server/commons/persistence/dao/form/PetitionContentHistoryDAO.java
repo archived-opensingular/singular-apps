@@ -16,21 +16,23 @@
 
 package org.opensingular.server.commons.persistence.dao.form;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.MenuGroup;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.MenuSessionConfig;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEntity, Long> {
 
@@ -90,6 +92,10 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
         ProcessDTO              processByAbbreviation = menuGroup.getProcessByAbbreviation(processDefinition.getKey());
         return processByAbbreviation != null
                 && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTask().getAbbreviation());
+    }
+
+    public FormVersionHistoryEntity findLastestByPetitionCodAndType(Class<? extends SType<?>> typeClass, Long cod) {
+        return findLastestByPetitionCodAndType(PetitionUtil.getTypeName(typeClass), cod);
     }
 
     public FormVersionHistoryEntity findLastestByPetitionCodAndType(String typeName, Long cod) {

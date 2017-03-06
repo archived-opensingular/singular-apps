@@ -16,8 +16,6 @@
 
 package org.opensingular.server.commons.persistence.dao.form;
 
-import java.util.List;
-
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -25,50 +23,53 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Optional;
+
 public class FormPetitionDAO extends BaseDAO<FormPetitionEntity, Long> {
 
     public FormPetitionDAO() {
         super(FormPetitionEntity.class);
     }
 
-    public FormPetitionEntity findFormPetitionEntityByTypeName(Long petitionPK, String typeName) {
-        return (FormPetitionEntity) getSession()
+    @Nonnull
+    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeName(@Nonnull Long petitionPK,
+            @Nonnull String typeName) {
+        return findUniqueResult(FormPetitionEntity.class,  getSession()
+                .createCriteria(FormPetitionEntity.class)
+                .createAlias("form", "formEntity")
+                .createAlias("formEntity.formType", "formType")
+                .add(Restrictions.eq("petition.cod", petitionPK))
+                .add(Restrictions.eq("formType.abbreviation", typeName)));
+    }
+
+    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeNameAndTask(@Nonnull Long petitionPK,
+            @Nonnull String typeName, @Nonnull Integer taskDefinitionEntityPK) {
+        return findUniqueResult(FormPetitionEntity.class, getSession()
                 .createCriteria(FormPetitionEntity.class)
                 .createAlias("form", "formEntity")
                 .createAlias("formEntity.formType", "formType")
                 .add(Restrictions.eq("petition.cod", petitionPK))
                 .add(Restrictions.eq("formType.abbreviation", typeName))
-                .setMaxResults(1)
-                .uniqueResult();
+                .add(Restrictions.eq("taskDefinitionEntity.cod", taskDefinitionEntityPK)));
     }
 
-    public FormPetitionEntity findFormPetitionEntityByTypeNameAndTask(Long petitionPK, String typeName, Integer taskDefinitionEntityPK) {
-        return (FormPetitionEntity) getSession()
-                .createCriteria(FormPetitionEntity.class)
-                .createAlias("form", "formEntity")
-                .createAlias("formEntity.formType", "formType")
-                .add(Restrictions.eq("petition.cod", petitionPK))
-                .add(Restrictions.eq("formType.abbreviation", typeName))
-                .add(Restrictions.eq("taskDefinitionEntity.cod", taskDefinitionEntityPK))
-                .setMaxResults(1)
-                .uniqueResult();
-    }
-
-    public FormPetitionEntity findLastFormPetitionEntityByTypeName(Long petitionPK, String typeName) {
-        return (FormPetitionEntity) getSession()
+    public Optional<FormPetitionEntity> findLastFormPetitionEntityByTypeName(@Nonnull Long petitionPK,
+            @Nonnull String typeName) {
+        return findUniqueResult(FormPetitionEntity.class, getSession()
                 .createCriteria(FormPetitionEntity.class)
                 .createAlias("form", "formEntity")
                 .createAlias("formEntity.formType", "formType")
                 .createAlias("formEntity.currentFormVersionEntity", "currentFormVersion")
                 .add(Restrictions.eq("petition.cod", petitionPK))
                 .add(Restrictions.eq("formType.abbreviation", typeName))
-                .addOrder(Order.desc("currentFormVersion.inclusionDate"))
-                .setMaxResults(1)
-                .uniqueResult();
+                .addOrder(Order.desc("currentFormVersion.inclusionDate")));
     }
 
     @SuppressWarnings("unchecked")
-    public List<FormVersionEntity> findTwoLastFormVersions(Long codForm) {
+    @Nonnull
+    public List<FormVersionEntity> findTwoLastFormVersions(@Nonnull Long codForm) {
         return getSession()
                 .createCriteria(FormVersionEntity.class)
                 .createAlias("formEntity", "formEntity")
@@ -78,7 +79,8 @@ public class FormPetitionDAO extends BaseDAO<FormPetitionEntity, Long> {
                 .list();
     }
 
-    public Long countVersions(Long codForm) {
+    @Nonnull
+    public Long countVersions(@Nonnull Long codForm) {
         return (Long) getSession()
                 .createCriteria(FormVersionEntity.class)
                 .createAlias("formEntity", "formEntity")

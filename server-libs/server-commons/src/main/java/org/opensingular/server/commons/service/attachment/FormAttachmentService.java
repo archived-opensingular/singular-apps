@@ -1,11 +1,7 @@
 package org.opensingular.server.commons.service.attachment;
 
 import org.opensingular.form.persistence.dao.FormAttachmentDAO;
-import org.opensingular.form.persistence.entity.AttachmentContentEntity;
-import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.form.persistence.entity.FormAttachmentEntity;
-import org.opensingular.form.persistence.entity.FormAttachmentEntityId;
-import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.*;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -19,7 +15,7 @@ public class FormAttachmentService extends AbstractFormAttachmentService<Attachm
 
     private FormAttachmentEntity saveNewFormAttachmentEntity(FormAttachmentEntityId formAttachmentPK) {
         if (formAttachmentPK != null) {
-            FormAttachmentEntity fae = formAttachmentDAO.find(formAttachmentPK);
+            FormAttachmentEntity fae = formAttachmentDAO.find(formAttachmentPK).orElse(null);
             if (fae == null) {
                 fae = new FormAttachmentEntity(formAttachmentPK);
                 formAttachmentDAO.save(fae);
@@ -46,7 +42,7 @@ public class FormAttachmentService extends AbstractFormAttachmentService<Attachm
     public FormAttachmentEntity findFormAttachmentEntity(AttachmentEntity attachmentEntity, FormVersionEntity formVersionEntity) {
         FormAttachmentEntityId formAttachmentPK = createFormAttachmentEntityId(attachmentEntity, formVersionEntity);
         if (formAttachmentPK != null) {
-            return formAttachmentDAO.find(formAttachmentPK);
+            return formAttachmentDAO.find(formAttachmentPK).orElse(null);
         }
         return null;
     }

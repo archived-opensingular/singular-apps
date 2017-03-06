@@ -16,39 +16,33 @@
 
 package org.opensingular.server.commons.rest;
 
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.commons.util.PetitionUtil;
+
 import org.opensingular.server.commons.flow.actions.ActionConfig;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
+import javax.inject.Inject;
+import java.util.List;
+import java.util.Map;
+
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
 
 /**
@@ -80,11 +74,6 @@ public class DefaultServerREST {
     @Inject
     protected AuthorizationService authorizationService;
 
-
-    @Inject
-    @Named("formConfigWithDatabase")
-    protected SFormConfig<String> singularFormConfig;
-
     @RequestMapping(value = PATH_BOX_ACTION + DELETE, method = RequestMethod.POST)
     public ActionResponse excluir(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
         try {
@@ -106,8 +95,8 @@ public class DefaultServerREST {
     @RequestMapping(value = PATH_BOX_ACTION + EXECUTE, method = RequestMethod.POST)
     public ActionResponse executar(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
         try {
-            final PetitionEntity petition = petitionService.findPetitionByCod(id);
-            final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition);
+            PetitionEntity petition = petitionService.getPetitionByCod(id);
+            ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition);
 
             IController controller = getActionController(processDefinition, actionRequest);
             return controller.run(petition, actionRequest);

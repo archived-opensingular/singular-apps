@@ -16,15 +16,16 @@
 
 package org.opensingular.server.commons.spring;
 
-import javax.inject.Inject;
-
 import org.apache.wicket.Application;
-import org.springframework.transaction.annotation.Transactional;
-
 import org.opensingular.flow.core.MUser;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.wicket.SingularSession;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
+import java.util.Objects;
+import java.util.Optional;
 
 public class SingularDefaultUserService implements IUserService {
 
@@ -66,13 +67,14 @@ public class SingularDefaultUserService implements IUserService {
 
     @Override
     @Transactional
-    public MUser saveUserIfNeeded(String codUsuario) {
+    public Optional<MUser> saveUserIfNeeded(String codUsuario) {
+        Objects.requireNonNull(codUsuario);
         return actorDAO.saveUserIfNeeded(codUsuario);
     }
 
     @Override
     @Transactional
     public MUser findByCod(Integer cod) {
-        return actorDAO.get(cod);
+        return actorDAO.get(cod).orElse(null);
     }
 }

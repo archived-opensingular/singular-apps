@@ -16,25 +16,12 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.document.RefType;
 import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.diff.DocumentDiff;
@@ -50,9 +37,17 @@ import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntit
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
+
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -67,10 +62,6 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
 
     @Inject
     protected IFormService formService;
-
-    @Inject
-    @Named("formConfigWithDatabase")
-    protected SFormConfig<String> singularFormConfig;
 
     private final FormPageConfig config;
 
@@ -89,14 +80,10 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        build();
-    }
 
-    private void build() {
-
-        PetitionEntity petition = petitionService.findPetitionByCod(Long.valueOf(config.getPetitionId()));
-        FormTypeEntity mainFormType = petition.getMainForm().getFormType();
-        DraftEntity    draftEntity = petition.currentEntityDraftByType(mainFormType.getAbbreviation());
+        PetitionEntity petition = petitionService.getPetitionByCod(config.getPetitionId());
+        String typeName = PetitionUtil.getTypeName(petition);
+        Optional<DraftEntity> draftEntity = petition.currentEntityDraftByType(typeName);
 
         SInstance original = null;
         SInstance newer;
@@ -104,30 +91,30 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
         Date originalDate = null;
         Date newerDate;
 
-        if (draftEntity != null) {
-            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByTypeName(petition.getCod(), mainFormType.getAbbreviation());
+        if (draftEntity.isPresent()) {
+            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition.getCod(), typeName);
             if (lastForm.isPresent()) {
                 FormEntity originalForm = lastForm.get().getForm();
-                original = loadSInstance(originalForm);
+                original = formPetitionService.getSInstance(originalForm);
                 originalFormVersion = originalForm.getCurrentFormVersionEntity();
                 originalDate = originalFormVersion.getInclusionDate();
             }
 
-            newerFormVersion = draftEntity.getForm().getCurrentFormVersionEntity();
+            newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
             FormEntity newerForm = newerFormVersion.getFormEntity();
-            newer = loadSInstance(newerForm);
-            newerDate = draftEntity.getEditionDate();
+            newer = formPetitionService.getSInstance(newerForm);
+            newerDate = draftEntity.get().getEditionDate();
 
 
         } else {
-            List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(Long.valueOf(config.getPetitionId()));
+            List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId());
 
             originalFormVersion = formPetitionEntities.get(1);
-            original = loadSInstanceVersion(originalFormVersion);
+            original = formPetitionService.getSInstance(originalFormVersion);
             originalDate = originalFormVersion.getInclusionDate();
 
             newerFormVersion = formPetitionEntities.get(0);
-            newer = loadSInstanceVersion(newerFormVersion);
+            newer = formPetitionService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
 
         }
@@ -174,25 +161,6 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
             .newFormGroup()
             .appendLabel(new BSLabel("label", labelCampo))
             .appendTag("div", new BOutputPanel("data", $m.ofValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(data))));
-    }
-
-    private SInstance loadSInstance(final FormEntity form) {
-        return formService.loadSInstance(formService.keyFromObject(form.getCod()), new RefType() {
-            @Override
-            protected SType<?> retrieve() {
-                return singularFormConfig.getTypeLoader().loadTypeOrException(form.getFormType().getAbbreviation());
-            }
-        }, singularFormConfig.getDocumentFactory());
-    }
-
-    private SInstance loadSInstanceVersion(FormVersionEntity formVersion) {
-        FormEntity        form      = formVersion.getFormEntity();
-        return formService.loadSInstance(formService.keyFromObject(form.getCod()), new RefType() {
-            @Override
-            protected SType<?> retrieve() {
-                return singularFormConfig.getTypeLoader().loadTypeOrException(form.getFormType().getAbbreviation());
-            }
-        }, singularFormConfig.getDocumentFactory(), formVersion.getCod());
     }
 
     @Override

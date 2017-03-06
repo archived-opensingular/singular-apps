@@ -52,7 +52,7 @@ public class ServerAttachmentPersistenceHelper extends DefaultAttachmentPersiste
     }
 
     private List<FormAttachmentEntity> getCurrentFormAttachmentEntities(SDocument document) {
-        return formAttachmentService.findAllByVersion(formService.findCurrentFormVersion(document));
+        return formAttachmentService.findAllByVersion(formService.findCurrentFormVersion(document).get());
     }
 
     protected List<SIAttachment> findAttachments(SDocument document) {
