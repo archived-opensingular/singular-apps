@@ -484,7 +484,7 @@ public class FormPetitionService<P extends PetitionEntity> {
     }
 
     public void removeFormPetitionEntity(@Nonnull PetitionEntity p, @Nonnull Class<? extends SType<?>> type) {
-        TaskDefinitionEntity taskDefinition = p.getProcessInstanceEntity().getCurrentTask().getTask().getTaskDefinition();
+        TaskDefinitionEntity taskDefinition = p.getProcessInstanceEntity().getCurrentTask().getTaskVersion().getTaskDefinition();
         Optional<FormPetitionEntity> formPetitionEntity = findFormPetitionEntityByTypeAndTask(
                 p.getCod(),
                 type,

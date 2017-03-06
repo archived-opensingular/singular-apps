@@ -33,7 +33,7 @@ public class PetitionHistoryDTO implements Serializable {
 
 
     public String getTaskName() {
-        return task.getTask().getName();
+        return task.getTaskVersion().getName();
     }
 
     public Date getBeginDate() {
