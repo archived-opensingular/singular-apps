@@ -17,9 +17,19 @@
 package org.opensingular.server.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.opensingular.flow.core.*;
+import org.opensingular.flow.core.Flow;
+import org.opensingular.flow.core.MTask;
+import org.opensingular.flow.core.MTransition;
+import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.core.variable.type.VarTypeString;
-import org.opensingular.flow.persistence.entity.*;
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
+import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -68,7 +78,7 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ANALYSE;
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_EDIT;
