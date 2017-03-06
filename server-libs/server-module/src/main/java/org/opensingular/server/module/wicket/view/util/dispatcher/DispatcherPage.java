@@ -103,19 +103,17 @@ public abstract class DispatcherPage extends WebPage {
     }
 
     private SingularWebRef retrieveSingularWebRef(FormPageConfig cfg) {
-        final TaskInstance ti = findCurrentTaskByPetitionId(cfg.getPetitionId());
-        if (ti != null) {
-            Optional<MTask<?>> task = ti.getFlowTask();
-            if (task.isPresent() && task.get() instanceof MTaskUserExecutable) {
-                final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
-                if (pageStrategy instanceof SingularServerTaskPageStrategy) {
-                    return (SingularWebRef) pageStrategy.getPageFor(ti, null);
-                } else {
-                    logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
-                }
-            } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
-                throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
+        Optional<TaskInstance> ti = findCurrentTaskByPetitionId(cfg.getPetitionId());
+        Optional<MTask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
+        if (task.isPresent() && task.get() instanceof MTaskUserExecutable) {
+            final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
+            if (pageStrategy instanceof SingularServerTaskPageStrategy) {
+                return (SingularWebRef) pageStrategy.getPageFor(ti.get(), null);
+            } else {
+                logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
             }
+        } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
+            throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
         }
         return null;
     }
@@ -211,11 +209,10 @@ public abstract class DispatcherPage extends WebPage {
     private boolean isTaskAssignedToAnotherUser(FormPageConfig config) {
         String username   = SingularSession.get().getUsername();
 
-        TaskInstanceEntity currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
+        Optional<TaskInstanceEntity> currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
 
-        if (currentTask != null
-                && !currentTask.getTaskHistory().isEmpty()) {
-            TaskInstanceHistoryEntity taskInstanceHistory = currentTask.getTaskHistory().get(currentTask.getTaskHistory().size() - 1);
+        if (currentTask.isPresent() && !currentTask.get().getTaskHistory().isEmpty()) {
+            TaskInstanceHistoryEntity taskInstanceHistory = currentTask.get().getTaskHistory().get(currentTask.get().getTaskHistory().size() - 1);
 
             return taskInstanceHistory.getAllocatedUser() != null
                     && taskInstanceHistory.getEndDateAllocation() == null
@@ -336,11 +333,11 @@ public abstract class DispatcherPage extends WebPage {
     protected void onDispatch(WebPage destination, FormPageConfig config) {
     }
 
-    protected TaskInstance findCurrentTaskByPetitionId(Long petitionId) {
+    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Long petitionId) {
         if (petitionId == null) {
-            return null;
+            return Optional.empty();
         }
-        return Flow.getTaskInstance(petitionService.findCurrentTaskByPetitionId(petitionId));
+        return petitionService.findCurrentTaskByPetitionId(petitionId).map(Flow::getTaskInstance);
     }
 
     protected Class<? extends AbstractFormPage> getDefaultFormPageClass() {

@@ -24,6 +24,8 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.util.Objects;
+import java.util.Optional;
 
 public class SingularDefaultUserService implements IUserService {
 
@@ -65,7 +67,8 @@ public class SingularDefaultUserService implements IUserService {
 
     @Override
     @Transactional
-    public MUser saveUserIfNeeded(String codUsuario) {
+    public Optional<MUser> saveUserIfNeeded(String codUsuario) {
+        Objects.requireNonNull(codUsuario);
         return actorDAO.saveUserIfNeeded(codUsuario);
     }
 

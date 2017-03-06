@@ -92,14 +92,14 @@ public final class PetitionUtil {
     @Nonnull
     public static ProcessInstance getProcessInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
-        return Objects.requireNonNull(Flow.getProcessInstance(petition.getProcessInstanceEntity()));
+        return Flow.getProcessInstance(petition.getProcessInstanceEntity());
     }
 
     /** Resolve o id de usuário. */
     @Nonnull
     public static Optional<MUser> findUser(@Nonnull String idUsuario) {
         Objects.requireNonNull(idUsuario);
-        return Optional.ofNullable(Flow.getConfigBean().getUserService().saveUserIfNeeded(idUsuario));
+        return Flow.getConfigBean().getUserService().saveUserIfNeeded(idUsuario);
     }
 
     /** Resolve o id de usuário ou dispara exception senão encontrar o usuário. */

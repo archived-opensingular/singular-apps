@@ -185,7 +185,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
         ActionConfig tryConfig = null;
         try {
-            final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
+            ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
             tryConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
         } catch (SingularException e) {
 
@@ -274,8 +274,8 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
     private void savePetitionHistory(PetitionEntity petition, List<FormEntity> newEntities) {
 
-        final TaskInstanceEntity taskInstance = findCurrentTaskByPetitionId(petition.getCod());
-        final FormEntity         formEntity   = petition.getMainForm();
+        Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
+        FormEntity         formEntity   = petition.getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -283,9 +283,9 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
         contentHistoryEntity.setPetitionEntity(petition);
 
-        if (taskInstance != null) {
-            contentHistoryEntity.setActor(taskInstance.getAllocatedUser());
-            contentHistoryEntity.setTaskInstanceEntity(taskInstance);
+        if (taskInstance.isPresent()) {
+            contentHistoryEntity.setActor(taskInstance.get().getAllocatedUser());
+            contentHistoryEntity.setTaskInstanceEntity(taskInstance.get());
         }
 
         if (CollectionUtils.isNotEmpty(formEntity.getCurrentFormVersionEntity().getFormAnnotations())) {
@@ -417,20 +417,22 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     public List<MTransition> listCurrentTaskTransitions(Long petitionId) {
-        return Optional
-                .ofNullable(Flow.getTaskInstance(findCurrentTaskByPetitionId(petitionId)))
+        return findCurrentTaskByPetitionId(petitionId)
+                .map(Flow::getTaskInstance)
                 .flatMap(TaskInstance::getFlowTask)
                 .map(MTask::getTransitions)
                 .orElse(Collections.emptyList());
     }
 
-    public TaskInstanceEntity findCurrentTaskByPetitionId(Long petitionId) {
+    @Nonnull
+    public Optional<TaskInstanceEntity> findCurrentTaskByPetitionId(@Nonnull Long petitionId) {
+        //TODO (Daniel) Por que usar essa entidade em vez de TaskIntnstace ?
+        Objects.requireNonNull(petitionId);
         List<TaskInstanceEntity> taskInstances = taskInstanceDAO.findCurrentTasksByPetitionId(petitionId);
         if (taskInstances.isEmpty()) {
-            return null;
-        } else {
-            return taskInstances.get(0);
+            return Optional.empty();
         }
+        return Optional.of(taskInstances.get(0));
     }
 
     public List<ProcessGroupEntity> listAllProcessGroups() {
@@ -467,10 +469,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     public ProcessDefinitionEntity findEntityProcessDefinitionByClass(Class<? extends ProcessDefinition> clazz) {
-        return (ProcessDefinitionEntity) Optional
-                .ofNullable(Flow.getProcessDefinition(clazz))
-                .map(ProcessDefinition::getEntityProcessDefinition)
-                .orElseThrow(() -> new SingularFlowException("Não foi possivel recuperar a definição do processo"));
+        return (ProcessDefinitionEntity) Flow.getProcessDefinition(clazz).getEntityProcessDefinition();
     }
 
     public List<PetitionHistoryDTO> listPetitionContentHistoryByPetitionCod(long petitionCod, String menu, boolean filter) {
@@ -487,10 +486,19 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         return petitionerDAO.findPetitionerByExternalId(externalId);
     }
 
-    public String searchPreviousTransition(Long petitionCod) {
-        final TaskInstanceEntity       currentTask = findCurrentTaskByPetitionId(petitionCod);
-        final List<TaskInstanceEntity> tasks       = currentTask.getProcessInstance().getTasks();
-        return tasks.get(tasks.indexOf(currentTask) - 1).getExecutedTransition().getName();
+    @Nonnull
+    public boolean isPreviousTransition(@Nonnull  P petition, @Nonnull String trasitionName) {
+        return isPreviousTransition(petition.getCod(), trasitionName);
+    }
+
+    public boolean isPreviousTransition(@Nonnull Long petitionCod, @Nonnull String trasitionName) {
+        Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
+        if (currentTask.isPresent()) {
+            List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
+            String name = tasks.get(tasks.indexOf(currentTask) - 1).getExecutedTransition().getName();
+            return Objects.equals(name, trasitionName);
+        }
+        return false;
     }
 
     public PetitionAuthMetadataDTO findPetitionAuthMetadata(Long petitionId) {
