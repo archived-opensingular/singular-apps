@@ -17,7 +17,9 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.flow.core.Flow;
+import org.opensingular.flow.core.MUser;
 import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
@@ -49,10 +51,11 @@ public final class PetitionUtil {
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
     public static ProcessDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
+        Objects.requireNonNull(petition);
         if (petition.getProcessDefinitionEntity() == null) {
             throw new PetitionWithoutDefinitionException();
         }
-        return Flow.getProcessDefinitionWith(petition.getProcessDefinitionEntity().getKey());
+        return Flow.getProcessDefinition(petition.getProcessDefinitionEntity().getKey());
     }
 
     /** Retorna a tarefa atual associada a petição ou dispara exception senão houver nenhuma. */
@@ -84,6 +87,28 @@ public final class PetitionUtil {
                 ServerSIntanceProcessAwareService::getProcessInstance).map(ProcessInstanceEntity::getCurrentTask);
 
     }
+
+    /** Recupera a instância de processo associada à petição informada. */
+    @Nonnull
+    public static ProcessInstance getProcessInstance(@Nonnull PetitionEntity petition) {
+        Objects.requireNonNull(petition);
+        return Objects.requireNonNull(Flow.getProcessInstance(petition.getProcessInstanceEntity()));
+    }
+
+    /** Resolve o id de usuário. */
+    @Nonnull
+    public static Optional<MUser> findUser(@Nonnull String idUsuario) {
+        Objects.requireNonNull(idUsuario);
+        return Optional.ofNullable(Flow.getConfigBean().getUserService().saveUserIfNeeded(idUsuario));
+    }
+
+    /** Resolve o id de usuário ou dispara exception senão encontrar o usuário. */
+    @Nonnull
+    public static MUser findUserOrException(@Nonnull String idUsuario) {
+        return findUser(idUsuario).orElseThrow(
+                () -> SingularServerException.rethrow("Não foi encontrado o usuário").add("idUsuario", idUsuario));
+    }
+
 
     @Nonnull
     public static PetitionService<?> getPetitionServiceOrException(@Nonnull SInstance instance) {

@@ -16,10 +16,11 @@
 
 package org.opensingular.server.commons.flow.rest;
 
-import javax.inject.Inject;
-
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 public abstract class IController {
 
@@ -44,7 +45,7 @@ public abstract class IController {
 
     public abstract String getActionName();
 
-    protected abstract ActionResponse execute(PetitionEntity petition, ActionRequest actionRequest);
+    protected abstract ActionResponse execute(@Nonnull PetitionEntity petition, ActionRequest actionRequest);
 
     protected Type getType() {
         return Type.PROCESS;

@@ -185,7 +185,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
         ActionConfig tryConfig = null;
         try {
-            final ProcessDefinition<?> processDefinition = Flow.getProcessDefinitionWith(processKey);
+            final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
             tryConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
         } catch (SingularException e) {
 
@@ -328,8 +328,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
 
             savePetitionHistory(petition, consolidatedDrafts);
 
-            final Class<? extends ProcessDefinition> clazz = PetitionUtil.getProcessDefinition(petition).getClass();
-            final ProcessInstance                    pi    = Flow.getProcessInstance(clazz, petition.getProcessInstanceEntity().getCod());
+            ProcessInstance pi = PetitionUtil.getProcessInstance(petition);
 
             checkTaskIsEqual(petition.getProcessInstanceEntity(), pi);
 
@@ -349,7 +348,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     }
 
     private void checkTaskIsEqual(ProcessInstanceEntity processInstanceEntity, ProcessInstance piAtual) {
-        if (!processInstanceEntity.getCurrentTask().getTask().getAbbreviation().equalsIgnoreCase(piAtual.getCurrentTask().getAbbreviation())) {
+        if (!processInstanceEntity.getCurrentTask().getTask().getAbbreviation().equalsIgnoreCase(piAtual.getCurrentTaskOrException().getAbbreviation())) {
             throw new PetitionConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
         }
     }
@@ -388,7 +387,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         appendTaskActions(task, actions);
 
         String                     processKey        = task.getProcessType();
-        final ProcessDefinition<?> processDefinition = Flow.getProcessDefinitionWith(processKey);
+        final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
         final ActionConfig         actionConfig      = processDefinition.getMetaDataValue(ActionConfig.KEY);
         if (actionConfig != null) {
             actions = actions.stream()
@@ -420,7 +419,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     public List<MTransition> listCurrentTaskTransitions(Long petitionId) {
         return Optional
                 .ofNullable(Flow.getTaskInstance(findCurrentTaskByPetitionId(petitionId)))
-                .map(TaskInstance::getFlowTask)
+                .flatMap(TaskInstance::getFlowTask)
                 .map(MTask::getTransitions)
                 .orElse(Collections.emptyList());
     }

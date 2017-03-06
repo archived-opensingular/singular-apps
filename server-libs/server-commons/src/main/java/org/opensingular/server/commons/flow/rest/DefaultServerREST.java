@@ -90,8 +90,8 @@ public class DefaultServerREST {
     @RequestMapping(value = PATH_BOX_ACTION + EXECUTE, method = RequestMethod.POST)
     public ActionResponse executar(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
         try {
-            final PetitionEntity petition = petitionService.getPetitionByCod(id);
-            final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition);
+            PetitionEntity petition = petitionService.getPetitionByCod(id);
+            ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition);
 
             IController controller = getActionController(processDefinition, actionRequest);
             return controller.run(petition, actionRequest);

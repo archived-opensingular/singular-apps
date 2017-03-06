@@ -105,9 +105,9 @@ public abstract class DispatcherPage extends WebPage {
     private SingularWebRef retrieveSingularWebRef(FormPageConfig cfg) {
         final TaskInstance ti = findCurrentTaskByPetitionId(cfg.getPetitionId());
         if (ti != null) {
-            final MTask task = ti.getFlowTask();
-            if (task instanceof MTaskUserExecutable) {
-                final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task).getExecutionPage();
+            Optional<MTask<?>> task = ti.getFlowTask();
+            if (task.isPresent() && task.get() instanceof MTaskUserExecutable) {
+                final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
                     return (SingularWebRef) pageStrategy.getPageFor(ti, null);
                 } else {
