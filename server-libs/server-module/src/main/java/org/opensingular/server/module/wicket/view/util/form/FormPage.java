@@ -23,6 +23,7 @@ import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.annotation.Nullable;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
@@ -36,7 +37,7 @@ public class FormPage extends AbstractFormPage<PetitionEntity> {
         this(null);
     }
 
-    public FormPage(FormPageConfig config) {
+    public FormPage(@Nullable FormPageConfig config) {
         super(PetitionEntity.class, config);
     }
 

@@ -31,18 +31,13 @@ import javax.inject.Inject;
 
 public class ReadOnlyFormContent extends Content {
 
-    private final IModel<Long> formVersionEntityPK;
-
-    private SingularFormPanel singularFormPanel;
-
     @Inject
     private FormPetitionService formPetitionService;
 
     public ReadOnlyFormContent(String id, IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
         super(id);
-        this.formVersionEntityPK = formVersionEntityPK;
 
-        singularFormPanel = new SingularFormPanel("singularFormPanel");
+        SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
         singularFormPanel.setInstanceCreator(() -> {
             FormVersionEntity formVersionEntity = formPetitionService.loadFormVersionEntity(formVersionEntityPK.getObject());
             return formPetitionService.getSInstance(formVersionEntity);

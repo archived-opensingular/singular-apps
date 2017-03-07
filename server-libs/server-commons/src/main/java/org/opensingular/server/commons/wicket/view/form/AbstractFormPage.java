@@ -92,11 +92,11 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
     private       AbstractFormContent content;
 
 
-    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config) {
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nullable FormPageConfig config) {
         this(petitionClass, config, null);
     }
 
-    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config,
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nullable FormPageConfig config,
             @Nullable Class<? extends SType<?>> formType) {
         if (config == null) {
             throw new RedirectToUrlException("/singular");
