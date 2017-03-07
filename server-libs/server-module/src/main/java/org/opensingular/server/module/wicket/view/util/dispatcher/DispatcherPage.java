@@ -36,6 +36,7 @@ import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
@@ -74,7 +75,7 @@ import static org.opensingular.server.commons.util.DispatcherPageParameters.PARE
 import static org.opensingular.server.commons.util.DispatcherPageParameters.PETITION_ID;
 
 @SuppressWarnings("serial")
-public abstract class DispatcherPage extends WebPage {
+public abstract class DispatcherPage extends WebPage implements Loggable {
 
     protected static final Logger logger = LoggerFactory.getLogger(DispatcherPage.class);
 
@@ -292,7 +293,9 @@ public abstract class DispatcherPage extends WebPage {
         final StringValue diffValue        = getParam(r, DIFF);
 
         if (action.isEmpty()) {
-            throw new RedirectToUrlException(getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + "/singular");
+            String url = getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + "/singular";
+            getLogger().info(" Redirecting to "+url);
+            throw new RedirectToUrlException(url);
         }
 
         final FormActions formAction = resolveFormAction(action);

@@ -515,7 +515,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String name = tasks.get(tasks.indexOf(currentTask) - 1).getExecutedTransition().getName();
+            String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
             return Objects.equals(name, trasitionName);
         }
         return false;

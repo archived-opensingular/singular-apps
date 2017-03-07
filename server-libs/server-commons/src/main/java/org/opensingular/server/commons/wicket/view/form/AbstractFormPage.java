@@ -99,7 +99,9 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
     public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nullable FormPageConfig config,
             @Nullable Class<? extends SType<?>> formType) {
         if (config == null) {
-            throw new RedirectToUrlException("/singular");
+            String url = "/singular";
+            getLogger().info(" Redirecting to "+url);
+            throw new RedirectToUrlException(url);
         }
         this.petitionClass = Objects.requireNonNull(petitionClass);
         this.config = Objects.requireNonNull(config);
@@ -243,8 +245,9 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
 
         String typeName = getFormType();
         if (typeName == null && config.getPetitionId() == null) {
-            String urlServidorSingular = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
-            throw new RedirectToUrlException(urlServidorSingular);
+            String url = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
+            getLogger().info(" Redirecting to "+url);
+            throw new RedirectToUrlException(url);
         }
 
         content = new AbstractFormContent(id, typeName, getViewMode(config), getAnnotationMode(config)) {
@@ -383,7 +386,7 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
             int totalVersoes = 0;
 
             // Verifica se existe rascunho
-            PetitionEntity petition     = petitionService.getPetitionByCod(petitionId);
+            PetitionEntity petition = petitionService.getPetitionByCod(petitionId);
             String typeName = PetitionUtil.getTypeName(petition);
             if (petition.currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
