@@ -70,7 +70,7 @@ public final class PetitionUtil {
     public static Optional<TaskDefinitionEntity> getCurrentTaskDefinitionOpt(@Nonnull PetitionEntity petition) {
         final ProcessInstanceEntity processInstanceEntity = petition.getProcessInstanceEntity();
         if (processInstanceEntity != null) {
-            return Optional.of(processInstanceEntity.getCurrentTask().getTask().getTaskDefinition());
+            return Optional.of(processInstanceEntity.getCurrentTask().getTaskVersion().getTaskDefinition());
         }
         return Optional.empty();
     }

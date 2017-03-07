@@ -73,7 +73,7 @@ public class CurrentTaskPredicate implements Predicate<SInstance>{
 
     private boolean matchesReferenceTask(TaskInstanceEntity t) {
         for(ITaskDefinition ref : referenceTasks){
-            if(ref.getName().equalsIgnoreCase(t.getTask().getName())){
+            if(ref.getName().equalsIgnoreCase(t.getTaskVersion().getName())){
                 return true;
             }
         }

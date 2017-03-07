@@ -69,7 +69,6 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
     protected DocumentDiff diff;
     protected BSGrid contentGrid = new BSGrid("content");
 
-    private FormVersionEntity newerFormVersion;
     private FormVersionEntity originalFormVersion;
 
     public DiffFormContent(String id, FormPageConfig config) {
@@ -100,7 +99,7 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
                 originalDate = originalFormVersion.getInclusionDate();
             }
 
-            newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
+            FormVersionEntity newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
             FormEntity newerForm = newerFormVersion.getFormEntity();
             newer = formPetitionService.getSInstance(newerForm);
             newerDate = draftEntity.get().getEditionDate();
@@ -113,7 +112,7 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
             original = formPetitionService.getSInstance(originalFormVersion);
             originalDate = originalFormVersion.getInclusionDate();
 
-            newerFormVersion = formPetitionEntities.get(0);
+            FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
             newer = formPetitionService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
 

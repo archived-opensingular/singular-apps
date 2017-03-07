@@ -92,11 +92,11 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
     private       AbstractFormContent content;
 
 
-    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config) {
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nullable FormPageConfig config) {
         this(petitionClass, config, null);
     }
 
-    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nonnull FormPageConfig config,
+    public AbstractFormPage(@Nonnull Class<T> petitionClass, @Nullable FormPageConfig config,
             @Nullable Class<? extends SType<?>> formType) {
         if (config == null) {
             throw new RedirectToUrlException("/singular");
@@ -108,7 +108,7 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
         this.formType = formType;
         if (formType != null) {
             config.setFormType(PetitionUtil.getTypeName(formType));
-        } else if (getFormType() == null) {
+        } else if (config.getFormType() == null) {
             throw SingularServerException.rethrow("Tipo do formulário da página nao foi definido");
         }
     }
@@ -739,11 +739,12 @@ public abstract class AbstractFormPage<T extends PetitionEntity> extends Templat
     }
 
     private boolean isMainForm() {
-        return formType != null;
+        return formType == null;
     }
 
+    @Nonnull
     private String getFormType() {
-        return config.getFormType();
+        return Objects.requireNonNull(config.getFormType());
     }
 
     protected ViewMode getViewMode(FormPageConfig formPageConfig) {

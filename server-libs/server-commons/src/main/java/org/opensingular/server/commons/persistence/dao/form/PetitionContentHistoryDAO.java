@@ -91,7 +91,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
         ProcessDefinitionEntity processDefinition     = petitionHistoryDTO.getTask().getProcessInstance().getProcessVersion().getProcessDefinition();
         ProcessDTO              processByAbbreviation = menuGroup.getProcessByAbbreviation(processDefinition.getKey());
         return processByAbbreviation != null
-                && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTask().getAbbreviation());
+                && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTaskVersion().getAbbreviation());
     }
 
     public FormVersionHistoryEntity findLastestByPetitionCodAndType(Class<? extends SType<?>> typeClass, Long cod) {
