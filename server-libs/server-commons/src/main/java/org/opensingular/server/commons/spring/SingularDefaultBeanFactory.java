@@ -32,6 +32,8 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
+import org.opensingular.server.commons.auth.AdminCredentialChecker;
+import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
@@ -59,8 +61,10 @@ import org.opensingular.server.commons.service.attachment.ServerAttachmentPersis
 import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.server.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
+import org.opensingular.server.commons.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
+import org.opensingular.server.commons.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
@@ -70,10 +74,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.io.ClassPathResource;
-
-import java.io.IOException;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 @SuppressWarnings("rawtypes")
@@ -273,6 +273,16 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IAttachmentPersistenceHelper serverAttachmentPersistenceHelper(IFormService formService, IFormAttachmentService attachmentService) {
         return new ServerAttachmentPersistenceHelper(formService, attachmentService);
+    }
+
+    @Bean
+    public RestUserDetailsService restUserDetailsService(){
+        return new DefaultRestUserDetailsService();
+    }
+
+    @Bean
+    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
+        return new DatabaseAdminCredentialChecker(parameterService, null);
     }
 
 }
