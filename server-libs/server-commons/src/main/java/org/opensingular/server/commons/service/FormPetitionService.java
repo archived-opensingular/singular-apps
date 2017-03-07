@@ -131,8 +131,10 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         if (!mainForm) {
             //Filter byTask
-            TaskDefinitionEntity currentTask = PetitionUtil.getCurrentTaskDefinition(petition);
-            entities = entities.filter(x -> x.getTaskDefinitionEntity().equals(currentTask));
+            Optional<TaskDefinitionEntity> currentTask = PetitionUtil.getCurrentTaskDefinitionOpt(petition);
+            if (currentTask.isPresent()) {
+                entities = entities.filter(x -> x.getTaskDefinitionEntity().equals(currentTask.get()));
+            }
         }
         return entities.findFirst();
     }
@@ -282,7 +284,7 @@ public class FormPetitionService<P extends PetitionEntity> {
             formPetitionEntity.setMainForm(SimNao.SIM);
         } else {
             formPetitionEntity.setMainForm(SimNao.NAO);
-            formPetitionEntity.setTaskDefinitionEntity(PetitionUtil.getCurrentTaskDefinition(petition));
+            formPetitionEntity.setTaskDefinitionEntity(PetitionUtil.getCurrentTaskDefinitionOpt(petition).orElse(null));
         }
         formPetitionDAO.saveOrUpdate(formPetitionEntity);
         return formPetitionEntity;
