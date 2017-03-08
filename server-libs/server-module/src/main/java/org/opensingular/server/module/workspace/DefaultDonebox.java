@@ -13,7 +13,7 @@ import java.util.List;
 import static org.opensingular.server.commons.rest.DefaultServerREST.COUNT_TASKS;
 import static org.opensingular.server.commons.rest.DefaultServerREST.SEARCH_TASKS;
 
-public class DefaultDonebox implements SingularItemBox {
+public class DefaultDonebox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {

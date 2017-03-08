@@ -24,9 +24,22 @@ import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
 import java.io.Serializable;
 import java.util.Optional;
 
+/**
+ * Programmatically resolves the {@link ProcessDefinition} for a given input data.
+ * When the users submits its initial application the Singular Server calls the proper
+ * {@link FlowResolver} in order to select which {@link ProcessDefinition} it should start
+ */
 @FunctionalInterface
 public interface FlowResolver extends Serializable {
 
+    /**
+     * return an optional {@link ProcessDefinition}
+     * @param cfg
+     *
+     * @param iRoot
+     *  form input data
+     * @return
+     */
     Optional<Class<? extends ProcessDefinition>> resolve(FormPageConfig cfg, SIComposite iRoot);
 
 }

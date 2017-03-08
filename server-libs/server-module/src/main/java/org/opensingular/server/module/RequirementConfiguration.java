@@ -7,15 +7,32 @@ import org.opensingular.server.module.requirement.builder.SingularRequirementBui
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Configuration object for module {@link SingularRequirement} registration.
+ *
+ */
 public class RequirementConfiguration {
 
     private List<SingularRequirement> requirements = new ArrayList<>();
 
+    /**
+     * Register a  {@link SingularRequirement}
+     * @param requirement
+     *  the {@link SingularRequirement} instance.
+     * @return
+     */
     public RequirementConfiguration add(SingularRequirement requirement) {
         requirements.add(requirement);
         return this;
     }
 
+    /**
+     * Register a  {@link SingularRequirement}
+     * @param requirementProvider
+     *  a {@link IFunction<SingularRequirementBuilder, SingularRequirement> } lambda to build the requirement definition
+     *  through an fluent interface builder.
+     * @return
+     */
     public RequirementConfiguration add(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
         requirements.add(requirementProvider.apply(new SingularRequirementBuilder()));
         return this;

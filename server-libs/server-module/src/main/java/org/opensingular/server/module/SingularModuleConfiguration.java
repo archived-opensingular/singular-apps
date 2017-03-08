@@ -6,7 +6,7 @@ import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.requirement.SingularRequirement;
-import org.opensingular.server.module.workspace.SingularItemBox;
+import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -19,7 +19,7 @@ public class SingularModuleConfiguration {
 
     private SingularModule            module;
     private List<SingularRequirement> requirements;
-    private List<SingularItemBox>     itemBoxes;
+    private List<ItemBoxFactory> itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {

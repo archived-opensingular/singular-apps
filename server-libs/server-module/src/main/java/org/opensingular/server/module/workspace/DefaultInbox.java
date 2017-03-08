@@ -14,7 +14,7 @@ import static org.opensingular.server.commons.flow.actions.DefaultActions.ASSIGN
 import static org.opensingular.server.commons.rest.DefaultServerREST.COUNT_TASKS;
 import static org.opensingular.server.commons.rest.DefaultServerREST.SEARCH_TASKS;
 
-public class DefaultInbox implements SingularItemBox {
+public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
