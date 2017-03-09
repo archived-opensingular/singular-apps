@@ -16,7 +16,7 @@ public class WorkspaceConfiguration {
     private List<ItemBoxFactory> itemBoxes = new ArrayList<>();
 
     /**
-     * Register a singule {@link ItemBoxFactory}
+     * Register a single {@link ItemBoxFactory}
      * @param itemBox     the
      * @return
      */
