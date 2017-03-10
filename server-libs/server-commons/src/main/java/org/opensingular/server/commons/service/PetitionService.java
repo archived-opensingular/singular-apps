@@ -41,7 +41,7 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.flow.rest.ActionConfig;
+import org.opensingular.server.commons.flow.actions.ActionConfig;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
@@ -57,6 +57,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
@@ -77,9 +78,13 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.*;
-import static org.opensingular.server.commons.flow.rest.DefaultServerREST.DELETE;
-import static org.opensingular.server.commons.flow.rest.DefaultServerREST.PATH_BOX_ACTION;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ANALYSE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_EDIT;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_RELOCATE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_VIEW;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.DELETE;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
@@ -260,7 +265,7 @@ public abstract class PetitionService<P extends PetitionEntity, PI extends Petit
     }
 
     private BoxItemAction createDeleteAction(Map<String, Object> line) {
-        String endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
+        String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
 
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
@@ -356,7 +361,6 @@ public abstract class PetitionService<P extends PetitionEntity, PI extends Petit
                         .collect(Collectors.toList())
         );
     }
-
 
 
     /**
@@ -545,7 +549,7 @@ public abstract class PetitionService<P extends PetitionEntity, PI extends Petit
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String name = tasks.get(tasks.indexOf(currentTask) - 1).getExecutedTransition().getName();
+            String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
             return Objects.equals(name, trasitionName);
         }
         return false;

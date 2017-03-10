@@ -14,14 +14,15 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.action;
+package org.opensingular.server.commons.flow.actions;
 
-import org.opensingular.server.commons.flow.rest.ActionDefinition;
-import org.opensingular.server.commons.flow.rest.DefaultServerREST;
+
+import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
-import org.opensingular.lib.wicket.util.resource.Icone;
+
 
 public class DefaultActions {
 

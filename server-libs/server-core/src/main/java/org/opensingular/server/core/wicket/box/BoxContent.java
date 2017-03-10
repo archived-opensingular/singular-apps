@@ -40,12 +40,13 @@ import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.server.commons.flow.rest.ActionAtribuirRequest;
-import org.opensingular.server.commons.flow.rest.ActionRequest;
-import org.opensingular.server.commons.flow.rest.ActionResponse;
+import org.opensingular.server.commons.flow.actions.ActionAtribuirRequest;
+import org.opensingular.server.commons.flow.actions.ActionRequest;
+import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
+import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
@@ -76,10 +77,9 @@ import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM
 public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
-
-    private Pair<String, SortOrder> sortProperty;
-    private ItemBox                 itemBoxDTO;
     protected IModel<BoxItemModel>    currentModel;
+    private   Pair<String, SortOrder> sortProperty;
+    private   ItemBox                 itemBoxDTO;
 
     public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxDTO) {
         super(id, processGroupCod, menu);
@@ -122,8 +122,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     @Override
     protected void appendPropertyColumns(BSDataTableBuilder<BoxItemModel, String, IColumn<BoxItemModel, String>> builder) {
-        for (Map.Entry<String, String> entry : getFieldsDatatable().entrySet()) {
-            builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getValue(), entry.getValue());
+        for (DatatableField entry : getFieldsDatatable()) {
+            builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getLabel(), entry.getLabel());
         }
     }
 
@@ -196,7 +196,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
 
             WebMarkupContainer link = new WebMarkupContainer(id);
-            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(),  boxItemModel.getObject().getCod())));
+            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
             return link;
         };
@@ -301,7 +301,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         BSModalBorder                confirmationModal = new BSModalBorder("confirmationModal", $m.ofValue(confirmation.getTitle()));
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
 
-        Model<Actor>        actorModel          = new Model<>();
+        Model<Actor>        actorModel     = new Model<>();
         IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(currentModel, confirmation));
         DropDownChoice      dropDownChoice = criarDropDown(actorsModel, actorModel);
         dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
@@ -384,8 +384,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     private IFunction<IModel<BoxItemModel>, Boolean> visibleFunction(ItemAction itemAction) {
         return (model) -> {
-            BoxItemModel boxItemModel = (BoxItemModel) model.getObject();
-            boolean      visible      = boxItemModel.hasAction(itemAction);
+            BoxItemModel boxItemModel = model.getObject();
+            boolean visible = boxItemModel.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemModel.getCod());
             }
@@ -520,7 +520,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         return itemBoxDTO.isQuickFilter();
     }
 
-    public Map<String, String> getFieldsDatatable() {
+    public List<DatatableField> getFieldsDatatable() {
         return itemBoxDTO.getFieldsDatatable();
     }
 

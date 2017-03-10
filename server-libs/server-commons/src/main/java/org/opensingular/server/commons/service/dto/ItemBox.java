@@ -16,10 +16,11 @@
 
 package org.opensingular.server.commons.service.dto;
 
+import org.opensingular.lib.wicket.util.resource.Icone;
+
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-
-import org.opensingular.lib.wicket.util.resource.Icone;
+import java.util.List;
 
 public class ItemBox implements Serializable {
 
@@ -28,13 +29,13 @@ public class ItemBox implements Serializable {
     private String name;
     private String description;
     private boolean showNewButton = false;
-    private boolean quickFilter = true;
-    private boolean showDraft = false;
-    private Boolean endedTasks;
-    private String searchEndpoint;
-    private String countEndpoint;
-    private Icone icone;
-    private LinkedHashMap<String, String> fieldsDatatable;
+    private boolean quickFilter   = true;
+    private boolean showDraft     = false;
+    private Boolean              endedTasks;
+    private String               searchEndpoint;
+    private String               countEndpoint;
+    private Icone                icone;
+    private List<DatatableField> fieldsDatatable;
 
     // Ações disponíveis para todos os processos
     private LinkedHashMap<String, ItemAction> actions;
@@ -82,11 +83,11 @@ public class ItemBox implements Serializable {
         this.quickFilter = quickFilter;
     }
 
-    public LinkedHashMap<String, String> getFieldsDatatable() {
+    public List<DatatableField> getFieldsDatatable() {
         return fieldsDatatable;
     }
 
-    public void setFieldsDatatable(LinkedHashMap<String, String> fieldsDatatable) {
+    public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
         this.fieldsDatatable = fieldsDatatable;
     }
 

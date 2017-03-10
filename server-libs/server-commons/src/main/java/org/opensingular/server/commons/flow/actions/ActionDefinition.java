@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.flow.actions;
 
 import java.io.Serializable;
 

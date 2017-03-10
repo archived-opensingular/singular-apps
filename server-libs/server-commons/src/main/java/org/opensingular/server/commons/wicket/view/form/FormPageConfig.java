@@ -20,7 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
-import org.opensingular.server.commons.flow.LazyFlowDefinitionResolver;
+import org.opensingular.server.commons.flow.FlowResolver;
 import org.opensingular.server.commons.form.FormActions;
 
 import java.io.Serializable;
@@ -34,12 +34,12 @@ public class FormPageConfig implements Serializable {
     private Long                               petitionId;
     private String                             formType;
     private Map<String, Serializable>          contextParams = new HashMap<>();
-    private LazyFlowDefinitionResolver         lazyFlowDefinitionResolver;
+    private FlowResolver                       lazyFlowDefinitionResolver;
     private Class<? extends ProcessDefinition> processDefinition;
     private Long                               formVersionPK;
     private Long                             parentPetitionId;
     private boolean                            diff;
-    private Map<String, String>                additionalParams = new HashMap<>();
+    private Map<String, String> additionalParams = new HashMap<>();
 
     private FormPageConfig() {
         formAction = FormActions.FORM_VIEW;
@@ -76,7 +76,7 @@ public class FormPageConfig implements Serializable {
                                            FormActions formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
-                                           LazyFlowDefinitionResolver lazyFlowDefinitionResolver) {
+                                           FlowResolver lazyFlowDefinitionResolver) {
         final FormPageConfig cfg = newConfig(formType, petitionId, formAction, formVersionPK, parentPetitionId);
         cfg.lazyFlowDefinitionResolver = lazyFlowDefinitionResolver;
         return cfg;
@@ -87,7 +87,7 @@ public class FormPageConfig implements Serializable {
                                            FormActions formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
-                                           LazyFlowDefinitionResolver lazyFlowDefinitionResolver,
+                                           FlowResolver lazyFlowDefinitionResolver,
                                            boolean diff) {
         final FormPageConfig cfg = newConfig(formType, petitionId, formAction, formVersionPK, parentPetitionId, lazyFlowDefinitionResolver);
         cfg.diff = diff;
@@ -130,11 +130,11 @@ public class FormPageConfig implements Serializable {
         this.processDefinition = processDefinition;
     }
 
-    public LazyFlowDefinitionResolver getLazyFlowDefinitionResolver() {
+    public FlowResolver getLazyFlowDefinitionResolver() {
         return lazyFlowDefinitionResolver;
     }
 
-    public void setLazyFlowDefinitionResolver(LazyFlowDefinitionResolver lazyFlowDefinitionResolver) {
+    public void setLazyFlowDefinitionResolver(FlowResolver lazyFlowDefinitionResolver) {
         this.lazyFlowDefinitionResolver = lazyFlowDefinitionResolver;
     }
 

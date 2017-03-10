@@ -22,7 +22,7 @@ import org.opensingular.server.core.wicket.template.ServerTemplate;
 import org.wicketstuff.annotation.mount.MountPath;
 
 
-@MountPath("historico")
+@MountPath("history")
 public class HistoryPage extends ServerTemplate {
 
     private static final long serialVersionUID = -3344810189307767761L;

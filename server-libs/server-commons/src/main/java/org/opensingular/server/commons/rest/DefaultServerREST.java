@@ -14,13 +14,17 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.rest;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.server.commons.flow.actions.ActionConfig;
+import org.opensingular.server.commons.flow.actions.ActionRequest;
+import org.opensingular.server.commons.flow.actions.ActionResponse;
+import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -31,13 +35,17 @@ import org.opensingular.server.commons.spring.security.PermissionResolverService
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_DELETE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
 
 /**

@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.rest;
+package org.opensingular.server.commons.flow.actions;
 
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.core.property.MetaDataRef;
+import org.opensingular.server.commons.flow.controllers.IController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.opensingular.server.commons.flow.action.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
 
 /**
  * Classe responsável por guardar a configuração de ações
@@ -42,7 +43,7 @@ public class ActionConfig implements Loggable {
         MAP_DEFAULT_ACTIONS.put(ACTION_ASSIGN, AtribuirController.class);
     }
 
-    private List<ActionDefinition> defaultActions;
+    private List<ActionDefinition>                              defaultActions;
     private Map<ActionDefinition, Class<? extends IController>> customActions;
 
     public ActionConfig() {

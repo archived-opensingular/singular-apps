@@ -27,11 +27,16 @@ import org.apache.wicket.request.Request;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.string.StringValue;
-import org.opensingular.flow.core.*;
+import org.opensingular.flow.core.Flow;
+import org.opensingular.flow.core.ITaskPageStrategy;
+import org.opensingular.flow.core.MTask;
+import org.opensingular.flow.core.MTaskUserExecutable;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
@@ -51,11 +56,9 @@ import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.server.commons.wicket.view.template.Template;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.opensingular.server.module.wicket.view.util.form.FormPage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
@@ -64,11 +67,15 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.ACTION;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.DIFF;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.PARENT_PETITION_ID;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.PETITION_ID;
 
 @SuppressWarnings("serial")
-@MountPath(DispatcherPageUtil.DISPATCHER_PAGE_PATH)
-public abstract class DispatcherPage extends WebPage {
+public abstract class DispatcherPage extends WebPage implements Loggable {
 
     protected static final Logger logger = LoggerFactory.getLogger(DispatcherPage.class);
 
@@ -88,6 +95,15 @@ public abstract class DispatcherPage extends WebPage {
         dispatch(parseParameters(getRequest()));
     }
 
+    private static boolean isMandatoryParam(String name) {
+        return Arrays.asList(ACTION,
+                PETITION_ID,
+                FORM_VERSION_KEY,
+                FORM_NAME,
+                PARENT_PETITION_ID,
+                DIFF).contains(name);
+    }
+
     private void initPage() {
         getApplication().setHeaderResponseDecorator(new SingularHeaderResponseDecorator());
         bodyContainer
@@ -102,20 +118,22 @@ public abstract class DispatcherPage extends WebPage {
         response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
     }
 
-    private SingularWebRef retrieveSingularWebRef(FormPageConfig cfg) {
-        Optional<TaskInstance> ti = findCurrentTaskByPetitionId(cfg.getPetitionId());
-        Optional<MTask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
-        if (task.isPresent() && task.get() instanceof MTaskUserExecutable) {
-            final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
-            if (pageStrategy instanceof SingularServerTaskPageStrategy) {
-                return (SingularWebRef) pageStrategy.getPageFor(ti.get(), null);
-            } else {
-                logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
+    private Optional<SingularWebRef> retrieveSingularWebRef(FormPageConfig cfg) {
+        Optional<TaskInstance> ti   = findCurrentTaskByPetitionId(cfg.getPetitionId());
+        Optional<MTask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
+        if (task.isPresent()) {
+            if (task.get() instanceof MTaskUserExecutable) {
+                final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
+                if (pageStrategy instanceof SingularServerTaskPageStrategy) {
+                    return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(ti.get(), null));
+                } else {
+                    logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
+                }
+            } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
+                throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
             }
-        } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
-            throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
         }
-        return null;
+        return Optional.empty();
     }
 
     private <T> T createNewInstanceUsingFormPageConfigConstructor(Class<T> clazz, FormPageConfig config) {
@@ -164,14 +182,14 @@ public abstract class DispatcherPage extends WebPage {
         throw SingularServerException.rethrow("Não foi possivel identificar qual é o formulario a ser exibido");
     }
 
-    private WebPage retrieveDestinationUsingSingularWebRef(FormPageConfig config, SingularWebRef ref) {
+    private WebPage retrieveDestinationUsingSingularWebRef(FormPageConfig config, Optional<SingularWebRef> ref) {
         try {
-            if (ref == null || ref.getPageClass() == null) {
+            if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
                 return createNewInstanceUsingFormPageConfigConstructor(getDefaultFormPageClass(), config);
-            } else if (AbstractFormPage.class.isAssignableFrom(ref.getPageClass())) {
-                return createNewInstanceUsingFormPageConfigConstructor(ref.getPageClass(), config);
+            } else if (AbstractFormPage.class.isAssignableFrom(ref.get().getPageClass())) {
+                return createNewInstanceUsingFormPageConfigConstructor(ref.get().getPageClass(), config);
             } else {
-                return ref.getPageClass().newInstance();
+                return ref.get().getPageClass().newInstance();
             }
         } catch (Exception e) {
             closeAndReloadParent();
@@ -192,8 +210,8 @@ public abstract class DispatcherPage extends WebPage {
     }
 
     protected boolean hasAccess(FormPageConfig config) {
-        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
-        boolean hasPermission = authorizationService.hasPermission(config.getPetitionId(), config.getFormType(), String.valueOf(userDetails.getUserPermissionKey()), config.getFormAction().name());
+        SingularUserDetails userDetails   = SingularSession.get().getUserDetails();
+        boolean             hasPermission = authorizationService.hasPermission(config.getPetitionId(), config.getFormType(), String.valueOf(userDetails.getUserPermissionKey()), config.getFormAction().name());
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
@@ -207,16 +225,18 @@ public abstract class DispatcherPage extends WebPage {
     }
 
     private boolean isTaskAssignedToAnotherUser(FormPageConfig config) {
-        String username   = SingularSession.get().getUsername();
+        String username = SingularSession.get().getUsername();
+        if (config.getPetitionId() != null) {
 
-        Optional<TaskInstanceEntity> currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
+            Optional<TaskInstanceEntity> currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
 
-        if (currentTask.isPresent() && !currentTask.get().getTaskHistory().isEmpty()) {
-            TaskInstanceHistoryEntity taskInstanceHistory = currentTask.get().getTaskHistory().get(currentTask.get().getTaskHistory().size() - 1);
+            if (currentTask.isPresent() && !currentTask.get().getTaskHistory().isEmpty()) {
+                TaskInstanceHistoryEntity taskInstanceHistory = currentTask.get().getTaskHistory().get(currentTask.get().getTaskHistory().size() - 1);
 
-            return taskInstanceHistory.getAllocatedUser() != null
-                    && taskInstanceHistory.getEndDateAllocation() == null
-                    && !username.equalsIgnoreCase(taskInstanceHistory.getAllocatedUser().getCodUsuario());
+                return taskInstanceHistory.getAllocatedUser() != null
+                        && taskInstanceHistory.getEndDateAllocation() == null
+                        && !username.equalsIgnoreCase(taskInstanceHistory.getAllocatedUser().getCodUsuario());
+            }
         }
 
         return false;
@@ -273,13 +293,15 @@ public abstract class DispatcherPage extends WebPage {
         final StringValue diffValue        = getParam(r, DIFF);
 
         if (action.isEmpty()) {
-            throw new RedirectToUrlException(getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + "/singular");
+            String url = getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + "/singular";
+            getLogger().info(" Redirecting to "+url);
+            throw new RedirectToUrlException(url);
         }
 
         final FormActions formAction = resolveFormAction(action);
 
-        final String pi  = petitionId.toString("");
-        final Long   fvk = formVersionPK.isEmpty() ? null : formVersionPK.toLong();
+        final String  pi   = petitionId.toString("");
+        final Long    fvk  = formVersionPK.isEmpty() ? null : formVersionPK.toLong();
         final boolean diff = Boolean.parseBoolean(diffValue.toOptionalString());
 
         String fn = null;
@@ -311,15 +333,6 @@ public abstract class DispatcherPage extends WebPage {
                 cfg.addAdditionalParam(name, getParam(r, name).toString());
             }
         }
-    }
-
-    private static boolean isMandatoryParam(String name) {
-        return Arrays.asList(ACTION,
-                PETITION_ID,
-                FORM_VERSION_KEY,
-                FORM_NAME,
-                PARENT_PETITION_ID,
-                DIFF).contains(name);
     }
 
     protected abstract FormPageConfig buildConfig(Request r, String petitionId, FormActions formAction, String formType, Long formVersionKey, String parentPetitionId, boolean diff);
