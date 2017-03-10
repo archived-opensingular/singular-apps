@@ -29,6 +29,7 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -38,6 +39,7 @@ import org.opensingular.server.commons.util.JPAQueryUtil;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -236,12 +238,16 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return " ORDER BY " + sortProperty + (ascending ? " asc " : " desc ");
     }
 
-    public T findByProcessCod(Integer cod) {
-        return (T) getSession()
+    public T findByProcessCodOrException(Integer cod) {
+        return findByProcessCod(cod).orElseThrow(
+                () -> new SingularServerException("Não foi encontrado a petição com processInstanceEntity.cod=" + cod));
+    }
+
+    public Optional<T> findByProcessCod(Integer cod) {
+        Objects.requireNonNull(cod);
+        return findUniqueResult(tipo, getSession()
                 .createCriteria(tipo)
-                .add(Restrictions.eq("processInstanceEntity.cod", cod))
-                .setMaxResults(1)
-                .uniqueResult();
+                .add(Restrictions.eq("processInstanceEntity.cod", cod)));
     }
 
     public T findByFormEntity(FormEntity formEntity) {

@@ -17,9 +17,19 @@
 package org.opensingular.server.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.opensingular.flow.core.*;
+import org.opensingular.flow.core.Flow;
+import org.opensingular.flow.core.MTask;
+import org.opensingular.flow.core.MTransition;
+import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.core.variable.type.VarTypeString;
-import org.opensingular.flow.persistence.entity.*;
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
+import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -57,7 +67,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
@@ -67,7 +83,7 @@ import static org.opensingular.server.commons.flow.rest.DefaultServerREST.PATH_B
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
-public class PetitionService<P extends PetitionEntity> implements Loggable {
+public abstract class PetitionService<P extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
 
     @Inject
     protected PetitionDAO<P> petitionDAO;
@@ -93,6 +109,40 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     @Inject
     protected ActorDAO actorDAO;
 
+    private final Class<PI> petitionInstanceClass;
+
+    public PetitionService(@Nonnull Class<PI> petitionInstanceClass) {
+        this.petitionInstanceClass = Objects.requireNonNull(petitionInstanceClass);
+    }
+
+    @Nonnull
+    protected abstract PI newPetitionInstance(@Nonnull P petitionEntity);
+
+    /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
+    @Nonnull
+    public PI getPetitionInstance(@Nonnull P petitionEntity) {
+        Objects.requireNonNull(petitionEntity);
+        return newPetitionInstance(petitionEntity);
+    }
+
+    /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
+    @Nonnull
+    public PI getPetitionInstance(@Nonnull ProcessInstance processInstance) {
+        Objects.requireNonNull(processInstance);
+        PI instance = getPetitionInstance(getPetitionByProcessCod(processInstance.getEntityCod()));
+        instance.setProcessInstance(processInstance);
+        return instance;
+    }
+
+
+
+    /** Recupera a petição associada a task informada ou dispara exception senão encontrar. */
+    @Nonnull
+    public PI getPetitionInstance(@Nonnull TaskInstance taskInstance) {
+        Objects.requireNonNull(taskInstance);
+        return getPetitionInstance(taskInstance.getProcessInstance());
+    }
+
     /** Retorna o serviço de formulários da petição. */
     @Nonnull
     protected  final FormPetitionService<P> getFormPetitionService() {
@@ -117,7 +167,7 @@ public class PetitionService<P extends PetitionEntity> implements Loggable {
     @Nonnull
     public P getPetitionByProcessCod(@Nonnull Integer cod) {
         Objects.requireNonNull(cod);
-        return petitionDAO.findByProcessCod(cod);
+        return petitionDAO.findByProcessCodOrException(cod);
     }
 
     /** Recupera a petição associado ao fluxo informado. */
