@@ -52,13 +52,13 @@ import java.util.Optional;
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
-public class DiffFormContent<P extends PetitionEntity> extends Content {
+public class DiffFormContent extends Content {
 
     @Inject
-    private PetitionService<P> petitionService;
+    private PetitionService<?,?> petitionService;
 
     @Inject
-    protected FormPetitionService<P> formPetitionService;
+    protected FormPetitionService<?> formPetitionService;
 
     @Inject
     protected IFormService formService;

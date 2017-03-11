@@ -33,10 +33,11 @@ import org.opensingular.lib.commons.lambda.IBiConsumer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.wicket.builder.HTMLParameters;
 import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 
-public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends AbstractFlowConfirmModal<T> {
+public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends AbstractFlowConfirmModal<PE, PI> {
 
     private final RefType refType;
     private final FormKey                          formKey;
@@ -47,7 +48,7 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
     private SingularFormPanel singularFormPanel;
     private       IModel<SInstance>                rootInstance;
 
-    public STypeBasedFlowConfirmModal(AbstractFormPage<T> formPage,
+    public STypeBasedFlowConfirmModal(AbstractFormPage<PE, PI> formPage,
                                       RefType refType,
                                       FormKey formKey,
                                       IBiConsumer<SIComposite, String> onCreateInstance, boolean validatePageForm) {
@@ -77,12 +78,11 @@ public class STypeBasedFlowConfirmModal<T extends PetitionEntity> extends Abstra
 
     @Override
     protected void addDefaultConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder modal) {
-        final FlowConfirmButton<T> confirmButton = newFlowConfirmButton(tn, im, vm, modal);
-        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.send", confirmButton);
+        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.send", newFlowConfirmButton(tn, im, vm, modal));
     }
 
     @Override
-    protected FlowConfirmButton<T> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
+    protected FlowConfirmButton<PE, PI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
         return new FlowConfirmButton<>(tn, "confirm-btn", im, validatePageForm && ViewMode.EDIT == vm, getFormPage(), m);
     }
 

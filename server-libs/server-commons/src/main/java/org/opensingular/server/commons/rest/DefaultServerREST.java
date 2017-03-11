@@ -28,6 +28,7 @@ import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
@@ -69,7 +70,7 @@ public class DefaultServerREST {
     static final        Logger LOGGER           = LoggerFactory.getLogger(DefaultServerREST.class);
 
     @Inject
-    protected PetitionService<PetitionEntity> petitionService;
+    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
 
     @Inject
     protected PermissionResolverService permissionResolverService;

@@ -67,12 +67,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.ACTION;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.DIFF;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.PARENT_PETITION_ID;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.PETITION_ID;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
 
 @SuppressWarnings("serial")
 public abstract class DispatcherPage extends WebPage implements Loggable {
@@ -82,7 +77,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private PetitionService<?> petitionService;
+    private PetitionService<?,?> petitionService;
 
     @Inject
     private AuthorizationService authorizationService;
