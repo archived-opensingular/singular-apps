@@ -183,7 +183,7 @@ public abstract class DispatcherPage extends WebPage {
     private WebPage retrieveDestinationUsingSingularWebRef(FormPageConfig config, SingularWebRef ref) {
         try {
             if (ref == null || ref.getPageClass() == null) {
-                return createNewInstanceUsingFormPageConfigConstructor(getDefaultFormPageClass(), config);
+                return createNewInstanceUsingFormPageConfigConstructor(getFormPageClass(config), config);
             } else if (AbstractFormPage.class.isAssignableFrom(ref.getPageClass())) {
                 return createNewInstanceUsingFormPageConfigConstructor(ref.getPageClass(), config);
             } else {
@@ -366,7 +366,7 @@ public abstract class DispatcherPage extends WebPage {
         }
     }
 
-    protected Class<? extends AbstractFormPage> getDefaultFormPageClass() {
+    protected Class<? extends AbstractFormPage> getFormPageClass(FormPageConfig config) {
         return FormPage.class;
     }
 
