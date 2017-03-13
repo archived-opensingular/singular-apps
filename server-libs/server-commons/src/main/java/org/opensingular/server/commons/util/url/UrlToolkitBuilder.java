@@ -6,7 +6,7 @@ import java.io.Serializable;
 
 public class UrlToolkitBuilder implements Serializable {
 
-    public UrlToolkit build(Url url){
+    public UrlToolkit build(Url url) {
         return new UrlToolkit(url);
     }
 
