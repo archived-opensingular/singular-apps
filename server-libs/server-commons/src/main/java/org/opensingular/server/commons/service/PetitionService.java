@@ -125,7 +125,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
     @Nonnull
-    public PI getPetitionInstance(@Nonnull PE petitionEntity) {
+    private PI getPetitionInstance(@Nonnull PE petitionEntity) {
         Objects.requireNonNull(petitionEntity);
         return newPetitionInstance(petitionEntity);
     }
@@ -156,7 +156,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     /** Procura a petição com o código informado. */
     @Nonnull
-    public Optional<PE> findPetitionByCod(@Nonnull Long cod) {
+    private Optional<PE> findPetitionByCod(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
         return petitionDAO.find(cod);
     }
@@ -170,6 +170,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
     @Nonnull
+    @Deprecated
     public PE getPetitionByCod(@Nonnull Long cod) {
         return findPetitionByCod(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
@@ -184,6 +185,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     /** Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar. */
     @Nonnull
+    @Deprecated
     public PE getPetitionByProcessCod(@Nonnull Integer cod) {
         Objects.requireNonNull(cod);
         return petitionDAO.findByProcessCodOrException(cod);
@@ -191,25 +193,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     /** Recupera a petição associado ao fluxo informado. */
     @Nonnull
-    @Deprecated
-    public PE getPetitionByProcess(@Nonnull ProcessInstance processInstance) {
-        Objects.requireNonNull(processInstance);
-        return getPetitionByProcessCod(processInstance.getEntityCod());
-    }
-
-    /** Recupera a petição associado ao fluxo informado. */
-    @Nonnull
     public PI getPetition(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
-        return newPetitionInstance(getPetitionByProcess(processInstance));
-    }
-
-    /** Recupera a petição associada a tarefa informada. */
-    @Nonnull
-    @Deprecated
-    public PE getPetitionByTask(@Nonnull TaskInstance taskInstance) {
-        Objects.requireNonNull(taskInstance);
-        return getPetitionByProcess(taskInstance.getProcessInstance());
+        PE petition = getPetitionByProcessCod(processInstance.getEntityCod());
+        return newPetitionInstance(petition);
     }
 
     /** Recupera a petição associada a tarefa informada. */

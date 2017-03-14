@@ -361,14 +361,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             int totalVersoes = 0;
 
             // Verifica se existe rascunho
-            PetitionEntity petition = petitionService.getPetitionByCod(petitionId);
+            PetitionInstance petition = petitionService.getPetition(petitionId);
             String typeName = PetitionUtil.getTypeName(petition);
-            if (petition.currentEntityDraftByType(typeName).isPresent()) {
+            if (petition.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
 
             // Busca o número de versões consolidadas
-            Long versoesConsolidadas = formPetitionService.countVersions(petition.getMainForm().getCod());
+            Long versoesConsolidadas = formPetitionService.countVersions(petition.getEntity().getMainForm().getCod());
             totalVersoes += versoesConsolidadas;
 
             String formType = getFormType();
