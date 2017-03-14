@@ -115,6 +115,15 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
 
     private final Class<PE> petitionEntityClass;
 
+    /**
+     * Para uso do CGLIB na criação de proxies, uma possivel solução e fazer a injeção através da interface
+     */
+    @Deprecated
+    public AbstractPetitionService() {
+        this.petitionEntityClass = null;
+        this.petitionInstanceClass = null;
+    }
+
     public AbstractPetitionService(@Nonnull Class<PE> petitionEntityClass, @Nonnull Class<PI> petitionInstanceClass) {
         this.petitionEntityClass = Objects.requireNonNull(petitionEntityClass);
         this.petitionInstanceClass = Objects.requireNonNull(petitionInstanceClass);
