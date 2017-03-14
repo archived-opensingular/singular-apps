@@ -51,6 +51,7 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
 import org.opensingular.server.commons.flow.metadata.ServerContextMetaData;
+import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
@@ -87,6 +88,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Inject
     private FormPetitionService<PE> formPetitionService;
 
+    @Inject
+    private SingularServerMetadata singularServerMetadata;
+
     private final FormPageConfig      config;
     private final Class<? extends SType<?>> formType; //Essa informação têm precedência sobre config.getFormType()
     private        IModel<PI>          currentModel;
@@ -94,14 +98,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private final IModel<FormKey>     parentPetitionformKeyModel;
     private       AbstractFormContent content;
 
-
     public AbstractFormPage(@Nullable FormPageConfig config) {
         this(config, null);
     }
 
     public AbstractFormPage(@Nullable FormPageConfig config, @Nullable Class<? extends SType<?>> formType) {
         if (config == null) {
-            String url = "/singular";
+            String url = singularServerMetadata.getServerBaseUrl();
             getLogger().info(" Redirecting to "+url);
             throw new RedirectToUrlException(url);
         }
