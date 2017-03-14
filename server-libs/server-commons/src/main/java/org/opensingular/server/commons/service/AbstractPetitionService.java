@@ -85,7 +85,7 @@ import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
-public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
+public abstract class AbstractPetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
 
     @Inject
     protected PetitionDAO<PE> petitionDAO;
@@ -115,7 +115,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     private final Class<PE> petitionEntityClass;
 
-    public PetitionService(@Nonnull Class<PE> petitionEntityClass, @Nonnull Class<PI> petitionInstanceClass) {
+    public AbstractPetitionService(@Nonnull Class<PE> petitionEntityClass, @Nonnull Class<PI> petitionInstanceClass) {
         this.petitionEntityClass = Objects.requireNonNull(petitionEntityClass);
         this.petitionInstanceClass = Objects.requireNonNull(petitionInstanceClass);
     }

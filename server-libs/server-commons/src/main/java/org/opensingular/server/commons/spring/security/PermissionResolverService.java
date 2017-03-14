@@ -30,7 +30,7 @@ import org.opensingular.server.commons.flow.actions.ActionDefinition;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.AbstractPetitionService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected AbstractPetitionService<PetitionEntity, PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

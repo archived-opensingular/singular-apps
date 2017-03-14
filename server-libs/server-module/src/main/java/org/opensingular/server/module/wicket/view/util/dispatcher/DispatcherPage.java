@@ -43,7 +43,7 @@ import org.opensingular.server.commons.flow.SingularWebRef;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.AbstractPetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
@@ -77,7 +77,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private PetitionService<?,?> petitionService;
+    private AbstractPetitionService<?,?> petitionService;
 
     @Inject
     private AuthorizationService authorizationService;

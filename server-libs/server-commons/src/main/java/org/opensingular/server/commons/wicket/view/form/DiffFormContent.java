@@ -36,7 +36,7 @@ import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.AbstractPetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.template.Content;
@@ -55,7 +55,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 public class DiffFormContent extends Content {
 
     @Inject
-    private PetitionService<?,?> petitionService;
+    private AbstractPetitionService<?,?> petitionService;
 
     @Inject
     protected FormPetitionService<?> formPetitionService;

@@ -43,7 +43,7 @@ import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.AbstractPetitionService;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.MenuGroup;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
@@ -81,7 +81,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     private List<FormDTO> forms;
 
     @Inject
-    protected PetitionService<?,?> petitionService;
+    protected AbstractPetitionService<?,?> petitionService;
 
     /**
      * Form padrão

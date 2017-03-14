@@ -79,8 +79,8 @@ public class PetitionInstance implements Serializable {
         return FormPetitionService.checkIfExpectedType(getMainForm(), expectedType);
     }
 
-    private PetitionService<?,?> getPetitionService() {
-        return ApplicationContextProvider.get().getBean(PetitionService.class);
+    private AbstractPetitionService<?,?> getPetitionService() {
+        return ApplicationContextProvider.get().getBean(AbstractPetitionService.class);
     }
 
     public ProcessDefinition<?> getProcessDefinition() {
@@ -101,7 +101,7 @@ public class PetitionInstance implements Serializable {
 
     public Optional<PetitionInstance> getParentPetition() {
         return Optional.ofNullable(petitionEntity.getParentPetition()).map(
-                parent -> ((PetitionService<PetitionEntity,?>) getPetitionService()).newPetitionInstance(parent));
+                parent -> ((AbstractPetitionService<PetitionEntity,?>) getPetitionService()).newPetitionInstance(parent));
     }
 
     public String getDescription() {

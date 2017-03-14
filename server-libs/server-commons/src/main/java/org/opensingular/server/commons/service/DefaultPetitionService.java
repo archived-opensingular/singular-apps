@@ -23,7 +23,7 @@ import javax.annotation.Nonnull;
 /**
  * @author Daniel C. Bordin on 08/03/2017.
  */
-public class DefaultPetitionService extends PetitionService<PetitionEntity, PetitionInstance> {
+public class DefaultPetitionService extends AbstractPetitionService<PetitionEntity, PetitionInstance> {
 
     public DefaultPetitionService() {
         super(PetitionEntity.class, PetitionInstance.class);

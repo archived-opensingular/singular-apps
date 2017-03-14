@@ -33,7 +33,7 @@ import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.AbstractPetitionService;
 import org.opensingular.server.commons.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
@@ -54,7 +54,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private static final long serialVersionUID = 8587873133590041152L;
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private AbstractPetitionService<?, ?> petitionService;
 
     private long   petitionPK;
     private String processGroupPK;
