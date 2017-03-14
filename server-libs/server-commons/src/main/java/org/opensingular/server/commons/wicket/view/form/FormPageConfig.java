@@ -16,10 +16,11 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
-import org.opensingular.server.commons.flow.LazyFlowDefinitionResolver;
+import org.opensingular.server.commons.flow.FlowResolver;
 import org.opensingular.server.commons.form.FormActions;
 
 import java.io.Serializable;
@@ -30,15 +31,15 @@ import java.util.Map;
 public class FormPageConfig implements Serializable {
 
     private FormActions                        formAction;
-    private String                             petitionId;
+    private Long                               petitionId;
     private String                             formType;
     private Map<String, Serializable>          contextParams = new HashMap<>();
-    private LazyFlowDefinitionResolver         lazyFlowDefinitionResolver;
+    private FlowResolver                       lazyFlowDefinitionResolver;
     private Class<? extends ProcessDefinition> processDefinition;
     private Long                               formVersionPK;
-    private String                             parentPetitionId;
+    private Long                             parentPetitionId;
     private boolean                            diff;
-    private Map<String, String>                additionalParams = new HashMap<>();
+    private Map<String, String> additionalParams = new HashMap<>();
 
     private FormPageConfig() {
         formAction = FormActions.FORM_VIEW;
@@ -51,10 +52,10 @@ public class FormPageConfig implements Serializable {
                                             String parentPetitionId) {
         final FormPageConfig cfg = new FormPageConfig();
         cfg.formType = formType;
-        cfg.petitionId = petitionId;
+        cfg.petitionId = StringUtils.isBlank(petitionId) ? null : Long.valueOf(petitionId);
         cfg.formAction = formAction;
         cfg.formVersionPK = formVersionPK;
-        cfg.parentPetitionId = parentPetitionId;
+        cfg.parentPetitionId = StringUtils.isBlank(parentPetitionId) ? null : Long.valueOf(parentPetitionId);
         return cfg;
     }
 
@@ -75,7 +76,7 @@ public class FormPageConfig implements Serializable {
                                            FormActions formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
-                                           LazyFlowDefinitionResolver lazyFlowDefinitionResolver) {
+                                           FlowResolver lazyFlowDefinitionResolver) {
         final FormPageConfig cfg = newConfig(formType, petitionId, formAction, formVersionPK, parentPetitionId);
         cfg.lazyFlowDefinitionResolver = lazyFlowDefinitionResolver;
         return cfg;
@@ -86,7 +87,7 @@ public class FormPageConfig implements Serializable {
                                            FormActions formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
-                                           LazyFlowDefinitionResolver lazyFlowDefinitionResolver,
+                                           FlowResolver lazyFlowDefinitionResolver,
                                            boolean diff) {
         final FormPageConfig cfg = newConfig(formType, petitionId, formAction, formVersionPK, parentPetitionId, lazyFlowDefinitionResolver);
         cfg.diff = diff;
@@ -101,11 +102,11 @@ public class FormPageConfig implements Serializable {
         return formAction.getAnnotationMode();
     }
 
-    public String getPetitionId() {
+    public Long getPetitionId() {
         return petitionId;
     }
 
-    public void setPetitionId(String petitionId) {
+    public void setPetitionId(Long petitionId) {
         this.petitionId = petitionId;
     }
 
@@ -129,11 +130,11 @@ public class FormPageConfig implements Serializable {
         this.processDefinition = processDefinition;
     }
 
-    public LazyFlowDefinitionResolver getLazyFlowDefinitionResolver() {
+    public FlowResolver getLazyFlowDefinitionResolver() {
         return lazyFlowDefinitionResolver;
     }
 
-    public void setLazyFlowDefinitionResolver(LazyFlowDefinitionResolver lazyFlowDefinitionResolver) {
+    public void setLazyFlowDefinitionResolver(FlowResolver lazyFlowDefinitionResolver) {
         this.lazyFlowDefinitionResolver = lazyFlowDefinitionResolver;
     }
 
@@ -153,7 +154,7 @@ public class FormPageConfig implements Serializable {
         return formVersionPK;
     }
 
-    public String getParentPetitionId() {
+    public Long getParentPetitionId() {
         return parentPetitionId;
     }
 

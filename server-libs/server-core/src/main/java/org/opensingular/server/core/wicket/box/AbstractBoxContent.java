@@ -16,25 +16,6 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.form.FormActions;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.MenuGroup;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.wicket.SingularSession;
-import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.lib.wicket.util.datatable.BSDataTable;
-import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
-import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
-import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
-import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.lib.wicket.util.resource.Icone;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -49,11 +30,35 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.wicket.util.datatable.BSDataTable;
+import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
+import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
+import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
+import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.dto.FormDTO;
+import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.server.commons.wicket.view.template.Content;
 
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -76,7 +81,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     private List<FormDTO> forms;
 
     @Inject
-    protected PetitionService<?> petitionService;
+    protected PetitionService<?,?> petitionService;
 
     /**
      * Form padrão

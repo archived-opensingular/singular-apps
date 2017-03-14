@@ -37,7 +37,6 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.web.context.support.WebApplicationContextUtils;
-import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
@@ -83,14 +82,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
             applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         }
 
-        AnnotatedMountScanner annotatedMountScanner = new AnnotatedMountScanner();
-
-        annotatedMountScanner.scanPackage("org.opensingular").mount(this);
-
-        for (String packageName : getPackagesToScan()) {
-            annotatedMountScanner.scanPackage(packageName).mount(this);
-        }
-
+        new SingularAnnotatedMountScanner().mountPages(this);
         getDebugSettings().setComponentPathAttributeName("wicketpath");
         WicketSerializationDebugUtil.configurePageSerializationDebugIfInDevelopmentMode(this, this.getClass());
     }
@@ -120,6 +112,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         }
     }
 
+
     public ApplicationContext getApplicationContext() {
         return applicationContext;
     }
@@ -129,9 +122,5 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         this.applicationContext = ctx;
     }
 
-    /**
-     * @return Package a ser escaneada pelo {@link AnnotatedMountScanner} para buscar pelos mounts das páginas.
-     */
-    protected abstract String[] getPackagesToScan();
 
 }

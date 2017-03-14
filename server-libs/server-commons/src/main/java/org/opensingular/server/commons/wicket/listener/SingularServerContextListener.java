@@ -30,12 +30,12 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
-import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
-import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
+import org.opensingular.server.commons.spring.security.SecurityUtil;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.Page410;
@@ -45,7 +45,7 @@ import org.opensingular.server.commons.wicket.error.Page500;
  * Listener para impedir que páginas de um contexto do wicket sejam acessadas por uma sessão
  * criada em outro contexto  wicket.
  */
-public class SingularServerContextListener extends AbstractRequestCycleListener {
+public class SingularServerContextListener extends AbstractRequestCycleListener implements Loggable {
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
@@ -60,9 +60,10 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     }
 
     private void resetLogin(RequestCycle cycle) {
-        SecurityAuthPathsFactory securityAuthPathsFactory = new SecurityAuthPathsFactory();
-        SecurityAuthPaths        securityAuthPaths        = securityAuthPathsFactory.get();
-        throw new RedirectToUrlException(securityAuthPaths.getLogoutPath(cycle));
+        final Url    url         = cycle.getUrlRenderer().getBaseUrl();
+        final String redirectURL = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + SecurityUtil.getLogoutPath();
+        getLogger().info("Redirecting to "+redirectURL);
+        throw new RedirectToUrlException(redirectURL);
     }
 
     private void redirect403(RequestCycle cycle) {

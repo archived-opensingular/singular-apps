@@ -30,8 +30,11 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.transformer.FindActorByUserCodResultTransformer;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 public class ActorDAO extends BaseDAO<Actor, Integer> {
@@ -66,14 +69,14 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         Integer cod        = mUser.getCod();
         String  codUsuario = mUser.getCodUsuario();
 
-        return saveUserIfNeeded(cod, codUsuario);
+        return saveUserIfNeeded(cod, codUsuario).orElse(null);
     }
 
-    public MUser saveUserIfNeeded(String codUsuario) {
-        return saveUserIfNeeded(null, codUsuario);
+    public Optional<MUser> saveUserIfNeeded(@Nonnull String codUsuario) {
+        return saveUserIfNeeded(null, Objects.requireNonNull(codUsuario));
     }
 
-    private MUser saveUserIfNeeded(Integer cod, String codUsuario) {
+    private Optional<MUser> saveUserIfNeeded(Integer cod, String codUsuario) {
         MUser result = null;
         if (cod != null) {
             result = (MUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("cod", cod)).uniqueResult();
@@ -106,7 +109,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                 throw SingularServerException.rethrow("Usuário que deveria ter sido criado não pode ser recuperado.");
             }
         }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     @SuppressWarnings("unchecked")

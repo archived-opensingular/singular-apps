@@ -17,11 +17,9 @@ import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersis
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoMoreInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerAttachmentPersistenceHelperTest {
@@ -82,7 +80,7 @@ public class ServerAttachmentPersistenceHelperTest {
         when(obsoletAttachment.getFileId()).thenReturn("1");
         when(normalAttachment.getFileId()).thenReturn("2");
 
-        when(formService.findCurrentFormVersion(document)).thenReturn(formVersionEntity);
+        when(formService.findCurrentFormVersion(document)).thenReturn(Optional.of(formVersionEntity));
         when(formAttachmentService.findAllByVersion(eq(formVersionEntity))).thenReturn(new ArrayList<>(Arrays.asList(obsoletFormAttachmentEntity, normalFormAttachmentEntity)));
 
         serverAttachmentPersistenceHelper = new ServerAttachmentPersistenceHelper(formService, formAttachmentService){

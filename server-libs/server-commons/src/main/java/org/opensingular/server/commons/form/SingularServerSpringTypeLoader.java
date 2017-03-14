@@ -16,21 +16,19 @@
 
 package org.opensingular.server.commons.form;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Optional;
-import java.util.function.Supplier;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.StringUtils;
-
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.spring.SpringTypeLoader;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.opensingular.server.commons.service.PetitionUtil;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
 
@@ -48,7 +46,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     }
 
     private void add(Class<? extends SType<?>> type) {
-        String typeName   = SFormUtil.getTypeName(type);
+        String typeName   = PetitionUtil.getTypeName(type);
         add(typeName, () -> {
             SDictionary d = SDictionary.create();
             d.loadPackage(SFormUtil.getTypePackage(type));
