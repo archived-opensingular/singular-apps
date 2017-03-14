@@ -37,7 +37,7 @@ import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.AbstractPetitionService;
+import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.MenuGroup;
@@ -78,7 +78,7 @@ public class Menu extends Panel {
 
     @SuppressWarnings("rawtypes")
     @Inject
-    protected AbstractPetitionService<?,?> petitionService;
+    protected PetitionService<?,?> petitionService;
 
     @Inject
     private SingularServerConfiguration singularServerConfiguration;

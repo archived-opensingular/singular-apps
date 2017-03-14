@@ -29,7 +29,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.AbstractPetitionService;
+import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -56,7 +56,7 @@ public class AuthorizationService implements Loggable {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected AbstractPetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

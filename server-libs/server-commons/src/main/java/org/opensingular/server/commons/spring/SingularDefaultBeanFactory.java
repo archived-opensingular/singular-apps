@@ -56,7 +56,7 @@ import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
-import org.opensingular.server.commons.service.AbstractPetitionService;
+import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
 import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceHelper;
@@ -107,7 +107,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public AbstractPetitionService<?,?> worklistPetitionServiceFactory() {
+    public PetitionService<?,?> worklistPetitionServiceFactory() {
         return new DefaultPetitionService();
     }
 

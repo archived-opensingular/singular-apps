@@ -117,7 +117,7 @@ public final class PetitionUtil {
 
 
     @Nonnull
-    public static AbstractPetitionService<?, ?> getPetitionServiceOrException(@Nonnull SInstance instance) {
+    public static PetitionService<?,?> getPetitionServiceOrException(@Nonnull SInstance instance) {
         return getServiceOrException(instance, AbstractPetitionService.class);
     }
 

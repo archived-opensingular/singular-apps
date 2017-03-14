@@ -5,7 +5,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
-import org.opensingular.server.commons.service.AbstractPetitionService;
+import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 
@@ -20,7 +20,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public class PermissionPanel extends Panel implements Loggable {
 
     @Inject
-    protected AbstractPetitionService<?,?> petitionService;
+    protected PetitionService<?,?> petitionService;
 
     protected BSDataTable<SingularPermission, String> listTable;
 
