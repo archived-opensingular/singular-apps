@@ -34,7 +34,6 @@ import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
@@ -243,8 +242,6 @@ abstract class AbstractFormContent extends Content {
     }
 
     protected abstract void saveForm(IModel<? extends SInstance> currentInstance);
-
-    protected abstract IModel<? extends PetitionEntity> getFormModel();
 
     protected abstract boolean hasProcess();
 

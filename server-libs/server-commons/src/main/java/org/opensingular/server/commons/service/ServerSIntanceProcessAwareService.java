@@ -16,7 +16,7 @@
 
 package org.opensingular.server.commons.service;
 
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.core.ProcessInstance;
 
 import java.io.Serializable;
 
@@ -25,5 +25,5 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface ServerSIntanceProcessAwareService extends Serializable {
-    ProcessInstanceEntity getProcessInstance();
+    ProcessInstance getProcessInstance();
 }

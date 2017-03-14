@@ -6,12 +6,11 @@
 package org.opensingular.server.commons.flow.controllers;
 
 import org.opensingular.flow.core.MUser;
-import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.springframework.stereotype.Controller;
 
@@ -24,12 +23,11 @@ import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION
 public class DefaultAssignController extends IController implements Loggable {
 
     @Override
-    public ActionResponse execute(@Nonnull PetitionEntity petition, ActionRequest action) {
+    public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest action) {
         try {
-            ProcessInstance processInstance = PetitionUtil.getProcessInstance(petition);
             MUser user = PetitionUtil.findUserOrException(action.getIdUsuario());
 
-            processInstance.getCurrentTaskOrException().relocateTask(user, user, false, "", action.getLastVersion());
+            petition.getCurrentTaskOrException().relocateTask(user, user, false, "", action.getLastVersion());
             return new ActionResponse("Tarefa atribuída com sucesso.", true);
         } catch (Exception e) {
             String resultMessage = "Erro ao atribuir tarefa.";

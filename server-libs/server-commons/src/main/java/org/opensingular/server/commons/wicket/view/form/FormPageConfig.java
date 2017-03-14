@@ -142,10 +142,6 @@ public class FormPageConfig implements Serializable {
         return lazyFlowDefinitionResolver != null;
     }
 
-    public boolean containsProcessDefinition() {
-        return processDefinition != null;
-    }
-
     public FormActions getFormAction() {
         return formAction;
     }

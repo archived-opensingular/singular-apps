@@ -26,7 +26,7 @@ import javax.annotation.Nonnull;
 public class DefaultPetitionService extends PetitionService<PetitionEntity, PetitionInstance> {
 
     public DefaultPetitionService() {
-        super(PetitionInstance.class);
+        super(PetitionEntity.class, PetitionInstance.class);
     }
 
     @Nonnull

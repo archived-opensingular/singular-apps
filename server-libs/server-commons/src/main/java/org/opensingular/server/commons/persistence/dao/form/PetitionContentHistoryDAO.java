@@ -32,6 +32,7 @@ import org.opensingular.server.commons.wicket.view.template.MenuSessionConfig;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEntity, Long> {
@@ -94,12 +95,13 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTaskVersion().getAbbreviation());
     }
 
-    public FormVersionHistoryEntity findLastestByPetitionCodAndType(Class<? extends SType<?>> typeClass, Long cod) {
+    public Optional<FormVersionHistoryEntity> findLastestByPetitionCodAndType(Class<? extends SType<?>> typeClass, Long cod) {
         return findLastestByPetitionCodAndType(PetitionUtil.getTypeName(typeClass), cod);
     }
 
-    public FormVersionHistoryEntity findLastestByPetitionCodAndType(String typeName, Long cod) {
-        return (FormVersionHistoryEntity) getSession().createQuery(" select fvhe from PetitionContentHistoryEntity p " +
+    public Optional<FormVersionHistoryEntity> findLastestByPetitionCodAndType(String typeName, Long cod) {
+        return findUniqueResult(FormVersionHistoryEntity.class, getSession()
+                .createQuery(" select fvhe from PetitionContentHistoryEntity p " +
                 " inner join p.formVersionHistoryEntities  fvhe " +
                 " inner join fvhe.formVersion fv  " +
                 " inner join fv.formEntity fe  " +
@@ -107,8 +109,6 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 " where ft.abbreviation = :typeName and p.petitionEntity.cod = :cod " +
                 " order by p.historyDate desc ")
                 .setParameter("typeName", typeName)
-                .setParameter("cod", cod)
-                .setMaxResults(1)
-                .uniqueResult();
+                .setParameter("cod", cod));
     }
 }

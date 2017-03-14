@@ -311,15 +311,10 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
 
         addAdditionalParams(r, cfg);
 
-        if (cfg != null) {
-            if (!(cfg.containsProcessDefinition() || cfg.isWithLazyProcessResolver())) {
-                throw SingularServerException.rethrow("Nenhum fluxo está configurado");
-            }
-            return cfg;
-        } else {
-            return null;
+        if (cfg != null && cfg.getProcessDefinition() == null && !cfg.isWithLazyProcessResolver()) {
+            throw SingularServerException.rethrow("Nenhum fluxo está configurado");
         }
-
+        return cfg;
     }
 
     private void addAdditionalParams(Request r, FormPageConfig cfg) {
