@@ -75,12 +75,11 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
             component.setOutputMarkupId(outputId).setOutputMarkupPlaceholderTag(outputId);
         });
 
-        if (applicationContext == null) {
-            applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-        }
-
         if (applicationContext != null) {
             getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext, true));
+        } else {
+            getComponentInstantiationListeners().add(new SpringComponentInjector(this));
+            applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         }
 
         new SingularAnnotatedMountScanner().mountPages(this);
