@@ -20,9 +20,9 @@ import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.MUser;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -51,11 +51,17 @@ public final class PetitionUtil {
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
     public static ProcessDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
+        return getProcessDefinitionOpt(petition).orElseThrow(() -> new PetitionWithoutDefinitionException());
+    }
+
+    /** Recupera a definição de processo associado a petição. */
+    @Nonnull
+    final static Optional<ProcessDefinition<?>> getProcessDefinitionOpt(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
         if (petition.getProcessDefinitionEntity() == null) {
-            throw new PetitionWithoutDefinitionException();
+            return Optional.empty();
         }
-        return Flow.getProcessDefinition(petition.getProcessDefinitionEntity().getKey());
+        return Optional.of(Flow.getProcessDefinition(petition.getProcessDefinitionEntity().getKey()));
     }
 
     /** Retorna a tarefa atual associada a petição ou dispara exception senão houver nenhuma. */
@@ -82,9 +88,9 @@ public final class PetitionUtil {
      * @return Task if exists
      */
     @Nonnull
-    public static Optional<TaskInstanceEntity> getCurrentTaskEntity(@Nonnull SInstance instance) {
+    public static Optional<TaskInstance> getCurrentTaskEntity(@Nonnull SInstance instance) {
         return Optional.of(getServiceOrException(instance, ServerSIntanceProcessAwareService.class)).map(
-                ServerSIntanceProcessAwareService::getProcessInstance).map(ProcessInstanceEntity::getCurrentTask);
+                ServerSIntanceProcessAwareService::getProcessInstance).flatMap(ProcessInstance::getCurrentTask);
 
     }
 
@@ -111,8 +117,8 @@ public final class PetitionUtil {
 
 
     @Nonnull
-    public static PetitionService<?> getPetitionServiceOrException(@Nonnull SInstance instance) {
-        return getServiceOrException(instance, PetitionService.class);
+    public static PetitionService<?,?> getPetitionServiceOrException(@Nonnull SInstance instance) {
+        return getServiceOrException(instance, AbstractPetitionService.class);
     }
 
     /** Localiza o serviço associado a instância ou dispara exception senão encontrar. */
@@ -126,6 +132,12 @@ public final class PetitionUtil {
                     "configurado corretamente");
         }
         return service;
+    }
+
+    /** Retorna o nome do tipo associado a essa entidade. */
+    @Nonnull
+    public static String getTypeName(@Nonnull PetitionInstance petition) {
+        return getTypeName(petition.getEntity().getMainForm());
     }
 
     /** Retorna o nome do tipo associado a essa entidade. */

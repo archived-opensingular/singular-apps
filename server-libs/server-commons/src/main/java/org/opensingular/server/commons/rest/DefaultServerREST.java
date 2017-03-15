@@ -28,8 +28,8 @@ import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -69,7 +69,7 @@ public class DefaultServerREST {
     static final        Logger LOGGER           = LoggerFactory.getLogger(DefaultServerREST.class);
 
     @Inject
-    protected PetitionService<PetitionEntity> petitionService;
+    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
 
     @Inject
     protected PermissionResolverService permissionResolverService;
@@ -98,8 +98,8 @@ public class DefaultServerREST {
     @RequestMapping(value = PATH_BOX_ACTION + EXECUTE, method = RequestMethod.POST)
     public ActionResponse executar(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
         try {
-            PetitionEntity petition = petitionService.getPetitionByCod(id);
-            ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition);
+            PetitionInstance petition = petitionService.getPetition(id);
+            ProcessDefinition<?> processDefinition = petition.getProcessDefinition();
 
             IController controller = getActionController(processDefinition, actionRequest);
             return controller.run(petition, actionRequest);

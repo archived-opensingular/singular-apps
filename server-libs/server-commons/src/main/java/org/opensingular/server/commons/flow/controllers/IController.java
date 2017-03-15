@@ -16,21 +16,20 @@
 
 package org.opensingular.server.commons.flow.controllers;
 
-import javax.inject.Inject;
-
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 public abstract class IController {
 
     @Inject
     private AuthorizationService authorizationService;
 
-    public ActionResponse run(PetitionEntity petition, ActionRequest actionRequest) {
+    public ActionResponse run(PetitionInstance petition, ActionRequest actionRequest) {
         if (hasPermission(petition, actionRequest)) {
             return execute(petition, actionRequest);
         } else {
@@ -38,7 +37,7 @@ public abstract class IController {
         }
     }
 
-    private boolean hasPermission(PetitionEntity petition, ActionRequest actionRequest) {
+    private boolean hasPermission(PetitionInstance petition, ActionRequest actionRequest) {
         if (getType() == Type.PROCESS) {
             return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), getActionName());
         } else {
@@ -48,7 +47,7 @@ public abstract class IController {
 
     public abstract String getActionName();
 
-    protected abstract ActionResponse execute(@Nonnull PetitionEntity petition, ActionRequest actionRequest);
+    protected abstract ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest);
 
     protected Type getType() {
         return Type.PROCESS;

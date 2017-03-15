@@ -34,8 +34,8 @@ import org.opensingular.lib.wicket.util.output.BOutputPanel;
 import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.util.DispatcherPageParameters;
@@ -52,13 +52,13 @@ import java.util.Optional;
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
-public class DiffFormContent<P extends PetitionEntity> extends Content {
+public class DiffFormContent extends Content {
 
     @Inject
-    private PetitionService<P> petitionService;
+    private PetitionService<?,?> petitionService;
 
     @Inject
-    protected FormPetitionService<P> formPetitionService;
+    protected FormPetitionService<?> formPetitionService;
 
     @Inject
     protected IFormService formService;
@@ -80,9 +80,9 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
     protected void onConfigure() {
         super.onConfigure();
 
-        PetitionEntity petition = petitionService.getPetitionByCod(config.getPetitionId());
+        PetitionInstance petition = petitionService.getPetition(config.getPetitionId());
         String typeName = PetitionUtil.getTypeName(petition);
-        Optional<DraftEntity> draftEntity = petition.currentEntityDraftByType(typeName);
+        Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
 
         SInstance original = null;
         SInstance newer;
@@ -91,7 +91,7 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
         Date newerDate;
 
         if (draftEntity.isPresent()) {
-            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition.getCod(), typeName);
+            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition, typeName);
             if (lastForm.isPresent()) {
                 FormEntity originalForm = lastForm.get().getForm();
                 original = formPetitionService.getSInstance(originalForm);
@@ -104,7 +104,6 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
             newer = formPetitionService.getSInstance(newerForm);
             newerDate = draftEntity.get().getEditionDate();
 
-
         } else {
             List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId());
 
@@ -115,8 +114,7 @@ public class DiffFormContent<P extends PetitionEntity> extends Content {
             FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
             newer = formPetitionService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
-
-        }
+       }
 
         diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
 

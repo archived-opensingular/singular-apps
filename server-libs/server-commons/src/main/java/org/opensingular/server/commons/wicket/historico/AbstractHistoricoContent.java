@@ -16,15 +16,6 @@
 
 package org.opensingular.server.commons.wicket.historico;
 
-import java.net.URL;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Button;
@@ -48,6 +39,14 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
+import javax.inject.Inject;
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
 
 public abstract class AbstractHistoricoContent extends Content {
@@ -55,7 +54,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private static final long serialVersionUID = 8587873133590041152L;
 
     @Inject
-    private PetitionService<?> petitionService;
+    private PetitionService<?,?> petitionService;
 
     private long   petitionPK;
     private String processGroupPK;

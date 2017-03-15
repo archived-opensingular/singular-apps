@@ -16,34 +16,27 @@
 
 package org.opensingular.server.commons.flow.actions;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
-
-
+import org.opensingular.flow.core.MUser;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.flow.controllers.IController;
+import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.springframework.stereotype.Controller;
 
-import org.opensingular.lib.commons.util.Loggable;
-
-import org.opensingular.flow.core.MUser;
-import org.opensingular.flow.core.ProcessInstance;
-
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionUtil;
-
-
 import javax.annotation.Nonnull;
+
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
 
 
 @Controller
 public class AtribuirController extends IController implements Loggable {
 
     @Override
-    public ActionResponse execute(@Nonnull PetitionEntity petition, ActionRequest actionRequest) {
+    public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest) {
         try {
-            ProcessInstance processInstance = PetitionUtil.getProcessInstance(petition);
             MUser user = PetitionUtil.findUserOrException(actionRequest.getIdUsuario());
 
-            processInstance.getCurrentTaskOrException().relocateTask(user, user, false, "", actionRequest.getLastVersion());
+            petition.getCurrentTaskOrException().relocateTask(user, user, false, "", actionRequest.getLastVersion());
             return new ActionResponse("Tarefa atribuída com sucesso.", true);
         } catch (Exception e) {
             String resultMessage = "Erro ao atribuir tarefa.";

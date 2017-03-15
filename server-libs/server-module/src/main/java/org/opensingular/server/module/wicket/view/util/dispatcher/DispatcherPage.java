@@ -41,6 +41,7 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
 import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionService;
@@ -67,12 +68,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.ACTION;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.DIFF;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.PARENT_PETITION_ID;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.PETITION_ID;
+import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
 
 @SuppressWarnings("serial")
 public abstract class DispatcherPage extends WebPage implements Loggable {
@@ -82,13 +78,16 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private PetitionService<?> petitionService;
+    private PetitionService<?,?> petitionService;
 
     @Inject
     private AuthorizationService authorizationService;
 
     @Inject
     private FormPetitionService<?> formPetitionService;
+
+    @Inject
+    private SingularServerMetadata singularServerMetadata;
 
     public DispatcherPage() {
         initPage();
@@ -293,7 +292,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         final StringValue diffValue        = getParam(r, DIFF);
 
         if (action.isEmpty()) {
-            String url = getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + "/singular";
+            String url = getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + singularServerMetadata.getServerBaseUrl();
             getLogger().info(" Redirecting to "+url);
             throw new RedirectToUrlException(url);
         }
@@ -316,15 +315,10 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
 
         addAdditionalParams(r, cfg);
 
-        if (cfg != null) {
-            if (!(cfg.containsProcessDefinition() || cfg.isWithLazyProcessResolver())) {
-                throw SingularServerException.rethrow("Nenhum fluxo está configurado");
-            }
-            return cfg;
-        } else {
-            return null;
+        if (cfg != null && cfg.getProcessDefinition() == null && !cfg.isWithLazyProcessResolver()) {
+            throw SingularServerException.rethrow("Nenhum fluxo está configurado");
         }
-
+        return cfg;
     }
 
     private void addAdditionalParams(Request r, FormPageConfig cfg) {

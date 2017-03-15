@@ -23,13 +23,14 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.wicket.builder.HTMLParameters;
 import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 
 
-public class SimpleMessageFlowConfirmModal<T extends PetitionEntity> extends AbstractFlowConfirmModal<T> {
+public class SimpleMessageFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends AbstractFlowConfirmModal<PE, PI> {
 
-    public SimpleMessageFlowConfirmModal(AbstractFormPage<T> formPage) {
+    public SimpleMessageFlowConfirmModal(AbstractFormPage<PE, PI> formPage) {
         super(formPage);
     }
 
