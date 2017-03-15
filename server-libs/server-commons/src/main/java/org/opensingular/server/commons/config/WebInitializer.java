@@ -64,11 +64,9 @@ public abstract class WebInitializer {
 
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        if(wicketFilter != null) {
-            wicketFilter.setInitParameter("applicationClassName", getWicketApplicationClass(context).getName());
-            wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
-            wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
-        }
+        wicketFilter.setInitParameter("applicationClassName", getWicketApplicationClass(context).getName());
+        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
+        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
 
     }
 
@@ -76,9 +74,7 @@ public abstract class WebInitializer {
 
     private void addOpenSessionInView(ServletContext servletContext) {
         FilterRegistration.Dynamic opensessioninview = servletContext.addFilter("opensessioninview", OpenSessionInViewFilter.class);
-        if(opensessioninview != null) {
-            opensessioninview.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
-        }
+        opensessioninview.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
     }
 
     protected String[] getDefaultPublicUrls() {
