@@ -1,14 +1,17 @@
 package org.opensingular.server.module.requirement;
 
 import org.opensingular.form.SType;
+import org.opensingular.server.module.wicket.view.util.form.FormPage;
 
 /**
- *
+ * Singular requirement specification.
+ * This class groups the main Singular components needed to orchestrate the requirement.
  */
 public interface SingularRequirement {
 
     /**
      * The requirement descriptive name
+     *
      * @return
      */
     String getName();
@@ -16,6 +19,7 @@ public interface SingularRequirement {
     /**
      * A {@link SType} representing the main form for this requirment.
      * The main form is always the initial application form
+     *
      * @return
      */
     Class<? extends SType> getMainForm();
@@ -27,5 +31,15 @@ public interface SingularRequirement {
      * @return
      */
     BoundedFlowResolver getFlowResolver();
+
+
+    /**
+     * Returns a custom initial form page.
+     * Defaults to {@link FormPage}
+     *
+     * @param <P>
+     * @return
+     */
+    <P extends FormPage> P getInitialPage();
 
 }
