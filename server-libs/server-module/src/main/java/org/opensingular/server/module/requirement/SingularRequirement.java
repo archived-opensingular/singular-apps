@@ -1,6 +1,8 @@
 package org.opensingular.server.module.requirement;
 
 import org.opensingular.form.SType;
+import org.opensingular.lib.commons.lambda.ISupplier;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.module.wicket.view.util.form.FormPage;
 
 /**
@@ -40,6 +42,14 @@ public interface SingularRequirement {
      * @param <P>
      * @return
      */
-    <P extends FormPage> P getInitialPage();
+    default <P extends FormPage> ISupplier<P> getInitialPage() {
+        return () -> {
+            try {
+                return (P) FormPage.class.newInstance();
+            } catch (Exception e) {
+                throw SingularServerException.rethrow(e.getMessage(), e);
+            }
+        };
+    }
 
 }
