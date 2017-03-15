@@ -56,7 +56,7 @@ public class AuthorizationService implements Loggable {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

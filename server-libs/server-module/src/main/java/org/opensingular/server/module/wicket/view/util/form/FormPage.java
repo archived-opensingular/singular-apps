@@ -39,7 +39,7 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
     }
 
     public FormPage(@Nullable FormPageConfig config) {
-        super(PetitionEntity.class, config);
+        super(config);
     }
 
     @Override
@@ -61,7 +61,6 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
     @Override
     protected Optional<String> getIdentifier() {
         return getPetitionOptional()
-                .map(PetitionEntity::getCod)
-                .map(Object::toString);
+                .map(p -> p.getCod().toString());
     }
 }

@@ -54,7 +54,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private static final long serialVersionUID = 8587873133590041152L;
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private PetitionService<?,?> petitionService;
 
     private long   petitionPK;
     private String processGroupPK;

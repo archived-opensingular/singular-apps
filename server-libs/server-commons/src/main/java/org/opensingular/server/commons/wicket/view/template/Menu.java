@@ -16,15 +16,6 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -57,6 +48,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
 
@@ -79,7 +78,7 @@ public class Menu extends Panel {
 
     @SuppressWarnings("rawtypes")
     @Inject
-    protected PetitionService petitionService;
+    protected PetitionService<?,?> petitionService;
 
     @Inject
     private SingularServerConfiguration singularServerConfiguration;

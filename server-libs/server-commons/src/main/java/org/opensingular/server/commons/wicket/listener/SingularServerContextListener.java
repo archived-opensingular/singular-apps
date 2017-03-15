@@ -35,7 +35,8 @@ import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
-import org.opensingular.server.commons.spring.security.SecurityUtil;
+import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
+import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.Page410;
@@ -60,8 +61,9 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     }
 
     private void resetLogin(RequestCycle cycle) {
-        final Url    url         = cycle.getUrlRenderer().getBaseUrl();
-        final String redirectURL = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + SecurityUtil.getLogoutPath();
+        SecurityAuthPathsFactory securityAuthPathsFactory = new SecurityAuthPathsFactory();
+        SecurityAuthPaths        securityAuthPaths        = securityAuthPathsFactory.get();
+        String redirectURL = securityAuthPaths.getLogoutPath(cycle);
         getLogger().info("Redirecting to "+redirectURL);
         throw new RedirectToUrlException(redirectURL);
     }

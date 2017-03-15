@@ -2,9 +2,15 @@ package org.opensingular.server.commons.service;
 
 
 import org.apache.commons.collections.CollectionUtils;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
-import org.opensingular.form.*;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.SIComposite;
+import org.opensingular.form.SIList;
+import org.opensingular.form.SInstance;
+import org.opensingular.form.SType;
+import org.opensingular.form.SingularFormException;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocument;
@@ -13,8 +19,16 @@ import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.io.SFormXMLUtil;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.SPackageFormPersistence;
-import org.opensingular.form.persistence.dao.*;
-import org.opensingular.form.persistence.entity.*;
+import org.opensingular.form.persistence.dao.FormAnnotationDAO;
+import org.opensingular.form.persistence.dao.FormAnnotationVersionDAO;
+import org.opensingular.form.persistence.dao.FormAttachmentDAO;
+import org.opensingular.form.persistence.dao.FormDAO;
+import org.opensingular.form.persistence.dao.FormVersionDAO;
+import org.opensingular.form.persistence.entity.FormAnnotationEntity;
+import org.opensingular.form.persistence.entity.FormAnnotationVersionEntity;
+import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.transformer.Value;
 import org.opensingular.lib.commons.lambda.IConsumer;
@@ -22,14 +36,22 @@ import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
-import org.opensingular.server.commons.persistence.entity.form.*;
+import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
+import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
+import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.*;
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -74,50 +96,54 @@ public class FormPetitionService<P extends PetitionEntity> {
     }
 
     @Nonnull
-    public Optional<FormPetitionEntity> findFormPetitionEntityByType(@Nonnull Long petitionPK,
+    public Optional<FormPetitionEntity> findFormPetitionEntityByType(@Nonnull PetitionInstance petition,
             @Nonnull String typeName) {
+        Objects.requireNonNull(petition);
         //TODO vericiar se esse método não deveria ser unificado com findLastFormPetitionEntityByType()
         //Aparentemente geram o mesmo resultado na DAO
-        return formPetitionDAO.findFormPetitionEntityByTypeName(petitionPK, typeName);
+        return formPetitionDAO.findFormPetitionEntityByTypeName(petition.getCod(), typeName);
     }
 
     /** Na petição, encontra o formulário mais recente do tipo indicado e associado a tarefa indicada. */
     @Nonnull
-    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeAndTask(@Nonnull Long petitionPK,
-            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull Integer taskDefinitionEntityPK) {
-        return findFormPetitionEntityByTypeAndTask(petitionPK, PetitionUtil.getTypeName(typeClass),
-                taskDefinitionEntityPK);
+    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeAndTask(@Nonnull PetitionInstance petition,
+            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull TaskInstance task) {
+        return findFormPetitionEntityByTypeAndTask(petition, PetitionUtil.getTypeName(typeClass), task);
     }
 
     /** Na petição, encontra o formulário mais recente do tipo indicado e associado a tarefa indicada. */
     @Nonnull
-    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeAndTask(@Nonnull Long petitionPK,
-            @Nonnull String typeName, @Nonnull Integer taskDefinitionEntityPK) {
-        return formPetitionDAO.findFormPetitionEntityByTypeNameAndTask(petitionPK, typeName, taskDefinitionEntityPK);
+    public Optional<FormPetitionEntity> findFormPetitionEntityByTypeAndTask(@Nonnull PetitionInstance petition,
+            @Nonnull String typeName, @Nonnull TaskInstance task) {
+        Objects.requireNonNull(petition);
+        Objects.requireNonNull(task);
+        Integer taskDefinitionEntityPK =
+                ((TaskInstanceEntity) task.getEntityTaskInstance()).getTaskVersion().getTaskDefinition().getCod();
+        return formPetitionDAO.findFormPetitionEntityByTypeNameAndTask(petition.getCod(), typeName, taskDefinitionEntityPK);
     }
 
     /** Na petição, encontra o formulário mais recente do tipo indicado. */
     @Nonnull
-    public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull Long petitionPK,
+    public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition,
             @Nonnull Class<? extends SType<?>> typeClass) {
-        return findLastFormPetitionEntityByType(petitionPK, PetitionUtil.getTypeName(typeClass));
+        return findLastFormPetitionEntityByType(petition, PetitionUtil.getTypeName(typeClass));
     }
 
     /** Na petição, encontra o formulário mais recente do tipo indicado. */
-    public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull Long petitionPK, @Nonnull String typeName) {
-        return formPetitionDAO.findLastFormPetitionEntityByTypeName(petitionPK, typeName);
+    public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition, @Nonnull String typeName) {
+        return formPetitionDAO.findLastFormPetitionEntityByTypeName(petition.getCod(), typeName);
     }
 
     @Nonnull
-    public Optional<FormPetitionEntity> findFormPetitionEntity(@Nonnull P petition,
+    public Optional<FormPetitionEntity> findFormPetitionEntity(@Nonnull PetitionInstance petition,
             @Nonnull Class<? extends SType<?>> typeClass, boolean mainForm) {
         return findFormPetitionEntity(petition, PetitionUtil.getTypeName(typeClass), mainForm);
     }
 
     @Nonnull
-    private static Optional<FormPetitionEntity> findFormPetitionEntity(@Nonnull PetitionEntity petition,
+    private static Optional<FormPetitionEntity> findFormPetitionEntity(@Nonnull PetitionInstance petition,
             @Nonnull String typeName, boolean mainForm) {
-        Stream<FormPetitionEntity> entities = petition.getFormPetitionEntities().stream();
+        Stream<FormPetitionEntity> entities = petition.getEntity().getFormPetitionEntities().stream();
 
         //Filter byName
         entities = entities.filter(x -> {
@@ -131,7 +157,7 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         if (!mainForm) {
             //Filter byTask
-            Optional<TaskDefinitionEntity> currentTask = PetitionUtil.getCurrentTaskDefinitionOpt(petition);
+            Optional<TaskDefinitionEntity> currentTask = PetitionUtil.getCurrentTaskDefinitionOpt(petition.getEntity());
             if (currentTask.isPresent()) {
                 entities = entities.filter(x -> x.getTaskDefinitionEntity().equals(currentTask.get()));
             }
@@ -141,23 +167,23 @@ public class FormPetitionService<P extends PetitionEntity> {
 
     /** Procura na petição a versão mais recente do formulário do tipo informado. */
     @Nonnull
-    public Optional<SInstance> findFormPetitionInstanceByTypeAndTask(@Nonnull Long petitionPK,
-            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull Integer taskDefinitionEntityPK) {
-        return findFormPetitionEntityByTypeAndTask(petitionPK, PetitionUtil.getTypeName(typeClass), taskDefinitionEntityPK)
+    public Optional<SInstance> findFormPetitionInstanceByTypeAndTask(@Nonnull PetitionInstance petition,
+            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull TaskInstance task) {
+        return findFormPetitionEntityByTypeAndTask(petition, PetitionUtil.getTypeName(typeClass), task)
                 .map(e -> getSInstance(e, typeClass));
     }
 
     /** Procura na petição a versão mais recente do formulário do tipo informado. */
     @Nonnull
     public <I extends SInstance, K extends SType<? extends I>> Optional<I> findLastFormPetitionInstanceByType(
-            @Nonnull Long petitionPK, @Nonnull Class<K> typeClass) {
-        return findLastFormPetitionEntityByType(petitionPK, PetitionUtil.getTypeName(typeClass))
+            @Nonnull PetitionInstance petition, @Nonnull Class<K> typeClass) {
+        return findLastFormPetitionEntityByType(petition, PetitionUtil.getTypeName(typeClass))
                 .map(e -> getSInstance(e, typeClass));
     }
 
     /** Verifia se a instância informada é do tipo esperado e faz cast para a instância associada ao tipo. */
     @Nonnull
-    private <I extends SInstance, K extends SType<? extends I>> I checkIfExpectedType(@Nonnull SInstance instance,
+    static <I extends SInstance, K extends SType<? extends I>> I checkIfExpectedType(@Nonnull SInstance instance,
             @Nonnull Class<K> expectedTypeClass) {
         if (instance == null) {
             throw SingularServerException.rethrow("O resultado da recuperação da SInstance retornou null");
@@ -254,7 +280,7 @@ public class FormPetitionService<P extends PetitionEntity> {
     }
 
     @Nonnull
-    public FormKey saveFormPetition(@Nonnull P petition, @Nonnull SInstance instance, boolean mainForm) {
+    public FormKey saveFormPetition(@Nonnull PetitionInstance petition, @Nonnull SInstance instance, boolean mainForm) {
 
         Optional<FormPetitionEntity> formPetitionEntity;
 
@@ -262,8 +288,8 @@ public class FormPetitionService<P extends PetitionEntity> {
         formPetitionEntity = findFormPetitionEntity(petition, instance.getType().getName(), mainForm);
 
         if (! formPetitionEntity.isPresent()) {
-            formPetitionEntity = Optional.of(newFormPetitionEntity(petition, mainForm));
-            petition.getFormPetitionEntities().add(formPetitionEntity.get());
+            formPetitionEntity = Optional.of(newFormPetitionEntity(petition.getEntity(), mainForm));
+            petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
         }
 
         DraftEntity currentDraftEntity = formPetitionEntity.get().getCurrentDraftEntity();
@@ -277,7 +303,7 @@ public class FormPetitionService<P extends PetitionEntity> {
         return formKeyFromFormEntity(currentDraftEntity.getForm());
     }
 
-    private FormPetitionEntity newFormPetitionEntity(P petition, boolean mainForm) {
+    private FormPetitionEntity newFormPetitionEntity(PetitionEntity petition, boolean mainForm) {
         FormPetitionEntity formPetitionEntity = new FormPetitionEntity();
         formPetitionEntity.setPetition(petition);
         if (mainForm) {
@@ -334,8 +360,8 @@ public class FormPetitionService<P extends PetitionEntity> {
      * @return as novas entidades criadas
      */
     @Nonnull
-    public List<FormEntity> consolidateDrafts(@Nonnull P petition) {
-        return petition.getFormPetitionEntities()
+    public List<FormEntity> consolidateDrafts(@Nonnull PetitionInstance petition) {
+        return petition.getEntity().getFormPetitionEntities()
                 .stream()
                 .filter(formPetitionEntity -> formPetitionEntity.getCurrentDraftEntity() != null)
                 .map(this::consolidadeDraft)
@@ -485,16 +511,12 @@ public class FormPetitionService<P extends PetitionEntity> {
         }
     }
 
-    public void removeFormPetitionEntity(@Nonnull PetitionEntity p, @Nonnull Class<? extends SType<?>> type) {
-        TaskDefinitionEntity taskDefinition = p.getProcessInstanceEntity().getCurrentTask().getTaskVersion().getTaskDefinition();
-        Optional<FormPetitionEntity> formPetitionEntity = findFormPetitionEntityByTypeAndTask(
-                p.getCod(),
-                type,
-                taskDefinition.getCod()
-        );
+    public void removeFormPetitionEntity(@Nonnull PetitionInstance p, @Nonnull Class<? extends SType<?>> type) {
+        TaskInstance task = p.getProcessInstance().getCurrentTaskOrException();
+        Optional<FormPetitionEntity> formPetitionEntity = findFormPetitionEntityByTypeAndTask(p, type, task);
 
         formPetitionEntity.ifPresent(x -> {
-            p.getFormPetitionEntities().remove(x);
+            p.getEntity().getFormPetitionEntities().remove(x);
             formPetitionDAO.delete(x);
         });
     }

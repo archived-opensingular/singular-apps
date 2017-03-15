@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

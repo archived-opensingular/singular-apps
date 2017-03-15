@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.form;
 
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.builder.ITaskDefinition;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SInstance;
 import org.opensingular.server.commons.service.PetitionUtil;
 
@@ -32,7 +32,7 @@ import java.util.function.Predicate;
 public class CurrentTaskPredicate implements Predicate<SInstance>{
     private final ITaskDefinition[] referenceTasks;
     private final boolean negate;
-    private TaskInstanceEntity currentTask;
+    private TaskInstance currentTask;
 
     public static CurrentTaskPredicate  in(ITaskDefinition ... referenceTask){
         return new CurrentTaskPredicate(false, referenceTask);
@@ -67,13 +67,13 @@ public class CurrentTaskPredicate implements Predicate<SInstance>{
         return result ;
     }
 
-    protected Optional<TaskInstanceEntity> getCurrentTask() {
+    protected Optional<TaskInstance> getCurrentTask() {
         return Optional.ofNullable(currentTask);
     }
 
-    private boolean matchesReferenceTask(TaskInstanceEntity t) {
+    private boolean matchesReferenceTask(TaskInstance t) {
         for(ITaskDefinition ref : referenceTasks){
-            if(ref.getName().equalsIgnoreCase(t.getTaskVersion().getName())){
+            if (ref.getName().equalsIgnoreCase(t.getName())) {
                 return true;
             }
         }
