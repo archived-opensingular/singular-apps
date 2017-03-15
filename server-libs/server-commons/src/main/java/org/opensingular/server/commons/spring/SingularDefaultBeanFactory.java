@@ -51,6 +51,7 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.server.commons.service.DefaultPetitionService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
@@ -106,8 +107,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends PetitionEntity> PetitionService<T> worklistPetitionServiceFactory() {
-        return new PetitionService<>();
+    public PetitionService<?,?> worklistPetitionServiceFactory() {
+        return new DefaultPetitionService();
     }
 
     @Bean
