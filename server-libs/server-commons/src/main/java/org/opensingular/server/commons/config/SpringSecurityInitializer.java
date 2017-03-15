@@ -24,6 +24,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import org.springframework.web.filter.DelegatingFilterProxy;
 
 import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import java.util.EnumSet;
 
@@ -42,20 +43,22 @@ public abstract class SpringSecurityInitializer {
         }
     }
 
-    protected void addRestSecurity(AnnotationConfigWebApplicationContext applicationContext){
+    protected void addRestSecurity(AnnotationConfigWebApplicationContext applicationContext) {
         applicationContext.register(DefaultRestSecurity.class);
     }
 
     protected void addLogoutFilter(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping, IServerContext context) {
-        ctx
-                .addFilter("singularLogoutFilter" + System.identityHashCode(context), SingularLogoutFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getUrlPath() + "/logout");
+        FilterRegistration.Dynamic singularLogoutFilter = ctx.addFilter("singularLogoutFilter" + System.identityHashCode(context), SingularLogoutFilter.class);
+        if (singularLogoutFilter != null) {
+            singularLogoutFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getUrlPath() + "/logout");
+        }
     }
 
     protected void addSpringSecurityFilter(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping) {
-        ctx
-                .addFilter("springSecurityFilterChain", DelegatingFilterProxy.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, springMVCServletMapping);
+        FilterRegistration.Dynamic springSecurityFilterChain = ctx.addFilter("springSecurityFilterChain", DelegatingFilterProxy.class);
+        if (springSecurityFilterChain != null) {
+            springSecurityFilterChain.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, springMVCServletMapping);
+        }
     }
 
     protected abstract <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context);
