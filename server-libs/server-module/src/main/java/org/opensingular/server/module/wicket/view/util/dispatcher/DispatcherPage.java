@@ -347,7 +347,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         return petitionService.findCurrentTaskByPetitionId(petitionId).map(Flow::getTaskInstance);
     }
 
-    protected Class<? extends AbstractFormPage> getDefaultFormPageClass() {
+    protected Class<? extends AbstractFormPage> getFormPageClass(FormPageConfig config) {
         return FormPage.class;
     }
 
