@@ -14,6 +14,10 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+/**
+ * Configuration bean from which the current module
+ * requirements configurations are made available.
+ */
 @Named
 public class SingularModuleConfiguration {
 
@@ -27,6 +31,7 @@ public class SingularModuleConfiguration {
         resolveRequirements(module);
         resolveWorkspace(module);
     }
+
 
     private void resolveWorkspace(SingularModule module) {
         WorkspaceConfiguration configuration = new WorkspaceConfiguration();
@@ -50,6 +55,11 @@ public class SingularModuleConfiguration {
         return this.module;
     }
 
+    /**
+     * runs
+     * @param context
+     * @return
+     */
     public List<ItemBox> buildItemBoxes(IServerContext context) {
         return itemBoxes
                 .stream()
