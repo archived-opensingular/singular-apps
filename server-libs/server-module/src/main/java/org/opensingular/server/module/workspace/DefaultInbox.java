@@ -6,6 +6,7 @@ import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.ItemBoxDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +37,11 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.addAction(DefaultActions.RELOCATE);
         caixaEntrada.addAction(DefaultActions.VIEW);
         return caixaEntrada;
+    }
+
+    @Override
+    public ItemBoxDataProvider getDataProvider() {
+        return null;
     }
 
     protected List<DatatableField> criarFieldsDatatableWorklist() {
