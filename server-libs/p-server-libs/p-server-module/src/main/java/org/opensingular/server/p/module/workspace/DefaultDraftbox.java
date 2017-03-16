@@ -5,6 +5,7 @@ import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -36,6 +37,11 @@ public class DefaultDraftbox implements ItemBoxFactory {
                 .addAction(DefaultActions.VIEW)
                 .addAction(DefaultActions.DELETE);
         return rascunho;
+    }
+
+    @Override
+    public ItemBoxDataProvider getDataProvider() {
+        return null;
     }
 
     private List<DatatableField> criarFieldsDatatableRascunho() {

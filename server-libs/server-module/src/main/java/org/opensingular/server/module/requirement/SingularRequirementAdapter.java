@@ -1,5 +1,8 @@
 package org.opensingular.server.module.requirement;
 
+/**
+ * Basic singular requirement adapter.
+ */
 public abstract class SingularRequirementAdapter implements SingularRequirement {
 
     private String              name;

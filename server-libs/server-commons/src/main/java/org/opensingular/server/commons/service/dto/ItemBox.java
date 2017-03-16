@@ -67,10 +67,12 @@ public class ItemBox implements Serializable {
         this.showNewButton = showNewButton;
     }
 
+    @Deprecated
     public String getSearchEndpoint() {
         return searchEndpoint;
     }
 
+    @Deprecated
     public void setSearchEndpoint(String searchEndpoint) {
         this.searchEndpoint = searchEndpoint;
     }
@@ -87,14 +89,17 @@ public class ItemBox implements Serializable {
         return fieldsDatatable;
     }
 
+    @Deprecated
     public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
         this.fieldsDatatable = fieldsDatatable;
     }
 
+    @Deprecated
     public String getCountEndpoint() {
         return countEndpoint;
     }
 
+    @Deprecated
     public void setCountEndpoint(String countEndpoint) {
         this.countEndpoint = countEndpoint;
     }
@@ -151,6 +156,7 @@ public class ItemBox implements Serializable {
         return endedTasks;
     }
 
+    @Deprecated
     public void setEndedTasks(Boolean endedTasks) {
         this.endedTasks = endedTasks;
     }
