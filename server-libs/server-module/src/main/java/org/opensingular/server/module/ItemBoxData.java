@@ -1,6 +1,7 @@
 package org.opensingular.server.module;
 
 import org.opensingular.server.commons.service.dto.BoxItemAction;
+import org.opensingular.server.commons.service.dto.DatatableField;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -11,10 +12,10 @@ import java.util.Map;
 public class ItemBoxData implements Serializable {
 
 
-    private Map<String, Object> data           = new HashMap<>();
-    private List<BoxItemAction> boxItemActions = new ArrayList<>();
+    private Map<DatatableField, Serializable> data           = new HashMap<>();
+    private List<BoxItemAction>               boxItemActions = new ArrayList<>();
 
-    public void addColumn(String key, Object value) {
+    void addColumn(DatatableField key, Serializable value) {
         data.put(key, value);
     }
 
