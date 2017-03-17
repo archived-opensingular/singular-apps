@@ -85,7 +85,7 @@ import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
-public abstract class AbstractPetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements PetitionService<PE, PI> {
+public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
 
     @Inject
     protected PetitionDAO<PE> petitionDAO;
@@ -111,26 +111,13 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     @Inject
     protected ActorDAO actorDAO;
 
-    private final Class<PI> petitionInstanceClass;
-
-    private final Class<PE> petitionEntityClass;
-
-    /**
-     * Para uso do CGLIB na criação de proxies, uma possivel solução e fazer a injeção através da interface
-     */
-    @Deprecated
-    public AbstractPetitionService() {
-        this.petitionEntityClass = null;
-        this.petitionInstanceClass = null;
-    }
-
-    public AbstractPetitionService(@Nonnull Class<PE> petitionEntityClass, @Nonnull Class<PI> petitionInstanceClass) {
-        this.petitionEntityClass = Objects.requireNonNull(petitionEntityClass);
-        this.petitionInstanceClass = Objects.requireNonNull(petitionInstanceClass);
-    }
-
+    /** Deve cria uma instância com base na entidade fornecida. */
     @Nonnull
     protected abstract PI newPetitionInstance(@Nonnull PE petitionEntity);
+
+    /** Deve cria uma nova entidade vazia de persistência. */
+    @Nonnull
+    protected abstract PE newPetitionEntity();
 
     /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
     @Nonnull
@@ -140,7 +127,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
-    @Override
     @Nonnull
     public PI getPetitionInstance(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
@@ -152,7 +138,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
 
 
     /** Recupera a petição associada a task informada ou dispara exception senão encontrar. */
-    @Override
     @Nonnull
     public PI getPetitionInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
@@ -173,7 +158,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Procura a petição com o código informado. */
-    @Override
     @Nonnull
     public Optional<PI> findPetition(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
@@ -181,7 +165,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
-    @Override
     @Nonnull
     @Deprecated
     public PE getPetitionByCod(@Nonnull Long cod) {
@@ -190,7 +173,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
-    @Override
     @Nonnull
     public PI getPetition(@Nonnull Long cod) {
         return findPetition(cod).orElseThrow(
@@ -198,7 +180,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar. */
-    @Override
     @Nonnull
     @Deprecated
     public PE getPetitionByProcessCod(@Nonnull Integer cod) {
@@ -207,7 +188,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição associado ao fluxo informado. */
-    @Override
     @Nonnull
     public PI getPetition(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
@@ -216,19 +196,16 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera a petição associada a tarefa informada. */
-    @Override
     @Nonnull
     public PI getPetition(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
         return getPetition(taskInstance.getProcessInstance());
     }
 
-    @Override
     public void deletePetition(PetitionDTO peticao) {
         deletePetition(peticao.getCodPeticao());
     }
 
-    @Override
     public void deletePetition(@Nonnull Long idPeticao) {
         Optional<PE> pp = petitionDAO.find(idPeticao);
         if (pp.isPresent()) {
@@ -236,22 +213,18 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         }
     }
 
-    @Override
     public Long countQuickSearch(QuickFilter filter) {
         return countQuickSearch(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    @Override
     public Long countQuickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
         return petitionDAO.countQuickSearch(filter, siglasProcesso, formNames);
     }
 
-    @Override
     public List<PetitionDTO> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
         return petitionDAO.quickSearch(filter, siglasProcesso, formNames);
     }
 
-    @Override
     public List<Map<String, Object>> quickSearchMap(QuickFilter filter) {
         final List<Map<String, Object>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
         parseResultsPetition(list);
@@ -334,7 +307,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         return boxItemAction;
     }
 
-    @Override
     @Nonnull
     public FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm) {
         Objects.requireNonNull(petition);
@@ -348,7 +320,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         return formPetitionService.saveFormPetition(petition, instance, mainForm);
     }
 
-    @Override
     public void send(PI petition, SInstance instance, String codResponsavel) {
 
         final List<FormEntity>      consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
@@ -408,7 +379,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
      * @param cfg          formConfig
      * @param onTransition listener
      */
-    @Override
     @SuppressWarnings({"unchecked", "rawtypes"})
     public void executeTransition(String tn, PI petition, BiConsumer<PI, String> onTransition, Map<String, String> params) {
         try {
@@ -445,7 +415,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         }
     }
 
-    @Override
     public List<TaskInstanceDTO> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
         List<TaskInstanceDTO> tasks = taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
         parseResultsTask(tasks);
@@ -495,24 +464,20 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
 
     }
 
-    @Override
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
     }
 
-    @Override
     public List<? extends TaskInstanceDTO> listTasks(int first, int count, String sortProperty, boolean ascending, String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
 
         return taskInstanceDAO.findTasks(first, count, sortProperty, ascending, siglaFluxo, authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
     }
 
 
-    @Override
     public Long countTasks(String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
         return taskInstanceDAO.countTasks(Collections.singletonList(siglaFluxo), authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
     }
 
-    @Override
     public List<MTransition> listCurrentTaskTransitions(Long petitionId) {
         return findCurrentTaskByPetitionId(petitionId)
                 .map(Flow::getTaskInstance)
@@ -521,7 +486,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
                 .orElse(Collections.emptyList());
     }
 
-    @Override
     @Nonnull
     public Optional<TaskInstanceEntity> findCurrentTaskByPetitionId(@Nonnull Long petitionId) {
         //TODO (Daniel) Por que usar essa entidade em vez de TaskIntnstace ?
@@ -533,32 +497,25 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         return Optional.of(taskInstances.get(0));
     }
 
-    @Override
     public List<ProcessGroupEntity> listAllProcessGroups() {
         return grupoProcessoDAO.listarTodosGruposProcesso();
     }
 
-    @Override
     public ProcessGroupEntity findByProcessGroupName(String name) {
         return grupoProcessoDAO.findByName(name);
     }
 
-    @Override
     public ProcessGroupEntity findByProcessGroupCod(String cod) {
         return grupoProcessoDAO.get(cod).orElse(null);
     }
 
-    @Override
     @Nonnull
     public PI createNewPetitionWithoutSave(@Nullable Class<? extends ProcessDefinition> classProcess, @Nullable PI parentPetition,
                                            @Nullable Consumer<PI> creationListener) {
 
-        final PE petitionEntity;
-
-        try {
-            petitionEntity = petitionEntityClass.newInstance();
-        } catch (Exception e) {
-            throw SingularServerException.rethrow("Error creating new petition instance", e);
+        final PE petitionEntity = newPetitionEntity();
+        if (petitionEntity == null) {
+            throw new SingularServerException("newPetitionEntity() em " + getClass().getName() + " retornou null");
         }
 
         if (classProcess != null) {
@@ -581,35 +538,29 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         return petition;
     }
 
-    @Override
     public ProcessDefinitionEntity findEntityProcessDefinitionByClass(Class<? extends ProcessDefinition> clazz) {
         return (ProcessDefinitionEntity) Flow.getProcessDefinition(clazz).getEntityProcessDefinition();
     }
 
-    @Override
     public List<PetitionHistoryDTO> listPetitionContentHistoryByPetitionCod(long petitionCod, String menu, boolean filter) {
         PE petition = petitionDAO.findOrException(petitionCod);
         return petitionContentHistoryDAO.listPetitionContentHistoryByPetitionCod(petition, menu, filter);
     }
 
-    @Override
     public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
         Integer taskInstanceId = (Integer) selectedTask.get("taskInstanceId");
         return actorDAO.listAllocableUsers(taskInstanceId);
     }
 
-    @Override
     public PetitionerEntity findPetitionerByExternalId(String externalId) {
         return petitionerDAO.findPetitionerByExternalId(externalId);
     }
 
-    @Override
     @Nonnull
     public boolean isPreviousTransition(@Nonnull PI petition, @Nonnull String trasitionName) {
         return isPreviousTransition(petition.getCod(), trasitionName);
     }
 
-    @Override
     public boolean isPreviousTransition(@Nonnull Long petitionCod, @Nonnull String trasitionName) {
         //TODO (Daniel) Esse código
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
@@ -621,12 +572,10 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
         return false;
     }
 
-    @Override
     public PetitionAuthMetadataDTO findPetitionAuthMetadata(Long petitionId) {
         return petitionDAO.findPetitionAuthMetadata(petitionId);
     }
 
-    @Override
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
         FormEntity     mainForm       = petitionEntity.getMainForm();
@@ -634,7 +583,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Procura a instância de processo (fluxo) associado ao formulário se o mesmo existir. */
-    @Override
     public Optional<ProcessInstanceEntity> getFormProcessInstanceEntity(@Nonnull SInstance instance) {
         return getFormPetitionService().findFormEntity(instance)
                 .map(formEntity -> petitionDAO.findByFormEntity(formEntity))
@@ -642,13 +590,11 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Verifica se o formulário já foi persistido e possui um processo (fluxo) instanciado e associado. */
-    @Override
     public boolean formHasProcessInstance(SInstance instance) {
         return getFormProcessInstanceEntity(instance).isPresent();
     }
 
     /** Recupera o formulário {@link SInstance} de abertura do requerimento. */
-    @Override
     @Nonnull
     public SIComposite getMainFormAsInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
@@ -656,7 +602,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     }
 
     /** Recupera o formulário {@link SInstance} de abertura do requerimento e garante que é do tipo inforado. */
-    @Override
     @Nonnull
     public <I extends SInstance, K extends SType<? extends I>> I getMainFormAsInstance(@Nonnull PetitionEntity petition,
                                                                                        @Nonnull Class<K> expectedType) {
