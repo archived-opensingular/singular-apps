@@ -6,6 +6,7 @@ import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.ItemBoxDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,11 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setFieldsDatatable(criarFieldsDatatableWorklistConcluidas());
         concluidas.addAction(DefaultActions.VIEW);
         return concluidas;
+    }
+
+    @Override
+    public ItemBoxDataProvider getDataProvider() {
+        return null;
     }
 
     protected List<DatatableField> criarFieldsDatatableWorklistConcluidas() {

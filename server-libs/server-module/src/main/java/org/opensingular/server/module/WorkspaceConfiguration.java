@@ -20,7 +20,7 @@ public class WorkspaceConfiguration {
      * @param itemBox     the
      * @return
      */
-    public WorkspaceConfiguration add(ItemBoxFactory itemBox) {
+    public WorkspaceConfiguration addBox(ItemBoxFactory itemBox) {
         itemBoxes.add(itemBox);
         return this;
     }

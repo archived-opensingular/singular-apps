@@ -10,7 +10,7 @@ public class SingularRequirementDefinitionForm {
         this.name = name;
     }
 
-    public <T extends SType> SingularRequirementDefinitionForms<T> mainForm(Class<T> form) {
+    public <T extends SType<?>> SingularRequirementDefinitionForms<T> mainForm(Class<T> form) {
         return new SingularRequirementDefinitionForms<>(name, form);
     }
 

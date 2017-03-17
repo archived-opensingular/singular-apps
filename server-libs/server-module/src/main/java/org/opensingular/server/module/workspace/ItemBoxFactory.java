@@ -2,6 +2,7 @@ package org.opensingular.server.module.workspace;
 
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.ItemBoxDataProvider;
 
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
@@ -28,4 +29,7 @@ public interface ItemBoxFactory {
      *  An proper configured ItemBox
      */
     ItemBox build(IServerContext context);
+
+
+    ItemBoxDataProvider getDataProvider();
 }
