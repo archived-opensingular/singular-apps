@@ -258,7 +258,7 @@ public class Menu extends Panel {
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ProcessGroupEntity processGroup, List<String> tipos, List<FormDTO> menuFormTypes) {
         return () -> {
             final String connectionURL = processGroup.getConnectionURL();
-            final String url           = connectionURL + PATH_BOX_SEARCH + itemBoxDTO.getCountEndpoint();
+            final String url           = connectionURL + "/count/" + itemBoxDTO.getId();
             long         qtd;
             try {
                 QuickFilter filter = new QuickFilter()

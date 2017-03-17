@@ -27,8 +27,6 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setName("Concluídas");
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
-        concluidas.setSearchEndpoint(SEARCH_TASKS);
-        concluidas.setCountEndpoint(COUNT_TASKS);
         concluidas.setEndedTasks(Boolean.TRUE);
         concluidas.setFieldsDatatable(criarFieldsDatatableWorklistConcluidas());
         concluidas.addAction(DefaultActions.VIEW);

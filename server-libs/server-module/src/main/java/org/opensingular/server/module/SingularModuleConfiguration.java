@@ -11,6 +11,8 @@ import org.opensingular.server.module.workspace.ItemBoxFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -21,9 +23,9 @@ import java.util.stream.Collectors;
 @Named
 public class SingularModuleConfiguration {
 
-    private SingularModule            module;
+    private SingularModule module;
     private List<SingularRequirement> requirements;
-    private List<ItemBoxFactory> itemBoxes;
+    private Map<String, ItemBoxFactory> itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {
@@ -47,26 +49,36 @@ public class SingularModuleConfiguration {
 
     private SingularModule resolveModule() throws IllegalAccessException, InstantiationException {
         Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.INSTANCE.findSubclassesOf(SingularModule.class);
-        if (modules.stream().count() != 1) {
+        if ((long) modules.size() != 1) {
             throw SingularServerException.rethrow(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
-
-        this.module = modules.stream().findFirst().get().newInstance();
-        return this.module;
+        Optional<Class<? extends SingularModule>> module = modules.stream().findFirst();
+        if(module.isPresent()) {
+            return this.module = module.get().newInstance();
+        }
+        return null;
     }
 
     /**
      * runs
+     *
      * @param context
      * @return
      */
     public List<ItemBox> buildItemBoxes(IServerContext context) {
-        return itemBoxes
+        return itemBoxes.entrySet()
                 .stream()
-                .filter(sib -> sib.appliesTo(context))
-                .map(sib -> sib.build(context))
+                .filter(entry -> entry.getValue().appliesTo(context))
+                .map(entry -> {
+                    ItemBox itemBox = entry.getValue().build(context);
+                    itemBox.setId(entry.getKey());
+                    return itemBox;
+                })
                 .collect(Collectors.toList());
     }
 
+    public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
+        return itemBoxes.entrySet().stream().filter(entry -> entry.getKey().equals(id)).map(Map.Entry::getValue).findFirst();
+    }
 
 }

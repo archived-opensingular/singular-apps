@@ -16,7 +16,4 @@ public interface ItemBoxDataProvider {
 
     void configureLineActions(ItemBoxData line);
 
-    List<DatatableField> datatableColumns();
-
-
 }

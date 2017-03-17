@@ -28,8 +28,6 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.setName("Caixa de Entrada");
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
-        caixaEntrada.setSearchEndpoint(SEARCH_TASKS);
-        caixaEntrada.setCountEndpoint(COUNT_TASKS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
         caixaEntrada.setFieldsDatatable(criarFieldsDatatableWorklist());
         caixaEntrada.addAction(ASSIGN);

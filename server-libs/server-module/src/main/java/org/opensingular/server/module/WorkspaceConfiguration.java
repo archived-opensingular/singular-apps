@@ -2,9 +2,7 @@ package org.opensingular.server.module;
 
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import java.util.*;
 
 
 /**
@@ -13,7 +11,7 @@ import java.util.List;
  */
 public class WorkspaceConfiguration {
 
-    private List<ItemBoxFactory> itemBoxes = new ArrayList<>();
+    private Map<String, ItemBoxFactory> itemBoxes = new LinkedHashMap<>();
 
     /**
      * Register a single {@link ItemBoxFactory}
@@ -21,11 +19,12 @@ public class WorkspaceConfiguration {
      * @return
      */
     public WorkspaceConfiguration addBox(ItemBoxFactory itemBox) {
-        itemBoxes.add(itemBox);
+        itemBoxes.put(UUID.randomUUID().toString(), itemBox);
         return this;
     }
 
-    List<ItemBoxFactory> getItemBoxes() {
+
+    Map<String, ItemBoxFactory> getItemBoxes() {
         return itemBoxes;
     }
 }

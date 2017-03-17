@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -123,7 +124,7 @@ public class DefaultServerREST {
 
 
     @RequestMapping(value = PATH_BOX_SEARCH + SEARCH_PETITIONS, method = RequestMethod.POST)
-    public List<Map<String, Object>> searchPetitions(@RequestBody QuickFilter filter) {
+    public List<Map<String, Serializable>> searchPetitions(@RequestBody QuickFilter filter) {
         return petitionService.quickSearchMap(filter);
     }
 

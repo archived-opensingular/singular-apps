@@ -77,9 +77,9 @@ import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM
 public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
-    protected IModel<BoxItemModel>    currentModel;
-    private   Pair<String, SortOrder> sortProperty;
-    private   ItemBox                 itemBoxDTO;
+    protected IModel<BoxItemModel> currentModel;
+    private Pair<String, SortOrder> sortProperty;
+    private ItemBox itemBoxDTO;
 
     public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxDTO) {
         super(id, processGroupCod, menu);
@@ -165,7 +165,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemModel> boxItemModel) {
-        BoxItemModel   boxItem        = boxItemModel.getObject();
+        BoxItemModel boxItem = boxItemModel.getObject();
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
             pageParameters.add(DispatcherPageParameters.PETITION_ID, boxItem.getCod());
@@ -297,13 +297,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     protected BSModalBorder construirModalConfirmationBorder(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
-        final ItemActionConfirmation confirmation      = itemAction.getConfirmation();
-        BSModalBorder                confirmationModal = new BSModalBorder("confirmationModal", $m.ofValue(confirmation.getTitle()));
+        final ItemActionConfirmation confirmation = itemAction.getConfirmation();
+        BSModalBorder confirmationModal = new BSModalBorder("confirmationModal", $m.ofValue(confirmation.getTitle()));
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
 
-        Model<Actor>        actorModel     = new Model<>();
-        IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(currentModel, confirmation));
-        DropDownChoice      dropDownChoice = criarDropDown(actorsModel, actorModel);
+        Model<Actor> actorModel = new Model<>();
+        IModel<List<Actor>> actorsModel = $m.get(() -> buscarUsuarios(currentModel, confirmation));
+        DropDownChoice dropDownChoice = criarDropDown(actorsModel, actorModel);
         dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
         confirmationModal.addOrReplace(dropDownChoice);
 
@@ -362,7 +362,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @SuppressWarnings("unchecked")
     private List<Actor> buscarUsuarios(IModel<BoxItemModel> currentModel, ItemActionConfirmation confirmation) {
         final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
+        final String url = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
 
         try {
             return Arrays.asList(new RestTemplate().postForObject(url, currentModel.getObject(), Actor[].class));
@@ -448,7 +448,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @Override
     protected List<BoxItemModel> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
         final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getSearchEndpoint();
+        final String url = connectionURL + getSearchEndpoint();
         try {
             return (List<BoxItemModel>) Arrays
                     .asList(new RestTemplate().postForObject(url, filter, Map[].class))
@@ -493,7 +493,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
         final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getCountEndpoint();
+        final String url = connectionURL + getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
@@ -525,11 +525,11 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     public String getSearchEndpoint() {
-        return itemBoxDTO.getSearchEndpoint();
+        return "/search/" + itemBoxDTO.getId();
     }
 
     public String getCountEndpoint() {
-        return itemBoxDTO.getCountEndpoint();
+        return "/count/" + itemBoxDTO.getId();
     }
 
     public boolean isWithRascunho() {

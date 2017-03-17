@@ -30,8 +30,6 @@ public class DefaultDraftbox implements ItemBoxFactory {
         rascunho.setIcone(Icone.DOCS);
         rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
-        rascunho.setSearchEndpoint(SEARCH_PETITIONS);
-        rascunho.setCountEndpoint(COUNT_PETITIONS);
         rascunho.setFieldsDatatable(criarFieldsDatatableRascunho());
         rascunho.addAction(DefaultActions.EDIT)
                 .addAction(DefaultActions.VIEW)

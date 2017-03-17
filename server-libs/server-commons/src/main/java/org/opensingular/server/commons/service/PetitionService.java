@@ -26,6 +26,7 @@ import org.opensingular.server.commons.spring.security.SingularPermission;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,7 +73,7 @@ public interface PetitionService<PE extends PetitionEntity, PI extends PetitionI
 
     List<PetitionDTO> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames);
 
-    List<Map<String, Object>> quickSearchMap(QuickFilter filter);
+    List<Map<String, Serializable>> quickSearchMap(QuickFilter filter);
 
     @Nonnull
     FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm);

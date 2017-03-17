@@ -28,8 +28,6 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Petições em andamento");
         acompanhamento.setIcone(Icone.CLOCK);
-        acompanhamento.setSearchEndpoint(SEARCH_PETITIONS);
-        acompanhamento.setCountEndpoint(COUNT_PETITIONS);
         acompanhamento.setFieldsDatatable(criarFieldsDatatableAcompanhamento());
         acompanhamento.addAction(DefaultActions.VIEW);
         return acompanhamento;
