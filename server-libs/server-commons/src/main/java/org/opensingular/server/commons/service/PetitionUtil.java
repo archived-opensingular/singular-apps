@@ -89,9 +89,8 @@ public final class PetitionUtil {
      */
     @Nonnull
     public static Optional<TaskInstance> getCurrentTaskEntity(@Nonnull SInstance instance) {
-        return Optional.of(getServiceOrException(instance, ServerSIntanceProcessAwareService.class)).map(
-                ServerSIntanceProcessAwareService::getProcessInstance).flatMap(ProcessInstance::getCurrentTask);
-
+        return Optional.of(instance.getDocument().lookupServiceOrException(ServerSIntanceProcessAwareService.class))
+                .map(ServerSIntanceProcessAwareService::getProcessInstance).flatMap(ProcessInstance::getCurrentTask);
     }
 
     /** Recupera a instância de processo associada à petição informada. */
@@ -118,20 +117,7 @@ public final class PetitionUtil {
 
     @Nonnull
     public static PetitionService<?,?> getPetitionServiceOrException(@Nonnull SInstance instance) {
-        return getServiceOrException(instance, AbstractPetitionService.class);
-    }
-
-    /** Localiza o serviço associado a instância ou dispara exception senão encontrar. */
-    @Nonnull
-    public static <T> T getServiceOrException(@Nonnull SInstance instance, @Nonnull Class<T> targetClass) {
-        //TODO (Daniel) Essa lógica fica melhor se for transferida para novo metodo SDocument.lookupServiceOrException()
-        T service = Objects.requireNonNull(instance).getDocument().lookupService(targetClass);
-        if (service == null) {
-            throw SingularServerException.rethrow("O serviço " + targetClass.getName() +
-                    " não está configurado na instância (no Document). Provavelmente o DOcumentFactory não foi " +
-                    "configurado corretamente");
-        }
-        return service;
+        return instance.getDocument().lookupServiceOrException(AbstractPetitionService.class);
     }
 
     /** Retorna o nome do tipo associado a essa entidade. */
