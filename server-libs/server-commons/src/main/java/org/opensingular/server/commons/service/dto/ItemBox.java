@@ -78,7 +78,6 @@ public class ItemBox implements Serializable {
         return fieldsDatatable;
     }
 
-    @Deprecated
     public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
         this.fieldsDatatable = fieldsDatatable;
     }
@@ -140,11 +139,22 @@ public class ItemBox implements Serializable {
         this.endedTasks = endedTasks;
     }
 
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
-        this.id = id;
+    public String getSearchEndpoint() {
+        return "/search/" + id;
     }
+
+    public String getCountEndpoint() {
+        return "/count/" + id;
+    }
+
+
+
 }

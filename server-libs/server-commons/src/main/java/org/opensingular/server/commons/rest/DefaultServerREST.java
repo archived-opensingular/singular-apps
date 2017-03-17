@@ -122,7 +122,6 @@ public class DefaultServerREST {
         }
     }
 
-
     @RequestMapping(value = PATH_BOX_SEARCH + SEARCH_PETITIONS, method = RequestMethod.POST)
     public List<Map<String, Serializable>> searchPetitions(@RequestBody QuickFilter filter) {
         return petitionService.quickSearchMap(filter);
