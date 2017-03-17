@@ -9,7 +9,6 @@ import java.util.Map;
 
 public interface ItemBoxDataProvider {
 
-
     List<Map<String, Serializable>> search(QuickFilter filter);
 
     Long count(QuickFilter filter);
