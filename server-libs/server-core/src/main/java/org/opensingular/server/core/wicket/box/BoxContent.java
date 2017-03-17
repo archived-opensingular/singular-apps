@@ -53,7 +53,7 @@ import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.opensingular.server.core.wicket.ModuleLink;
 import org.opensingular.server.core.wicket.history.HistoryPage;
@@ -72,7 +72,7 @@ import java.util.stream.Collectors;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 

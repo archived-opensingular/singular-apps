@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.util;
+package org.opensingular.server.commons.wicket.view.util;
 
 /**
  * Nomes de parametros default a serem utilizados para montar links para a dispatcher page

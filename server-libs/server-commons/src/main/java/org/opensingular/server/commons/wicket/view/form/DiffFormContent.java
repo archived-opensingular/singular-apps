@@ -38,7 +38,7 @@ import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 

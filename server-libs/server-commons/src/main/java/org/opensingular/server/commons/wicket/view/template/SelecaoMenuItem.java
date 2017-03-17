@@ -5,8 +5,8 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import static org.opensingular.server.commons.util.DispatcherPageParameters.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
 
 import java.util.List;
 

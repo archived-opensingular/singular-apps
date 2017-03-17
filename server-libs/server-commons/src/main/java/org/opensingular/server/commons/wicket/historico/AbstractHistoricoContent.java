@@ -34,7 +34,7 @@ import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_VERSION_KEY;
 
 public abstract class AbstractHistoricoContent extends Content {
 

@@ -68,7 +68,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.*;
 
 @SuppressWarnings("serial")
 public abstract class DispatcherPage extends WebPage implements Loggable {

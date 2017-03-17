@@ -38,7 +38,6 @@ import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
@@ -82,7 +81,7 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
 public abstract class AbstractPetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements PetitionService<PE, PI> {

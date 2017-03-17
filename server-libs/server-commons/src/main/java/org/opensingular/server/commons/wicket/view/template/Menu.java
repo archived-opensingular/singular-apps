@@ -57,7 +57,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.*;
 
 public class Menu extends Panel {
 
