@@ -1,5 +1,6 @@
 package org.opensingular.server.module.workspace;
 
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
@@ -7,6 +8,7 @@ import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ItemBoxDataProvider;
+import org.opensingular.server.module.provider.TaskItemBoxDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,7 +39,7 @@ public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public ItemBoxDataProvider getDataProvider() {
-        return null;
+        return ApplicationContextProvider.get().getBean(TaskItemBoxDataProvider.class);
     }
 
     protected List<DatatableField> criarFieldsDatatableWorklist() {

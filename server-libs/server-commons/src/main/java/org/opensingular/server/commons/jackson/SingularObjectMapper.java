@@ -17,11 +17,14 @@
 package org.opensingular.server.commons.jackson;
 
 import java.io.IOException;
+import java.io.Serializable;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
@@ -50,4 +53,12 @@ public class SingularObjectMapper extends ObjectMapper {
             }
         }
     }
+
+    public <T extends Serializable> List<Map<String, Serializable>> toMap(List<T> serializables) {
+        return serializables
+                .stream()
+                .map(task -> (Map<String, Serializable>) this.convertValue(task, Map.class))
+                .collect(Collectors.toList());
+    }
+
 }
