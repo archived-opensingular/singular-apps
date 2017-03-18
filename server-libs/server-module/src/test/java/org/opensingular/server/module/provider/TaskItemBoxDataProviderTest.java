@@ -33,12 +33,8 @@ public class TaskItemBoxDataProviderTest {
     @Mock
     private List<SingularPermission> permissions;
 
-    @Mock
-    private TaskInstanceDTO taskInstanceDTO;
-
     @InjectMocks
     private TaskItemBoxDataProvider taskItemBoxDataProvider;
-
 
     @Test
     public void search() throws Exception {
