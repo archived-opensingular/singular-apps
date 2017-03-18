@@ -19,11 +19,15 @@ import java.util.Map;
 @Named
 public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
-    @Inject
-    private PetitionService<?, ?> petitionService;
+    private final PetitionService<?, ?> petitionService;
+
+    private final PermissionResolverService permissionResolverService;
 
     @Inject
-    private PermissionResolverService permissionResolverService;
+    public TaskItemBoxDataProvider(PetitionService<?, ?> petitionService, PermissionResolverService permissionResolverService) {
+        this.petitionService = petitionService;
+        this.permissionResolverService = permissionResolverService;
+    }
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
