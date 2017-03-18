@@ -12,6 +12,7 @@ import org.opensingular.server.module.ItemBoxDataProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -25,10 +26,9 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
     private PermissionResolverService permissionResolverService;
 
     @Override
-    public List<Map<String, java.io.Serializable>> search(QuickFilter filter) {
-        List<SingularPermission> permissions      = permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
-        List<TaskInstanceDTO>    taskInstanceDTOS = petitionService.listTasks(filter, permissions);
-        return getSingularObjectMapper().toMap(taskInstanceDTOS);
+    public List<Map<String, Serializable>> search(QuickFilter filter) {
+        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, searchPermissions(filter));
+        return getSingularObjectMapper().toStringSerializableMap(taskInstanceDTOS);
     }
 
     @NotNull
@@ -38,8 +38,11 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
     @Override
     public Long count(QuickFilter filter) {
-        List<SingularPermission> permissions = permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
-        return petitionService.countTasks(filter, permissions);
+        return petitionService.countTasks(filter, searchPermissions(filter));
+    }
+
+    private List<SingularPermission> searchPermissions(QuickFilter filter) {
+        return permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
     }
 
     public void configureLineActions(ItemBoxData line) {

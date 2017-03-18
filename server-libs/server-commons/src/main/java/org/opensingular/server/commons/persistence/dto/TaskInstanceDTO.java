@@ -79,6 +79,9 @@ public class TaskInstanceDTO implements Serializable {
     }
 
 
+    public TaskInstanceDTO() {
+    }
+
     public Integer getTaskInstanceId() {
         return taskInstanceId;
     }

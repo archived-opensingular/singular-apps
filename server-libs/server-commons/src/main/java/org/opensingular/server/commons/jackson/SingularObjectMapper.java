@@ -54,7 +54,7 @@ public class SingularObjectMapper extends ObjectMapper {
         }
     }
 
-    public <T extends Serializable> List<Map<String, Serializable>> toMap(List<T> serializables) {
+    public <T extends Serializable> List<Map<String, Serializable>> toStringSerializableMap(List<T> serializables) {
         return serializables
                 .stream()
                 .map(task -> (Map<String, Serializable>) this.convertValue(task, Map.class))
