@@ -396,7 +396,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
             if (params != null && !params.isEmpty()) {
                 for (Map.Entry<String, String> entry : params.entrySet()) {
-                    pi.getVariables().addValor(entry.getKey(), new VarTypeString(), entry.getValue());
+                    pi.getVariables().addValue(entry.getKey(), new VarTypeString(), entry.getValue());
                 }
             }
 
@@ -410,6 +410,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     private void checkTaskIsEqual(ProcessInstanceEntity processInstanceEntity, ProcessInstance piAtual) {
+        //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
         if (!processInstanceEntity.getCurrentTask().getTaskVersion().getAbbreviation().equalsIgnoreCase(piAtual.getCurrentTaskOrException().getAbbreviation())) {
             throw new PetitionConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
         }
@@ -654,7 +655,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     protected ProcessInstance startNewProcess(PetitionInstance petition, ProcessDefinition processDefinition) {
-        ProcessInstance   newProcessInstance = processDefinition.newInstance();
+        ProcessInstance   newProcessInstance = processDefinition.newPreStartInstance();
         newProcessInstance.setDescription(petition.getDescription());
 
         ProcessInstanceEntity processEntity = newProcessInstance.saveEntity();
