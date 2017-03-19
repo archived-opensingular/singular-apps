@@ -1,6 +1,5 @@
 package org.opensingular.server.module.provider;
 
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.module.ItemBoxData;
@@ -15,8 +14,12 @@ import java.util.Map;
 @Named
 public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
 
+    private final PetitionService<?, ?> petitionService;
+
     @Inject
-    private PetitionService<?, ?> petitionService;
+    public PetitionItemBoxDataProvider(PetitionService<?, ?> petitionService) {
+        this.petitionService = petitionService;
+    }
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
