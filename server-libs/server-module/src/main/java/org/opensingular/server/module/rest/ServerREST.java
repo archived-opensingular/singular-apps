@@ -17,8 +17,12 @@ import java.util.Optional;
 @RequestMapping("/rest/flow")
 public class ServerREST {
 
+    private final SingularModuleConfiguration singularModuleConfiguration;
+
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    public ServerREST(SingularModuleConfiguration singularModuleConfiguration) {
+        this.singularModuleConfiguration = singularModuleConfiguration;
+    }
 
     private Optional<ItemBoxDataProvider> getItemBoxDataProvider(@PathVariable String boxId) {
         return singularModuleConfiguration.getItemBoxFactory(boxId).map(ItemBoxFactory::getDataProvider);
