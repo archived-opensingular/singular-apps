@@ -400,7 +400,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 }
             }
 
-            pi.executeTransition(tn);
+            pi.prepareTransition(tn).go();
 
         } catch (SingularException e) {
             throw e;
