@@ -226,22 +226,21 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearch(filter, siglasProcesso, formNames);
     }
 
-    List<Map<String, Serializable>> quickSearchMap(QuickFilter filter);
-    public List<Map<String, Object>> quickSearchMap(QuickFilter filter) {
-        final List<Map<String, Object>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
+        final List<Map<String, Serializable>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
         parseResultsPetition(list);
         list.forEach(this::addLineActions);
-        for (Map<String, Object> map : list) {
+        for (Map<String, Serializable> map : list) {
             authorizationService.filterActions((String) map.get("type"), (Long) map.get("codPeticao"), (List<BoxItemAction>) map.get("actions"), filter.getIdUsuarioLogado());
         }
         return list;
     }
 
-    protected void parseResultsPetition(List<Map<String, Object>> results) {
+    protected void parseResultsPetition(List<Map<String, Serializable>> results) {
 
     }
 
-    private void addLineActions(Map<String, Object> line) {
+    private void addLineActions(Map<String, Serializable> line) {
         List<BoxItemAction> actions = new ArrayList<>();
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
@@ -269,17 +268,17 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                     .collect(Collectors.toList());
         }
 
-        line.put("actions", actions);
+        line.put("actions", (Serializable) actions);
     }
 
     /**
      * Dado um linha de dados (line), permite ao serviço adicionar quais as ações possiveis associadas a essa linha em
      * particular. Esse método deve ser sobrescrito pelos serviços derivados.
      */
-    protected void appendLineActions(@Nonnull Map<String, Object> line, @Nonnull List<BoxItemAction> lineActions) {
+    protected void appendLineActions(@Nonnull Map<String, Serializable> line, @Nonnull List<BoxItemAction> lineActions) {
     }
 
-    private BoxItemAction createDeleteAction(Map<String, Object> line) {
+    private BoxItemAction createDeleteAction(Map<String, Serializable> line) {
         String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
 
         final BoxItemAction boxItemAction = new BoxItemAction();
@@ -288,7 +287,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return boxItemAction;
     }
 
-    protected final static BoxItemAction createPopupBoxItemAction(Map<String, Object> line, FormActions formAction, String actionName) {
+    protected final static BoxItemAction createPopupBoxItemAction(Map<String, Serializable> line, FormActions formAction, String actionName) {
         Object cod  = line.get("codPeticao");
         Object type = line.get("type");
         return createPopupBoxItemAction(cod, type, formAction, actionName);
@@ -378,7 +377,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      *
      * @param tn           nome da transicao
      * @param petition     peticao
-     * @param cfg          formConfig
      * @param onTransition listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
