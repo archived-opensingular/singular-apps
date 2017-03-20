@@ -21,16 +21,21 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import javax.annotation.Nonnull;
 
 /**
+ * Implementação padrão de {@link PetitionService}. Não acrescenta nenhuma funcionaldiade ao serviço.
+ *
  * @author Daniel C. Bordin on 08/03/2017.
  */
-public class DefaultPetitionService extends AbstractPetitionService<PetitionEntity, PetitionInstance> {
+public class DefaultPetitionService extends PetitionService<PetitionEntity, PetitionInstance> {
 
-    public DefaultPetitionService() {
-        super(PetitionEntity.class, PetitionInstance.class);
-    }
-
+    @Override
     @Nonnull
     protected PetitionInstance newPetitionInstance(@Nonnull PetitionEntity petitionEntity) {
         return new PetitionInstance(petitionEntity);
+    }
+
+    @Override
+    @Nonnull
+    protected PetitionEntity newPetitionEntity() {
+        return new PetitionEntity();
     }
 }
