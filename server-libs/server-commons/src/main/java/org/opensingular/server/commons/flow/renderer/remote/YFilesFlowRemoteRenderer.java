@@ -16,15 +16,15 @@
 
 package org.opensingular.server.commons.flow.renderer.remote;
 
-import org.opensingular.server.commons.flow.renderer.remote.dto.Task;
-import org.opensingular.server.commons.flow.renderer.remote.dto.Transition;
-import org.opensingular.server.commons.flow.renderer.remote.dto.TransitionTask;
 import org.opensingular.flow.core.EventType;
 import org.opensingular.flow.core.ITaskPredicate;
 import org.opensingular.flow.core.MTask;
 import org.opensingular.flow.core.MTransition;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.server.commons.flow.renderer.remote.dto.Task;
+import org.opensingular.server.commons.flow.renderer.remote.dto.Transition;
+import org.opensingular.server.commons.flow.renderer.remote.dto.TransitionTask;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
@@ -47,7 +47,7 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
         org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition pd = new org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition();
         pd.setTasks(new ArrayList<>());
         for (MTask<?> task : definicao.getFlowMap().getAllTasks()) {
-            pd.getTasks().add(from(task, definicao.getFlowMap().getStartTask()));
+            pd.getTasks().add(from(task, definicao.getFlowMap().getStart().getTask()));
         }
         return new RestTemplate().postForObject(url, pd, byte[].class);
     }
