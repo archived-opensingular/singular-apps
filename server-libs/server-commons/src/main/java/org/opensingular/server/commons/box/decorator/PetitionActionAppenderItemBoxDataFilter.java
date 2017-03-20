@@ -20,7 +20,7 @@ public class PetitionActionAppenderItemBoxDataFilter implements ItemBoxDataFilte
 
     @Override
     public void doFilter(Map<String, Serializable> line, QuickFilter filter) {
-        if(line.get("codPeticao") != null) {//TODO virar metodo isPetition danilo
+        if(line.get("taskInstanceId") == null) {//TODO virar metodo isTask danilo
             petitionService.addLineActions(line);
         }
     }
