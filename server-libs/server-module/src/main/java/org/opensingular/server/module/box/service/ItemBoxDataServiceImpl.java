@@ -1,9 +1,10 @@
 package org.opensingular.server.module.box.service;
 
-import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
+import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.box.filter.ItemBoxDataFiltersFactory;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -18,22 +19,11 @@ import java.util.Optional;
 @Named
 public class ItemBoxDataServiceImpl implements ItemBoxDataService {
 
-    private final SingularModuleConfiguration singularModuleConfiguration;
-
+    @Inject
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
-    public ItemBoxDataServiceImpl(SingularModuleConfiguration singularModuleConfiguration) {
-        this.singularModuleConfiguration = singularModuleConfiguration;
-    }
-
-    private Optional<ItemBoxDataProvider> getItemBoxDataProvider(@PathVariable String boxId) {
-        return singularModuleConfiguration.getItemBoxFactory(boxId).map(ItemBoxFactory::getDataProvider);
-    }
-
-    private Optional<ItemBoxDataDecoratorChainFactory> getItemBoxDataDecoratorChainFactory(@PathVariable String boxId) {
-        return getItemBoxDataProvider(boxId).map(ItemBoxDataProvider::itemBoxDataDecoratorChainFactory);
-    }
-
+    private ItemBoxDataFiltersFactory filtersFactory;
 
     @Override
     public Long count(String boxId, QuickFilter filter) {
@@ -42,22 +32,37 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
 
     @Override
     public List<Map<String, Serializable>> search(String boxId, QuickFilter filter) {
-        return searchAndApplyChain(boxId, filter);
+        return searchAndApplyFilters(boxId, filter);
     }
 
-    private List<Map<String, Serializable>> searchAndApplyChain(String boxId, QuickFilter filter) {
-        return applyDecoratorChain(boxId, findProviderAndSearch(boxId, filter), filter);
+    private Optional<ItemBoxDataProvider> getItemBoxDataProvider(@PathVariable String boxId) {
+        return getItemBoxFactory(boxId).map(ItemBoxFactory::getDataProvider);
+    }
+
+    private Optional<ItemBoxFactory> getItemBoxFactory(@PathVariable String boxId) {
+        return singularModuleConfiguration.getItemBoxFactory(boxId);
+    }
+
+    private List<Map<String, Serializable>> searchAndApplyFilters(String boxId, QuickFilter filter) {
+        List<Map<String, Serializable>> searchResult = findProviderAndSearch(boxId, filter);
+        if(searchResult != null) {
+            applyFilters(boxId, searchResult, filter);
+        }
+        return searchResult;
     }
 
     private List<Map<String, Serializable>> findProviderAndSearch(String boxId, QuickFilter filter) {
         return getItemBoxDataProvider(boxId).map(provider -> provider.search(filter)).orElse(Collections.emptyList());
     }
 
-    private List<Map<String, Serializable>> applyDecoratorChain(String boxId, List<Map<String, Serializable>> lines, QuickFilter filter) {
-        lines.forEach(line -> getItemBoxDataDecoratorChainFactory(boxId)
-                .map(ItemBoxDataDecoratorChainFactory::newChain)
-                .ifPresent(chain -> chain.decorate(line, filter)));
-        return lines;
+    private void applyFilters(String boxId, List<Map<String, Serializable>> lines, QuickFilter filter) {
+        getItemBoxFactory(boxId).ifPresent(factory -> {
+            List<ItemBoxDataFilter> filters = filtersFactory.getFilters(factory);
+            for (Map<String, Serializable> line : lines) {
+                filters.forEach(f -> f.doFilter(line, filter));
+            }
+        });
     }
+
 
 }

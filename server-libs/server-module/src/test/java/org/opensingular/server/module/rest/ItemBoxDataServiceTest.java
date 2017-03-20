@@ -3,22 +3,37 @@ package org.opensingular.server.module.rest;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.box.filter.ItemBoxDataFiltersFactory;
 import org.opensingular.server.module.box.service.ItemBoxDataService;
 import org.opensingular.server.module.box.service.ItemBoxDataServiceImpl;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
+@RunWith(MockitoJUnitRunner.class)
 public class ItemBoxDataServiceTest {
 
-    private ItemBoxDataService itemBoxDataService;
+    @Mock
+    private SingularModuleConfiguration singularModuleConfiguration;
+
+    @Mock
+    private ItemBoxDataFiltersFactory filtersFactory;
+
+    @InjectMocks
+    private ItemBoxDataServiceImpl itemBoxDataService;
 
     private QuickFilter quickFilter;
 
@@ -30,11 +45,9 @@ public class ItemBoxDataServiceTest {
     public void setUp() {
 
         ItemBoxFactory itemBoxFactory = mock(ItemBoxFactory.class);
-        SingularModuleConfiguration singularModuleConfiguration = mock(SingularModuleConfiguration.class);
         ItemBoxDataProvider itemBoxDataProvider = mock(ItemBoxDataProvider.class);
-        List searchResult = mock(List.class);
+        List searchResult = spy(new ArrayList());
 
-        itemBoxDataService = new ItemBoxDataServiceImpl(singularModuleConfiguration);
         quickFilter = new QuickFilter();
 
         when(singularModuleConfiguration.getItemBoxFactory(eq(boxId))).thenReturn(Optional.of(itemBoxFactory));
@@ -42,6 +55,7 @@ public class ItemBoxDataServiceTest {
         when(itemBoxDataProvider.count(eq(quickFilter))).thenReturn(countSize);
         when(itemBoxDataProvider.search(eq(quickFilter))).thenReturn(searchResult);
         when(searchResult.size()).thenReturn(countSize.intValue());
+        when(filtersFactory.getFilters(any())).thenReturn(Collections.emptyList());
     }
 
     @Test

@@ -1,10 +1,10 @@
 package org.opensingular.server.module;
 
-import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
+import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.DatatableField;
 
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +16,8 @@ public interface ItemBoxDataProvider {
 
     void configureLineActions(ItemBoxData line);
 
-    ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory();
+    default List<ItemBoxDataFilter> getFilters(){
+        return Collections.emptyList();
+    }
 
 }
