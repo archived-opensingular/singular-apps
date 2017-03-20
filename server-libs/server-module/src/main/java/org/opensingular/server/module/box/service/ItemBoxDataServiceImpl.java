@@ -47,15 +47,16 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
     }
 
     private List<ItemBoxData> searchAndApplyFilters(String boxId, QuickFilter filter) {
-        List<ItemBoxData> tableItens = findProviderAndSearch(boxId, filter)
-                .stream()
-                .map(map -> new ItemBoxData().setRawMap(map)).collect(Collectors.toList());
-
-        if (tableItens != null) {
-            applyFilters(boxId, tableItens, filter);
+        List<ItemBoxData> itemBoxDatas = convertMapToItemBoxData(findProviderAndSearch(boxId, filter));
+        if (itemBoxDatas != null) {
+            applyFilters(boxId, itemBoxDatas, filter);
         }
+        return itemBoxDatas;
+    }
 
-        return tableItens;
+    private List<ItemBoxData> convertMapToItemBoxData(List<Map<String, Serializable>> searchResult) {
+        return searchResult.stream()
+                .map(map -> new ItemBoxData().setRawMap(map)).collect(Collectors.toList());
     }
 
     private List<Map<String, Serializable>> findProviderAndSearch(String boxId, QuickFilter filter) {

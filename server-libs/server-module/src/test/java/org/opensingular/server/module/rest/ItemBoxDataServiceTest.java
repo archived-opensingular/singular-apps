@@ -14,10 +14,8 @@ import org.opensingular.server.module.box.filter.ItemBoxDataFilterCollector;
 import org.opensingular.server.module.box.service.ItemBoxDataServiceImpl;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.io.Serializable;
+import java.util.*;
 
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
@@ -45,7 +43,10 @@ public class ItemBoxDataServiceTest {
 
         ItemBoxFactory itemBoxFactory = mock(ItemBoxFactory.class);
         ItemBoxDataProvider itemBoxDataProvider = mock(ItemBoxDataProvider.class);
-        List searchResult = spy(new ArrayList());
+        List<Map<String, Serializable>> searchResult = new ArrayList<>();
+        Map<String, Serializable> firstItemMap = new HashMap<>();
+        searchResult.add(firstItemMap);
+        firstItemMap.put("id", "123456");
 
         quickFilter = new QuickFilter();
 
@@ -53,7 +54,6 @@ public class ItemBoxDataServiceTest {
         when(itemBoxFactory.getDataProvider()).thenReturn(itemBoxDataProvider);
         when(itemBoxDataProvider.count(eq(quickFilter))).thenReturn(countSize);
         when(itemBoxDataProvider.search(eq(quickFilter))).thenReturn(searchResult);
-        when(searchResult.size()).thenReturn(countSize.intValue());
         when(filtersFactory.getFilterList(any())).thenReturn(Collections.emptyList());
     }
 
