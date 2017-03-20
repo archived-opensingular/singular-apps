@@ -413,11 +413,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void checkTaskActions(Map<String, Serializable> task, QuickFilter filter) {
         List<BoxItemAction> actions = new ArrayList<>();
         if (task.get("codUsuarioAlocado") == null
-                && task.get("taskType") == TaskType.PEOPLE.getAbbreviation()) {
+                &&  TaskType.PEOPLE.name().equals(task.get("taskType"))) {
             actions.add(BoxItemAction.newExecuteInstante(task.get("codPeticao"), ACTION_ASSIGN.getName()));
         }
 
-        if (task.get("taskType") == TaskType.PEOPLE.getAbbreviation()) {
+        if (TaskType.PEOPLE.name().equals(task.get("taskType"))) {
             actions.add(BoxItemAction.newExecuteInstante(task.get("codPeticao"), ACTION_RELOCATE.getName()));
         }
 

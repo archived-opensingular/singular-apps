@@ -37,8 +37,9 @@ import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
 import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactoryImpl;
 import org.opensingular.server.commons.box.decorator.PetitionActionAppenderItemBoxDataDecorator;
-import org.opensingular.server.commons.box.decorator.ActionPermissionItemBoxDataDecorator;
+import org.opensingular.server.commons.box.decorator.PetitionActionPermissionItemBoxDataDecorator;
 import org.opensingular.server.commons.box.decorator.TaskActionAppenderItemBoxDataDecorator;
+import org.opensingular.server.commons.box.decorator.TaskActionPermissionItemBoxDataDecorator;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
@@ -315,14 +316,19 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    private ActionPermissionItemBoxDataDecorator actionPermissionItemBoxDataDecorator(AuthorizationService authorizationService) {
-        return new ActionPermissionItemBoxDataDecorator(authorizationService);
+    private PetitionActionPermissionItemBoxDataDecorator actionPermissionItemBoxDataDecorator(AuthorizationService authorizationService) {
+        return new PetitionActionPermissionItemBoxDataDecorator(authorizationService);
+    }
+
+    @Bean
+    private TaskActionPermissionItemBoxDataDecorator taskActionPermissionItemBoxDataDecorator() {
+        return new TaskActionPermissionItemBoxDataDecorator();
     }
 
     @Bean(name = "petitionItemBoxDataDecoratorChainFactory")
     public ItemBoxDataDecoratorChainFactory petitionItemBoxDataDecoratorChainFactory(
             PetitionActionAppenderItemBoxDataDecorator actionAppenderDecorator,
-            ActionPermissionItemBoxDataDecorator actionPermissionDecorator
+            PetitionActionPermissionItemBoxDataDecorator actionPermissionDecorator
     ) {
         return new ItemBoxDataDecoratorChainFactoryImpl()
                 .addDecorator(actionAppenderDecorator)
@@ -332,7 +338,7 @@ public class SingularDefaultBeanFactory {
     @Bean(name = "analysisItemBoxDataDecoratorChainFactory")
     public ItemBoxDataDecoratorChainFactory analysisItemBoxDataDecoratorChainFactory(
             TaskActionAppenderItemBoxDataDecorator actionAppenderDecorator,
-            ActionPermissionItemBoxDataDecorator actionPermissionDecorator
+            TaskActionPermissionItemBoxDataDecorator actionPermissionDecorator
     ) {
         return new ItemBoxDataDecoratorChainFactoryImpl()
                 .addDecorator(actionAppenderDecorator)
