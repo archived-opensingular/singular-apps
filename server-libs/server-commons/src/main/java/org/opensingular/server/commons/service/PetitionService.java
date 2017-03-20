@@ -638,9 +638,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         PE petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
+        petitionDAO.saveOrUpdate(petitionEntity);
 
         newProcessInstance.start();
-        petitionDAO.saveOrUpdate(petitionEntity);
 
         petition.setProcessInstance(newProcessInstance);
 
