@@ -1,12 +1,11 @@
-package org.opensingular.server.commons.box.decorator;
+package org.opensingular.server.commons.box.filter;
 
+import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.io.Serializable;
-import java.util.Map;
 
 @Named
 public class TaskActionAppenderItemBoxDataFilter implements ItemBoxDataFilter {
@@ -19,8 +18,8 @@ public class TaskActionAppenderItemBoxDataFilter implements ItemBoxDataFilter {
     }
 
     @Override
-    public void doFilter(Map<String, Serializable> line, QuickFilter filter) {
-        petitionService.checkTaskActions(line, filter);
+    public void doFilter(ItemBoxData itemBoxData, QuickFilter filter) {
+        petitionService.checkTaskActions(itemBoxData, filter);
     }
 
 }

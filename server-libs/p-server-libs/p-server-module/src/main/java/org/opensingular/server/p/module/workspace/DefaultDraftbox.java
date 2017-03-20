@@ -29,7 +29,6 @@ public class DefaultDraftbox implements ItemBoxFactory {
         rascunho.setIcone(Icone.DOCS);
         rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
-        rascunho.setFieldsDatatable(criarFieldsDatatableRascunho());
         rascunho.addAction(DefaultActions.EDIT)
                 .addAction(DefaultActions.VIEW)
                 .addAction(DefaultActions.DELETE);
@@ -41,11 +40,13 @@ public class DefaultDraftbox implements ItemBoxFactory {
         return ApplicationContextProvider.get().getBean(PetitionItemBoxDataProvider.class);
     }
 
-    private List<DatatableField> criarFieldsDatatableRascunho() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Descrição", "description"));
         fields.add(DatatableField.of("Dt. Edição", "editionDate"));
         fields.add(DatatableField.of("Data de Entrada", "creationDate"));
         return fields;
     }
+
 }

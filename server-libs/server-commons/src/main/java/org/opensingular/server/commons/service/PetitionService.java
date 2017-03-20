@@ -39,6 +39,7 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
@@ -230,8 +231,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    public void addLineActions(Map<String, Serializable> line) {
+    public void addLineActions(ItemBoxData line) {
+
         List<BoxItemAction> actions = new ArrayList<>();
+
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
         actions.add(createDeleteAction(line));
@@ -258,17 +261,17 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                     .collect(Collectors.toList());
         }
 
-        line.put("actions", (Serializable) actions);
+        line.setBoxItemActions(actions);
     }
 
     /**
      * Dado um linha de dados (line), permite ao serviço adicionar quais as ações possiveis associadas a essa linha em
      * particular. Esse método deve ser sobrescrito pelos serviços derivados.
      */
-    protected void appendLineActions(@Nonnull Map<String, Serializable> line, @Nonnull List<BoxItemAction> lineActions) {
+    protected void appendLineActions(@Nonnull ItemBoxData line, @Nonnull List<BoxItemAction> lineActions) {
     }
 
-    private BoxItemAction createDeleteAction(Map<String, Serializable> line) {
+    private BoxItemAction createDeleteAction(ItemBoxData line) {
         String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
 
         final BoxItemAction boxItemAction = new BoxItemAction();
@@ -277,7 +280,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return boxItemAction;
     }
 
-    protected final static BoxItemAction createPopupBoxItemAction(Map<String, Serializable> line, FormActions formAction, String actionName) {
+    protected final static BoxItemAction createPopupBoxItemAction(ItemBoxData line, FormActions formAction, String actionName) {
         Object cod  = line.get("codPeticao");
         Object type = line.get("type");
         return createPopupBoxItemAction(cod, type, formAction, actionName);
@@ -410,7 +413,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    public void checkTaskActions(Map<String, Serializable> task, QuickFilter filter) {
+    public void checkTaskActions(ItemBoxData task, QuickFilter filter) {
         List<BoxItemAction> actions = new ArrayList<>();
         if (task.get("codUsuarioAlocado") == null
                 &&  TaskType.PEOPLE.name().equals(task.get("taskType"))) {
@@ -437,7 +440,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                     .collect(Collectors.toList());
         }
 
-        task.put("actions", (Serializable) actions);
+        task.setBoxItemActions(actions);
     }
 
 

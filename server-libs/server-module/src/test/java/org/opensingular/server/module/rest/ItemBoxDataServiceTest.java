@@ -64,7 +64,7 @@ public class ItemBoxDataServiceTest {
 
     @Test
     public void testSearch() throws Exception {
-        assertThat(itemBoxDataService.search(boxId, quickFilter).size(), Matchers.is(countSize.intValue()));
+        assertThat(itemBoxDataService.search(boxId, quickFilter).getItemBoxDataList().size(), Matchers.is(countSize.intValue()));
     }
 
 }

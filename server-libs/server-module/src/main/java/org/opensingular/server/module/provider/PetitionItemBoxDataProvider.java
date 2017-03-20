@@ -1,10 +1,10 @@
 package org.opensingular.server.module.provider;
 
-import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
-import org.opensingular.server.commons.box.decorator.PetitionActionAppenderItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.PetitionActionAppenderItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.module.ItemBoxData;
+import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.module.ItemBoxDataProvider;
 
 import javax.inject.Inject;

@@ -1,15 +1,15 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
-import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
-import org.opensingular.server.commons.box.decorator.TaskActionAppenderItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.TaskActionAppenderItemBoxDataFilter;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.module.ItemBoxData;
+import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.module.ItemBoxDataProvider;
 
 import javax.inject.Inject;

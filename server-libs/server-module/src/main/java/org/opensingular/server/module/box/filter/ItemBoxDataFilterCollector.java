@@ -1,9 +1,7 @@
 package org.opensingular.server.module.box.filter;
 
-import org.opensingular.server.commons.box.decorator.ActionPermissionItemBoxDataFilter;
-import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
-import org.opensingular.server.commons.box.decorator.PetitionActionAppenderItemBoxDataFilter;
-import org.opensingular.server.commons.box.decorator.TaskActionAppenderItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.ActionPermissionItemBoxDataFilter;
+import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.inject.Inject;

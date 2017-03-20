@@ -27,7 +27,6 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
         concluidas.setEndedTasks(Boolean.TRUE);
-        concluidas.setFieldsDatatable(criarFieldsDatatableWorklistConcluidas());
         concluidas.addAction(DefaultActions.VIEW);
         return concluidas;
     }
@@ -37,7 +36,8 @@ public class DefaultDonebox implements ItemBoxFactory {
         return ApplicationContextProvider.get().getBean(TaskItemBoxDataProvider.class);
     }
 
-    protected List<DatatableField> criarFieldsDatatableWorklistConcluidas() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
         fields.add(DatatableField.of("Dt. de Entrada", "creationDate"));
@@ -47,6 +47,5 @@ public class DefaultDonebox implements ItemBoxFactory {
         fields.add(DatatableField.of("Situação", "taskName"));
         return fields;
     }
-
 
 }

@@ -1,5 +1,7 @@
 package org.opensingular.server.module.rest;
 
+import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
@@ -31,7 +33,7 @@ public class ServerREST {
     }
 
     @RequestMapping(value = "/search/{boxId}", method = RequestMethod.POST)
-    public List<Map<String, Serializable>> search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
+    public ItemBoxDataList search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
         return itemBoxDataService.search(boxId, filter);
     }
 

@@ -40,6 +40,7 @@ import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionAtribuirRequest;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
@@ -458,8 +459,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         final String connectionURL = getProcessGroup().getConnectionURL();
         final String url           = connectionURL + getSearchEndpoint();
         try {
-            return (List<BoxItemModel>) Arrays
-                    .asList(new RestTemplate().postForObject(url, filter, Map[].class))
+            return new RestTemplate().postForObject(url, filter, ItemBoxDataList.class)
+                    .getItemBoxDataList()
                     .stream()
                     .map(BoxItemModel::new)
                     .collect(Collectors.toList());

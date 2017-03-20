@@ -69,9 +69,11 @@ public class SingularModuleConfiguration {
         return itemBoxes.entrySet()
                 .stream()
                 .filter(entry -> entry.getValue().appliesTo(context))
-                .map(entry -> {
-                    ItemBox itemBox = entry.getValue().build(context);
-                    itemBox.setId(entry.getKey());
+                .map(stringItemBoxFactoryEntry -> {
+                    ItemBoxFactory factory = stringItemBoxFactoryEntry.getValue();
+                    ItemBox itemBox = factory.build(context);
+                    itemBox.setId(stringItemBoxFactoryEntry.getKey());
+                    itemBox.setFieldsDatatable(factory.getDatatableFields());
                     return itemBox;
                 })
                 .collect(Collectors.toList());

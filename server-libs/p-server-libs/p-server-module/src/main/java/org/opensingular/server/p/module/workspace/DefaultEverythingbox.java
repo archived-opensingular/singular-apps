@@ -27,7 +27,6 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Petições em andamento");
         acompanhamento.setIcone(Icone.CLOCK);
-        acompanhamento.setFieldsDatatable(criarFieldsDatatableAcompanhamento());
         acompanhamento.addAction(DefaultActions.VIEW);
         return acompanhamento;
     }
@@ -37,7 +36,8 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         return ApplicationContextProvider.get().getBean(PetitionItemBoxDataProvider.class);
     }
 
-    private List<DatatableField> criarFieldsDatatableAcompanhamento() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
         fields.add(DatatableField.of("Dt. Entrada", "processBeginDate"));
@@ -45,4 +45,5 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         return fields;
     }
+
 }

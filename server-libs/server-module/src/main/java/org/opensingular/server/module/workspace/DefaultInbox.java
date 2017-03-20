@@ -29,7 +29,6 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
-        caixaEntrada.setFieldsDatatable(criarFieldsDatatableWorklist());
         caixaEntrada.addAction(ASSIGN);
         caixaEntrada.addAction(DefaultActions.ANALYSE);
         caixaEntrada.addAction(DefaultActions.RELOCATE);
@@ -42,7 +41,8 @@ public class DefaultInbox implements ItemBoxFactory {
         return ApplicationContextProvider.get().getBean(TaskItemBoxDataProvider.class);
     }
 
-    protected List<DatatableField> criarFieldsDatatableWorklist() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
         fields.add(DatatableField.of("Dt. de Entrada", "creationDate"));
@@ -53,5 +53,6 @@ public class DefaultInbox implements ItemBoxFactory {
         fields.add(DatatableField.of("Alocado", "nomeUsuarioAlocado"));
         return fields;
     }
+
 }
 
