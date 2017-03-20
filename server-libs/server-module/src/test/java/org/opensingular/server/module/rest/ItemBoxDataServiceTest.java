@@ -6,6 +6,8 @@ import org.junit.Test;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.box.service.ItemBoxDataService;
+import org.opensingular.server.module.box.service.ItemBoxDataServiceImpl;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import java.util.List;
@@ -14,9 +16,9 @@ import java.util.Optional;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
-public class ServerRESTTest {
+public class ItemBoxDataServiceTest {
 
-    private ServerREST serverREST;
+    private ItemBoxDataService itemBoxDataService;
 
     private QuickFilter quickFilter;
 
@@ -32,7 +34,7 @@ public class ServerRESTTest {
         ItemBoxDataProvider itemBoxDataProvider = mock(ItemBoxDataProvider.class);
         List searchResult = mock(List.class);
 
-        serverREST = new ServerREST(singularModuleConfiguration);
+        itemBoxDataService = new ItemBoxDataServiceImpl(singularModuleConfiguration);
         quickFilter = new QuickFilter();
 
         when(singularModuleConfiguration.getItemBoxFactory(eq(boxId))).thenReturn(Optional.of(itemBoxFactory));
@@ -44,12 +46,12 @@ public class ServerRESTTest {
 
     @Test
     public void testCount() throws Exception {
-        assertThat(serverREST.count(boxId, quickFilter), Matchers.is(countSize));
+        assertThat(itemBoxDataService.count(boxId, quickFilter), Matchers.is(countSize));
     }
 
     @Test
     public void testSearch() throws Exception {
-        assertThat(serverREST.search(boxId, quickFilter).size(), Matchers.is(countSize.intValue()));
+        assertThat(itemBoxDataService.search(boxId, quickFilter).size(), Matchers.is(countSize.intValue()));
     }
 
 }

@@ -227,20 +227,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        final List<Map<String, Serializable>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
-        parseResultsPetition(list);
-        list.forEach(this::addLineActions);
-        for (Map<String, Serializable> map : list) {
-            authorizationService.filterActions((String) map.get("type"), (Long) map.get("codPeticao"), (List<BoxItemAction>) map.get("actions"), filter.getIdUsuarioLogado());
-        }
-        return list;
+        return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    protected void parseResultsPetition(List<Map<String, Serializable>> results) {
-
-    }
-
-    private void addLineActions(Map<String, Serializable> line) {
+    public void addLineActions(Map<String, Serializable> line) {
         List<BoxItemAction> actions = new ArrayList<>();
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
         actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
@@ -417,39 +407,28 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<TaskInstanceDTO> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        List<TaskInstanceDTO> tasks = taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
-        parseResultsTask(tasks);
-        for (TaskInstanceDTO task : tasks) {
-            checkTaskActions(task, filter);
-            authorizationService.filterActions(task.getType(), task.getCodPeticao(), task.getActions(), filter.getIdUsuarioLogado(), permissions);
-        }
-        return tasks;
+        return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    protected void parseResultsTask(List<TaskInstanceDTO> tasks) {
-
-    }
-
-    protected void checkTaskActions(TaskInstanceDTO task, QuickFilter filter) {
+    public void checkTaskActions(Map<String, Serializable> task, QuickFilter filter) {
         List<BoxItemAction> actions = new ArrayList<>();
-        if (task.getCodUsuarioAlocado() == null
-                && task.getTaskType() == TaskType.PEOPLE) {
-            actions.add(BoxItemAction.newExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName()));
+        if (task.get("codUsuarioAlocado") == null
+                && task.get("taskType") == TaskType.PEOPLE.getAbbreviation()) {
+            actions.add(BoxItemAction.newExecuteInstante(task.get("codPeticao"), ACTION_ASSIGN.getName()));
         }
 
-        if (task.getTaskType() == TaskType.PEOPLE) {
-            actions.add(BoxItemAction.newExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName()));
+        if (task.get("taskType") == TaskType.PEOPLE.getAbbreviation()) {
+            actions.add(BoxItemAction.newExecuteInstante(task.get("codPeticao"), ACTION_RELOCATE.getName()));
         }
 
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase(task.getCodUsuarioAlocado())) {
-            actions.add(createPopupBoxItemAction(task.getCodPeticao(), task.getType(), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
+        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.get("codUsuarioAlocado"))) {
+            actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("taskType"), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
         }
 
-        actions.add(createPopupBoxItemAction(task.getCodPeticao(), task.getType(), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
+        actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("taskType"), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
 
-        appendTaskActions(task, actions);
 
-        String                     processKey        = task.getProcessType();
+        String                     processKey        = (String) task.get("processType");
         final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
         final ActionConfig         actionConfig      = processDefinition.getMetaDataValue(ActionConfig.KEY);
         if (actionConfig != null) {
@@ -458,12 +437,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                     .collect(Collectors.toList());
         }
 
-        task.setActions(actions);
+        task.put("actions", (Serializable) actions);
     }
 
-    protected void appendTaskActions(TaskInstanceDTO task, List<BoxItemAction> actions) {
-
-    }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());

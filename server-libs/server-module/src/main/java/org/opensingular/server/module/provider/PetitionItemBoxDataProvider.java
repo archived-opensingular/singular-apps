@@ -1,5 +1,6 @@
 package org.opensingular.server.module.provider;
 
+import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.module.ItemBoxData;
@@ -14,12 +15,12 @@ import java.util.Map;
 @Named
 public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
 
-    private final PetitionService<?, ?> petitionService;
+    @Inject
+    private PetitionService<?, ?> petitionService;
 
     @Inject
-    public PetitionItemBoxDataProvider(PetitionService<?, ?> petitionService) {
-        this.petitionService = petitionService;
-    }
+    @Named("analysisItemBoxDataDecoratorChainFactory")
+    private ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory;
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
@@ -34,6 +35,11 @@ public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
     @Override
     public void configureLineActions(ItemBoxData line) {
 
+    }
+
+    @Override
+    public ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory() {
+        return itemBoxDataDecoratorChainFactory;
     }
 
 }

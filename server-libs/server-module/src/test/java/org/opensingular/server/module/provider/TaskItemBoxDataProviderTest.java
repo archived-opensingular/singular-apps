@@ -4,6 +4,7 @@ import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
@@ -31,13 +32,13 @@ public class TaskItemBoxDataProviderTest {
     @Mock
     private PermissionResolverService permissionResolverService;
 
+    @InjectMocks
     private TaskItemBoxDataProvider taskItemBoxDataProvider;
 
     private QuickFilter filter;
 
     @Before
     public void setUp() {
-        taskItemBoxDataProvider = new TaskItemBoxDataProvider(petitionService, permissionResolverService);
         filter = new QuickFilter();
     }
 

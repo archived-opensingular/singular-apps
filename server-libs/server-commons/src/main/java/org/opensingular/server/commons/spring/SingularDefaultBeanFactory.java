@@ -34,6 +34,11 @@ import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
+import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
+import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactoryImpl;
+import org.opensingular.server.commons.box.decorator.PetitionActionAppenderItemBoxDataDecorator;
+import org.opensingular.server.commons.box.decorator.ActionPermissionItemBoxDataDecorator;
+import org.opensingular.server.commons.box.decorator.TaskActionAppenderItemBoxDataDecorator;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
@@ -109,7 +114,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public PetitionService<?,?> worklistPetitionServiceFactory() {
+    public PetitionService<?, ?> worklistPetitionServiceFactory() {
         return new DefaultPetitionService();
     }
 
@@ -280,23 +285,58 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public DefaultServerREST serverRest(){
+    public DefaultServerREST serverRest() {
         return new DefaultServerREST();
     }
 
     @Bean
-    public RestUserDetailsService restUserDetailsService(){
+    public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
+    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService) {
         return new DatabaseAdminCredentialChecker(parameterService, null);
     }
 
     @Bean
     public SingularServerMetadata singularServerMetadata() {
         return new DefaultSingularServerMetadata();
+    }
+
+    @Bean
+    private PetitionActionAppenderItemBoxDataDecorator actionAppenderItemBoxDataDecorator(PetitionService<?, ?> petitionService) {
+        return new PetitionActionAppenderItemBoxDataDecorator(petitionService);
+    }
+
+    @Bean
+    private TaskActionAppenderItemBoxDataDecorator taskActionAppenderItemBoxDataDecorator(PetitionService<?, ?> petitionService) {
+        return new TaskActionAppenderItemBoxDataDecorator(petitionService);
+    }
+
+    @Bean
+    private ActionPermissionItemBoxDataDecorator actionPermissionItemBoxDataDecorator(AuthorizationService authorizationService) {
+        return new ActionPermissionItemBoxDataDecorator(authorizationService);
+    }
+
+    @Bean(name = "petitionItemBoxDataDecoratorChainFactory")
+    public ItemBoxDataDecoratorChainFactory petitionItemBoxDataDecoratorChainFactory(
+            PetitionActionAppenderItemBoxDataDecorator actionAppenderDecorator,
+            ActionPermissionItemBoxDataDecorator actionPermissionDecorator
+    ) {
+        return new ItemBoxDataDecoratorChainFactoryImpl()
+                .addDecorator(actionAppenderDecorator)
+                .addDecorator(actionPermissionDecorator);
+    }
+
+    @Bean(name = "analysisItemBoxDataDecoratorChainFactory")
+    public ItemBoxDataDecoratorChainFactory analysisItemBoxDataDecoratorChainFactory(
+            TaskActionAppenderItemBoxDataDecorator actionAppenderDecorator,
+            ActionPermissionItemBoxDataDecorator actionPermissionDecorator
+    ) {
+        return new ItemBoxDataDecoratorChainFactoryImpl()
+                .addDecorator(actionAppenderDecorator)
+                .addDecorator(actionPermissionDecorator);
     }
 
 }

@@ -3,6 +3,7 @@ package org.opensingular.server.module.rest;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.box.service.ItemBoxDataService;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,25 +18,21 @@ import java.util.Optional;
 @RequestMapping("/rest/flow")
 public class ServerREST {
 
-    private final SingularModuleConfiguration singularModuleConfiguration;
+    private final ItemBoxDataService itemBoxDataService;
 
     @Inject
-    public ServerREST(SingularModuleConfiguration singularModuleConfiguration) {
-        this.singularModuleConfiguration = singularModuleConfiguration;
-    }
-
-    private Optional<ItemBoxDataProvider> getItemBoxDataProvider(@PathVariable String boxId) {
-        return singularModuleConfiguration.getItemBoxFactory(boxId).map(ItemBoxFactory::getDataProvider);
+    public ServerREST(ItemBoxDataService itemBoxDataService) {
+        this.itemBoxDataService = itemBoxDataService;
     }
 
     @RequestMapping(value = "/count/{boxId}", method = RequestMethod.POST)
     public Long count(@PathVariable String boxId, @RequestBody QuickFilter filter) {
-        return getItemBoxDataProvider(boxId).map(provider -> provider.count(filter)).orElse(0L);
+        return itemBoxDataService.count(boxId, filter);
     }
 
     @RequestMapping(value = "/search/{boxId}", method = RequestMethod.POST)
     public List<Map<String, Serializable>> search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
-        return getItemBoxDataProvider(boxId).map(provider -> provider.search(filter)).orElse(Collections.emptyList());
+        return itemBoxDataService.search(boxId, filter);
     }
 
 }

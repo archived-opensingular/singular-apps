@@ -1,6 +1,7 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -19,15 +20,15 @@ import java.util.Map;
 @Named
 public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
-    private final PetitionService<?, ?> petitionService;
-
-    private final PermissionResolverService permissionResolverService;
+    @Inject
+    private PetitionService<?, ?> petitionService;
 
     @Inject
-    public TaskItemBoxDataProvider(PetitionService<?, ?> petitionService, PermissionResolverService permissionResolverService) {
-        this.petitionService = petitionService;
-        this.permissionResolverService = permissionResolverService;
-    }
+    private PermissionResolverService permissionResolverService;
+
+    @Inject
+    @Named("analysisItemBoxDataDecoratorChainFactory")
+    private ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory;
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
@@ -51,6 +52,11 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
     public void configureLineActions(ItemBoxData line) {
 
+    }
+
+    @Override
+    public ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory() {
+        return itemBoxDataDecoratorChainFactory;
     }
 
 }

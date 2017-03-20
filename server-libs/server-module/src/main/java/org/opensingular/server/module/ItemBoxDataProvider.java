@@ -1,5 +1,6 @@
 package org.opensingular.server.module;
 
+import org.opensingular.server.commons.box.chain.ItemBoxDataDecoratorChainFactory;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.DatatableField;
 
@@ -14,5 +15,7 @@ public interface ItemBoxDataProvider {
     Long count(QuickFilter filter);
 
     void configureLineActions(ItemBoxData line);
+
+    ItemBoxDataDecoratorChainFactory itemBoxDataDecoratorChainFactory();
 
 }
