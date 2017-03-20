@@ -19,7 +19,7 @@ package org.opensingular.server.commons.form;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 
-public enum FormActions {
+public enum FormAction {
 
     FORM_ANALYSIS(1, ViewMode.READ_ONLY, AnnotationMode.EDIT),
     FORM_FILL(2, ViewMode.EDIT, AnnotationMode.NONE),
@@ -31,14 +31,14 @@ public enum FormActions {
     private ViewMode viewMode;
     private AnnotationMode annotationMode;
 
-    FormActions(Integer id, ViewMode viewMode, AnnotationMode annotationMode) {
+    FormAction(Integer id, ViewMode viewMode, AnnotationMode annotationMode) {
         this.id = id;
         this.viewMode = viewMode;
         this.annotationMode = annotationMode;
     }
 
-    public static FormActions getById(Integer id) {
-        for (FormActions fa : FormActions.values()) {
+    public static FormAction getById(Integer id) {
+        for (FormAction fa : FormAction.values()) {
             if (fa.id.equals(id)) {
                 return fa;
             }

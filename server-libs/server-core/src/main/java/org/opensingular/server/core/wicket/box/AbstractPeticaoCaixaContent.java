@@ -25,7 +25,7 @@ import java.util.Map;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
@@ -41,11 +41,11 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<T> peticaoModel, FormActions formActions) {
+    protected WebMarkupContainer criarLink(String id, IModel<T> peticaoModel, FormAction formAction) {
         T peticao = peticaoModel.getObject();
         String href = DispatcherPageUtil
                 .baseURL(getBaseUrl())
-                .formAction(formActions.getId())
+                .formAction(formAction.getId())
                 .petitionId(peticao.getCodPeticao())
                 .params(getCriarLinkParameters(peticao))
                 .build();

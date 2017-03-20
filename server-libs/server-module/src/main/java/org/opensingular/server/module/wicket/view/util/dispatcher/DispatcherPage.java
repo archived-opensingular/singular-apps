@@ -40,7 +40,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
@@ -278,8 +278,8 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         return r.getRequestParameters().getParameterValue(key);
     }
 
-    private FormActions resolveFormAction(StringValue action) {
-        return FormActions.getById(Integer.valueOf(action.toString("0")));
+    private FormAction resolveFormAction(StringValue action) {
+        return FormAction.getById(Integer.valueOf(action.toString("0")));
     }
 
     protected FormPageConfig parseParameters(Request r) {
@@ -297,7 +297,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
             throw new RedirectToUrlException(url);
         }
 
-        final FormActions formAction = resolveFormAction(action);
+        final FormAction formAction = resolveFormAction(action);
 
         final String  pi   = petitionId.toString("");
         final Long    fvk  = formVersionPK.isEmpty() ? null : formVersionPK.toLong();
@@ -329,7 +329,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         }
     }
 
-    protected abstract FormPageConfig buildConfig(Request r, String petitionId, FormActions formAction, String formType, Long formVersionKey, String parentPetitionId, boolean diff);
+    protected abstract FormPageConfig buildConfig(Request r, String petitionId, FormAction formAction, String formType, Long formVersionKey, String parentPetitionId, boolean diff);
 
     /**
      * Possibilita execução de qualquer ação antes de fazer o dispatch

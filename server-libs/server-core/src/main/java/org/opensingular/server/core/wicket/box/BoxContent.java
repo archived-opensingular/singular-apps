@@ -44,7 +44,7 @@ import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionAtribuirRequest;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.DatatableField;
@@ -107,7 +107,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             for (FormDTO form : forms) {
                 String url = DispatcherPageUtil
                         .baseURL(getBaseUrl())
-                        .formAction(FormActions.FORM_FILL.getId())
+                        .formAction(FormAction.FORM_FILL.getId())
                         .petitionId(null)
                         .param(DispatcherPageParameters.FORM_NAME, form.getName())
                         .params(getLinkParams())
@@ -190,9 +190,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @Override
     protected WebMarkupContainer criarLinkEdicao(String id, IModel<BoxItemModel> peticao) {
         if (boxItemModelObject(peticao).getProcessBeginDate() == null) {
-            return criarLink(id, peticao, FormActions.FORM_FILL);
+            return criarLink(id, peticao, FormAction.FORM_FILL);
         } else {
-            return criarLink(id, peticao, FormActions.FORM_FILL_WITH_ANALYSIS);
+            return criarLink(id, peticao, FormAction.FORM_FILL_WITH_ANALYSIS);
         }
     }
 
@@ -471,18 +471,18 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<BoxItemModel> itemModel, FormActions formActions) {
+    protected WebMarkupContainer criarLink(String id, IModel<BoxItemModel> itemModel, FormAction formAction) {
         BoxItemModel item = boxItemModelObject(itemModel);
         String href = DispatcherPageUtil
                 .baseURL(getBaseUrl())
-                .formAction(formActions.getId())
+                .formAction(formAction.getId())
                 .petitionId(item.getCod())
                 .param(FORM_NAME, item.get("type"))
                 .params(getCriarLinkParameters(item))
                 .build();
 
         WebMarkupContainer link = new WebMarkupContainer(id);
-        link.add($b.attr("target", String.format("_%s_%s", formActions.getId(), item.getCod())));
+        link.add($b.attr("target", String.format("_%s_%s", formAction.getId(), item.getCod())));
         link.add($b.attr("href", href));
         return link;
     }

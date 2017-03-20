@@ -31,7 +31,7 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
@@ -143,7 +143,7 @@ public class DiffFormContent extends Content {
         StringBuilder url = new StringBuilder();
         url.append(DispatcherPageUtil.getBaseURL())
                 .append('?')
-                .append(String.format("%s=%s", DispatcherPageParameters.ACTION, FormActions.FORM_VIEW.getId()))
+                .append(String.format("%s=%s", DispatcherPageParameters.ACTION, FormAction.FORM_VIEW.getId()))
                 .append(String.format("&%s=%s", DispatcherPageParameters.FORM_VERSION_KEY, originalFormVersion.getCod()));
 
         for (Map.Entry<String, String> entry : config.getAdditionalParams().entrySet()) {

@@ -16,7 +16,7 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -28,7 +28,7 @@ public class BoxItemAction implements Serializable {
 
     private String      name;
     private String      endpoint;
-    private FormActions formAction;
+    private FormAction formAction;
     private boolean useExecute = false;
 
     public BoxItemAction() {
@@ -74,11 +74,11 @@ public class BoxItemAction implements Serializable {
         this.useExecute = useExecute;
     }
 
-    public FormActions getFormAction() {
+    public FormAction getFormAction() {
         return formAction;
     }
 
-    public void setFormAction(FormActions formAction) {
+    public void setFormAction(FormAction formAction) {
         this.formAction = formAction;
     }
 }

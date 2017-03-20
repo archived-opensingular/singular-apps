@@ -41,7 +41,7 @@ import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -185,18 +185,18 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     }
 
     protected WebMarkupContainer criarLinkEdicao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormActions.FORM_FILL);
+        return criarLink(id, peticao, FormAction.FORM_FILL);
     }
 
     protected WebMarkupContainer criarLinkExigencia(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormActions.FORM_FILL);
+        return criarLink(id, peticao, FormAction.FORM_FILL);
     }
 
     protected WebMarkupContainer criarLinkVisualizacao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormActions.FORM_VIEW);
+        return criarLink(id, peticao, FormAction.FORM_VIEW);
     }
 
-    protected abstract WebMarkupContainer criarLink(String id, IModel<T> peticao, FormActions formActions);
+    protected abstract WebMarkupContainer criarLink(String id, IModel<T> peticao, FormAction formAction);
 
     protected abstract Map<String, String> getCriarLinkParameters(T peticao);
 

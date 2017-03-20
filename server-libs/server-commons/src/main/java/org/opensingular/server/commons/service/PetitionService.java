@@ -40,10 +40,11 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.factory.BoxItemActionBuilder;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -235,8 +236,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
         List<BoxItemAction> actions = new ArrayList<>();
 
-        actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
-        actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
+        BoxItemActionBuilder boxItemActionBuilder = new BoxItemActionBuilder();
+
+        actions.add(boxItemActionBuilder.newPopupBox(line).setFormAction(FormAction.FORM_FILL).setAction(ACTION_EDIT.getName()).build());
+        actions.add(boxItemActionBuilder.newPopupBox(line).setFormAction(FormAction.FORM_VIEW).setAction(ACTION_VIEW.getName()).build());
+
         actions.add(createDeleteAction(line));
         actions.add(BoxItemAction.newExecuteInstante(line.get("codPeticao"), ACTION_ASSIGN.getName()));
 
@@ -280,26 +284,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return boxItemAction;
     }
 
-    protected final static BoxItemAction createPopupBoxItemAction(ItemBoxData line, FormActions formAction, String actionName) {
-        Object cod  = line.get("codPeticao");
-        Object type = line.get("type");
-        return createPopupBoxItemAction(cod, type, formAction, actionName);
-    }
-
-    private static BoxItemAction createPopupBoxItemAction(Object cod, Object type, FormActions formAction, String actionName) {
-        String endpoint = DispatcherPageUtil
-                .baseURL("")
-                .formAction(formAction.getId())
-                .petitionId(cod)
-                .param(FORM_NAME, type)
-                .build();
-
-        final BoxItemAction boxItemAction = new BoxItemAction();
-        boxItemAction.setName(actionName);
-        boxItemAction.setEndpoint(endpoint);
-        boxItemAction.setFormAction(formAction);
-        return boxItemAction;
-    }
 
     @Nonnull
     public FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm) {
@@ -414,7 +398,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public void checkTaskActions(ItemBoxData task, QuickFilter filter) {
+
         List<BoxItemAction> actions = new ArrayList<>();
+        BoxItemActionBuilder boxItemActionBuilder = new BoxItemActionBuilder();
+
         if (task.get("codUsuarioAlocado") == null
                 &&  TaskType.PEOPLE.name().equals(task.get("taskType"))) {
             actions.add(BoxItemAction.newExecuteInstante(task.get("codPeticao"), ACTION_ASSIGN.getName()));
@@ -425,11 +412,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         }
 
         if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.get("codUsuarioAlocado"))) {
-            actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("type"), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
+            actions.add(boxItemActionBuilder.newPopupBox(task).setFormAction(FormAction.FORM_ANALYSIS).setAction(ACTION_ANALYSE.getName()).build());
         }
 
-        actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("type"), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
-
+        actions.add(boxItemActionBuilder.newPopupBox(task).setFormAction(FormAction.FORM_VIEW).setAction(ACTION_VIEW.getName()).build());
 
         String                     processKey        = (String) task.get("processType");
         final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);

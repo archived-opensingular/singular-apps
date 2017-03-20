@@ -21,7 +21,7 @@ import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -30,7 +30,7 @@ import java.util.Map;
 
 public class FormPageConfig implements Serializable {
 
-    private FormActions                        formAction;
+    private FormAction formAction;
     private Long                               petitionId;
     private String                             formType;
     private Map<String, Serializable>          contextParams = new HashMap<>();
@@ -42,12 +42,12 @@ public class FormPageConfig implements Serializable {
     private Map<String, String> additionalParams = new HashMap<>();
 
     private FormPageConfig() {
-        formAction = FormActions.FORM_VIEW;
+        formAction = FormAction.FORM_VIEW;
     }
 
     private static FormPageConfig newConfig(String formType,
                                             String petitionId,
-                                            FormActions formAction,
+                                            FormAction formAction,
                                             Long formVersionPK,
                                             String parentPetitionId) {
         final FormPageConfig cfg = new FormPageConfig();
@@ -61,7 +61,7 @@ public class FormPageConfig implements Serializable {
 
     public static FormPageConfig newConfig(String petitionId,
                                            String formType,
-                                           FormActions formAction,
+                                           FormAction formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
                                            Class<? extends ProcessDefinition> processDefinition) {
@@ -73,7 +73,7 @@ public class FormPageConfig implements Serializable {
 
     public static FormPageConfig newConfig(String formType,
                                            String petitionId,
-                                           FormActions formAction,
+                                           FormAction formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
                                            FlowResolver lazyFlowDefinitionResolver) {
@@ -84,7 +84,7 @@ public class FormPageConfig implements Serializable {
 
     public static FormPageConfig newConfig(String formType,
                                            String petitionId,
-                                           FormActions formAction,
+                                           FormAction formAction,
                                            Long formVersionPK,
                                            String parentPetitionId,
                                            FlowResolver lazyFlowDefinitionResolver,
@@ -142,7 +142,7 @@ public class FormPageConfig implements Serializable {
         return lazyFlowDefinitionResolver != null;
     }
 
-    public FormActions getFormAction() {
+    public FormAction getFormAction() {
         return formAction;
     }
 
