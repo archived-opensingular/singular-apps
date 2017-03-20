@@ -422,10 +422,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         }
 
         if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.get("codUsuarioAlocado"))) {
-            actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("taskType"), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
+            actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("type"), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
         }
 
-        actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("taskType"), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
+        actions.add(createPopupBoxItemAction(task.get("codPeticao"), task.get("type"), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
 
 
         String                     processKey        = (String) task.get("processType");
