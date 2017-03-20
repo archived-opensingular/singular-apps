@@ -1,6 +1,8 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
+import org.opensingular.server.commons.box.decorator.TaskActionAppenderItemBoxDataFilter;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -13,6 +15,7 @@ import org.opensingular.server.module.ItemBoxDataProvider;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -24,6 +27,9 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
     @Inject
     private PermissionResolverService permissionResolverService;
+
+    @Inject
+    private TaskActionAppenderItemBoxDataFilter taskActionAppenderItemBoxDataFilter;
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
@@ -47,6 +53,13 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
 
     public void configureLineActions(ItemBoxData line) {
 
+    }
+
+    @Override
+    public List<ItemBoxDataFilter> getFilters() {
+        List<ItemBoxDataFilter> filters = new ArrayList<>();
+        filters.add(taskActionAppenderItemBoxDataFilter);
+        return filters;
     }
 
 }

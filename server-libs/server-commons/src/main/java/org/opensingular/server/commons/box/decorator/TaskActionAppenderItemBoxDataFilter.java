@@ -20,9 +20,7 @@ public class TaskActionAppenderItemBoxDataFilter implements ItemBoxDataFilter {
 
     @Override
     public void doFilter(Map<String, Serializable> line, QuickFilter filter) {
-        if (line.get("taskInstanceId") != null) {//TODO virar metodo isTask danilo
-            petitionService.checkTaskActions(line, filter);
-        }
+        petitionService.checkTaskActions(line, filter);
     }
 
 }

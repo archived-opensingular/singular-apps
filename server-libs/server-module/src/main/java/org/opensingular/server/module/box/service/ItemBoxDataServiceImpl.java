@@ -4,7 +4,7 @@ import org.opensingular.server.commons.box.decorator.ItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
-import org.opensingular.server.module.box.filter.ItemBoxDataFiltersFactory;
+import org.opensingular.server.module.box.filter.ItemBoxDataFilterCollector;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.springframework.web.bind.annotation.PathVariable;
 
@@ -23,7 +23,7 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
     private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
-    private ItemBoxDataFiltersFactory filtersFactory;
+    private ItemBoxDataFilterCollector filtersFactory;
 
     @Override
     public Long count(String boxId, QuickFilter filter) {
@@ -57,7 +57,7 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
 
     private void applyFilters(String boxId, List<Map<String, Serializable>> lines, QuickFilter filter) {
         getItemBoxFactory(boxId).ifPresent(factory -> {
-            List<ItemBoxDataFilter> filters = filtersFactory.getFilters(factory);
+            List<ItemBoxDataFilter> filters = filtersFactory.getFilterList(factory);
             for (Map<String, Serializable> line : lines) {
                 filters.forEach(f -> f.doFilter(line, filter));
             }

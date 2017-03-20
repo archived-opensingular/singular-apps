@@ -10,8 +10,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
-import org.opensingular.server.module.box.filter.ItemBoxDataFiltersFactory;
-import org.opensingular.server.module.box.service.ItemBoxDataService;
+import org.opensingular.server.module.box.filter.ItemBoxDataFilterCollector;
 import org.opensingular.server.module.box.service.ItemBoxDataServiceImpl;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
@@ -30,7 +29,7 @@ public class ItemBoxDataServiceTest {
     private SingularModuleConfiguration singularModuleConfiguration;
 
     @Mock
-    private ItemBoxDataFiltersFactory filtersFactory;
+    private ItemBoxDataFilterCollector filtersFactory;
 
     @InjectMocks
     private ItemBoxDataServiceImpl itemBoxDataService;
@@ -55,7 +54,7 @@ public class ItemBoxDataServiceTest {
         when(itemBoxDataProvider.count(eq(quickFilter))).thenReturn(countSize);
         when(itemBoxDataProvider.search(eq(quickFilter))).thenReturn(searchResult);
         when(searchResult.size()).thenReturn(countSize.intValue());
-        when(filtersFactory.getFilters(any())).thenReturn(Collections.emptyList());
+        when(filtersFactory.getFilterList(any())).thenReturn(Collections.emptyList());
     }
 
     @Test

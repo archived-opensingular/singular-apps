@@ -12,23 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Named
-public class ItemBoxDataFiltersFactory {
+public class ItemBoxDataFilterCollector {
 
     @Inject
     private ActionPermissionItemBoxDataFilter actionPermissionItemBoxDataFilter;
 
-    @Inject
-    private TaskActionAppenderItemBoxDataFilter taskActionAppenderItemBoxDataFilter;
-
-    @Inject
-    private PetitionActionAppenderItemBoxDataFilter petitionActionAppenderItemBoxDataFilter;
-
-    public List<ItemBoxDataFilter> getFilters(ItemBoxFactory itemBoxDataProvider) {
+    public List<ItemBoxDataFilter> getFilterList(ItemBoxFactory itemBoxDataProvider) {
         List<ItemBoxDataFilter> filters = new ArrayList<>();
-        filters.add(taskActionAppenderItemBoxDataFilter);
-        filters.add(petitionActionAppenderItemBoxDataFilter);
-        filters.add(actionPermissionItemBoxDataFilter);
         filters.addAll(itemBoxDataProvider.getDataProvider().getFilters());
+        filters.add(actionPermissionItemBoxDataFilter);
         return filters;
     }
 
