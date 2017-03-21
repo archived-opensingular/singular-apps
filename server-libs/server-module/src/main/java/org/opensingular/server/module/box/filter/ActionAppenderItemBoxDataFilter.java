@@ -5,6 +5,7 @@ import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -36,7 +37,7 @@ public class ActionAppenderItemBoxDataFilter implements ItemBoxDataFilter, Logga
         return findActionConfigAndFilter(itemBoxData, dataProvider.getLineActions(itemBoxData, filter));
     }
 
-    private List<BoxItemAction> findActionConfigAndFilter(ItemBoxData itemBoxData, List<BoxItemAction> boxAction) {
+    private List<BoxItemAction> findActionConfigAndFilter(ItemBoxData itemBoxData, BoxItemActionList boxItemActionList) {
         String processKey = (String) itemBoxData.getProcessType();
         ActionConfig actionConfig = null;
 
@@ -48,14 +49,14 @@ public class ActionAppenderItemBoxDataFilter implements ItemBoxDataFilter, Logga
         }
 
         if (actionConfig != null) {
-            boxAction = filterByActionConfig(boxAction, actionConfig);
+           return filterByActionConfig(boxItemActionList, actionConfig);
         }
 
-        return boxAction;
+        return boxItemActionList.getBoxItemActions();
     }
 
-    private List<BoxItemAction> filterByActionConfig(List<BoxItemAction> boxAction, ActionConfig actionConfig) {
-        return boxAction.stream()
+    private List<BoxItemAction> filterByActionConfig( BoxItemActionList boxItemActionList, ActionConfig actionConfig) {
+        return boxItemActionList.getBoxItemActions().stream()
                 .filter(itemAction -> actionConfig.containsAction(itemAction.getName()))
                 .collect(Collectors.toList());
     }

@@ -1,11 +1,11 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.box.ItemBoxData;
@@ -47,7 +47,7 @@ public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
     }
 
     @Override
-    public List<BoxItemAction> getLineActions(ItemBoxData line, QuickFilter filter) {
+    public BoxItemActionList getLineActions(ItemBoxData line, QuickFilter filter) {
         return petitionService.getTaskActions(line, filter);
     }
 }

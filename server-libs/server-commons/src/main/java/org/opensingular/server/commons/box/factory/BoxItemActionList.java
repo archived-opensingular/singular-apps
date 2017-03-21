@@ -14,21 +14,21 @@ import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION
 import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
 import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
-public class BoxItemActionsBuilder {
+public class BoxItemActionList {
 
     private List<BoxItemAction> boxItemActions;
 
-    public BoxItemActionsBuilder() {
+    public BoxItemActionList() {
         this.boxItemActions = new ArrayList<>();
     }
 
-    public BoxItemActionsBuilder(List<BoxItemAction> configuredActions) {
-        this.boxItemActions = new ArrayList<>(configuredActions);
+    public BoxItemActionList(BoxItemActionList boxItemActionList) {
+        this.boxItemActions = new ArrayList<>(boxItemActionList.getBoxItemActions());
     }
 
-    public BoxItemActionsBuilder addPopupBox(ItemBoxData boxData,
-                                             FormAction formAction,
-                                             String action) {
+    public BoxItemActionList addPopupBox(ItemBoxData boxData,
+                                         FormAction formAction,
+                                         String action) {
         String endpoint = DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
@@ -45,7 +45,7 @@ public class BoxItemActionsBuilder {
         return this;
     }
 
-    public BoxItemActionsBuilder addExecuteInstante(Object id, String actionName) {
+    public BoxItemActionList addExecuteInstante(Object id, String actionName) {
         final BoxItemAction boxItemAction = new BoxItemAction();
         final String endpointUrl = PATH_BOX_ACTION + DefaultServerREST.EXECUTE + "?id=" + id;
         boxItemAction.setName(actionName);
@@ -55,7 +55,7 @@ public class BoxItemActionsBuilder {
         return this;
     }
 
-    public BoxItemActionsBuilder addDeleteAction(ItemBoxData line) {
+    public BoxItemActionList addDeleteAction(ItemBoxData line) {
         String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DefaultServerREST.DELETE + "?id=" + line.getCodPeticao();
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
@@ -64,9 +64,12 @@ public class BoxItemActionsBuilder {
         return this;
     }
 
-    public List<BoxItemAction> build() {
-        return boxItemActions;
+    public BoxItemActionList add(BoxItemAction boxItemAction){
+        boxItemActions.add(boxItemAction);
+        return this;
     }
 
-
+    public List<BoxItemAction> getBoxItemActions() {
+        return boxItemActions;
+    }
 }

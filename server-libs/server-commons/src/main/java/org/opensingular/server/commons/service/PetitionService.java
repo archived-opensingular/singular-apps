@@ -40,7 +40,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
-import org.opensingular.server.commons.box.factory.BoxItemActionsBuilder;
+import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
@@ -59,7 +59,6 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -252,13 +251,12 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    public List<BoxItemAction> getLineActions(ItemBoxData line) {
-        return new BoxItemActionsBuilder()
+    public BoxItemActionList getLineActions(ItemBoxData line) {
+        return new BoxItemActionList()
                 .addPopupBox(line, FormAction.FORM_FILL, ACTION_EDIT.getName())
                 .addPopupBox(line, FormAction.FORM_VIEW, ACTION_VIEW.getName())
                 .addDeleteAction(line)
-                .addExecuteInstante(line.getCodPeticao(), ACTION_ASSIGN.getName())
-                .build();
+                .addExecuteInstante(line.getCodPeticao(), ACTION_ASSIGN.getName());
     }
 
     @Nonnull
@@ -373,19 +371,18 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    public List<BoxItemAction> getTaskActions(ItemBoxData task, QuickFilter filter) {
-        BoxItemActionsBuilder actionsBuilder = new BoxItemActionsBuilder();
+    public BoxItemActionList getTaskActions(ItemBoxData task, QuickFilter filter) {
+        BoxItemActionList boxItemActionList = new BoxItemActionList();
         if (task.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            actionsBuilder.addExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName());
+            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName());
         }
         if (TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            actionsBuilder.addExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName());
+            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName());
         }
         if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.getCodUsuarioAlocado())) {
-            actionsBuilder.addPopupBox(task, FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
+            boxItemActionList.addPopupBox(task, FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
         }
-        return actionsBuilder.addPopupBox(task, FormAction.FORM_VIEW, ACTION_VIEW.getName()).build();
-
+        return boxItemActionList.addPopupBox(task, FormAction.FORM_VIEW, ACTION_VIEW.getName());
     }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
