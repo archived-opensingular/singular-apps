@@ -116,8 +116,8 @@ public class PetitionInstance implements Serializable {
     }
 
     public ProcessInstance startNewProcess(ProcessDefinition processDefinition) {
-        ProcessInstance   newProcessInstance = getPetitionService().startNewProcess(this, processDefinition);
-        return newProcessInstance;
+        processInstance = getPetitionService().startNewProcess(this, processDefinition);
+        return processInstance;
     }
 
     public final PetitionEntity getEntity() {

@@ -184,7 +184,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
     private WebPage retrieveDestinationUsingSingularWebRef(FormPageConfig config, Optional<SingularWebRef> ref) {
         try {
             if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
-                return createNewInstanceUsingFormPageConfigConstructor(getDefaultFormPageClass(), config);
+                return createNewInstanceUsingFormPageConfigConstructor(getFormPageClass(config), config);
             } else if (AbstractFormPage.class.isAssignableFrom(ref.get().getPageClass())) {
                 return createNewInstanceUsingFormPageConfigConstructor(ref.get().getPageClass(), config);
             } else {
