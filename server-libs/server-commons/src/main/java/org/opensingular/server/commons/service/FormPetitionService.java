@@ -18,7 +18,6 @@ import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.io.SFormXMLUtil;
 import org.opensingular.form.persistence.FormKey;
-import org.opensingular.form.persistence.SPackageFormPersistence;
 import org.opensingular.form.persistence.dao.FormAnnotationDAO;
 import org.opensingular.form.persistence.dao.FormAnnotationVersionDAO;
 import org.opensingular.form.persistence.dao.FormAttachmentDAO;
@@ -341,11 +340,8 @@ public class FormPetitionService<P extends PetitionEntity> {
         return draftEntity;
     }
 
-    private static void copyFormKey(SInstance a, SInstance b) {
-        final FormKey key = a.getAttributeValue(SPackageFormPersistence.ATR_FORM_KEY);
-        if (key != null) {
-            b.setAttributeValue(SPackageFormPersistence.ATR_FORM_KEY, key);
-        }
+    private static void copyFormKey(@Nonnull SInstance origen, @Nonnull SInstance destiny) {
+        FormKey.fromOpt(origen).ifPresent(key -> FormKey.set(destiny, key));
     }
 
     private DraftEntity createNewDraftWithoutSave() {

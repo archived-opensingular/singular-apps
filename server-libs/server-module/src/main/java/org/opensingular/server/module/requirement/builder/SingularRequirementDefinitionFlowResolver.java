@@ -4,18 +4,18 @@ import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.SType;
 import org.opensingular.server.commons.flow.FlowResolver;
 import org.opensingular.server.module.requirement.BoundedFlowResolver;
-import org.opensingular.server.module.requirement.MultiformDynamicFlowSingularRequirement;
+import org.opensingular.server.module.requirement.DynamicFormFlowSingularRequirement;
 
 import java.util.HashSet;
 import java.util.Set;
 
 public class SingularRequirementDefinitionFlowResolver {
 
-    private String                 name;
-    private Class<? extends SType> form;
+    private String                    name;
+    private Class<? extends SType<?>> form;
     private Set<Class<? extends ProcessDefinition>> flows = new HashSet<>();
 
-    public SingularRequirementDefinitionFlowResolver(String name, Class<? extends SType> form, Set<Class<? extends ProcessDefinition>> flows) {
+    public SingularRequirementDefinitionFlowResolver(String name, Class<? extends SType<?>> form, Set<Class<? extends ProcessDefinition>> flows) {
         this.name = name;
         this.form = form;
         this.flows.addAll(flows);
@@ -27,6 +27,6 @@ public class SingularRequirementDefinitionFlowResolver {
     }
 
     public SingularRequirementDefinitionFlow flowResolver(FlowResolver resolver) {
-        return new SingularRequirementDefinitionFlow(new MultiformDynamicFlowSingularRequirement(name, form, new BoundedFlowResolver(resolver, flows)));
+        return new SingularRequirementDefinitionFlow(new DynamicFormFlowSingularRequirement(name, form, new BoundedFlowResolver(resolver, flows)));
     }
 }

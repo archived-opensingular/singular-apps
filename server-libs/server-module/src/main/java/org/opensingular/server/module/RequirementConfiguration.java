@@ -21,7 +21,7 @@ public class RequirementConfiguration {
      *  the {@link SingularRequirement} instance.
      * @return
      */
-    public RequirementConfiguration add(SingularRequirement requirement) {
+    public RequirementConfiguration addRequirement(SingularRequirement requirement) {
         requirements.add(requirement);
         return this;
     }
@@ -33,7 +33,7 @@ public class RequirementConfiguration {
      *  through an fluent interface builder.
      * @return
      */
-    public RequirementConfiguration add(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
+    public RequirementConfiguration addRequirement(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
         requirements.add(requirementProvider.apply(new SingularRequirementBuilder()));
         return this;
     }
