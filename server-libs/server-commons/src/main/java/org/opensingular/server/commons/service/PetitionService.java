@@ -261,14 +261,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 .build();
     }
 
-    /**
-     * Dado um linha de dados (line), permite ao serviço adicionar quais as ações possiveis associadas a essa linha em
-     * particular. Esse método deve ser sobrescrito pelos serviços derivados.
-     */
-    protected void appendLineActions(@Nonnull ItemBoxData line, @Nonnull List<BoxItemAction> lineActions) {
-    }
-
-
     @Nonnull
     public FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm) {
         Objects.requireNonNull(petition);

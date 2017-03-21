@@ -16,7 +16,15 @@ import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM
 
 public class BoxItemActionsBuilder {
 
-    private List<BoxItemAction> boxItemActions = new ArrayList<>();
+    private List<BoxItemAction> boxItemActions;
+
+    public BoxItemActionsBuilder() {
+        this.boxItemActions = new ArrayList<>();
+    }
+
+    public BoxItemActionsBuilder(List<BoxItemAction> configuredActions) {
+        this.boxItemActions = new ArrayList<>(configuredActions);
+    }
 
     public BoxItemActionsBuilder addPopupBox(ItemBoxData boxData,
                                              FormAction formAction,

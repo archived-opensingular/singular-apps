@@ -46,8 +46,8 @@ public class ItemBoxData implements Serializable {
         return rawMap;
     }
 
-    public Serializable getCodUsuarioAlocado(){
-       return rawMap.get("codUsuarioAlocado");
+    public Serializable getCodUsuarioAlocado() {
+        return rawMap.get("codUsuarioAlocado");
     }
 
     public Serializable getCodPeticao() {
@@ -64,5 +64,9 @@ public class ItemBoxData implements Serializable {
 
     public Serializable getProcessType() {
         return rawMap.get("processType");
+    }
+
+    public Serializable getSituation() {
+        return rawMap.get("situation");
     }
 }
