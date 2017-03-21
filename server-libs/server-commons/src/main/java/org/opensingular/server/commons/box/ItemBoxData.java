@@ -15,8 +15,6 @@ public class ItemBoxData implements Serializable {
     private Map<String, Serializable> rawMap = new HashMap<>();
 
     private List<BoxItemAction> boxItemActions = new ArrayList<>();
-    private Object petitionCod;
-    private Object type;
 
     public void addAction(BoxItemAction boxItemAction) {
         boxItemActions.add(boxItemAction);
@@ -48,11 +46,23 @@ public class ItemBoxData implements Serializable {
         return rawMap;
     }
 
-    public Object getPetitionCod() {
+    public Serializable getCodUsuarioAlocado(){
+       return rawMap.get("codUsuarioAlocado");
+    }
+
+    public Serializable getCodPeticao() {
         return rawMap.get("codPeticao");
     }
 
-    public Object getType() {
+    public Serializable getType() {
         return rawMap.get("type");
+    }
+
+    public Serializable getTaskType() {
+        return rawMap.get("taskType");
+    }
+
+    public Serializable getProcessType() {
+        return rawMap.get("processType");
     }
 }

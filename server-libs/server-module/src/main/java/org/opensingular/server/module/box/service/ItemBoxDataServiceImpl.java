@@ -26,7 +26,7 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
     private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
-    private ItemBoxDataFilterCollector filtersFactory;
+    private ItemBoxDataFilterCollector filterCollector;
 
     @Override
     public Long count(String boxId, QuickFilter filter) {
@@ -65,9 +65,9 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
 
     private void applyFilters(String boxId, List<ItemBoxData> tableItens, QuickFilter filter) {
         getItemBoxFactory(boxId).ifPresent(factory -> {
-            List<ItemBoxDataFilter> filters = filtersFactory.getFilterList(factory);
+            List<ItemBoxDataFilter> filters = filterCollector.getFilterList(factory);
             for (ItemBoxData itemBoxData : tableItens) {
-                filters.forEach(f -> f.doFilter(itemBoxData, filter));
+                filters.forEach(f -> f.doFilter(boxId, itemBoxData, filter));
             }
         });
     }

@@ -1,7 +1,6 @@
 package org.opensingular.server.module.provider;
 
-import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
-import org.opensingular.server.commons.box.filter.PetitionActionAppenderItemBoxDataFilter;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.box.ItemBoxData;
@@ -10,7 +9,6 @@ import org.opensingular.server.module.ItemBoxDataProvider;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -19,9 +17,6 @@ public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
 
     @Inject
     private PetitionService<?, ?> petitionService;
-
-    @Inject
-    private PetitionActionAppenderItemBoxDataFilter petitionActionAppenderItemBoxDataFilter;
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter) {
@@ -34,15 +29,8 @@ public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
     }
 
     @Override
-    public void configureLineActions(ItemBoxData line) {
-
-    }
-
-    @Override
-    public List<ItemBoxDataFilter> getFilters() {
-        List<ItemBoxDataFilter> filters = new ArrayList<>();
-        filters.add(petitionActionAppenderItemBoxDataFilter);
-        return filters;
+    public List<BoxItemAction> getLineActions(ItemBoxData line, QuickFilter filter) {
+        return petitionService.getLineActions(line);
     }
 
 }

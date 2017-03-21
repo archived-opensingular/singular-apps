@@ -5,6 +5,6 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 public interface ItemBoxDataFilter {
 
-    void doFilter(ItemBoxData itemBoxData, QuickFilter filter);
+    void doFilter(String boxId, ItemBoxData itemBoxData, QuickFilter filter);
 
 }

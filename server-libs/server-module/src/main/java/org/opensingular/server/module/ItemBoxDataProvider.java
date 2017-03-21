@@ -3,6 +3,7 @@ package org.opensingular.server.module;
 import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
 import java.util.Collections;
@@ -15,7 +16,7 @@ public interface ItemBoxDataProvider {
 
     Long count(QuickFilter filter);
 
-    void configureLineActions(ItemBoxData line);
+    List<BoxItemAction> getLineActions(ItemBoxData line, QuickFilter filter);
 
     default List<ItemBoxDataFilter> getFilters(){
         return Collections.emptyList();

@@ -40,16 +40,6 @@ public class BoxItemAction implements Serializable {
         this.useExecute = (Boolean) map.get("useExecute");
     }
 
-    public static BoxItemAction newExecuteInstante(Object id, String actionName) {
-        String endpointUrl = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
-
-        final BoxItemAction boxItemAction = new BoxItemAction();
-        boxItemAction.setName(actionName);
-        boxItemAction.setEndpoint(endpointUrl);
-        boxItemAction.setUseExecute(true);
-        return boxItemAction;
-    }
-
     public String getName() {
         return name;
     }
