@@ -155,7 +155,7 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     @Nonnull
     public PI getPetitionInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
-        return getPetitionInstance(taskInstance.getProcessInstance());
+        return getPetitionInstance(taskInstance.<ProcessInstance>getProcessInstance());
     }
 
     /** Retorna o serviço de formulários da petição. */
@@ -219,7 +219,7 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
     @Nonnull
     public PI getPetition(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
-        return getPetition(taskInstance.getProcessInstance());
+        return getPetition(taskInstance.<ProcessInstance>getProcessInstance());
     }
 
     @Override
@@ -404,7 +404,6 @@ public abstract class AbstractPetitionService<PE extends PetitionEntity, PI exte
      *
      * @param tn           nome da transicao
      * @param petition     peticao
-     * @param cfg          formConfig
      * @param onTransition listener
      */
     @Override

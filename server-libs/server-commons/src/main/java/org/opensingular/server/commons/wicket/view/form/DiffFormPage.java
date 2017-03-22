@@ -19,13 +19,14 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.Template;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 public class DiffFormPage extends Template {
 
-    private FormPageConfig config;
+    private ActionContext config;
 
 
-    public DiffFormPage(FormPageConfig config) {
+    public DiffFormPage(ActionContext config) {
         this.config = config;
     }
 

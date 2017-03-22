@@ -8,13 +8,12 @@ import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
-public class DiffLink extends WebMarkupContainer {
+public class ViewVersionLink extends WebMarkupContainer {
 
-    public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
+    public ViewVersionLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
         add(new Label("label", labelModel));
-        this.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
+        this.add($b.attr("target", String.format("version%s", context.getFormVersionId().get())));
         this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
     }
-
 }

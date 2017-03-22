@@ -30,7 +30,6 @@ import org.opensingular.form.RefService;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
@@ -74,15 +73,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiConsumer;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends Template implements Loggable {
 
-    private final FormPageConfig                  config;
-    private final Class<? extends SType<?>>       formType; //Essa informação têm precedência sobre config.getFormType()
+    private final FormPageExecutionContext        config;
     private final IModel<FormKey>                 formKeyModel;
     private final IModel<FormKey>                 parentPetitionformKeyModel;
     @Inject
@@ -94,24 +91,21 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private       IModel<PI>                      currentModel;
     private       AbstractFormContent             content;
 
-    public AbstractFormPage(@Nullable FormPageConfig config) {
-        this(config, null);
+    public AbstractFormPage(@Nullable ActionContext context) {
+        this(context, null);
     }
 
-    public AbstractFormPage(@Nullable FormPageConfig config, @Nullable Class<? extends SType<?>> formType) {
-        if (config == null) {
+    public AbstractFormPage(@Nullable ActionContext context, @Nullable Class<? extends SType<?>> formType) {
+        if (context == null) {
             String url = singularServerMetadata.getServerBaseUrl();
             getLogger().info(" Redirecting to " + url);
             throw new RedirectToUrlException(url);
         }
-        this.config = Objects.requireNonNull(config);
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName));
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
-        this.formType = formType;
-        if (formType != null) {
-            config.setFormType(PetitionUtil.getTypeName(formType));
-        } else if (config.getFormType() == null) {
-            throw SingularServerException.rethrow("Tipo do formulário da página nao foi definido");
+        if (this.config.getFormType() == null) {
+            throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
     }
 
@@ -182,7 +176,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * Retorna as configurações da página de edição de formulário.
      */
     @Nonnull
-    protected final FormPageConfig getConfig() {
+    protected final FormPageExecutionContext getConfig() {
         return config;
     }
 
@@ -207,16 +201,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private PI loadPetition() {
         PI petition;
-        if (config.getPetitionId() != null) {
-            petition = petitionService.getPetition(config.getPetitionId());
+        if (config.getPetitionId().isPresent()) {
+            petition = petitionService.getPetition(config.getPetitionId().get());
             FormEntity formEntityDraftOrPetition = getDraftOrFormEntity(petition);
             if (formEntityDraftOrPetition != null) {
                 formKeyModel.setObject(formPetitionService.formKeyFromFormEntity(formEntityDraftOrPetition));
             }
         } else {
             PI parentPetition = null;
-            if (config.getParentPetitionId() != null) {
-                parentPetition = petitionService.getPetition(config.getParentPetitionId());
+            if (config.getParentPetitionId().isPresent()) {
+                parentPetition = petitionService.getPetition(config.getParentPetitionId().get());
                 parentPetitionformKeyModel.setObject(formPetitionService.formKeyFromFormEntity(parentPetition.getEntity().getMainForm()));
             }
             petition = petitionService.createNewPetitionWithoutSave(config.getProcessDefinition(), parentPetition, this::onNewPetitionCreation);
@@ -241,15 +235,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     @Override
     protected final Content getContent(String id) {
-
-        String typeName = getFormType();
-        if (typeName == null && config.getPetitionId() == null) {
+        if (config.getPetitionId().isPresent()) {
             String url = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
             getLogger().info(" Redirecting to " + url);
             throw new RedirectToUrlException(url);
         }
 
-        content = new AbstractFormContent(id, typeName, getViewMode(config), getAnnotationMode(config)) {
+        content = new AbstractFormContent(id, config.getFormType(), getViewMode(config), getAnnotationMode(config)) {
 
             @Override
             protected IModel<?> getContentTitleModel() {
@@ -296,7 +288,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
         };
 
-        final RefType refType = formPetitionService.loadRefType(typeName);
+        final RefType refType = formPetitionService.loadRefType(config.getFormType());
         content.singularFormPanel.setInstanceCreator(() -> createInstance(refType));
 
         onBuildSingularFormPanel(content.singularFormPanel);
@@ -342,12 +334,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
         List<MTransition> trans = null;
-        if (config.getPetitionId() != null) {
-            trans = petitionService.listCurrentTaskTransitions(config.getPetitionId());
-        }
+        if (config.getPetitionId().isPresent()) {
+            trans = petitionService.listCurrentTaskTransitions(config.getPetitionId().get());
 
-        if (hasMultipleVersionsAndIsMainForm(config.getPetitionId())) {
-            appendButtonViewDiff(buttonContainer, config.getPetitionId(), currentInstance);
+            if (hasMultipleVersionsAndIsMainForm(config.getPetitionId().get())) {
+                appendButtonViewDiff(buttonContainer, config.getPetitionId().get(), currentInstance);
+            }
         }
 
         if (CollectionUtils.isNotEmpty(trans) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
@@ -407,7 +399,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void appendButtonViewDiff(BSContainer<?> buttonContainer, Long petitionId, IModel<? extends SInstance> currentInstance) {
         buttonContainer.add(
                 new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
-                .getDiffButton("diffLink", $m.ofValue("Visualizar Diferenças"))
+                        .getDiffButton("diffLink")
         );
     }
 
@@ -509,26 +501,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void onSave(PI petition, String transitionName) {
-
     }
 
     protected boolean onBeforeSend(IModel<? extends SInstance> currentInstance) {
-        configureLazyFlowIfNeeded(currentInstance, getPetition(), config);
-        saveForm(currentInstance);
         return true;
     }
 
     protected void onBeforeSave(IModel<? extends SInstance> currentInstance) {
-        configureLazyFlowIfNeeded(currentInstance, getPetition(), config);
-    }
-
-    protected void configureLazyFlowIfNeeded(IModel<? extends SInstance> currentInstance, PI petition, FormPageConfig cfg) {
-        if (!petition.getProcessDefinitionOpt().isPresent() && cfg.isWithLazyProcessResolver()) {
-            cfg
-                    .getLazyFlowDefinitionResolver()
-                    .resolve(cfg, (SIComposite) currentInstance.getObject())
-                    .ifPresent(clazz -> petition.setProcessDefinition(clazz));
-        }
     }
 
     /**
@@ -540,6 +519,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      */
     protected void send(IModel<? extends SInstance> mi, AjaxRequestTarget ajxrt, BSModalBorder sm) {
         //executa antes de enviar, chance para fazer validações, salvar o formulario e alterar dados na peticao
+        resolveFlow(mi);
+        saveForm(mi);
         if (onBeforeSend(mi)) {
 
             //peticao atual, atualizações devem ser feitas em before send
@@ -566,6 +547,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
         }
     }
+
+    protected void resolveFlow(IModel<? extends SInstance> mi) {
+        getPetition()
+                .setProcessDefinition(config.getFlowResolver()
+                        .resolve(config, (SIComposite)
+                                mi.getObject())
+                        .orElseThrow(() -> new SingularServerException("Não foi possível determinar o fluxo a ser inicicado.")));
+    }
+
 
     protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal) {
         atualizarContentWorklist(target);
@@ -599,7 +589,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @param mi    model contendo a instancia atual
      * @throws SingularServerFormValidationError caso exista erros de validação
      * @see AbstractFormPage#onBeforeExecuteTransition
-     * @see AbstractPetitionService#executeTransition(String, PetitionEntity, SFormConfig, BiConsumer, Map)
      * @see AbstractFormPage#onTransitionExecuted(AjaxRequestTarget, String)
      */
     protected void executeTransition(AjaxRequestTarget ajxrt, Form<?> form, String tn, IModel<? extends SInstance> mi)
@@ -701,19 +690,19 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private boolean isMainForm() {
-        return formType == null;
+        return config.isMainForm();
     }
 
     @Nonnull
     private String getFormType() {
-        return Objects.requireNonNull(config.getFormType());
+        return config.getFormType();
     }
 
-    protected ViewMode getViewMode(FormPageConfig formPageConfig) {
+    protected ViewMode getViewMode(FormPageExecutionContext formPageConfig) {
         return formPageConfig.getViewMode();
     }
 
-    protected AnnotationMode getAnnotationMode(FormPageConfig formPageConfig) {
+    protected AnnotationMode getAnnotationMode(FormPageExecutionContext formPageConfig) {
         return formPageConfig.getAnnotationMode();
     }
 

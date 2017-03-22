@@ -56,7 +56,7 @@ public class AuthorizationService implements Loggable {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
@@ -121,10 +121,9 @@ public class AuthorizationService implements Loggable {
         }
     }
 
-    public List<SingularPermission> filterListTaskPermissions(List<SingularPermission> permissions){
-        return permissions.stream().filter( p -> p != null && p.getSingularId() != null && p.getSingularId().startsWith(LIST_TASKS_PERMISSION_PREFIX)).collect(Collectors.toList());
+    public List<SingularPermission> filterListTaskPermissions(List<SingularPermission> permissions) {
+        return permissions.stream().filter(p -> p != null && p.getSingularId() != null && p.getSingularId().startsWith(LIST_TASKS_PERMISSION_PREFIX)).collect(Collectors.toList());
     }
-
 
 
     protected List<SingularPermission> searchPermissions(String userPermissionKey) {
@@ -185,7 +184,10 @@ public class AuthorizationService implements Loggable {
 
 
     public boolean hasPermission(Long petitionId, String formType, String idUsuario, String action) {
-        PetitionAuthMetadataDTO petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
+        PetitionAuthMetadataDTO petitionAuthMetadataDTO = null;
+        if (petitionId != null) {
+            petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
+        }
         return hasPermission(petitionAuthMetadataDTO, formType, idUsuario, action);
     }
 

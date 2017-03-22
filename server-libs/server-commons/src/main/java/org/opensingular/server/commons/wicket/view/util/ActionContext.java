@@ -3,7 +3,7 @@ package org.opensingular.server.commons.wicket.view.util;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.server.commons.form.FormActions;
-import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
+import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -29,6 +29,8 @@ public class ActionContext implements Serializable, Cloneable {
 
     private final static String FORM_VERSION_KEY = "v";
 
+    private final static String REQUIREMENT_DEFINITION = "r";
+
     private final static String DIFF = "d";
 
     private LinkedHashMap<String, String> params = new LinkedHashMap<>();
@@ -49,7 +51,7 @@ public class ActionContext implements Serializable, Cloneable {
     }
 
     public Optional<Long> getPetitionId() {
-        return Optional.of(this.params.get(PETITION_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
+        return Optional.ofNullable(this.params.get(PETITION_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
     }
 
     public ActionContext setPetitionId(Long petitionId) {
@@ -177,7 +179,7 @@ public class ActionContext implements Serializable, Cloneable {
     }
 
     @Deprecated
-    public static ActionContext fromFormConfig(FormPageConfig config) {
+    public static ActionContext fromFormConfig(FormPageExecutionContext config) {
         return new ActionContext();
     }
 }

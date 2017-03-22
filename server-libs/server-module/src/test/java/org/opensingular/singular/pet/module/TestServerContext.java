@@ -1,4 +1,4 @@
-package org.opensingular.singular.pet.module.test;
+package org.opensingular.singular.pet.module;
 
 
 import org.opensingular.server.commons.config.IServerContext;

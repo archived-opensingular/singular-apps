@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.wicket.view.util;
 
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.wicket.view.util.huffman.HuffmanUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -17,11 +18,13 @@ public class ParameterHttpSerializer {
         try {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, String> e : params.entrySet()) {
+                if (sb.length() > 0) {
+                    sb.append("&");
+                }
                 if (e.getValue() != null) {
-                    if (sb.length() > 0) {
-                        sb.append("&");
-                    }
                     sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), ENCODING), URLEncoder.encode(e.getValue(), ENCODING)));
+                } else {
+                    sb.append(String.format("%s", URLEncoder.encode(e.getKey(), ENCODING)));
                 }
             }
             return sb.toString();
@@ -32,16 +35,35 @@ public class ParameterHttpSerializer {
 
     public static LinkedHashMap<String, String> decode(String query) {
         try {
+            String cleanQueryString = clearQueryString(query);
             LinkedHashMap<String, String> decoded = new LinkedHashMap<>();
-            String[] params = query.split("&");
-            for (String s : params) {
-                String[] value = s.split("=");
-                decoded.put(URLDecoder.decode(value[0], ENCODING), URLDecoder.decode(value[1], ENCODING));
+            String[] params = cleanQueryString.split("&");
+            for (String paramString : params) {
+                String[] param = paramString.split("=");
+                String key = URLDecoder.decode(param[0], ENCODING);
+                String value = null;
+                if (param.length > 1) {
+                    StringBuilder sb = new StringBuilder();
+                    for (int i = 1; i < param.length; i++) {
+                        sb.append(param[i]);
+                    }
+                    value = URLDecoder.decode(sb.toString(), ENCODING);
+                }
+                decoded.put(key, value);
             }
             return decoded;
         } catch (Exception e) {
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
+    }
+
+    private static String clearQueryString(String queryString) {
+        String result = queryString;
+        //Remove url fragment - usually anchor links
+        if (queryString.contains("#")) {
+            result = result.substring(0, result.indexOf("#"));
+        }
+        return result;
     }
 
     public static String encodeAndCompress(LinkedHashMap<String, String> params) {
@@ -62,19 +84,32 @@ public class ParameterHttpSerializer {
     }
 
     private static String compress(String s) throws UnsupportedEncodingException {
-        return URLEncoder.encode(new String(Base64.getEncoder().encode(compressAlgorithm(s.getBytes(ENCODING))), ENCODING), ENCODING);
+        return URLEncoder.encode(
+                new String(
+                        Base64.getUrlEncoder().encode(
+                                compressAlgorithm(s.getBytes(ENCODING))
+                        ), ENCODING
+                ),
+                ENCODING);
     }
 
     private static String decompress(String s) throws UnsupportedEncodingException {
-        return new String(decompressAlgorithm(Base64.getDecoder().decode(URLDecoder.decode(s, ENCODING).getBytes(ENCODING))), ENCODING);
+        return new String(
+                decompressAlgorithm(
+                        Base64.getUrlDecoder().decode(
+                                URLDecoder.decode(s, ENCODING)
+                                        .getBytes(ENCODING)
+                        )
+                ),
+                ENCODING);
     }
 
-    private static byte[] compressAlgorithm(byte[] bytes) {
-        return bytes;
+    private static byte[] compressAlgorithm(byte[] bytes) throws UnsupportedEncodingException {
+        return HuffmanUtil.compress(bytes);
     }
 
-    private static byte[] decompressAlgorithm(byte[] bytes) {
-        return bytes;
+    private static byte[] decompressAlgorithm(byte[] bytes) throws UnsupportedEncodingException {
+        return HuffmanUtil.decompress(bytes);
     }
 
 

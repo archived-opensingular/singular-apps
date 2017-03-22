@@ -35,6 +35,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
@@ -55,7 +56,6 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
-import org.opensingular.server.core.wicket.ModuleLink;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemModel;
 import org.slf4j.Logger;
@@ -74,9 +74,8 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
-public class BoxContent extends AbstractBoxContent<BoxItemModel> {
+public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Loggable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
     protected IModel<BoxItemModel>    currentModel;
     private   Pair<String, SortOrder> sortProperty;
     private   ItemBox                 itemBoxDTO;
@@ -236,7 +235,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -253,7 +252,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -367,7 +366,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             return Arrays.asList(new RestTemplate().postForObject(url, currentModel.getObject(), Actor[].class));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
@@ -456,7 +455,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
                     .map(BoxItemModel::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
@@ -497,7 +496,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return 0;
         }
     }

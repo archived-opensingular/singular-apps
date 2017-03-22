@@ -16,8 +16,6 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
@@ -31,47 +29,40 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.form.FormActions;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
+import org.opensingular.server.commons.wicket.view.util.ModuleButtonFactory;
 
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public class DiffFormContent extends Content {
 
-    @Inject
-    private PetitionService<?,?> petitionService;
-
+    private final ActionContext config;
     @Inject
     protected FormPetitionService<?> formPetitionService;
 
     @Inject
     protected IFormService formService;
-
-    private final FormPageConfig config;
-
     protected BSDataTable<DocumentDiff, String> tabela;
-    protected DocumentDiff diff;
+    protected DocumentDiff                      diff;
     protected BSGrid contentGrid = new BSGrid("content");
-
+    @Inject
+    private PetitionService<?, ?> petitionService;
     private FormVersionEntity originalFormVersion;
 
-    public DiffFormContent(String id, FormPageConfig config) {
+    public DiffFormContent(String id, ActionContext config) {
         super(id);
         this.config = config;
     }
@@ -80,8 +71,8 @@ public class DiffFormContent extends Content {
     protected void onConfigure() {
         super.onConfigure();
 
-        PetitionInstance petition = petitionService.getPetition(config.getPetitionId());
-        String typeName = PetitionUtil.getTypeName(petition);
+        PetitionInstance      petition    = petitionService.getPetition(config.getPetitionId().get());
+        String                typeName    = PetitionUtil.getTypeName(petition);
         Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
 
         SInstance original = null;
@@ -105,7 +96,7 @@ public class DiffFormContent extends Content {
             newerDate = draftEntity.get().getEditionDate();
 
         } else {
-            List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId());
+            List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId().get());
 
             originalFormVersion = formPetitionEntities.get(1);
             original = formPetitionService.getSInstance(originalFormVersion);
@@ -114,7 +105,7 @@ public class DiffFormContent extends Content {
             FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
             newer = formPetitionService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
-       }
+        }
 
         diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
 
@@ -128,36 +119,18 @@ public class DiffFormContent extends Content {
         appendDate(container, "Data da modificação anterior:", originalDate);
         appendDate(container, "Data da modificação atual:", newerDate);
 
-        WebMarkupContainer link = new WebMarkupContainer("oldVersionLink");
-        link.add($b.attr("target", String.format("version%s", originalFormVersion.getCod())));
-        link.add($b.attr("href", mountUrlOldVersion()));
 
         contentGrid.newRow().newCol(2)
                 .newFormGroup()
                 .appendLabel(new BSLabel("label", $m.ofValue("")))
-                .newTemplateTag(tt -> "<a class='btn' wicket:id='oldVersionLink'><span wicket:id='label'></span></a>")
-                .add(link.add(new Label("label", "Versão anterior do formulário")));
-    }
-
-    private String mountUrlOldVersion() {
-        StringBuilder url = new StringBuilder();
-        url.append(DispatcherPageUtil.getBaseURL())
-                .append('?')
-                .append(String.format("%s=%s", DispatcherPageParameters.ACTION, FormActions.FORM_VIEW.getId()))
-                .append(String.format("&%s=%s", DispatcherPageParameters.FORM_VERSION_KEY, originalFormVersion.getCod()));
-
-        for (Map.Entry<String, String> entry : config.getAdditionalParams().entrySet()) {
-            url.append(String.format("&%s=%s", entry.getKey(), entry.getValue()));
-        }
-
-        return url.toString();
+                .appendComponent(id -> new ModuleButtonFactory(config).getViewVersionButton(id, originalFormVersion.getCod()));
     }
 
     private void appendDate(BSRow container, String labelCampo, Date data) {
         container.newCol(2)
-            .newFormGroup()
-            .appendLabel(new BSLabel("label", labelCampo))
-            .appendTag("div", new BOutputPanel("data", $m.ofValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(data))));
+                .newFormGroup()
+                .appendLabel(new BSLabel("label", labelCampo))
+                .appendTag("div", new BOutputPanel("data", $m.ofValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(data))));
     }
 
     @Override
