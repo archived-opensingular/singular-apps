@@ -26,7 +26,7 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
@@ -143,7 +143,7 @@ public class AuthorizationService implements Loggable {
     protected void filterForms(MenuGroup menuGroup, List<SingularPermission> permissions, String idUsuario) {
         for (Iterator<FormDTO> it = menuGroup.getForms().iterator(); it.hasNext(); ) {
             FormDTO form = it.next();
-            String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormActions.FORM_FILL.name());
+            String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
                 it.remove();
             }

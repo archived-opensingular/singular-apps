@@ -9,6 +9,8 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -61,12 +63,21 @@ public class SingularModuleConfiguration {
      * @return
      */
     public List<ItemBox> buildItemBoxes(IServerContext context) {
-        return itemBoxes
+        return itemBoxes.entrySet()
                 .stream()
-                .filter(bc -> bc.getItemBoxFactory().appliesTo(context))
-                .map(sib -> sib.getItemBoxFactory().build(context))
+                .filter(entry -> entry.getValue().appliesTo(context))
+                .map(stringItemBoxFactoryEntry -> {
+                    ItemBoxFactory factory = stringItemBoxFactoryEntry.getValue();
+                    ItemBox itemBox = factory.build(context);
+                    itemBox.setId(stringItemBoxFactoryEntry.getKey());
+                    itemBox.setFieldsDatatable(factory.getDatatableFields());
+                    return itemBox;
+                })
                 .collect(Collectors.toList());
     }
 
+    public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
+        return itemBoxes.entrySet().stream().filter(entry -> entry.getKey().equals(id)).map(Map.Entry::getValue).findFirst();
+    }
 
 }

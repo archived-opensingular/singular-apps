@@ -109,7 +109,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public PetitionService<?,?> worklistPetitionServiceFactory() {
+    public PetitionService<?, ?> worklistPetitionServiceFactory() {
         return new DefaultPetitionService();
     }
 
@@ -280,17 +280,17 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public DefaultServerREST serverRest(){
+    public DefaultServerREST serverRest() {
         return new DefaultServerREST();
     }
 
     @Bean
-    public RestUserDetailsService restUserDetailsService(){
+    public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
+    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService) {
         return new DatabaseAdminCredentialChecker(parameterService, null);
     }
 

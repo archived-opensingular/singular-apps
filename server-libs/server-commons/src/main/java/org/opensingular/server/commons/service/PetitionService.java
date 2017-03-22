@@ -58,8 +58,6 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.rest.DefaultServerREST;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -69,8 +67,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.io.Serializable;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -111,22 +109,30 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     @Inject
     protected ActorDAO actorDAO;
 
-    /** Deve cria uma instância com base na entidade fornecida. */
+    /**
+     * Deve cria uma instância com base na entidade fornecida.
+     */
     @Nonnull
     protected abstract PI newPetitionInstance(@Nonnull PE petitionEntity);
 
-    /** Deve cria uma nova entidade vazia de persistência. */
+    /**
+     * Deve cria uma nova entidade vazia de persistência.
+     */
     @Nonnull
     protected abstract PE newPetitionEntity();
 
-    /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
+    /**
+     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
+     */
     @Nonnull
     private PI getPetitionInstance(@Nonnull PE petitionEntity) {
         Objects.requireNonNull(petitionEntity);
         return newPetitionInstance(petitionEntity);
     }
 
-    /** Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar. */
+    /**
+     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
+     */
     @Nonnull
     public PI getPetitionInstance(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
@@ -136,35 +142,44 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
 
-
-    /** Recupera a petição associada a task informada ou dispara exception senão encontrar. */
+    /**
+     * Recupera a petição associada a task informada ou dispara exception senão encontrar.
+     */
     @Nonnull
     public PI getPetitionInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
         return getPetitionInstance(taskInstance.getProcessInstance());
     }
 
-    /** Retorna o serviço de formulários da petição. */
+    /**
+     * Retorna o serviço de formulários da petição.
+     */
     @Nonnull
-    protected  final FormPetitionService<PE> getFormPetitionService() {
+    protected final FormPetitionService<PE> getFormPetitionService() {
         return Objects.requireNonNull(formPetitionService);
     }
 
-    /** Procura a petição com o código informado. */
+    /**
+     * Procura a petição com o código informado.
+     */
     @Nonnull
     private Optional<PE> findPetitionByCod(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
         return petitionDAO.find(cod);
     }
 
-    /** Procura a petição com o código informado. */
+    /**
+     * Procura a petição com o código informado.
+     */
     @Nonnull
     public Optional<PI> findPetition(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
         return petitionDAO.find(cod).map(this::newPetitionInstance);
     }
 
-    /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
+    /**
+     * Recupera a petição com o código informado ou dispara Exception senão encontrar.
+     */
     @Nonnull
     @Deprecated
     public PE getPetitionByCod(@Nonnull Long cod) {
@@ -172,14 +187,18 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
     }
 
-    /** Recupera a petição com o código informado ou dispara Exception senão encontrar. */
+    /**
+     * Recupera a petição com o código informado ou dispara Exception senão encontrar.
+     */
     @Nonnull
     public PI getPetition(@Nonnull Long cod) {
         return findPetition(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
     }
 
-    /** Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar. */
+    /**
+     * Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar.
+     */
     @Nonnull
     @Deprecated
     public PE getPetitionByProcessCod(@Nonnull Integer cod) {
@@ -187,7 +206,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.findByProcessCodOrException(cod);
     }
 
-    /** Recupera a petição associado ao fluxo informado. */
+    /**
+     * Recupera a petição associado ao fluxo informado.
+     */
     @Nonnull
     public PI getPetition(@Nonnull ProcessInstance processInstance) {
         Objects.requireNonNull(processInstance);
@@ -195,7 +216,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return newPetitionInstance(petition);
     }
 
-    /** Recupera a petição associada a tarefa informada. */
+    /**
+     * Recupera a petição associada a tarefa informada.
+     */
     @Nonnull
     public PI getPetition(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
@@ -225,86 +248,16 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearch(filter, siglasProcesso, formNames);
     }
 
-    public List<Map<String, Object>> quickSearchMap(QuickFilter filter) {
-        final List<Map<String, Object>> list = petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
-        parseResultsPetition(list);
-        list.forEach(this::addLineActions);
-        for (Map<String, Object> map : list) {
-            authorizationService.filterActions((String) map.get("type"), (Long) map.get("codPeticao"), (List<BoxItemAction>) map.get("actions"), filter.getIdUsuarioLogado());
-        }
-        return list;
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
+        return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    protected void parseResultsPetition(List<Map<String, Object>> results) {
-
-    }
-
-    private void addLineActions(Map<String, Object> line) {
-        List<BoxItemAction> actions = new ArrayList<>();
-        actions.add(createPopupBoxItemAction(line, FormActions.FORM_FILL, ACTION_EDIT.getName()));
-        actions.add(createPopupBoxItemAction(line, FormActions.FORM_VIEW, ACTION_VIEW.getName()));
-        actions.add(createDeleteAction(line));
-        actions.add(BoxItemAction.newExecuteInstante(line.get("codPeticao"), ACTION_ASSIGN.getName()));
-
-        appendLineActions(line, actions);
-
-        String processKey = (String) line.get("processType");
-
-
-        ActionConfig tryConfig = null;
-        try {
-            ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
-            tryConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
-        } catch (SingularException e) {
-
-            getLogger().error(e.getMessage(), e);
-        }
-
-        final ActionConfig actionConfig = tryConfig;
-        if (actionConfig != null) {
-            actions = actions.stream()
-                    .filter(itemAction -> actionConfig.containsAction(itemAction.getName()))
-                    .collect(Collectors.toList());
-        }
-
-        line.put("actions", actions);
-    }
-
-    /**
-     * Dado um linha de dados (line), permite ao serviço adicionar quais as ações possiveis associadas a essa linha em
-     * particular. Esse método deve ser sobrescrito pelos serviços derivados.
-     */
-    protected void appendLineActions(@Nonnull Map<String, Object> line, @Nonnull List<BoxItemAction> lineActions) {
-    }
-
-    private BoxItemAction createDeleteAction(Map<String, Object> line) {
-        String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DELETE + "?id=" + line.get("codPeticao");
-
-        final BoxItemAction boxItemAction = new BoxItemAction();
-        boxItemAction.setName(ACTION_DELETE.getName());
-        boxItemAction.setEndpoint(endpointUrl);
-        return boxItemAction;
-    }
-
-    protected final static BoxItemAction createPopupBoxItemAction(Map<String, Object> line, FormActions formAction, String actionName) {
-        Object cod  = line.get("codPeticao");
-        Object type = line.get("type");
-        return createPopupBoxItemAction(cod, type, formAction, actionName);
-    }
-
-    private static BoxItemAction createPopupBoxItemAction(Object cod, Object type, FormActions formAction, String actionName) {
-        String endpoint = DispatcherPageUtil
-                .baseURL("")
-                .formAction(formAction.getId())
-                .petitionId(cod)
-                .param(DispatcherPageParameters.FORM_NAME, type)
-                .build();
-
-        final BoxItemAction boxItemAction = new BoxItemAction();
-        boxItemAction.setName(actionName);
-        boxItemAction.setEndpoint(endpoint);
-        boxItemAction.setFormAction(formAction);
-        return boxItemAction;
+    public BoxItemActionList getLineActions(ItemBoxData line) {
+        return new BoxItemActionList()
+                .addPopupBox(line, FormAction.FORM_FILL, ACTION_EDIT.getName())
+                .addPopupBox(line, FormAction.FORM_VIEW, ACTION_VIEW.getName())
+                .addDeleteAction(line)
+                .addExecuteInstante(line.getCodPeticao(), ACTION_ASSIGN.getName());
     }
 
     @Nonnull
@@ -322,8 +275,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public void send(PI petition, SInstance instance, String codResponsavel) {
 
-        final List<FormEntity>      consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
-        final ProcessDefinition<?>  processDefinition  = PetitionUtil.getProcessDefinition(petition.getEntity());
+        final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
+        final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
 
         ProcessInstance newProcessInstance = startNewProcess(petition, processDefinition);
 
@@ -338,7 +291,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     private void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
-        FormEntity         formEntity   = petition.getEntity().getMainForm();
+        FormEntity formEntity = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -376,7 +329,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      *
      * @param tn           nome da transicao
      * @param petition     peticao
-     * @param cfg          formConfig
      * @param onTransition listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -417,66 +369,25 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<TaskInstanceDTO> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        List<TaskInstanceDTO> tasks = taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
-        parseResultsTask(tasks);
-        for (TaskInstanceDTO task : tasks) {
-            checkTaskActions(task, filter);
-            authorizationService.filterActions(task.getType(), task.getCodPeticao(), task.getActions(), filter.getIdUsuarioLogado(), permissions);
-        }
-        return tasks;
+        return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    protected void parseResultsTask(List<TaskInstanceDTO> tasks) {
-
-    }
-
-    protected void checkTaskActions(TaskInstanceDTO task, QuickFilter filter) {
-        List<BoxItemAction> actions = new ArrayList<>();
-        if (task.getCodUsuarioAlocado() == null
-                && task.getTaskType() == TaskType.PEOPLE) {
-            actions.add(BoxItemAction.newExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName()));
+    public BoxItemActionList getTaskActions(ItemBoxData task, QuickFilter filter) {
+        BoxItemActionList boxItemActionList = new BoxItemActionList();
+        if (task.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(task.getTaskType())) {
+            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName());
         }
-
-        if (task.getTaskType() == TaskType.PEOPLE) {
-            actions.add(BoxItemAction.newExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName()));
+        if (TaskType.PEOPLE.name().equals(task.getTaskType())) {
+            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName());
         }
-
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase(task.getCodUsuarioAlocado())) {
-            actions.add(createPopupBoxItemAction(task.getCodPeticao(), task.getType(), FormActions.FORM_ANALYSIS, ACTION_ANALYSE.getName()));
+        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.getCodUsuarioAlocado())) {
+            boxItemActionList.addPopupBox(task, FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
         }
-
-        actions.add(createPopupBoxItemAction(task.getCodPeticao(), task.getType(), FormActions.FORM_VIEW, ACTION_VIEW.getName()));
-
-        appendTaskActions(task, actions);
-
-        String                     processKey        = task.getProcessType();
-        final ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
-        final ActionConfig         actionConfig      = processDefinition.getMetaDataValue(ActionConfig.KEY);
-        if (actionConfig != null) {
-            actions = actions.stream()
-                    .filter(itemAction -> actionConfig.containsAction(itemAction.getName()))
-                    .collect(Collectors.toList());
-        }
-
-        task.setActions(actions);
-    }
-
-    protected void appendTaskActions(TaskInstanceDTO task, List<BoxItemAction> actions) {
-
+        return boxItemActionList.addPopupBox(task, FormAction.FORM_VIEW, ACTION_VIEW.getName());
     }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
-    }
-
-    public List<? extends TaskInstanceDTO> listTasks(int first, int count, String sortProperty, boolean ascending, String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
-
-        return taskInstanceDAO.findTasks(first, count, sortProperty, ascending, siglaFluxo, authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
-    }
-
-
-    public Long countTasks(String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
-        return taskInstanceDAO.countTasks(Collections.singletonList(siglaFluxo), authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
     }
 
     public List<MTransition> listCurrentTaskTransitions(Long petitionId) {
@@ -502,10 +413,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return grupoProcessoDAO.listarTodosGruposProcesso();
     }
 
-    public ProcessGroupEntity findByProcessGroupName(String name) {
-        return grupoProcessoDAO.findByName(name);
-    }
-
     public ProcessGroupEntity findByProcessGroupCod(String cod) {
         return grupoProcessoDAO.get(cod).orElse(null);
     }
@@ -515,9 +422,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                                            @Nullable Consumer<PI> creationListener) {
 
         final PE petitionEntity = newPetitionEntity();
-        if (petitionEntity == null) {
-            throw new SingularServerException("newPetitionEntity() em " + getClass().getName() + " retornou null");
-        }
 
         if (classProcess != null) {
             petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) Flow.getProcessDefinition(classProcess).getEntityProcessDefinition());
@@ -539,9 +443,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petition;
     }
 
-    public ProcessDefinitionEntity findEntityProcessDefinitionByClass(Class<? extends ProcessDefinition> clazz) {
-        return (ProcessDefinitionEntity) Flow.getProcessDefinition(clazz).getEntityProcessDefinition();
-    }
 
     public List<PetitionHistoryDTO> listPetitionContentHistoryByPetitionCod(long petitionCod, String menu, boolean filter) {
         PE petition = petitionDAO.findOrException(petitionCod);
@@ -579,30 +480,38 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
-        FormEntity     mainForm       = petitionEntity.getMainForm();
+        FormEntity mainForm = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
 
-    /** Procura a instância de processo (fluxo) associado ao formulário se o mesmo existir. */
+    /**
+     * Procura a instância de processo (fluxo) associado ao formulário se o mesmo existir.
+     */
     public Optional<ProcessInstanceEntity> getFormProcessInstanceEntity(@Nonnull SInstance instance) {
         return getFormPetitionService().findFormEntity(instance)
                 .map(formEntity -> petitionDAO.findByFormEntity(formEntity))
                 .map(PetitionEntity::getProcessInstanceEntity);
     }
 
-    /** Verifica se o formulário já foi persistido e possui um processo (fluxo) instanciado e associado. */
+    /**
+     * Verifica se o formulário já foi persistido e possui um processo (fluxo) instanciado e associado.
+     */
     public boolean formHasProcessInstance(SInstance instance) {
         return getFormProcessInstanceEntity(instance).isPresent();
     }
 
-    /** Recupera o formulário {@link SInstance} de abertura do requerimento. */
+    /**
+     * Recupera o formulário {@link SInstance} de abertura do requerimento.
+     */
     @Nonnull
     public SIComposite getMainFormAsInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
         return (SIComposite) getFormPetitionService().getSInstance(petition.getMainForm());
     }
 
-    /** Recupera o formulário {@link SInstance} de abertura do requerimento e garante que é do tipo inforado. */
+    /**
+     * Recupera o formulário {@link SInstance} de abertura do requerimento e garante que é do tipo inforado.
+     */
     @Nonnull
     public <I extends SInstance, K extends SType<? extends I>> I getMainFormAsInstance(@Nonnull PetitionEntity petition,
                                                                                        @Nonnull Class<K> expectedType) {
@@ -610,24 +519,30 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return getFormPetitionService().getSInstance(petition.getMainForm(), expectedType);
     }
 
-    /** Procura na petição a versão mais recente do formulário do tipo informado. */
+    /**
+     * Procura na petição a versão mais recente do formulário do tipo informado.
+     */
     @Nonnull
     protected final Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition,
-            @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                                  @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionEntityByType(petition, typeClass);
     }
 
-    /** Procura na petição a versão mais recente do formulário do tipo informado. */
+    /**
+     * Procura na petição a versão mais recente do formulário do tipo informado.
+     */
     @Nonnull
     protected final Optional<SInstance> findLastFormPetitionInstanceByType(@Nonnull PetitionInstance petition,
-            @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                           @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionInstanceByType(petition, typeClass);
     }
 
-    /** Procura na petição a versão mais recente do formulário do tipo informado. */
+    /**
+     * Procura na petição a versão mais recente do formulário do tipo informado.
+     */
     @Nonnull
     protected final Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
-            @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                        @Nonnull Class<? extends SType<?>> typeClass) {
         //TODO Verificar se esse método não está redundante com FormPetitionService.findLastFormPetitionEntityByType
         Objects.requireNonNull(petition);
         return petitionContentHistoryDAO.findLastestByPetitionCodAndType(typeClass, petition.getCod())
@@ -635,10 +550,12 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 .map(version -> (SIComposite) getFormPetitionService().getSInstance(version));
     }
 
-    /** Procura na petição o formulário mais recente dentre os tipos informados. */
+    /**
+     * Procura na petição o formulário mais recente dentre os tipos informados.
+     */
     @Nonnull
     protected final Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
-            @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
+                                                                        @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
         Objects.requireNonNull(petition);
         FormVersionHistoryEntity max = null;
         for (Class<? extends SType<?>> type : typesClass) {
@@ -655,7 +572,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     protected ProcessInstance startNewProcess(PetitionInstance petition, ProcessDefinition processDefinition) {
-        ProcessInstance   newProcessInstance = processDefinition.newPreStartInstance();
+        ProcessInstance newProcessInstance = processDefinition.newPreStartInstance();
         newProcessInstance.setDescription(petition.getDescription());
 
         ProcessInstanceEntity processEntity = newProcessInstance.saveEntity();

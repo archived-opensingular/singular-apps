@@ -21,7 +21,7 @@ public class WorkspaceConfiguration {
     WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
         this.requirementConfiguration = requirementConfiguration;
     }
-
+    
     /**
      * Register a single {@link ItemBoxFactory}
      *
@@ -36,6 +36,7 @@ public class WorkspaceConfiguration {
     List<BoxCofiguration> getItemBoxes() {
         return itemBoxes;
     }
+
 
     public WorkspaceConfiguration newFor(RequirementProvider... requirementProvider) {
         Arrays

@@ -29,7 +29,7 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
@@ -139,7 +139,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private IFunction<String, Button> viewFormButton(final Long versionPK) {
         final String url = DispatcherPageUtil
                 .baseURL(getBaseUrl())
-                .formAction(FormActions.FORM_ANALYSIS_VIEW.getId())
+                .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
                 .petitionId(null)
                 .param(FORM_VERSION_KEY, versionPK)
                 .build();

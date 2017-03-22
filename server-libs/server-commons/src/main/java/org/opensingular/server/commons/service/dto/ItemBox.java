@@ -26,14 +26,13 @@ public class ItemBox implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String id;
     private String name;
     private String description;
     private boolean showNewButton = false;
     private boolean quickFilter   = true;
     private boolean showDraft     = false;
     private Boolean              endedTasks;
-    private String               searchEndpoint;
-    private String               countEndpoint;
     private Icone                icone;
     private List<DatatableField> fieldsDatatable;
 
@@ -67,16 +66,6 @@ public class ItemBox implements Serializable {
         this.showNewButton = showNewButton;
     }
 
-    @Deprecated
-    public String getSearchEndpoint() {
-        return searchEndpoint;
-    }
-
-    @Deprecated
-    public void setSearchEndpoint(String searchEndpoint) {
-        this.searchEndpoint = searchEndpoint;
-    }
-
     public boolean isQuickFilter() {
         return quickFilter;
     }
@@ -89,19 +78,8 @@ public class ItemBox implements Serializable {
         return fieldsDatatable;
     }
 
-    @Deprecated
     public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
         this.fieldsDatatable = fieldsDatatable;
-    }
-
-    @Deprecated
-    public String getCountEndpoint() {
-        return countEndpoint;
-    }
-
-    @Deprecated
-    public void setCountEndpoint(String countEndpoint) {
-        this.countEndpoint = countEndpoint;
     }
 
     public boolean isShowDraft() {
@@ -160,4 +138,23 @@ public class ItemBox implements Serializable {
     public void setEndedTasks(Boolean endedTasks) {
         this.endedTasks = endedTasks;
     }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public String getSearchEndpoint() {
+        return "/search/" + id;
+    }
+
+    public String getCountEndpoint() {
+        return "/count/" + id;
+    }
+
+
+
 }

@@ -42,6 +42,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
@@ -57,19 +58,15 @@ import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_B
 @RestController
 public class DefaultServerREST {
 
-    public static final String PATH_BOX_ACTION  = "/box/action";
-    public static final String DELETE           = "/delete";
-    public static final String EXECUTE          = "/executar";
-    public static final String SEARCH_PETITIONS = "/searchPetitions";
-    public static final String COUNT_PETITIONS  = "/countPetitions";
-    public static final String SEARCH_TASKS     = "/searchTasks";
-    public static final String COUNT_TASKS      = "/countTasks";
-    public static final String USERS            = "/listarUsuarios";
+    public static final String PATH_BOX_ACTION = "/box/action";
+    public static final String DELETE = "/delete";
+    public static final String EXECUTE = "/executar";
+    public static final String USERS = "/listarUsuarios";
 
-    static final        Logger LOGGER           = LoggerFactory.getLogger(DefaultServerREST.class);
+    static final Logger LOGGER = LoggerFactory.getLogger(DefaultServerREST.class);
 
     @Inject
-    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
 
     @Inject
     protected PermissionResolverService permissionResolverService;
@@ -92,7 +89,6 @@ public class DefaultServerREST {
             LOGGER.error(msg, e);
             return new ActionResponse(msg, false);
         }
-
     }
 
     @RequestMapping(value = PATH_BOX_ACTION + EXECUTE, method = RequestMethod.POST)
@@ -114,38 +110,11 @@ public class DefaultServerREST {
     private IController getActionController(ProcessDefinition<?> processDefinition, ActionRequest actionRequest) {
         final ActionConfig actionConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
         Class<? extends IController> controllerClass = actionConfig.getAction(actionRequest.getName());
-        if (ApplicationContextProvider.get().containsBean(controllerClass.getName())){
+        if (ApplicationContextProvider.get().containsBean(controllerClass.getName())) {
             return ApplicationContextProvider.get().getBean(controllerClass);
         } else {
             return ApplicationContextProvider.get().getAutowireCapableBeanFactory().createBean(controllerClass);
         }
     }
 
-
-    @RequestMapping(value = PATH_BOX_SEARCH + SEARCH_PETITIONS, method = RequestMethod.POST)
-    public List<Map<String, Object>> searchPetitions(@RequestBody QuickFilter filter) {
-        return petitionService.quickSearchMap(filter);
-    }
-
-    @RequestMapping(value = PATH_BOX_SEARCH + COUNT_PETITIONS, method = RequestMethod.POST)
-    public Long countPetitions(@RequestBody QuickFilter filter) {
-        return petitionService.countQuickSearch(filter);
-    }
-
-    @RequestMapping(value = PATH_BOX_SEARCH + SEARCH_TASKS, method = RequestMethod.POST)
-    public List<TaskInstanceDTO> searchTasks(@RequestBody QuickFilter filter) {
-        List<SingularPermission> permissions = permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
-        return petitionService.listTasks(filter, permissions);
-    }
-
-    @RequestMapping(value = PATH_BOX_SEARCH + COUNT_TASKS, method = RequestMethod.POST)
-    public Long countTasks(@RequestBody QuickFilter filter) {
-        List<SingularPermission> permissions = permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
-        return petitionService.countTasks(filter, permissions);
-    }
-
-    @RequestMapping(value = PATH_BOX_SEARCH + USERS, method = RequestMethod.POST)
-    public List<Actor> listarUsuarios(@RequestBody Map<String, Object> selectedTask) {
-        return petitionService.listAllocableUsers(selectedTask);
-    }
 }
