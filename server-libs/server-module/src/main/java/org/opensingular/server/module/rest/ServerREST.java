@@ -1,20 +1,15 @@
 package org.opensingular.server.module.rest;
 
-import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.module.ItemBoxDataProvider;
-import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.box.service.ItemBoxDataService;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/rest/flow")
