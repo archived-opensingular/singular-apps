@@ -56,6 +56,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.AbstractPetitionService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -82,8 +83,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private final FormPageExecutionContext        config;
     private final IModel<FormKey>                 formKeyModel;
     private final IModel<FormKey>                 parentPetitionformKeyModel;
+    
     @Inject
     private       AbstractPetitionService<PE, PI> petitionService;
+    private PetitionService<PE, PI> petitionService;
+
     @Inject
     private       FormPetitionService<PE>         formPetitionService;
     @Inject
@@ -119,7 +123,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * Retorna o serviço de petição.
      */
     @Nonnull
-    protected final AbstractPetitionService<PE, PI> getPetitionService() {
+    protected final PetitionService<PE, PI> getPetitionService() {
         return Objects.requireNonNull(petitionService);
     }
 
@@ -589,6 +593,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @param mi    model contendo a instancia atual
      * @throws SingularServerFormValidationError caso exista erros de validação
      * @see AbstractFormPage#onBeforeExecuteTransition
+     * @see PetitionService#executeTransition(String, PetitionEntity, SFormConfig, BiConsumer, Map)
      * @see AbstractFormPage#onTransitionExecuted(AjaxRequestTarget, String)
      */
     protected void executeTransition(AjaxRequestTarget ajxrt, Form<?> form, String tn, IModel<? extends SInstance> mi)

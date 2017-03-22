@@ -117,7 +117,7 @@ public final class PetitionUtil {
 
     @Nonnull
     public static PetitionService<?,?> getPetitionServiceOrException(@Nonnull SInstance instance) {
-        return instance.getDocument().lookupServiceOrException(AbstractPetitionService.class);
+        return instance.getDocument().lookupServiceOrException(PetitionService.class);
     }
 
     /** Retorna o nome do tipo associado a essa entidade. */

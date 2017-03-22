@@ -16,12 +16,6 @@
 
 package org.opensingular.server.commons.flow;
 
-import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTaskEnd;
-import org.opensingular.flow.core.MTransition;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.renderer.IFlowRenderer;
 import com.google.common.base.Throwables;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.model.mxICell;
@@ -29,6 +23,12 @@ import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
+import org.opensingular.flow.core.FlowMap;
+import org.opensingular.flow.core.MTask;
+import org.opensingular.flow.core.MTaskEnd;
+import org.opensingular.flow.core.MTransition;
+import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.renderer.IFlowRenderer;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -111,7 +111,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
             mapaVertice.put(task.getAbbreviation(), v);
         }
 
-        addStartTransition(graph, fluxo.getStartTask(), mapaVertice);
+        addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
 
         for (final MTask<?> task : fluxo.getTasks()) {
             for (final MTransition transicao : task.getTransitions()) {
