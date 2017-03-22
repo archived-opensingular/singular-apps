@@ -5,11 +5,11 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -56,6 +56,10 @@ public class SingularModuleConfiguration {
         return this.module;
     }
 
+    public List<SingularRequirementRef> getRequirements() {
+        return requirements;
+    }
+
     /**
      * runs
      *
@@ -63,13 +67,13 @@ public class SingularModuleConfiguration {
      * @return
      */
     public List<ItemBox> buildItemBoxes(IServerContext context) {
-        return itemBoxes.entrySet()
+        return itemBoxes
                 .stream()
-                .filter(entry -> entry.getValue().appliesTo(context))
+                .filter(boxCofiguration -> boxCofiguration.getItemBoxFactory().appliesTo(context))
                 .map(stringItemBoxFactoryEntry -> {
-                    ItemBoxFactory factory = stringItemBoxFactoryEntry.getValue();
+                    ItemBoxFactory factory = stringItemBoxFactoryEntry.getItemBoxFactory();
                     ItemBox itemBox = factory.build(context);
-                    itemBox.setId(stringItemBoxFactoryEntry.getKey());
+                    itemBox.setId(stringItemBoxFactoryEntry.getId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());
                     return itemBox;
                 })
@@ -77,7 +81,7 @@ public class SingularModuleConfiguration {
     }
 
     public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
-        return itemBoxes.entrySet().stream().filter(entry -> entry.getKey().equals(id)).map(Map.Entry::getValue).findFirst();
+        return itemBoxes.stream().filter(boxCofiguration -> boxCofiguration.getId().equals(id)).map(BoxCofiguration::getItemBoxFactory).findFirst();
     }
 
 }

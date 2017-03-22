@@ -39,10 +39,11 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.flow.actions.ActionConfig;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -61,14 +62,12 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -80,7 +79,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ANALYSE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_EDIT;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_RELOCATE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_VIEW;
 
 @Transactional
 public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {

@@ -184,7 +184,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     protected boolean hasAccess(ActionContext context) {
         SingularUserDetails userDetails   = SingularSession.get().getUserDetails();
-        boolean             hasPermission = authorizationService.hasPermission(context.getPetitionId().orElse(null), context.getFormName().get(), String.valueOf(userDetails.getUserPermissionKey()), context.getFormAction().map(FormActions::name).orElse(null));
+        boolean             hasPermission = authorizationService.hasPermission(context.getPetitionId().orElse(null), context.getFormName().get(), String.valueOf(userDetails.getUserPermissionKey()), context.getFormAction().map(FormAction::name).orElse(null));
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.

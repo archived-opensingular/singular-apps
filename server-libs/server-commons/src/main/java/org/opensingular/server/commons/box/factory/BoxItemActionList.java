@@ -12,7 +12,7 @@ import java.util.List;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
 import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxItemActionList {
 

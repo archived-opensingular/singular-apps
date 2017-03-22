@@ -3,14 +3,14 @@ package org.opensingular.server.commons.wicket.view.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 
 public class ActionContextTest {
 
     private ActionContext newActionContext() {
         ActionContext actionContext = new ActionContext();
         actionContext.setDiffEnabled(true);
-        actionContext.setFormAction(FormActions.FORM_ANALYSIS);
+        actionContext.setFormAction(FormAction.FORM_ANALYSIS);
         actionContext.setFormName("Nomezinho");
         actionContext.setFormVersionId(1l);
         actionContext.setMenuLabel("menuzinho");
@@ -28,7 +28,7 @@ public class ActionContextTest {
         ActionContext actionContext = newActionContext();
 
         Assert.assertTrue(actionContext.getDiffEnabled());
-        Assert.assertEquals(actionContext.getFormAction().get(), FormActions.FORM_ANALYSIS);
+        Assert.assertEquals(actionContext.getFormAction().get(), FormAction.FORM_ANALYSIS);
         Assert.assertEquals(actionContext.getFormName().get(), "Nomezinho");
         Assert.assertEquals((long) actionContext.getFormVersionId().get(), 1l);
         Assert.assertEquals(actionContext.getMenuLabel().get(), "menuzinho");

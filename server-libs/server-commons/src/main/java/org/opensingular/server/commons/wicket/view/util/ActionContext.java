@@ -2,7 +2,7 @@ package org.opensingular.server.commons.wicket.view.util;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
 import java.io.Serializable;
@@ -63,11 +63,11 @@ public class ActionContext implements Serializable, Cloneable {
         return this;
     }
 
-    public Optional<FormActions> getFormAction() {
-        return Optional.ofNullable(this.params.get(ACTION)).flatMap(s -> Optional.of(FormActions.getById(Integer.valueOf(s))));
+    public Optional<FormAction> getFormAction() {
+        return Optional.ofNullable(this.params.get(ACTION)).flatMap(s -> Optional.of(FormAction.getById(Integer.valueOf(s))));
     }
 
-    public ActionContext setFormAction(FormActions formAction) {
+    public ActionContext setFormAction(FormAction formAction) {
         this.params.put(ACTION, String.valueOf(formAction.getId()));
         return this;
     }

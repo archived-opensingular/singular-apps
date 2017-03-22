@@ -5,9 +5,11 @@ import org.opensingular.server.module.workspace.ItemBoxFactory;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 public class BoxCofiguration {
 
+    private String                      id              = UUID.randomUUID().toString();
     private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
     private ItemBoxFactory itemBoxFactory;
 
@@ -18,6 +20,10 @@ public class BoxCofiguration {
 
     public BoxCofiguration(ItemBoxFactory itemBox) {
         this.itemBoxFactory = itemBox;
+    }
+
+    public String getId() {
+        return id;
     }
 
     public Set<SingularRequirementRef> getRequirementRefs() {

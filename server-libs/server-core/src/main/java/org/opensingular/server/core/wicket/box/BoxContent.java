@@ -59,8 +59,6 @@ import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -79,12 +77,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
 
     protected IModel<BoxItemModel>    currentModel;
     private   Pair<String, SortOrder> sortProperty;
-    private   ItemBox                 itemBoxDTO;
-
-    protected IModel<BoxItemModel> currentModel;
-
-    private Pair<String, SortOrder> sortProperty;
-    private IModel<ItemBox>         itemBoxModel;
+    private   IModel<ItemBox>         itemBoxModel;
 
     public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxModel) {
         super(id, processGroupCod, menu);
@@ -396,7 +389,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
     private IFunction<IModel<BoxItemModel>, Boolean> visibleFunction(ItemAction itemAction) {
         return (model) -> {
             BoxItemModel boxItemModel = boxItemModelObject(model);
-            boolean      visible      = boxItemModel.hasAction(itemAction);
+            boolean visible = boxItemModel.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemModel.getCod());
             }
