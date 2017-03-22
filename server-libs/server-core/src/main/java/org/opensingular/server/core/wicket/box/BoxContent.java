@@ -70,7 +70,7 @@ import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.util.RESTPaths.PATH_BOX_SEARCH;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Loggable {

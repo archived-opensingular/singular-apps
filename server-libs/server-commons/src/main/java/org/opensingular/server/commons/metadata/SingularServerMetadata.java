@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.metadata;
 
+@Deprecated
 public interface SingularServerMetadata {
 
     String getServerBaseUrl();

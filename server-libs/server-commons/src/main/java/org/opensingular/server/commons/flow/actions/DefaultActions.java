@@ -18,13 +18,14 @@ package org.opensingular.server.commons.flow.actions;
 
 
 import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 
+import static org.opensingular.server.commons.util.RESTPaths.USERS;
 
 public class DefaultActions {
+
 
     public static final ActionDefinition ACTION_EDIT     = new ActionDefinition("alterar");
     public static final ActionDefinition ACTION_DELETE   = new ActionDefinition("excluir");
@@ -34,7 +35,7 @@ public class DefaultActions {
     public static final ActionDefinition ACTION_RELOCATE = new ActionDefinition("realocar");
 
     public static final ItemActionConfirmation CONFIRMATION_DELETE   = new ItemActionConfirmation("Excluir o rascunho", "Confirma a exclusão?", "Cancelar", "Remover", null);
-    public static final ItemActionConfirmation CONFIRMATION_RELOCATE = new ItemActionConfirmation("Realocar", "Usuário:", "Cancelar", "Realocar", DefaultServerREST.USERS);
+    public static final ItemActionConfirmation CONFIRMATION_RELOCATE = new ItemActionConfirmation("Realocar", "Usuário:", "Cancelar", "Realocar", USERS);
 
     public static final ItemAction EDIT     = new ItemAction(ACTION_EDIT.getName(), "Alterar", Icone.PENCIL, ItemActionType.POPUP);
     public static final ItemAction DELETE   = new ItemAction(ACTION_DELETE.getName(), "Excluir", Icone.MINUS, ItemActionType.ENDPOINT, CONFIRMATION_DELETE);

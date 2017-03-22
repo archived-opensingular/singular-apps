@@ -16,7 +16,13 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import static org.opensingular.server.commons.service.IServerMetadataREST.*;
+
+import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.Serializable;
 import java.util.Arrays;
@@ -25,13 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.opensingular.server.commons.config.IServerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
-
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.server.commons.service.dto.MenuGroup;
+import static org.opensingular.server.commons.util.RESTPaths.MENU_CONTEXT;
+import static org.opensingular.server.commons.util.RESTPaths.PATH_LIST_MENU;
+import static org.opensingular.server.commons.util.RESTPaths.USER;
 
 /**
  * Cache de sessão da configuração de menus que são exibidos para o usuário.

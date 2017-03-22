@@ -21,9 +21,6 @@ import org.opensingular.server.commons.form.FormAction;
 import java.io.Serializable;
 import java.util.Map;
 
-import static org.opensingular.server.commons.rest.DefaultServerREST.EXECUTE;
-import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
-
 public class BoxItemAction implements Serializable {
 
     private String      name;
