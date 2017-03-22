@@ -63,6 +63,7 @@ import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -82,7 +83,6 @@ import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
 
 @Transactional
 public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
@@ -297,7 +297,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 .baseURL("")
                 .formAction(formAction.getId())
                 .petitionId(cod)
-                .param(FORM_NAME, type)
+                .param(DispatcherPageParameters.FORM_NAME, type)
                 .build();
 
         final BoxItemAction boxItemAction = new BoxItemAction();

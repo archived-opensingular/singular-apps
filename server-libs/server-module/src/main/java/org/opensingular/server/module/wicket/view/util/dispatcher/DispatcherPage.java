@@ -260,7 +260,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         }
     }
 
-    protected Class<? extends AbstractFormPage> getFormPageClass(FormPageConfig config) {
+    protected Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
         return FormPage.class;
     }
 

@@ -9,6 +9,10 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Optional;
 
+/**
+ * Representa o contexto de execução de uma página de um módulo.
+ * Armazena as informações passadas como parâmetros pelo server para o módulo.
+ */
 public class ActionContext implements Serializable, Cloneable {
 
     private static final String ACTION = "a";

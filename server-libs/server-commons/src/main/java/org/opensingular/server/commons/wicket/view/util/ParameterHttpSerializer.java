@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.wicket.view.util;
 
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.wicket.view.util.huffman.HuffmanUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -104,12 +103,12 @@ public class ParameterHttpSerializer {
                 ENCODING);
     }
 
-    private static byte[] compressAlgorithm(byte[] bytes) throws UnsupportedEncodingException {
-        return HuffmanUtil.compress(bytes);
+    private static byte[] compressAlgorithm(byte[] bytes) {
+        return bytes;
     }
 
-    private static byte[] decompressAlgorithm(byte[] bytes) throws UnsupportedEncodingException {
-        return HuffmanUtil.decompress(bytes);
+    private static byte[] decompressAlgorithm(byte[] bytes) {
+        return bytes;
     }
 
 

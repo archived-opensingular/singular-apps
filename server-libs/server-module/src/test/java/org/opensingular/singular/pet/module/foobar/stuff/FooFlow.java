@@ -26,7 +26,7 @@ public class FooFlow extends ProcessDefinition<ProcessInstance> {
         BPeople dobar  = flow.addPeopleTask(dobarDef);
         BEnd    endbar = flow.addEnd(endbarDef);
 
-        flow.setStartTask(dobarDef);
+        flow.setStart(dobarDef);
         dobar.go(endbarDef);
 
         return flow.build();
