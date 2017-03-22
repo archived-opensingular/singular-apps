@@ -22,7 +22,7 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 
-import static org.opensingular.server.commons.util.RESTPaths.USERS;
+import static org.opensingular.server.commons.RESTPaths.USERS;
 
 public class DefaultActions {
 

@@ -1,4 +1,4 @@
-package org.opensingular.server.commons.util;
+package org.opensingular.server.commons;
 
 public interface RESTPaths {
 

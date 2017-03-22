@@ -17,12 +17,12 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.inject.Inject;
 import java.util.List;
 
-import static org.opensingular.server.commons.util.RESTPaths.DELETE;
-import static org.opensingular.server.commons.util.RESTPaths.EXECUTE;
-import static org.opensingular.server.commons.util.RESTPaths.MENU_CONTEXT;
-import static org.opensingular.server.commons.util.RESTPaths.PATH_BOX_ACTION;
-import static org.opensingular.server.commons.util.RESTPaths.PATH_LIST_MENU;
-import static org.opensingular.server.commons.util.RESTPaths.USER;
+import static org.opensingular.server.commons.RESTPaths.DELETE;
+import static org.opensingular.server.commons.RESTPaths.EXECUTE;
+import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
+import static org.opensingular.server.commons.RESTPaths.PATH_LIST_MENU;
+import static org.opensingular.server.commons.RESTPaths.USER;
 
 @RestController
 @RequestMapping("/rest/flow")

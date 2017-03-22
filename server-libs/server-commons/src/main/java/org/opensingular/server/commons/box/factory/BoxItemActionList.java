@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
-import static org.opensingular.server.commons.util.RESTPaths.*;
+import static org.opensingular.server.commons.RESTPaths.*;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxItemActionList {

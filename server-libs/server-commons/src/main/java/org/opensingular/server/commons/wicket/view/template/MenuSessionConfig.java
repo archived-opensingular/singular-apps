@@ -31,9 +31,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.opensingular.server.commons.util.RESTPaths.MENU_CONTEXT;
-import static org.opensingular.server.commons.util.RESTPaths.PATH_LIST_MENU;
-import static org.opensingular.server.commons.util.RESTPaths.USER;
+import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
+import static org.opensingular.server.commons.RESTPaths.PATH_LIST_MENU;
+import static org.opensingular.server.commons.RESTPaths.USER;
 
 /**
  * Cache de sessão da configuração de menus que são exibidos para o usuário.
