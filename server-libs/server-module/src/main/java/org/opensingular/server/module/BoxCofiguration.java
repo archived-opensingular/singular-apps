@@ -4,7 +4,6 @@ import org.opensingular.server.commons.service.dto.RequirementData;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -13,13 +12,13 @@ import java.util.UUID;
 
 public class BoxCofiguration {
 
-    private String                              id              = UUID.randomUUID().toString();
-    private Map<String, SingularRequirementRef> requirementRefs = new LinkedHashMap<>();
+    private String                      id              = UUID.randomUUID().toString();
+    private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
     private ItemBoxFactory itemBoxFactory;
 
     public BoxCofiguration(ItemBoxFactory itemBoxFactory, List<SingularRequirementRef> requirementRefs) {
         for (SingularRequirementRef ref : requirementRefs) {
-            this.requirementRefs.put(UUID.randomUUID().toString(), ref);
+            this.requirementRefs.add(ref);
         }
         this.itemBoxFactory = itemBoxFactory;
     }
@@ -33,11 +32,11 @@ public class BoxCofiguration {
     }
 
     public Set<SingularRequirementRef> getRequirementRefs() {
-        return new LinkedHashSet<>(requirementRefs.values());
+        return new LinkedHashSet<>(requirementRefs);
     }
 
     public void addRequirementRefs(SingularRequirementRef requirementRefs) {
-        this.requirementRefs.put(UUID.randomUUID().toString(), requirementRefs);
+        this.requirementRefs.add(requirementRefs);
     }
 
     public ItemBoxFactory getItemBoxFactory() {
@@ -46,8 +45,8 @@ public class BoxCofiguration {
 
     public List<RequirementData> getRequirementsData() {
         List<RequirementData> result = new ArrayList<>();
-        for (Map.Entry<String, SingularRequirementRef> ref : requirementRefs.entrySet()) {
-            result.add(new RequirementData(ref.getKey(), ref.getValue().getRequirementDescription()));
+        for (SingularRequirementRef ref : requirementRefs) {
+            result.add(new RequirementData(ref.getId(), ref.getRequirementDescription()));
         }
         return result;
     }

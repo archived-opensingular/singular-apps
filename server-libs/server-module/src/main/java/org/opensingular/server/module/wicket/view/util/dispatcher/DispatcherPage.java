@@ -31,9 +31,12 @@ import org.opensingular.flow.core.MTaskUserExecutable;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
+import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
@@ -51,6 +54,10 @@ import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.server.commons.wicket.view.template.Template;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
+import org.opensingular.server.module.SingularModule;
+import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.SingularRequirementRef;
+import org.opensingular.server.module.requirement.SingularRequirement;
 import org.opensingular.server.module.wicket.view.util.form.FormPage;
 
 import javax.inject.Inject;
@@ -74,7 +81,23 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     public DispatcherPage() {
         initPage();
-        dispatch(new ActionContext(getRequest().getOriginalUrl().getQueryString()));
+        dispatch(setFormNameActionContext(new ActionContext(getRequest().getOriginalUrl().getQueryString())));
+    }
+
+    /**
+     * Método temporário, remover após migrar os links para usar id do requerimento ao invés do nome do form
+     * @return
+     * @param context
+     */
+    //TODO REFACTOR
+    @SuppressWarnings("unchecked")
+    @Deprecated
+    private ActionContext setFormNameActionContext(ActionContext context){
+        SingularRequirement req = ApplicationContextProvider.get().getBean(SingularModuleConfiguration.class).getRequirementById(context.getRequirementId().orElse(null));
+        if (req != null && !context.getFormName().isPresent()) {
+            context.setFormName(SFormUtil.getTypeName((Class<? extends SType<?>>) req.getMainForm()));
+        }
+        return context;
     }
 
     private void initPage() {
@@ -195,6 +218,8 @@ public class DispatcherPage extends WebPage implements Loggable {
         }
 
     }
+
+
 
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
         String username = SingularSession.get().getUsername();

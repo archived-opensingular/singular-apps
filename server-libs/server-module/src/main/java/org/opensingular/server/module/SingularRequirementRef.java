@@ -1,10 +1,11 @@
 package org.opensingular.server.module;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.server.module.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
+
+import java.util.UUID;
 
 /**
  * Requirement Reference to check equality against same requirements provided many times in configuration classes
@@ -14,6 +15,7 @@ public class SingularRequirementRef {
 
     private SingularRequirement                                        requirement;
     private IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider;
+    private String                                                     id;
 
     SingularRequirementRef(SingularRequirement requirement) {
         this.requirement = requirement;
@@ -24,7 +26,7 @@ public class SingularRequirementRef {
 
     }
 
-    private SingularRequirement getRequirement() {
+    SingularRequirement getRequirement() {
         if (requirement == null) {
             this.requirement = requirementProvider.apply(new SingularRequirementBuilder());
         }
@@ -57,5 +59,12 @@ public class SingularRequirementRef {
 
     String getRequirementDescription() {
         return requirement.getName();
+    }
+
+    public String getId() {
+        if (id == null) {
+            id = UUID.randomUUID().toString();
+        }
+        return id;
     }
 }

@@ -6,6 +6,7 @@ import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ItemBoxData;
+import org.opensingular.server.module.requirement.SingularRequirement;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
@@ -57,8 +58,8 @@ public class SingularModuleConfiguration {
         return this.module;
     }
 
-    public List<SingularRequirementRef> getRequirements() {
-        return requirements;
+    public SingularRequirement getRequirementById(String id) {
+        return requirements.stream().filter(r -> r.getId().equals(id)).map(SingularRequirementRef::getRequirement).findFirst().orElse(null);
     }
 
     /**
