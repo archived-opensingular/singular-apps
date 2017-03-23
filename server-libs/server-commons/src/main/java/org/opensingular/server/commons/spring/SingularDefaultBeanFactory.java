@@ -35,7 +35,6 @@ import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceH
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
-import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
@@ -266,11 +265,6 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IFormAttachmentService formAttachmentService() {
         return new FormAttachmentService();
-    }
-
-    @Bean
-    public FileInputStreamAndHashFactory fileInputStreamAndHashFactory() {
-        return new FileInputStreamAndHashFactory();
     }
 
     @Bean

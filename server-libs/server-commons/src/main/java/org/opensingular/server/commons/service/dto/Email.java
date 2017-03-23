@@ -16,6 +16,8 @@
 package org.opensingular.server.commons.service.dto;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,8 +71,8 @@ public class Email {
     }
     
     public Email addAttachment(File file, String name){
-        try (DigestInputStream inHash = HashUtil.toSHA1InputStream(IOUtil.newBuffredInputStream(file))){
-            String sha1 = HashUtil.bytesToBase16(inHash.getMessageDigest().digest());
+        try{
+            String sha1 = HashUtil.toSHA1Base16(file);
             return addAttachments(new FileSystemAttachmentRef(file.getName(), sha1, file.getAbsolutePath(), file.length(), name));
         } catch (Exception e) {
             throw new SingularFormException("Erro lendo origem de dados", e);

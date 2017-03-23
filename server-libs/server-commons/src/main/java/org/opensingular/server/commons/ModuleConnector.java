@@ -4,7 +4,7 @@ import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
 
 import java.util.List;
 
@@ -51,5 +51,5 @@ public interface ModuleConnector {
     ActionResponse delete(Long id, ActionRequest actionRequest);
 
 
-    List<MenuGroup> loadWorkspaceConfiguration(String context, String user);
+    List<BoxConfigurationMetadata> loadWorkspaceConfiguration(String context, String user);
 }

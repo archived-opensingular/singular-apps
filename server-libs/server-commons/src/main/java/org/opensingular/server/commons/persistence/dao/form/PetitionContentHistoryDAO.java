@@ -25,7 +25,7 @@ import org.opensingular.server.commons.persistence.entity.form.FormVersionHistor
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionUtil;
-import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.MenuSessionConfig;
@@ -74,23 +74,23 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 .forEach(task -> petitionHistoryDTOs.add(new PetitionHistoryDTO().setTask(task)));
 
         MenuSessionConfig menuSessionConfig = SingularSession.get().getMenuSessionConfig();
-        MenuGroup         menuGroup         = menuSessionConfig.getMenuPorLabel(menu);
+        BoxConfigurationMetadata boxConfigurationMetadata = menuSessionConfig.getMenuPorLabel(menu);
 
         return petitionHistoryDTOs
                 .stream()
-                .filter(p -> filterAllowedHistoryTasks(p, menuGroup, filter))
+                .filter(p -> filterAllowedHistoryTasks(p, boxConfigurationMetadata, filter))
                 .sorted((a,b) -> a.getTask().getBeginDate().compareTo(b.getTask().getBeginDate()))
                 .collect(Collectors.toList());
 
     }
 
-    private boolean filterAllowedHistoryTasks(PetitionHistoryDTO petitionHistoryDTO, MenuGroup menuGroup, boolean filter) {
+    private boolean filterAllowedHistoryTasks(PetitionHistoryDTO petitionHistoryDTO, BoxConfigurationMetadata boxConfigurationMetadata, boolean filter) {
         if (!filter) {
             return true;
         }
 
         ProcessDefinitionEntity processDefinition     = petitionHistoryDTO.getTask().getProcessInstance().getProcessVersion().getProcessDefinition();
-        ProcessDTO              processByAbbreviation = menuGroup.getProcessByAbbreviation(processDefinition.getKey());
+        ProcessDTO              processByAbbreviation = boxConfigurationMetadata.getProcessByAbbreviation(processDefinition.getKey());
         return processByAbbreviation != null
                 && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTaskVersion().getAbbreviation());
     }
