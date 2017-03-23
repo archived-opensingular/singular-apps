@@ -182,8 +182,7 @@ public class ActionContext implements Serializable, Cloneable {
                 .toHashCode();
     }
 
-    @Deprecated
     public static ActionContext fromFormConfig(FormPageExecutionContext config) {
-        return new ActionContext();
+        return config.copyOfInnerActionContext();
     }
 }

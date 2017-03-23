@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.module.wicket.rest;
+package org.opensingular.server.module.rest;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -23,6 +23,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import org.opensingular.flow.core.ws.BaseSingularRest;
 
+/**
+ * Unificar com o conector rest
+ */
+@Deprecated
 @RestController
 @RequestMapping("/rest/flow/")
 public class SingularRest extends BaseSingularRest {

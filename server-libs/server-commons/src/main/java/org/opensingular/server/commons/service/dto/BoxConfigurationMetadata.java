@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.service.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -27,6 +28,9 @@ public class BoxConfigurationMetadata implements Serializable {
     private String                label;
     private List<ItemBoxMetadata> itemBoxesMetadata;
     private List<ProcessDTO>      processes;
+
+    public BoxConfigurationMetadata() {
+    }
 
     public String getId() {
         return id;
@@ -59,10 +63,6 @@ public class BoxConfigurationMetadata implements Serializable {
         return itemBoxesMetadata.stream().map(ItemBoxMetadata::getItemBox).collect(Collectors.toList());
     }
 
-    public void setItemBoxes(List<ItemBoxMetadata> itemBoxes) {
-        this.itemBoxesMetadata = itemBoxes;
-    }
-
     public ItemBoxMetadata getItemPorLabel(String itemName) {
         for (ItemBoxMetadata itemBoxMeta : itemBoxesMetadata) {
             if (itemBoxMeta.getItemBox().getName().equalsIgnoreCase(itemName)) {
@@ -80,6 +80,14 @@ public class BoxConfigurationMetadata implements Serializable {
                 .orElse(null);
     }
 
+    public List<ItemBoxMetadata> getItemBoxesMetadata() {
+        return itemBoxesMetadata;
+    }
+
+    public void setItemBoxesMetadata(List<ItemBoxMetadata> itemBoxesMetadata) {
+        this.itemBoxesMetadata = itemBoxesMetadata;
+    }
+
     /**
      * matar esse método em favor do uso do id do requerimento
      *
@@ -87,6 +95,8 @@ public class BoxConfigurationMetadata implements Serializable {
      */
     @Deprecated
     public List<FormDTO> getForms() {
-        return Collections.EMPTY_LIST;
+        return new ArrayList<>(0);
     }
+
+
 }

@@ -27,8 +27,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.wicket.SingularSession;
-import org.opensingular.server.commons.wicket.view.template.MenuSessionConfig;
+import org.opensingular.server.commons.wicket.view.template.MenuService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,6 +35,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEntity, Long> {
+
+    public Optional<MenuService> menuService;
 
     public PetitionContentHistoryDAO() {
         super(PetitionContentHistoryEntity.class);
@@ -73,13 +74,17 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 .filter(task -> !petitionHistoryTaskCods.contains(task.getCod()))
                 .forEach(task -> petitionHistoryDTOs.add(new PetitionHistoryDTO().setTask(task)));
 
-        MenuSessionConfig menuSessionConfig = SingularSession.get().getMenuSessionConfig();
-        BoxConfigurationMetadata boxConfigurationMetadata = menuSessionConfig.getMenuPorLabel(menu);
+        BoxConfigurationMetadata boxConfigurationMetadata;
+        if (menuService.isPresent()) {
+            boxConfigurationMetadata = menuService.get().getMenuByLabel(menu);
+        } else {
+            boxConfigurationMetadata = null;
+        }
 
         return petitionHistoryDTOs
                 .stream()
                 .filter(p -> filterAllowedHistoryTasks(p, boxConfigurationMetadata, filter))
-                .sorted((a,b) -> a.getTask().getBeginDate().compareTo(b.getTask().getBeginDate()))
+                .sorted((a, b) -> a.getTask().getBeginDate().compareTo(b.getTask().getBeginDate()))
                 .collect(Collectors.toList());
 
     }
@@ -102,12 +107,12 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
     public Optional<FormVersionHistoryEntity> findLastestByPetitionCodAndType(String typeName, Long cod) {
         return findUniqueResult(FormVersionHistoryEntity.class, getSession()
                 .createQuery(" select fvhe from PetitionContentHistoryEntity p " +
-                " inner join p.formVersionHistoryEntities  fvhe " +
-                " inner join fvhe.formVersion fv  " +
-                " inner join fv.formEntity fe  " +
-                " inner join fe.formType ft  " +
-                " where ft.abbreviation = :typeName and p.petitionEntity.cod = :cod " +
-                " order by p.historyDate desc ")
+                        " inner join p.formVersionHistoryEntities  fvhe " +
+                        " inner join fvhe.formVersion fv  " +
+                        " inner join fv.formEntity fe  " +
+                        " inner join fe.formType ft  " +
+                        " where ft.abbreviation = :typeName and p.petitionEntity.cod = :cod " +
+                        " order by p.historyDate desc ")
                 .setParameter("typeName", typeName)
                 .setParameter("cod", cod));
     }

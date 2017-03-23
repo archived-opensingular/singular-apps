@@ -60,7 +60,7 @@ public class FormPageExecutionContext implements Serializable {
     }
 
 
-    public String getFormType() {
+    public String getFormName() {
         return formType;
     }
 
@@ -81,4 +81,9 @@ public class FormPageExecutionContext implements Serializable {
     public FlowResolver getFlowResolver() {
         return null;
     }
+
+    public ActionContext copyOfInnerActionContext() {
+        return actionContext.clone();
+    }
+
 }

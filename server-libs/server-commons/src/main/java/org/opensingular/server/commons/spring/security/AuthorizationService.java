@@ -33,7 +33,7 @@ import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.MenuGroup;
+import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
 import org.opensingular.server.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -66,16 +66,16 @@ public class AuthorizationService implements Loggable {
     @Named("formConfigWithDatabase")
     private Optional<SFormConfig<String>> singularFormConfig;
 
-    public void filterBoxWithPermissions(List<MenuGroup> groupDTOs, String idUsuario) {
+    public void filterBoxWithPermissions(List<BoxConfigurationMetadata> groupDTOs, String idUsuario) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
 
-        for (Iterator<MenuGroup> it = groupDTOs.iterator(); it.hasNext(); ) {
-            MenuGroup menuGroup = it.next();
-            String permissionNeeded = menuGroup.getId().toUpperCase();
+        for (Iterator<BoxConfigurationMetadata> it = groupDTOs.iterator(); it.hasNext(); ) {
+            BoxConfigurationMetadata boxConfigurationMetadata = it.next();
+            String permissionNeeded = boxConfigurationMetadata.getId().toUpperCase();
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
                 it.remove();
             } else {
-                filterForms(menuGroup, permissions, idUsuario);
+                filterForms(boxConfigurationMetadata, permissions, idUsuario);
             }
 
         }
@@ -140,8 +140,8 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    protected void filterForms(MenuGroup menuGroup, List<SingularPermission> permissions, String idUsuario) {
-        for (Iterator<FormDTO> it = menuGroup.getForms().iterator(); it.hasNext(); ) {
+    protected void filterForms(BoxConfigurationMetadata boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
+        for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
             FormDTO form = it.next();
             String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {

@@ -18,6 +18,7 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,6 +32,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
@@ -54,7 +56,9 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.ItemBoxMetadata;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.opensingular.server.core.wicket.history.HistoryPage;
@@ -77,17 +81,16 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
 
     protected IModel<BoxItemModel>    currentModel;
     private   Pair<String, SortOrder> sortProperty;
-    private   IModel<ItemBox>         itemBoxModel;
+    private   IModel<ItemBoxMetadata> itemBoxModel;
 
-    public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxModel) {
+    public BoxContent(String id, String processGroupCod, String menu, ItemBoxMetadata itemBox) {
         super(id, processGroupCod, menu);
-        this.itemBoxModel = new Model<>(itemBoxModel);
+        this.itemBoxModel = new Model<>(itemBox);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        showNew();
         configureQuickFilter();
     }
 
@@ -96,26 +99,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
         getPesquisarButton().setVisible(isShowQuickFilter());
     }
 
-    private void showNew() {
+    @Override
+    public Component buildNewPetitionButton(String id) {
         if (isShowNew() && getMenu() != null) {
-            List<FormDTO> forms = getForms().stream().filter(FormDTO::isNewable).collect(Collectors.toList());
-            for (FormDTO form : forms) {
-                String url = DispatcherPageUtil
-                        .baseURL(getBaseUrl())
-                        .formAction(FormAction.FORM_FILL.getId())
-                        .petitionId(null)
-                        .param(DispatcherPageParameters.FORM_NAME, form.getName())
-                        .params(getLinkParams())
-                        .build();
-
-                if (forms.size() > 1) {
-                    dropdownMenu.adicionarMenu(id -> new ModuleLink(id, $m.ofValue(form.getDescription()), url));
-                } else {
-                    adicionarBotaoGlobal(id -> new ModuleLink(id, getMessage("label.button.insert"), url));
-                }
-            }
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(itemBoxModel, "requirements"));
+        } else {
+            return super.buildNewPetitionButton(id);
         }
-
     }
 
     @Override
@@ -541,6 +531,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
     }
 
     private ItemBox getItemBoxModelObject() {
-        return itemBoxModel.getObject();
+        return itemBoxModel.getObject().getItemBox();
     }
 }

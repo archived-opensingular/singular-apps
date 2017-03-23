@@ -7,6 +7,15 @@ import java.util.List;
 
 public class WorkspaceConfigurationMetadata implements Serializable {
 
+    private List<BoxConfigurationMetadata> boxesConfiguration;
+
+    public WorkspaceConfigurationMetadata() {
+    }
+
+    public WorkspaceConfigurationMetadata(List<BoxConfigurationMetadata> boxConfigurationMetadatas) {
+        this.boxesConfiguration = boxConfigurationMetadatas;
+    }
+
     public List<BoxConfigurationMetadata> getBoxesConfiguration() {
         return boxesConfiguration;
     }
@@ -14,7 +23,5 @@ public class WorkspaceConfigurationMetadata implements Serializable {
     public void setBoxesConfiguration(List<BoxConfigurationMetadata> boxesConfiguration) {
         this.boxesConfiguration = boxesConfiguration;
     }
-
-    private List<BoxConfigurationMetadata> boxesConfiguration;
 
 }

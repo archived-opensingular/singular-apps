@@ -42,6 +42,9 @@ public class ItemBox implements Serializable {
     // Ações específicas para um processo
     private LinkedHashMap<String, ItemAction> processActions;
 
+    public ItemBox() {
+    }
+
     public String getName() {
         return name;
     }
@@ -139,12 +142,12 @@ public class ItemBox implements Serializable {
         this.endedTasks = endedTasks;
     }
 
-    public void setId(String id) {
-        this.id = id;
-    }
-
     public String getId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSearchEndpoint() {
@@ -154,7 +157,4 @@ public class ItemBox implements Serializable {
     public String getCountEndpoint() {
         return "/count/" + id;
     }
-
-
-
 }

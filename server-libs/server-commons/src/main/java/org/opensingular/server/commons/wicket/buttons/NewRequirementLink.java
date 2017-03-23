@@ -16,80 +16,99 @@
 
 package org.opensingular.server.commons.wicket.buttons;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
+import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.server.commons.wicket.view.util.ActionContext;
+import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.service.dto.RequirementMetadata;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
-public class NewRequirementLink extends WebMarkupContainer {
+public class NewRequirementLink extends Panel {
 
-    private List<Object> requirements;
-    private IModel<?> labelModel;
+    private final String                            url;
+    private final Map<String, String>               params;
+    private       IModel<List<RequirementMetadata>> requirements;
+    private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
-    public NewRequirementLink(String id, ActionContext actionContext, List<Object> requirements) {
+    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<List<RequirementMetadata>> requirements) {
+        this(id, null, url, params, requirements);
+    }
+
+    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<List<RequirementMetadata>> requirements) {
         super(id);
-        labelModel =   new StringResourceModel("label.button.insert", this, null);
+        this.url = url;
+        this.params = params;
+        this.labelModel = labelModel == null ? this.labelModel : labelModel;
         this.requirements = requirements;
+        buildButtons();
     }
 
-    public NewRequirementLink(String id, IModel<?> labelModel, ActionContext actionContext, List<Object> requirements) {
-        super(id);
-        this.labelModel = labelModel;
-        this.requirements = requirements;
+    protected void buildButtons() {
+        addSingleButton(() -> Optional.ofNullable(requirements.getObject()).map(List::size).orElse(0) == 1);
+        addDropdownButton(() -> Optional.ofNullable(requirements.getObject()).map(List::size).orElse(0) > 1);
     }
 
-    @Override
-    protected void onInitialize() {
-        super.onInitialize();
-        Integer numberOfRequirements = Optional.ofNullable(requirements).map(List::size).orElse(0);
-        addSingleButton(numberOfRequirements == 1);
-        addDropdownButton(numberOfRequirements > 1);
+    protected void addSingleButton(ISupplier<Boolean> visibleSupplier) {
+        Link<String> newButton = buildLink("_botao", labelModel, requirements.getObject().stream().findFirst().get());
+        newButton.add($b.visibleIf(visibleSupplier));
+        this.add(newButton);
     }
 
-    protected void addSingleButton(boolean visible) {
-        Link botoes = new Link("_botao") {
+    private Link<String> buildLink(String id, IModel<String> labelModel, RequirementMetadata requirement) {
+        Link botao = new Link(id) {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
+                this.add($b.attr("href", NewRequirementLink.this.buildURL(requirement)));
                 this.add($b.attr("target", "_blank"));
-                this.setVisible(visible);
+                this.setBody(labelModel);
             }
 
             @Override
             public void onClick() {
             }
         };
+        return botao;
     }
 
-    protected void addDropdownButton(boolean visible) {
+    protected void addDropdownButton(ISupplier<Boolean> visibleSupplier) {
         DropdownMenu dropdownMenu = new DropdownMenu("_novos");
-        dropdownMenu.setVisible(visible);
+        dropdownMenu.add($b.visibleIf(visibleSupplier));
+        dropdownMenu.add($b.onConfigure(c -> {
+            for (RequirementMetadata r : requirements.getObject()) {
+                dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(r.getLabel()), r));
+            }
+        }));
+        this.add(dropdownMenu);
     }
 
-    protected String getURL(Object requirement) {
-//        DispatcherPageUtil.buildFullURL(context);
-//
-//        String url = DispatcherPageUtil
-//                .baseURL(getBaseUrl())
-//                .formAction(FormActions.FORM_FILL.getId())
-//                .petitionId(null)
-//                .param(DispatcherPageParameters.FORM_NAME, form.getName())
-//                .params(getLinkParams())
-//                .build();
-//        return url;
-        return "";
+    protected String buildURL(RequirementMetadata requirement) {
+        String result = DispatcherPageUtil
+                .baseURL(url)
+                .formAction(FormAction.FORM_FILL.getId())
+                .petitionId(null)
+                .param(DispatcherPageParameters.REQUIREMENT_ID, requirement.getId())
+                .params(params)
+                .build();
+        return result;
+
     }
 
     @Override
     protected boolean getStatelessHint() {
         return true;
     }
+
 
 }

@@ -30,6 +30,8 @@ public class DispatcherPageParameters {
 
     public static final String FORM_NAME = "f";
 
+    public static final String REQUIREMENT_ID = "r";
+
     public static final String INSTANCE_ID = "i";
 
     public static final String PROCESS_GROUP_PARAM_NAME = "ctx";

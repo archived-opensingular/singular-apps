@@ -27,29 +27,26 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
-import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.MenuGroup;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
+import org.opensingular.server.commons.wicket.view.template.MenuService;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -69,59 +66,45 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
  */
 public abstract class AbstractBoxContent<T extends Serializable> extends Content {
 
-    private static final long serialVersionUID = -3611649597709058163L;
-
-    public static final int DEFAULT_ROWS_PER_PAGE = 15;
-
-    private String processGroupCod;
-
-    private String menu;
-
-    private List<ProcessDTO> processes;
-
-    private List<FormDTO> forms;
+    public static final  int  DEFAULT_ROWS_PER_PAGE = 15;
+    private static final long serialVersionUID      = -3611649597709058163L;
 
     @Inject
-    protected PetitionService<?,?> petitionService;
+    protected PetitionService<?, ?> petitionService;
 
-    /**
-     * Form padrão
-     */
-    private Form<?> form = new Form<>("form");
-
-    /**
-     * Filtro Rapido
-     */
-    private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
-
-    /**
-     * Botões globais
-     */
-    protected RepeatingView botoes = new RepeatingView("_botoes");
-
-    protected DropdownMenu dropdownMenu = new DropdownMenu("_novos");
+    @Inject
+    protected transient Optional<MenuService> menuService;
 
     /**
      * Tabela de registros
      */
     protected BSDataTable<T, String> tabela;
-
+    /**
+     * Confirmation Form
+     */
+    protected Form<?> confirmationForm = new Form<>("confirmationForm");
+    private String           processGroupCod;
+    private String           menu;
+    private List<ProcessDTO> processes;
+    private List<FormDTO>    forms;
+    /**
+     * Form padrão
+     */
+    private Form<?>           form            = new Form<>("form");
+    /**
+     * Filtro Rapido
+     */
+    private TextField<String> filtroRapido    = new TextField<>("filtroRapido", new Model<>());
     /**
      * Botão de pesquisa do filtro rapido
      */
-    private AjaxButton pesquisarButton = new AjaxButton("pesquisar") {
+    private AjaxButton        pesquisarButton = new AjaxButton("pesquisar") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
             super.onSubmit(target, form);
             onFiltroRapido(filtroRapido.getModel(), target);
         }
     };
-
-    /**
-     * Confirmation Form
-     */
-    protected Form<?> confirmationForm = new Form<>("confirmationForm");
-
     private IModel<T> currentModel;
 
     /**
@@ -147,6 +130,10 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
     public ProcessGroupEntity getProcessGroup() {
         return processGroup;
+    }
+
+    protected Component buildNewPetitionButton(String id) {
+        return new WebMarkupContainer(id);
     }
 
     protected abstract void appendPropertyColumns(BSDataTableBuilder<T, String, IColumn<T, String>> builder);
@@ -231,10 +218,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         confirmationModal.show(target);
     }
 
-    public <X> void adicionarBotaoGlobal(IFunction<String, Link<X>> funcaoConstrutora) {
-        botoes.add(funcaoConstrutora.apply(botoes.newChildId()));
-    }
-
     protected TextField<String> getFiltroRapido() {
         return filtroRapido;
     }
@@ -259,19 +242,22 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     protected void onInitialize() {
         super.onInitialize();
         processGroup = petitionService.findByProcessGroupCod(getProcessGroupCod());
-        
+
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(criarDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
         tabela = construirTabela(builder);
         tabela.add($b.classAppender("worklist"));
 
-        add(form.add(filtroRapido, pesquisarButton, botoes, dropdownMenu));
+        add(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
         add(tabela);
         add(confirmationForm.add(confirmationModal));
         if (getMenu() != null) {
-            setProcesses(Optional.ofNullable(getMenuSessionConfig().getMenuPorLabel(getMenu())).map(MenuGroup::getProcesses).orElse(new ArrayList<>(0)));
-            setForms(Optional.ofNullable(getMenuSessionConfig().getMenuPorLabel(getMenu())).map(MenuGroup::getForms).orElse(new ArrayList<>(0)));
-            if (CollectionUtils.isEmpty(getProcesses())){
+            if (menuService.isPresent()) {
+                BoxConfigurationMetadata boxConfigurationMetadata = menuService.get().getMenuByLabel(getMenu());
+                setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationMetadata::getProcesses).orElse(new ArrayList<>(0)));
+                setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationMetadata::getForms).orElse(new ArrayList<>(0)));
+            }
+            if (CollectionUtils.isEmpty(getProcesses())) {
                 getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
             }
         }

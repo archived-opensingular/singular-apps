@@ -106,7 +106,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName));
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
-        if (this.config.getFormType() == null) {
+        if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
     }
@@ -237,13 +237,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     @Override
     protected final Content getContent(String id) {
-        if (config.getPetitionId().isPresent()) {
+        if (config.getFormName() == null && config.getPetitionId().isPresent()) {
             String url = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
             getLogger().info(" Redirecting to " + url);
             throw new RedirectToUrlException(url);
         }
 
-        content = new AbstractFormContent(id, config.getFormType(), getViewMode(config), getAnnotationMode(config)) {
+        content = new AbstractFormContent(id, config.getFormName(), getViewMode(config), getAnnotationMode(config)) {
 
             @Override
             protected IModel<?> getContentTitleModel() {
@@ -290,7 +290,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
         };
 
-        final RefType refType = formPetitionService.loadRefType(config.getFormType());
+        final RefType refType = formPetitionService.loadRefType(config.getFormName());
         content.singularFormPanel.setInstanceCreator(() -> createInstance(refType));
 
         onBuildSingularFormPanel(content.singularFormPanel);
@@ -697,7 +697,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     @Nonnull
     private String getFormType() {
-        return config.getFormType();
+        return config.getFormName();
     }
 
     protected ViewMode getViewMode(FormPageExecutionContext formPageConfig) {

@@ -51,5 +51,5 @@ public interface ModuleConnector {
     ActionResponse delete(Long id, ActionRequest actionRequest);
 
 
-    List<BoxConfigurationMetadata> loadWorkspaceConfiguration(String context, String user);
+    WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
 }

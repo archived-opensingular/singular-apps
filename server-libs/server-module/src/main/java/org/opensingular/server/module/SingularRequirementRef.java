@@ -1,18 +1,16 @@
 package org.opensingular.server.module;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.server.module.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
-
-import javax.annotation.Nullable;
 
 /**
  * Requirement Reference to check equality against same requirements provided many times in configuration classes
  * Two requirementes are considered equal if it have the same name.
  */
 public class SingularRequirementRef {
-
 
     private SingularRequirement                                        requirement;
     private IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider;
@@ -55,5 +53,9 @@ public class SingularRequirementRef {
                 .append(requirement)
                 .append(requirementProvider)
                 .toHashCode();
+    }
+
+    String getRequirementDescription() {
+        return SFormUtil.getTypeLabel(requirement.getMainForm()).orElse("Novo");
     }
 }

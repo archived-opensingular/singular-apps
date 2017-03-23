@@ -16,22 +16,18 @@
 
 package org.opensingular.server.commons.wicket;
 
-import static org.opensingular.server.commons.wicket.view.template.Menu.MENU_CACHE;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.springframework.security.core.context.SecurityContextHolder;
-
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.opensingular.server.commons.wicket.view.template.MenuSessionConfig;
+import org.springframework.security.core.context.SecurityContextHolder;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SingularSession extends AuthenticatedWebSession {
 
@@ -53,7 +49,7 @@ public class SingularSession extends AuthenticatedWebSession {
     @Override
     public Roles getRoles() {
         if (getUserDetails() != null) {
-            return new Roles(getUserDetails().getPermissions().stream().map( sp -> sp.getSingularId()).collect(Collectors.toList()).toArray(new String[0]));
+            return new Roles(getUserDetails().getPermissions().stream().map(sp -> sp.getSingularId()).collect(Collectors.toList()).toArray(new String[0]));
         }
         return new Roles();
     }
@@ -106,9 +102,6 @@ public class SingularSession extends AuthenticatedWebSession {
         this.categoriaSelecionada = categoriaSelecionada;
     }
 
-    public MenuSessionConfig getMenuSessionConfig() {
-        return (MenuSessionConfig) getAttribute(MENU_CACHE);
-    }
 
 }
 

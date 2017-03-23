@@ -1,11 +1,11 @@
 package org.opensingular.server.module.rest;
 
 import org.opensingular.server.commons.ModuleConnector;
+import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.MenuGroup;
 import org.opensingular.server.module.box.service.ItemBoxDataService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -15,13 +15,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
-import java.util.List;
 
 import static org.opensingular.server.commons.RESTPaths.DELETE;
 import static org.opensingular.server.commons.RESTPaths.EXECUTE;
 import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
 import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
-import static org.opensingular.server.commons.RESTPaths.PATH_LIST_MENU;
+import static org.opensingular.server.commons.RESTPaths.WORKSPACE_CONFIGURATION;
 import static org.opensingular.server.commons.RESTPaths.USER;
 
 @RestController
@@ -58,9 +57,9 @@ public class RESTModuleConnector implements ModuleConnector {
     }
 
     @Override
-    @RequestMapping(value = PATH_LIST_MENU, method = RequestMethod.GET)
-    public List<MenuGroup> loadWorkspaceConfiguration(@RequestParam(MENU_CONTEXT) String context, @RequestParam(USER) String user) {
-        return restBackstageService.listMenu(context, user);
+    @RequestMapping(value = WORKSPACE_CONFIGURATION, method = RequestMethod.GET)
+    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(@RequestParam(MENU_CONTEXT) String context, @RequestParam(USER) String user) {
+        return new WorkspaceConfigurationMetadata(restBackstageService.listMenu(context, user));
     }
 
 }

@@ -2,7 +2,6 @@ package org.opensingular.server.module.box.filter;
 
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.box.factory.BoxItemActionList;
@@ -39,23 +38,19 @@ public class ActionAppenderItemBoxDataFilter implements ItemBoxDataFilter, Logga
 
     private List<BoxItemAction> findActionConfigAndFilter(ItemBoxData itemBoxData, BoxItemActionList boxItemActionList) {
         String processKey = (String) itemBoxData.getProcessType();
-        ActionConfig actionConfig = null;
 
-        try {
+        if (processKey != null) {
             ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
-            actionConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
-        } catch (SingularException e) {
-            getLogger().error(e.getMessage(), e);
-        }
-
-        if (actionConfig != null) {
-           return filterByActionConfig(boxItemActionList, actionConfig);
+            ActionConfig actionConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
+            if (actionConfig != null) {
+                return filterByActionConfig(boxItemActionList, actionConfig);
+            }
         }
 
         return boxItemActionList.getBoxItemActions();
     }
 
-    private List<BoxItemAction> filterByActionConfig( BoxItemActionList boxItemActionList, ActionConfig actionConfig) {
+    private List<BoxItemAction> filterByActionConfig(BoxItemActionList boxItemActionList, ActionConfig actionConfig) {
         return boxItemActionList.getBoxItemActions().stream()
                 .filter(itemAction -> actionConfig.containsAction(itemAction.getName()))
                 .collect(Collectors.toList());
