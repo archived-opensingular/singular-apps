@@ -33,7 +33,7 @@ import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -66,11 +66,11 @@ public class AuthorizationService implements Loggable {
     @Named("formConfigWithDatabase")
     private Optional<SFormConfig<String>> singularFormConfig;
 
-    public void filterBoxWithPermissions(List<BoxConfigurationMetadata> groupDTOs, String idUsuario) {
+    public void filterBoxWithPermissions(List<BoxConfigurationData> groupDTOs, String idUsuario) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
 
-        for (Iterator<BoxConfigurationMetadata> it = groupDTOs.iterator(); it.hasNext(); ) {
-            BoxConfigurationMetadata boxConfigurationMetadata = it.next();
+        for (Iterator<BoxConfigurationData> it = groupDTOs.iterator(); it.hasNext(); ) {
+            BoxConfigurationData boxConfigurationMetadata = it.next();
             String permissionNeeded = boxConfigurationMetadata.getId().toUpperCase();
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
                 it.remove();
@@ -140,7 +140,7 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    protected void filterForms(BoxConfigurationMetadata boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
+    protected void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
         for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
             FormDTO form = it.next();
             String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());

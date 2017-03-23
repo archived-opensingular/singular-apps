@@ -25,7 +25,7 @@ import org.opensingular.server.commons.persistence.entity.form.FormVersionHistor
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionUtil;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 
@@ -74,7 +74,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 .filter(task -> !petitionHistoryTaskCods.contains(task.getCod()))
                 .forEach(task -> petitionHistoryDTOs.add(new PetitionHistoryDTO().setTask(task)));
 
-        BoxConfigurationMetadata boxConfigurationMetadata;
+        BoxConfigurationData boxConfigurationMetadata;
         if (menuService.isPresent()) {
             boxConfigurationMetadata = menuService.get().getMenuByLabel(menu);
         } else {
@@ -89,7 +89,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
 
     }
 
-    private boolean filterAllowedHistoryTasks(PetitionHistoryDTO petitionHistoryDTO, BoxConfigurationMetadata boxConfigurationMetadata, boolean filter) {
+    private boolean filterAllowedHistoryTasks(PetitionHistoryDTO petitionHistoryDTO, BoxConfigurationData boxConfigurationMetadata, boolean filter) {
         if (!filter) {
             return true;
         }

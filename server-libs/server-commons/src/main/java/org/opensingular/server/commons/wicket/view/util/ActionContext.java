@@ -48,10 +48,15 @@ public class ActionContext implements Serializable, Cloneable {
 
     /**
      * Used by {@link this#clone()} method only
+     *
      * @param params
      */
     private ActionContext(LinkedHashMap<String, String> params) {
         this.params = params;
+    }
+
+    public static ActionContext fromFormConfig(FormPageExecutionContext config) {
+        return config.copyOfInnerActionContext();
     }
 
     public Optional<Long> getPetitionId() {
@@ -79,6 +84,14 @@ public class ActionContext implements Serializable, Cloneable {
     public ActionContext setParentPetitionId(Long parentPetitionId) {
         this.params.put(PARENT_PETITION_ID, String.valueOf(parentPetitionId));
         return this;
+    }
+
+    public Optional<String> getRequirementId() {
+        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION));
+    }
+
+    public void setRequirementId(String requirementId) {
+        this.params.put(REQUIREMENT_DEFINITION, requirementId);
     }
 
     public Optional<String> getFormName() {
@@ -158,7 +171,7 @@ public class ActionContext implements Serializable, Cloneable {
         return ParameterHttpSerializer.encode(params);
     }
 
-    public ActionContext clone(){
+    public ActionContext clone() {
         return new ActionContext(params);
     }
 
@@ -180,9 +193,5 @@ public class ActionContext implements Serializable, Cloneable {
         return new HashCodeBuilder(17, 37)
                 .append(params)
                 .toHashCode();
-    }
-
-    public static ActionContext fromFormConfig(FormPageExecutionContext config) {
-        return config.copyOfInnerActionContext();
     }
 }

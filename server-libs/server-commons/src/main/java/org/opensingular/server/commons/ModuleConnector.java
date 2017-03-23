@@ -4,9 +4,6 @@ import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
-
-import java.util.List;
 
 /**
  * Module connector interface for server communication

@@ -2,7 +2,7 @@ package org.opensingular.server.core.service;
 
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.springframework.context.annotation.Scope;
 
@@ -22,8 +22,8 @@ public class ServerMenuService implements MenuService, Loggable {
     @Inject
     private SingularServerSessionConfiguration singularServerSessionConfiguration;
 
-    private Map<ProcessGroupEntity, List<BoxConfigurationMetadata>> map;
-    private Map<String, BoxConfigurationMetadata>                   mapMenu;
+    private Map<ProcessGroupEntity, List<BoxConfigurationData>> map;
+    private Map<String, BoxConfigurationData>                   mapMenu;
 
     @PostConstruct
     public void initialize() {
@@ -35,14 +35,14 @@ public class ServerMenuService implements MenuService, Loggable {
         map = new HashMap<>();
         mapMenu = null;
         singularServerSessionConfiguration.reload();
-        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationMetadata>> entry : singularServerSessionConfiguration.getProcessGroupBoxConfigurationMap().entrySet()) {
+        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> entry : singularServerSessionConfiguration.getProcessGroupBoxConfigurationMap().entrySet()) {
             addMenu(entry.getKey(), entry.getValue());
         }
     }
 
     @Override
-    public BoxConfigurationMetadata getDefaultSelectedMenu(ProcessGroupEntity processGroupEntity) {
-        final List<BoxConfigurationMetadata> menusPorCategoria = getMenusByCategory(processGroupEntity);
+    public BoxConfigurationData getDefaultSelectedMenu(ProcessGroupEntity processGroupEntity) {
+        final List<BoxConfigurationData> menusPorCategoria = getMenusByCategory(processGroupEntity);
         if (menusPorCategoria != null && !menusPorCategoria.isEmpty()) {
             return menusPorCategoria.get(0);
         }
@@ -50,12 +50,12 @@ public class ServerMenuService implements MenuService, Loggable {
     }
 
     @Override
-    public List<BoxConfigurationMetadata> getMenusByCategory(ProcessGroupEntity categoria) {
+    public List<BoxConfigurationData> getMenusByCategory(ProcessGroupEntity categoria) {
         return map.get(categoria);
     }
 
     @Override
-    public BoxConfigurationMetadata getMenuByLabel(String label) {
+    public BoxConfigurationData getMenuByLabel(String label) {
         return getMapMenu().get(label);
     }
 
@@ -64,13 +64,13 @@ public class ServerMenuService implements MenuService, Loggable {
         return new ArrayList<>(map.keySet());
     }
 
-    private Map<String, BoxConfigurationMetadata> getMapMenu() {
+    private Map<String, BoxConfigurationData> getMapMenu() {
         if (mapMenu == null) {
             mapMenu = new HashMap<>();
         }
 
-        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationMetadata>> processGroupEntityListEntry : map.entrySet()) {
-            for (BoxConfigurationMetadata boxConfigurationMetadataDTO : processGroupEntityListEntry.getValue()) {
+        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> processGroupEntityListEntry : map.entrySet()) {
+            for (BoxConfigurationData boxConfigurationMetadataDTO : processGroupEntityListEntry.getValue()) {
                 mapMenu.put(boxConfigurationMetadataDTO.getLabel(), boxConfigurationMetadataDTO);
             }
         }
@@ -78,12 +78,12 @@ public class ServerMenuService implements MenuService, Loggable {
         return mapMenu;
     }
 
-    private void addMenu(ProcessGroupEntity categoria, List<BoxConfigurationMetadata> menusGroupDTO) {
+    private void addMenu(ProcessGroupEntity categoria, List<BoxConfigurationData> menusGroupDTO) {
         mapMenu = null;
         map.put(categoria, menusGroupDTO);
     }
 
-    public Map<ProcessGroupEntity, List<BoxConfigurationMetadata>> getMap() {
+    public Map<ProcessGroupEntity, List<BoxConfigurationData>> getMap() {
         return Collections.unmodifiableMap(map);
     }
 }

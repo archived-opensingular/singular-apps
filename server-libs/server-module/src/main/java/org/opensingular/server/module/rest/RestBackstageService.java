@@ -22,8 +22,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
-import org.opensingular.server.commons.service.dto.ItemBoxMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
@@ -64,7 +63,7 @@ public class RestBackstageService implements Loggable {
     private SFormConfig<String> singularFormConfig;
 
 
-    public List<BoxConfigurationMetadata> listMenu(String context, String user) {
+    public List<BoxConfigurationData> listMenu(String context, String user) {
         return listMenu(IServerContext.getContextFromName(context, singularServerConfiguration.getContexts()), user);
     }
 
@@ -117,18 +116,18 @@ public class RestBackstageService implements Loggable {
     }
 
 
-    private List<BoxConfigurationMetadata> listMenu(IServerContext context, String user) {
-        List<BoxConfigurationMetadata> groups = listMenuGroups();
+    private List<BoxConfigurationData> listMenu(IServerContext context, String user) {
+        List<BoxConfigurationData> groups = listMenuGroups();
         filterAccessRight(groups, user);
         customizeMenu(groups, context, user);
         return groups;
     }
 
 
-    private List<BoxConfigurationMetadata> listMenuGroups() {
-        final List<BoxConfigurationMetadata> groups = new ArrayList<>();
+    private List<BoxConfigurationData> listMenuGroups() {
+        final List<BoxConfigurationData> groups = new ArrayList<>();
         getDefinitionsMap().forEach((category, definitions) -> {
-            BoxConfigurationMetadata boxConfigurationMetadata = new BoxConfigurationMetadata();
+            BoxConfigurationData boxConfigurationMetadata = new BoxConfigurationData();
             boxConfigurationMetadata.setId(permissionResolverService.buildCategoryPermission(category).getSingularId());
             boxConfigurationMetadata.setLabel(category);
             boxConfigurationMetadata.setProcesses(new ArrayList<>());
@@ -158,7 +157,7 @@ public class RestBackstageService implements Loggable {
     }
 
     @SuppressWarnings("unchecked")
-    private void addForms(BoxConfigurationMetadata boxConfigurationMetadata) {
+    private void addForms(BoxConfigurationData boxConfigurationMetadata) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
             SInfoType annotation = formClass.getAnnotation(SInfoType.class);
             String name = SFormUtil.getTypeName(formClass);
@@ -172,12 +171,12 @@ public class RestBackstageService implements Loggable {
         }
     }
 
-    private void filterAccessRight(List<BoxConfigurationMetadata> groupDTOs, String user) {
+    private void filterAccessRight(List<BoxConfigurationData> groupDTOs, String user) {
         authorizationService.filterBoxWithPermissions(groupDTOs, user);
     }
 
-    private void customizeMenu(List<BoxConfigurationMetadata> groupDTOs, IServerContext menuContext, String user) {
-        for (BoxConfigurationMetadata boxConfigurationMetadata : groupDTOs) {
+    private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
+        for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
             boxConfigurationMetadata.setItemBoxesMetadata(singularModuleConfiguration.buildItemBoxes(menuContext));
         }
     }

@@ -2,19 +2,21 @@ package org.opensingular.server.commons.service.dto;
 
 import java.io.Serializable;
 
-public class RequirementMetadata implements Serializable {
+public class RequirementData implements Serializable {
 
     private String id;
     private String label;
 
-    public RequirementMetadata() {
+    public RequirementData() {
     }
 
-    public RequirementMetadata(String id) {
+    public RequirementData(String id) {
         this.id = id;
     }
 
-    public RequirementMetadata(String key, String requirementDescription) {
+    public RequirementData(String key, String requirementDescription) {
+        this.id = key;
+        this.label = requirementDescription;
     }
 
     public String getId() {

@@ -6,7 +6,7 @@ import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -81,17 +81,17 @@ public class SingularServerSessionConfiguration implements Loggable {
         return null;
     }
 
-    public LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationMetadata>> getProcessGroupBoxConfigurationMap() {
-        LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationMetadata>> map        = new LinkedHashMap<>();
+    public LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> getProcessGroupBoxConfigurationMap() {
+        LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
         List<ProcessGroupEntity>                                          categorias = buscarCategorias();
         for (ProcessGroupEntity categoria : categorias) {
-            final List<BoxConfigurationMetadata> boxConfigurationMetadataDTOs = listMenus(categoria);
+            final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
             map.put(categoria, boxConfigurationMetadataDTOs);
         }
         return map;
     }
 
-    private List<BoxConfigurationMetadata> listMenus(ProcessGroupEntity processGroup) {
+    private List<BoxConfigurationData> listMenus(ProcessGroupEntity processGroup) {
         if (configMaps.containsKey(processGroup)) {
             return configMaps.get(processGroup).getBoxesConfiguration();
         } else {

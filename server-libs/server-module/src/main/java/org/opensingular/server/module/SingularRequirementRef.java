@@ -56,6 +56,6 @@ public class SingularRequirementRef {
     }
 
     String getRequirementDescription() {
-        return SFormUtil.getTypeLabel(requirement.getMainForm()).orElse("Novo");
+        return requirement.getName();
     }
 }

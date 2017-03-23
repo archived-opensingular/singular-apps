@@ -41,7 +41,7 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -253,9 +253,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         add(confirmationForm.add(confirmationModal));
         if (getMenu() != null) {
             if (menuService.isPresent()) {
-                BoxConfigurationMetadata boxConfigurationMetadata = menuService.get().getMenuByLabel(getMenu());
-                setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationMetadata::getProcesses).orElse(new ArrayList<>(0)));
-                setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationMetadata::getForms).orElse(new ArrayList<>(0)));
+                BoxConfigurationData boxConfigurationMetadata = menuService.get().getMenuByLabel(getMenu());
+                setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
+                setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
             }
             if (CollectionUtils.isEmpty(getProcesses())) {
                 getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");

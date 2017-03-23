@@ -17,7 +17,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
 
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.lib.wicket.util.behavior.BSSelectInitBehaviour;
 import org.opensingular.lib.wicket.util.behavior.FormComponentAjaxUpdateBehavior;
@@ -51,7 +51,7 @@ public class SelecaoMenuItem extends AbstractMenuItem {
             final ProcessGroupEntity categoriaSelecionada = (ProcessGroupEntity) component.getDefaultModelObject();
             SingularSession.get().setCategoriaSelecionada(categoriaSelecionada);
             getPage().getPageParameters().set(PROCESS_GROUP_PARAM_NAME, categoriaSelecionada.getCod());
-            final BoxConfigurationMetadata boxConfigurationMetadataDTO = getDefaultMenuSelection(categoriaSelecionada);
+            final BoxConfigurationData boxConfigurationMetadataDTO = getDefaultMenuSelection(categoriaSelecionada);
             if (boxConfigurationMetadataDTO != null) {
                 getPage().getPageParameters().set(MENU_PARAM_NAME, boxConfigurationMetadataDTO.getLabel());
             } else {
@@ -63,7 +63,7 @@ public class SelecaoMenuItem extends AbstractMenuItem {
         add(form);
     }
 
-    private BoxConfigurationMetadata getDefaultMenuSelection(ProcessGroupEntity categoriaSelecionada) {
+    private BoxConfigurationData getDefaultMenuSelection(ProcessGroupEntity categoriaSelecionada) {
         if(menuService.isPresent()){
             return menuService.get().getDefaultSelectedMenu(categoriaSelecionada);
         }

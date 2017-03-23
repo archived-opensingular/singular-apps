@@ -36,7 +36,7 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxConfigurationMetadata;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
@@ -100,7 +100,7 @@ public class Menu extends Panel implements Loggable {
 
     protected void buildMenuGroup(MetronicMenu menu, ProcessGroupEntity processGroup) {
         if (menuService.isPresent()) {
-            for (BoxConfigurationMetadata boxConfigurationMetadata : menuService.get().getMenusByCategory(processGroup)) {
+            for (BoxConfigurationData boxConfigurationMetadata : menuService.get().getMenusByCategory(processGroup)) {
                 List<MenuItemConfig> subMenus;
                 if (boxConfigurationMetadata.getItemBoxes() == null) {
                     subMenus = buildDefaultSubMenus(boxConfigurationMetadata, processGroup);
@@ -115,11 +115,11 @@ public class Menu extends Panel implements Loggable {
         }
     }
 
-    protected List<MenuItemConfig> buildDefaultSubMenus(BoxConfigurationMetadata boxConfigurationMetadata, ProcessGroupEntity processGroup) {
+    protected List<MenuItemConfig> buildDefaultSubMenus(BoxConfigurationData boxConfigurationMetadata, ProcessGroupEntity processGroup) {
         return Collections.emptyList();
     }
 
-    private void buildMenus(MetronicMenu menu, BoxConfigurationMetadata boxConfigurationMetadata,
+    private void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
                             ProcessGroupEntity processGroup, List<MenuItemConfig> subMenus) {
         MetronicMenuGroup group = new MetronicMenuGroup(Icone.LAYERS, boxConfigurationMetadata.getLabel());
         menu.addItem(group);
@@ -138,7 +138,7 @@ public class Menu extends Panel implements Loggable {
         menu.add(new AddContadoresBehaviour(itens));
     }
 
-    private List<MenuItemConfig> buildSubMenus(BoxConfigurationMetadata boxConfigurationMetadata, ProcessGroupEntity processGroup) {
+    private List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ProcessGroupEntity processGroup) {
 
         List<String> siglas = boxConfigurationMetadata.getProcesses().stream()
                 .map(ProcessDTO::getAbbreviation)

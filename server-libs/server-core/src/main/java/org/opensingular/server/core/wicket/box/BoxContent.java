@@ -56,7 +56,7 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ItemBoxMetadata;
+import org.opensingular.server.commons.service.dto.ItemBoxData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
@@ -81,9 +81,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Logg
 
     protected IModel<BoxItemModel>    currentModel;
     private   Pair<String, SortOrder> sortProperty;
-    private   IModel<ItemBoxMetadata> itemBoxModel;
+    private   IModel<ItemBoxData> itemBoxModel;
 
-    public BoxContent(String id, String processGroupCod, String menu, ItemBoxMetadata itemBox) {
+    public BoxContent(String id, String processGroupCod, String menu, ItemBoxData itemBox) {
         super(id, processGroupCod, menu);
         this.itemBoxModel = new Model<>(itemBox);
     }

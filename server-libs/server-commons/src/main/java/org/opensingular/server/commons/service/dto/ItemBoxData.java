@@ -3,24 +3,24 @@ package org.opensingular.server.commons.service.dto;
 import java.io.Serializable;
 import java.util.List;
 
-public class ItemBoxMetadata implements Serializable {
+public class ItemBoxData implements Serializable {
 
-    private List<RequirementMetadata> requirements;
-    private ItemBox                   itemBox;
+    private List<RequirementData> requirements;
+    private ItemBox               itemBox;
 
-    public ItemBoxMetadata() {
+    public ItemBoxData() {
     }
 
-    public ItemBoxMetadata(ItemBox itemBox, List<RequirementMetadata> requirementsMetadata) {
+    public ItemBoxData(ItemBox itemBox, List<RequirementData> requirementsMetadata) {
         this.itemBox = itemBox;
         this.requirements = requirementsMetadata;
     }
 
-    public List<RequirementMetadata> getRequirements() {
+    public List<RequirementData> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<RequirementMetadata> requirements) {
+    public void setRequirements(List<RequirementData> requirements) {
         this.requirements = requirements;
     }
 

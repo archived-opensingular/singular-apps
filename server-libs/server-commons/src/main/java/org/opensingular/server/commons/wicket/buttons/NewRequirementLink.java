@@ -23,7 +23,7 @@ import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.service.dto.RequirementMetadata;
+import org.opensingular.server.commons.service.dto.RequirementData;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
@@ -38,14 +38,14 @@ public class NewRequirementLink extends Panel {
 
     private final String                            url;
     private final Map<String, String>               params;
-    private       IModel<List<RequirementMetadata>> requirements;
+    private       IModel<List<RequirementData>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
-    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<List<RequirementMetadata>> requirements) {
+    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
         this(id, null, url, params, requirements);
     }
 
-    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<List<RequirementMetadata>> requirements) {
+    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
         super(id);
         this.url = url;
         this.params = params;
@@ -65,7 +65,7 @@ public class NewRequirementLink extends Panel {
         this.add(newButton);
     }
 
-    private Link<String> buildLink(String id, IModel<String> labelModel, RequirementMetadata requirement) {
+    private Link<String> buildLink(String id, IModel<String> labelModel, RequirementData requirement) {
         Link botao = new Link(id) {
             @Override
             protected void onConfigure() {
@@ -86,14 +86,14 @@ public class NewRequirementLink extends Panel {
         DropdownMenu dropdownMenu = new DropdownMenu("_novos");
         dropdownMenu.add($b.visibleIf(visibleSupplier));
         dropdownMenu.add($b.onConfigure(c -> {
-            for (RequirementMetadata r : requirements.getObject()) {
+            for (RequirementData r : requirements.getObject()) {
                 dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(r.getLabel()), r));
             }
         }));
         this.add(dropdownMenu);
     }
 
-    protected String buildURL(RequirementMetadata requirement) {
+    protected String buildURL(RequirementData requirement) {
         String result = DispatcherPageUtil
                 .baseURL(url)
                 .formAction(FormAction.FORM_FILL.getId())

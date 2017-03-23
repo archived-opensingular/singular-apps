@@ -5,8 +5,7 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ItemBoxMetadata;
-import org.opensingular.server.commons.service.dto.RequirementMetadata;
+import org.opensingular.server.commons.service.dto.ItemBoxData;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
@@ -68,7 +67,7 @@ public class SingularModuleConfiguration {
      * @param context
      * @return
      */
-    public List<ItemBoxMetadata> buildItemBoxes(IServerContext context) {
+    public List<ItemBoxData> buildItemBoxes(IServerContext context) {
         return itemBoxes
                 .stream()
                 .filter(boxCofiguration -> boxCofiguration.getItemBoxFactory().appliesTo(context))
@@ -77,7 +76,7 @@ public class SingularModuleConfiguration {
                     ItemBox itemBox = factory.build(context);
                     itemBox.setId(stringItemBoxFactoryEntry.getId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());
-                    return new ItemBoxMetadata(itemBox, stringItemBoxFactoryEntry.getRequirementsMetadata());
+                    return new ItemBoxData(itemBox, stringItemBoxFactoryEntry.getRequirementsData());
                 })
                 .collect(Collectors.toList());
     }
