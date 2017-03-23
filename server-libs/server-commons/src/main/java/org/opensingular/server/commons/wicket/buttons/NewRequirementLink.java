@@ -36,8 +36,8 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class NewRequirementLink extends Panel {
 
-    private final String                            url;
-    private final Map<String, String>               params;
+    private final String                        url;
+    private final Map<String, String>           params;
     private       IModel<List<RequirementData>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
@@ -86,8 +86,10 @@ public class NewRequirementLink extends Panel {
         DropdownMenu dropdownMenu = new DropdownMenu("_novos");
         dropdownMenu.add($b.visibleIf(visibleSupplier));
         dropdownMenu.add($b.onConfigure(c -> {
-            for (RequirementData r : requirements.getObject()) {
-                dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(r.getLabel()), r));
+            if (visibleSupplier.get()) {
+                for (RequirementData r : requirements.getObject()) {
+                    dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(r.getLabel()), r));
+                }
             }
         }));
         this.add(dropdownMenu);
