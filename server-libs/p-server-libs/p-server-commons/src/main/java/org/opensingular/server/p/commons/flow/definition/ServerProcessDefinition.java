@@ -1,33 +1,23 @@
 package org.opensingular.server.p.commons.flow.definition;
 
 import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.builder.BTransition;
-import org.opensingular.flow.core.variable.VarService;
+import org.opensingular.flow.core.builder.BuilderTransition;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
+import org.opensingular.server.commons.flow.builder.PetitionProcessDefinition;
 import org.opensingular.server.commons.flow.controllers.DefaultAssignController;
 import org.opensingular.server.commons.flow.metadata.ServerContextMetaData;
 import org.opensingular.server.p.commons.config.PServerContext;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ANALYSE;
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_EDIT;
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_VIEW;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
 
-public abstract class SingularServerProcessDefinition<I extends ProcessInstance> extends ProcessDefinition<I> {
+public abstract class ServerProcessDefinition<I extends ProcessInstance> extends PetitionProcessDefinition<I> {
 
-
-    protected SingularServerProcessDefinition(Class<I> instanceClass) {
+    protected ServerProcessDefinition(Class<I> instanceClass) {
         super(instanceClass);
     }
 
-    protected SingularServerProcessDefinition(Class<I> processInstanceClass, VarService varService) {
-        super(processInstanceClass, varService);
-    }
-
-    protected BTransition worklist(BTransition t) {
+    protected final BuilderTransition worklist(BuilderTransition t) {
         t.getTransition()
                 .setMetaDataValue(ServerContextMetaData.KEY,
                         ServerContextMetaData
@@ -36,8 +26,7 @@ public abstract class SingularServerProcessDefinition<I extends ProcessInstance>
         return t;
     }
 
-
-    protected BTransition petition(BTransition t) {
+    protected final BuilderTransition petition(BuilderTransition t) {
         t.getTransition()
                 .setMetaDataValue(ServerContextMetaData.KEY,
                         ServerContextMetaData
@@ -45,7 +34,6 @@ public abstract class SingularServerProcessDefinition<I extends ProcessInstance>
                                 .enableOn(PServerContext.PETITION));
         return t;
     }
-
 
     @Override
     protected void configureActions(FlowMap flowMap) {

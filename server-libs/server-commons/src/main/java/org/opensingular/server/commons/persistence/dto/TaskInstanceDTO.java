@@ -17,15 +17,15 @@
 package org.opensingular.server.commons.persistence.dto;
 
 
+import org.opensingular.flow.core.SUser;
+import org.opensingular.flow.core.TaskType;
+import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
+
 import java.io.Serializable;
 import java.net.URL;
 import java.util.Date;
 import java.util.List;
-
-import org.opensingular.flow.core.MUser;
-import org.opensingular.flow.core.TaskType;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 public class TaskInstanceDTO implements Serializable {
 
@@ -52,7 +52,7 @@ public class TaskInstanceDTO implements Serializable {
 
     public TaskInstanceDTO(Integer processInstanceId, Integer taskInstanceId, Integer taskId, Integer versionStamp,
                            Date creationDate, String descricao,
-                           MUser usuarioAlocado, String taskName, String type, String processType, Long codPeticao,
+                           SUser usuarioAlocado, String taskName, String type, String processType, Long codPeticao,
                            Date situationBeginDate, Date processBeginDate, TaskType taskType, String processGroupCod, String processGroupContext) {
         this.processInstanceId = processInstanceId;
         this.taskInstanceId = taskInstanceId;

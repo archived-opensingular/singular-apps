@@ -16,7 +16,7 @@
 
 package org.opensingular.server.commons.flow.actions;
 
-import org.opensingular.flow.core.MUser;
+import org.opensingular.flow.core.SUser;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -34,7 +34,7 @@ public class AtribuirController extends IController implements Loggable {
     @Override
     public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest) {
         try {
-            MUser user = PetitionUtil.findUserOrException(actionRequest.getIdUsuario());
+            SUser user = PetitionUtil.findUserOrException(actionRequest.getIdUsuario());
 
             petition.getCurrentTaskOrException().relocateTask(user, user, false, "", actionRequest.getLastVersion());
             return new ActionResponse("Tarefa atribuída com sucesso.", true);
