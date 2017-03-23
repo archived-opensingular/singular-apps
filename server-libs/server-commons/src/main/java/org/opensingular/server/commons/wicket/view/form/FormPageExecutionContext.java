@@ -16,7 +16,6 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
-import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.server.commons.flow.FlowResolver;
@@ -27,13 +26,14 @@ import java.util.Optional;
 
 public class FormPageExecutionContext implements Serializable {
 
-    private ActionContext                      actionContext;
-    private String                             formType;
-    private Class<? extends ProcessDefinition> processDefinition;
+    private ActionContext actionContext;
+    private String        formType;
+    private FlowResolver  resolver;
     private boolean mainForm = true;
 
-    public FormPageExecutionContext(ActionContext context, Optional<String> formName) {
+    public FormPageExecutionContext(ActionContext context, Optional<String> formName, FlowResolver resolver) {
         this(context);
+        this.resolver = resolver;
         formName.ifPresent(f -> {
             this.mainForm = false;
             this.formType = formName.get();
@@ -64,11 +64,6 @@ public class FormPageExecutionContext implements Serializable {
         return formType;
     }
 
-    public Class<? extends ProcessDefinition> getProcessDefinition() {
-        return processDefinition;
-    }
-
-
     public Optional<Long> getParentPetitionId() {
         return actionContext.getParentPetitionId();
     }
@@ -79,7 +74,7 @@ public class FormPageExecutionContext implements Serializable {
     }
 
     public FlowResolver getFlowResolver() {
-        return null;
+        return resolver;
     }
 
     public ActionContext copyOfInnerActionContext() {

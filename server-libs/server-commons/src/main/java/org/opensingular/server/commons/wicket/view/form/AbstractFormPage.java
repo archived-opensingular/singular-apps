@@ -103,7 +103,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             getLogger().info(" Redirecting to " + url);
             throw new RedirectToUrlException(url);
         }
-        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName));
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName), /*TODO resolver o requirement pelo requirement id do action context e configurar aqui*/ null);
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
         if (this.config.getFormName() == null) {
@@ -215,7 +215,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 parentPetition = petitionService.getPetition(config.getParentPetitionId().get());
                 parentPetitionformKeyModel.setObject(formPetitionService.formKeyFromFormEntity(parentPetition.getEntity().getMainForm()));
             }
-            petition = petitionService.createNewPetitionWithoutSave(config.getProcessDefinition(), parentPetition, this::onNewPetitionCreation);
+            petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation);
         }
         return petition;
     }
