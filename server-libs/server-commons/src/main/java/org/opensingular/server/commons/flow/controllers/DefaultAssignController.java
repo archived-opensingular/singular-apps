@@ -5,7 +5,7 @@
 
 package org.opensingular.server.commons.flow.controllers;
 
-import org.opensingular.flow.core.MUser;
+import org.opensingular.flow.core.SUser;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
@@ -25,7 +25,7 @@ public class DefaultAssignController extends IController implements Loggable {
     @Override
     public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest action) {
         try {
-            MUser user = PetitionUtil.findUserOrException(action.getIdUsuario());
+            SUser user = PetitionUtil.findUserOrException(action.getIdUsuario());
 
             petition.getCurrentTaskOrException().relocateTask(user, user, false, "", action.getLastVersion());
             return new ActionResponse("Tarefa atribuída com sucesso.", true);

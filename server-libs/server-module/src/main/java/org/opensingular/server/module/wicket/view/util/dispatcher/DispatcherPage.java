@@ -29,8 +29,8 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.apache.wicket.util.string.StringValue;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTaskUserExecutable;
+import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.STaskUserExecutable;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
@@ -119,17 +119,17 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
 
     private Optional<SingularWebRef> retrieveSingularWebRef(FormPageConfig cfg) {
         Optional<TaskInstance> ti   = findCurrentTaskByPetitionId(cfg.getPetitionId());
-        Optional<MTask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
-            if (task.get() instanceof MTaskUserExecutable) {
-                final ITaskPageStrategy pageStrategy = ((MTaskUserExecutable) task.get()).getExecutionPage();
+            if (task.get() instanceof STaskUserExecutable) {
+                final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
                     return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(ti.get(), null));
                 } else {
                     logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
                 }
             } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
-                throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
+                throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo STaskUserExecutable");
             }
         }
         return Optional.empty();

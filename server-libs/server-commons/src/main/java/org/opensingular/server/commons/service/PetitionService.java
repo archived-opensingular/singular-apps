@@ -18,10 +18,10 @@ package org.opensingular.server.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTransition;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.core.variable.type.VarTypeString;
@@ -389,11 +389,21 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
     }
 
-    public List<MTransition> listCurrentTaskTransitions(Long petitionId) {
+    public List<? extends TaskInstanceDTO> listTasks(int first, int count, String sortProperty, boolean ascending, String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
+
+        return taskInstanceDAO.findTasks(first, count, sortProperty, ascending, siglaFluxo, authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
+    }
+
+
+    public Long countTasks(String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
+        return taskInstanceDAO.countTasks(Collections.singletonList(siglaFluxo), authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
+    }
+
+    public List<STransition> listCurrentTaskTransitions(Long petitionId) {
         return findCurrentTaskByPetitionId(petitionId)
                 .map(Flow::getTaskInstance)
                 .flatMap(TaskInstance::getFlowTask)
-                .map(MTask::getTransitions)
+                .map(STask::getTransitions)
                 .orElse(Collections.emptyList());
     }
 

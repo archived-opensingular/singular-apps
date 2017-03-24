@@ -26,7 +26,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
-import org.opensingular.flow.core.MTransition;
+import org.opensingular.flow.core.STransition;
 import org.opensingular.form.RefService;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -325,7 +325,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
-        List<MTransition> trans = null;
+        List<STransition> trans = null;
         if (config.getPetitionId() != null) {
             trans = petitionService.listCurrentTaskTransitions(config.getPetitionId());
         }
@@ -424,7 +424,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return Collections.emptyMap();
     }
 
-    protected Boolean isTransitionButtonVisibible(MTransition transition) {
+    protected Boolean isTransitionButtonVisibible(STransition transition) {
         return Boolean.TRUE;
     }
 

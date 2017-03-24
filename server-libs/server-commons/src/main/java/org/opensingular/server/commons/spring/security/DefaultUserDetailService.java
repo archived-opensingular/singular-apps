@@ -17,19 +17,17 @@
 package org.opensingular.server.commons.spring.security;
 
 
+import org.opensingular.flow.core.SUser;
+import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-
-import javax.inject.Inject;
-
-import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import org.opensingular.flow.core.MUser;
-import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 
 public class DefaultUserDetailService implements SingularUserDetailsService {
 
@@ -41,8 +39,8 @@ public class DefaultUserDetailService implements SingularUserDetailsService {
 
     @Override
     public SingularUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException {
-        MUser user = actorDAO.buscarPorCodUsuario(username);
-        return new DefaultUserDetails(username, new ArrayList<>(), Optional.ofNullable(user).map(MUser::getSimpleName).orElse(username), context);
+        SUser user = actorDAO.buscarPorCodUsuario(username);
+        return new DefaultUserDetails(username, new ArrayList<>(), Optional.ofNullable(user).map(SUser::getSimpleName).orElse(username), context);
     }
 
     @Override

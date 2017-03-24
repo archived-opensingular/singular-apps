@@ -18,9 +18,9 @@ package org.opensingular.server.commons.flow.renderer.remote;
 
 import org.opensingular.flow.core.EventType;
 import org.opensingular.flow.core.ITaskPredicate;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTransition;
 import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.server.commons.flow.renderer.remote.dto.Task;
 import org.opensingular.server.commons.flow.renderer.remote.dto.Transition;
@@ -46,21 +46,21 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
     public byte[] generateImage(ProcessDefinition<?> definicao) {
         org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition pd = new org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition();
         pd.setTasks(new ArrayList<>());
-        for (MTask<?> task : definicao.getFlowMap().getAllTasks()) {
+        for (STask<?> task : definicao.getFlowMap().getAllTasks()) {
             pd.getTasks().add(from(task, definicao.getFlowMap().getStart().getTask()));
         }
         return new RestTemplate().postForObject(url, pd, byte[].class);
     }
 
-    private Task from(MTask<?> task, MTask<?> startTask) {
+    private Task from(STask<?> task, STask<?> startTask) {
         Task t = new Task(task.isWait(), task.isJava(), task.isPeople(), task.isEnd(), task.getName(), task.getAbbreviation(), task.equals(startTask), new ArrayList<>(0), task.getMetaDataValue(IFlowRenderer.SEND_EMAIL, Boolean.FALSE));
-        for (MTransition mt : task.getTransitions()) {
+        for (STransition mt : task.getTransitions()) {
             t.getTransitions().add(from(mt));
         }
         return t;
     }
 
-    private Transition from(MTransition mt) {
+    private Transition from(STransition mt) {
         Transition t = new Transition(from(mt.getOrigin()), from(mt.getDestination()), mt.getName(), from(mt.getPredicate()));
         return t;
     }
@@ -73,7 +73,7 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
     }
 
 
-    private TransitionTask from(MTask<?> origin) {
+    private TransitionTask from(STask<?> origin) {
         return new TransitionTask(origin.getAbbreviation(), origin.getName());
     }
 }
