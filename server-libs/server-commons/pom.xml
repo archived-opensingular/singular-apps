@@ -42,7 +42,7 @@
 
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-flow-persistence</artifactId>
+            <artifactId>singular-flow-core</artifactId>
             <version>${singular.version}</version>
         </dependency>
         <dependency>
