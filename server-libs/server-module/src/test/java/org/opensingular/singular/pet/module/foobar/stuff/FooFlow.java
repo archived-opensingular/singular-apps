@@ -1,13 +1,13 @@
 package org.opensingular.singular.pet.module.foobar.stuff;
 
 import org.opensingular.flow.core.FlowMap;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.builder.BEnd;
-import org.opensingular.flow.core.builder.BPeople;
+import org.opensingular.flow.core.builder.BuilderEnd;
+import org.opensingular.flow.core.builder.BuilderPeople;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
-import org.opensingular.flow.core.builder.ITaskDefinition;
 
 public class FooFlow extends ProcessDefinition<ProcessInstance> {
 
@@ -23,8 +23,8 @@ public class FooFlow extends ProcessDefinition<ProcessInstance> {
         ITaskDefinition dobarDef  = () -> "Do bar";
         ITaskDefinition endbarDef = () -> "No more bar";
 
-        BPeople dobar  = flow.addPeopleTask(dobarDef);
-        BEnd    endbar = flow.addEnd(endbarDef);
+        BuilderPeople dobar  = flow.addPeopleTask(dobarDef);
+        BuilderEnd    endbar = flow.addEnd(endbarDef);
 
         flow.setStart(dobarDef);
         dobar.go(endbarDef);

@@ -17,9 +17,9 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.MUser;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
@@ -102,14 +102,14 @@ public final class PetitionUtil {
 
     /** Resolve o id de usuário. */
     @Nonnull
-    public static Optional<MUser> findUser(@Nonnull String idUsuario) {
+    public static Optional<SUser> findUser(@Nonnull String idUsuario) {
         Objects.requireNonNull(idUsuario);
         return Flow.getConfigBean().getUserService().saveUserIfNeeded(idUsuario);
     }
 
     /** Resolve o id de usuário ou dispara exception senão encontrar o usuário. */
     @Nonnull
-    public static MUser findUserOrException(@Nonnull String idUsuario) {
+    public static SUser findUserOrException(@Nonnull String idUsuario) {
         return findUser(idUsuario).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrado o usuário").add("idUsuario", idUsuario));
     }

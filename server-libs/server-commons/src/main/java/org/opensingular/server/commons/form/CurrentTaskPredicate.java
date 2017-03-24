@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.form;
 
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.core.builder.ITaskDefinition;
 import org.opensingular.form.SInstance;
 import org.opensingular.server.commons.service.PetitionUtil;
 
