@@ -24,10 +24,10 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.MTask;
-import org.opensingular.flow.core.MTaskEnd;
-import org.opensingular.flow.core.MTransition;
 import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.STaskEnd;
+import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 
 import javax.imageio.ImageIO;
@@ -102,19 +102,19 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         final FlowMap fluxo = definicao.getFlowMap();
 
         final Map<String, Object> mapaVertice = new HashMap<>();
-        for (final MTask<?> task : fluxo.getTasks()) {
+        for (final STask<?> task : fluxo.getTasks()) {
             final Object v = insertVertex(graph, task);
             mapaVertice.put(task.getAbbreviation(), v);
         }
-        for (final MTaskEnd task : fluxo.getEndTasks()) {
+        for (final STaskEnd task : fluxo.getEndTasks()) {
             final Object v = insertVertex(graph, task);
             mapaVertice.put(task.getAbbreviation(), v);
         }
 
         addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
 
-        for (final MTask<?> task : fluxo.getTasks()) {
-            for (final MTransition transicao : task.getTransitions()) {
+        for (final STask<?> task : fluxo.getTasks()) {
+            for (final STransition transicao : task.getTransitions()) {
                 createTransition(graph, transicao, mapaVertice);
             }
         }
@@ -127,14 +127,14 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         return graph;
     }
 
-    private static void addStartTransition(mxGraph graph, MTask<?> taskInicial, Map<String, Object> mapaVertice) {
+    private static void addStartTransition(mxGraph graph, STask<?> taskInicial, Map<String, Object> mapaVertice) {
         final Object v = graph.insertVertex(graph.getDefaultParent(), null, null, 20, 20, 20, 20);
         setStyle(v, "START");
         final Object destino = mapaVertice.get(taskInicial.getAbbreviation());
         graph.insertEdge(graph.getDefaultParent(), null, null, v, destino);
     }
 
-    private static void createTransition(mxGraph graph, MTransition transicao, Map<String, Object> mapaVertice) {
+    private static void createTransition(mxGraph graph, STransition transicao, Map<String, Object> mapaVertice) {
         final Object origem = mapaVertice.get(transicao.getOrigin().getAbbreviation());
         final Object destino = mapaVertice.get(transicao.getDestination().getAbbreviation());
         String nome = transicao.getName();
@@ -147,7 +147,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         graph.insertEdge(graph.getDefaultParent(), null, nome, origem, destino);
     }
 
-    private static Object insertVertex(mxGraph graph, MTask<?> task) {
+    private static Object insertVertex(mxGraph graph, STask<?> task) {
         final Object v = graph.insertVertex(graph.getDefaultParent(), task.getAbbreviation(), formatarNome(task.getName()),
                 20, 20, 20, 20);
         graph.updateCellSize(v);

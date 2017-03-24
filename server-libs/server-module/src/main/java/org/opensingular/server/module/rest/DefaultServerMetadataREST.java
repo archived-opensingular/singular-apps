@@ -17,8 +17,8 @@
 package org.opensingular.server.module.rest;
 
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.MTask;
 import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.STask;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
@@ -90,8 +90,8 @@ public class DefaultServerMetadataREST implements IServerMetadataREST {
             menuGroup.setProcesses(new ArrayList<>());
             menuGroup.setForms(new ArrayList<>());
             definitions.forEach(d -> {
-                        List<MTask<?>> tasks = d.getFlowMap().getTasksWithMetadata(PetitionHistoryTaskMetaDataValue.KEY);
-                        List<String> allowedHistoryTasks = tasks.stream().map(MTask::getAbbreviation).collect(Collectors.toList());
+                        List<STask<?>> tasks = d.getFlowMap().getTasksWithMetadata(PetitionHistoryTaskMetaDataValue.KEY);
+                        List<String> allowedHistoryTasks = tasks.stream().map(STask::getAbbreviation).collect(Collectors.toList());
                         menuGroup
                                 .getProcesses()
                                 .add(new ProcessDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
