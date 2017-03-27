@@ -17,15 +17,20 @@
 package org.opensingular.server.commons.service.dto;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
-public class MenuGroup implements Serializable {
+public class BoxConfigurationData implements Serializable {
 
-    private String id;
-    private String label;
-    private List<ItemBox> itemBoxes;
-    private List<ProcessDTO> processes;
-    private List<FormDTO> forms;
+    private String                id;
+    private String                label;
+    private List<ItemBoxData> itemBoxesMetadata;
+    private List<ProcessDTO>  processes;
+
+    public BoxConfigurationData() {
+    }
 
     public String getId() {
         return id;
@@ -52,31 +57,19 @@ public class MenuGroup implements Serializable {
     }
 
     public List<ItemBox> getItemBoxes() {
-        return itemBoxes;
+        if (itemBoxesMetadata == null) {
+            return Collections.EMPTY_LIST;
+        }
+        return itemBoxesMetadata.stream().map(ItemBoxData::getItemBox).collect(Collectors.toList());
     }
 
-    public void setItemBoxes(List<ItemBox> itemBoxes) {
-        this.itemBoxes = itemBoxes;
-    }
-
-    public ItemBox getItemPorLabel(String itemName) {
-        if (itemBoxes != null) {
-            for (ItemBox itemBox : itemBoxes) {
-                if (itemBox.getName().equalsIgnoreCase(itemName)) {
-                    return itemBox;
-                }
+    public ItemBoxData getItemPorLabel(String itemName) {
+        for (ItemBoxData itemBoxMeta : itemBoxesMetadata) {
+            if (itemBoxMeta.getItemBox().getName().equalsIgnoreCase(itemName)) {
+                return itemBoxMeta;
             }
         }
-
         return null;
-    }
-
-    public List<FormDTO> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<FormDTO> forms) {
-        this.forms = forms;
     }
 
     public ProcessDTO getProcessByAbbreviation(String processAbbreviation) {
@@ -86,4 +79,24 @@ public class MenuGroup implements Serializable {
                 .findFirst()
                 .orElse(null);
     }
+
+    public List<ItemBoxData> getItemBoxesMetadata() {
+        return itemBoxesMetadata;
+    }
+
+    public void setItemBoxesMetadata(List<ItemBoxData> itemBoxesMetadata) {
+        this.itemBoxesMetadata = itemBoxesMetadata;
+    }
+
+    /**
+     * matar esse método em favor do uso do id do requerimento
+     *
+     * @return
+     */
+    @Deprecated
+    public List<FormDTO> getForms() {
+        return new ArrayList<>(0);
+    }
+
+
 }

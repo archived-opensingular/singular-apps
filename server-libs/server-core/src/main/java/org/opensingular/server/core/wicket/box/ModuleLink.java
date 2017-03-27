@@ -1,3 +1,4 @@
+package org.opensingular.server.core.wicket.box;
 /*
  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
@@ -14,7 +15,6 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.core.wicket;
 
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.model.IModel;
@@ -38,7 +38,8 @@ public class ModuleLink extends Link<Object> {
     }
 
     @Override
-    public void onClick() {}
+    public void onClick() {
+    }
 
     @Override
     protected boolean getStatelessHint() {

@@ -18,6 +18,7 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,10 +32,12 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
@@ -53,14 +56,13 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.ItemBoxData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
-import org.opensingular.server.core.wicket.ModuleLink;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -72,27 +74,23 @@ import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
-public class BoxContent extends AbstractBoxContent<BoxItemModel> {
+public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Loggable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
+    protected IModel<BoxItemModel>    currentModel;
+    private   Pair<String, SortOrder> sortProperty;
+    private   IModel<ItemBoxData> itemBoxModel;
 
-    protected IModel<BoxItemModel> currentModel;
-
-    private Pair<String, SortOrder> sortProperty;
-    private IModel<ItemBox>         itemBoxModel;
-
-    public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxModel) {
+    public BoxContent(String id, String processGroupCod, String menu, ItemBoxData itemBox) {
         super(id, processGroupCod, menu);
-        this.itemBoxModel = new Model<>(itemBoxModel);
+        this.itemBoxModel = new Model<>(itemBox);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        showNew();
         configureQuickFilter();
     }
 
@@ -101,26 +99,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         getPesquisarButton().setVisible(isShowQuickFilter());
     }
 
-    private void showNew() {
+    @Override
+    public Component buildNewPetitionButton(String id) {
         if (isShowNew() && getMenu() != null) {
-            List<FormDTO> forms = getForms().stream().filter(FormDTO::isNewable).collect(Collectors.toList());
-            for (FormDTO form : forms) {
-                String url = DispatcherPageUtil
-                        .baseURL(getBaseUrl())
-                        .formAction(FormAction.FORM_FILL.getId())
-                        .petitionId(null)
-                        .param(DispatcherPageParameters.FORM_NAME, form.getName())
-                        .params(getLinkParams())
-                        .build();
-
-                if (forms.size() > 1) {
-                    dropdownMenu.adicionarMenu(id -> new ModuleLink(id, $m.ofValue(form.getDescription()), url));
-                } else {
-                    adicionarBotaoGlobal(id -> new ModuleLink(id, getMessage("label.button.insert"), url));
-                }
-            }
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(itemBoxModel, "requirements"));
+        } else {
+            return super.buildNewPetitionButton(id);
         }
-
     }
 
     @Override
@@ -245,7 +230,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -262,7 +247,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -376,7 +361,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             return Arrays.asList(new RestTemplate().postForObject(url, boxItemModelObject(currentModel), Actor[].class));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
@@ -394,7 +379,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     private IFunction<IModel<BoxItemModel>, Boolean> visibleFunction(ItemAction itemAction) {
         return (model) -> {
             BoxItemModel boxItemModel = boxItemModelObject(model);
-            boolean      visible      = boxItemModel.hasAction(itemAction);
+            boolean visible = boxItemModel.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemModel.getCod());
             }
@@ -465,7 +450,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
                     .map(BoxItemModel::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
@@ -506,7 +491,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return 0;
         }
     }
@@ -546,6 +531,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     private ItemBox getItemBoxModelObject() {
-        return itemBoxModel.getObject();
+        return itemBoxModel.getObject().getItemBox();
     }
 }

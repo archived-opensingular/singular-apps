@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.util;
+package org.opensingular.server.commons.wicket.view.util;
 
 /**
  * Nomes de parametros default a serem utilizados para montar links para a dispatcher page
@@ -29,6 +29,8 @@ public class DispatcherPageParameters {
     public static final String PARENT_PETITION_ID = "p";
 
     public static final String FORM_NAME = "f";
+
+    public static final String REQUIREMENT_ID = "r";
 
     public static final String INSTANCE_ID = "i";
 

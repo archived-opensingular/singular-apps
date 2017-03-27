@@ -16,7 +16,7 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 import java.util.HashMap;

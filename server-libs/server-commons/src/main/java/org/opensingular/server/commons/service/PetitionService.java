@@ -66,8 +66,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.io.Serializable;
 import javax.inject.Inject;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -79,7 +79,11 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.*;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ANALYSE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_EDIT;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_RELOCATE;
+import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_VIEW;
 
 @Transactional
 public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
@@ -387,16 +391,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
-    }
-
-    public List<? extends TaskInstanceDTO> listTasks(int first, int count, String sortProperty, boolean ascending, String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
-
-        return taskInstanceDAO.findTasks(first, count, sortProperty, ascending, siglaFluxo, authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
-    }
-
-
-    public Long countTasks(String siglaFluxo, List<SingularPermission> permissions, String filtroRapido, boolean concluidas) {
-        return taskInstanceDAO.countTasks(Collections.singletonList(siglaFluxo), authorizationService.filterListTaskPermissions(permissions), filtroRapido, concluidas);
     }
 
     public List<STransition> listCurrentTaskTransitions(Long petitionId) {

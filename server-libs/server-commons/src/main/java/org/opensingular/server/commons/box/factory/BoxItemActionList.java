@@ -3,7 +3,6 @@ package org.opensingular.server.commons.box.factory;
 
 import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
@@ -11,8 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
-import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.RESTPaths.*;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxItemActionList {
 
@@ -47,7 +46,7 @@ public class BoxItemActionList {
 
     public BoxItemActionList addExecuteInstante(Object id, String actionName) {
         final BoxItemAction boxItemAction = new BoxItemAction();
-        final String endpointUrl = PATH_BOX_ACTION + DefaultServerREST.EXECUTE + "?id=" + id;
+        final String endpointUrl = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
         boxItemAction.setName(actionName);
         boxItemAction.setEndpoint(endpointUrl);
         boxItemAction.setUseExecute(true);
@@ -56,7 +55,7 @@ public class BoxItemActionList {
     }
 
     public BoxItemActionList addDeleteAction(ItemBoxData line) {
-        String endpointUrl = DefaultServerREST.PATH_BOX_ACTION + DefaultServerREST.DELETE + "?id=" + line.getCodPeticao();
+        String endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.getCodPeticao();
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
         boxItemAction.setEndpoint(endpointUrl);

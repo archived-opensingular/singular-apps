@@ -5,9 +5,8 @@ import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
+import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
-import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Set;
@@ -50,7 +49,7 @@ public class BoundedFlowResolver implements FlowResolver {
     }
 
     @Override
-    public Optional<Class<? extends ProcessDefinition>> resolve(FormPageConfig cfg, SIComposite iRoot) {
+    public Optional<Class<? extends ProcessDefinition>> resolve(FormPageExecutionContext cfg, SIComposite iRoot) {
         return resolver.resolve(cfg, iRoot);
     }
 

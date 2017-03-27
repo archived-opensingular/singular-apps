@@ -21,7 +21,7 @@ import org.apache.wicket.model.ResourceModel;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
-import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.annotation.Nullable;
@@ -38,8 +38,8 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
         this(null);
     }
 
-    public FormPage(@Nullable FormPageConfig config) {
-        super(config);
+    public FormPage(@Nullable ActionContext context) {
+        super(context);
     }
 
     @Override

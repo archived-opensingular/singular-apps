@@ -13,6 +13,7 @@ public interface SingularRequirement {
 
     /**
      * The requirement descriptive name
+     * Must be unique across requirements in the same module
      *
      * @return
      */

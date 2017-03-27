@@ -23,10 +23,7 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.Request;
-import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
-import org.apache.wicket.util.string.StringValue;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
 import org.opensingular.flow.core.STask;
@@ -34,18 +31,18 @@ import org.opensingular.flow.core.STaskUserExecutable;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
+import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -54,53 +51,53 @@ import org.opensingular.server.commons.wicket.view.SingularHeaderResponseDecorat
 import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
-import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.server.commons.wicket.view.template.Template;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
+import org.opensingular.server.module.SingularModule;
+import org.opensingular.server.module.SingularModuleConfiguration;
+import org.opensingular.server.module.SingularRequirementRef;
+import org.opensingular.server.module.requirement.SingularRequirement;
 import org.opensingular.server.module.wicket.view.util.form.FormPage;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
-import java.util.Arrays;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.*;
 
 @SuppressWarnings("serial")
-public abstract class DispatcherPage extends WebPage implements Loggable {
-
-    protected static final Logger logger = LoggerFactory.getLogger(DispatcherPage.class);
+public class DispatcherPage extends WebPage implements Loggable {
 
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private PetitionService<?,?> petitionService;
+    private PetitionService<?, ?> petitionService;
 
     @Inject
     private AuthorizationService authorizationService;
 
-    @Inject
-    private FormPetitionService<?> formPetitionService;
-
-    @Inject
-    private SingularServerMetadata singularServerMetadata;
 
     public DispatcherPage() {
         initPage();
-        dispatch(parseParameters(getRequest()));
+        dispatch(setFormNameActionContext(new ActionContext(getRequest().getOriginalUrl().getQueryString())));
     }
 
-    private static boolean isMandatoryParam(String name) {
-        return Arrays.asList(ACTION,
-                PETITION_ID,
-                FORM_VERSION_KEY,
-                FORM_NAME,
-                PARENT_PETITION_ID,
-                DIFF).contains(name);
+    /**
+     * Método temporário, remover após migrar os links para usar id do requerimento ao invés do nome do form
+     * @return
+     * @param context
+     */
+    //TODO REFACTOR
+    @SuppressWarnings("unchecked")
+    @Deprecated
+    private ActionContext setFormNameActionContext(ActionContext context){
+        SingularRequirement req = ApplicationContextProvider.get().getBean(SingularModuleConfiguration.class).getRequirementById(context.getRequirementId().orElse(null));
+        if (req != null && !context.getFormName().isPresent()) {
+            context.setFormName(SFormUtil.getTypeName((Class<? extends SType<?>>) req.getMainForm()));
+        }
+        return context;
     }
 
     private void initPage() {
@@ -117,8 +114,8 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
     }
 
-    private Optional<SingularWebRef> retrieveSingularWebRef(FormPageConfig cfg) {
-        Optional<TaskInstance> ti   = findCurrentTaskByPetitionId(cfg.getPetitionId());
+    private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
+        Optional<TaskInstance> ti   = findCurrentTaskByPetitionId(actionContext.getPetitionId());
         Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
             if (task.get() instanceof STaskUserExecutable) {
@@ -126,49 +123,49 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
                     return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(ti.get(), null));
                 } else {
-                    logger.warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
+                    getLogger().warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
                 }
-            } else if (!(ViewMode.READ_ONLY == cfg.getViewMode())) {
-                throw SingularServerException.rethrow("Página invocada para uma atividade que não é do tipo STaskUserExecutable");
+            } else if (!(ViewMode.READ_ONLY == actionContext.getFormAction().get().getViewMode())) {
+                throw new SingularServerException("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
             }
         }
         return Optional.empty();
     }
 
-    private <T> T createNewInstanceUsingFormPageConfigConstructor(Class<T> clazz, FormPageConfig config) {
+    private <T> T createNewInstanceUsingFormPageConfigConstructor(Class<? extends WebPage> clazz, ActionContext context) {
         try {
-            Constructor c = clazz.getConstructor(FormPageConfig.class);
-            return (T) c.newInstance(config);
+            Constructor c = clazz.getConstructor(ActionContext.class);
+            return (T) c.newInstance(context);
         } catch (Exception e) {
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
     }
 
-    private WebPage retrieveDestination(FormPageConfig config) {
-        if (config.isDiff()) {
-            return newDiffPage(config);
-        } else if (config.getViewMode().isVisualization() && !(AnnotationMode.EDIT == config.getAnnotationMode())) {
-            return newVisualizationPage(config);
+    private WebPage retrieveDestination(ActionContext context) {
+        if (context.getDiffEnabled()) {
+            return newDiffPage(context);
+        } else if (context.getFormAction().get().getViewMode().isVisualization() && !(AnnotationMode.EDIT == context.getFormAction().get().getAnnotationMode())) {
+            return newVisualizationPage(context);
         } else {
-            return retrieveDestinationUsingSingularWebRef(config, retrieveSingularWebRef(config));
+            return retrieveDestinationUsingSingularWebRef(context, retrieveSingularWebRef(context));
         }
     }
 
-    private WebPage newDiffPage(FormPageConfig config) {
-        return new DiffFormPage(config);
+    private WebPage newDiffPage(ActionContext context) {
+        return new DiffFormPage(context);
     }
 
-    private WebPage newVisualizationPage(FormPageConfig config) {
+    private WebPage newVisualizationPage(ActionContext context) {
 
         Long    formVersionPK;
         Boolean showAnnotations;
 
-        showAnnotations = config.getAnnotationMode() == AnnotationMode.READ_ONLY;
+        showAnnotations = context.getFormAction().get().getAnnotationMode() == AnnotationMode.READ_ONLY;
 
-        if (config.getFormVersionPK() != null) {
-            formVersionPK = config.getFormVersionPK();
-        } else if (config.getPetitionId() != null) {
-            PetitionEntity p = petitionService.getPetitionByCod(config.getPetitionId());
+        if (context.getFormVersionId().isPresent()) {
+            formVersionPK = context.getFormVersionId().get();
+        } else if (context.getPetitionId().isPresent()) {
+            PetitionEntity p = petitionService.getPetitionByCod(context.getPetitionId().get());
             formVersionPK = p.getMainForm().getCurrentFormVersionEntity().getCod();
         } else {
             formVersionPK = null;
@@ -181,7 +178,7 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         throw SingularServerException.rethrow("Não foi possivel identificar qual é o formulario a ser exibido");
     }
 
-    private WebPage retrieveDestinationUsingSingularWebRef(FormPageConfig config, Optional<SingularWebRef> ref) {
+    private WebPage retrieveDestinationUsingSingularWebRef(ActionContext config, Optional<SingularWebRef> ref) {
         try {
             if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
                 return createNewInstanceUsingFormPageConfigConstructor(getFormPageClass(config), config);
@@ -192,42 +189,43 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
             }
         } catch (Exception e) {
             closeAndReloadParent();
-            logger.error(e.getMessage(), e);
+            getLogger().error(e.getMessage(), e);
         }
         return null;
     }
 
-    protected void dispatch(FormPageConfig config) {
-        if (config != null
-                && (!hasAccess(config))) {
+    protected void dispatch(ActionContext context) {
+        if (context != null && (!hasAccess(context))) {
             redirectForbidden();
-        } else if (config != null) {
-            dispatchForDestination(config, retrieveDestination(config));
+        } else if (context != null) {
+            dispatchForDestination(context, retrieveDestination(context));
         } else {
             closeAndReloadParent();
         }
     }
 
-    protected boolean hasAccess(FormPageConfig config) {
+    protected boolean hasAccess(ActionContext context) {
         SingularUserDetails userDetails   = SingularSession.get().getUserDetails();
-        boolean             hasPermission = authorizationService.hasPermission(config.getPetitionId(), config.getFormType(), String.valueOf(userDetails.getUserPermissionKey()), config.getFormAction().name());
+        boolean             hasPermission = authorizationService.hasPermission(context.getPetitionId().orElse(null), context.getFormName().get(), String.valueOf(userDetails.getUserPermissionKey()), context.getFormAction().map(FormAction::name).orElse(null));
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
-        if (ViewMode.EDIT == config.getFormAction().getViewMode()
-                || AnnotationMode.EDIT == config.getFormAction().getAnnotationMode()) {
-            return hasPermission && !isTaskAssignedToAnotherUser(config);
+        if (ViewMode.EDIT == context.getFormAction().get().getViewMode()
+                || AnnotationMode.EDIT == context.getFormAction().get().getAnnotationMode()) {
+            return hasPermission && !isTaskAssignedToAnotherUser(context);
         } else {
             return hasPermission;
         }
 
     }
 
-    private boolean isTaskAssignedToAnotherUser(FormPageConfig config) {
-        String username = SingularSession.get().getUsername();
-        if (config.getPetitionId() != null) {
 
-            Optional<TaskInstanceEntity> currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId());
+
+    private boolean isTaskAssignedToAnotherUser(ActionContext config) {
+        String username = SingularSession.get().getUsername();
+        if (config.getPetitionId().isPresent()) {
+
+            Optional<TaskInstanceEntity> currentTask = petitionService.findCurrentTaskByPetitionId(config.getPetitionId().get());
 
             if (currentTask.isPresent() && !currentTask.get().getTaskHistory().isEmpty()) {
                 TaskInstanceHistoryEntity taskInstanceHistory = currentTask.get().getTaskHistory().get(currentTask.get().getTaskHistory().size() - 1);
@@ -241,21 +239,15 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         return false;
     }
 
-    private String loadTypeNameFormFormVersionPK(Long formVersionPK) {
-        return Optional.of(formVersionPK)
-                .map(formPetitionService::loadFormVersionEntity)
-                .map(PetitionUtil::getTypeName)
-                .orElseThrow(() -> SingularServerException.rethrow("Não possivel idenfiticar o tipo"));
-    }
 
     protected void redirectForbidden() {
         setResponsePage(AccessDeniedPage.class);
     }
 
-    private void dispatchForDestination(FormPageConfig config, WebPage destination) {
+    private void dispatchForDestination(ActionContext context, WebPage destination) {
         if (destination != null) {
             configureReload(destination);
-            onDispatch(destination, config);
+            onDispatch(destination, context);
             setResponsePage(destination);
         }
     }
@@ -274,80 +266,26 @@ public abstract class DispatcherPage extends WebPage implements Loggable {
         add($b.onReadyScript(() -> " Singular.atualizarContentWorklist(); window.close(); "));
     }
 
-    private StringValue getParam(Request r, String key) {
-        return r.getRequestParameters().getParameterValue(key);
-    }
-
-    private FormAction resolveFormAction(StringValue action) {
-        return FormAction.getById(Integer.valueOf(action.toString("0")));
-    }
-
-    protected FormPageConfig parseParameters(Request r) {
-
-        final StringValue action           = getParam(r, ACTION);
-        final StringValue petitionId       = getParam(r, PETITION_ID);
-        final StringValue formVersionPK    = getParam(r, FORM_VERSION_KEY);
-        final StringValue formName         = getParam(r, FORM_NAME);
-        final StringValue parentPetitionId = getParam(r, PARENT_PETITION_ID);
-        final StringValue diffValue        = getParam(r, DIFF);
-
-        if (action.isEmpty()) {
-            String url = getRequestCycle().getUrlRenderer().renderFullUrl(getRequest().getUrl()) + singularServerMetadata.getServerBaseUrl();
-            getLogger().info(" Redirecting to "+url);
-            throw new RedirectToUrlException(url);
-        }
-
-        final FormAction formAction = resolveFormAction(action);
-
-        final String  pi   = petitionId.toString("");
-        final Long    fvk  = formVersionPK.isEmpty() ? null : formVersionPK.toLong();
-        final boolean diff = Boolean.parseBoolean(diffValue.toOptionalString());
-
-        String fn = null;
-
-        if (!formName.isEmpty()) {
-            fn = formName.toString();
-        } else if (fvk != null) {
-            fn = loadTypeNameFormFormVersionPK(fvk);
-        }
-
-        final FormPageConfig cfg = buildConfig(r, pi, formAction, fn, fvk, parentPetitionId.toOptionalString(), diff);
-
-        addAdditionalParams(r, cfg);
-
-        if (cfg != null && cfg.getProcessDefinition() == null && !cfg.isWithLazyProcessResolver()) {
-            throw SingularServerException.rethrow("Nenhum fluxo está configurado");
-        }
-        return cfg;
-    }
-
-    private void addAdditionalParams(Request r, FormPageConfig cfg) {
-        for (String name : r.getRequestParameters().getParameterNames()) {
-            if (!isMandatoryParam(name)) {
-                cfg.addAdditionalParam(name, getParam(r, name).toString());
-            }
-        }
-    }
-
-    protected abstract FormPageConfig buildConfig(Request r, String petitionId, FormAction formAction, String formType, Long formVersionKey, String parentPetitionId, boolean diff);
 
     /**
      * Possibilita execução de qualquer ação antes de fazer o dispatch
      *
+     * @param context     config atual
      * @param destination pagina destino
-     * @param config      config atual
+     * @param context
      */
-    protected void onDispatch(WebPage destination, FormPageConfig config) {
+    protected void onDispatch(WebPage destination, ActionContext context) {
     }
 
-    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Long petitionId) {
-        if (petitionId == null) {
+    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Optional<Long> petitionId) {
+        if (petitionId.isPresent()) {
+            return petitionService.findCurrentTaskByPetitionId(petitionId.get()).map(Flow::getTaskInstance);
+        } else {
             return Optional.empty();
         }
-        return petitionService.findCurrentTaskByPetitionId(petitionId).map(Flow::getTaskInstance);
     }
 
-    protected Class<? extends AbstractFormPage> getFormPageClass(FormPageConfig config) {
+    protected Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
         return FormPage.class;
     }
 

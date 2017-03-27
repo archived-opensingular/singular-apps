@@ -6,11 +6,10 @@ import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
-import org.opensingular.server.commons.file.FileInputStreamAndHash;
-import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 
 import javax.inject.Inject;
 import java.io.File;
+import java.io.FileInputStream;
 
 /**
  * Classe base para os anexos do singular server
@@ -23,9 +22,6 @@ public abstract class ServerAbstractAttachmentPersistenceService<T extends Attac
     @Inject
     protected transient FormAttachmentDAO formAttachmentDAO;
 
-    @Inject
-    private transient FileInputStreamAndHashFactory fileInputStreamAndHashFactory;
-
     /**
      * Adiciona o anexo ao banco de dados, faz o calculo de HASH
      *
@@ -35,9 +31,9 @@ public abstract class ServerAbstractAttachmentPersistenceService<T extends Attac
      * @return a referencia
      */
     @Override
-    public AttachmentRef addAttachment(File file, long length, String name) {
-        try (FileInputStreamAndHash fish = fileInputStreamAndHashFactory.get(file)) {
-            return createRef(attachmentDao.insert(fish.getInputStream(), length, name, fish.getHash()));
+    public AttachmentRef addAttachment(File file, long length, String name, String hash) {
+        try (FileInputStream fish = new FileInputStream(file)) {
+            return createRef(attachmentDao.insert(fish, length, name, hash));
         } catch (Exception e) {
             throw new SingularFormException("Erro lendo origem de dados", e);
         }

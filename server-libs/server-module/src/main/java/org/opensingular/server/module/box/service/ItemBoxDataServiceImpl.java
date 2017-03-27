@@ -38,11 +38,11 @@ public class ItemBoxDataServiceImpl implements ItemBoxDataService {
         return new ItemBoxDataList().setItemBoxDataList(searchAndApplyFilters(boxId, filter));
     }
 
-    private Optional<ItemBoxDataProvider> getItemBoxDataProvider(@PathVariable String boxId) {
+    private Optional<ItemBoxDataProvider> getItemBoxDataProvider(String boxId) {
         return getItemBoxFactory(boxId).map(ItemBoxFactory::getDataProvider);
     }
 
-    private Optional<ItemBoxFactory> getItemBoxFactory(@PathVariable String boxId) {
+    private Optional<ItemBoxFactory> getItemBoxFactory(String boxId) {
         return singularModuleConfiguration.getItemBoxFactory(boxId);
     }
 
