@@ -27,7 +27,7 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-form-wicket</artifactId>
-            <version>${singular.version}</version>
+            <version>1.6.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
