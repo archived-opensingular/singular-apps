@@ -10,6 +10,8 @@ import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import javax.inject.Inject;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 
 /**
  * Classe base para os anexos do singular server
@@ -32,11 +34,15 @@ public abstract class ServerAbstractAttachmentPersistenceService<T extends Attac
      */
     @Override
     public AttachmentRef addAttachment(File file, long length, String name, String hash) {
-        try (FileInputStream fish = new FileInputStream(file)) {
-            return createRef(attachmentDao.insert(fish, length, name, hash));
+        try (InputStream in = getFileInputStream(file)) {
+            return createRef(attachmentDao.insert(in, length, name, hash));
         } catch (Exception e) {
             throw new SingularFormException("Erro lendo origem de dados", e);
         }
+    }
+
+    InputStream getFileInputStream(File file) throws FileNotFoundException {
+        return new FileInputStream(file);
     }
 
 }
