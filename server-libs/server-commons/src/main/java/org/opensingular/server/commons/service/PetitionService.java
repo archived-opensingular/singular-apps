@@ -24,7 +24,6 @@ import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.flow.core.variable.type.VarTypeString;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
@@ -351,7 +350,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
             if (params != null && !params.isEmpty()) {
                 for (Map.Entry<String, String> entry : params.entrySet()) {
-                    pi.getVariables().addValue(entry.getKey(), new VarTypeString(), entry.getValue());
+                    pi.getVariables().addValueString(entry.getKey(), entry.getValue());
                 }
             }
 
