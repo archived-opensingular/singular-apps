@@ -2,7 +2,7 @@ package org.opensingular.server.module;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.server.module.requirement.SingularRequirement;
+import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
 
 import java.util.UUID;

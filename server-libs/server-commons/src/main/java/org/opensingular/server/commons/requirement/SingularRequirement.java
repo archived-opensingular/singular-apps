@@ -1,9 +1,9 @@
-package org.opensingular.server.module.requirement;
+package org.opensingular.server.commons.requirement;
 
 import org.opensingular.form.SType;
-import org.opensingular.lib.commons.lambda.ISupplier;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.module.wicket.view.util.form.FormPage;
+import org.opensingular.server.commons.flow.FlowResolver;
+import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
+import org.opensingular.server.commons.wicket.view.form.FormPage;
 
 /**
  * Singular requirement specification.
@@ -28,29 +28,22 @@ public interface SingularRequirement {
     Class<? extends SType> getMainForm();
 
     /**
-     * Returns an {@link BoundedFlowResolver} which is responsible to
+     * Returns an {@link FlowResolver} which is responsible to
      * select the start flow for this requirement based on {@link #getMainForm} SType properly filled.
      *
      * @return
      */
-    BoundedFlowResolver getFlowResolver();
+    FlowResolver getFlowResolver();
 
 
     /**
      * Returns a custom initial form page.
      * Defaults to {@link FormPage}
      *
-     * @param <P>
      * @return
      */
-    default <P extends FormPage> ISupplier<P> getInitialPage() {
-        return () -> {
-            try {
-                return (P) FormPage.class.newInstance();
-            } catch (Exception e) {
-                throw SingularServerException.rethrow(e.getMessage(), e);
-            }
-        };
+    default Class<? extends AbstractFormPage<?, ?>> getInitialPageClass() {
+        return FormPage.class;
     }
 
 }

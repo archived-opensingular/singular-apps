@@ -3,7 +3,7 @@ package org.opensingular.singular.pet.module.foobar.stuff;
 import org.opensingular.server.module.RequirementConfiguration;
 import org.opensingular.server.module.SingularModule;
 import org.opensingular.server.module.WorkspaceConfiguration;
-import org.opensingular.server.module.requirement.SingularRequirement;
+import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
 import org.opensingular.server.module.workspace.DefaultDonebox;
 import org.opensingular.server.module.workspace.DefaultInbox;

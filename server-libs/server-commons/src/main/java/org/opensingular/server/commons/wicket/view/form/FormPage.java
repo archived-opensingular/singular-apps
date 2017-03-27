@@ -14,13 +14,12 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.module.wicket.view.util.form;
+package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -61,6 +60,7 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
     @Override
     protected Optional<String> getIdentifier() {
         return getPetitionOptional()
-                .map(p -> p.getCod().toString());
+                .map(PetitionInstance::getCod)
+                .map(Object::toString);
     }
 }

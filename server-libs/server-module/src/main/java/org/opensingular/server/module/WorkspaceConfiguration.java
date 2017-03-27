@@ -1,7 +1,7 @@
 package org.opensingular.server.module;
 
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.server.module.requirement.SingularRequirement;
+import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 

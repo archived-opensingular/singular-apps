@@ -3,7 +3,7 @@ package org.opensingular.server.module;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.module.requirement.SingularRequirement;
+import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
 
 import java.util.LinkedHashSet;

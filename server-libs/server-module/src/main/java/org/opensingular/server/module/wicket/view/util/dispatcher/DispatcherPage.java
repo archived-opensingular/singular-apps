@@ -36,7 +36,6 @@ import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
@@ -54,11 +53,8 @@ import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.server.commons.wicket.view.template.Template;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
-import org.opensingular.server.module.SingularModule;
-import org.opensingular.server.module.SingularModuleConfiguration;
-import org.opensingular.server.module.SingularRequirementRef;
-import org.opensingular.server.module.requirement.SingularRequirement;
-import org.opensingular.server.module.wicket.view.util.form.FormPage;
+import org.opensingular.server.commons.requirement.SingularRequirement;
+import org.opensingular.server.commons.service.SingularRequirementService;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
@@ -78,9 +74,11 @@ public class DispatcherPage extends WebPage implements Loggable {
     @Inject
     private AuthorizationService authorizationService;
 
+    @Inject
+    private SingularRequirementService singularRequirementService;
 
     public DispatcherPage() {
-        initPage();
+        buildPage();
         dispatch(setFormNameActionContext(new ActionContext(getRequest().getOriginalUrl().getQueryString())));
     }
 
@@ -93,14 +91,16 @@ public class DispatcherPage extends WebPage implements Loggable {
     @SuppressWarnings("unchecked")
     @Deprecated
     private ActionContext setFormNameActionContext(ActionContext context){
-        SingularRequirement req = ApplicationContextProvider.get().getBean(SingularModuleConfiguration.class).getRequirementById(context.getRequirementId().orElse(null));
+        SingularRequirement req = singularRequirementService.getSingularRequirement(context);
         if (req != null && !context.getFormName().isPresent()) {
             context.setFormName(SFormUtil.getTypeName((Class<? extends SType<?>>) req.getMainForm()));
         }
         return context;
     }
 
-    private void initPage() {
+
+
+    private void buildPage() {
         getApplication().setHeaderResponseDecorator(new SingularHeaderResponseDecorator());
         bodyContainer
                 .add(new HeaderResponseContainer("scripts", "scripts"))
@@ -286,7 +286,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     protected Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        return FormPage.class;
+        return singularRequirementService.getSingularRequirement(config).getInitialPageClass();
     }
 
 }
