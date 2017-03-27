@@ -43,12 +43,12 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-flow-core</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>${singular.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-form-service</artifactId>
-            <version>1.6.0-SNAPSHOT</version>
+            <version>${singular.version}</version>
         </dependency>
 
         <dependency>
