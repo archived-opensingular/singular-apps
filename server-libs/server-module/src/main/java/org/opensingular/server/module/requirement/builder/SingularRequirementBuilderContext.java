@@ -12,7 +12,7 @@ public class SingularRequirementBuilderContext {
     private String name;
     private Class<? extends SType<?>> mainForm;
     private Set<Class<? extends ProcessDefinition>> flowClasses = new LinkedHashSet<>();
-    private Class<? extends AbstractFormPage<?, ?>> initPage;
+    private Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage;
 
     public String getName() {
         return name;
@@ -41,12 +41,12 @@ public class SingularRequirementBuilderContext {
         return this;
     }
 
-    public Class<? extends AbstractFormPage<?, ?>> getInitPage() {
-        return initPage;
+    public Class<? extends AbstractFormPage<?, ?>> getDefaultExecutionPage() {
+        return defaultExecutionPage;
     }
 
-    public SingularRequirementBuilderContext setInitPage(Class<? extends AbstractFormPage<?, ?>> initPage) {
-        this.initPage = initPage;
+    public SingularRequirementBuilderContext defaultExecutionPage(Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage) {
+        this.defaultExecutionPage = defaultExecutionPage;
         return this;
     }
 

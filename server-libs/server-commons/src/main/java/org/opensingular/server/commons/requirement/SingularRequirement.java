@@ -42,7 +42,7 @@ public interface SingularRequirement {
      *
      * @return
      */
-    default Class<? extends AbstractFormPage<?, ?>> getInitialPageClass() {
+    default Class<? extends AbstractFormPage<?, ?>> getDefaultExecutionPage() {
         return FormPage.class;
     }
 

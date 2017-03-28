@@ -25,11 +25,11 @@ public class DynamicFormFlowSingularRequirement extends SingularRequirementAdapt
     }
 
     @Override
-    public Class<? extends AbstractFormPage<?, ?>> getInitialPageClass() {
+    public Class<? extends AbstractFormPage<?, ?>> getDefaultExecutionPage() {
         if(initPage != null){
             return initPage;
         } else {
-            return super.getInitialPageClass();
+            return super.getDefaultExecutionPage();
         }
     }
 

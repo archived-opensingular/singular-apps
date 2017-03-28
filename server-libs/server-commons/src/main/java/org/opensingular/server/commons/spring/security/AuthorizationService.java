@@ -23,17 +23,15 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -87,7 +85,7 @@ public class AuthorizationService implements Loggable {
     }
 
     @SuppressWarnings("unchecked")
-    public void filterActions(String formType, Long petitionId, List<BoxItemAction> actions, String idUsuario, List<SingularPermission> permissions) {
+    private void filterActions(String formType, Long petitionId, List<BoxItemAction> actions, String idUsuario, List<SingularPermission> permissions) {
         PetitionAuthMetadataDTO petitionAuthMetadataDTO = null;
         if (petitionId != null) {
             petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
@@ -111,13 +109,7 @@ public class AuthorizationService implements Loggable {
     public void filterActors(List<Actor> actors, Long petitionId, String actionName) {
         PetitionAuthMetadataDTO petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
         if (actors != null && !actors.isEmpty()) {
-            Iterator<Actor> it = actors.iterator();
-            while (it.hasNext()) {
-                Actor a = it.next();
-                if (!hasPermission(petitionAuthMetadataDTO, null, a.getCodUsuario(), actionName)) {
-                    it.remove();
-                }
-            }
+            actors.removeIf(a -> !hasPermission(petitionAuthMetadataDTO, null, a.getCodUsuario(), actionName));
         }
     }
 
@@ -126,7 +118,7 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    protected List<SingularPermission> searchPermissions(String userPermissionKey) {
+    private List<SingularPermission> searchPermissions(String userPermissionKey) {
         if (SingularSession.exists()) {
             SingularUserDetails userDetails = SingularSession.get().getUserDetails();
             if (userPermissionKey.equals(userDetails.getUserPermissionKey())) {
@@ -140,7 +132,7 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    protected void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
+    private void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
         for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
             FormDTO form = it.next();
             String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
@@ -158,28 +150,41 @@ public class AuthorizationService implements Loggable {
      * @param action
      * @return
      */
-    protected String buildPermissionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO, String formSimpleName, String action) {
+    private String buildPermissionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO, String formSimpleName, String action) {
         String permission = Joiner.on("_")
                 .skipNulls()
                 .join(
-                        Optional.ofNullable(action)
-                                .map(String::toUpperCase)
-                                .orElse(null),
-                        Optional.ofNullable(formSimpleName)
-                                .map(String::toUpperCase)
-                                .orElse(null),
-                        Optional.ofNullable(petitionAuthMetadataDTO)
-                                .map(PetitionAuthMetadataDTO::getDefinitionKey)
-                                .orElse(null),
-                        Optional.ofNullable(petitionAuthMetadataDTO)
-                                .map(PetitionAuthMetadataDTO::getCurrentTaskAbbreviation)
-                                .orElse(null)
+                        upperCaseOrNull(action),
+                        upperCaseOrNull(formSimpleName),
+                        getDefinitionKey(petitionAuthMetadataDTO),
+                        getCurrentTaskAbbreviation(petitionAuthMetadataDTO)
                 )
                 .toUpperCase();
         if (getLogger().isTraceEnabled()) {
             getLogger().debug(String.format("Nome de permissão computada %s", permission));
         }
         return permission;
+    }
+
+    private String getDefinitionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO) {
+        if (petitionAuthMetadataDTO != null) {
+            return petitionAuthMetadataDTO.getDefinitionKey();
+        }
+        return null;
+    }
+
+    private String getCurrentTaskAbbreviation(PetitionAuthMetadataDTO petitionAuthMetadataDTO) {
+        if (petitionAuthMetadataDTO != null) {
+            return petitionAuthMetadataDTO.getCurrentTaskAbbreviation();
+        }
+        return null;
+    }
+
+    private String upperCaseOrNull(String string) {
+        if (string != null) {
+            return string.toUpperCase();
+        }
+        return null;
     }
 
 
@@ -199,7 +204,7 @@ public class AuthorizationService implements Loggable {
         return hasPermission(idUsuario, buildPermissionKey(petitionAuthMetadataDTO, formSimpleName, action));
     }
 
-    protected boolean hasPermission(String idUsuario, String permissionNeeded) {
+    private boolean hasPermission(String idUsuario, String permissionNeeded) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
         return hasPermission(idUsuario, permissionNeeded, permissions);
     }
@@ -213,16 +218,17 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    protected boolean hasPermission(String idUsuario, String permissionNeeded, List<SingularPermission> permissions) {
+    private boolean hasPermission(String idUsuario, String permissionNeeded, List<SingularPermission> permissions) {
         if (SingularProperties.get().isTrue(SingularProperties.DISABLE_AUTHORIZATION)) {
             return true;
         }
-        if (permissions.stream().filter(ps -> ps.getSingularId().equals(permissionNeeded)).findFirst().isPresent()) {
+
+        if (permissions.stream().anyMatch(ps -> ps.getSingularId().equals(permissionNeeded))) {
             return true;
         }
 
         String definitionPermission = removeTask(permissionNeeded);
-        if (permissions.stream().filter(ps -> ps.getSingularId().equals(definitionPermission)).findFirst().isPresent()) {
+        if (permissions.stream().anyMatch(ps -> ps.getSingularId().equals(definitionPermission))) {
             return true;
         }
 
@@ -230,21 +236,15 @@ public class AuthorizationService implements Loggable {
         return false;
     }
 
-    protected String getFormSimpleName(FormTypeEntity formType) {
-        if (formType == null) {
-            return null;
-        }
-        return getFormSimpleName(PetitionUtil.getTypeName(formType));
-    }
-
-    protected String getFormSimpleName(String formTypeName) {
+    private String getFormSimpleName(String formTypeName) {
         if (StringUtils.isBlank(formTypeName)) {
             return null;
         }
-
         return singularFormConfig
-                .map(formConfig -> formConfig.getTypeLoader().loadType(formTypeName))
-                .map(sType -> SFormUtil.getTypeSimpleName((Class<? extends SType<?>>) sType.get().getClass()).toUpperCase())
+                .flatMap(formConfig -> formConfig.getTypeLoader().loadType(formTypeName))
+                .map(typeClass -> (Class<? extends SType<?>>) typeClass.getClass())
+                .map(SFormUtil::getTypeSimpleName)
+                .map(String::toUpperCase)
                 .orElse(null);
     }
 

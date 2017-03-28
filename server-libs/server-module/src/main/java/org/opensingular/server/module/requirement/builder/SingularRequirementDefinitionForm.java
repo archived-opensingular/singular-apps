@@ -15,8 +15,8 @@ public class SingularRequirementDefinitionForm {
         return new SingularRequirementDefinitionForms(builderContext.setMainForm(form));
     }
 
-    public SingularRequirementDefinitionForm initPage(Class<? extends AbstractFormPage<?, ?>> initPage) {
-        builderContext.setInitPage(initPage);
+    public SingularRequirementDefinitionForm defaultExecutionPage(Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage) {
+        builderContext.defaultExecutionPage(defaultExecutionPage);
         return this;
     }
 

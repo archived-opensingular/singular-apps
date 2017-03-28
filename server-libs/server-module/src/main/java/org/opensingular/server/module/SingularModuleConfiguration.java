@@ -23,13 +23,13 @@ import java.util.stream.Collectors;
 @Named
 public class SingularModuleConfiguration {
 
-    private SingularModule               module;
+    private SingularModule module;
     private List<SingularRequirementRef> requirements;
-    private List<BoxCofiguration>        itemBoxes;
+    private List<BoxCofiguration> itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {
-        SingularModule           module                   = resolveModule();
+        SingularModule module = resolveModule();
         RequirementConfiguration requirementConfiguration = resolveRequirements(module);
         resolveWorkspace(module, requirementConfiguration);
     }
@@ -84,6 +84,11 @@ public class SingularModuleConfiguration {
 
     public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
         return itemBoxes.stream().filter(boxCofiguration -> boxCofiguration.getId().equals(id)).map(BoxCofiguration::getItemBoxFactory).findFirst();
+    }
+
+    @Deprecated
+    public List<SingularRequirementRef> getRequirements() {
+        return requirements;
     }
 
 }

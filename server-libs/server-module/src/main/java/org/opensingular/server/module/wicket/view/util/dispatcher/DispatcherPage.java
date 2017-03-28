@@ -84,20 +84,20 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     /**
      * Método temporário, remover após migrar os links para usar id do requerimento ao invés do nome do form
-     * @return
+     *
      * @param context
+     * @return
      */
     //TODO REFACTOR
     @SuppressWarnings("unchecked")
     @Deprecated
-    private ActionContext setFormNameActionContext(ActionContext context){
+    private ActionContext setFormNameActionContext(ActionContext context) {
         SingularRequirement req = singularRequirementService.getSingularRequirement(context);
         if (req != null && !context.getFormName().isPresent()) {
             context.setFormName(SFormUtil.getTypeName((Class<? extends SType<?>>) req.getMainForm()));
         }
         return context;
     }
-
 
 
     private void buildPage() {
@@ -115,8 +115,8 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti   = findCurrentTaskByPetitionId(actionContext.getPetitionId());
-        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<TaskInstance> ti = actionContext.getPetitionId().flatMap(this::findCurrentTaskByPetitionId);
+        Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
             if (task.get() instanceof STaskUserExecutable) {
                 final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
@@ -157,7 +157,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private WebPage newVisualizationPage(ActionContext context) {
 
-        Long    formVersionPK;
+        Long formVersionPK;
         Boolean showAnnotations;
 
         showAnnotations = context.getFormAction().get().getAnnotationMode() == AnnotationMode.READ_ONLY;
@@ -180,14 +180,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private WebPage retrieveDestinationUsingSingularWebRef(ActionContext config, Optional<SingularWebRef> ref) {
         try {
-
-            //TODO vinicius.nunes
-            Optional<Class<? extends AbstractFormPage<?, ?>>> formPageClass = config.getFormPageClass();
-            if(formPageClass.isPresent()) {
-                return createNewInstanceUsingFormPageConfigConstructor(formPageClass.get(), config);
-            }
-
-            else if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
+            if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
                 return createNewInstanceUsingFormPageConfigConstructor(getFormPageClass(config), config);
             } else if (AbstractFormPage.class.isAssignableFrom(ref.get().getPageClass())) {
                 return createNewInstanceUsingFormPageConfigConstructor(ref.get().getPageClass(), config);
@@ -212,8 +205,8 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     protected boolean hasAccess(ActionContext context) {
-        SingularUserDetails userDetails   = SingularSession.get().getUserDetails();
-        boolean             hasPermission = authorizationService.hasPermission(context.getPetitionId().orElse(null), context.getFormName().get(), String.valueOf(userDetails.getUserPermissionKey()), context.getFormAction().map(FormAction::name).orElse(null));
+        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        boolean hasPermission = authorizationService.hasPermission(context.getPetitionId().orElse(null), context.getFormName().get(), String.valueOf(userDetails.getUserPermissionKey()), context.getFormAction().map(FormAction::name).orElse(null));
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
@@ -225,7 +218,6 @@ public class DispatcherPage extends WebPage implements Loggable {
         }
 
     }
-
 
 
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
@@ -284,18 +276,23 @@ public class DispatcherPage extends WebPage implements Loggable {
     protected void onDispatch(WebPage destination, ActionContext context) {
     }
 
-    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Optional<Long> petitionId) {
-        if (petitionId.isPresent()) {
-            return petitionService.findCurrentTaskByPetitionId(petitionId.get()).map(Flow::getTaskInstance);
+    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Long petitionId) {
+        if (petitionId  != null) {
+            return petitionService.findCurrentTaskByPetitionId(petitionId).map(Flow::getTaskInstance);
         } else {
             return Optional.empty();
         }
     }
 
-    protected Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        SingularRequirement singularRequirement = singularRequirementService.getSingularRequirement(config);
-        if(singularRequirement != null) {
-            return singularRequirement.getInitialPageClass();
+    private Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
+        Optional<Class<? extends AbstractFormPage<?, ?>>> formPageClass = config.getFormPageClass();
+        if (formPageClass.isPresent()) {
+            return formPageClass.get();
+        } else {
+            SingularRequirement singularRequirement = singularRequirementService.getSingularRequirement(config);
+            if (singularRequirement != null) {
+                return singularRequirement.getDefaultExecutionPage();
+            }
         }
         return null;
     }

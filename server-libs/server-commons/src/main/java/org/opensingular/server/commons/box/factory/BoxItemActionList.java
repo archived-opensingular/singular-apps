@@ -1,9 +1,13 @@
 package org.opensingular.server.commons.box.factory;
 
 
+import org.opensingular.form.SType;
 import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
+import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.ArrayList;
@@ -34,13 +38,11 @@ public class BoxItemActionList {
                 .petitionId(boxData.getCodPeticao())
                 .param(FORM_NAME, boxData.getType())
                 .build();
-
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(action);
         boxItemAction.setEndpoint(endpoint);
         boxItemAction.setFormAction(formAction);
-
-        boxItemActions.add(boxItemAction);
+        add(boxItemAction);
         return this;
     }
 
@@ -50,7 +52,7 @@ public class BoxItemActionList {
         boxItemAction.setName(actionName);
         boxItemAction.setEndpoint(endpointUrl);
         boxItemAction.setUseExecute(true);
-        boxItemActions.add(boxItemAction);
+        add(boxItemAction);
         return this;
     }
 
@@ -59,7 +61,7 @@ public class BoxItemActionList {
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
         boxItemAction.setEndpoint(endpointUrl);
-        boxItemActions.add(boxItemAction);
+        add(boxItemAction);
         return this;
     }
 
@@ -70,5 +72,24 @@ public class BoxItemActionList {
 
     public List<BoxItemAction> getBoxItemActions() {
         return boxItemActions;
+    }
+
+    public BoxItemActionList addInheritPetitionPopupBox(String actioName,
+                                           ItemBoxData line,
+                                           Class<? extends SType<?>> type,
+                                           Class<? extends AbstractFormPage<?,?>> executioPage) {
+        final BoxItemAction boxItemAction = new BoxItemAction();
+        boxItemAction.setName(actioName);
+        String url = DispatcherPageUtil
+                .baseURL("")
+                .formAction(FormAction.FORM_FILL.getId())
+                .petitionId(null)
+                .param(DispatcherPageParameters.FORM_NAME, PetitionUtil.getTypeName(type))
+                .param(DispatcherPageParameters.PARENT_PETITION_ID, line.get("codPeticao"))
+                .param(DispatcherPageParameters.FORM_PAGE_CLASS, executioPage.getName())
+                .build();
+        boxItemAction.setEndpoint(url);
+        add(boxItemAction);
+        return this;
     }
 }

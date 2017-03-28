@@ -26,7 +26,8 @@ public class SingularRequirementRef {
 
     }
 
-    SingularRequirement getRequirement() {
+    //TODO vinicius.nunes modifiquei para public
+    public SingularRequirement getRequirement() {
         if (requirement == null) {
             this.requirement = requirementProvider.apply(new SingularRequirementBuilder());
         }
