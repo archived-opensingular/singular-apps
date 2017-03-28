@@ -25,6 +25,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.form.RefService;
 import org.opensingular.form.SIComposite;
@@ -48,6 +49,7 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
+import org.opensingular.server.commons.flow.FlowResolver;
 import org.opensingular.server.commons.flow.metadata.ServerContextMetaData;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
@@ -103,16 +105,22 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             throw new RedirectToUrlException(url);
         }
 
-        SingularRequirementService requirementService = SingularRequirementService.get();
-        SingularRequirement singularRequirement = requirementService.getSingularRequirement(context);
-
-        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName), singularRequirement.getFlowResolver());
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName), getFlowResolver(context));
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
 
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
+    }
+
+    private FlowResolver getFlowResolver(@Nullable ActionContext context) {
+        return getSingularRequirement(context).map(SingularRequirement::getFlowResolver).orElse(null);
+    }
+
+    private Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
+        SingularRequirementService requirementService = SingularRequirementService.get();
+        return Optional.ofNullable(requirementService.getSingularRequirement(context));
     }
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
@@ -434,6 +442,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return instance.toStringDisplay();
     }
 
+    @NotNull
     @Nonnull
     protected SInstance createInstance(@Nonnull RefType refType) {
 

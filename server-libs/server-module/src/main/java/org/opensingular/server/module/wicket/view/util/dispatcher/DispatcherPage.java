@@ -180,7 +180,14 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private WebPage retrieveDestinationUsingSingularWebRef(ActionContext config, Optional<SingularWebRef> ref) {
         try {
-            if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
+
+            //TODO vinicius.nunes
+            Optional<Class<? extends AbstractFormPage<?, ?>>> formPageClass = config.getFormPageClass();
+            if(formPageClass.isPresent()) {
+                return createNewInstanceUsingFormPageConfigConstructor(formPageClass.get(), config);
+            }
+
+            else if (!ref.map(SingularWebRef::getPageClass).isPresent()) {
                 return createNewInstanceUsingFormPageConfigConstructor(getFormPageClass(config), config);
             } else if (AbstractFormPage.class.isAssignableFrom(ref.get().getPageClass())) {
                 return createNewInstanceUsingFormPageConfigConstructor(ref.get().getPageClass(), config);
@@ -286,7 +293,11 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     protected Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        return singularRequirementService.getSingularRequirement(config).getInitialPageClass();
+        SingularRequirement singularRequirement = singularRequirementService.getSingularRequirement(config);
+        if(singularRequirement != null) {
+            return singularRequirement.getInitialPageClass();
+        }
+        return null;
     }
 
 }

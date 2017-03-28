@@ -44,4 +44,6 @@ public class DispatcherPageParameters {
 
     public final static String DIFF = "diff";
 
+    public final static String FORM_PAGE_CLASS = "fpc";
+
 }

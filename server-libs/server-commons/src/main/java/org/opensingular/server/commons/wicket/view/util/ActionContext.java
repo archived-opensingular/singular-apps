@@ -2,7 +2,9 @@ package org.opensingular.server.commons.wicket.view.util;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
 import java.io.Serializable;
@@ -13,7 +15,7 @@ import java.util.Optional;
  * Representa o contexto de execução de uma página de um módulo.
  * Armazena as informações passadas como parâmetros pelo server para o módulo.
  */
-public class ActionContext implements Serializable, Cloneable {
+public class ActionContext implements Serializable, Cloneable, Loggable {
 
     private static final String ACTION = "a";
 
@@ -173,6 +175,18 @@ public class ActionContext implements Serializable, Cloneable {
 
     public ActionContext clone() {
         return new ActionContext(params);
+    }
+
+    public Optional<Class<? extends AbstractFormPage<?, ?>>> getFormPageClass() {
+        String formPageClassName = params.get(DispatcherPageParameters.FORM_PAGE_CLASS);
+        if (formPageClassName != null) {
+            try {
+                return Optional.ofNullable((Class<? extends AbstractFormPage<?, ?>>) Class.forName(formPageClassName));
+            } catch (ClassNotFoundException e) {
+                getLogger().info("Nenhuma classe fornecida", e);
+            }
+        }
+        return Optional.empty();
     }
 
     @Override
