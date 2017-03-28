@@ -65,7 +65,7 @@ public class BoxItemActionList {
         return this;
     }
 
-    public BoxItemActionList add(BoxItemAction boxItemAction){
+    public BoxItemActionList add(BoxItemAction boxItemAction) {
         boxItemActions.add(boxItemAction);
         return this;
     }
@@ -75,9 +75,10 @@ public class BoxItemActionList {
     }
 
     public BoxItemActionList addInheritPetitionPopupBox(String actioName,
-                                           ItemBoxData line,
-                                           Class<? extends SType<?>> type,
-                                           Class<? extends AbstractFormPage<?,?>> executioPage) {
+                                                        ItemBoxData line,
+                                                        Class<? extends SType<?>> type,
+                                                        Class<? extends AbstractFormPage<?, ?>> executioPage,
+                                                        String requirementId) {
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(actioName);
         String url = DispatcherPageUtil
@@ -87,6 +88,7 @@ public class BoxItemActionList {
                 .param(DispatcherPageParameters.FORM_NAME, PetitionUtil.getTypeName(type))
                 .param(DispatcherPageParameters.PARENT_PETITION_ID, line.get("codPeticao"))
                 .param(DispatcherPageParameters.FORM_PAGE_CLASS, executioPage.getName())
+                .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
                 .build();
         boxItemAction.setEndpoint(url);
         add(boxItemAction);

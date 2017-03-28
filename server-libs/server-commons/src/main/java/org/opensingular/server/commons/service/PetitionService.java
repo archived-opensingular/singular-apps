@@ -280,14 +280,17 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
         final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
 
-        ProcessInstance newProcessInstance = startNewProcess(petition, processDefinition);
-
-        onSend(petition, instance, newProcessInstance, codResponsavel);
+        onBeforeStartProcess(petition, instance, codResponsavel);
+        ProcessInstance processInstance = startNewProcess(petition, processDefinition);
+        onAfterStartProcess(petition, instance, codResponsavel, processInstance);
 
         savePetitionHistory(petition, consolidatedDrafts);
     }
 
-    protected void onSend(PI peticao, SInstance instance, ProcessInstance newProcessInstance, String codResponsavel) {
+    protected void onAfterStartProcess(PI petition, SInstance instance, String codResponsavel, ProcessInstance processInstance) {
+    }
+
+    protected void onBeforeStartProcess(PI peticao, SInstance instance, String codResponsavel) {
     }
 
     private void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
