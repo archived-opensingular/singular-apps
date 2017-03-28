@@ -57,4 +57,21 @@ public enum FormAction {
     public AnnotationMode getAnnotationMode() {
         return annotationMode;
     }
+
+    public boolean isAnnotationModeEdit(){
+        return AnnotationMode.EDIT.equals(getAnnotationMode());
+    }
+
+    public boolean isAnnotationModeReadOnly(){
+        return AnnotationMode.READ_ONLY.equals(getAnnotationMode());
+    }
+
+    public boolean isViewModeEdit(){
+        return ViewMode.EDIT.equals(getViewMode());
+    }
+
+    public boolean isViewModeReadOnly(){
+        return ViewMode.READ_ONLY.equals(getViewMode());
+    }
+
 }
