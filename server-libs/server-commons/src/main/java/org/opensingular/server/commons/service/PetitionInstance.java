@@ -26,6 +26,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.persistence.entity.enums.PersonType;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 
@@ -135,5 +136,12 @@ public class PetitionInstance implements Serializable {
 
     public void setDescription(String description) {
         petitionEntity.setDescription(description);
+    }
+
+    public String getIdPessoaSeForPessoaJuridica() {
+        if (PersonType.JURIDICA.equals(getPetitioner().getPersonType())) {
+            return getPetitioner().getIdPessoa();
+        }
+        return null;
     }
 }
