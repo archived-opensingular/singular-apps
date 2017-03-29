@@ -592,4 +592,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
         return newProcessInstance;
     }
+
+    //TODO vinicius.nunes LENTO
+    @Deprecated
+    public boolean containChildren(Long petitionCod){
+        return petitionDAO.containChildren(petitionCod);
+    }
 }
