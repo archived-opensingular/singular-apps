@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 
 public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEntity, Long> {
 
-    public Optional<MenuService> menuService;
+    private MenuService.MenuServiceSupplier menuServiceSupplier = new MenuService.MenuServiceSupplier();
 
     public PetitionContentHistoryDAO() {
         super(PetitionContentHistoryEntity.class);
@@ -75,11 +75,8 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 .forEach(task -> petitionHistoryDTOs.add(new PetitionHistoryDTO().setTask(task)));
 
         BoxConfigurationData boxConfigurationMetadata;
-        if (menuService.isPresent()) {
-            boxConfigurationMetadata = menuService.get().getMenuByLabel(menu);
-        } else {
-            boxConfigurationMetadata = null;
-        }
+
+        boxConfigurationMetadata = menuServiceSupplier.get().map(ms -> ms.getMenuByLabel(menu)).orElse(null);
 
         return petitionHistoryDTOs
                 .stream()

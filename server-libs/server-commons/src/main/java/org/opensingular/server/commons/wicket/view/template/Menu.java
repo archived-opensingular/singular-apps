@@ -46,26 +46,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.ITEM_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
+
     protected static final Logger LOGGER = LoggerFactory.getLogger(Menu.class);
 
-    @Inject
-    protected transient Optional<MenuService> menuService;
+    private MenuService.MenuServiceSupplier menuServiceSupplier = new MenuService.MenuServiceSupplier();
 
     private Class<? extends WebPage> boxPageClass;
-    private MetronicMenu             menu;
+    private MetronicMenu menu;
 
     public Menu(String id, Class<? extends WebPage> boxPageClass) {
         super(id);
@@ -80,17 +82,19 @@ public class Menu extends Panel implements Loggable {
         return this.menu;
     }
 
-
     protected void buildMenuSelecao() {
         List<ProcessGroupEntity> categories = new ArrayList<>(0);
-        menuService.ifPresent(ms -> categories.addAll(ms.getCategories()));
+        menuServiceSupplier.get().ifPresent(menuService -> {
+            categories.addAll(menuService.getCategories());
+        });
         SelecaoMenuItem selecaoMenuItem = new SelecaoMenuItem(categories);
         menu.addItem(selecaoMenuItem);
     }
 
     protected List<ProcessGroupEntity> getSelectedCategoryOrAll() {
         final ProcessGroupEntity categoriaSelecionada = SingularSession.get().getCategoriaSelecionada();
-        if (categoriaSelecionada == null) {
+        Optional<MenuService> menuService = menuServiceSupplier.get();
+        if (categoriaSelecionada == null && menuService.isPresent()) {
             return menuService.get().getCategories();
         } else {
             return Collections.singletonList(categoriaSelecionada);
@@ -99,20 +103,21 @@ public class Menu extends Panel implements Loggable {
 
 
     protected void buildMenuGroup(MetronicMenu menu, ProcessGroupEntity processGroup) {
-        if (menuService.isPresent()) {
-            for (BoxConfigurationData boxConfigurationMetadata : menuService.get().getMenusByCategory(processGroup)) {
-                List<MenuItemConfig> subMenus;
-                if (boxConfigurationMetadata.getItemBoxes() == null) {
-                    subMenus = buildDefaultSubMenus(boxConfigurationMetadata, processGroup);
-                } else {
-                    subMenus = buildSubMenus(boxConfigurationMetadata, processGroup);
-                }
-
-                if (!subMenus.isEmpty()) {
-                    buildMenus(menu, boxConfigurationMetadata, processGroup, subMenus);
-                }
-            }
-        }
+        menuServiceSupplier.get()
+                .map(menuService -> menuService.getMenusByCategory(processGroup))
+                .map(Collection::stream)
+                .orElse(Stream.empty())
+                .forEach(boxConfigurationMetadata -> {
+                    List<MenuItemConfig> subMenus;
+                    if (boxConfigurationMetadata.getItemBoxes() == null) {
+                        subMenus = buildDefaultSubMenus(boxConfigurationMetadata, processGroup);
+                    } else {
+                        subMenus = buildSubMenus(boxConfigurationMetadata, processGroup);
+                    }
+                    if (!subMenus.isEmpty()) {
+                        buildMenus(menu, boxConfigurationMetadata, processGroup, subMenus);
+                    }
+                });
     }
 
     protected List<MenuItemConfig> buildDefaultSubMenus(BoxConfigurationData boxConfigurationMetadata, ProcessGroupEntity processGroup) {
@@ -146,7 +151,7 @@ public class Menu extends Panel implements Loggable {
 
         List<String> tipos = boxConfigurationMetadata.getProcesses().stream()
                 .map(ProcessDTO::getFormName)
-                .filter(s -> s != null)
+                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         List<MenuItemConfig> configs = new ArrayList<>();
@@ -238,9 +243,9 @@ public class Menu extends Panel implements Loggable {
 
         @Override
         protected void respond(AjaxRequestTarget target) {
-            final String        type     = "application/json";
-            final String        encoding = StandardCharsets.UTF_8.name();
-            final StringBuilder json     = new StringBuilder();
+            final String type = "application/json";
+            final String encoding = StandardCharsets.UTF_8.name();
+            final StringBuilder json = new StringBuilder();
             json.append('{');
             for (int i = 0; i < itens.size(); i++) {
                 json.append("\"item").append(i).append('\"').append(':').append(itens.get(i).getRight().get());
@@ -254,11 +259,11 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected static class MenuItemConfig {
-        public IRequestablePage                  page;
-        public String                            name;
+        public IRequestablePage page;
+        public String name;
         public Class<? extends IRequestablePage> pageClass;
-        public Icone                             icon;
-        public ISupplier<String>                 counterSupplier;
+        public Icone icon;
+        public ISupplier<String> counterSupplier;
 
         public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, Icone icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();
