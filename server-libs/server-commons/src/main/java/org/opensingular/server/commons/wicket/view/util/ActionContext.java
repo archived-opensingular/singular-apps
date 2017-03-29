@@ -83,6 +83,10 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
         return Optional.ofNullable(this.params.get(PARENT_PETITION_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
     }
 
+    public Optional<Boolean> getInheritParentFormData() {
+        return Optional.ofNullable(this.params.get(DispatcherPageParameters.INHERIT_PARENT_FORM_DATA)).map(Boolean::valueOf);
+    }
+
     public ActionContext setParentPetitionId(Long parentPetitionId) {
         this.params.put(PARENT_PETITION_ID, String.valueOf(parentPetitionId));
         return this;

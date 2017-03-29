@@ -81,6 +81,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private final FormPageExecutionContext config;
     private final IModel<FormKey> formKeyModel;
     private final IModel<FormKey> parentPetitionformKeyModel;
+    private final IModel<Boolean> inheritParentFormData;
 
     @Inject
     private PetitionService<PE, PI> petitionService;
@@ -108,6 +109,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName), getFlowResolver(context));
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
+        this.inheritParentFormData = $m.ofValue();
+
+        context.getInheritParentFormData().ifPresent(inheritParentFormData::setObject);
 
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
@@ -450,7 +454,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
         if (formKeyModel.getObject() == null) {
             /* clonagem do ultimo formulário da petição */
-            if (parentPetitionformKeyModel.getObject() != null) {
+            if (parentPetitionformKeyModel.getObject() != null
+                    && inheritParentFormData.getObject() != null
+                    && inheritParentFormData.getObject()) {
                 return formPetitionService.newTransientSInstance(parentPetitionformKeyModel.getObject(), refType, false, extraSetup);
             } else {
                 return formPetitionService.createInstance(refType, extraSetup);

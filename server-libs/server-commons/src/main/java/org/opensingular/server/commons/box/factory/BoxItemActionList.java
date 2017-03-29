@@ -78,7 +78,8 @@ public class BoxItemActionList {
                                                         ItemBoxData line,
                                                         Class<? extends SType<?>> type,
                                                         Class<? extends AbstractFormPage<?, ?>> executioPage,
-                                                        String requirementId) {
+                                                        String requirementId,
+                                                        boolean inheritFormData) {
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(actioName);
         String url = DispatcherPageUtil
@@ -89,6 +90,8 @@ public class BoxItemActionList {
                 .param(DispatcherPageParameters.PARENT_PETITION_ID, line.get("codPeticao"))
                 .param(DispatcherPageParameters.FORM_PAGE_CLASS, executioPage.getName())
                 .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
+                .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
+                .param(DispatcherPageParameters.INHERIT_PARENT_FORM_DATA, inheritFormData)
                 .build();
         boxItemAction.setEndpoint(url);
         add(boxItemAction);

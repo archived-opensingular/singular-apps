@@ -46,4 +46,6 @@ public class DispatcherPageParameters {
 
     public final static String FORM_PAGE_CLASS = "fpc";
 
+    public final static String INHERIT_PARENT_FORM_DATA = "ipfd";
+
 }
