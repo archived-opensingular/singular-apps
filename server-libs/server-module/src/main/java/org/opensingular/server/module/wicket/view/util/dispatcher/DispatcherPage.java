@@ -247,12 +247,11 @@ public class DispatcherPage extends WebPage implements Loggable {
         if (config.getPetitionId().isPresent()) {
             return petitionService.findCurrentTaskByPetitionId(config.getPetitionId().get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
+                    .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
-                    .map(history -> {
-                        return history.getAllocatedUser() != null
-                                && history.getEndDateAllocation() == null
-                                && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario());
-                    })
+                    .map(history -> history.getAllocatedUser() != null
+                            && history.getEndDateAllocation() == null
+                            && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
                     .orElse(false);
         }
         return false;
