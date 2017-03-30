@@ -25,6 +25,7 @@ import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.entity.enums.PersonType;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
@@ -144,4 +145,13 @@ public class PetitionInstance implements Serializable {
         }
         return null;
     }
+
+    public FormVersionEntity getMainFormCurrentFormVersion(){
+        return petitionEntity.getMainForm().getCurrentFormVersionEntity();
+    }
+
+    public Long getMainFormCurrentFormVersionCod(){
+        return getMainFormCurrentFormVersion().getCod();
+    }
+
 }
