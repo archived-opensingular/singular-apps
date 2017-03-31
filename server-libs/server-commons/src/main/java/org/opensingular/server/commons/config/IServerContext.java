@@ -78,6 +78,7 @@ public interface IServerContext extends Serializable {
      */
     public String getUrlPath();
 
+    @Deprecated
     public String getPropertiesBaseKey();
 
     public String getName();
