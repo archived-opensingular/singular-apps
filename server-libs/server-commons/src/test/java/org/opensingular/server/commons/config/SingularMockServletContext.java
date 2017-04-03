@@ -20,7 +20,7 @@ public class SingularMockServletContext extends MockServletContext implements Lo
 
     @Override
     public void addListener(String className) {
-        getLogger().info("addListener class : %s", className);
+        getLogger().info("addListener class : {}", className);
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SingularMockServletContext extends MockServletContext implements Lo
 
     @Override
     public FilterRegistration.Dynamic addFilter(String filterName, String className) {
-        getLogger().info("addFilter name: %s class: %s", filterName, className);
+        getLogger().info("addFilter name: {} class: {}", filterName, className);
         return Mockito.mock(FilterRegistration.Dynamic.class);
     }
 
@@ -46,7 +46,7 @@ public class SingularMockServletContext extends MockServletContext implements Lo
 
     @Override
     public ServletRegistration.Dynamic addServlet(String servletName, String className) {
-        getLogger().info("addServlet name: %s class: %s", servletName, className);
+        getLogger().info("addServlet name: {} class: {}", servletName, className);
         return Mockito.mock(ServletRegistration.Dynamic.class);
     }
 

@@ -7,7 +7,6 @@ import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.mock.web.MockServletContext;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.ServletException;

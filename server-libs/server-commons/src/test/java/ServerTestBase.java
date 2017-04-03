@@ -18,7 +18,6 @@ import javax.inject.Inject;
 public class ServerTestBase {
 
     private StaticLoggerBinder binder = StaticLoggerBinder.getSingleton();
-    ;
 
     @Inject
     protected WebApplicationContext webApplicationContext;
