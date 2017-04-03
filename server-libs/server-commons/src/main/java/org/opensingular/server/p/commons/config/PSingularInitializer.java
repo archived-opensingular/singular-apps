@@ -18,6 +18,7 @@ package org.opensingular.server.p.commons.config;
 
 import org.opensingular.server.commons.config.SingularInitializer;
 
+@Deprecated
 public interface PSingularInitializer extends SingularInitializer {
 
     @Override

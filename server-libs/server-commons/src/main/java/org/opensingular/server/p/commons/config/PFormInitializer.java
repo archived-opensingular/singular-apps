@@ -18,6 +18,7 @@ package org.opensingular.server.p.commons.config;
 
 import org.opensingular.server.commons.config.FormInitializer;
 
+@Deprecated
 public class PFormInitializer extends FormInitializer {
 
 }
