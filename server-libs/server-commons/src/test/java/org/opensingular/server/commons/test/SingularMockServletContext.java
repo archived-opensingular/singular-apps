@@ -1,4 +1,4 @@
-package org.opensingular.server.commons.config;
+package org.opensingular.server.commons.test;
 
 import org.mockito.Mockito;
 import org.opensingular.lib.commons.util.Loggable;
