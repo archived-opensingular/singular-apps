@@ -2,6 +2,7 @@ package org.opensingular.server.commons.test;
 
 import org.mockito.Mockito;
 import org.opensingular.lib.commons.util.Loggable;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.mock.web.MockServletContext;
 
 import javax.servlet.Filter;
@@ -12,6 +13,10 @@ import java.util.EventListener;
 
 public class SingularMockServletContext extends MockServletContext implements Loggable {
 
+
+    public SingularMockServletContext(String resourceBasePath, ResourceLoader resourceLoader) {
+        super(resourceBasePath, resourceLoader);
+    }
 
     @Override
     public void addListener(Class<? extends EventListener> listenerClass) {
@@ -59,4 +64,6 @@ public class SingularMockServletContext extends MockServletContext implements Lo
     public ServletRegistration.Dynamic addServlet(String servletName, Servlet servlet) {
         return addServlet(servletName, servlet.getClass());
     }
+
+
 }
