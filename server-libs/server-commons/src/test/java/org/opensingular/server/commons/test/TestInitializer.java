@@ -8,25 +8,18 @@ import org.opensingular.server.p.commons.config.PFlowInitializer;
 import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
-import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import javax.annotation.PostConstruct;
-import javax.servlet.ServletException;
 
+public class TestInitializer implements PSingularInitializer {
 
-@Configuration
-public class TestInitializer implements PSingularInitializer, ApplicationContextAware {
+    private AnnotationConfigWebApplicationContext applicationContext;
 
-    private AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext = new AnnotationConfigWebApplicationContext();
+    public TestInitializer(AnnotationConfigWebApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
-    @PostConstruct
-    public void init() throws ServletException {
-        onStartup(new SingularMockServletContext());
+    public TestInitializer() {
     }
 
     @Override
@@ -44,7 +37,7 @@ public class TestInitializer implements PSingularInitializer, ApplicationContext
         return new PSpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
-                return annotationConfigWebApplicationContext;
+                return applicationContext;
             }
         };
     }
@@ -57,17 +50,6 @@ public class TestInitializer implements PSingularInitializer, ApplicationContext
     @Override
     public SchedulerInitializer schedulerConfiguration() {
         return null;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-//        annotationConfigWebApplicationContext.setParent(applicationContext);
-//        AbstractApplicationContext abstractApplicationContext = (AbstractApplicationContext) applicationContext;
-//
-//        abstractApplicationContext.setParent(annotationConfigWebApplicationContext);
-//        abstractApplicationContext.setClassLoader(applicationContext.getClassLoader());
-//        abstractApplicationContext.refresh();
-//        abstractApplicationContext.registerShutdownHook();
     }
 
     public static class TestSingularApplication extends SingularApplication {
