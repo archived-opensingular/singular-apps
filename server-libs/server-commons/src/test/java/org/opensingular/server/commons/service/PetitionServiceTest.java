@@ -11,6 +11,7 @@ import javax.inject.Inject;
 import javax.transaction.Transaction;
 import java.util.List;
 
+
 public class PetitionServiceTest extends SingularServerTestBase {
 
     @Inject
