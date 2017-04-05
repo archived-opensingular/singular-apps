@@ -18,9 +18,17 @@ public class SingularMockServletContext extends MockServletContext implements Lo
         super(resourceBasePath, resourceLoader);
     }
 
+    public SingularMockServletContext() {
+    }
+
     @Override
     public void addListener(Class<? extends EventListener> listenerClass) {
         addListener(listenerClass.getName());
+    }
+
+    @Override
+    public String getVirtualServerName() {
+        return null;
     }
 
     @Override

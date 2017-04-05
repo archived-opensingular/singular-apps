@@ -49,22 +49,31 @@ public class SingularDefaultPersistenceConfiguration {
 
     @Value("classpath:db/ddl/drops.sql")
     protected Resource drops;
+
     @Value("classpath:db/ddl/create-tables-form.sql")
     protected Resource sqlCreateTablesForm;
+
     @Value("classpath:db/ddl/create-tables.sql")
     protected Resource sqlCreateTables;
+
     @Value("classpath:db/ddl/create-constraints.sql")
     protected Resource sqlCreateConstraints;
+
     @Value("classpath:db/ddl/create-constraints-form.sql")
     protected Resource sqlCreateConstraintsForm;
+
     @Value("classpath:db/ddl/create-sequences-form.sql")
     protected Resource sqlCreateSequencesForm;
+
     @Value("classpath:db/ddl/create-function.sql")
     private   Resource sqlCreateFunction;
+
     @Value("classpath:db/ddl/create-tables-actor.sql")
     private   Resource sqlCreateTablesActor;
+
     @Value("classpath:db/ddl/create-sequences-server.sql")
     private   Resource sqlCreateSequencesServer;
+
     @Value("classpath:db/dml/insert-flow-data.sql")
     private   Resource insertDadosSingular;
 
@@ -152,7 +161,7 @@ public class SingularDefaultPersistenceConfiguration {
         return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
     }
 
-    @DependsOn("scriptsInitializer")
+    @DependsOn("createFunctionInitializer")
     @Bean
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
