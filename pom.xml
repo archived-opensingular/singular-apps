@@ -49,15 +49,6 @@
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>2.19.1</version>
-                <configuration>
-                    <forkCount>0</forkCount>
-                    <reuseForks>false</reuseForks>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.3</version>
                 <configuration>
@@ -250,10 +241,8 @@
 
             <properties>
                 <project.scm.url>https://github.com/opensingular/singular-server/tree/master</project.scm.url>
-                <project.scm.connection>scm:git:https://github.com/opensingular/singular-server.git
-                </project.scm.connection>
-                <project.scm.developerConnection>scm:git:https://github.com/opensingular/singular-server.git
-                </project.scm.developerConnection>
+                <project.scm.connection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.connection>
+                <project.scm.developerConnection>scm:git:https://github.com/opensingular/singular-server.git</project.scm.developerConnection>
             </properties>
         </profile>
 
@@ -272,22 +261,16 @@
     </profiles>
 
     <properties>
-        <sonar.issue.ignore.multicriteria>
-            e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15,e16,e17,e18,e19,s1,s2,s3,s4,s5,s6,s7,s8,s9
-        </sonar.issue.ignore.multicriteria>
+        <sonar.issue.ignore.multicriteria>e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15,e16,e17,e18,e19,s1,s2,s3,s4,s5,s6,s7,s8,s9</sonar.issue.ignore.multicriteria>
         <!-- Falso positivo: injeção via construtor -->
         <sonar.issue.ignore.multicriteria.e1.ruleKey>squid:S3306</sonar.issue.ignore.multicriteria.e1.ruleKey>
         <sonar.issue.ignore.multicriteria.e1.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e1.resourceKey>
         <!-- Falso positivo: chaves duplicadas em properties  -->
-        <sonar.issue.ignore.multicriteria.e2.ruleKey>jproperties:duplicated-keys-across-files
-        </sonar.issue.ignore.multicriteria.e2.ruleKey>
-        <sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.properties
-        </sonar.issue.ignore.multicriteria.e2.resourceKey>
+        <sonar.issue.ignore.multicriteria.e2.ruleKey>jproperties:duplicated-keys-across-files</sonar.issue.ignore.multicriteria.e2.ruleKey>
+        <sonar.issue.ignore.multicriteria.e2.resourceKey>**/*.properties</sonar.issue.ignore.multicriteria.e2.resourceKey>
         <!-- Falso positivo: chaves duplicadas em properties  -->
-        <sonar.issue.ignore.multicriteria.e3.ruleKey>jproperties:duplicated-keys
-        </sonar.issue.ignore.multicriteria.e3.ruleKey>
-        <sonar.issue.ignore.multicriteria.e3.resourceKey>**/*.properties
-        </sonar.issue.ignore.multicriteria.e3.resourceKey>
+        <sonar.issue.ignore.multicriteria.e3.ruleKey>jproperties:duplicated-keys</sonar.issue.ignore.multicriteria.e3.ruleKey>
+        <sonar.issue.ignore.multicriteria.e3.resourceKey>**/*.properties</sonar.issue.ignore.multicriteria.e3.resourceKey>
         <!-- Falso positivo: sobrescrever equals em entidades -->
         <sonar.issue.ignore.multicriteria.e4.ruleKey>squid:S2160</sonar.issue.ignore.multicriteria.e4.ruleKey>
         <sonar.issue.ignore.multicriteria.e4.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e4.resourceKey>
@@ -296,11 +279,9 @@
         <sonar.issue.ignore.multicriteria.e5.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e5.resourceKey>
         <!-- Falso positivo: hard coded credentials -->
         <sonar.issue.ignore.multicriteria.e6.ruleKey>jproperties:S2068</sonar.issue.ignore.multicriteria.e6.ruleKey>
-        <sonar.issue.ignore.multicriteria.e6.resourceKey>**/*.properties
-        </sonar.issue.ignore.multicriteria.e6.resourceKey>
+        <sonar.issue.ignore.multicriteria.e6.resourceKey>**/*.properties</sonar.issue.ignore.multicriteria.e6.resourceKey>
         <!-- Falso positivo: sha-1 vulneravel -->
-        <sonar.issue.ignore.multicriteria.e7.ruleKey>findsecbugs:WEAK_MESSAGE_DIGEST_SHA1
-        </sonar.issue.ignore.multicriteria.e7.ruleKey>
+        <sonar.issue.ignore.multicriteria.e7.ruleKey>findsecbugs:WEAK_MESSAGE_DIGEST_SHA1</sonar.issue.ignore.multicriteria.e7.ruleKey>
         <sonar.issue.ignore.multicriteria.e7.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e7.resourceKey>
         <!-- Falso positivo: generic wildcard -->
         <sonar.issue.ignore.multicriteria.e8.ruleKey>squid:S1452</sonar.issue.ignore.multicriteria.e8.ruleKey>
@@ -318,80 +299,54 @@
         <sonar.issue.ignore.multicriteria.e12.ruleKey>squid:S1214</sonar.issue.ignore.multicriteria.e12.ruleKey>
         <sonar.issue.ignore.multicriteria.e12.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e12.resourceKey>
         <!-- Falso positivo: different keys with same value -->
-        <sonar.issue.ignore.multicriteria.e13.ruleKey>jproperties:duplicated-values
-        </sonar.issue.ignore.multicriteria.e13.ruleKey>
-        <sonar.issue.ignore.multicriteria.e13.resourceKey>**/*.properties
-        </sonar.issue.ignore.multicriteria.e13.resourceKey>
+        <sonar.issue.ignore.multicriteria.e13.ruleKey>jproperties:duplicated-values</sonar.issue.ignore.multicriteria.e13.ruleKey>
+        <sonar.issue.ignore.multicriteria.e13.resourceKey>**/*.properties</sonar.issue.ignore.multicriteria.e13.resourceKey>
         <!-- Falso positivo: different keys with same value -->
-        <sonar.issue.ignore.multicriteria.e14.ruleKey>squid:MaximumInheritanceDepth
-        </sonar.issue.ignore.multicriteria.e14.ruleKey>
+        <sonar.issue.ignore.multicriteria.e14.ruleKey>squid:MaximumInheritanceDepth</sonar.issue.ignore.multicriteria.e14.ruleKey>
         <sonar.issue.ignore.multicriteria.e14.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e14.resourceKey>
         <!-- Falso positivo: literais replicados -->
-        <sonar.issue.ignore.multicriteria.e15.ruleKey>squid:S1192</sonar.issue.ignore.multicriteria.e15.ruleKey>
+        <sonar.issue.ignore.multicriteria.e15.ruleKey>squid:S1192 </sonar.issue.ignore.multicriteria.e15.ruleKey>
         <sonar.issue.ignore.multicriteria.e15.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e15.resourceKey>
         <!-- Falso positivo: atributos publicos nos stypes  -->
-        <sonar.issue.ignore.multicriteria.e16.ruleKey>squid:ClassVariableVisibilityCheck
-        </sonar.issue.ignore.multicriteria.e16.ruleKey>
+        <sonar.issue.ignore.multicriteria.e16.ruleKey>squid:ClassVariableVisibilityCheck</sonar.issue.ignore.multicriteria.e16.ruleKey>
         <sonar.issue.ignore.multicriteria.e16.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e16.resourceKey>
         <!-- Falso positivo: array armazenado diretamente -->
-        <sonar.issue.ignore.multicriteria.e17.ruleKey>pmd:ArrayIsStoredDirectly
-        </sonar.issue.ignore.multicriteria.e17.ruleKey>
+        <sonar.issue.ignore.multicriteria.e17.ruleKey>pmd:ArrayIsStoredDirectly</sonar.issue.ignore.multicriteria.e17.ruleKey>
         <sonar.issue.ignore.multicriteria.e17.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e17.resourceKey>
         <!-- Falso positivo: métodos chamados de maneira redundante -->
-        <sonar.issue.ignore.multicriteria.e18.ruleKey>fb-contrib:PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS
-        </sonar.issue.ignore.multicriteria.e18.ruleKey>
+        <sonar.issue.ignore.multicriteria.e18.ruleKey>fb-contrib:PRMC_POSSIBLY_REDUNDANT_METHOD_CALLS</sonar.issue.ignore.multicriteria.e18.ruleKey>
         <sonar.issue.ignore.multicriteria.e18.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e18.resourceKey>
         <!-- Falso positivo: chamada a método não final no construtor -->
-        <sonar.issue.ignore.multicriteria.e19.ruleKey>fb-contrib:PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS
-        </sonar.issue.ignore.multicriteria.e19.ruleKey>
+        <sonar.issue.ignore.multicriteria.e19.ruleKey>fb-contrib:PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS</sonar.issue.ignore.multicriteria.e19.ruleKey>
         <sonar.issue.ignore.multicriteria.e19.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e19.resourceKey>
 
         <!-- Falso positivo: concatenacao de parametros  -->
-        <sonar.issue.ignore.multicriteria.s1.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE
-        </sonar.issue.ignore.multicriteria.s1.ruleKey>
-        <sonar.issue.ignore.multicriteria.s1.resourceKey>**/PetitionDAO.java
-        </sonar.issue.ignore.multicriteria.s1.resourceKey>
+        <sonar.issue.ignore.multicriteria.s1.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE</sonar.issue.ignore.multicriteria.s1.ruleKey>
+        <sonar.issue.ignore.multicriteria.s1.resourceKey>**/PetitionDAO.java</sonar.issue.ignore.multicriteria.s1.resourceKey>
         <!-- Falso positivo: concatenacao de parametros  -->
-        <sonar.issue.ignore.multicriteria.s2.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE
-        </sonar.issue.ignore.multicriteria.s2.ruleKey>
-        <sonar.issue.ignore.multicriteria.s2.resourceKey>**/TaskInstanceDAO.java
-        </sonar.issue.ignore.multicriteria.s2.resourceKey>
+        <sonar.issue.ignore.multicriteria.s2.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE</sonar.issue.ignore.multicriteria.s2.ruleKey>
+        <sonar.issue.ignore.multicriteria.s2.resourceKey>**/TaskInstanceDAO.java</sonar.issue.ignore.multicriteria.s2.resourceKey>
         <!-- Falso positivo: redirect não validado  -->
-        <sonar.issue.ignore.multicriteria.s3.ruleKey>findsecbugs:UNVALIDATED_REDIRECT
-        </sonar.issue.ignore.multicriteria.s3.ruleKey>
-        <sonar.issue.ignore.multicriteria.s3.resourceKey>**/SingularCASLogoutHandler.java
-        </sonar.issue.ignore.multicriteria.s3.resourceKey>
+        <sonar.issue.ignore.multicriteria.s3.ruleKey>findsecbugs:UNVALIDATED_REDIRECT</sonar.issue.ignore.multicriteria.s3.ruleKey>
+        <sonar.issue.ignore.multicriteria.s3.resourceKey>**/SingularCASLogoutHandler.java</sonar.issue.ignore.multicriteria.s3.resourceKey>
         <!-- Falso positivo: redirect não validado  -->
-        <sonar.issue.ignore.multicriteria.s4.ruleKey>findsecbugs:UNVALIDATED_REDIRECT
-        </sonar.issue.ignore.multicriteria.s4.ruleKey>
-        <sonar.issue.ignore.multicriteria.s4.resourceKey>**/SSOLogoutUtil.java
-        </sonar.issue.ignore.multicriteria.s4.resourceKey>
+        <sonar.issue.ignore.multicriteria.s4.ruleKey>findsecbugs:UNVALIDATED_REDIRECT</sonar.issue.ignore.multicriteria.s4.ruleKey>
+        <sonar.issue.ignore.multicriteria.s4.resourceKey>**/SSOLogoutUtil.java</sonar.issue.ignore.multicriteria.s4.resourceKey>
         <!-- Falso positivo: log injection  -->
-        <sonar.issue.ignore.multicriteria.s5.ruleKey>findsecbugs:CRLF_INJECTION_LOGS
-        </sonar.issue.ignore.multicriteria.s5.ruleKey>
-        <sonar.issue.ignore.multicriteria.s5.resourceKey>**/SSOLogoutUtil.java
-        </sonar.issue.ignore.multicriteria.s5.resourceKey>
-        <sonar.issue.ignore.multicriteria.s6.ruleKey>findsecbugs:CRLF_INJECTION_LOGS
-        </sonar.issue.ignore.multicriteria.s6.ruleKey>
-        <sonar.issue.ignore.multicriteria.s6.resourceKey>**/SingularCASLogoutHandler.java
-        </sonar.issue.ignore.multicriteria.s6.resourceKey>
-        <sonar.issue.ignore.multicriteria.s7.ruleKey>findsecbugs:CRLF_INJECTION_LOGS
-        </sonar.issue.ignore.multicriteria.s7.ruleKey>
-        <sonar.issue.ignore.multicriteria.s7.resourceKey>**/SSOFilter.java
-        </sonar.issue.ignore.multicriteria.s7.resourceKey>
-        <sonar.issue.ignore.multicriteria.s8.ruleKey>findsecbugs:CRLF_INJECTION_LOGS
-        </sonar.issue.ignore.multicriteria.s8.ruleKey>
-        <sonar.issue.ignore.multicriteria.s8.resourceKey>**/DefaultServerREST.java
-        </sonar.issue.ignore.multicriteria.s8.resourceKey>
-        <sonar.issue.ignore.multicriteria.s9.ruleKey>fb-contrib:MDM_SETDEFAULTLOCALE
-        </sonar.issue.ignore.multicriteria.s9.ruleKey>
-        <sonar.issue.ignore.multicriteria.s9.resourceKey>**/SingularApplication.java
-        </sonar.issue.ignore.multicriteria.s9.resourceKey>
+        <sonar.issue.ignore.multicriteria.s5.ruleKey>findsecbugs:CRLF_INJECTION_LOGS</sonar.issue.ignore.multicriteria.s5.ruleKey>
+        <sonar.issue.ignore.multicriteria.s5.resourceKey>**/SSOLogoutUtil.java</sonar.issue.ignore.multicriteria.s5.resourceKey>
+        <sonar.issue.ignore.multicriteria.s6.ruleKey>findsecbugs:CRLF_INJECTION_LOGS</sonar.issue.ignore.multicriteria.s6.ruleKey>
+        <sonar.issue.ignore.multicriteria.s6.resourceKey>**/SingularCASLogoutHandler.java</sonar.issue.ignore.multicriteria.s6.resourceKey>
+        <sonar.issue.ignore.multicriteria.s7.ruleKey>findsecbugs:CRLF_INJECTION_LOGS</sonar.issue.ignore.multicriteria.s7.ruleKey>
+        <sonar.issue.ignore.multicriteria.s7.resourceKey>**/SSOFilter.java</sonar.issue.ignore.multicriteria.s7.resourceKey>
+        <sonar.issue.ignore.multicriteria.s8.ruleKey>findsecbugs:CRLF_INJECTION_LOGS</sonar.issue.ignore.multicriteria.s8.ruleKey>
+        <sonar.issue.ignore.multicriteria.s8.resourceKey>**/DefaultServerREST.java</sonar.issue.ignore.multicriteria.s8.resourceKey>
+        <sonar.issue.ignore.multicriteria.s9.ruleKey>fb-contrib:MDM_SETDEFAULTLOCALE</sonar.issue.ignore.multicriteria.s9.ruleKey>
+        <sonar.issue.ignore.multicriteria.s9.resourceKey>**/SingularApplication.java</sonar.issue.ignore.multicriteria.s9.resourceKey>
 
         <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.url>
         <project.scm.connection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.connection>
-        <project.scm.developerConnection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git
-        </project.scm.developerConnection>
+        <project.scm.developerConnection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.developerConnection>
         <sonar.exclusions>**/*.less, **/*.sass, **/*.html, **/*.xml **/*.js, **/*.css</sonar.exclusions>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
