@@ -52,7 +52,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
     public boolean send(Email email) {
         EmailEntity emailEntity = new EmailEntity();
         if (!validateRecipients(email.getAllRecipients())) {
-            throw SingularServerException.rethrow("O destinatário de e-mail é inválido.");
+            throw new SingularServerException("O destinatário de e-mail é inválido.");
         }
         emailEntity.setSubject(email.getSubject());
         emailEntity.setContent(email.getContent());
