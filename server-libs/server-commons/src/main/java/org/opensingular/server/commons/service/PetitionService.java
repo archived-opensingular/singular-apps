@@ -98,18 +98,14 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     @Inject
     protected PetitionerDAO petitionerDAO;
-
-    @Inject
-    private PetitionContentHistoryDAO petitionContentHistoryDAO;
-
     @Inject
     protected AuthorizationService authorizationService;
-
-    @Inject
-    private FormPetitionService<PE> formPetitionService;
-
     @Inject
     protected ActorDAO actorDAO;
+    @Inject
+    private PetitionContentHistoryDAO petitionContentHistoryDAO;
+    @Inject
+    private FormPetitionService<PE> formPetitionService;
 
     /**
      * Deve cria uma instância com base na entidade fornecida.
@@ -598,4 +594,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public boolean containChildren(Long petitionCod){
         return petitionDAO.containChildren(petitionCod);
     }
+
+
 }
