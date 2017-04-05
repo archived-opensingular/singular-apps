@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.test;
 
 import org.apache.wicket.Page;
+import org.opensingular.flow.core.service.IFlowMetadataREST;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
 import org.opensingular.server.commons.wicket.SingularApplication;
@@ -13,6 +14,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 public class TestInitializer implements PSingularInitializer {
 
+    public static final String TESTE = "Teste";
+    public static final String[] DEFINITIONS_PACKS_ARRAY = new String[]{"org.opensingular.server.commons.test"};
+    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public TestInitializer(AnnotationConfigWebApplicationContext applicationContext) {
@@ -39,17 +43,47 @@ public class TestInitializer implements PSingularInitializer {
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;
             }
+
+            @Override
+            protected String springMVCServletMapping() {
+                return SPRING_MVC_SERVLET_MAPPING;
+            }
         };
     }
 
     @Override
     public PFlowInitializer flowConfiguration() {
-        return null;
+        return new PFlowInitializer() {
+            @Override
+            public Class<? extends IFlowMetadataREST> flowMetadataProvider() {
+                return null;
+            }
+
+            @Override
+            public String[] definitionsBasePackage() {
+                return DEFINITIONS_PACKS_ARRAY;
+            }
+
+            @Override
+            public String processGroupCod() {
+                return TESTE;
+            }
+        };
     }
 
     @Override
     public SchedulerInitializer schedulerConfiguration() {
-        return null;
+        return new SchedulerInitializer() {
+            @Override
+            public Class<?> mailConfiguration() {
+                return Object.class;
+            }
+
+            @Override
+            public Class<?> attachmentGCConfiguration() {
+                return Object.class;
+            }
+        };
     }
 
     public static class TestSingularApplication extends SingularApplication {

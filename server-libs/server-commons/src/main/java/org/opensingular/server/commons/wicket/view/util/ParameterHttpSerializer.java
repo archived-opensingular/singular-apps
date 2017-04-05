@@ -5,25 +5,27 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class ParameterHttpSerializer {
 
-    private static final String ENCODING = "UTF-8";
+    private static final Charset ENCODING = StandardCharsets.UTF_8;
 
     public static String encode(LinkedHashMap<String, String> params) {
         try {
             StringBuilder sb = new StringBuilder();
             for (Map.Entry<String, String> e : params.entrySet()) {
                 if (sb.length() > 0) {
-                    sb.append("&");
+                    sb.append('&');
                 }
                 if (e.getValue() != null) {
-                    sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), ENCODING), URLEncoder.encode(e.getValue(), ENCODING)));
+                    sb.append(String.format("%s=%s", URLEncoder.encode(e.getKey(), ENCODING.name()), URLEncoder.encode(e.getValue(), ENCODING.name())));
                 } else {
-                    sb.append(String.format("%s", URLEncoder.encode(e.getKey(), ENCODING)));
+                    sb.append(String.format("%s", URLEncoder.encode(e.getKey(), ENCODING.name())));
                 }
             }
             return sb.toString();
@@ -39,14 +41,14 @@ public class ParameterHttpSerializer {
             String[] params = cleanQueryString.split("&");
             for (String paramString : params) {
                 String[] param = paramString.split("=");
-                String key = URLDecoder.decode(param[0], ENCODING);
+                String key = URLDecoder.decode(param[0], ENCODING.name());
                 String value = null;
                 if (param.length > 1) {
                     StringBuilder sb = new StringBuilder();
                     for (int i = 1; i < param.length; i++) {
                         sb.append(param[i]);
                     }
-                    value = URLDecoder.decode(sb.toString(), ENCODING);
+                    value = URLDecoder.decode(sb.toString(), ENCODING.name());
                 }
                 decoded.put(key, value);
             }
@@ -89,14 +91,14 @@ public class ParameterHttpSerializer {
                                 compressAlgorithm(s.getBytes(ENCODING))
                         ), ENCODING
                 ),
-                ENCODING);
+                ENCODING.name());
     }
 
     private static String decompress(String s) throws UnsupportedEncodingException {
         return new String(
                 decompressAlgorithm(
                         Base64.getUrlDecoder().decode(
-                                URLDecoder.decode(s, ENCODING)
+                                URLDecoder.decode(s, ENCODING.name())
                                         .getBytes(ENCODING)
                         )
                 ),
