@@ -82,7 +82,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
                 return false;
             }
         }
-        return true;
+        return !recipients.isEmpty();
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
