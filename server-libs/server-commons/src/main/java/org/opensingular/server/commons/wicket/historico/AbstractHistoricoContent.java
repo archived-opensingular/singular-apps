@@ -29,12 +29,12 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
@@ -47,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_VERSION_KEY;
 
 public abstract class AbstractHistoricoContent extends Content {
 
@@ -139,7 +139,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private IFunction<String, Button> viewFormButton(final Long versionPK) {
         final String url = DispatcherPageUtil
                 .baseURL(getBaseUrl())
-                .formAction(FormActions.FORM_ANALYSIS_VIEW.getId())
+                .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
                 .petitionId(null)
                 .param(FORM_VERSION_KEY, versionPK)
                 .build();

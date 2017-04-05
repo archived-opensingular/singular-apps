@@ -35,7 +35,6 @@ import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceH
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
-import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
@@ -51,7 +50,6 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionContentHisto
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.rest.DefaultServerREST;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultPetitionService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
@@ -109,7 +107,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public PetitionService<?,?> worklistPetitionServiceFactory() {
+    public PetitionService<?, ?> worklistPetitionServiceFactory() {
         return new DefaultPetitionService();
     }
 
@@ -270,27 +268,17 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public FileInputStreamAndHashFactory fileInputStreamAndHashFactory() {
-        return new FileInputStreamAndHashFactory();
-    }
-
-    @Bean
     public IAttachmentPersistenceHelper serverAttachmentPersistenceHelper(IFormService formService, IFormAttachmentService attachmentService) {
         return new ServerAttachmentPersistenceHelper(formService, attachmentService);
     }
 
     @Bean
-    public DefaultServerREST serverRest(){
-        return new DefaultServerREST();
-    }
-
-    @Bean
-    public RestUserDetailsService restUserDetailsService(){
+    public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
+    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService) {
         return new DatabaseAdminCredentialChecker(parameterService, null);
     }
 

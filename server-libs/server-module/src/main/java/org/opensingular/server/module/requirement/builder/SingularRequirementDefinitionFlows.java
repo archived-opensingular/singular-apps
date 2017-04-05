@@ -1,35 +1,31 @@
 package org.opensingular.server.module.requirement.builder;
 
 import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.form.SType;
 import org.opensingular.server.module.requirement.BoundedFlowResolver;
 import org.opensingular.server.module.requirement.DynamicFormFlowSingularRequirement;
-import org.opensingular.server.module.requirement.SingularRequirement;
+import org.opensingular.server.commons.requirement.SingularRequirement;
 
-import java.util.HashSet;
 import java.util.Set;
 
 public class SingularRequirementDefinitionFlows {
 
-    private String                 name;
-    private Class<? extends SType<?>> form;
-    private Set<Class<? extends ProcessDefinition>> flows = new HashSet<>();
+    private SingularRequirementBuilderContext builderContext;
 
-
-    public SingularRequirementDefinitionFlows(String name, Class<? extends SType<?>> form, Class<? extends ProcessDefinition> flowClass) {
-        this.name = name;
-        this.form = form;
-        this.flows.add(flowClass);
+    public SingularRequirementDefinitionFlows(SingularRequirementBuilderContext builderContext) {
+        this.builderContext = builderContext;
     }
 
     public SingularRequirementDefinitionFlowResolver allowedFlow(Class<? extends ProcessDefinition> flowClass) {
-        this.flows.add(flowClass);
-        return new SingularRequirementDefinitionFlowResolver(name, form, flows);
+        return new SingularRequirementDefinitionFlowResolver(builderContext.addFlowClass(flowClass));
     }
 
-
     public SingularRequirement build() {
-        return new DynamicFormFlowSingularRequirement(name, form, new BoundedFlowResolver((s, c) -> flows.stream().findFirst(), flows));
+        Set<Class<? extends ProcessDefinition>> flowClasses = builderContext.getFlowClasses();
+        return new DynamicFormFlowSingularRequirement(
+                builderContext.getName(),
+                builderContext.getMainForm(),
+                new BoundedFlowResolver((s, c) -> flowClasses.stream().findFirst(), flowClasses),
+                builderContext.getDefaultExecutionPage());
     }
 
 }

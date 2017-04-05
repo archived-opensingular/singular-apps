@@ -6,6 +6,6 @@ public class SingularRequirementBuilder {
     }
 
     public SingularRequirementDefinitionForm name(String name) {
-        return new SingularRequirementDefinitionForm(name);
+        return new SingularRequirementDefinitionForm(new SingularRequirementBuilderContext().setName(name));
     }
 }

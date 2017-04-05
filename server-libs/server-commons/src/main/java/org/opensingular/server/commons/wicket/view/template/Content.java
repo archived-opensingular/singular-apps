@@ -31,7 +31,6 @@ import org.apache.wicket.markup.repeater.RepeatingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 
-import static org.opensingular.server.commons.wicket.view.template.Menu.MENU_CACHE;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public abstract class Content extends Panel implements Loggable {
@@ -76,10 +75,6 @@ public abstract class Content extends Panel implements Loggable {
             breadcrumb.add(new AttributeAppender("class", "hide", " "));
         }
 
-    }
-
-    protected MenuSessionConfig getMenuSessionConfig() {
-        return (MenuSessionConfig) SingularSession.get().getAttribute(MENU_CACHE);
     }
 
     protected StringResourceModel getMessage(String prop) {
