@@ -31,7 +31,6 @@ import org.opensingular.internal.form.wicket.util.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
-import org.opensingular.server.commons.spring.SingularWicketInjector;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
 import org.springframework.beans.BeansException;
@@ -77,9 +76,9 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
         });
 
         if (applicationContext != null) {
-            getComponentInstantiationListeners().add(new SingularWicketInjector(this, applicationContext, true));
+            getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext, true));
         } else {
-            getComponentInstantiationListeners().add(new SingularWicketInjector(this));
+            getComponentInstantiationListeners().add(new SpringComponentInjector(this));
             applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
         }
 
