@@ -7,12 +7,10 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = TestConfiguration.class, loader = SingularServerContextLoader.class)
+@ContextConfiguration(classes = ConfigurationMock.class, loader = SingularServerContextLoader.class)
 public abstract class SingularServerBaseTest {
 
-    static {
-        System.setProperty("h2.javaSystemCompiler", "false");
-    }
+
 
 
 }

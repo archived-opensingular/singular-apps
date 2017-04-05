@@ -11,14 +11,14 @@ import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
 import java.util.EventListener;
 
-public class SingularMockServletContext extends MockServletContext implements Loggable {
+public class SingularServletContextMock extends MockServletContext implements Loggable {
 
 
-    public SingularMockServletContext(String resourceBasePath, ResourceLoader resourceLoader) {
+    public SingularServletContextMock(String resourceBasePath, ResourceLoader resourceLoader) {
         super(resourceBasePath, resourceLoader);
     }
 
-    public SingularMockServletContext() {
+    public SingularServletContextMock() {
     }
 
     @Override

@@ -1,6 +1,5 @@
 package org.opensingular.server.commons.test;
 
-import org.apache.wicket.Page;
 import org.opensingular.flow.core.service.IFlowMetadataREST;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
@@ -12,18 +11,18 @@ import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class TestInitializer implements PSingularInitializer {
+public class SingularInitializerMock implements PSingularInitializer {
 
-    public static final String TESTE = "Teste";
-    public static final String[] DEFINITIONS_PACKS_ARRAY = new String[]{"org.opensingular.server.commons.test"};
-    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
+    public static final String   TESTE                      = "Teste";
+    public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.server.commons.test"};
+    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
-    public TestInitializer(AnnotationConfigWebApplicationContext applicationContext) {
+    public SingularInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public TestInitializer() {
+    public SingularInitializerMock() {
     }
 
     @Override
@@ -31,7 +30,7 @@ public class TestInitializer implements PSingularInitializer {
         return new PWebInitializer() {
             @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext context) {
-                return TestSingularApplication.class;
+                return SingularApplicationMock.class;
             }
         };
     }
@@ -86,11 +85,5 @@ public class TestInitializer implements PSingularInitializer {
         };
     }
 
-    public static class TestSingularApplication extends SingularApplication {
 
-        @Override
-        public Class<? extends Page> getHomePage() {
-            return null;
-        }
-    }
 }

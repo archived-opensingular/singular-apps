@@ -195,7 +195,7 @@ public class SingularServerContextLoader extends AbstractContextLoader {
             ResourceLoader resourceLoader = resourceBasePath.startsWith(ResourceLoader.CLASSPATH_URL_PREFIX) ? new DefaultResourceLoader()
                     : new FileSystemResourceLoader();
 
-            ServletContext servletContext = new SingularMockServletContext(resourceBasePath, resourceLoader);
+            ServletContext servletContext = new SingularServletContextMock(resourceBasePath, resourceLoader);
             servletContext.setAttribute(WebApplicationContext.ROOT_WEB_APPLICATION_CONTEXT_ATTRIBUTE, context);
             context.setServletContext(servletContext);
         } else {
@@ -243,7 +243,7 @@ public class SingularServerContextLoader extends AbstractContextLoader {
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new TestInitializer(context).onStartup(context.getServletContext());
+            new SingularInitializerMock(context).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

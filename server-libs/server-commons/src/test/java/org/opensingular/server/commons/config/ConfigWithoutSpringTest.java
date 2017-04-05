@@ -2,8 +2,8 @@ package org.opensingular.server.commons.config;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.test.SingularMockServletContext;
-import org.opensingular.server.commons.test.TestInitializer;
+import org.opensingular.server.commons.test.SingularServletContextMock;
+import org.opensingular.server.commons.test.SingularInitializerMock;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletException;
@@ -15,8 +15,8 @@ import static org.opensingular.server.commons.config.SingularInitializer.SERVLET
 public class ConfigWithoutSpringTest {
 
     AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
-    SingularMockServletContext            mockServletContext = new SingularMockServletContext();
-    TestInitializer                       initializer        = new TestInitializer(applicationContext);
+    SingularServletContextMock mockServletContext = new SingularServletContextMock();
+    SingularInitializerMock    initializer        = new SingularInitializerMock(applicationContext);
 
 
     @Test
