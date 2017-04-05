@@ -19,13 +19,10 @@ public class ConfigTest {
     SingularMockServletContext            mockServletContext = new SingularMockServletContext();
     TestInitializer                       initializer        = new TestInitializer(applicationContext);
 
-    @Before
-    public void testConfigSpike() throws ServletException {
-        initializer.onStartup(mockServletContext);
-    }
 
     @Test
-    public void checkServletParams() {
+    public void checkServletParams() throws ServletException {
+        initializer.onStartup(mockServletContext);
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION));
