@@ -8,7 +8,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = TestConfiguration.class, loader = SingularServerContextLoader.class)
-public abstract class SingularServerTestBase {
+public abstract class SingularServerBaseTest {
 
 
 }

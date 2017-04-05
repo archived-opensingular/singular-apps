@@ -12,7 +12,7 @@ import static org.opensingular.server.commons.config.SingularInitializer.SERVLET
 import static org.opensingular.server.commons.config.SingularInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION;
 import static org.opensingular.server.commons.config.SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION;
 
-public class ConfigTestWithoutSpring {
+public class ConfigWithoutSpringTest {
 
     AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
     SingularMockServletContext            mockServletContext = new SingularMockServletContext();

@@ -3,16 +3,13 @@ package org.opensingular.server.commons.service;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
-import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.server.commons.test.SingularServerTestBase;
+import org.opensingular.server.commons.test.SingularServerBaseTest;
 
 import javax.inject.Inject;
-import javax.transaction.Transaction;
-import java.util.List;
 
 
-public class PetitionServiceTest extends SingularServerTestBase {
+public class PetitionServiceTest extends SingularServerBaseTest {
 
     @Inject
     public PetitionService<?,?> petitionService;
