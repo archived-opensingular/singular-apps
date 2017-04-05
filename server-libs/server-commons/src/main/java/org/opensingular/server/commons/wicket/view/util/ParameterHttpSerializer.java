@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.wicket.view.util;
 
+import org.apache.commons.lang3.tuple.Pair;
 import org.opensingular.server.commons.exception.SingularServerException;
 
 import java.io.UnsupportedEncodingException;
@@ -40,22 +41,27 @@ public class ParameterHttpSerializer {
             LinkedHashMap<String, String> decoded = new LinkedHashMap<>();
             String[] params = cleanQueryString.split("&");
             for (String paramString : params) {
-                String[] param = paramString.split("=");
-                String key = URLDecoder.decode(param[0], ENCODING.name());
-                String value = null;
-                if (param.length > 1) {
-                    StringBuilder sb = new StringBuilder();
-                    for (int i = 1; i < param.length; i++) {
-                        sb.append(param[i]);
-                    }
-                    value = URLDecoder.decode(sb.toString(), ENCODING.name());
-                }
-                decoded.put(key, value);
+                Pair<String, String> param = parseParamValue(paramString);
+                decoded.put(param.getKey(), param.getValue());
             }
             return decoded;
         } catch (Exception e) {
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
+    }
+
+    private static Pair<String, String> parseParamValue(String paramString) throws UnsupportedEncodingException {
+        String[] param = paramString.split("=");
+        String   key   = URLDecoder.decode(param[0], ENCODING.name());
+        String   value = null;
+        if (param.length > 1) {
+            StringBuilder sb = new StringBuilder();
+            for (int i = 1; i < param.length; i++) {
+                sb.append(param[i]);
+            }
+            value = URLDecoder.decode(sb.toString(), ENCODING.name());
+        }
+        return Pair.of(key, value);
     }
 
     private static String clearQueryString(String queryString) {
