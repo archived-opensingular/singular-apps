@@ -16,19 +16,16 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 
 import java.io.Serializable;
 import java.util.Map;
-
-import static org.opensingular.server.commons.rest.DefaultServerREST.EXECUTE;
-import static org.opensingular.server.commons.rest.DefaultServerREST.PATH_BOX_ACTION;
 
 public class BoxItemAction implements Serializable {
 
     private String      name;
     private String      endpoint;
-    private FormActions formAction;
+    private FormAction formAction;
     private boolean useExecute = false;
 
     public BoxItemAction() {
@@ -38,16 +35,6 @@ public class BoxItemAction implements Serializable {
         this.name = (String) map.get("name");
         this.endpoint = (String) map.get("endpoint");
         this.useExecute = (Boolean) map.get("useExecute");
-    }
-
-    public static BoxItemAction newExecuteInstante(Object id, String actionName) {
-        String endpointUrl = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
-
-        final BoxItemAction boxItemAction = new BoxItemAction();
-        boxItemAction.setName(actionName);
-        boxItemAction.setEndpoint(endpointUrl);
-        boxItemAction.setUseExecute(true);
-        return boxItemAction;
     }
 
     public String getName() {
@@ -74,11 +61,11 @@ public class BoxItemAction implements Serializable {
         this.useExecute = useExecute;
     }
 
-    public FormActions getFormAction() {
+    public FormAction getFormAction() {
         return formAction;
     }
 
-    public void setFormAction(FormActions formAction) {
+    public void setFormAction(FormAction formAction) {
         this.formAction = formAction;
     }
 }

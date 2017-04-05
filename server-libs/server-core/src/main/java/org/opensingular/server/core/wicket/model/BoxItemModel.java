@@ -16,31 +16,33 @@
 
 package org.opensingular.server.core.wicket.model;
 
+import org.opensingular.server.commons.box.ItemBoxData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemAction;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BoxItemModel extends LinkedHashMap<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private ItemBoxData itemBoxData;
 
-    public BoxItemModel(Map<String, Object> map) {
-        super(map);
+    public BoxItemModel(ItemBoxData itemBoxData) {
+        this.itemBoxData = itemBoxData;
+        putAll(itemBoxData.getRawMap());
     }
 
     public Long getCod() {
-        return ((Integer) get("codPeticao")).longValue();
+        return Integer.valueOf((String) get("codPeticao")).longValue();
     }
 
     public Integer getVersionStamp() {
         Object versionStamp = get("versionStamp");
         if (versionStamp != null) {
-            return ((Integer) versionStamp);
+            return Integer.valueOf((String) versionStamp);
         } else {
             return null;
         }
@@ -49,7 +51,7 @@ public class BoxItemModel extends LinkedHashMap<String, Object> implements Seria
     public Long getProcessInstanceId() {
         Object processInstanceId = get("processInstanceId");
         if (processInstanceId != null) {
-            return ((Integer) processInstanceId).longValue();
+            return Integer.valueOf((String) processInstanceId).longValue();
         } else {
             return null;
         }
@@ -60,11 +62,9 @@ public class BoxItemModel extends LinkedHashMap<String, Object> implements Seria
     }
 
     public Map<String, BoxItemAction> getActionsMap() {
-        LinkedHashMap actionsMap = new LinkedHashMap<>();
-
-        for (Map<String, Object> map : (List<Map<String, Object>>) get("actions")) {
-            final BoxItemAction itemAction = new BoxItemAction(map);
-            actionsMap.put(itemAction.getName(), itemAction);
+        Map<String, BoxItemAction> actionsMap = new LinkedHashMap<>();
+        for (BoxItemAction boxItemAction : itemBoxData.getBoxItemActions()) {
+            actionsMap.put(boxItemAction.getName(), boxItemAction);
         }
         return actionsMap;
     }
@@ -76,4 +76,5 @@ public class BoxItemModel extends LinkedHashMap<String, Object> implements Seria
     public boolean hasAction(ItemAction itemAction) {
         return getActionsMap().containsKey(itemAction.getName());
     }
+
 }

@@ -27,7 +27,7 @@ import org.opensingular.server.commons.cache.SingularSessionCache;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
 import org.opensingular.server.commons.flow.actions.ActionDefinition;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
@@ -76,7 +76,7 @@ public class PermissionResolverService implements Loggable {
         List<String> typeNames = listAllTypeNames();
 
         for (String typeName : typeNames) {
-            for (FormActions action : FormActions.values()) {
+            for (FormAction action : FormAction.values()) {
                 String singularId = action + "_" + typeName;
                 permissions.add(new SingularPermission(singularId, null));
             }

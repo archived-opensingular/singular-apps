@@ -18,6 +18,7 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,19 +32,22 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionAtribuirRequest;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.DatatableField;
@@ -52,14 +56,13 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.ItemBoxData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
-import org.opensingular.server.core.wicket.ModuleLink;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
@@ -71,25 +74,23 @@ import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
-public class BoxContent extends AbstractBoxContent<BoxItemModel> {
+public class BoxContent extends AbstractBoxContent<BoxItemModel> implements Loggable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
     protected IModel<BoxItemModel>    currentModel;
     private   Pair<String, SortOrder> sortProperty;
-    private   ItemBox                 itemBoxDTO;
+    private   IModel<ItemBoxData> itemBoxModel;
 
-    public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxDTO) {
+    public BoxContent(String id, String processGroupCod, String menu, ItemBoxData itemBox) {
         super(id, processGroupCod, menu);
-        this.itemBoxDTO = itemBoxDTO;
+        this.itemBoxModel = new Model<>(itemBox);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        showNew();
         configureQuickFilter();
     }
 
@@ -98,26 +99,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         getPesquisarButton().setVisible(isShowQuickFilter());
     }
 
-    private void showNew() {
+    @Override
+    public Component buildNewPetitionButton(String id) {
         if (isShowNew() && getMenu() != null) {
-            List<FormDTO> forms = getForms().stream().filter(FormDTO::isNewable).collect(Collectors.toList());
-            for (FormDTO form : forms) {
-                String url = DispatcherPageUtil
-                        .baseURL(getBaseUrl())
-                        .formAction(FormActions.FORM_FILL.getId())
-                        .petitionId(null)
-                        .param(DispatcherPageParameters.FORM_NAME, form.getName())
-                        .params(getLinkParams())
-                        .build();
-
-                if (forms.size() > 1) {
-                    dropdownMenu.adicionarMenu(id -> new ModuleLink(id, $m.ofValue(form.getDescription()), url));
-                } else {
-                    adicionarBotaoGlobal(id -> new ModuleLink(id, getMessage("label.button.insert"), url));
-                }
-            }
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(itemBoxModel, "requirements"));
+        } else {
+            return super.buildNewPetitionButton(id);
         }
-
     }
 
     @Override
@@ -131,10 +119,12 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     protected void appendActionColumns(BSDataTableBuilder<BoxItemModel, String, IColumn<BoxItemModel, String>> builder) {
         BSActionColumn<BoxItemModel, String> actionColumn = new BSActionColumn<>(getMessage("label.table.column.actions"));
 
+        ItemBox itemBox = getItemBoxModelObject();
+
         if (getLogger().isDebugEnabled()) {
-            getLogger().debug(String.format("A caixa %s permite a apresentação apenas das ações %s", itemBoxDTO.getName(), Arrays.toString(itemBoxDTO.getActions().keySet().toArray())));
+            getLogger().debug(String.format("A caixa %s permite a apresentação apenas das ações %s", itemBox.getName(), Arrays.toString(itemBox.getActions().keySet().toArray())));
         }
-        for (ItemAction itemAction : itemBoxDTO.getActions().values()) {
+        for (ItemAction itemAction : itemBox.getActions().values()) {
 
             if (itemAction.getType() == ItemActionType.POPUP) {
                 actionColumn.appendStaticAction(
@@ -165,7 +155,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemModel> boxItemModel) {
-        BoxItemModel   boxItem        = boxItemModel.getObject();
+        BoxItemModel   boxItem        = boxItemModelObject(boxItemModel);
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
             pageParameters.add(DispatcherPageParameters.PETITION_ID, boxItem.getCod());
@@ -184,10 +174,10 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     @Override
     protected WebMarkupContainer criarLinkEdicao(String id, IModel<BoxItemModel> peticao) {
-        if (peticao.getObject().getProcessBeginDate() == null) {
-            return criarLink(id, peticao, FormActions.FORM_FILL);
+        if (boxItemModelObject(peticao).getProcessBeginDate() == null) {
+            return criarLink(id, peticao, FormAction.FORM_FILL);
         } else {
-            return criarLink(id, peticao, FormActions.FORM_FILL_WITH_ANALYSIS);
+            return criarLink(id, peticao, FormAction.FORM_FILL_WITH_ANALYSIS);
         }
     }
 
@@ -196,14 +186,18 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
 
             WebMarkupContainer link = new WebMarkupContainer(id);
-            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
+            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModelObject(boxItemModel).getCod())));
             link.add($b.attr("href", url));
             return link;
         };
     }
 
+    private BoxItemModel boxItemModelObject(IModel<BoxItemModel> boxItemModel) {
+        return boxItemModel.getObject();
+    }
+
     private String mountStaticUrl(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemModel> boxItemModel) {
-        final BoxItemAction action = boxItemModel.getObject().getActionByName(itemAction.getName());
+        final BoxItemAction action = boxItemModelObject(boxItemModel).getActionByName(itemAction.getName());
         if (action.getEndpoint().startsWith("http")) {
             return action.getEndpoint();
         } else {
@@ -222,7 +216,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
                 confirmationModal.show(target);
             };
         } else {
-            return (target, model) -> executeDynamicAction(itemAction, baseUrl, additionalParams, model.getObject(), target);
+            return (target, model) -> executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(model), target);
         }
     }
 
@@ -236,7 +230,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -253,7 +247,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -321,7 +315,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    relocate(itemAction, baseUrl, additionalParams, currentModel.getObject(), target, actorModel.getObject());
+                    relocate(itemAction, baseUrl, additionalParams, boxItemModelObject(currentModel), target, actorModel.getObject());
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -331,7 +325,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    executeDynamicAction(itemAction, baseUrl, additionalParams, currentModel.getObject(), target);
+                    executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(currentModel), target);
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -365,9 +359,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
 
         try {
-            return Arrays.asList(new RestTemplate().postForObject(url, currentModel.getObject(), Actor[].class));
+            return Arrays.asList(new RestTemplate().postForObject(url, boxItemModelObject(currentModel), Actor[].class));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
@@ -384,7 +378,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     private IFunction<IModel<BoxItemModel>, Boolean> visibleFunction(ItemAction itemAction) {
         return (model) -> {
-            BoxItemModel boxItemModel = model.getObject();
+            BoxItemModel boxItemModel = boxItemModelObject(model);
             boolean visible = boxItemModel.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemModel.getCod());
@@ -416,7 +410,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
                 .withProcessesAbbreviation(getProcessesNames())
                 .withTypesNames(getFormNames())
                 .withRascunho(isWithRascunho())
-                .withEndedTasks(itemBoxDTO.getEndedTasks());
+                .withEndedTasks(getItemBoxModelObject().getEndedTasks());
     }
 
     private BoxPage getBoxPage() {
@@ -448,32 +442,32 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @Override
     protected List<BoxItemModel> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
         final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getSearchEndpoint();
+        final String url           = connectionURL + getSearchEndpoint();
         try {
-            return (List<BoxItemModel>) Arrays
-                    .asList(new RestTemplate().postForObject(url, filter, Map[].class))
+            return new RestTemplate().postForObject(url, filter, ItemBoxDataList.class)
+                    .getItemBoxDataList()
                     .stream()
                     .map(BoxItemModel::new)
                     .collect(Collectors.toList());
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
         }
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<BoxItemModel> itemModel, FormActions formActions) {
-        BoxItemModel item = itemModel.getObject();
+    protected WebMarkupContainer criarLink(String id, IModel<BoxItemModel> itemModel, FormAction formAction) {
+        BoxItemModel item = boxItemModelObject(itemModel);
         String href = DispatcherPageUtil
                 .baseURL(getBaseUrl())
-                .formAction(formActions.getId())
+                .formAction(formAction.getId())
                 .petitionId(item.getCod())
                 .param(FORM_NAME, item.get("type"))
                 .params(getCriarLinkParameters(item))
                 .build();
 
         WebMarkupContainer link = new WebMarkupContainer(id);
-        link.add($b.attr("target", String.format("_%s_%s", formActions.getId(), item.getCod())));
+        link.add($b.attr("target", String.format("_%s_%s", formAction.getId(), item.getCod())));
         link.add($b.attr("href", href));
         return link;
     }
@@ -493,46 +487,50 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
         final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getCountEndpoint();
+        final String url           = connectionURL + getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             return 0;
         }
     }
 
     @Override
     public IModel<?> getContentTitleModel() {
-        return $m.ofValue(itemBoxDTO.getName());
+        return $m.ofValue(getItemBoxModelObject().getName());
     }
 
     @Override
     public IModel<?> getContentSubtitleModel() {
-        return $m.ofValue(itemBoxDTO.getDescription());
+        return $m.ofValue(getItemBoxModelObject().getDescription());
     }
 
     public boolean isShowNew() {
-        return itemBoxDTO.isShowNewButton();
+        return getItemBoxModelObject().isShowNewButton();
     }
 
     public boolean isShowQuickFilter() {
-        return itemBoxDTO.isQuickFilter();
+        return getItemBoxModelObject().isQuickFilter();
     }
 
     public List<DatatableField> getFieldsDatatable() {
-        return itemBoxDTO.getFieldsDatatable();
+        return getItemBoxModelObject().getFieldsDatatable();
     }
 
     public String getSearchEndpoint() {
-        return itemBoxDTO.getSearchEndpoint();
+        return getItemBoxModelObject().getSearchEndpoint();
     }
 
     public String getCountEndpoint() {
-        return itemBoxDTO.getCountEndpoint();
+        return getItemBoxModelObject().getCountEndpoint();
     }
 
     public boolean isWithRascunho() {
-        return itemBoxDTO.isShowDraft();
+        return getItemBoxModelObject().isShowDraft();
+    }
+
+    private ItemBox getItemBoxModelObject() {
+        return itemBoxModel.getObject().getItemBox();
     }
 }

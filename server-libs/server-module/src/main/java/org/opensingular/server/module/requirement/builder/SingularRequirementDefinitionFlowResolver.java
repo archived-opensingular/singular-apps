@@ -1,32 +1,29 @@
 package org.opensingular.server.module.requirement.builder;
 
 import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.form.SType;
 import org.opensingular.server.commons.flow.FlowResolver;
 import org.opensingular.server.module.requirement.BoundedFlowResolver;
 import org.opensingular.server.module.requirement.DynamicFormFlowSingularRequirement;
 
-import java.util.HashSet;
-import java.util.Set;
-
 public class SingularRequirementDefinitionFlowResolver {
 
-    private String                    name;
-    private Class<? extends SType<?>> form;
-    private Set<Class<? extends ProcessDefinition>> flows = new HashSet<>();
+    private SingularRequirementBuilderContext builderContext;
 
-    public SingularRequirementDefinitionFlowResolver(String name, Class<? extends SType<?>> form, Set<Class<? extends ProcessDefinition>> flows) {
-        this.name = name;
-        this.form = form;
-        this.flows.addAll(flows);
+    public SingularRequirementDefinitionFlowResolver(SingularRequirementBuilderContext builderContext) {
+        this.builderContext = builderContext;
     }
 
     public SingularRequirementDefinitionFlowResolver allowedFlow(Class<? extends ProcessDefinition> flowClass) {
-        this.flows.add(flowClass);
+        builderContext.addFlowClass(flowClass);
         return this;
     }
 
     public SingularRequirementDefinitionFlow flowResolver(FlowResolver resolver) {
-        return new SingularRequirementDefinitionFlow(new DynamicFormFlowSingularRequirement(name, form, new BoundedFlowResolver(resolver, flows)));
+        return new SingularRequirementDefinitionFlow(new DynamicFormFlowSingularRequirement(
+                builderContext.getName(),
+                builderContext.getMainForm(),
+                new BoundedFlowResolver(resolver, builderContext.getFlowClasses()),
+                builderContext.getDefaultExecutionPage()));
     }
+
 }

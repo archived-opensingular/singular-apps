@@ -36,6 +36,7 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.util.JPAQueryUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -76,7 +77,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return PetitionDTO.class;
     }
 
-    public List<Map<String, Object>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
         final Query query = createQuery(filter, processesAbbreviation, false, formNames);
         query.setFirstResult(filter.getFirst());
         query.setMaxResults(filter.getCount());
@@ -143,7 +144,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
         hql.append(" WHERE 1=1 ");
 
-        if(filtro.getIdPessoa() != null) {
+        if (filtro.getIdPessoa() != null) {
             hql.append(" AND petitioner.idPessoa = :idPessoa ");
             params.put("idPessoa", filtro.getIdPessoa());
         }
@@ -221,7 +222,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
     private Query createQuery(QuickFilter filtro, List<String> siglasProcesso, boolean count, List<String> formNames) {
 
-        final StringBuilder       hql    = new StringBuilder(   );
+        final StringBuilder hql = new StringBuilder();
         final Map<String, Object> params = new HashMap<>();
 
         buildSelectClause(hql, count, filtro);
@@ -323,4 +324,10 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .list();
     }
 
+    public boolean containChildren(Long petitionCod) {
+        return ((Long) getSession()
+                .createQuery("select count(p) from PetitionEntity p where p.parentPetition.cod = :petitionCod")
+                .setParameter("petitionCod", petitionCod)
+                .uniqueResult()) > 0;
+    }
 }
