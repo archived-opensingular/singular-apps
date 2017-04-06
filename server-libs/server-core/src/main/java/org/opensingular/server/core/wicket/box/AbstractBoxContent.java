@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -72,8 +73,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     @Inject
     protected PetitionService<?, ?> petitionService;
 
-    @Inject
-    protected transient Optional<MenuService> menuService;
+    @SpringBean(required = false)
+    protected MenuService menuService;
 
     /**
      * Tabela de registros
@@ -252,8 +253,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         add(tabela);
         add(confirmationForm.add(confirmationModal));
         if (getMenu() != null) {
-            if (menuService.isPresent()) {
-                BoxConfigurationData boxConfigurationMetadata = menuService.get().getMenuByLabel(getMenu());
+            if (menuService != null) {
+                BoxConfigurationData boxConfigurationMetadata = menuService.getMenuByLabel(getMenu());
                 setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
                 setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
             }

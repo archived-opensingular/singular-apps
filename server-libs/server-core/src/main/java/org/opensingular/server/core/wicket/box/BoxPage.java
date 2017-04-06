@@ -18,6 +18,7 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
@@ -45,8 +46,8 @@ public class BoxPage extends ServerTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
 
-    @Inject
-    private transient Optional<MenuService> menuService;
+    @SpringBean(required = false)
+    private MenuService menuService;
 
     @Override
     protected Content getContent(String id) {
@@ -59,9 +60,9 @@ public class BoxPage extends ServerTemplate {
         if (processGroupCod == null
                 && menu == null
                 && item == null
-                && menuService.isPresent()) {
+                && menuService != null) {
 
-            for (Iterator<Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>>> it = menuService.get().getMap().entrySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>>> it = menuService.getMap().entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> entry = it.next();
                 if (!entry.getValue().isEmpty()) {
                     processGroupCod = entry.getKey().getCod();
@@ -79,8 +80,8 @@ public class BoxPage extends ServerTemplate {
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
-        if (menuService.isPresent()) {
-            boxConfigurationMetadata = menuService.get().getMenuByLabel(menu);
+        if (menuService != null) {
+            boxConfigurationMetadata = menuService.getMenuByLabel(menu);
         }
 
         if (boxConfigurationMetadata != null) {
