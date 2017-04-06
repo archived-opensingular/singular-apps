@@ -8,8 +8,12 @@ import org.opensingular.form.type.core.STypeString;
 
 import javax.annotation.Nonnull;
 
-@SInfoType(label = "Foo", name = "StypeFoo", spackage = SPackageFOO.class)
+@SInfoType(label = "Foo", name = STypeFOO.NAME, spackage = SPackageFOO.class)
 public class STypeFOO extends STypeComposite<SIComposite> {
+
+    public static final String NAME = "StypeFoo";
+
+    public static final String FULL_NAME = SPackageFOO.NAME + "." + NAME;
 
     public STypeString nome;
 

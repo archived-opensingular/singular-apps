@@ -7,8 +7,10 @@ import org.opensingular.form.SPackage;
 import javax.annotation.Nonnull;
 
 
-@SInfoPackage(name = "foooooo")
+@SInfoPackage(name = SPackageFOO.NAME)
 public class SPackageFOO extends SPackage {
+
+    public static final String NAME = "foooooo";
 
     @Override
     protected void onLoadPackage(@Nonnull PackageBuilder pb) {

@@ -10,6 +10,12 @@ import javax.inject.Named;
 public class SingularApplicationMock extends SingularApplication {
 
     @Override
+    public void init() {
+        super.init();
+        getRequestCycleListeners().add(new SingularTestRequestCycleListener());
+    }
+
+    @Override
     public Class<? extends Page> getHomePage() {
         return null;
     }

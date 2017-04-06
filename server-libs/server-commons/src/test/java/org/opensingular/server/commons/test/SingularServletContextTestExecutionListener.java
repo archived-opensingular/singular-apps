@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.config.ServerContext;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -17,9 +16,6 @@ import org.springframework.web.context.request.ServletWebRequest;
 import javax.servlet.ServletContext;
 
 public class SingularServletContextTestExecutionListener extends AbstractTestExecutionListener implements Loggable {
-
-
-    public static final String CONTEXT_PATH = "/singular";
 
     @Override
     public void prepareTestInstance(TestContext testContext) throws Exception {
@@ -44,11 +40,7 @@ public class SingularServletContextTestExecutionListener extends AbstractTestExe
 
             MockServletContext mockServletContext = (MockServletContext) servletContext;
             MockHttpServletRequest request = new MockHttpServletRequest(mockServletContext);
-            getLogger().info("Configurando Request Context Path: " + CONTEXT_PATH);
-            request.setContextPath(CONTEXT_PATH);
-            String pathInfo = "/singular" + ServerContext.WORKLIST.getUrlPath();
-            getLogger().info("Configurando Request Path Info: " + pathInfo);
-            request.setPathInfo(pathInfo);
+            ContextUtil.prepareRequest(request);
 
             MockHttpServletResponse response = new MockHttpServletResponse();
             ServletWebRequest servletWebRequest = new ServletWebRequest(request, response);

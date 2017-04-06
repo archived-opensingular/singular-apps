@@ -44,8 +44,6 @@ import java.util.Locale;
 public abstract class SingularApplication extends AuthenticatedWebApplication
         implements ApplicationContextAware, SkinnableApplication {
 
-    public static final String BASE_FOLDER = "/tmp/fileUploader";
-
     private ApplicationContext applicationContext;
 
     public static SingularApplication get() {
