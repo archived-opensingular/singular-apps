@@ -25,6 +25,7 @@ import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.SingularFormException;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.entity.enums.PersonType;
@@ -79,6 +80,17 @@ public class PetitionInstance implements Serializable {
     @Nonnull
     public <I extends SInstance, K extends SType<? extends I>> I getMainForm(@Nonnull Class<K> expectedType) {
         return FormPetitionService.checkIfExpectedType(getMainForm(), expectedType);
+    }
+
+    @Nonnull
+    public <I extends SInstance> I getMainFormAndCast(@Nonnull Class<I> expectedType) {
+        SIComposite i = getMainForm();
+        if(expectedType.isAssignableFrom(i.getClass())) {
+            return (I) i;
+        }
+        throw new SingularFormException(
+                "Era esperado a instância recuperada fosse do tipo " + expectedType.getName() +
+                        " mas ela é do tipo " + i.getClass(), i);
     }
 
     private PetitionService<?,?> getPetitionService() {
