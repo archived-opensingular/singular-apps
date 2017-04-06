@@ -18,7 +18,7 @@ public class DefaultEverythingbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return PServerContext.PETITION.equals(context);
+        return PServerContext.PETITION == context;
     }
 
     @Override
