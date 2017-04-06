@@ -190,7 +190,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private boolean isAnnotationModeReadOnly(ActionContext context) {
         return context.getFormAction()
                 .map(FormAction::isAnnotationModeReadOnly)
-                .orElse(false);
+                .orElse(Boolean.FALSE);
     }
 
     private WebPage retrieveDestinationUsingSingularWebRefPageClass(ActionContext config, Class<? extends WebPage> pageClass) {
