@@ -21,8 +21,8 @@ import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaData
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
+import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
