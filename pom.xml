@@ -44,6 +44,7 @@
         <module>sso</module>
     </modules>
 
+
     <build>
         <plugins>
             <plugin>
@@ -184,6 +185,12 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.12</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
@@ -346,6 +353,7 @@
         <skipTests>false</skipTests>
         <wicket.version>7.1.0</wicket.version>
         <singular.version>1.6.0-SNAPSHOT</singular.version>
+        <spring.security.version>4.0.3.RELEASE</spring.security.version>
         <cas.version>4.0.4</cas.version>
         <cas.client.version>3.4.1</cas.client.version>
     </properties>

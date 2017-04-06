@@ -40,7 +40,7 @@ import java.util.Properties;
 
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
-import static org.opensingular.lib.commons.base.SingularProperties.USE_INMEMORY_DATABASE;
+import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration {
@@ -49,22 +49,31 @@ public class SingularDefaultPersistenceConfiguration {
 
     @Value("classpath:db/ddl/drops.sql")
     protected Resource drops;
+
     @Value("classpath:db/ddl/create-tables-form.sql")
     protected Resource sqlCreateTablesForm;
+
     @Value("classpath:db/ddl/create-tables.sql")
     protected Resource sqlCreateTables;
+
     @Value("classpath:db/ddl/create-constraints.sql")
     protected Resource sqlCreateConstraints;
+
     @Value("classpath:db/ddl/create-constraints-form.sql")
     protected Resource sqlCreateConstraintsForm;
+
+    @Value("classpath:db/ddl/create-sequences-form.sql")
+    protected Resource sqlCreateSequencesForm;
+
     @Value("classpath:db/ddl/create-function.sql")
     private   Resource sqlCreateFunction;
+
     @Value("classpath:db/ddl/create-tables-actor.sql")
     private   Resource sqlCreateTablesActor;
+
     @Value("classpath:db/ddl/create-sequences-server.sql")
     private   Resource sqlCreateSequencesServer;
-    @Value("classpath:db/ddl/create-sequences-form.sql")
-    protected   Resource sqlCreateSequencesForm;
+
     @Value("classpath:db/dml/insert-flow-data.sql")
     private   Resource insertDadosSingular;
 
@@ -108,41 +117,51 @@ public class SingularDefaultPersistenceConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        if (SingularProperties.get().isTrue(USE_INMEMORY_DATABASE)) {
-            LOGGER.warn("Usando datasource banco em memória");
-            final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-            dataSource.setUrl(getUrlConnection());
-            
-            dataSource.setUsername("sa");
-            dataSource.setPassword("sa");
-            dataSource.setDriverClassName("org.h2.Driver");
-
-            final Properties connectionProperties = new Properties();
-            connectionProperties.setProperty("removeAbandoned", "true");
-            connectionProperties.setProperty("initialSize", "5");
-            connectionProperties.setProperty("maxActive", "10");
-            connectionProperties.setProperty("minIdle", "1");
-            dataSource.setConnectionProperties(connectionProperties);
-            return dataSource;
+        if (SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE)) {
+            return embeddedDataSourceConfiguration();
+        } else if (SingularProperties.get().isFalse(USE_EMBEDDED_DATABASE) || SingularProperties.get().isFalse(SingularProperties.SINGULAR_DEV_MODE)) {
+            return jndiDataSourceConfiguration();
         } else {
-            LOGGER.info("Usando datasource configurado via JNDI");
-            DataSource dataSource = null;
-            JndiTemplate jndi = new JndiTemplate();
-            String dataSourceName = SingularProperties.get().getProperty(JNDI_DATASOURCE, "java:jboss/datasources/singular");
-            try {
-                dataSource = (DataSource) jndi.lookup(dataSourceName);
-            } catch (NamingException e) {
-                LOGGER.error(String.format("Datasource %s not found.", dataSourceName), e);
-            }
-            return dataSource;
+            return embeddedDataSourceConfiguration();
         }
     }
 
-    protected String getUrlConnection() {
-    	return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
+    protected DataSource jndiDataSourceConfiguration() {
+        LOGGER.info("Usando datasource configurado via JNDI");
+        DataSource   dataSource     = null;
+        JndiTemplate jndi           = new JndiTemplate();
+        String       dataSourceName = SingularProperties.get().getProperty(JNDI_DATASOURCE, "java:jboss/datasources/singular");
+        try {
+            dataSource = (DataSource) jndi.lookup(dataSourceName);
+        } catch (NamingException e) {
+            LOGGER.error(String.format("Datasource %s not found.", dataSourceName), e);
+        }
+        return dataSource;
     }
 
-    @DependsOn("scriptsInitializer")
+    protected DataSource embeddedDataSourceConfiguration() {
+        LOGGER.warn("Usando datasource banco embarcado H2");
+        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setUrl(getUrlConnection());
+
+        dataSource.setUsername("sa");
+        dataSource.setPassword("sa");
+        dataSource.setDriverClassName("org.h2.Driver");
+
+        final Properties connectionProperties = new Properties();
+        connectionProperties.setProperty("removeAbandoned", "true");
+        connectionProperties.setProperty("initialSize", "5");
+        connectionProperties.setProperty("maxActive", "10");
+        connectionProperties.setProperty("minIdle", "1");
+        dataSource.setConnectionProperties(connectionProperties);
+        return dataSource;
+    }
+
+    protected String getUrlConnection() {
+        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
+    }
+
+    @DependsOn("createFunctionInitializer")
     @Bean
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();

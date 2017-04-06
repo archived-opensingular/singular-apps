@@ -155,11 +155,11 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private boolean isAnnotationModeEdit(ActionContext context) {
-        return context.getFormAction().map(FormAction::isAnnotationModeEdit).orElse(false);
+        return context.getFormAction().map(FormAction::isAnnotationModeEdit).orElse(Boolean.FALSE);
     }
 
     private boolean isViewModeReadOnly(ActionContext context) {
-        return context.getFormAction().map(FormAction::isViewModeReadOnly).orElse(false);
+        return context.getFormAction().map(FormAction::isViewModeReadOnly).orElse(Boolean.FALSE);
     }
 
     private WebPage newDiffPage(ActionContext context) {
@@ -190,7 +190,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private boolean isAnnotationModeReadOnly(ActionContext context) {
         return context.getFormAction()
                 .map(FormAction::isAnnotationModeReadOnly)
-                .orElse(false);
+                .orElse(Boolean.FALSE);
     }
 
     private WebPage retrieveDestinationUsingSingularWebRefPageClass(ActionContext config, Class<? extends WebPage> pageClass) {
@@ -239,7 +239,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private boolean isViewModeEdit(ActionContext context) {
-        return context.getFormAction().map(FormAction::isViewModeEdit).orElse(false);
+        return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
     }
 
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
@@ -252,7 +252,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                     .map(history -> history.getAllocatedUser() != null
                             && history.getEndDateAllocation() == null
                             && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
-                    .orElse(false);
+                    .orElse(Boolean.FALSE);
         }
         return false;
     }

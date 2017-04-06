@@ -27,8 +27,8 @@ public enum FormAction {
     FORM_FILL_WITH_ANALYSIS(4, ViewMode.EDIT, AnnotationMode.READ_ONLY),
     FORM_ANALYSIS_VIEW(5, ViewMode.READ_ONLY, AnnotationMode.READ_ONLY);
 
-    private Integer id;
-    private ViewMode viewMode;
+    private Integer        id;
+    private ViewMode       viewMode;
     private AnnotationMode annotationMode;
 
     FormAction(Integer id, ViewMode viewMode, AnnotationMode annotationMode) {
@@ -58,20 +58,20 @@ public enum FormAction {
         return annotationMode;
     }
 
-    public boolean isAnnotationModeEdit(){
-        return AnnotationMode.EDIT.equals(getAnnotationMode());
+    public boolean isAnnotationModeEdit() {
+        return AnnotationMode.EDIT == getAnnotationMode();
     }
 
-    public boolean isAnnotationModeReadOnly(){
-        return AnnotationMode.READ_ONLY.equals(getAnnotationMode());
+    public boolean isAnnotationModeReadOnly() {
+        return AnnotationMode.READ_ONLY == getAnnotationMode();
     }
 
-    public boolean isViewModeEdit(){
-        return ViewMode.EDIT.equals(getViewMode());
+    public boolean isViewModeEdit() {
+        return ViewMode.EDIT == getViewMode();
     }
 
-    public boolean isViewModeReadOnly(){
-        return ViewMode.READ_ONLY.equals(getViewMode());
+    public boolean isViewModeReadOnly() {
+        return ViewMode.READ_ONLY == getViewMode();
     }
 
 }

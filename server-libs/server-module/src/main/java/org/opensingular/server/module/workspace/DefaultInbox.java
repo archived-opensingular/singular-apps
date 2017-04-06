@@ -19,7 +19,7 @@ public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.equals(context);
+        return ServerContext.WORKLIST == context;
     }
 
     @Override

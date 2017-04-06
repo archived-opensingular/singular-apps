@@ -58,7 +58,9 @@ public abstract class PetitionProcessDefinition<I extends ProcessInstance> exten
             configureActions(flowMap);
             return flowMap;
         } catch (Exception e) {
-            throw new SingularFlowException("Erro criando fluxo do processo '" + getName() + '\'', e).add(this);
+            SingularFlowException ex = new SingularFlowException("Erro criando fluxo do processo '" + getName() + '\'', e);
+            ex.add(this);
+            throw ex;
         }
     }
 

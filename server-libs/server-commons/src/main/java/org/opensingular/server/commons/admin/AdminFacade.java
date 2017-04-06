@@ -16,26 +16,29 @@
 
 package org.opensingular.server.commons.admin;
 
-import javax.inject.Named;
-
+import net.sf.ehcache.CacheManager;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduledJob;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import net.sf.ehcache.CacheManager;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Optional;
 
 @Named
 public class AdminFacade {
 
-    @Autowired
-    private IScheduleService scheduleService;
+    @Inject
+    private Optional<IScheduleService> scheduleService;
 
     public void runAllJobs() throws SchedulerException {
-        for (JobKey jobKey : scheduleService.getAllJobKeys()) {
-            ScheduledJob scheduledJob = new ScheduledJob(jobKey.getName(), null, null);
-            scheduleService.trigger(scheduledJob);
+        if (scheduleService.isPresent()) {
+            for (JobKey jobKey : scheduleService.get().getAllJobKeys()) {
+                ScheduledJob scheduledJob = new ScheduledJob(jobKey.getName(), null, null);
+                scheduleService.get().trigger(scheduledJob);
+            }
         }
 
     }
