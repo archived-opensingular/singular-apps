@@ -541,7 +541,7 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     public FormKey formKeyFromFormEntity(@Nonnull FormEntity formEntity) {
-        return Objects.requireNonNull(formPersistenceService.keyFromObject(formEntity.getCod()));
+        return formPersistenceService.keyFromObject(formEntity.getCod());
     }
 
     /**
