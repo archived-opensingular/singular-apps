@@ -58,9 +58,9 @@ import javax.servlet.ServletException;
  * @see #loadContext(String...)
  * @since 3.2
  */
-public class SingularServerContextLoader extends AbstractContextLoader {
+public class SingularCommonsContextLoader extends AbstractContextLoader {
 
-    protected static final Log logger = LogFactory.getLog(SingularServerContextLoader.class);
+    protected static final Log logger = LogFactory.getLog(SingularCommonsContextLoader.class);
 
 
     // --- SmartContextLoader -----------------------------------------------
@@ -243,7 +243,7 @@ public class SingularServerContextLoader extends AbstractContextLoader {
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new SingularInitializerMock(context).onStartup(context.getServletContext());
+            new CommonsInitializerMock(context).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

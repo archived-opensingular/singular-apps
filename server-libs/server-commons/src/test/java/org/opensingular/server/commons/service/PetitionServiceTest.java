@@ -4,12 +4,12 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Test;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.server.commons.test.SingularServerBaseTest;
+import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
 import javax.inject.Inject;
 
 
-public class PetitionServiceTest extends SingularServerBaseTest {
+public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Inject
     public PetitionService<?,?> petitionService;

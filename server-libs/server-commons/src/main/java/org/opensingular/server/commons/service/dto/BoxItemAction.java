@@ -45,10 +45,12 @@ public class BoxItemAction implements Serializable {
         this.name = name;
     }
 
+    @Deprecated
     public String getEndpoint() {
         return endpoint;
     }
 
+    @Deprecated
     public void setEndpoint(String endpoint) {
         this.endpoint = endpoint;
     }
