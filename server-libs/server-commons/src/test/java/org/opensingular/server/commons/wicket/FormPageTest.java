@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.wicket;
 
 import org.junit.Test;
+import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.form.FormAction;
@@ -36,6 +37,22 @@ public class FormPageTest extends SingularServerBaseTest {
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
     }
+
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void testSaveForm() {
+        tester = new SingularWicketTester(singularApplication);
+        ActionContext context = new ActionContext();
+        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormAction(FormAction.FORM_FILL);
+        FormPage p = new FormPage(context);
+        tester.startPage(p);
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("save-btn").getTarget(), "click");
+        tester.assertRenderedPage(FormPage.class);
+    }
+
 
 
     @WithUserDetails("vinicius.nunes")
