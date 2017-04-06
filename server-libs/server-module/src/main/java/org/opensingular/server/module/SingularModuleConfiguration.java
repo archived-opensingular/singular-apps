@@ -23,7 +23,6 @@ import java.util.stream.Collectors;
 @Named
 public class SingularModuleConfiguration {
 
-    private SingularModule module;
     private List<SingularRequirementRef> requirements;
     private List<BoxCofiguration> itemBoxes;
 
@@ -54,8 +53,8 @@ public class SingularModuleConfiguration {
         if (modules.stream().count() != 1) {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
-        this.module = modules.stream().findFirst().get().newInstance();
-        return this.module;
+        SingularModule module = modules.stream().findFirst().get().newInstance();
+        return module;
     }
 
     public SingularRequirement getRequirementById(String id) {

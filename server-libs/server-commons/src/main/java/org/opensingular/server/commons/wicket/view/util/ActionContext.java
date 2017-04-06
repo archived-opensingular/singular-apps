@@ -165,7 +165,7 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     }
 
     public boolean getDiffEnabled() {
-        return Optional.ofNullable(this.params.get(DIFF)).flatMap(s -> Optional.of(Boolean.valueOf(s))).orElse(false);
+        return Optional.ofNullable(this.params.get(DIFF)).flatMap(s -> Optional.of(Boolean.valueOf(s))).orElse(Boolean.FALSE);
     }
 
     public ActionContext setDiffEnabled(boolean enabled) {

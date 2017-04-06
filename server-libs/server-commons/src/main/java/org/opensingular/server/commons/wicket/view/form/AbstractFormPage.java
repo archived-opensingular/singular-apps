@@ -56,7 +56,12 @@ import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
-import org.opensingular.server.commons.service.*;
+import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService;
+import org.opensingular.server.commons.service.SingularRequirementService;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 import org.opensingular.server.commons.wicket.view.template.Content;
@@ -79,9 +84,9 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends Template implements Loggable {
 
     private final FormPageExecutionContext config;
-    private final IModel<FormKey> formKeyModel;
-    private final IModel<FormKey> parentPetitionformKeyModel;
-    private final IModel<Boolean> inheritParentFormData;
+    private final IModel<FormKey>          formKeyModel;
+    private final IModel<FormKey>          parentPetitionformKeyModel;
+    private final IModel<Boolean>          inheritParentFormData;
 
     @Inject
     private PetitionService<PE, PI> petitionService;
@@ -92,7 +97,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Inject
     private SingularServerMetadata singularServerMetadata;
 
-    private IModel<PI> currentModel;
+    private IModel<PI>          currentModel;
     private AbstractFormContent content;
 
     public AbstractFormPage(@Nullable ActionContext context) {
@@ -102,7 +107,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     public AbstractFormPage(@Nullable ActionContext context, @Nullable Class<? extends SType<?>> formType) {
         if (context == null) {
             String url = singularServerMetadata.getServerBaseUrl();
-            getLogger().info(" Redirecting to " + url);
+            getLogger().info(" Redirecting to {}", url);
             throw new RedirectToUrlException(url);
         }
 
@@ -118,6 +123,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
+    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
+        //É um método estático para garantir que nada inesperado vai ser serializado junto
+        return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
+                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
+    }
+
     private FlowResolver getFlowResolver(@Nullable ActionContext context) {
         return getSingularRequirement(context).map(SingularRequirement::getFlowResolver).orElse(null);
     }
@@ -125,12 +136,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
         SingularRequirementService requirementService = SingularRequirementService.get();
         return Optional.ofNullable(requirementService.getSingularRequirement(context));
-    }
-
-    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
-        //É um método estático para garantir que nada inesperado vai ser serializado junto
-        return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
-                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
     }
 
     /**
@@ -255,7 +260,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected final Content getContent(String id) {
         if (config.getFormName() == null && config.getPetitionId().isPresent()) {
             String url = SingularProperties.get().getProperty(SingularProperties.SINGULAR_SERVER_ADDR);
-            getLogger().info(" Redirecting to " + url);
+            getLogger().info(" Redirecting to {}", url);
             throw new RedirectToUrlException(url);
         }
 
@@ -315,8 +320,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private Component buildExtraContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendExtraContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -324,8 +329,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private Component buildPreFormPanelContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendBeforeFormContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -668,7 +673,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                  String transitionName,
                                  BSModalBorder confirmarAcaoFlowModal) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
-                "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
+                        "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, content.getFormInstance()) {
             @Override
@@ -693,9 +698,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @return
      */
     private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> mc, String tn, IModel<? extends SInstance> im, ViewMode vm) {
-        final FlowConfirmModal flowConfirmModal = resolveFlowConfirmModal(tn);
-        final TemplatePanel modalTemplatePanel = mc.newTemplateTag(t -> flowConfirmModal.getMarkup(idSuffix));
-        final BSModalBorder modal = flowConfirmModal.init(idSuffix, tn, im, vm);
+        final FlowConfirmModal flowConfirmModal   = resolveFlowConfirmModal(tn);
+        final TemplatePanel    modalTemplatePanel = mc.newTemplateTag(t -> flowConfirmModal.getMarkup(idSuffix));
+        final BSModalBorder    modal              = flowConfirmModal.init(idSuffix, tn, im, vm);
         modalTemplatePanel.add(modal);
         return modal;
     }

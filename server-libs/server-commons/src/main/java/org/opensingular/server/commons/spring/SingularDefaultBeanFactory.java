@@ -81,6 +81,7 @@ import org.springframework.core.io.ClassPathResource;
 @SuppressWarnings("rawtypes")
 public class SingularDefaultBeanFactory {
 
+    @Primary
     @Bean(name = "peticionamentoUserDetailService")
     public SingularUserDetailsService worklistUserDetailServiceFactory() {
         return new DefaultUserDetailService();

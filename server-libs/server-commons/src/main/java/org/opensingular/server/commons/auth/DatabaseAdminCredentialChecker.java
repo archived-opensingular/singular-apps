@@ -9,8 +9,8 @@ import javax.inject.Inject;
 
 public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
 
-    public static final String PARAM_ADMIN_HASH_PASSWORD = "ADMIN_HASH_PASSWORD";
-    public static final String PARAM_ADMIN_USERNAME      = "ADMIN_USERNAME";
+    public static final String PARAM_PASSHASHADMIN  = "ADMIN_HASH_PASSWORD";
+    public static final String PARAM_ADMINUSERNAME = "ADMIN_USERNAME";
 
     private ParameterService parameterService;
 
@@ -34,11 +34,11 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     }
 
     private String retrievePasswordHash() {
-        return retrieveParameter(PARAM_ADMIN_HASH_PASSWORD);
+        return retrieveParameter(PARAM_PASSHASHADMIN);
     }
 
     private String retrieveUsername() {
-        return retrieveParameter(PARAM_ADMIN_USERNAME);
+        return retrieveParameter(PARAM_ADMINUSERNAME);
     }
 
     private String retrieveParameter(String parameterName) {
