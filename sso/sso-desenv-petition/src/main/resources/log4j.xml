@@ -100,13 +100,8 @@
         <level value="DEBUG" />
         <appender-ref ref="cas" />
     </logger>
-    
-    <logger name="br.com.montrealonline" additivity="false">
-        <level value="ALL" />
-        <appender-ref ref="cas" />
-    </logger>   
-    
-      <logger name="org.infinispan">
+
+    <logger name="org.infinispan">
         <level value="DEBUG" />
         <appender-ref ref="cas" />
     </logger>

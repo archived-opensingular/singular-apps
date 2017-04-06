@@ -18,7 +18,6 @@
         <module>server-commons</module>
         <module>server-module</module>
         <module>server-core</module>
-        <module>p-server-libs</module>
     </modules>
 
 
