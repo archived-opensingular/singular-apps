@@ -7,6 +7,7 @@ import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.test.SingularApplicationMock;
 import org.opensingular.server.commons.test.SingularServerBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.server.commons.wicket.error.Page500;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -26,7 +27,7 @@ public class FormPageTest extends SingularServerBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testFormPage() {
+    public void testFormPageRendering() {
         tester = new SingularWicketTester(singularApplication);
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
@@ -34,6 +35,19 @@ public class FormPageTest extends SingularServerBaseTest {
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
+    }
+
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void testFormPageWithoutContext() {
+        tester = new SingularWicketTester(singularApplication);
+        ActionContext context = new ActionContext();
+        context.setFormName(STypeFOO.FULL_NAME);
+        FormPage      p       = new FormPage(context);
+        tester.startPage(p);
+        tester.assertRenderedPage(Page500.class);
     }
 
 

@@ -4,7 +4,6 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import org.apache.wicket.protocol.http.mock.MockHttpServletRequest;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
@@ -17,14 +16,14 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
 
     @Override
     public void onBeginRequest(RequestCycle cycle) {
-        MockHttpServletRequest mockHttpServletRequest  = (MockHttpServletRequest) cycle.getRequest().getContainerRequest();
-        HttpServletRequest     superPoweredMockRequest = getSuperPoweredHttpRequest(mockHttpServletRequest);
-        Request                superPoweredRequest     = getSuperPoweredRequest((WebRequest) cycle.getRequest(), superPoweredMockRequest);
+        HttpServletRequest mockHttpServletRequest  = (HttpServletRequest) cycle.getRequest().getContainerRequest();
+        HttpServletRequest superPoweredMockRequest = getSuperPoweredHttpRequest(mockHttpServletRequest);
+        Request            superPoweredRequest     = getSuperPoweredRequest((WebRequest) cycle.getRequest(), superPoweredMockRequest);
         cycle.setRequest(superPoweredRequest);
         ContextUtil.prepareRequest(superPoweredMockRequest);
     }
 
-    private HttpServletRequest getSuperPoweredHttpRequest(MockHttpServletRequest httpServletRequest) {
+    private HttpServletRequest getSuperPoweredHttpRequest(HttpServletRequest httpServletRequest) {
         if (isSuperPowered(httpServletRequest)) {
             return httpServletRequest;
         }
