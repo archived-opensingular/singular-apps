@@ -68,7 +68,7 @@ public class ParameterHttpSerializer {
         String result = queryString;
         //Remove url fragment - usually anchor links
         if (queryString.contains("#")) {
-            result = result.substring(0, result.indexOf("#"));
+            result = result.substring(0, result.indexOf('#'));
         }
         return result;
     }
