@@ -44,12 +44,13 @@ public class SingularServerSessionConfiguration implements Loggable {
     @PostConstruct
     public void init() {
         try {
+            RestTemplate restTemplate = new RestTemplate();
             for (ProcessGroupEntity processGroup : buscarCategorias()) {
                 final String url = processGroup.getConnectionURL() + WORKSPACE_CONFIGURATION
                         + "?" + MENU_CONTEXT + "=" + getMenuContext().getName()
                         + "&" + USER + "=" + getUserDetails().getUserPermissionKey();
 
-                configMaps.put(processGroup, new RestTemplate().getForObject(url, WorkspaceConfigurationMetadata.class));
+                configMaps.put(processGroup, restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class));
 
             }
         } catch (Exception e) {
@@ -83,7 +84,7 @@ public class SingularServerSessionConfiguration implements Loggable {
 
     public LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> getProcessGroupBoxConfigurationMap() {
         LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
-        List<ProcessGroupEntity>                                          categorias = buscarCategorias();
+        List<ProcessGroupEntity>                                      categorias = buscarCategorias();
         for (ProcessGroupEntity categoria : categorias) {
             final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
             map.put(categoria, boxConfigurationMetadataDTOs);
