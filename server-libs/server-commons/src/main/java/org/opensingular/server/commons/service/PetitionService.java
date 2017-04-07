@@ -98,18 +98,14 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     @Inject
     protected PetitionerDAO petitionerDAO;
-
-    @Inject
-    private PetitionContentHistoryDAO petitionContentHistoryDAO;
-
     @Inject
     protected AuthorizationService authorizationService;
-
-    @Inject
-    private FormPetitionService<PE> formPetitionService;
-
     @Inject
     protected ActorDAO actorDAO;
+    @Inject
+    private PetitionContentHistoryDAO petitionContentHistoryDAO;
+    @Inject
+    private FormPetitionService<PE> formPetitionService;
 
     /**
      * Deve cria uma instância com base na entidade fornecida.
@@ -157,7 +153,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      * Retorna o serviço de formulários da petição.
      */
     @Nonnull
-    protected final FormPetitionService<PE> getFormPetitionService() {
+    protected FormPetitionService<PE> getFormPetitionService() {
         return Objects.requireNonNull(formPetitionService);
     }
 
@@ -528,7 +524,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
     @Nonnull
-    protected final Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition,
+    public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition,
                                                                                   @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionEntityByType(petition, typeClass);
     }
@@ -537,7 +533,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
     @Nonnull
-    protected final Optional<SInstance> findLastFormPetitionInstanceByType(@Nonnull PetitionInstance petition,
+    public Optional<SInstance> findLastFormPetitionInstanceByType(@Nonnull PetitionInstance petition,
                                                                            @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionInstanceByType(petition, typeClass);
     }
@@ -546,7 +542,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
     @Nonnull
-    protected final Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
+    public Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
                                                                         @Nonnull Class<? extends SType<?>> typeClass) {
         //TODO Verificar se esse método não está redundante com FormPetitionService.findLastFormPetitionEntityByType
         Objects.requireNonNull(petition);
@@ -559,7 +555,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      * Procura na petição o formulário mais recente dentre os tipos informados.
      */
     @Nonnull
-    protected final Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
+    protected Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
                                                                         @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
         Objects.requireNonNull(petition);
         FormVersionHistoryEntity max = null;
@@ -598,4 +594,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public boolean containChildren(Long petitionCod){
         return petitionDAO.containChildren(petitionCod);
     }
+
+
 }
