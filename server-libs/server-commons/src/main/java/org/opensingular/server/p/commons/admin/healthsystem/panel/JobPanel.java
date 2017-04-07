@@ -21,6 +21,7 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.admin.AdminFacade;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.quartz.SchedulerException;
@@ -28,7 +29,7 @@ import org.quartz.SchedulerException;
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 
 @SuppressWarnings("serial")
-public class JobPanel extends Panel {
+public class JobPanel extends Panel implements Loggable {
 	
 	@Inject
     private AdminFacade adminFacade;
@@ -50,7 +51,7 @@ public class JobPanel extends Panel {
 					new SingularToastrHelper(this).
 						addToastrMessage(ToastrType.SUCCESS, "All jobs runned!");
 				} catch (SchedulerException e) {
-					e.printStackTrace();
+					getLogger().error(e.getMessage(), e);
 				}
 			}
 		});

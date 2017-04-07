@@ -18,6 +18,9 @@ package org.opensingular.server.commons.flow;
 
 import com.google.common.base.Throwables;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
+import com.mxgraph.layout.mxEdgeLabelLayout;
+import com.mxgraph.layout.mxParallelEdgeLayout;
+import com.mxgraph.layout.orthogonal.mxOrthogonalLayout;
 import com.mxgraph.model.mxICell;
 import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxConstants;
@@ -44,8 +47,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
     INSTANCE;
 
     private static byte[] renderGraphImpl(ProcessDefinition<?> definicao) {
-        final mxGraph graph = renderGraph(definicao);
-        final RenderedImage img = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
+        final mxGraph       graph = renderGraph(definicao);
+        final RenderedImage img   = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -63,11 +66,12 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
 
         final Map<String, Object> stil = new HashMap<>();
         stil.put(mxConstants.STYLE_ROUNDED, Boolean.TRUE);
-        stil.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ENTITY_RELATION);
+        stil.put(mxConstants.STYLE_EDGE, mxConstants.EDGESTYLE_ORTHOGONAL);
         stil.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_CONNECTOR);
         stil.put(mxConstants.STYLE_ENDARROW, mxConstants.ARROW_CLASSIC);
-        stil.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_MIDDLE);
         stil.put(mxConstants.STYLE_ALIGN, mxConstants.ALIGN_CENTER);
+        stil.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
+        stil.put(mxConstants.STYLE_VERTICAL_ALIGN, mxConstants.ALIGN_BOTTOM);
         stil.put(mxConstants.STYLE_STROKECOLOR, "#6482B9");
         stil.put(mxConstants.STYLE_FONTCOLOR, "#446299");
         foo.setDefaultEdgeStyle(stil);
@@ -75,24 +79,26 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         addStyleIcone(foo, "TIMER", "timer.png");
         addStyleIcone(foo, "END", "terminate.png");
         addStyleIcone(foo, "MESSAGE", "message_intermediate.png");
-        addStyleIcone(foo, "START", "event.png");
+        addStyleIcone(foo, "START", "start.png");
         addStyleIcone(foo, "JAVA", "gear.png");
+        addStyleIcone(foo, "HUMAN", "pessoinha.png");
 
         graph.setStylesheet(foo);
     }
 
     private static void addStyleIcone(mxStylesheet foo, String nomeEstilo, String nomeImagem) {
         final Map<String, Object> def = new HashMap<>();
+        def.put(mxConstants.STYLE_SEGMENT, mxConstants.ALIGN_BOTTOM);
+        def.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-        def.put(mxConstants.STYLE_IMAGE, "/com/miranteinfo/alocpro/processo/mbpm/renderer/" + nomeImagem);
-        // def.put(mxConstants.STYLE_SPACING_TOP, mxConstants.SHAPE_IMAGE);
+        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace('.', '/'), nomeImagem));
         foo.putCellStyle(nomeEstilo, def);
     }
 
     private static mxGraph renderGraph(ProcessDefinition<?> definicao) {
 
-        final mxGraph graph = new mxGraph();
-        final Object parent = graph.getDefaultParent();
+        final mxGraph graph  = new mxGraph();
+        final Object  parent = graph.getDefaultParent();
 
         style(graph);
 
@@ -122,6 +128,12 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         final mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         layout.setOrientation(SwingConstants.WEST);
         layout.execute(parent);
+        final mxParallelEdgeLayout layoutParalelo = new mxParallelEdgeLayout(graph);
+        layoutParalelo.execute(parent);
+        final mxOrthogonalLayout mxOrthogonalLayout = new mxOrthogonalLayout(graph);
+        mxOrthogonalLayout.execute(parent);
+        final mxEdgeLabelLayout labelLayout = new mxEdgeLabelLayout(graph);
+        labelLayout.execute(parent);
         graph.getModel().endUpdate();
 
         return graph;
@@ -129,15 +141,16 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
 
     private static void addStartTransition(mxGraph graph, STask<?> taskInicial, Map<String, Object> mapaVertice) {
         final Object v = graph.insertVertex(graph.getDefaultParent(), null, null, 20, 20, 20, 20);
+
         setStyle(v, "START");
         final Object destino = mapaVertice.get(taskInicial.getAbbreviation());
         graph.insertEdge(graph.getDefaultParent(), null, null, v, destino);
     }
 
     private static void createTransition(mxGraph graph, STransition transicao, Map<String, Object> mapaVertice) {
-        final Object origem = mapaVertice.get(transicao.getOrigin().getAbbreviation());
+        final Object origem  = mapaVertice.get(transicao.getOrigin().getAbbreviation());
         final Object destino = mapaVertice.get(transicao.getDestination().getAbbreviation());
-        String nome = transicao.getName();
+        String       nome    = transicao.getName();
         if (transicao.getDestination().getName().equals(nome)) {
             nome = null;
         } else {
@@ -155,6 +168,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
             setStyle(v, "TIMER");
         } else if (task.isEnd()) {
             setStyle(v, "END");
+        } else if (task.isPeople()) {
+            setStyle(v, "HUMAN");
         } else if (task.isJava()) {
             if (task.getName().startsWith("Notificar")) {
                 setStyle(v, "MESSAGE");

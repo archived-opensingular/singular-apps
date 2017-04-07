@@ -13,6 +13,8 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.SIAttachment;
 import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersistenceHelper;
+import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
+import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -69,7 +71,7 @@ public class ServerAttachmentPersistenceHelperTest {
     private ServerAttachmentPersistenceHelper serverAttachmentPersistenceHelper;
 
     @Before
-    public void setUp(){
+    public void setUp() {
 
         when(obsoletFormAttachmentEntity.getAttachmentEntity()).thenReturn(obsoletAttachmentEntity);
         when(normalFormAttachmentEntity.getAttachmentEntity()).thenReturn(normalAttachmentEntity);
@@ -83,7 +85,7 @@ public class ServerAttachmentPersistenceHelperTest {
         when(formService.findCurrentFormVersion(document)).thenReturn(Optional.of(formVersionEntity));
         when(formAttachmentService.findAllByVersion(eq(formVersionEntity))).thenReturn(new ArrayList<>(Arrays.asList(obsoletFormAttachmentEntity, normalFormAttachmentEntity)));
 
-        serverAttachmentPersistenceHelper = new ServerAttachmentPersistenceHelper(formService, formAttachmentService){
+        serverAttachmentPersistenceHelper = new ServerAttachmentPersistenceHelper(formService, formAttachmentService) {
             @Override
             protected List<SIAttachment> findAttachments(SDocument document) {
                 return new ArrayList<>(Arrays.asList(newtAttachment, normalAttachment));

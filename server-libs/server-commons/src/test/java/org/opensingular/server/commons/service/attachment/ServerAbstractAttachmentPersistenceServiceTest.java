@@ -9,6 +9,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.server.commons.service.attachment.ServerAbstractAttachmentPersistenceService;
 
 import javax.inject.Inject;
 import java.io.File;
