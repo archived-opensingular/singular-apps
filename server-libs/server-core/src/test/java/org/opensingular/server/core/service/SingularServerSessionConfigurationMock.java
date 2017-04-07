@@ -89,7 +89,6 @@ public class SingularServerSessionConfigurationMock extends SingularServerSessio
         boxDefinitionData.getRequirements().add(req);
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);
-        box.setProcesses(new ArrayList<>());
         w.getBoxesConfiguration().add(box);
         return w;
     }
