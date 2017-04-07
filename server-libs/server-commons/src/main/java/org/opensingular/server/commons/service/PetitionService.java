@@ -44,7 +44,7 @@ import org.opensingular.server.commons.exception.PetitionConcurrentModificationE
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
+import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionContentHistoryDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
@@ -91,7 +91,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     protected PetitionDAO<PE> petitionDAO;
 
     @Inject
-    protected GrupoProcessoDAO grupoProcessoDAO;
+    protected ProcessGroupDAO processGroupDAO;
 
     @Inject
     protected TaskInstanceDAO taskInstanceDAO;
@@ -411,11 +411,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<ProcessGroupEntity> listAllProcessGroups() {
-        return grupoProcessoDAO.listarTodosGruposProcesso();
+        return processGroupDAO.listAll();
     }
 
     public ProcessGroupEntity findByProcessGroupCod(String cod) {
-        return grupoProcessoDAO.get(cod).orElse(null);
+        return processGroupDAO.get(cod).orElse(null);
     }
 
     @Nonnull

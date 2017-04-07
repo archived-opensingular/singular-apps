@@ -1,5 +1,6 @@
 package org.opensingular.server.core.service;
 
+import org.fest.util.VisibleForTesting;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
@@ -98,7 +99,14 @@ public class SingularServerSessionConfiguration implements Loggable {
         } else {
             return new ArrayList<>(0);
         }
-
     }
 
+    /**
+     * For testing purposes only. Must not be used in another scenario.
+     * @param configMaps
+     */
+    @VisibleForTesting
+    void setConfigMaps(Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> configMaps) {
+        this.configMaps = configMaps;
+    }
 }

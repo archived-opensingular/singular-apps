@@ -22,7 +22,7 @@ import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.service.dto.ItemBoxData;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.AccessDeniedContent;
@@ -31,7 +31,6 @@ import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.opensingular.server.core.wicket.template.ServerTemplate;
 import org.slf4j.LoggerFactory;
 
-import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -85,12 +84,12 @@ public class BoxPage extends ServerTemplate {
         }
 
         if (boxConfigurationMetadata != null) {
-            final ItemBoxData itemBoxData = boxConfigurationMetadata.getItemPorLabel(item);
+            final BoxDefinitionData boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
             /**
              * itemBoxDTO pode ser nulo quando nenhum item está selecionado.
              */
-            if (itemBoxData != null) {
-                return newBoxContent(id, processGroupCod, boxConfigurationMetadata, itemBoxData);
+            if (boxDefinitionData != null) {
+                return newBoxContent(id, processGroupCod, boxConfigurationMetadata, boxDefinitionData);
             }
         }
 
@@ -101,8 +100,8 @@ public class BoxPage extends ServerTemplate {
         return new AccessDeniedContent(id);
     }
 
-    protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, ItemBoxData itemBoxData) {
-        return new BoxContent(id, processGroupCod, boxConfigurationMetadata.getLabel(), itemBoxData);
+    protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
+        return new BoxContent(id, processGroupCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

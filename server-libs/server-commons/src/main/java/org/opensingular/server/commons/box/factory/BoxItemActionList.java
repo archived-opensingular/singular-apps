@@ -13,8 +13,10 @@ import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.opensingular.server.commons.RESTPaths.DELETE;
+import static org.opensingular.server.commons.RESTPaths.EXECUTE;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
-import static org.opensingular.server.commons.RESTPaths.*;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
 public class BoxItemActionList {
@@ -48,7 +50,7 @@ public class BoxItemActionList {
 
     public BoxItemActionList addExecuteInstante(Object id, String actionName) {
         final BoxItemAction boxItemAction = new BoxItemAction();
-        final String endpointUrl = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
+        final String        endpointUrl   = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
         boxItemAction.setName(actionName);
         boxItemAction.setEndpoint(endpointUrl);
         boxItemAction.setUseExecute(true);
@@ -57,7 +59,7 @@ public class BoxItemActionList {
     }
 
     public BoxItemActionList addDeleteAction(ItemBoxData line) {
-        String endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.getCodPeticao();
+        String              endpointUrl   = PATH_BOX_ACTION + DELETE + "?id=" + line.getCodPeticao();
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
         boxItemAction.setEndpoint(endpointUrl);
@@ -74,6 +76,7 @@ public class BoxItemActionList {
         return boxItemActions;
     }
 
+    @Deprecated
     public BoxItemActionList addInheritPetitionPopupBox(String actioName,
                                                         ItemBoxData line,
                                                         Class<? extends SType<?>> type,

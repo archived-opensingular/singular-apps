@@ -24,7 +24,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class TaskItemBoxDataProviderTest {
+public class TaskBoxDefinitionDataProviderTest {
 
     @Mock
     private PetitionService petitionService;

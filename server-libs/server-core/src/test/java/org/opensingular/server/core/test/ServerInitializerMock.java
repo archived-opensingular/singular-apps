@@ -1,28 +1,28 @@
-package org.opensingular.server.commons.test;
+package org.opensingular.server.core.test;
 
-import org.opensingular.flow.core.service.IFlowMetadataREST;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
+import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.p.commons.config.PFlowInitializer;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class SingularInitializerMock implements PSingularInitializer {
+public class ServerInitializerMock extends CommonsInitializerMock {
 
     public static final String   TESTE                      = "Teste";
     public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.server.commons.test"};
     public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
-    public SingularInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
+    public ServerInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public SingularInitializerMock() {
+    public ServerInitializerMock() {
     }
 
     @Override
@@ -30,7 +30,7 @@ public class SingularInitializerMock implements PSingularInitializer {
         return new PWebInitializer() {
             @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext context) {
-                return SingularApplicationMock.class;
+                return CommonsApplicationMock.class;
             }
         };
     }
@@ -52,22 +52,7 @@ public class SingularInitializerMock implements PSingularInitializer {
 
     @Override
     public PFlowInitializer flowConfiguration() {
-        return new PFlowInitializer() {
-            @Override
-            public Class<? extends IFlowMetadataREST> flowMetadataProvider() {
-                return null;
-            }
-
-            @Override
-            public String[] definitionsBasePackage() {
-                return DEFINITIONS_PACKS_ARRAY;
-            }
-
-            @Override
-            public String processGroupCod() {
-                return TESTE;
-            }
-        };
+        return null;
     }
 
     @Override

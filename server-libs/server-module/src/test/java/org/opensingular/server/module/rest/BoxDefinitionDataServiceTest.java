@@ -21,7 +21,7 @@ import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
-public class ItemBoxDataServiceTest {
+public class BoxDefinitionDataServiceTest {
 
     @Mock
     private SingularModuleConfiguration singularModuleConfiguration;

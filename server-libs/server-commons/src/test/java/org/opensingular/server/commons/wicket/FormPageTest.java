@@ -14,8 +14,8 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.test.SingularApplicationMock;
-import org.opensingular.server.commons.test.SingularServerBaseTest;
+import org.opensingular.server.commons.test.CommonsApplicationMock;
+import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.commons.wicket.error.Page500;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
@@ -27,17 +27,18 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class FormPageTest extends SingularServerBaseTest {
+public class FormPageTest extends SingularCommonsBaseTest {
 
     public static final String SUPER_TESTE_STRING = "SuperTeste";
+
     @Inject
-    SingularApplicationMock singularApplication;
+    CommonsApplicationMock singularApplication;
 
     @Inject
     FormService formService;
 
     @Inject
-    PetitionService<?,?> petitionService;
+    PetitionService<?, ?> petitionService;
 
     @Inject
     SpringSDocumentFactory documentFactory;
@@ -74,7 +75,7 @@ public class FormPageTest extends SingularServerBaseTest {
         tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("save-btn").getTarget(), "click");
 
         SInstance fooInstance = tester.getAssertionsInstance().getTarget();
-        FormKey formKey = FormKey.from(fooInstance);
+        FormKey   formKey     = FormKey.from(fooInstance);
 
         Assert.assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
         Assert.assertNotNull(formService.loadFormEntity(formKey));
