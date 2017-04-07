@@ -58,7 +58,7 @@ public class BoxConfigurationData implements Serializable {
 
     public List<ItemBox> getItemBoxes() {
         if (itemBoxesMetadata == null) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>(0);
         }
         return itemBoxesMetadata.stream().map(BoxDefinitionData::getItemBox).collect(Collectors.toList());
     }
