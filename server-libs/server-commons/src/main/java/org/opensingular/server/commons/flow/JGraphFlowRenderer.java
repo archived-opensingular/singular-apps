@@ -91,7 +91,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         def.put(mxConstants.STYLE_SEGMENT, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace(".", "/"), nomeImagem));
+        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace('.', '/'), nomeImagem));
         foo.putCellStyle(nomeEstilo, def);
     }
 
