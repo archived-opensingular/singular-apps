@@ -8,7 +8,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@ContextConfiguration(classes = ConfigurationMock.class, loader = SingularCommonsContextLoader.class)
+@ContextConfiguration(classes = CommonsConfigurationMock.class, loader = SingularCommonsContextLoader.class)
 public abstract class SingularCommonsBaseTest implements Loggable {
 
 
