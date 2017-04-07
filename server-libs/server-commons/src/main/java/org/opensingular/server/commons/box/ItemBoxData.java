@@ -69,4 +69,12 @@ public class ItemBoxData implements Serializable {
     public Serializable getSituation() {
         return rawMap.get("situation");
     }
+
+    public Serializable getParentPetition() {
+        return rawMap.get("parentPetition");
+    }
+
+    public Serializable getRootPetition() {
+        return rawMap.get("rootPetition");
+    }
 }

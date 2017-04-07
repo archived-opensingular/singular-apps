@@ -100,6 +100,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             hql.append(" , pie.beginDate as processBeginDate ");
             hql.append(" , currentDraftEntity.editionDate as editionDate ");
             hql.append(" , pie.cod as processInstanceId ");
+            hql.append(" , p.rootPetition.id as rootPetition ");
+            hql.append(" , p.parentPetition.id as parentPetition ");
             appendCustomSelectClauses(hql, filter);
         }
     }
