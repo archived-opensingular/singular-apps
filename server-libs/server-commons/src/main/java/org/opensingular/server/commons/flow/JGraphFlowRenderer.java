@@ -47,8 +47,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
     INSTANCE;
 
     private static byte[] renderGraphImpl(ProcessDefinition<?> definicao) {
-        final mxGraph graph = renderGraph(definicao);
-        final RenderedImage img = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
+        final mxGraph       graph = renderGraph(definicao);
+        final RenderedImage img   = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
 
         final ByteArrayOutputStream out = new ByteArrayOutputStream();
 
@@ -91,8 +91,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         def.put(mxConstants.STYLE_SEGMENT, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-        def.put(mxConstants.STYLE_IMAGE, "/" + JGraphFlowRenderer.class.getPackage().getName().replace(".", "/") + "/" + nomeImagem);
-        // def.put(mxConstants.STYLE_SPACING_TOP, mxConstants.SHAPE_IMAGE);
+        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace(".", "/"), nomeImagem));
         foo.putCellStyle(nomeEstilo, def);
     }
 
