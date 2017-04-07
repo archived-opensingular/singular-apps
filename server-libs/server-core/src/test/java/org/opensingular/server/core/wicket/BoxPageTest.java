@@ -24,11 +24,10 @@ public class BoxPageTest extends SingularServerBaseTest {
         ContextUtil.setPathInfo(SINGULAR + PServerContext.PETITION.getUrlPath());
     }
 
-    @Inject
-    private ServerApplicationMock singularApplication;
-
     private SingularWicketTester tester;
 
+    @Inject
+    private ServerApplicationMock singularApplication;
 
     @WithUserDetails("vinicius.nunes")
     @Test

@@ -177,7 +177,7 @@ public class RestBackstageService implements Loggable {
 
     private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
         for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
-            boxConfigurationMetadata.setItemBoxesMetadata(singularModuleConfiguration.buildItemBoxes(menuContext));
+            boxConfigurationMetadata.setBoxesDefinition(singularModuleConfiguration.buildItemBoxes(menuContext));
         }
     }
 
