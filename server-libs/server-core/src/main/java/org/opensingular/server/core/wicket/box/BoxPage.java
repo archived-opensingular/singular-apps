@@ -31,6 +31,7 @@ import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.opensingular.server.core.wicket.template.ServerTemplate;
 import org.slf4j.LoggerFactory;
 
+import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -45,6 +46,7 @@ public class BoxPage extends ServerTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
 
+    @Inject
     @SpringBean(required = false)
     private MenuService menuService;
 
