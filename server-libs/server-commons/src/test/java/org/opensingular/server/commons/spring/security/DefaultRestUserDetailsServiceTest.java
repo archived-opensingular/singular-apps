@@ -1,6 +1,8 @@
 package org.opensingular.server.commons.spring.security;
 
+import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.server.commons.spring.security.DefaultRestUserDetailsService;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
@@ -35,7 +37,7 @@ public class DefaultRestUserDetailsServiceTest {
     @Test
     public void getSubjectPrincipalRegexTest() {
         TestDefaultRestUserDetailsService userDetailsService = new TestDefaultRestUserDetailsService();
-        assertEquals(DefaultRestUserDetailsService.SUBJECT_PRINCIPAL_REGEX, userDetailsService.getSubjectPrincipalRegex());
+        Assert.assertEquals(DefaultRestUserDetailsService.SUBJECT_PRINCIPAL_REGEX, userDetailsService.getSubjectPrincipalRegex());
     }
 
     private static class TestDefaultRestUserDetailsService extends DefaultRestUserDetailsService {
