@@ -9,16 +9,17 @@ import javax.inject.Inject;
 
 public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
 
-    public static final String PARAM_PASSHASHADMIN  = "ADMIN_HASH_PASSWORD";
+    public static final String PARAM_PASSHASHADMIN = "ADMIN_HASH_PASSWORD";
     public static final String PARAM_ADMINUSERNAME = "ADMIN_USERNAME";
 
-    private ParameterService parameterService;
-
-    private String codProcessGroup;
 
     @Inject
-    public DatabaseAdminCredentialChecker(ParameterService parameterService, String codProcessGroup) {
-        this.parameterService = parameterService;
+    private ParameterService parameterService;
+
+    private String           codProcessGroup;
+
+
+    public DatabaseAdminCredentialChecker(String codProcessGroup) {
         this.codProcessGroup = codProcessGroup;
     }
 

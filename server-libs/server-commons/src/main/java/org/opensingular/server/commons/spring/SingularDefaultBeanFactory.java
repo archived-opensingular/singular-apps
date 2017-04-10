@@ -279,8 +279,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService) {
-        return new DatabaseAdminCredentialChecker(parameterService, null);
+    public AdminCredentialChecker adminCredentialChecker() {
+        return new DatabaseAdminCredentialChecker(null);
     }
 
     @Bean
