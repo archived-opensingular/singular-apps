@@ -60,6 +60,7 @@ public class WorkspaceMetadataMockBean {
         teste.setIcone(Icone.DOCS);
         teste.setShowNewButton(true);
         teste.setShowDraft(true);
+        teste.setId("1");
         teste.addAction(DefaultActions.EDIT)
                 .addAction(DefaultActions.VIEW)
                 .addAction(DefaultActions.DELETE);
