@@ -99,7 +99,7 @@ public class RestBackstageService implements Loggable {
             return controller.run(petition, actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getName()), id);
-            getLogger().error(msg, e);
+            getLogger().error(msg, e);//NOSONAR
             return new ActionResponse(msg, false);
         }
 
@@ -177,7 +177,7 @@ public class RestBackstageService implements Loggable {
 
     private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
         for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
-            boxConfigurationMetadata.setItemBoxesMetadata(singularModuleConfiguration.buildItemBoxes(menuContext));
+            boxConfigurationMetadata.setBoxesDefinition(singularModuleConfiguration.buildItemBoxes(menuContext));
         }
     }
 

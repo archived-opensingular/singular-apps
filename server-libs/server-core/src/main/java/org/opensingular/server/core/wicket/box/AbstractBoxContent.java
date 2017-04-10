@@ -73,6 +73,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     @Inject
     protected PetitionService<?, ?> petitionService;
 
+    @Inject
     @SpringBean(required = false)
     protected MenuService menuService;
 

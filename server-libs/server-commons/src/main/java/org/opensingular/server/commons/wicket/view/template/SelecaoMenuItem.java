@@ -28,6 +28,7 @@ import javax.inject.Inject;
 
 public class SelecaoMenuItem extends AbstractMenuItem {
 
+    @Inject
     @SpringBean(required = false)
     private MenuService menuService;
 

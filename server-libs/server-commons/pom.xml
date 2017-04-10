@@ -61,7 +61,7 @@
         <dependency>
             <groupId>org.tinyjee.jgraphx</groupId>
             <artifactId>jgraphx</artifactId>
-            <version>1.10.4.1</version>
+            <version>1.13.0.0</version>
         </dependency>
 
         <dependency>
@@ -119,12 +119,6 @@
             <version>1.5.6</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.springframework.security</groupId>
-            <artifactId>spring-security-test</artifactId>
-            <version>${spring.security.version}</version>
-            <scope>test</scope>
-        </dependency>
 
     </dependencies>
 
