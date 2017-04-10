@@ -223,7 +223,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
         boolean hasPermission = authorizationService.hasPermission(
                 context.getPetitionId().orElse(null),
-                context.getFormName().get(),
+                context.getFormName().orElse(null),
                 String.valueOf(userDetails.getUserPermissionKey()),
                 context.getFormAction().map(FormAction::name).orElse(null)
         );
