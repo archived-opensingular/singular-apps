@@ -47,6 +47,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_VERSION_KEY;
 
 public abstract class AbstractHistoricoContent extends Content {
@@ -128,7 +129,7 @@ public abstract class AbstractHistoricoContent extends Content {
                                     .map(PetitionHistoryDTO::getPetitionContentHistory)
                                     .map(PetitionContentHistoryEntity::getFormVersionHistoryEntities)
                                     .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
-                                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh.getCodFormVersion()))));
+                                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
 
                             return dropDownButtonPanel;
                         })
@@ -136,12 +137,13 @@ public abstract class AbstractHistoricoContent extends Content {
                 .build("tabela");
     }
 
-    private IFunction<String, Button> viewFormButton(final Long versionPK) {
+    private IFunction<String, Button> viewFormButton(final FormVersionHistoryEntity formVersionHistoryEntity) {
         final String url = DispatcherPageUtil
                 .baseURL(getBaseUrl())
                 .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
                 .petitionId(null)
-                .param(FORM_VERSION_KEY, versionPK)
+                .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
+                .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod())
                 .build();
         return id -> new Button(id) {
             @Override

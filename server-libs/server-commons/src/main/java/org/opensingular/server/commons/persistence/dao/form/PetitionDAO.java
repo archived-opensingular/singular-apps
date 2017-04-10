@@ -332,4 +332,23 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .setParameter("petitionCod", petitionCod)
                 .uniqueResult()) > 0;
     }
+
+    public T findPetitionInstanceByRootPetitionAndType(Long rootPetition, String type) {
+        return (T) getSession()
+                .createQuery(" select p from PetitionEntity p" +
+                        " inner join p.formPetitionEntities formPetitionEntity " +
+                        " inner join formPetitionEntity.form form " +
+                        " inner join form.formType formType " +
+                        " where 1=1 " +
+                        " and formPetitionEntity.mainForm = :sim  " +
+                        " and p.rootPetition.id = :rootPetition " +
+                        " and formType.abbreviation = :type ")
+                .setParameter("sim", SimNao.SIM)
+                .setParameter("rootPetition", rootPetition)
+                .setParameter("type", type)
+                .setMaxResults(1)
+                .uniqueResult();
+
+
+    }
 }
