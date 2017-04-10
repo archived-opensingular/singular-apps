@@ -19,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -83,19 +84,17 @@ public class WorkspaceMetadataMockBean {
     }
 
 
-    public void configBoxesMock() {
+    private void configBoxesMock() {
         try {
+            ProcessGroupEntity processGroupEntity = new ProcessGroupEntity();
             new TransactionTemplate(transactionManager).execute((transactionStatus) -> {
-                ProcessGroupEntity processGroupEntity = new ProcessGroupEntity();
                 processGroupEntity.setName("Grupo Processo Teste");
                 processGroupEntity.setCod("GRUPO_TESTE");
                 processGroupEntity.setConnectionURL("http://localhost:8080/rest/nada");
                 processGroupDAO.saveOrUpdate(processGroupEntity);
-
-                map.put(processGroupEntity, gimmeSomeMock());
-
                 return null;
             });
+            map.put(processGroupEntity, gimmeSomeMock());
 
         } catch (Throwable t) {
             throw new RuntimeException(t);
@@ -103,6 +102,6 @@ public class WorkspaceMetadataMockBean {
     }
 
     public Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> getMap() {
-        return map;
+        return new LinkedHashMap<>(map);
     }
 }
