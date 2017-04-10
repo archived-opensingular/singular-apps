@@ -31,7 +31,7 @@ public class BoxPageTest extends SingularServerBaseTest {
 
     @WithUserDetails("vinicius.nunes")
     @Test
-    public void test() {
+    public void renderTestPageWithMenu() {
         tester = new SingularWicketTester(singularApplication);
         tester.startPage(BoxPage.class);
         tester.assertRenderedPage(BoxPage.class);
