@@ -17,10 +17,6 @@ public class TableInfoDTO implements Serializable {
 		userPrivs = new ArrayList<>();
 		columnsInfo = new ArrayList<>();
 	}
-	
-	public TableInfoDTO(String tableName) {
-		this.tableName = tableName;
-	}
 
 	public String getTableName() {
 		return tableName;

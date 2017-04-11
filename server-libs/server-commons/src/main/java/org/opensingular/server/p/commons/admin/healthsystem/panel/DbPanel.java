@@ -25,7 +25,7 @@ import org.opensingular.form.util.transformer.TransformPojoUtil;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.server.commons.persistence.dto.healthsystem.HealthInfoDTO;
-import org.opensingular.server.commons.service.HealthPanelDbService;
+import org.opensingular.server.commons.service.HealthSystemDbService;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.opensingular.server.p.commons.admin.healthsystem.stypes.SDbHealth;
 
@@ -34,7 +34,7 @@ import javax.inject.Inject;
 public class DbPanel extends Panel {
 
 	@Inject
-    private HealthPanelDbService painelService;
+    private HealthSystemDbService painelService;
 
 	public DbPanel(String id) {
 		super(id);

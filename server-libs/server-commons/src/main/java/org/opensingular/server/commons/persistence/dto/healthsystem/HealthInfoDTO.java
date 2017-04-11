@@ -12,8 +12,4 @@ public class HealthInfoDTO {
 	public List<TableInfoDTO> getTablesList() {
 		return tablesList;
 	}
-
-	public void setTablesList(List<TableInfoDTO> tablesList) {
-		this.tablesList = tablesList;
-	}
 }
