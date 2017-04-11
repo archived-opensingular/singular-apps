@@ -16,6 +16,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
 
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -28,7 +29,8 @@ import javax.inject.Inject;
 public class SelecaoMenuItem extends AbstractMenuItem {
 
     @Inject
-    private transient Optional<MenuService> menuService;
+    @SpringBean(required = false)
+    private MenuService menuService;
 
     private List<ProcessGroupEntity> categorias;
 
@@ -64,8 +66,8 @@ public class SelecaoMenuItem extends AbstractMenuItem {
     }
 
     private BoxConfigurationData getDefaultMenuSelection(ProcessGroupEntity categoriaSelecionada) {
-        if(menuService.isPresent()){
-            return menuService.get().getDefaultSelectedMenu(categoriaSelecionada);
+        if(menuService != null){
+            return menuService.getDefaultSelectedMenu(categoriaSelecionada);
         }
         return null;
     }

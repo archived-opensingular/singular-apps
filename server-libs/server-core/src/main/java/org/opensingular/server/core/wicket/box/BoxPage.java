@@ -18,10 +18,11 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.service.dto.ItemBoxData;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.AccessDeniedContent;
@@ -46,7 +47,8 @@ public class BoxPage extends ServerTemplate {
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
 
     @Inject
-    private transient Optional<MenuService> menuService;
+    @SpringBean(required = false)
+    private MenuService menuService;
 
     @Override
     protected Content getContent(String id) {
@@ -59,9 +61,9 @@ public class BoxPage extends ServerTemplate {
         if (processGroupCod == null
                 && menu == null
                 && item == null
-                && menuService.isPresent()) {
+                && menuService != null) {
 
-            for (Iterator<Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>>> it = menuService.get().getMap().entrySet().iterator(); it.hasNext(); ) {
+            for (Iterator<Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>>> it = menuService.getMap().entrySet().iterator(); it.hasNext(); ) {
                 Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> entry = it.next();
                 if (!entry.getValue().isEmpty()) {
                     processGroupCod = entry.getKey().getCod();
@@ -79,17 +81,17 @@ public class BoxPage extends ServerTemplate {
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
-        if (menuService.isPresent()) {
-            boxConfigurationMetadata = menuService.get().getMenuByLabel(menu);
+        if (menuService != null) {
+            boxConfigurationMetadata = menuService.getMenuByLabel(menu);
         }
 
         if (boxConfigurationMetadata != null) {
-            final ItemBoxData itemBoxData = boxConfigurationMetadata.getItemPorLabel(item);
+            final BoxDefinitionData boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
             /**
              * itemBoxDTO pode ser nulo quando nenhum item está selecionado.
              */
-            if (itemBoxData != null) {
-                return newBoxContent(id, processGroupCod, boxConfigurationMetadata, itemBoxData);
+            if (boxDefinitionData != null) {
+                return newBoxContent(id, processGroupCod, boxConfigurationMetadata, boxDefinitionData);
             }
         }
 
@@ -100,8 +102,8 @@ public class BoxPage extends ServerTemplate {
         return new AccessDeniedContent(id);
     }
 
-    protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, ItemBoxData itemBoxData) {
-        return new BoxContent(id, processGroupCod, boxConfigurationMetadata.getLabel(), itemBoxData);
+    protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
+        return new BoxContent(id, processGroupCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

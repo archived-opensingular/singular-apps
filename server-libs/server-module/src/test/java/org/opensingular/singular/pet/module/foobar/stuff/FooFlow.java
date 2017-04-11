@@ -1,19 +1,22 @@
 package org.opensingular.singular.pet.module.foobar.stuff;
 
+import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.builder.BuilderEnd;
-import org.opensingular.flow.core.builder.BuilderPeople;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
+import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
+import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
+import org.opensingular.server.commons.wicket.view.form.FormPage;
 
+@DefinitionInfo("fooooooooFlow")
 public class FooFlow extends ProcessDefinition<ProcessInstance> {
 
 
-    protected FooFlow(Class<ProcessInstance> instanceClass) {
-        super(instanceClass);
+    public FooFlow() {
+        super(ProcessInstance.class);
     }
 
     @Override
@@ -23,11 +26,14 @@ public class FooFlow extends ProcessDefinition<ProcessInstance> {
         ITaskDefinition dobarDef  = () -> "Do bar";
         ITaskDefinition endbarDef = () -> "No more bar";
 
-        BuilderPeople dobar  = flow.addPeopleTask(dobarDef);
-        BuilderEnd    endbar = flow.addEnd(endbarDef);
+        flow.addEnd(endbarDef);
+        flow.addPeopleTask(dobarDef)
+                .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
+                .addAccessStrategy(new NullTaskAccessStrategy())
+                .go(endbarDef);
 
         flow.setStart(dobarDef);
-        dobar.go(endbarDef);
+
 
         return flow.build();
 

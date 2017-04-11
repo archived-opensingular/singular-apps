@@ -4,7 +4,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.Email;
-import org.opensingular.server.commons.test.SingularServerBaseTest;
+import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -12,7 +12,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Date;
 
-public class EmailTest extends SingularServerBaseTest {
+public class EmailTest extends SingularCommonsBaseTest {
 
     @Inject
     private EmailPersistenceService emailPersistenceService;

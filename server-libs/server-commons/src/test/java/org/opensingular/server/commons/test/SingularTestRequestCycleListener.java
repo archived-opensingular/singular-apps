@@ -4,21 +4,21 @@ import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
-import org.apache.wicket.request.Request;
+import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.http.WebRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.Method;
 
 public class SingularTestRequestCycleListener extends AbstractRequestCycleListener {
 
+
     @Override
     public void onBeginRequest(RequestCycle cycle) {
         HttpServletRequest mockHttpServletRequest  = (HttpServletRequest) cycle.getRequest().getContainerRequest();
         HttpServletRequest superPoweredMockRequest = getSuperPoweredHttpRequest(mockHttpServletRequest);
-        Request            superPoweredRequest     = getSuperPoweredRequest((WebRequest) cycle.getRequest(), superPoweredMockRequest);
+        ServletWebRequest  superPoweredRequest     = getSuperPoweredRequest((ServletWebRequest) cycle.getRequest(), superPoweredMockRequest);
         cycle.setRequest(superPoweredRequest);
         ContextUtil.prepareRequest(superPoweredMockRequest);
     }
@@ -59,12 +59,12 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
         return (HttpServletRequest) enhancer.create();
     }
 
-    private WebRequest getSuperPoweredRequest(WebRequest request, HttpServletRequest superPoweredMockRequest) {
+    private ServletWebRequest getSuperPoweredRequest(ServletWebRequest request, HttpServletRequest superPoweredMockRequest) {
         if (isSuperPowered(request)) {
             return request;
         }
         Enhancer enhancer = new Enhancer();
-        enhancer.setSuperclass(WebRequest.class);
+        enhancer.setSuperclass(SingularServletWebRequest.class);
         enhancer.setInterfaces(new Class[]{SuperPowered.class});
         enhancer.setCallback(new InvocationHandler() {
             @Override
@@ -75,7 +75,7 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
                 return method.invoke(request, objects);
             }
         });
-        return (WebRequest) enhancer.create();
+        return (ServletWebRequest) enhancer.create();
     }
 
     public boolean isSuperPowered(Object o) {
@@ -93,5 +93,15 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
         void setPathInfo(String path);
     }
 
+    /**
+     * Dummy class to provide no-arg constructor for ServletWebRequest
+     */
+    public static class SingularServletWebRequest extends ServletWebRequest {
+
+        public SingularServletWebRequest() {
+            super(new org.springframework.mock.web.MockHttpServletRequest(), "");
+        }
+
+    }
 
 }

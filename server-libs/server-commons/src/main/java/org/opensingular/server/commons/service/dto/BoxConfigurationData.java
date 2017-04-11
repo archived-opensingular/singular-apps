@@ -26,8 +26,8 @@ public class BoxConfigurationData implements Serializable {
 
     private String                id;
     private String                label;
-    private List<ItemBoxData> itemBoxesMetadata;
-    private List<ProcessDTO>  processes;
+    private List<BoxDefinitionData> itemBoxesMetadata;
+    private List<ProcessDTO>        processes;
 
     public BoxConfigurationData() {
     }
@@ -58,13 +58,13 @@ public class BoxConfigurationData implements Serializable {
 
     public List<ItemBox> getItemBoxes() {
         if (itemBoxesMetadata == null) {
-            return Collections.EMPTY_LIST;
+            return new ArrayList<>(0);
         }
-        return itemBoxesMetadata.stream().map(ItemBoxData::getItemBox).collect(Collectors.toList());
+        return itemBoxesMetadata.stream().map(BoxDefinitionData::getItemBox).collect(Collectors.toList());
     }
 
-    public ItemBoxData getItemPorLabel(String itemName) {
-        for (ItemBoxData itemBoxMeta : itemBoxesMetadata) {
+    public BoxDefinitionData getItemPorLabel(String itemName) {
+        for (BoxDefinitionData itemBoxMeta : itemBoxesMetadata) {
             if (itemBoxMeta.getItemBox().getName().equalsIgnoreCase(itemName)) {
                 return itemBoxMeta;
             }
@@ -80,11 +80,11 @@ public class BoxConfigurationData implements Serializable {
                 .orElse(null);
     }
 
-    public List<ItemBoxData> getItemBoxesMetadata() {
+    public List<BoxDefinitionData> getBoxesDefinition() {
         return itemBoxesMetadata;
     }
 
-    public void setItemBoxesMetadata(List<ItemBoxData> itemBoxesMetadata) {
+    public void setBoxesDefinition(List<BoxDefinitionData> itemBoxesMetadata) {
         this.itemBoxesMetadata = itemBoxesMetadata;
     }
 

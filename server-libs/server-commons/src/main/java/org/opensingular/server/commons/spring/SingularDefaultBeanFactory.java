@@ -42,7 +42,7 @@ import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
+import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
@@ -123,8 +123,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public GrupoProcessoDAO grupoProcessoDAO() {
-        return new GrupoProcessoDAO();
+    public ProcessGroupDAO grupoProcessoDAO() {
+        return new ProcessGroupDAO();
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)
@@ -279,8 +279,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService) {
-        return new DatabaseAdminCredentialChecker(parameterService, null);
+    public AdminCredentialChecker adminCredentialChecker() {
+        return new DatabaseAdminCredentialChecker(null);
     }
 
     @Bean

@@ -28,7 +28,8 @@ import static org.opensingular.server.commons.RESTPaths.USER;
 public class RESTModuleConnector implements ModuleConnector {
 
     @Inject
-    RestBackstageService restBackstageService;
+    private RestBackstageService restBackstageService;
+
     @Inject
     private ItemBoxDataService itemBoxDataService;
 
