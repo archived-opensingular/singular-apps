@@ -82,7 +82,7 @@ public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 		tableInfoDTO.setColumnsInfo(colunas);
 	}
 	
-	private List<ColumnInfoDTO> getColumnsInfoFromTable(String table) {
+	protected List<ColumnInfoDTO> getColumnsInfoFromTable(String table) {
 		String query = "SELECT OWNER, COLUMN_NAME, DATA_TYPE, CHAR_LENGTH, DATA_PRECISION, TABLE_NAME, DATA_LENGTH, NULLABLE "
 				+ " FROM SYS.ALL_TAB_COLS "
 				+ " WHERE TABLE_NAME = :nome_tabela";
@@ -128,7 +128,7 @@ public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 	 * @param tabela
 	 * @return lista de String com o nome dos privilegios obtidos.
 	 */
-	private List<String> getPermissionEspecificTable(String tabela) {
+	protected List<String> getPermissionEspecificTable(String tabela) {
 		String query = " SELECT PRIVILEGE"
 				+ " FROM SYS.ALL_TAB_PRIVS_RECD"
 				+ " WHERE TABLE_NAME = :nome_tabela";
