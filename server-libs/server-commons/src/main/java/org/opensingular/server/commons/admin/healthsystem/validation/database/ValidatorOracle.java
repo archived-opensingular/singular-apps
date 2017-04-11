@@ -1,20 +1,19 @@
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.opensingular.lib.support.persistence.SimpleDAO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Named
 public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 
 	@Transactional
