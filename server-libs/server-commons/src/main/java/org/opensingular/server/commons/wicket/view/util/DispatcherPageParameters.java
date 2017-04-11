@@ -40,7 +40,7 @@ public class DispatcherPageParameters {
 
     public static final String ITEM_PARAM_NAME = "item";
 
-    public final static String FORM_VERSION_KEY = "fvk";
+    public final static String FORM_VERSION_KEY = "v";
 
     public final static String DIFF = "diff";
 

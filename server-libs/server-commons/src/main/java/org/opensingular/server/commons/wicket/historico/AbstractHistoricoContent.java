@@ -143,7 +143,7 @@ public abstract class AbstractHistoricoContent extends Content {
                 .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
                 .petitionId(null)
                 .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
-                .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod())
+                .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
                 .build();
         return id -> new Button(id) {
             @Override
