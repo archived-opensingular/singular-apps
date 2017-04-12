@@ -275,10 +275,10 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return formPetitionService.saveFormPetition(petition, instance, mainForm);
     }
 
-    protected void onAfterStartProcess(PI petition, SInstance instance, String codResponsavel, ProcessInstance processInstance) {
+    public void onAfterStartProcess(PI petition, SInstance instance, String codResponsavel, ProcessInstance processInstance) {
     }
 
-    protected void onBeforeStartProcess(PI peticao, SInstance instance, String codResponsavel) {
+    public void onBeforeStartProcess(PI peticao, SInstance instance, String codResponsavel) {
     }
 
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
@@ -564,7 +564,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 version -> (SIComposite) getFormPetitionService().getSInstance(version.getFormVersion()));
     }
 
-    protected ProcessInstance startNewProcess(PetitionInstance petition, ProcessDefinition processDefinition) {
+    public ProcessInstance startNewProcess(PetitionInstance petition, ProcessDefinition processDefinition) {
         ProcessInstance newProcessInstance = processDefinition.newPreStartInstance();
         newProcessInstance.setDescription(petition.getDescription());
 
