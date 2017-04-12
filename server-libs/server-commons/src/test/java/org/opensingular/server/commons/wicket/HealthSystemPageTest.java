@@ -1,19 +1,12 @@
 package org.opensingular.server.commons.wicket;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.junit.Assert;
-import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
-import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.persistence.util.HibernateSingularFlowConfigurationBean;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
-import org.opensingular.form.wicket.helpers.AssertionsWComponentList;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
@@ -26,6 +19,9 @@ import org.opensingular.server.p.commons.admin.healthsystem.panel.PermissionPane
 import org.opensingular.server.p.commons.admin.healthsystem.panel.WebPanel;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class HealthSystemPageTest extends SingularCommonsBaseTest {
@@ -48,6 +44,7 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
+    @Ignore
     public void testClickDbButton() {
         clickButtonAndCheckComponent("buttonDb", DbPanel.class);
     }
