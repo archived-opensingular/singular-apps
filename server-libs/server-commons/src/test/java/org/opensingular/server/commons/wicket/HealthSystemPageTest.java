@@ -44,40 +44,39 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    @Ignore
     public void testClickDbButton() {
-        clickButtonAndCheckComponent("buttonDb", DbPanel.class);
+        clickButtonAndCheckPanel("buttonDb", DbPanel.class);
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
     public void testClickCacheButton() {
-        clickButtonAndCheckComponent("buttonCache", CachePanel.class);
+        clickButtonAndCheckPanel("buttonCache", CachePanel.class);
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
     public void testClickJobButton() {
-        clickButtonAndCheckComponent("buttonJobs", JobPanel.class);
+        clickButtonAndCheckPanel("buttonJobs", JobPanel.class);
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
     public void testClickPermissionButton() {
-        clickButtonAndCheckComponent("buttonPermissions", PermissionPanel.class);
+        clickButtonAndCheckPanel("buttonPermissions", PermissionPanel.class);
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
     public void testClickWebButton() {
-        clickButtonAndCheckComponent("buttonWeb", WebPanel.class);
+        clickButtonAndCheckPanel("buttonWeb", WebPanel.class);
     }
 
-    private void clickButtonAndCheckComponent(String buttonId, Class<? extends Panel> clazz) {
+    private void clickButtonAndCheckPanel(String buttonId, Class<? extends Panel> clazz) {
         tester = new SingularWicketTester(singularApplication);
         Page p = new HealthSystemPage();
         tester.startPage(p);
