@@ -450,19 +450,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected final PI getUpdatedPetitionFromInstance(IModel<? extends SInstance> currentInstance, boolean mainForm) {
         PI petition = getPetition();
         if (currentInstance.getObject() instanceof SIComposite && mainForm) {
-            String description = createPetitionDescriptionFromForm(currentInstance.getObject());
-            if (description != null && description.length() > 200) {
-                getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
-                description = description.substring(0, 197) + "...";
-            }
-            petition.setDescription(description);
+            petitionService.updatePetitionDescription(currentInstance.getObject(), petition);
         }
         return petition;
     }
 
-    protected String createPetitionDescriptionFromForm(SInstance instance) {
-        return instance.toStringDisplay();
-    }
+
 
     @NotNull
     @Nonnull

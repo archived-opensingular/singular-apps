@@ -588,4 +588,14 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
 
+    public void updatePetitionDescription(SInstance currentInstance, PI petition) {
+        String description = currentInstance.toStringDisplay();
+        if (description != null && description.length() > 200) {
+            getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
+            description = description.substring(0, 197) + "...";
+        }
+        petition.setDescription(description);
+    }
+
+
 }
