@@ -75,4 +75,15 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
     }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void emptyValueTest() throws Exception {
+        SIComposite url = reachWebPanel();
+        url.getField(0).setValue("tcp://10.0.0.3:80");
+
+        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
+        Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
+    }
 }
