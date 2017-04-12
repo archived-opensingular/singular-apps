@@ -51,11 +51,14 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.server.commons.service.DefaultPetitionSender;
 import org.opensingular.server.commons.service.DefaultPetitionService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
+import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
@@ -286,6 +289,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public SingularServerMetadata singularServerMetadata() {
         return new DefaultSingularServerMetadata();
+    }
+
+    @Bean
+    public DefaultPetitionSender defaultPetitionSender(){
+        return new DefaultPetitionSender();
     }
 
 }

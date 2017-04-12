@@ -44,6 +44,7 @@ import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
@@ -58,6 +59,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService;
@@ -111,7 +113,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             throw new RedirectToUrlException(url);
         }
 
-        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), Optional.ofNullable(formType).map(PetitionUtil::getTypeName), getFlowResolver(context));
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), getTypeName(formType), getFlowResolver(context), getPetitionSender(context));
         this.formKeyModel = $m.ofValue();
         this.parentPetitionformKeyModel = $m.ofValue();
         this.inheritParentFormData = $m.ofValue();
@@ -123,6 +125,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
+    private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
+        if(formType != null){
+            return PetitionUtil.getTypeName(formType);
+        }
+        return null;
+    }
+
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
         //É um método estático para garantir que nada inesperado vai ser serializado junto
         return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
@@ -131,6 +140,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private FlowResolver getFlowResolver(@Nullable ActionContext context) {
         return getSingularRequirement(context).map(SingularRequirement::getFlowResolver).orElse(null);
+    }
+
+    private Class<? extends PetitionSender> getPetitionSender(@Nullable ActionContext context) {
+        return getSingularRequirement(context).map(SingularRequirement::getPetitionSenderBeanClass).orElse(null);
     }
 
     private Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
@@ -562,9 +575,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             //tenha dados que sofreram rollback
             try {
                 //executa o envio, iniciando o fluxo informado
-                petitionService.send(petition, instance, username);
-                //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
-                onAfterSend(ajxrt, sm);
+                Class<? extends PetitionSender> senderClass = config.getPetitionSender();
+                PetitionSender sender = ApplicationContextProvider.get().getBean(senderClass);
+                if(sender != null) {
+                    sender.send(petition, instance, username);
+                    //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
+                    onAfterSend(ajxrt, sm);
+                } else {
+                    throw new SingularServerException("O PetitionSender não foi configurado corretamente");
+                }
             } catch (Exception ex) {
                 //recarrega a petição novamente
                 getPetitionModel().setObject(petitionService.getPetition(petition.getCod()));

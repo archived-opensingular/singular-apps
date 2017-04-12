@@ -98,12 +98,16 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     @Inject
     protected PetitionerDAO petitionerDAO;
+
     @Inject
     protected AuthorizationService authorizationService;
+
     @Inject
     protected ActorDAO actorDAO;
+
     @Inject
     private PetitionContentHistoryDAO petitionContentHistoryDAO;
+
     @Inject
     private FormPetitionService<PE> formPetitionService;
 
@@ -271,25 +275,13 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return formPetitionService.saveFormPetition(petition, instance, mainForm);
     }
 
-    public void send(PI petition, SInstance instance, String codResponsavel) {
-
-        final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
-        final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
-
-        onBeforeStartProcess(petition, instance, codResponsavel);
-        ProcessInstance processInstance = startNewProcess(petition, processDefinition);
-        onAfterStartProcess(petition, instance, codResponsavel, processInstance);
-
-        savePetitionHistory(petition, consolidatedDrafts);
-    }
-
     protected void onAfterStartProcess(PI petition, SInstance instance, String codResponsavel, ProcessInstance processInstance) {
     }
 
     protected void onBeforeStartProcess(PI peticao, SInstance instance, String codResponsavel) {
     }
 
-    private void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
+    public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
         FormEntity formEntity = petition.getEntity().getMainForm();
@@ -525,7 +517,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      */
     @Nonnull
     public Optional<FormPetitionEntity> findLastFormPetitionEntityByType(@Nonnull PetitionInstance petition,
-                                                                                  @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                         @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionEntityByType(petition, typeClass);
     }
 
@@ -534,7 +526,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      */
     @Nonnull
     public Optional<SInstance> findLastFormPetitionInstanceByType(@Nonnull PetitionInstance petition,
-                                                                           @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                  @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormPetitionService().findLastFormPetitionInstanceByType(petition, typeClass);
     }
 
@@ -543,7 +535,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      */
     @Nonnull
     public Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
-                                                                        @Nonnull Class<? extends SType<?>> typeClass) {
+                                                               @Nonnull Class<? extends SType<?>> typeClass) {
         //TODO Verificar se esse método não está redundante com FormPetitionService.findLastFormPetitionEntityByType
         Objects.requireNonNull(petition);
         return petitionContentHistoryDAO.findLastestByPetitionCodAndType(typeClass, petition.getCod())
@@ -556,7 +548,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
      */
     @Nonnull
     protected Optional<SIComposite> findLastestFormInstanceByType(@Nonnull PetitionInstance petition,
-                                                                        @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
+                                                                  @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
         Objects.requireNonNull(petition);
         FormVersionHistoryEntity max = null;
         for (Class<? extends SType<?>> type : typesClass) {
@@ -591,7 +583,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     //TODO vinicius.nunes LENTO
     @Deprecated
-    public boolean containChildren(Long petitionCod){
+    public boolean containChildren(Long petitionCod) {
         return petitionDAO.containChildren(petitionCod);
     }
 

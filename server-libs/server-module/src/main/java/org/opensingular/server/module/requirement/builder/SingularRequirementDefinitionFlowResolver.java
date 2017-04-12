@@ -23,7 +23,8 @@ public class SingularRequirementDefinitionFlowResolver {
                 builderContext.getName(),
                 builderContext.getMainForm(),
                 new BoundedFlowResolver(resolver, builderContext.getFlowClasses()),
-                builderContext.getDefaultExecutionPage()));
+                builderContext.getDefaultExecutionPage(),
+                builderContext.getPetitionSenderBeanClass()));
     }
 
 }
