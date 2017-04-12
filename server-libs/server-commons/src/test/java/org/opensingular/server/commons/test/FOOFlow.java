@@ -11,7 +11,7 @@ import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 
-@DefinitionInfo("fooooooooFlow")
+@DefinitionInfo("fooFlowCommons")
 public class FOOFlow extends ProcessDefinition<ProcessInstance> {
 
 
