@@ -56,6 +56,8 @@ public class HealthSystemDTOTest {
         Assert.assertFalse(columnDTO.isFoundDataBase());
         Assert.assertTrue(columnDTO.isFoundHibernate());
         Assert.assertFalse(columnDTO.isNullable());
+
+        Assert.assertNotNull(new ColumnInfoDTO("columnName2", false));
     }
 
     @Test
