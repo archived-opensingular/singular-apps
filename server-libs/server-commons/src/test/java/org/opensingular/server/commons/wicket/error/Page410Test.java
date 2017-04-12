@@ -1,4 +1,4 @@
-package org.opensingular.server.commons.wicket;
+package org.opensingular.server.commons.wicket.error;
 
 import org.apache.wicket.Page;
 import org.junit.Test;
