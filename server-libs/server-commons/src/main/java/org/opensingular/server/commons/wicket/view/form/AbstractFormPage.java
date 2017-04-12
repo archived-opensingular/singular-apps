@@ -420,9 +420,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @param currentInstance
      */
     protected void appendButtonViewDiff(BSContainer<?> buttonContainer, Long petitionId, IModel<? extends SInstance> currentInstance) {
-        buttonContainer.add(
-                new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
-                        .getDiffButton("diffLink")
+        buttonContainer.appendComponent(id ->
+                        new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
+                                .getDiffButton(id)
         );
     }
 
