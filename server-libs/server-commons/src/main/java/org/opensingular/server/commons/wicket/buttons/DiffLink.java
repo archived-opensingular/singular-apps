@@ -1,7 +1,7 @@
 package org.opensingular.server.commons.wicket.buttons;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -13,9 +13,15 @@ public class DiffLink extends Panel {
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
-        add(new Label("label", labelModel));
-        this.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
-        this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
+        Link<String> link = new Link<String>("diffLink") {
+            @Override
+            public void onClick() {
+            }
+        };
+        this.add(link);
+        link.add(new Label("label", labelModel));
+        link.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
+        link.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
     }
 
 }
