@@ -6,7 +6,10 @@ import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDT
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
 
+import java.io.IOException;
 import java.math.BigDecimal;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.Arrays;
 
 public class HealthSystemDTOTest {
@@ -40,6 +43,7 @@ public class HealthSystemDTOTest {
         columnDTO.setFoundHibernate(true);
         columnDTO.setCharLength(null);
         columnDTO.setDataLength(new BigDecimal(50));
+        columnDTO.setDataPrecision(new BigDecimal(10));
         columnDTO.setNullable(false);
 
         Assert.assertEquals("tableName", columnDTO.getTableName());
@@ -47,6 +51,7 @@ public class HealthSystemDTOTest {
         Assert.assertEquals("columnName", columnDTO.getColumnName());
         Assert.assertEquals("varchar", columnDTO.getDataType());
         Assert.assertEquals(new BigDecimal(50), columnDTO.getDataLength());
+        Assert.assertEquals(new BigDecimal(10), columnDTO.getDataPrecision());
         Assert.assertNull(columnDTO.getCharLength());
         Assert.assertFalse(columnDTO.isFoundDataBase());
         Assert.assertTrue(columnDTO.isFoundHibernate());
