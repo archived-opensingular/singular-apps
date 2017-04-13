@@ -18,9 +18,8 @@ package org.opensingular.server.commons.spring;
 
 import org.hibernate.SessionFactory;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.EntityInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -43,39 +42,37 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
 
 @EnableTransactionManagement(proxyTargetClass = true)
-public class SingularDefaultPersistenceConfiguration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SingularDefaultPersistenceConfiguration.class);
+public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Value("classpath:db/ddl/drops.sql")
-    protected Resource drops;
+    private Resource drops;
 
     @Value("classpath:db/ddl/create-tables-form.sql")
-    protected Resource sqlCreateTablesForm;
+    private Resource sqlCreateTablesForm;
 
     @Value("classpath:db/ddl/create-tables.sql")
-    protected Resource sqlCreateTables;
+    private Resource sqlCreateTables;
 
     @Value("classpath:db/ddl/create-constraints.sql")
-    protected Resource sqlCreateConstraints;
+    private Resource sqlCreateConstraints;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
-    protected Resource sqlCreateConstraintsForm;
+    private Resource sqlCreateConstraintsForm;
 
     @Value("classpath:db/ddl/create-sequences-form.sql")
-    protected Resource sqlCreateSequencesForm;
+    private Resource sqlCreateSequencesForm;
 
     @Value("classpath:db/ddl/create-function.sql")
-    private   Resource sqlCreateFunction;
+    private Resource sqlCreateFunction;
 
     @Value("classpath:db/ddl/create-tables-actor.sql")
-    private   Resource sqlCreateTablesActor;
+    private Resource sqlCreateTablesActor;
 
     @Value("classpath:db/ddl/create-sequences-server.sql")
-    private   Resource sqlCreateSequencesServer;
+    private Resource sqlCreateSequencesServer;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
-    private   Resource insertDadosSingular;
+    private Resource insertDadosSingular;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -127,20 +124,20 @@ public class SingularDefaultPersistenceConfiguration {
     }
 
     protected DataSource jndiDataSourceConfiguration() {
-        LOGGER.info("Usando datasource configurado via JNDI");
+        getLogger().info("Usando datasource configurado via JNDI");
         DataSource   dataSource     = null;
         JndiTemplate jndi           = new JndiTemplate();
         String       dataSourceName = SingularProperties.get().getProperty(JNDI_DATASOURCE, "java:jboss/datasources/singular");
         try {
             dataSource = (DataSource) jndi.lookup(dataSourceName);
         } catch (NamingException e) {
-            LOGGER.error(String.format("Datasource %s not found.", dataSourceName), e);
+            getLogger().error(String.format("Datasource %s not found.", dataSourceName), e);
         }
         return dataSource;
     }
 
     protected DataSource embeddedDataSourceConfiguration() {
-        LOGGER.warn("Usando datasource banco embarcado H2");
+        getLogger().warn("Usando datasource banco embarcado H2");
         final DriverManagerDataSource dataSource = new DriverManagerDataSource();
         dataSource.setUrl(getUrlConnection());
 
@@ -169,7 +166,7 @@ public class SingularDefaultPersistenceConfiguration {
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
         sessionFactoryBean.setPackagesToScan(hibernatePackagesToScan());
         if (SingularProperties.get().containsKey(CUSTOM_SCHEMA_NAME)) {
-            LOGGER.info("Utilizando schema customizado: {}", SingularProperties.get().getProperty(CUSTOM_SCHEMA_NAME));
+            getLogger().info("Utilizando schema customizado: {}", SingularProperties.get().getProperty(CUSTOM_SCHEMA_NAME));
             sessionFactoryBean.setEntityInterceptor(new EntityInterceptor());
         }
         return sessionFactoryBean;
