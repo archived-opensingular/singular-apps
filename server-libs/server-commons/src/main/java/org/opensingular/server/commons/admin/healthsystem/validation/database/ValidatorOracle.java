@@ -1,20 +1,19 @@
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.transaction.Transactional;
-
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.opensingular.lib.support.persistence.SimpleDAO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+
+@Named
 public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 
 	@Transactional
@@ -83,7 +82,7 @@ public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 		tableInfoDTO.setColumnsInfo(colunas);
 	}
 	
-	private List<ColumnInfoDTO> getColumnsInfoFromTable(String table) {
+	protected List<ColumnInfoDTO> getColumnsInfoFromTable(String table) {
 		String query = "SELECT OWNER, COLUMN_NAME, DATA_TYPE, CHAR_LENGTH, DATA_PRECISION, TABLE_NAME, DATA_LENGTH, NULLABLE "
 				+ " FROM SYS.ALL_TAB_COLS "
 				+ " WHERE TABLE_NAME = :nome_tabela";
@@ -129,7 +128,7 @@ public class ValidatorOracle extends SimpleDAO implements IValidatorDatabase{
 	 * @param tabela
 	 * @return lista de String com o nome dos privilegios obtidos.
 	 */
-	private List<String> getPermissionEspecificTable(String tabela) {
+	protected List<String> getPermissionEspecificTable(String tabela) {
 		String query = " SELECT PRIVILEGE"
 				+ " FROM SYS.ALL_TAB_PRIVS_RECD"
 				+ " WHERE TABLE_NAME = :nome_tabela";

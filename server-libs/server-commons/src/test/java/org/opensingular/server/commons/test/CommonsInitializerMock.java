@@ -13,7 +13,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 public class CommonsInitializerMock implements PSingularInitializer {
 
-    public static final String   TESTE                      = "Teste";
+    public static final String   TESTE                      = "GRUPO_TESTE";
     public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.server.commons.test"};
     public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
