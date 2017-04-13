@@ -117,6 +117,10 @@ public class PetitionInstance implements Serializable {
         return getProcessInstance().getCurrentTaskOrException();
     }
 
+    public String getCurrentTaskNameOrException() {
+        return getProcessInstance().getCurrentTaskOrException().getName();
+    }
+
     public Optional<PetitionInstance> getParentPetition() {
         return Optional.ofNullable(petitionEntity.getParentPetition()).map(
                 parent -> ((PetitionService<PetitionEntity, ?>) getPetitionService()).newPetitionInstance(parent));
