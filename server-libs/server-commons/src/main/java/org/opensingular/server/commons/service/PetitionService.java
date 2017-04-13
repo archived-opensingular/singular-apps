@@ -246,10 +246,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.countQuickSearch(filter, siglasProcesso, formNames);
     }
 
-    public List<PetitionDTO> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return petitionDAO.quickSearch(filter, siglasProcesso, formNames);
-    }
-
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }

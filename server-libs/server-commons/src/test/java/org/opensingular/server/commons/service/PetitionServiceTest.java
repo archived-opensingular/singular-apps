@@ -1,5 +1,8 @@
 package org.opensingular.server.commons.service;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -18,6 +21,7 @@ import org.opensingular.form.helpers.AssertionsSInstance;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
@@ -28,6 +32,9 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Inject
     public PetitionService<PetitionEntity, PetitionInstance> petitionService;
+
+    @Inject
+    public PetitionSender petitionSender;
 
     @Inject
     public SessionFactory sessionFactory;
@@ -82,7 +89,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         petitionService.saveOrUpdate(petitionInstance, instance, true);
         petitionInstance.setProcessDefinition(FOOFlow.class);
 
-        petitionService.send(petitionInstance, instance, "vinicius.nunes");
+        petitionSender.send(petitionInstance, instance, "vinicius.nunes");
         petitionService.executeTransition("No more bar", petitionInstance, null, null);
     }
 
@@ -95,5 +102,21 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
         Optional<PetitionInstance> petition = petitionService.findPetition(petitionInstance.getCod());
+    }
+
+    @Test
+    public void quickSearchTests() {
+        QuickFilter f1 = new QuickFilter();
+        List<Map<String, Serializable>> maps1 = petitionService.quickSearchMap(f1);
+        assertTrue(maps1.isEmpty());
+
+        QuickFilter f2 = new QuickFilter();
+        f2.withRascunho(true).withSortProperty("description");
+        List<Map<String, Serializable>> maps2 = petitionService.quickSearchMap(f2);
+        assertTrue(maps2.isEmpty());
+
+        QuickFilter f3 = new QuickFilter();
+        Long        count = petitionService.countQuickSearch(f3);
+        assertTrue(count == 0);
     }
 }
