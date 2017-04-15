@@ -25,7 +25,8 @@ public enum FormAction {
     FORM_FILL(2, ViewMode.EDIT, AnnotationMode.NONE),
     FORM_VIEW(3, ViewMode.READ_ONLY, AnnotationMode.NONE),
     FORM_FILL_WITH_ANALYSIS(4, ViewMode.EDIT, AnnotationMode.READ_ONLY),
-    FORM_ANALYSIS_VIEW(5, ViewMode.READ_ONLY, AnnotationMode.READ_ONLY);
+    FORM_ANALYSIS_VIEW(5, ViewMode.READ_ONLY, AnnotationMode.READ_ONLY),
+    FORM_FILL_WITH_ANALYSIS_FILL(4, ViewMode.EDIT, AnnotationMode.EDIT);
 
     private Integer        id;
     private ViewMode       viewMode;

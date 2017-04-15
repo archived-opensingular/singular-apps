@@ -25,7 +25,8 @@ public class SingularRequirementDefinitionFlows {
                 builderContext.getName(),
                 builderContext.getMainForm(),
                 new BoundedFlowResolver((s, c) -> flowClasses.stream().findFirst(), flowClasses),
-                builderContext.getDefaultExecutionPage());
+                builderContext.getDefaultExecutionPage(),
+                builderContext.getPetitionSenderBeanClass());
     }
 
 }

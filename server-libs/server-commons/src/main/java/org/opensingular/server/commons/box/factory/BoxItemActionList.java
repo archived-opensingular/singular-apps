@@ -93,7 +93,6 @@ public class BoxItemActionList {
                 .param(DispatcherPageParameters.PARENT_PETITION_ID, line.get("codPeticao"))
                 .param(DispatcherPageParameters.FORM_PAGE_CLASS, executioPage.getName())
                 .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
-                .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
                 .param(DispatcherPageParameters.INHERIT_PARENT_FORM_DATA, inheritFormData)
                 .build();
         boxItemAction.setEndpoint(url);
