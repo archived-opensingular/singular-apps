@@ -76,7 +76,7 @@ public class BoxItemActionList {
         return boxItemActions;
     }
 
-    @Deprecated
+    @Deprecated //TODO vinicius.nunes revisar formularios filhos de outr peticao
     public BoxItemActionList addInheritPetitionPopupBox(String actioName,
                                                         ItemBoxData line,
                                                         Class<? extends SType<?>> type,

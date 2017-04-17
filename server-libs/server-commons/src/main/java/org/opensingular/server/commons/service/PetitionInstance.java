@@ -170,4 +170,8 @@ public class PetitionInstance implements Serializable {
         return getMainFormCurrentFormVersion().getCod();
     }
 
+    public String getMainFormTypeName(){
+        return getEntity().getMainForm().getFormType().getAbbreviation();
+    }
+
 }
