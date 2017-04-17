@@ -38,7 +38,7 @@ public class SDbHealthTest extends SingularCommonsBaseTest {
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonDB").isNotNull().getTarget(), "click");
 
         SInstance panelDB = tester.getAssertionsInstance().getTarget();
-        Assert.assertEquals(1, ((SIList)( ((SIComposite) panelDB).getAllFields().get(0))).get(0).getValidationErrors().size());
+        Assert.assertEquals(0, ((SIList)( ((SIComposite) panelDB).getAllFields().get(0))).get(0).getValidationErrors().size());
     }
 
 }
