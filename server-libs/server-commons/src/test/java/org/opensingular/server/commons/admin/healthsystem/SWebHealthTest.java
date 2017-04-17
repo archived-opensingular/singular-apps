@@ -23,7 +23,7 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
 
     private SingularWicketTester tester;
 
-    private SIComposite reachWebPanel(){
+    private SIComposite reachWebPanelAndGetNewCompositeInstance(){
         tester = new SingularWicketTester(singularApplication);
         HealthSystemPage healthSystemPage = new HealthSystemPage();
         tester.startPage(healthSystemPage);
@@ -39,18 +39,8 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @Transactional
     @Test
     public void httpCheckerTest() throws Exception {
-        SIComposite url = reachWebPanel();
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
         url.getField(0).setValue("http://www.opensingular.org/");
-
-        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
-    }
-
-    @WithUserDetails("vinicius.nunes")
-    @Transactional
-    @Test
-    public void ipCheckerExceptionTest() throws Exception {
-        SIComposite url = reachWebPanel();
-        url.getField(0).setValue("ip://www.opensingular.org/");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
         Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
@@ -59,8 +49,41 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
+    public void httpsCheckerTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("https://alocpro.mirante.net.br");
+
+        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
+        Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void ipCheckerExceptionTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("ip://www.opensingular.org:80");
+
+        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
+        Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void ipCheckerTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("ip://10.0.0.3:80");
+
+        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
+        Assert.assertEquals(0, url.getField(0).getValidationErrors().size());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
     public void ldapCheckerExceptionTest() throws Exception {
-        SIComposite url = reachWebPanel();
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
         url.getField(0).setValue("ldap://10.0.0.3:363");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
@@ -69,9 +92,9 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void tcpCheckerExceptionTest() throws Exception {
-        SIComposite url = reachWebPanel();
-        url.getField(0).setValue("tcp://10.0.0.3:80");
+    public void ldapsCheckerExceptionTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("ldaps://10.0.0.3:363");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
     }
@@ -79,9 +102,20 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void emptyValueTest() throws Exception {
-        SIComposite url = reachWebPanel();
-        url.getField(0).setValue("");
+    public void tcpCheckerExceptionTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("tcp://10.0.0.3:8080");
+
+        tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
+        Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void invalidValueTest() throws Exception {
+        SIComposite url = reachWebPanelAndGetNewCompositeInstance();
+        url.getField(0).setValue("www");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
         Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
