@@ -1,0 +1,78 @@
+package org.opensingular.server.module;
+
+import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.ItemBoxDataList;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.RequirementData;
+import org.opensingular.server.module.workspace.ItemBoxFactory;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+public class BoxController implements BoxInfo {
+
+    private String                      id              = UUID.randomUUID().toString();
+    private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
+    private ItemBoxFactory itemBoxFactory;
+
+    public BoxController(ItemBoxFactory itemBoxFactory, List<SingularRequirementRef> requirementRefs) {
+        for (SingularRequirementRef ref : requirementRefs) {
+            this.requirementRefs.add(ref);
+        }
+        this.itemBoxFactory = itemBoxFactory;
+    }
+
+    public BoxController(ItemBoxFactory itemBox) {
+        this.itemBoxFactory = itemBox;
+    }
+
+    @Override
+    public String getBoxId() {
+        return id;
+    }
+
+    @Override
+    public Set<SingularRequirementRef> getRequirementRefs() {
+        return new LinkedHashSet<>(requirementRefs);
+    }
+
+    void addRequirementRefs(SingularRequirementRef requirementRefs) {
+        this.requirementRefs.add(requirementRefs);
+    }
+
+    ItemBoxFactory getItemBoxFactory() {
+        return itemBoxFactory;
+    }
+
+    public Long countItens(QuickFilter filter) {
+        return itemBoxFactory.getDataProvider().count(filter, this);
+    }
+
+    public ItemBoxDataList searchItens(QuickFilter filter) {
+        ItemBoxDataProvider             provider       = itemBoxFactory.getDataProvider();
+        List<Map<String, Serializable>> itens          = provider.search(filter, this);
+        ItemBoxDataList                 result         = new ItemBoxDataList();
+        ActionProvider                  actionProvider = new AuthorizationAwareActionProviderDecorator(provider.getActionProvider());
+        for (Map<String, Serializable> item : itens) {
+            ItemBoxData line = new ItemBoxData();
+            line.setRawMap(item);
+            line.setBoxItemActions(actionProvider.getLineActions(this, line, filter).getBoxItemActions());
+            result.getItemBoxDataList().add(line);
+        }
+        return result;
+    }
+
+
+    List<RequirementData> getRequirementsData() {
+        List<RequirementData> result = new ArrayList<>();
+        for (SingularRequirementRef ref : requirementRefs) {
+            result.add(new RequirementData(ref.getId(), ref.getRequirementDescription()));
+        }
+        return result;
+    }
+}

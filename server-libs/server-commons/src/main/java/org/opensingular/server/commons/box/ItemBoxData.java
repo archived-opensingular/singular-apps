@@ -28,22 +28,22 @@ public class ItemBoxData implements Serializable {
         rawMap.replace(key, value);
     }
 
+    public List<BoxItemAction> getBoxItemActions() {
+        return boxItemActions;
+    }
+
     public ItemBoxData setBoxItemActions(List<BoxItemAction> boxItemActions) {
         this.boxItemActions = boxItemActions;
         return this;
     }
 
-    public List<BoxItemAction> getBoxItemActions() {
-        return boxItemActions;
+    public Map<String, Serializable> getRawMap() {
+        return rawMap;
     }
 
     public ItemBoxData setRawMap(Map<String, Serializable> rawMap) {
         this.rawMap = rawMap;
         return this;
-    }
-
-    public Map<String, Serializable> getRawMap() {
-        return rawMap;
     }
 
     public Serializable getCodUsuarioAlocado() {

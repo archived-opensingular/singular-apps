@@ -15,13 +15,13 @@ import java.util.List;
  */
 public class WorkspaceConfiguration {
 
-    private List<BoxCofiguration> itemBoxes = new ArrayList<>();
+    private List<BoxController> itemBoxes = new ArrayList<>();
     private RequirementConfiguration requirementConfiguration;
 
     WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
         this.requirementConfiguration = requirementConfiguration;
     }
-    
+
     /**
      * Register a single {@link ItemBoxFactory}
      *
@@ -29,11 +29,11 @@ public class WorkspaceConfiguration {
      * @return
      */
     public WorkspaceConfiguration addBox(ItemBoxFactory itemBox) {
-        itemBoxes.add(new BoxCofiguration(itemBox));
+        itemBoxes.add(new BoxController(itemBox));
         return this;
     }
 
-    List<BoxCofiguration> getItemBoxes() {
+    List<BoxController> getItemBoxes() {
         return itemBoxes;
     }
 
@@ -56,7 +56,7 @@ public class WorkspaceConfiguration {
     }
 
 
-    private BoxCofiguration getCurrent() {
+    private BoxController getCurrent() {
         return itemBoxes.get(itemBoxes.size() - 1);
     }
 

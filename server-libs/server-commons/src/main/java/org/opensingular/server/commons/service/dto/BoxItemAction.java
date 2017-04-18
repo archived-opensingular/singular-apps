@@ -19,22 +19,16 @@ package org.opensingular.server.commons.service.dto;
 import org.opensingular.server.commons.form.FormAction;
 
 import java.io.Serializable;
-import java.util.Map;
 
 public class BoxItemAction implements Serializable {
 
-    private String      name;
-    private String      endpoint;
+    private String     name;
+    private String     endpoint;
     private FormAction formAction;
+    private String     requirementId;
     private boolean useExecute = false;
 
     public BoxItemAction() {
-    }
-
-    public BoxItemAction(Map<String, Object> map) {
-        this.name = (String) map.get("name");
-        this.endpoint = (String) map.get("endpoint");
-        this.useExecute = (Boolean) map.get("useExecute");
     }
 
     public String getName() {
@@ -69,5 +63,13 @@ public class BoxItemAction implements Serializable {
 
     public void setFormAction(FormAction formAction) {
         this.formAction = formAction;
+    }
+
+    public String getRequirementId() {
+        return requirementId;
+    }
+
+    public void setRequirementId(String requirementId) {
+        this.requirementId = requirementId;
     }
 }

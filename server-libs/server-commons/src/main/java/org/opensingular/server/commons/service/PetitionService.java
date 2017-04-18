@@ -254,14 +254,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    public BoxItemActionList getLineActions(ItemBoxData line) {
-        return new BoxItemActionList()
-                .addPopupBox(line, FormAction.FORM_FILL, ACTION_EDIT.getName())
-                .addPopupBox(line, FormAction.FORM_VIEW, ACTION_VIEW.getName())
-                .addDeleteAction(line)
-                .addExecuteInstante(line.getCodPeticao(), ACTION_ASSIGN.getName());
-    }
-
     @Nonnull
     public FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm) {
         Objects.requireNonNull(petition);
@@ -365,19 +357,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    public BoxItemActionList getTaskActions(ItemBoxData task, QuickFilter filter) {
-        BoxItemActionList boxItemActionList = new BoxItemActionList();
-        if (task.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName());
-        }
-        if (TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName());
-        }
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.getCodUsuarioAlocado())) {
-            boxItemActionList.addPopupBox(task, FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
-        }
-        return boxItemActionList.addPopupBox(task, FormAction.FORM_VIEW, ACTION_VIEW.getName());
-    }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());

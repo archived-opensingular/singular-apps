@@ -27,10 +27,6 @@ public class BoxItemActionList {
         this.boxItemActions = new ArrayList<>();
     }
 
-    public BoxItemActionList(BoxItemActionList boxItemActionList) {
-        this.boxItemActions = new ArrayList<>(boxItemActionList.getBoxItemActions());
-    }
-
     public BoxItemActionList addPopupBox(ItemBoxData boxData,
                                          FormAction formAction,
                                          String action) {
@@ -74,6 +70,10 @@ public class BoxItemActionList {
 
     public List<BoxItemAction> getBoxItemActions() {
         return boxItemActions;
+    }
+
+    void setBoxItemActions(List<BoxItemAction> boxItemActions) {
+        this.boxItemActions = boxItemActions;
     }
 
     @Deprecated

@@ -11,6 +11,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
@@ -19,6 +20,7 @@ import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaDataValue;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
@@ -26,6 +28,7 @@ import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
+import org.opensingular.server.module.BoxController;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.springframework.stereotype.Service;
 
@@ -181,4 +184,19 @@ public class RestBackstageService implements Loggable {
         }
     }
 
+    public Long count(String boxId, QuickFilter filter) {
+        Optional<BoxController> boxController = singularModuleConfiguration.getBoxControllerByBoxId(boxId);
+        if (boxController.isPresent()) {
+            return boxController.get().countItens(filter);
+        }
+        return 0l;
+    }
+
+    public ItemBoxDataList search(String boxId, QuickFilter filter) {
+        Optional<BoxController> boxController = singularModuleConfiguration.getBoxControllerByBoxId(boxId);
+        if (boxController.isPresent()) {
+            return boxController.get().searchItens(filter);
+        }
+        return new ItemBoxDataList();
+    }
 }

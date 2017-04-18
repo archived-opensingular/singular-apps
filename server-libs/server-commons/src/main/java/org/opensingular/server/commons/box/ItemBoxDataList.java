@@ -1,11 +1,13 @@
 package org.opensingular.server.commons.box;
 
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class ItemBoxDataList {
+public class ItemBoxDataList implements Serializable {
 
-    private List<ItemBoxData> itemBoxDataList;
+    private List<ItemBoxData> itemBoxDataList = new ArrayList<>(0);
 
     public List<ItemBoxData> getItemBoxDataList() {
         return itemBoxDataList;

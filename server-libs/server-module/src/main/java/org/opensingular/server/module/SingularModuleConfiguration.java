@@ -4,9 +4,9 @@ package org.opensingular.server.module;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.requirement.SingularRequirement;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
+import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
@@ -24,11 +24,11 @@ import java.util.stream.Collectors;
 public class SingularModuleConfiguration {
 
     private List<SingularRequirementRef> requirements;
-    private List<BoxCofiguration> itemBoxes;
+    private List<BoxController>          itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {
-        SingularModule module = resolveModule();
+        SingularModule           module                   = resolveModule();
         RequirementConfiguration requirementConfiguration = resolveRequirements(module);
         resolveWorkspace(module, requirementConfiguration);
     }
@@ -74,16 +74,17 @@ public class SingularModuleConfiguration {
                 .map(stringItemBoxFactoryEntry -> {
                     ItemBoxFactory factory = stringItemBoxFactoryEntry.getItemBoxFactory();
                     ItemBox itemBox = factory.build(context);
-                    itemBox.setId(stringItemBoxFactoryEntry.getId());
+                    itemBox.setId(stringItemBoxFactoryEntry.getBoxId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());
                     return new BoxDefinitionData(itemBox, stringItemBoxFactoryEntry.getRequirementsData());
                 })
                 .collect(Collectors.toList());
     }
 
-    public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
-        return itemBoxes.stream().filter(boxCofiguration -> boxCofiguration.getId().equals(id)).map(BoxCofiguration::getItemBoxFactory).findFirst();
+    public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
+        return itemBoxes.stream().filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }
+
 
     @Deprecated
     public List<SingularRequirementRef> getRequirements() {

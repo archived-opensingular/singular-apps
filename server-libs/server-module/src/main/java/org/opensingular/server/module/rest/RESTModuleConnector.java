@@ -6,7 +6,6 @@ import org.opensingular.server.commons.box.ItemBoxDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.module.box.service.ItemBoxDataService;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,19 +29,16 @@ public class RESTModuleConnector implements ModuleConnector {
     @Inject
     private RestBackstageService restBackstageService;
 
-    @Inject
-    private ItemBoxDataService itemBoxDataService;
-
     @Override
     @RequestMapping(value = "/count/{boxId}", method = RequestMethod.POST)
     public Long count(@PathVariable String boxId, @RequestBody QuickFilter filter) {
-        return itemBoxDataService.count(boxId, filter);
+        return restBackstageService.count(boxId, filter);
     }
 
     @Override
     @RequestMapping(value = "/search/{boxId}", method = RequestMethod.POST)
     public ItemBoxDataList search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
-        return itemBoxDataService.search(boxId, filter);
+        return restBackstageService.search(boxId, filter);
     }
 
     @Override

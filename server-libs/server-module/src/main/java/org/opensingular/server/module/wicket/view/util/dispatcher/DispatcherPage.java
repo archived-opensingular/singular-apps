@@ -52,6 +52,7 @@ import org.opensingular.server.commons.wicket.view.SingularHeaderResponseDecorat
 import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
+import org.opensingular.server.commons.wicket.view.form.FormPage;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.server.commons.wicket.view.template.Template;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -310,7 +311,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                 return singularRequirement.getDefaultExecutionPage();
             }
         }
-        return null;
+        return FormPage.class;
     }
 
 }
