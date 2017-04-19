@@ -17,7 +17,6 @@
 package org.opensingular.server.commons.service.dto;
 
 import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.server.commons.flow.controllers.DefaultAssignController;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;
 

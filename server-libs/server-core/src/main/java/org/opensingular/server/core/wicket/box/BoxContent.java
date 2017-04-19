@@ -41,6 +41,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
+import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.box.BoxItemDataList;
@@ -82,13 +83,12 @@ import static org.opensingular.server.commons.wicket.view.util.DispatcherPagePar
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
-    protected IModel<BoxItemDataMap> boxItemDataMapModel = $m.ofValue();
     private Pair<String, SortOrder>   sortProperty;
-    private IModel<BoxDefinitionData> boxDefinitionDataModel;
+    private IModel<BoxDefinitionData> definitionModel;
 
     public BoxContent(String id, String processGroupCod, String menu, BoxDefinitionData itemBox) {
         super(id, processGroupCod, menu);
-        this.boxDefinitionDataModel = new Model<>(itemBox);
+        this.definitionModel = new Model<>(itemBox);
     }
 
     @Override
@@ -105,7 +105,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     public Component buildNewPetitionButton(String id) {
         if (isShowNew() && getMenu() != null) {
-            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(boxDefinitionDataModel, "requirements"));
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(definitionModel, "requirements"));
         } else {
             return super.buildNewPetitionButton(id);
         }
@@ -120,34 +120,41 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected void appendActionColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
-        BSActionColumn<BoxItemDataMap, String> actionColumn = new BSActionColumn<>(getMessage("label.table.column.actions"));
+        BSActionColumn<BoxItemDataMap, String> actionColumn = new BSActionColumn<BoxItemDataMap, String>(getMessage("label.table.column.actions")) {
+            @Override
+            protected void onPopulateActions(IModel<BoxItemDataMap> rowModel, BSActionPanel<BoxItemDataMap> actionPanel) {
 
-        Set<Map.Entry<String, BoxItemAction>> actions = Optional
-                .ofNullable(boxItemDataMapModel)
-                .map(IModel::getObject)
-                .map(BoxItemDataMap::getActionsMap)
-                .map(Map::entrySet)
-                .orElse(new HashSet<>(0));
+                Set<Map.Entry<String, BoxItemAction>> actions = Optional
+                        .ofNullable(rowModel)
+                        .map(IModel::getObject)
+                        .map(BoxItemDataMap::getActionsMap)
+                        .map(Map::entrySet)
+                        .orElse(new HashSet<>(0));
 
-        for (Map.Entry<String, BoxItemAction> entry : actions) {
-            BoxItemAction itemAction = entry.getValue();
+                for (Map.Entry<String, BoxItemAction> entry : actions) {
+                    BoxItemAction itemAction = entry.getValue();
 
-            if (itemAction.getType() == ItemActionType.POPUP) {
-                actionColumn.appendStaticAction(
-                        $m.ofValue(itemAction.getLabel()),
-                        itemAction.getIcon(),
-                        linkFunction(itemAction, getBaseUrl(), getLinkParams()),
-                        visibleFunction(itemAction),
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
-            } else if (itemAction.getType() == ItemActionType.ENDPOINT) {
-                actionColumn.appendAction(
-                        $m.ofValue(itemAction.getLabel()),
-                        itemAction.getIcon(),
-                        dynamicLinkFunction(itemAction, getProcessGroup().getConnectionURL(), getLinkParams()),
-                        visibleFunction(itemAction),
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+                    if (itemAction.getType() == ItemActionType.POPUP) {
+                        appendStaticAction(
+                                $m.ofValue(itemAction.getLabel()),
+                                itemAction.getIcon(),
+                                linkFunction(itemAction, getBaseUrl(), getLinkParams()),
+                                visibleFunction(itemAction),
+                                c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+                    } else if (itemAction.getType() == ItemActionType.ENDPOINT) {
+                        appendAction(
+                                $m.ofValue(itemAction.getLabel()),
+                                itemAction.getIcon(),
+                                dynamicLinkFunction(itemAction, getProcessGroup().getConnectionURL(), getLinkParams()),
+                                visibleFunction(itemAction),
+                                c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+                    }
+                }
+
+                super.onPopulateActions(rowModel, actionPanel);
             }
-        }
+        };
+
 
         actionColumn
                 .appendStaticAction(
@@ -216,7 +223,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IBSAction<BoxItemDataMap> dynamicLinkFunction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
-                boxItemDataMapModel = model;
+                getDataModel().setObject(model.getObject());
                 final BSModalBorder confirmationModal = construirModalConfirmationBorder(itemAction, baseUrl, additionalParams);
                 confirmationForm.addOrReplace(confirmationModal);
                 confirmationModal.show(target);
@@ -302,7 +309,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
 
         Model<Actor>        actorModel     = new Model<>();
-        IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(boxItemDataMapModel, confirmation));
+        IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(getDataModel(), confirmation));
         DropDownChoice      dropDownChoice = criarDropDown(actorsModel, actorModel);
         dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
         confirmationModal.addOrReplace(dropDownChoice);
@@ -310,7 +317,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, $m.ofValue(confirmation.getCancelButtonLabel()), new AjaxButton("cancel-delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                boxItemDataMapModel = null;
+                getDataModel().setObject(null);
                 confirmationModal.hide(target);
             }
         }.setDefaultFormProcessing(false));
@@ -321,7 +328,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    relocate(itemAction, baseUrl, additionalParams, boxItemModelObject(boxItemDataMapModel), target, actorModel.getObject());
+                    relocate(itemAction, baseUrl, additionalParams, boxItemModelObject(getDataModel()), target, actorModel.getObject());
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -331,7 +338,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(boxItemDataMapModel), target);
+                    executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(getDataModel()), target);
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -537,6 +544,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private ItemBox getItemBoxModelObject() {
-        return boxDefinitionDataModel.getObject().getItemBox();
+        return definitionModel.getObject().getItemBox();
     }
+
 }

@@ -10,7 +10,7 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 public class DefaultActionProvider implements ActionProvider, Loggable {
 
 
-    public BoxItemActionList getDefaultActions(BoxItemData line, QuickFilter filter) {
+    protected BoxItemActionList getDefaultActions(BoxItemData line, QuickFilter filter) {
 
         BoxItemActionList boxItemActionList = new BoxItemActionList();
 
@@ -20,7 +20,8 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
         //petition
         boxItemActionList
                 .addDeleteAction(line)
-                .addEditAction(line);
+                .addEditAction(line)
+        ;
         //.addAssingAction(line);
 
         // tasks

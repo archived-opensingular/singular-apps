@@ -107,19 +107,22 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
             onFiltroRapido(filtroRapido.getModel(), target);
         }
     };
-    private IModel<T> currentModel;
 
+    private IModel<T>     dataModel         = new Model<>();
     /**
      * Modal de confirmação de ação
      */
     private BSModalBorder confirmationModal = new BSModalBorder("confirmationModal");
-
     private ProcessGroupEntity processGroup;
 
     public AbstractBoxContent(String id, String processGroupCod, String menu) {
         super(id);
         this.processGroupCod = processGroupCod;
         this.menu = menu;
+    }
+
+    public IModel<T> getDataModel() {
+        return dataModel;
     }
 
     protected String getBaseUrl() {
@@ -196,15 +199,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxButton("cancel-delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                currentModel = null;
+                dataModel = null;
                 confirmationModal.hide(target);
             }
         });
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.delete", new AjaxButton("delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                action.accept(currentModel.getObject());
-                currentModel = null;
+                action.accept(dataModel.getObject());
+                dataModel = null;
                 target.add(tabela);
                 confirmationModal.hide(target);
             }
@@ -214,7 +217,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     }
 
     private void deleteSelected(AjaxRequestTarget target, IModel<T> model) {
-        currentModel = model;
+        dataModel = model;
         confirmationModal = construirModalDeleteBorder(this::onDelete);
         confirmationForm.addOrReplace(confirmationModal);
         confirmationModal.show(target);
