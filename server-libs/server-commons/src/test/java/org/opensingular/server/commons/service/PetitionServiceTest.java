@@ -1,16 +1,8 @@
 package org.opensingular.server.commons.service;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.junit.Ignore;
+import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -19,13 +11,24 @@ import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.helpers.AssertionsSInstance;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
+import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.STypeFOO;
+import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
-import static org.junit.Assert.*;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @Transactional
 public class PetitionServiceTest extends SingularCommonsBaseTest {
@@ -102,6 +105,61 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
         Optional<PetitionInstance> petition = petitionService.findPetition(petitionInstance.getCod());
+    }
+
+    @Test
+    public void testGetPetition() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+
+        PetitionInstance petition = petitionService.getPetition(petitionInstance.getCod());
+        Assert.assertEquals(petitionInstance.getEntity(), petition.getEntity());
+    }
+
+    @Test
+    public void testDeletePetition() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+
+        petitionService.deletePetition(petitionInstance.getCod());
+        Assert.assertFalse(petitionService.findPetition(petitionInstance.getCod()).isPresent());
+    }
+
+    @Test
+    public void testDeletePetitionWithPetitionDTO() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+
+        PetitionDTO dto = new PetitionDTO();
+        dto.setCodPeticao(petitionInstance.getCod());
+
+        petitionService.deletePetition(dto);
+        Assert.assertFalse(petitionService.findPetition(petitionInstance.getCod()).isPresent());
+    }
+
+    @Test
+    public void testListCurrentTaskTransitionsWithEmptyTransitions() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+
+        Assert.assertEquals(0, petitionService.listCurrentTaskTransitions(petitionInstance.getCod()).size());
+    }
+
+    @Test(expected = SingularException.class)
+    public void testGetPetitionException() {
+        petitionService.getPetition((long)0);
     }
 
     @Test
