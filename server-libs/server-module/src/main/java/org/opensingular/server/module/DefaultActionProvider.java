@@ -19,8 +19,8 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
                 .addViewAction(line);
         //petition
         boxItemActionList
-                .addDeleteAction(line)
                 .addEditAction(line)
+                .addDeleteAction(line)
         ;
         //.addAssingAction(line);
 

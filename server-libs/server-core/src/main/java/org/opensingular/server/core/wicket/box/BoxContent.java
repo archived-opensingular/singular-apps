@@ -123,7 +123,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         BSActionColumn<BoxItemDataMap, String> actionColumn = new BSActionColumn<BoxItemDataMap, String>(getMessage("label.table.column.actions")) {
             @Override
             protected void onPopulateActions(IModel<BoxItemDataMap> rowModel, BSActionPanel<BoxItemDataMap> actionPanel) {
-
+                resetActions();
                 Set<Map.Entry<String, BoxItemAction>> actions = Optional
                         .ofNullable(rowModel)
                         .map(IModel::getObject)
