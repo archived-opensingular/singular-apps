@@ -43,14 +43,14 @@ public class DefaultBoxItemActionFactory {
         return DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
-                .petitionId(line.getCodPeticao())
+                .petitionId(line.getPetitionId())
                 .param(FORM_NAME, line.getType())
                 .build();
 
     }
 
     protected static String getEndpointExecute(BoxItemData line) {
-        return PATH_BOX_ACTION + EXECUTE + "?id=" + line.getCodPeticao();
+        return PATH_BOX_ACTION + EXECUTE + "?id=" + line.getPetitionId();
 
     }
 
@@ -62,7 +62,7 @@ public class DefaultBoxItemActionFactory {
 
     public static BoxItemAction getDELETE(BoxItemData line) {
         BoxItemAction action      = new BoxItemAction("delete", "Excluir", Icone.MINUS, ItemActionType.ENDPOINT, CONFIRMATION_DELETE);
-        String        endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.getCodPeticao();
+        String        endpointUrl = PATH_BOX_ACTION + DELETE + "?id=" + line.getPetitionId();
         action.setEndpoint(endpointUrl);
         return action;
     }

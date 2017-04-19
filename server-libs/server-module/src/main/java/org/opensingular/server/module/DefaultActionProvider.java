@@ -24,13 +24,13 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
         //.addAssingAction(line);
 
         // tasks
-        if (line.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(line.getTaskType())) {
+        if (line.getAllocatedSUserId() == null && TaskType.PEOPLE.name().equals(line.getTaskType())) {
             boxItemActionList.addAssignAction(line);
         }
         if (TaskType.PEOPLE.name().equals(line.getTaskType())) {
             boxItemActionList.addRelocateAction(line);
         }
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getCodUsuarioAlocado())) {
+        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
             boxItemActionList.addAnalyseAction(line);
         }
         return boxItemActionList;

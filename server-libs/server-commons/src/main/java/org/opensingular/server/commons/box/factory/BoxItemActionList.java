@@ -5,63 +5,46 @@ import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.flow.actions.DefaultBoxItemActionFactory;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
 
-public class BoxItemActionList {
-
-    private List<BoxItemAction> boxItemActions;
-
-    public BoxItemActionList() {
-        this.boxItemActions = new ArrayList<>();
-    }
+public class BoxItemActionList extends LinkedHashSet<BoxItemAction> {
 
 
     public BoxItemActionList addViewAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getVIEW(line));
+        addAction(DefaultBoxItemActionFactory.getVIEW(line));
         return this;
     }
 
     public BoxItemActionList addDeleteAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getDELETE(line));
+        addAction(DefaultBoxItemActionFactory.getDELETE(line));
         return this;
     }
 
     public BoxItemActionList addAssignAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getASSIGN(line));
+        addAction(DefaultBoxItemActionFactory.getASSIGN(line));
         return this;
     }
 
 
     public BoxItemActionList addRelocateAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getRELOCATE(line));
+        addAction(DefaultBoxItemActionFactory.getRELOCATE(line));
         return this;
     }
 
     public BoxItemActionList addAnalyseAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getANALYSE(line));
+        addAction(DefaultBoxItemActionFactory.getANALYSE(line));
         return this;
     }
 
     public BoxItemActionList addEditAction(BoxItemData line) {
-        add(DefaultBoxItemActionFactory.getEDIT(line));
+        addAction(DefaultBoxItemActionFactory.getEDIT(line));
         return this;
     }
 
-    public BoxItemActionList add(BoxItemAction boxItemAction) {
-        boxItemActions.add(boxItemAction);
+    public BoxItemActionList addAction(BoxItemAction boxItemAction) {
+        add(boxItemAction);
         return this;
     }
-
-    public List<BoxItemAction> getBoxItemActions() {
-        return boxItemActions;
-    }
-
-    void setBoxItemActions(List<BoxItemAction> boxItemActions) {
-        this.boxItemActions = boxItemActions;
-    }
-
-
 
 
 }

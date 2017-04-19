@@ -5,9 +5,7 @@ import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 public class BoxItemData implements Serializable {
@@ -15,10 +13,10 @@ public class BoxItemData implements Serializable {
     @JsonDeserialize(contentAs = String.class)
     private Map<String, Serializable> rawMap = new HashMap<>();
 
-    private List<BoxItemAction> boxItemActions = new ArrayList<>();
+    private BoxItemActionList boxItemActions = new BoxItemActionList();
 
     public void addAction(BoxItemAction boxItemAction) {
-        boxItemActions.add(boxItemAction);
+        boxItemActions.addAction(boxItemAction);
     }
 
     public Serializable get(String key) {
@@ -29,17 +27,12 @@ public class BoxItemData implements Serializable {
         rawMap.replace(key, value);
     }
 
-    public List<BoxItemAction> getBoxItemActions() {
+    public BoxItemActionList getBoxItemActions() {
         return boxItemActions;
     }
 
-    public void setBoxItemActions(BoxItemActionList lineActions) {
-        this.getBoxItemActions().addAll(lineActions.getBoxItemActions());
-    }
-
-    public BoxItemData setBoxItemActions(List<BoxItemAction> boxItemActions) {
+    public void setBoxItemActions(BoxItemActionList boxItemActions) {
         this.boxItemActions = boxItemActions;
-        return this;
     }
 
     public Map<String, Serializable> getRawMap() {
@@ -51,11 +44,11 @@ public class BoxItemData implements Serializable {
         return this;
     }
 
-    public Serializable getCodUsuarioAlocado() {
+    public Serializable getAllocatedSUserId() {
         return rawMap.get("codUsuarioAlocado");
     }
 
-    public Serializable getCodPeticao() {
+    public Serializable getPetitionId() {
         return rawMap.get("codPeticao");
     }
 

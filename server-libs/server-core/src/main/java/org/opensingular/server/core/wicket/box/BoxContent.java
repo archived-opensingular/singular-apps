@@ -49,6 +49,7 @@ import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -56,7 +57,6 @@ import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
@@ -68,8 +68,11 @@ import org.springframework.web.client.RestTemplate;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -79,9 +82,9 @@ import static org.opensingular.server.commons.wicket.view.util.DispatcherPagePar
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
-    protected IModel<BoxItemDataMap>    boxItemDataMapModel;
-    private   Pair<String, SortOrder>   sortProperty;
-    private   IModel<BoxDefinitionData> boxDefinitionDataModel;
+    protected IModel<BoxItemDataMap> boxItemDataMapModel = $m.ofValue();
+    private Pair<String, SortOrder>   sortProperty;
+    private IModel<BoxDefinitionData> boxDefinitionDataModel;
 
     public BoxContent(String id, String processGroupCod, String menu, BoxDefinitionData itemBox) {
         super(id, processGroupCod, menu);
@@ -119,7 +122,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected void appendActionColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
         BSActionColumn<BoxItemDataMap, String> actionColumn = new BSActionColumn<>(getMessage("label.table.column.actions"));
 
-        for (Map.Entry<String, BoxItemAction> entry : boxItemDataMapModel.getObject().getActionsMap().entrySet()){
+        Set<Map.Entry<String, BoxItemAction>> actions = Optional
+                .ofNullable(boxItemDataMapModel)
+                .map(IModel::getObject)
+                .map(BoxItemDataMap::getActionsMap)
+                .map(Map::entrySet)
+                .orElse(new HashSet<>(0));
+
+        for (Map.Entry<String, BoxItemAction> entry : actions) {
             BoxItemAction itemAction = entry.getValue();
 
             if (itemAction.getType() == ItemActionType.POPUP) {
