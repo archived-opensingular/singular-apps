@@ -19,26 +19,27 @@ import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
 import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 
-public class BoxItemActionList {
+public class ItemBoxActionList {
 
-    private List<BoxItemAction> boxItemActions;
+    private final List<BoxItemAction> boxItemActions;
+    private final ItemBoxData itemBoxData;
 
-    public BoxItemActionList() {
+    public ItemBoxActionList(ItemBoxData itemBoxData) {
+        this.itemBoxData = itemBoxData;
         this.boxItemActions = new ArrayList<>();
     }
 
-    public BoxItemActionList(BoxItemActionList boxItemActionList) {
-        this.boxItemActions = new ArrayList<>(boxItemActionList.getBoxItemActions());
+    public ItemBoxActionList(ItemBoxActionList itemBoxActionList) {
+        this.boxItemActions = new ArrayList<>(itemBoxActionList.getBoxItemActions());
+        this.itemBoxData = itemBoxActionList.itemBoxData;
     }
 
-    public BoxItemActionList addPopupBox(ItemBoxData boxData,
-                                         FormAction formAction,
-                                         String action) {
+    public ItemBoxActionList addPopupBox(FormAction formAction, String action) {
         String endpoint = DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
-                .petitionId(boxData.getCodPeticao())
-                .param(FORM_NAME, boxData.getType())
+                .petitionId(itemBoxData.getCodPeticao())
+                .param(FORM_NAME, itemBoxData.getType())
                 .build();
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(action);
@@ -48,7 +49,7 @@ public class BoxItemActionList {
         return this;
     }
 
-    public BoxItemActionList addExecuteInstante(Object id, String actionName) {
+    public ItemBoxActionList addExecuteInstante(Object id, String actionName) {
         final BoxItemAction boxItemAction = new BoxItemAction();
         final String        endpointUrl   = PATH_BOX_ACTION + EXECUTE + "?id=" + id;
         boxItemAction.setName(actionName);
@@ -58,8 +59,8 @@ public class BoxItemActionList {
         return this;
     }
 
-    public BoxItemActionList addDeleteAction(ItemBoxData line) {
-        String              endpointUrl   = PATH_BOX_ACTION + DELETE + "?id=" + line.getCodPeticao();
+    public ItemBoxActionList addDeleteAction() {
+        String              endpointUrl   = PATH_BOX_ACTION + DELETE + "?id=" + itemBoxData.getCodPeticao();
         final BoxItemAction boxItemAction = new BoxItemAction();
         boxItemAction.setName(ACTION_DELETE.getName());
         boxItemAction.setEndpoint(endpointUrl);
@@ -67,7 +68,7 @@ public class BoxItemActionList {
         return this;
     }
 
-    public BoxItemActionList add(BoxItemAction boxItemAction) {
+    public ItemBoxActionList add(BoxItemAction boxItemAction) {
         boxItemActions.add(boxItemAction);
         return this;
     }
@@ -77,8 +78,7 @@ public class BoxItemActionList {
     }
 
     @Deprecated //TODO vinicius.nunes revisar formularios filhos de outr peticao
-    public BoxItemActionList addInheritPetitionPopupBox(String actioName,
-                                                        ItemBoxData line,
+    public ItemBoxActionList addInheritPetitionPopupBox(String actioName,
                                                         Class<? extends SType<?>> type,
                                                         Class<? extends AbstractFormPage<?, ?>> executioPage,
                                                         String requirementId,
@@ -90,7 +90,7 @@ public class BoxItemActionList {
                 .formAction(FormAction.FORM_FILL.getId())
                 .petitionId(null)
                 .param(DispatcherPageParameters.FORM_NAME, PetitionUtil.getTypeName(type))
-                .param(DispatcherPageParameters.PARENT_PETITION_ID, line.get("codPeticao"))
+                .param(DispatcherPageParameters.PARENT_PETITION_ID, itemBoxData.get("codPeticao"))
                 .param(DispatcherPageParameters.FORM_PAGE_CLASS, executioPage.getName())
                 .param(DispatcherPageParameters.REQUIREMENT_ID, requirementId)
                 .param(DispatcherPageParameters.INHERIT_PARENT_FORM_DATA, inheritFormData)
@@ -98,5 +98,9 @@ public class BoxItemActionList {
         boxItemAction.setEndpoint(url);
         add(boxItemAction);
         return this;
+    }
+
+    public ItemBoxData getItemBoxData() {
+        return itemBoxData;
     }
 }

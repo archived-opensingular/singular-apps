@@ -1,7 +1,7 @@
 package org.opensingular.server.module;
 
 import org.opensingular.server.commons.box.ItemBoxData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.factory.ItemBoxActionList;
 import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
@@ -36,7 +36,7 @@ public interface ItemBoxDataProvider {
      * @param filter o filtro do usuario
      * @return a lista de ações que a linha deve conter
      */
-    BoxItemActionList getLineActions(ItemBoxData line, QuickFilter filter);
+    ItemBoxActionList getLineActions(ItemBoxData line, QuickFilter filter);
 
     /**
      * Retorna os filtros a serem executados antes de responder os dados para o servidor

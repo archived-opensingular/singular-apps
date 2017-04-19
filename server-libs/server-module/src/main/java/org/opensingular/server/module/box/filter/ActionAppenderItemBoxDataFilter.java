@@ -4,7 +4,7 @@ import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.factory.ItemBoxActionList;
 import org.opensingular.server.commons.box.filter.ItemBoxDataFilter;
 import org.opensingular.server.commons.flow.actions.ActionConfig;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -36,22 +36,22 @@ public class ActionAppenderItemBoxDataFilter implements ItemBoxDataFilter, Logga
         return findActionConfigAndFilter(itemBoxData, dataProvider.getLineActions(itemBoxData, filter));
     }
 
-    private List<BoxItemAction> findActionConfigAndFilter(ItemBoxData itemBoxData, BoxItemActionList boxItemActionList) {
+    private List<BoxItemAction> findActionConfigAndFilter(ItemBoxData itemBoxData, ItemBoxActionList itemBoxActionList) {
         String processKey = (String) itemBoxData.getProcessType();
 
         if (processKey != null) {
             ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(processKey);
             ActionConfig actionConfig = processDefinition.getMetaDataValue(ActionConfig.KEY);
             if (actionConfig != null) {
-                return filterByActionConfig(boxItemActionList, actionConfig);
+                return filterByActionConfig(itemBoxActionList, actionConfig);
             }
         }
 
-        return boxItemActionList.getBoxItemActions();
+        return itemBoxActionList.getBoxItemActions();
     }
 
-    private List<BoxItemAction> filterByActionConfig(BoxItemActionList boxItemActionList, ActionConfig actionConfig) {
-        return boxItemActionList.getBoxItemActions().stream()
+    private List<BoxItemAction> filterByActionConfig(ItemBoxActionList itemBoxActionList, ActionConfig actionConfig) {
+        return itemBoxActionList.getBoxItemActions().stream()
                 .filter(itemAction -> actionConfig.containsAction(itemAction.getName()))
                 .collect(Collectors.toList());
     }

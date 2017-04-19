@@ -39,7 +39,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.ItemBoxData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.factory.ItemBoxActionList;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
@@ -254,11 +254,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
 
-    public BoxItemActionList getLineActions(ItemBoxData line) {
-        return new BoxItemActionList()
-                .addPopupBox(line, FormAction.FORM_FILL, ACTION_EDIT.getName())
-                .addPopupBox(line, FormAction.FORM_VIEW, ACTION_VIEW.getName())
-                .addDeleteAction(line)
+    public ItemBoxActionList getLineActions(ItemBoxData line) {
+        return new ItemBoxActionList(line)
+                .addPopupBox(FormAction.FORM_FILL, ACTION_EDIT.getName())
+                .addPopupBox(FormAction.FORM_VIEW, ACTION_VIEW.getName())
+                .addDeleteAction()
                 .addExecuteInstante(line.getCodPeticao(), ACTION_ASSIGN.getName());
     }
 
@@ -284,7 +284,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
-        FormEntity formEntity = petition.getEntity().getMainForm();
+        FormEntity                   formEntity   = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -365,18 +365,18 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
-    public BoxItemActionList getTaskActions(ItemBoxData task, QuickFilter filter) {
-        BoxItemActionList boxItemActionList = new BoxItemActionList();
-        if (task.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_ASSIGN.getName());
+    public ItemBoxActionList getTaskActions(ItemBoxData boxData, QuickFilter filter) {
+        ItemBoxActionList itemBoxActionList = new ItemBoxActionList(boxData);
+        if (boxData.getCodUsuarioAlocado() == null && TaskType.PEOPLE.name().equals(boxData.getTaskType())) {
+            itemBoxActionList.addExecuteInstante(boxData.getCodPeticao(), ACTION_ASSIGN.getName());
         }
-        if (TaskType.PEOPLE.name().equals(task.getTaskType())) {
-            boxItemActionList.addExecuteInstante(task.getCodPeticao(), ACTION_RELOCATE.getName());
+        if (TaskType.PEOPLE.name().equals(boxData.getTaskType())) {
+            itemBoxActionList.addExecuteInstante(boxData.getCodPeticao(), ACTION_RELOCATE.getName());
         }
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) task.getCodUsuarioAlocado())) {
-            boxItemActionList.addPopupBox(task, FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
+        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) boxData.getCodUsuarioAlocado())) {
+            itemBoxActionList.addPopupBox(FormAction.FORM_ANALYSIS, ACTION_ANALYSE.getName());
         }
-        return boxItemActionList.addPopupBox(task, FormAction.FORM_VIEW, ACTION_VIEW.getName());
+        return itemBoxActionList.addPopupBox(FormAction.FORM_VIEW, ACTION_VIEW.getName());
     }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
@@ -461,7 +461,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
+            String                   name  = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
             return Objects.equals(name, trasitionName);
         }
         return false;
@@ -473,7 +473,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
-        FormEntity mainForm = petitionEntity.getMainForm();
+        FormEntity     mainForm       = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -568,8 +568,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         ProcessInstance newProcessInstance = processDefinition.newPreStartInstance();
         newProcessInstance.setDescription(petition.getDescription());
 
-        ProcessInstanceEntity processEntity = newProcessInstance.saveEntity();
-        PE petitionEntity = (PE) petition.getEntity();
+        ProcessInstanceEntity processEntity  = newProcessInstance.saveEntity();
+        PE                    petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
         petitionDAO.saveOrUpdate(petitionEntity);

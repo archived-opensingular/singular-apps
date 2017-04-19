@@ -1,8 +1,7 @@
 package org.opensingular.server.module.provider;
 
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.factory.ItemBoxActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.box.ItemBoxData;
@@ -37,31 +36,8 @@ public class PetitionItemBoxDataProvider implements ItemBoxDataProvider {
     }
 
     @Override
-    public BoxItemActionList getLineActions(ItemBoxData line, QuickFilter filter) {
+    public ItemBoxActionList getLineActions(ItemBoxData line, QuickFilter filter) {
         return petitionService.getLineActions(line);
     }
-
-    @Deprecated
-    protected String getRequirementIdByType(ItemBoxData line, Class<? extends SType<?>> type) {
-        return moduleConfiguration.getRequirements()
-                .stream()
-                .filter(requirementRef -> isSameType(type, requirementRef))
-                .findFirst()
-                .map(SingularRequirementRef::getId)
-                .orElse(null);
-    }
-
-    protected boolean isSameType(Class<? extends SType<?>> type, SingularRequirementRef requirementRef) {
-        return type.equals(requirementRef.getRequirement().getMainForm());
-    }
-
-    protected boolean isRoot(ItemBoxData line) {
-        return line.getParentPetition() == null && line.getRootPetition() == null;
-    }
-
-    protected boolean possuiFilhos(ItemBoxData line) {
-        return petitionService.containChildren((Long) line.getCodPeticao());
-    }
-
 
 }
