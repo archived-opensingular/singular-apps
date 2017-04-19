@@ -10,7 +10,7 @@ import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.ActionProvider;
 import org.opensingular.server.module.BoxInfo;
 import org.opensingular.server.module.DefaultActionProvider;
-import org.opensingular.server.module.ItemBoxDataProvider;
+import org.opensingular.server.module.BoxItemDataProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 @Named
-public class TaskItemBoxDataProvider implements ItemBoxDataProvider {
+public class TaskBoxItemDataProvider implements BoxItemDataProvider {
 
     @Inject
     private PetitionService<?, ?> petitionService;

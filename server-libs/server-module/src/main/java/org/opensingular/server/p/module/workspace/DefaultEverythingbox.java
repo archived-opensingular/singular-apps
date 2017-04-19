@@ -5,8 +5,8 @@ import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
-import org.opensingular.server.module.provider.PetitionItemBoxDataProvider;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.PetitionBoxItemDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -31,8 +31,8 @@ public class DefaultEverythingbox implements ItemBoxFactory {
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return ApplicationContextProvider.get().getBean(PetitionItemBoxDataProvider.class);
+    public BoxItemDataProvider getDataProvider() {
+        return ApplicationContextProvider.get().getBean(PetitionBoxItemDataProvider.class);
     }
 
     @Override

@@ -3,7 +3,7 @@ package org.opensingular.server.module.workspace;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
+import org.opensingular.server.module.BoxItemDataProvider;
 
 import java.util.List;
 
@@ -34,7 +34,7 @@ public interface ItemBoxFactory {
     ItemBox build(IServerContext context);
 
 
-    ItemBoxDataProvider getDataProvider();
+    BoxItemDataProvider getDataProvider();
 
     List<DatatableField> getDatatableFields();
 

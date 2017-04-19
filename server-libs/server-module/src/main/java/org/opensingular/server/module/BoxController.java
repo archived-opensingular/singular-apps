@@ -54,7 +54,7 @@ public class BoxController implements BoxInfo {
     }
 
     public BoxItemDataList searchItens(QuickFilter filter) {
-        ItemBoxDataProvider             provider       = itemBoxFactory.getDataProvider();
+        BoxItemDataProvider provider       = itemBoxFactory.getDataProvider();
         List<Map<String, Serializable>> itens          = provider.search(filter, this);
         BoxItemDataList result         = new BoxItemDataList();
         ActionProvider                  actionProvider = new AuthorizationAwareActionProviderDecorator(provider.getActionProvider());

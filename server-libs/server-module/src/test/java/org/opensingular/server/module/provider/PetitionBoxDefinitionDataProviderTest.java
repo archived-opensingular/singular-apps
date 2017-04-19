@@ -24,7 +24,7 @@ public class PetitionBoxDefinitionDataProviderTest {
     private PetitionService<?, ?> petitionService;
 
     @InjectMocks
-    private PetitionItemBoxDataProvider petitionItemBoxDataProvider;
+    private PetitionBoxItemDataProvider petitionItemBoxDataProvider;
 
     private QuickFilter filter;
 

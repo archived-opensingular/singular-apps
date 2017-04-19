@@ -9,7 +9,7 @@ import java.util.Map;
 /**
  * Provider responsavel por fornecer dados e metadados para exibição das tabelas no server
  */
-public interface ItemBoxDataProvider {
+public interface BoxItemDataProvider {
 
     /**
      * Pesquisa a lista de linhas a serem exibidas pelo servidor

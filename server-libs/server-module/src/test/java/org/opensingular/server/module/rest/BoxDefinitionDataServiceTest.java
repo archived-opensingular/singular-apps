@@ -1,22 +1,12 @@
 package org.opensingular.server.module.rest;
 
-import org.hamcrest.Matchers;
-import org.junit.Before;
-import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.module.ItemBoxDataProvider;
 import org.opensingular.server.module.SingularModuleConfiguration;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
-
-import java.io.Serializable;
-import java.util.*;
 
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BoxDefinitionDataServiceTest {

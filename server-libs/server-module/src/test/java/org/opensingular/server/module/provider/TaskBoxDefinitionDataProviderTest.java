@@ -35,7 +35,7 @@ public class TaskBoxDefinitionDataProviderTest {
     private PermissionResolverService permissionResolverService;
 
     @InjectMocks
-    private TaskItemBoxDataProvider taskItemBoxDataProvider;
+    private TaskBoxItemDataProvider taskItemBoxDataProvider;
 
     private QuickFilter filter;
 
@@ -46,13 +46,13 @@ public class TaskBoxDefinitionDataProviderTest {
 
     @Test
     public void testSearch() throws Exception {
-        Integer taskId = 10;
+        Integer               taskId           = 10;
         List<TaskInstanceDTO> taskInstanceDTOS = listOfTaskInstanceDTOForIDsAndTodayDate(taskId);
 
         when(petitionService.listTasks(eq(filter), anyListOf(SingularPermission.class))).thenReturn(taskInstanceDTOS);
 
-        List<Map<String, Serializable>> itemBoxes = taskItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class));
-        Map<String, Serializable> taskInstanceMap = itemBoxes.get(0);
+        List<Map<String, Serializable>> itemBoxes       = taskItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class));
+        Map<String, Serializable>       taskInstanceMap = itemBoxes.get(0);
 
         assertEquals(taskId, taskInstanceMap.get("taskId"));
         assertEquals(String.class, taskInstanceMap.get("creationDate").getClass());
