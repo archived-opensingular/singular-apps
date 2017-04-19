@@ -4,7 +4,6 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ItemBoxDataProvider;
@@ -27,7 +26,7 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
         concluidas.setEndedTasks(Boolean.TRUE);
-        concluidas.addAction(DefaultActions.VIEW);
+//        concluidas.addAction(DefaultActions.VIEW);
         return concluidas;
     }
 

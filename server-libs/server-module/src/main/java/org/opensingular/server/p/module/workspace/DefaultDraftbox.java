@@ -3,7 +3,6 @@ package org.opensingular.server.p.module.workspace;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ItemBoxDataProvider;
@@ -29,9 +28,9 @@ public class DefaultDraftbox implements ItemBoxFactory {
         rascunho.setIcone(Icone.DOCS);
         rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
-        rascunho.addAction(DefaultActions.EDIT)
-                .addAction(DefaultActions.VIEW)
-                .addAction(DefaultActions.DELETE);
+//        rascunho.addAction(DefaultActions.EDIT)
+//                .addAction(DefaultActions.VIEW)
+//                .addAction(DefaultActions.DELETE);
         return rascunho;
     }
 

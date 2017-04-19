@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.box;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ItemBoxData implements Serializable {
+public class BoxItemData implements Serializable {
 
     @JsonDeserialize(contentAs = String.class)
     private Map<String, Serializable> rawMap = new HashMap<>();
@@ -32,7 +33,11 @@ public class ItemBoxData implements Serializable {
         return boxItemActions;
     }
 
-    public ItemBoxData setBoxItemActions(List<BoxItemAction> boxItemActions) {
+    public void setBoxItemActions(BoxItemActionList lineActions) {
+        this.getBoxItemActions().addAll(lineActions.getBoxItemActions());
+    }
+
+    public BoxItemData setBoxItemActions(List<BoxItemAction> boxItemActions) {
         this.boxItemActions = boxItemActions;
         return this;
     }
@@ -41,7 +46,7 @@ public class ItemBoxData implements Serializable {
         return rawMap;
     }
 
-    public ItemBoxData setRawMap(Map<String, Serializable> rawMap) {
+    public BoxItemData setRawMap(Map<String, Serializable> rawMap) {
         this.rawMap = rawMap;
         return this;
     }

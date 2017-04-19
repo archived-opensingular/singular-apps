@@ -1,6 +1,6 @@
 package org.opensingular.server.module;
 
-import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.box.factory.BoxItemActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
@@ -16,5 +16,5 @@ public interface ActionProvider {
      * @param filter o filtro do usuario
      * @return a lista de ações que a linha deve conter
      */
-    BoxItemActionList getLineActions(BoxInfo boxInfo, ItemBoxData line, QuickFilter filter);
+    BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter);
 }

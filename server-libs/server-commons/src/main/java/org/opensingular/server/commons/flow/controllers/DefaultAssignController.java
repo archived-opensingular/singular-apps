@@ -16,8 +16,6 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Nonnull;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_ASSIGN;
-
 @AutoScanDisabled
 @Controller
 public class DefaultAssignController extends IController implements Loggable {
@@ -34,11 +32,6 @@ public class DefaultAssignController extends IController implements Loggable {
             getLogger().error(resultMessage, e);
             return new ActionResponse(resultMessage, false);
         }
-    }
-
-    @Override
-    public String getActionName() {
-        return ACTION_ASSIGN.getName();
     }
 
 }

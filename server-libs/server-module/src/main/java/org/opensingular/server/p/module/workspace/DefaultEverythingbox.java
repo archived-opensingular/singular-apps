@@ -3,7 +3,6 @@ package org.opensingular.server.p.module.workspace;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ItemBoxDataProvider;
@@ -27,7 +26,7 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Petições em andamento");
         acompanhamento.setIcone(Icone.CLOCK);
-        acompanhamento.addAction(DefaultActions.VIEW);
+//        acompanhamento.addAction(DefaultActions.VIEW);
         return acompanhamento;
     }
 

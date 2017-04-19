@@ -16,27 +16,36 @@
 
 package org.opensingular.server.commons.service.dto;
 
+import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.flow.controllers.DefaultAssignController;
+import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;
 
-import java.io.Serializable;
+public class BoxItemAction extends ItemAction {
 
-public class BoxItemAction implements Serializable {
-
-    private String     name;
     private String     endpoint;
     private FormAction formAction;
     private String     requirementId;
     private boolean useExecute = false;
 
+
     public BoxItemAction() {
     }
 
-    public String getName() {
-        return name;
+    public BoxItemAction(String name) {
+        super(name);
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public BoxItemAction(String name, String label, Icone icon, ItemActionType type) {
+        super(name, label, icon, type);
+    }
+
+    public BoxItemAction(String name, String label, Icone icon, ItemActionType type, ItemActionConfirmation confirmation) {
+        super(name, label, icon, type, confirmation);
+    }
+
+    public BoxItemAction(String name, String label, Icone icon, ItemActionType type, Class<? extends IController> defaultAssignControllerClass) {
+        super(name, label, icon, type, defaultAssignControllerClass, null);
     }
 
     @Deprecated

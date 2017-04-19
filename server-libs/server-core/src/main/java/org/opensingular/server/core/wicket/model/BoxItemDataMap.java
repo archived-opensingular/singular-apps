@@ -16,7 +16,7 @@
 
 package org.opensingular.server.core.wicket.model;
 
-import org.opensingular.server.commons.box.ItemBoxData;
+import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemAction;
 
@@ -24,15 +24,15 @@ import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class BoxItemModel extends LinkedHashMap<String, Object> implements Serializable {
+public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
-    private ItemBoxData itemBoxData;
+    private BoxItemData boxItemData;
 
-    public BoxItemModel(ItemBoxData itemBoxData) {
-        this.itemBoxData = itemBoxData;
-        putAll(itemBoxData.getRawMap());
+    public BoxItemDataMap(BoxItemData boxItemData) {
+        this.boxItemData = boxItemData;
+        putAll(boxItemData.getRawMap());
     }
 
     public Long getCod() {
@@ -63,7 +63,7 @@ public class BoxItemModel extends LinkedHashMap<String, Object> implements Seria
 
     public Map<String, BoxItemAction> getActionsMap() {
         Map<String, BoxItemAction> actionsMap = new LinkedHashMap<>();
-        for (BoxItemAction boxItemAction : itemBoxData.getBoxItemActions()) {
+        for (BoxItemAction boxItemAction : boxItemData.getBoxItemActions()) {
             actionsMap.put(boxItemAction.getName(), boxItemAction);
         }
         return actionsMap;

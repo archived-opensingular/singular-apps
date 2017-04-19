@@ -2,7 +2,7 @@ package org.opensingular.server.module.rest;
 
 import org.opensingular.server.commons.ModuleConnector;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.server.commons.box.ItemBoxDataList;
+import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -37,7 +37,7 @@ public class RESTModuleConnector implements ModuleConnector {
 
     @Override
     @RequestMapping(value = "/search/{boxId}", method = RequestMethod.POST)
-    public ItemBoxDataList search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
+    public BoxItemDataList search(@PathVariable String boxId, @RequestBody QuickFilter filter) {
         return restBackstageService.search(boxId, filter);
     }
 

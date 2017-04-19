@@ -1,6 +1,6 @@
 package org.opensingular.server.commons;
 
-import org.opensingular.server.commons.box.ItemBoxDataList;
+import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -27,10 +27,10 @@ public interface ModuleConnector {
      * @param filter
      * @return
      */
-    ItemBoxDataList search(String boxId, QuickFilter filter);
+    BoxItemDataList search(String boxId, QuickFilter filter);
 
     /**
-     * Executes custom actions defined in the {@link ItemBoxDataList}
+     * Executes custom actions defined in the {@link BoxItemDataList}
      * @param id
      * @param actionRequest
      * @return

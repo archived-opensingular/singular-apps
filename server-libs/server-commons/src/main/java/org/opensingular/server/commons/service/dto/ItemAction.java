@@ -16,18 +16,20 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import java.io.Serializable;
-
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.flow.controllers.IController;
+
+import java.io.Serializable;
 
 public class ItemAction implements Serializable {
 
-    private String name;
+    private String  name;
     private boolean defaultAction;
 
-    private String label;
-    private Icone icon;
-    private ItemActionType type;
+    private String                       label;
+    private Icone                        icon;
+    private ItemActionType               type;
+    private Class<? extends IController> controller;
 
     private ItemActionConfirmation confirmation;
 
@@ -54,6 +56,16 @@ public class ItemAction implements Serializable {
         this.type = type;
         this.confirmation = confirmation;
         defaultAction = false;
+    }
+
+    public ItemAction(String name, String label, Icone icon, ItemActionType type, Class<? extends IController> controller, ItemActionConfirmation confirmation) {
+        this.name = name;
+        this.defaultAction = defaultAction;
+        this.label = label;
+        this.icon = icon;
+        this.type = type;
+        this.controller = controller;
+        this.confirmation = confirmation;
     }
 
     public String getName() {
@@ -102,5 +114,15 @@ public class ItemAction implements Serializable {
 
     public void setConfirmation(ItemActionConfirmation confirmation) {
         this.confirmation = confirmation;
+    }
+
+
+
+    public Class<? extends IController> getController() {
+        return controller;
+    }
+
+    public void setController(Class<? extends IController> controller) {
+        this.controller = controller;
     }
 }

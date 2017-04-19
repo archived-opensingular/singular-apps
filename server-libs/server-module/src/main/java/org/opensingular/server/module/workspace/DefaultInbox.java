@@ -4,7 +4,6 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ItemBoxDataProvider;
@@ -12,8 +11,6 @@ import org.opensingular.server.module.provider.TaskItemBoxDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ASSIGN;
 
 public class DefaultInbox implements ItemBoxFactory {
 
@@ -29,10 +26,10 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
-        caixaEntrada.addAction(ASSIGN);
-        caixaEntrada.addAction(DefaultActions.ANALYSE);
-        caixaEntrada.addAction(DefaultActions.RELOCATE);
-        caixaEntrada.addAction(DefaultActions.VIEW);
+//        caixaEntrada.addAction(ASSIGN);
+//        caixaEntrada.addAction(DefaultActions.ANALYSE);
+//        caixaEntrada.addAction(DefaultActions.RELOCATE);
+//        caixaEntrada.addAction(DefaultActions.VIEW);
         return caixaEntrada;
     }
 

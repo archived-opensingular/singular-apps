@@ -26,6 +26,9 @@ import javax.inject.Inject;
 
 public abstract class IController {
 
+    protected enum Type {
+        PROCESS, FORM
+    }
     @Inject
     private AuthorizationService authorizationService;
 
@@ -39,21 +42,15 @@ public abstract class IController {
 
     private boolean hasPermission(PetitionInstance petition, ActionRequest actionRequest) {
         if (getType() == Type.PROCESS) {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), getActionName());
+            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
         } else {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), getActionName());
+            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
         }
     }
-
-    public abstract String getActionName();
 
     protected abstract ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest);
 
     protected Type getType() {
         return Type.PROCESS;
-    }
-
-    protected enum Type {
-        PROCESS, FORM
     }
 }

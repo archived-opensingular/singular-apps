@@ -10,11 +10,10 @@ import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.server.commons.box.ItemBoxDataList;
+import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.flow.actions.ActionConfig;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.actions.ActionRequest;
 import org.opensingular.server.commons.flow.actions.ActionResponse;
 import org.opensingular.server.commons.flow.controllers.IController;
@@ -41,7 +40,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ACTION_DELETE;
 
 @Service
 public class RestBackstageService implements Loggable {
@@ -79,7 +77,7 @@ public class RestBackstageService implements Loggable {
     @Deprecated
     public ActionResponse excluir(Long id, ActionRequest actionRequest) {
         try {
-            boolean hasPermission = authorizationService.hasPermission(id, null, actionRequest.getIdUsuario(), ACTION_DELETE.getName());
+            boolean hasPermission = authorizationService.hasPermission(id, null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
             if (hasPermission) {
                 petitionService.deletePetition(id);
                 return new ActionResponse("Registro excluído com sucesso", true);
@@ -101,7 +99,7 @@ public class RestBackstageService implements Loggable {
             IController controller = getActionController(processDefinition, actionRequest);
             return controller.run(petition, actionRequest);
         } catch (Exception e) {
-            final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getName()), id);
+            final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR
             return new ActionResponse(msg, false);
         }
@@ -109,12 +107,10 @@ public class RestBackstageService implements Loggable {
     }
 
     private IController getActionController(ProcessDefinition<?> processDefinition, ActionRequest actionRequest) {
-        final ActionConfig           actionConfig    = processDefinition.getMetaDataValue(ActionConfig.KEY);
-        Class<? extends IController> controllerClass = actionConfig.getAction(actionRequest.getName());
-        if (ApplicationContextProvider.get().containsBean(controllerClass.getName())) {
-            return ApplicationContextProvider.get().getBean(controllerClass);
-        } else {
-            return ApplicationContextProvider.get().getAutowireCapableBeanFactory().createBean(controllerClass);
+        try {
+            return actionRequest.getAction().getController().newInstance();
+        } catch (Exception e) {
+            throw SingularServerException.rethrow(e.getMessage(), e);
         }
     }
 
@@ -192,11 +188,11 @@ public class RestBackstageService implements Loggable {
         return 0l;
     }
 
-    public ItemBoxDataList search(String boxId, QuickFilter filter) {
+    public BoxItemDataList search(String boxId, QuickFilter filter) {
         Optional<BoxController> boxController = singularModuleConfiguration.getBoxControllerByBoxId(boxId);
         if (boxController.isPresent()) {
             return boxController.get().searchItens(filter);
         }
-        return new ItemBoxDataList();
+        return new BoxItemDataList();
     }
 }
