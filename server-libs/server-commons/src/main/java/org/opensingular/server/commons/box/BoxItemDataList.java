@@ -18,4 +18,6 @@ public class BoxItemDataList implements Serializable {
         return this;
     }
 
+
+
 }
