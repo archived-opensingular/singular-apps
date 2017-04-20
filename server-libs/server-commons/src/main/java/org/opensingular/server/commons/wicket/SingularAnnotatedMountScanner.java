@@ -35,7 +35,7 @@ public class SingularAnnotatedMountScanner {
             paths.add(clazz.getAnnotation(MountPath.class).value());
             paths.addAll(Arrays.asList(clazz.getAnnotation(MountPath.class).alt()));
             for (String path : paths) {
-                StringUtils.removeStart("/", StringUtils.removeEnd(path, "/"));
+                path = StringUtils.removeStart("/", StringUtils.removeEnd(path, "/"));
                 if (mountPaths.containsKey(path)) {
                     throw SingularServerException
                             .rethrow(
