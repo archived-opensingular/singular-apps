@@ -61,7 +61,6 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
 
     @Override
     public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
-        BoxItemActionList boxItemActionList = getDefaultActions(boxInfo, line, filter);
-        return boxItemActionList;
+        return getDefaultActions(boxInfo, line, filter);
     }
 }
