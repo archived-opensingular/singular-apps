@@ -58,7 +58,7 @@ public class DefaultBoxItemActionFactory {
 
     public static BoxItemAction getEDIT(BoxItemData line) {
         BoxItemAction action = new BoxItemAction("edit", "Alterar", Icone.PENCIL, ItemActionType.POPUP);
-        action.setFormAction(FormAction.FORM_VIEW);
+        action.setFormAction(FormAction.FORM_FILL);
         action.setEndpoint(getEndpointPopUp(line, FormAction.FORM_FILL));
         return action;
     }
@@ -79,7 +79,7 @@ public class DefaultBoxItemActionFactory {
 
     public static BoxItemAction getANALYSE(BoxItemData line) {
         BoxItemAction action = new BoxItemAction("analyse", "Analisar", Icone.PENCIL, ItemActionType.POPUP);
-        action.setFormAction(FormAction.FORM_VIEW);
+        action.setFormAction(FormAction.FORM_ANALYSIS);
         action.setEndpoint(getEndpointPopUp(line, FormAction.FORM_ANALYSIS));
         action.setUseExecute(true);
         return action;
