@@ -35,5 +35,5 @@ public interface BoxItemData extends Serializable {
 
     Serializable getRootPetition();
 
-    Serializable getRequirementId();
+    Serializable getRequirementDefinitionId();
 }

@@ -45,6 +45,7 @@ public class BoxItemAction extends ItemAction {
 
     public BoxItemAction(String name, String label, Icone icon, ItemActionType type, Class<? extends IController> defaultAssignControllerClass) {
         super(name, label, icon, type, defaultAssignControllerClass, null);
+        this.useExecute = true;
     }
 
     @Deprecated

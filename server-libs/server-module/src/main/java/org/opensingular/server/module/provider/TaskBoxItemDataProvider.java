@@ -1,7 +1,6 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
-import org.opensingular.server.commons.box.factory.ItemBoxActionList;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -10,8 +9,8 @@ import org.opensingular.server.commons.spring.security.PermissionResolverService
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.ActionProvider;
 import org.opensingular.server.module.BoxInfo;
-import org.opensingular.server.module.DefaultActionProvider;
 import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.DefaultActionProvider;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,5 +51,5 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
     private List<SingularPermission> searchPermissions(QuickFilter filter) {
         return permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
     }
-    
+
 }

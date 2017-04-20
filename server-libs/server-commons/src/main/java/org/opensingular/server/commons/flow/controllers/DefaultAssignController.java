@@ -16,7 +16,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.Nonnull;
 
-@AutoScanDisabled
+
 @Controller
 public class DefaultAssignController extends IController implements Loggable {
 

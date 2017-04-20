@@ -10,12 +10,13 @@ import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.box.BoxItemDataList;
+import org.opensingular.server.commons.box.action.ActionRequest;
+import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.box.action.ActionRequest;
-import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaDataValue;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
@@ -108,7 +109,7 @@ public class RestBackstageService implements Loggable {
 
     private IController getActionController(ProcessDefinition<?> processDefinition, ActionRequest actionRequest) {
         try {
-            return actionRequest.getAction().getController().newInstance();
+            return ApplicationContextProvider.get().getBean(actionRequest.getAction().getController());
         } catch (Exception e) {
             throw SingularServerException.rethrow(e.getMessage(), e);
         }

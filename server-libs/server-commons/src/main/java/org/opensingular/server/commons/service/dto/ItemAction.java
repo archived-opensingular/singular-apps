@@ -16,7 +16,9 @@
 
 package org.opensingular.server.commons.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 
 import java.io.Serializable;
@@ -26,10 +28,10 @@ public class ItemAction implements Serializable {
     private String  name;
     private boolean defaultAction;
 
-    private String                       label;
-    private Icone                        icon;
-    private ItemActionType               type;
-    private Class<? extends IController> controller;
+    private String         label;
+    private Icone          icon;
+    private ItemActionType type;
+    private String         controllerClassName;
 
     private ItemActionConfirmation confirmation;
 
@@ -64,7 +66,7 @@ public class ItemAction implements Serializable {
         this.label = label;
         this.icon = icon;
         this.type = type;
-        this.controller = controller;
+        this.controllerClassName = controller.getName();
         this.confirmation = confirmation;
     }
 
@@ -117,12 +119,21 @@ public class ItemAction implements Serializable {
     }
 
 
-
-    public Class<? extends IController> getController() {
-        return controller;
+    @SuppressWarnings("unchecked")
+    @JsonIgnore
+    public Class<IController> getController() {
+        try {
+            return (Class<IController>) Class.forName(controllerClassName);
+        } catch (ClassNotFoundException e) {
+            throw SingularServerException.rethrow(e.getMessage(), e);
+        }
     }
 
-    public void setController(Class<? extends IController> controller) {
-        this.controller = controller;
+    public String getControllerClassName() {
+        return controllerClassName;
+    }
+
+    public void setControllerClassName(String controllerClassName) {
+        this.controllerClassName = controllerClassName;
     }
 }

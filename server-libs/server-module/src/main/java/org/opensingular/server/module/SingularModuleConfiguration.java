@@ -1,6 +1,9 @@
 package org.opensingular.server.module;
 
 
+import org.jetbrains.annotations.NotNull;
+import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
@@ -88,6 +91,29 @@ public class SingularModuleConfiguration {
 
     public List<SingularRequirementRef> getRequirements() {
         return requirements;
+    }
+
+    @Deprecated
+    public Optional<SingularRequirementRef> findRequirmentByFormType(SType<?> type) {
+        return findRequirmentByFormType(type.getName());
+    }
+
+    @Deprecated
+    public Optional<SingularRequirementRef> findRequirmentByFormType(String typeName) {
+        return requirements
+                .stream()
+                .filter(requirementRef -> isSameType(typeName, requirementRef))
+                .findFirst();
+    }
+
+    private boolean isSameType(String type, SingularRequirementRef requirementRef) {
+        return getMainFormName(requirementRef.getRequirement()).equals(type);
+    }
+
+    @SuppressWarnings("unchecked")
+    @NotNull
+    private String getMainFormName(SingularRequirement requirement) {
+        return SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
     }
 
 }

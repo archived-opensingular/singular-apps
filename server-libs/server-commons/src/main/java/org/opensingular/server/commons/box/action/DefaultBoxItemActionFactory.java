@@ -46,7 +46,7 @@ public class DefaultBoxItemActionFactory {
                 .formAction(formAction.getId())
                 .petitionId(line.getPetitionId())
                 .param(FORM_NAME, line.getType())
-                .param(REQUIREMENT_ID, line.getRequirementId())
+                .param(REQUIREMENT_ID, line.getRequirementDefinitionId())
                 .build();
 
     }

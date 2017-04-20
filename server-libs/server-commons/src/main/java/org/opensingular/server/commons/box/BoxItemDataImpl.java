@@ -80,8 +80,8 @@ public class BoxItemDataImpl implements BoxItemData {
     }
 
     @Override
-    public Serializable getRequirementId() {
-        return rawMap.get("requirementId");
+    public Serializable getRequirementDefinitionId() {
+        return rawMap.get("requirementDefinitionId");
     }
 
     /**
@@ -89,8 +89,8 @@ public class BoxItemDataImpl implements BoxItemData {
      * @deprecated para uso temporário enquanto a forma de identificar o requerimento não é definida
      */
     @Deprecated
-    public void setRequirementId(String id) {
-        rawMap.put("requirementId", id);
+    public void setRequirementDefinitionId(String id) {
+        rawMap.put("requirementDefinitionId", id);
     }
 
     public void setRawMap(Map<String, Serializable> rawMap) {

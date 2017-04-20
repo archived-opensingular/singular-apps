@@ -49,12 +49,12 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
 
     protected BoxItemActionList getDefaultActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
         BoxItemActionList list = new BoxItemActionList();
-        addViewAction(boxInfo, line, filter, list);
-        addEditAction(boxInfo, line, filter, list);
-        addAnalyseAction(boxInfo, line, filter, list);
         addAssignAction(boxInfo, line, filter, list);
+        addAnalyseAction(boxInfo, line, filter, list);
+        addEditAction(boxInfo, line, filter, list);
         addRelocateAction(boxInfo, line, filter, list);
         addCustomActions(boxInfo, line, filter, list);
+        addViewAction(boxInfo, line, filter, list);
         addDeleteAction(boxInfo, line, filter, list);
         return list;
     }

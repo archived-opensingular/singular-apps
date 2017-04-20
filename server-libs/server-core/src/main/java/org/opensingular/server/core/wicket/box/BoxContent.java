@@ -151,18 +151,16 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                     }
                 }
 
+                appendStaticAction(
+                        getMessage("label.table.column.history"),
+                        Icone.HISTORY,
+                        BoxContent.this::criarLinkHistorico,
+                        (x) -> Boolean.TRUE,
+                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+
                 super.onPopulateActions(rowModel, actionPanel);
             }
         };
-
-
-        actionColumn
-                .appendStaticAction(
-                        getMessage("label.table.column.history"),
-                        Icone.HISTORY,
-                        this::criarLinkHistorico,
-                        (x) -> Boolean.TRUE,
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
 
         builder.appendColumn(actionColumn);
     }
