@@ -2,7 +2,7 @@ package org.opensingular.server.module;
 
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 

@@ -25,7 +25,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;

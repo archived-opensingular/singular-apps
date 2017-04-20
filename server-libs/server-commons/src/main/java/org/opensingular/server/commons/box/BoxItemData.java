@@ -1,78 +1,34 @@
 package org.opensingular.server.commons.box;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
 
-public class BoxItemData implements Serializable {
+public interface BoxItemData extends Serializable {
+    void addAction(BoxItemAction boxItemAction);
 
-    @JsonDeserialize(contentAs = String.class)
-    private Map<String, Serializable> rawMap = new HashMap<>();
+    Serializable get(String key);
 
-    private BoxItemActionList boxItemActions = new BoxItemActionList();
+    BoxItemActionList getBoxItemActions();
 
-    public void addAction(BoxItemAction boxItemAction) {
-        boxItemActions.addAction(boxItemAction);
-    }
+    void setBoxItemActions(BoxItemActionList boxItemActions);
 
-    public Serializable get(String key) {
-        return rawMap.get(key);
-    }
+    Serializable getAllocatedSUserId();
 
-    public void replace(String key, Serializable value) {
-        rawMap.replace(key, value);
-    }
+    Serializable getPetitionId();
 
-    public BoxItemActionList getBoxItemActions() {
-        return boxItemActions;
-    }
+    Serializable getType();
 
-    public void setBoxItemActions(BoxItemActionList boxItemActions) {
-        this.boxItemActions = boxItemActions;
-    }
+    Serializable getTaskType();
 
-    public Map<String, Serializable> getRawMap() {
-        return rawMap;
-    }
+    Serializable getProcessType();
 
-    public BoxItemData setRawMap(Map<String, Serializable> rawMap) {
-        this.rawMap = rawMap;
-        return this;
-    }
+    Serializable getSituation();
 
-    public Serializable getAllocatedSUserId() {
-        return rawMap.get("codUsuarioAlocado");
-    }
+    Serializable getParentPetition();
 
-    public Serializable getPetitionId() {
-        return rawMap.get("codPeticao");
-    }
+    Serializable getRootPetition();
 
-    public Serializable getType() {
-        return rawMap.get("type");
-    }
-
-    public Serializable getTaskType() {
-        return rawMap.get("taskType");
-    }
-
-    public Serializable getProcessType() {
-        return rawMap.get("processType");
-    }
-
-    public Serializable getSituation() {
-        return rawMap.get("situation");
-    }
-
-    public Serializable getParentPetition() {
-        return rawMap.get("parentPetition");
-    }
-
-    public Serializable getRootPetition() {
-        return rawMap.get("rootPetition");
-    }
+    Serializable getRequirementId();
 }

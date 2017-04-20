@@ -3,43 +3,60 @@ package org.opensingular.server.module;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 
 public class DefaultActionProvider implements ActionProvider, Loggable {
 
+    protected void addViewAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+        list.addViewAction(line);
+    }
 
-    protected BoxItemActionList getDefaultActions(BoxItemData line, QuickFilter filter) {
 
-        BoxItemActionList boxItemActionList = new BoxItemActionList();
+    protected void addEditAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+        list.addEditAction(line);
+    }
 
-        //BOTH
-        boxItemActionList
-                .addViewAction(line);
-        //petition
-        boxItemActionList
-                .addEditAction(line)
-                .addDeleteAction(line)
-        ;
-        //.addAssingAction(line);
 
-        // tasks
+    protected void addDeleteAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+        list.addDeleteAction(line);
+    }
+
+
+    protected void addAssignAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
         if (line.getAllocatedSUserId() == null && TaskType.PEOPLE.name().equals(line.getTaskType())) {
-            boxItemActionList.addAssignAction(line);
+            list.addAssignAction(line);
         }
+    }
+
+    protected void addRelocateAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
         if (TaskType.PEOPLE.name().equals(line.getTaskType())) {
-            boxItemActionList.addRelocateAction(line);
+            list.addRelocateAction(line);
         }
+    }
+
+    protected void addAnalyseAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
         if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
-            boxItemActionList.addAnalyseAction(line);
+            list.addAnalyseAction(line);
         }
-        return boxItemActionList;
+    }
+
+
+    protected BoxItemActionList getDefaultActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+        BoxItemActionList list = new BoxItemActionList();
+        addViewAction(boxInfo, line, filter, list);
+        addEditAction(boxInfo, line, filter, list);
+        addDeleteAction(boxInfo, line, filter, list);
+        addAssignAction(boxInfo, line, filter, list);
+        addRelocateAction(boxInfo, line, filter, list);
+        addAnalyseAction(boxInfo, line, filter, list);
+        return list;
     }
 
     @Override
     public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
-        BoxItemActionList boxItemActionList = getDefaultActions(line, filter);
+        BoxItemActionList boxItemActionList = getDefaultActions(boxInfo, line, filter);
         return boxItemActionList;
     }
 }

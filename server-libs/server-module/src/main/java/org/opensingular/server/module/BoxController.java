@@ -1,6 +1,6 @@
 package org.opensingular.server.module;
 
-import org.opensingular.server.commons.box.BoxItemData;
+import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.RequirementData;
@@ -54,17 +54,25 @@ public class BoxController implements BoxInfo {
     }
 
     public BoxItemDataList searchItens(QuickFilter filter) {
-        BoxItemDataProvider provider       = itemBoxFactory.getDataProvider();
+        BoxItemDataProvider             provider       = itemBoxFactory.getDataProvider();
         List<Map<String, Serializable>> itens          = provider.search(filter, this);
-        BoxItemDataList result         = new BoxItemDataList();
-        ActionProvider                  actionProvider = new AuthorizationAwareActionProviderDecorator(provider.getActionProvider());
+        BoxItemDataList                 result         = new BoxItemDataList();
+        ActionProvider                  actionProvider = addBuiltInDecorators(provider.getActionProvider());
+
         for (Map<String, Serializable> item : itens) {
-            BoxItemData line = new BoxItemData();
+            BoxItemDataImpl line = new BoxItemDataImpl();
             line.setRawMap(item);
             line.setBoxItemActions(actionProvider.getLineActions(this, line, filter));
             result.getBoxItemDataList().add(line);
         }
         return result;
+    }
+
+    protected ActionProvider addBuiltInDecorators(ActionProvider actionProvider) {
+        return
+                new RequirementeIdActionProviderDecorator(
+                        new AuthorizationAwareActionProviderDecorator(
+                                actionProvider));
     }
 
 

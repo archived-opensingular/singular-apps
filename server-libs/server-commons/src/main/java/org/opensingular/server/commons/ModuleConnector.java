@@ -1,8 +1,8 @@
 package org.opensingular.server.commons;
 
 import org.opensingular.server.commons.box.BoxItemDataList;
-import org.opensingular.server.commons.flow.actions.ActionRequest;
-import org.opensingular.server.commons.flow.actions.ActionResponse;
+import org.opensingular.server.commons.box.action.ActionRequest;
+import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 /**

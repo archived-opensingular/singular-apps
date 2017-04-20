@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.actions;
+package org.opensingular.server.commons.box.action;
 
-public class ActionAtribuirRequest extends ActionRequest {
+public class ActionResponse {
 
-    private String idUsuarioDestino;
+    private String resultMessage;
+    private boolean successful;
 
-    private boolean endLastAllocation;
-
-    public String getIdUsuarioDestino() {
-        return idUsuarioDestino;
+    public ActionResponse() {
     }
 
-    public void setIdUsuarioDestino(String idUsuarioDestino) {
-        this.idUsuarioDestino = idUsuarioDestino;
+    public ActionResponse(String resultMessage, boolean successful) {
+        this.resultMessage = resultMessage;
+        this.successful = successful;
     }
 
-    public boolean isEndLastAllocation() {
-        return endLastAllocation;
+    public String getResultMessage() {
+        return resultMessage;
     }
 
-    public void setEndLastAllocation(boolean endLastAllocation) {
-        this.endLastAllocation = endLastAllocation;
+    public boolean isSuccessful() {
+        return successful;
     }
 }

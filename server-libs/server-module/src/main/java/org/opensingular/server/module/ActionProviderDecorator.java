@@ -1,7 +1,7 @@
 package org.opensingular.server.module;
 
 import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 public abstract class ActionProviderDecorator implements ActionProvider {

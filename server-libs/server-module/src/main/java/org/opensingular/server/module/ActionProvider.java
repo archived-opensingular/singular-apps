@@ -1,7 +1,8 @@
 package org.opensingular.server.module;
 
 import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.factory.BoxItemActionList;
+import org.opensingular.server.commons.box.BoxItemDataImpl;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 /**

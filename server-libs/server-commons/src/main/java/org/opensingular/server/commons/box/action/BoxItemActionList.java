@@ -1,8 +1,7 @@
-package org.opensingular.server.commons.box.factory;
+package org.opensingular.server.commons.box.action;
 
 
 import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.flow.actions.DefaultBoxItemActionFactory;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.util.ArrayList;

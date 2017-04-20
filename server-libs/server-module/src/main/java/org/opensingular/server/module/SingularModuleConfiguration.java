@@ -86,7 +86,6 @@ public class SingularModuleConfiguration {
     }
 
 
-    @Deprecated
     public List<SingularRequirementRef> getRequirements() {
         return requirements;
     }

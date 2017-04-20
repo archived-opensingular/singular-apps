@@ -17,6 +17,7 @@
 package org.opensingular.server.core.wicket.model;
 
 import org.opensingular.server.commons.box.BoxItemData;
+import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemAction;
 
@@ -32,7 +33,7 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
 
     public BoxItemDataMap(BoxItemData boxItemData) {
         this.boxItemData = boxItemData;
-        putAll(boxItemData.getRawMap());
+        putAll(((BoxItemDataImpl) boxItemData).getRawMap());
     }
 
     public Long getCod() {

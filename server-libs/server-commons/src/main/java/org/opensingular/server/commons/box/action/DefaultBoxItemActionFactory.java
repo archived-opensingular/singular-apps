@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.actions;
+package org.opensingular.server.commons.box.action;
 
 
 import org.opensingular.lib.wicket.util.resource.Icone;
@@ -31,6 +31,7 @@ import static org.opensingular.server.commons.RESTPaths.EXECUTE;
 import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
 import static org.opensingular.server.commons.RESTPaths.USERS;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.REQUIREMENT_ID;
 
 public class DefaultBoxItemActionFactory {
 
@@ -45,6 +46,7 @@ public class DefaultBoxItemActionFactory {
                 .formAction(formAction.getId())
                 .petitionId(line.getPetitionId())
                 .param(FORM_NAME, line.getType())
+                .param(REQUIREMENT_ID, line.getRequirementId())
                 .build();
 
     }

@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.flow.controllers;
 
-import org.opensingular.server.commons.flow.actions.ActionRequest;
-import org.opensingular.server.commons.flow.actions.ActionResponse;
+import org.opensingular.server.commons.box.action.ActionRequest;
+import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 
