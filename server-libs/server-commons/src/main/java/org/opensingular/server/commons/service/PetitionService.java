@@ -266,7 +266,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
-        FormEntity formEntity = petition.getEntity().getMainForm();
+        FormEntity                   formEntity   = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -430,7 +430,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
+            String                   name  = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
             return Objects.equals(name, trasitionName);
         }
         return false;
@@ -442,7 +442,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
-        FormEntity mainForm = petitionEntity.getMainForm();
+        FormEntity     mainForm       = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -537,8 +537,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         ProcessInstance newProcessInstance = processDefinition.newPreStartInstance();
         newProcessInstance.setDescription(petition.getDescription());
 
-        ProcessInstanceEntity processEntity = newProcessInstance.saveEntity();
-        PE petitionEntity = (PE) petition.getEntity();
+        ProcessInstanceEntity processEntity  = newProcessInstance.saveEntity();
+        PE                    petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
         petitionDAO.saveOrUpdate(petitionEntity);
