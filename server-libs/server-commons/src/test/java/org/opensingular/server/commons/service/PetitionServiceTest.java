@@ -14,6 +14,7 @@ import org.opensingular.form.helpers.AssertionsSInstance;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.STypeFOO;
+import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -43,6 +44,9 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Inject
     public SessionFactory sessionFactory;
+
+    @Inject
+    protected PetitionDAO<PetitionEntity> petitionDAO;
 
     @Test
     public void testName() throws Exception {
@@ -165,19 +169,32 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         petitionService.getPetition((long)0);
     }
 
-//    @Test
-//    public void quickSearchTests() {
-//        QuickFilter f1 = new QuickFilter();
-//        List<Map<String, Serializable>> maps1 = petitionService.quickSearchMap(f1);
-//        assertTrue(maps1.isEmpty());
-//
-//        QuickFilter f2 = new QuickFilter();
-//        f2.withRascunho(true).withSortProperty("description");
-//        List<Map<String, Serializable>> maps2 = petitionService.quickSearchMap(f2);
-//        assertTrue(maps2.isEmpty());
-//
-//        QuickFilter f3 = new QuickFilter();
-//        Long        count = petitionService.countQuickSearch(f3);
-//        assertTrue(count == 0);
-//    }
+    @Test
+    public void quickSearchTests() {
+
+        long qtdEnviada = 0;
+        long qtdRascunho = 0;
+        List<PetitionEntity> petitionEntities = petitionDAO.listAll();
+
+        for (PetitionEntity petitionEntity : petitionEntities) {
+            if (petitionEntity.getProcessInstanceEntity() == null) {
+                qtdRascunho++;
+            } else {
+                qtdEnviada++;
+            }
+        }
+
+        QuickFilter f1 = new QuickFilter();
+        List<Map<String, Serializable>> maps1 = petitionService.quickSearchMap(f1);
+        assertEquals(qtdEnviada, maps1.size());
+
+        QuickFilter f2 = new QuickFilter();
+        f2.withRascunho(true).withSortProperty("description");
+        List<Map<String, Serializable>> maps2 = petitionService.quickSearchMap(f2);
+        assertEquals(qtdRascunho, maps2.size());
+
+        QuickFilter f3 = new QuickFilter();
+        Long        count = petitionService.countQuickSearch(f3);
+        assertTrue(count == qtdEnviada);
+    }
 }
