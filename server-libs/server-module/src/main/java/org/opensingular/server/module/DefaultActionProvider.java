@@ -37,7 +37,7 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
     }
 
     protected void addAnalyseAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
-        if (filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
+        if (filter.getIdUsuarioLogado() != null && filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
             list.addAnalyseAction(line);
         }
     }
