@@ -26,7 +26,7 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     public void saveUserIfNeededTest(){
-        SUser user = new Actor(1, "codUser", "name", "email@email.com");
+        SUser user = new Actor(13, "codUser", "name", "email@email.com");
         Assert.assertNull(actorDAO.saveUserIfNeeded(user));
 
 

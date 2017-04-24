@@ -1,9 +1,12 @@
 package org.opensingular.server.commons.admin.healthsystem;
 
+import java.util.Collection;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
+import org.opensingular.form.validation.IValidationError;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
@@ -73,10 +76,12 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @Test
     public void ipCheckerTest() throws Exception {
         SIComposite url = reachWebPanelAndGetNewCompositeInstance();
-        url.getField(0).setValue("ip://10.0.0.3:80");
+        url.getField(0).setValue("ip://localhost:80");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
-        Assert.assertEquals(0, url.getField(0).getValidationErrors().size());
+        Collection<IValidationError> validationErrors = url.getField(0).getValidationErrors();
+        String message = validationErrors.stream().map(ve -> ve.getMessage() + "\n").reduce("", String::concat);
+        Assert.assertEquals(message,0, url.getField(0).getValidationErrors().size());
     }
 
     @WithUserDetails("vinicius.nunes")

@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.dto.Email;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+import org.springframework.test.annotation.Rollback;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -32,7 +33,7 @@ public class EmailTest extends SingularCommonsBaseTest {
     }
 
     @Test(expected = SingularServerException.class)
-    @Transactional
+    @Rollback
     public void testEmailNaoExise(){
         Email e = new Email();
         emailPersistenceService.send(e);

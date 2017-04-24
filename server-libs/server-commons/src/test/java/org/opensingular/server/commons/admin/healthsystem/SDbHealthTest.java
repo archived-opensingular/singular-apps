@@ -34,7 +34,6 @@ public class SDbHealthTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    @Ignore("DELFINO")
     public void validateTablesWithErrorTest(){
         reachDbPanel();
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonDB").isNotNull().getTarget(), "click");

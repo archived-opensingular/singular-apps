@@ -14,9 +14,9 @@ public class ContextUtil {
     private static Logger logger      = LoggerFactory.getLogger(ContextUtil.class);
 
     public static void prepareRequest(ServletRequest request) {
-        logger.info("Configurando Request Context Path: " + contextPath);
+//        logger.info("Configurando Request Context Path: " + contextPath);
         new Mirror().on(request).invoke().setterFor("contextPath").withValue(contextPath);
-        logger.info("Configurando Request Path Info: " + pathInfo);
+//        logger.info("Configurando Request Path Info: " + pathInfo);
         new Mirror().on(request).invoke().setterFor("pathInfo").withValue(pathInfo);
     }
 
