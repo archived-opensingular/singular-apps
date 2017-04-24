@@ -6,6 +6,7 @@ import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
+import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
 import org.opensingular.server.p.commons.config.PFlowInitializer;
 import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
@@ -61,7 +62,7 @@ public class ServerInitializerMock extends CommonsInitializerMock {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
-                return Object.class;
+                return MailSenderSchedulerInitializer.class;
             }
 
             @Override

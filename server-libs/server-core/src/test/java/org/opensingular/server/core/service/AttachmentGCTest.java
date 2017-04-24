@@ -17,13 +17,13 @@ import java.util.Calendar;
 
 public class AttachmentGCTest extends SingularServerBaseTest {
     @Inject
-    AttachmentGCJob job;
+    private AttachmentGCJob job;
 
     @Inject
-    AttachmentContentDao<AttachmentContentEntity> attachmentContentDao;
+    private AttachmentContentDao<AttachmentContentEntity> attachmentContentDao;
 
     @Inject
-    AttachmentDao<AttachmentEntity,AttachmentContentEntity> attachmentDao;
+    private AttachmentDao<AttachmentEntity,AttachmentContentEntity> attachmentDao;
 
     @Test
     public void attachmentGCJobWithoutFilesToRemoveTest(){
