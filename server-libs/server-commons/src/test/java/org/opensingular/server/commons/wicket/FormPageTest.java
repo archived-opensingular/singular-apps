@@ -13,6 +13,8 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
@@ -25,6 +27,8 @@ import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import net.vidageek.mirror.dsl.Mirror;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class FormPageTest extends SingularCommonsBaseTest {
@@ -83,6 +87,28 @@ public class FormPageTest extends SingularCommonsBaseTest {
         SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
         Assert.assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
 
+
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void testSendForm() {
+        tester = new SingularWicketTester(singularApplication);
+        ActionContext context = new ActionContext();
+        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormAction(FormAction.FORM_FILL);
+        FormPage p = new FormPage(context);
+        tester.startPage(p);
+        tester.assertRenderedPage(FormPage.class);
+
+        TextField<String> t = (TextField<String>) new AssertionsWComponent(p).getSubComponents(TextField.class).first().getTarget();
+        t.getModel().setObject(SUPER_TESTE_STRING);
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("send-btn").getTarget(), "click");
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("confirm-btn").getTarget(), "click");
+
+        PetitionInstance petition = (PetitionInstance) new Mirror().on(p).invoke().method("getPetition").withoutArgs();
+        Assert.assertNotNull(petition.getProcessInstance());
 
     }
 
