@@ -53,10 +53,6 @@ public class CommonsInitializerMock implements PSingularInitializer {
     @Override
     public PFlowInitializer flowConfiguration() {
         return new PFlowInitializer() {
-            @Override
-            public Class<? extends IFlowMetadataREST> flowMetadataProvider() {
-                return null;
-            }
 
             @Override
             public String[] definitionsBasePackage() {

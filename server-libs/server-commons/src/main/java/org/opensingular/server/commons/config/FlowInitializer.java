@@ -18,17 +18,12 @@ package org.opensingular.server.commons.config;
 
 import org.opensingular.flow.core.ProcessDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
-import org.opensingular.flow.core.service.IFlowMetadataREST;
 import org.opensingular.server.commons.flow.SingularServerFlowConfigurationBean;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
-import java.util.Optional;
 
 public abstract class FlowInitializer {
-
-
-    public abstract Class<? extends IFlowMetadataREST> flowMetadataProvider();
 
 
     public Class<? extends SingularFlowConfigurationBean> singularFlowConfiguration() {
@@ -42,8 +37,5 @@ public abstract class FlowInitializer {
     public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
         ProcessDefinitionCache.invalidateAll();
         applicationContext.register(singularFlowConfiguration());
-        Optional
-                .ofNullable(flowMetadataProvider())
-                .ifPresent(applicationContext::register);
     }
 }
