@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.wicket;
 
 import org.apache.wicket.markup.html.form.TextField;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SInstance;
@@ -50,7 +51,6 @@ public class FormPageTest extends SingularCommonsBaseTest {
     private SingularWicketTester tester;
 
     @WithUserDetails("vinicius.nunes")
-    @Transactional
     @Test
     public void testFormPageRendering() {
         tester = new SingularWicketTester(singularApplication);
@@ -67,6 +67,19 @@ public class FormPageTest extends SingularCommonsBaseTest {
     @Test
     public void testSaveForm() {
         tester = new SingularWicketTester(singularApplication);
+        saveDraft();
+
+        SInstance fooInstance = tester.getAssertionsInstance().getTarget();
+        FormKey   formKey     = FormKey.from(fooInstance);
+
+        Assert.assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
+        Assert.assertNotNull(formService.loadFormEntity(formKey));
+
+        SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
+        Assert.assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
+    }
+
+    private FormPage saveDraft() {
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
@@ -78,23 +91,21 @@ public class FormPageTest extends SingularCommonsBaseTest {
         t.getModel().setObject(SUPER_TESTE_STRING);
         tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("save-btn").getTarget(), "click");
 
-        SInstance fooInstance = tester.getAssertionsInstance().getTarget();
-        FormKey   formKey     = FormKey.from(fooInstance);
-
-        Assert.assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
-        Assert.assertNotNull(formService.loadFormEntity(formKey));
-
-        SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
-        Assert.assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
-
-
+        return p;
     }
 
     @WithUserDetails("vinicius.nunes")
-    @Transactional
     @Test
     public void testSendForm() {
         tester = new SingularWicketTester(singularApplication);
+        FormPage p = sendDraft();
+
+        PetitionInstance petition = getPetitionFrom(p);
+        Assert.assertNotNull(petition.getProcessInstance());
+    }
+
+    @NotNull
+    public FormPage sendDraft() {
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
@@ -106,15 +117,36 @@ public class FormPageTest extends SingularCommonsBaseTest {
         t.getModel().setObject(SUPER_TESTE_STRING);
         tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("send-btn").getTarget(), "click");
         tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("confirm-btn").getTarget(), "click");
-
-        PetitionInstance petition = (PetitionInstance) new Mirror().on(p).invoke().method("getPetition").withoutArgs();
-        Assert.assertNotNull(petition.getProcessInstance());
-
+        return p;
     }
 
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void testLoadDraft() {
+        tester = new SingularWicketTester(singularApplication);
+
+        FormPage p = saveDraft();
+
+        PetitionInstance petition = getPetitionFrom(p);
+
+        ActionContext context = new ActionContext();
+        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormAction(FormAction.FORM_FILL);
+        context.setPetitionId(petition.getCod());
+
+        FormPage p2 = new FormPage(context);
+        tester.startPage(p2);
+        tester.assertRenderedPage(FormPage.class);
+
+        TextField<String> t2 = (TextField<String>) new AssertionsWComponent(p2).getSubComponents(TextField.class).first().getTarget();
+        Assert.assertEquals(SUPER_TESTE_STRING, t2.getDefaultModelObject());
+    }
+
+    public PetitionInstance getPetitionFrom(FormPage p) {
+        return (PetitionInstance) new Mirror().on(p).invoke().method("getPetition").withoutArgs();
+    }
 
     @WithUserDetails("vinicius.nunes")
-    @Transactional
     @Test
     public void testFormPageWithoutContext() {
         tester = new SingularWicketTester(singularApplication);
