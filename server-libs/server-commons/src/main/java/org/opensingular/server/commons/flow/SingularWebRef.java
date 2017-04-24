@@ -18,9 +18,9 @@ package org.opensingular.server.commons.flow;
 
 import org.apache.commons.lang3.NotImplementedException;
 import org.apache.wicket.markup.html.WebPage;
-import org.opensingular.flow.core.view.Lnk;
-import org.opensingular.flow.core.view.ModalViewDef;
-import org.opensingular.flow.core.view.WebRef;
+import org.opensingular.lib.commons.net.Lnk;
+import org.opensingular.lib.commons.net.ModalViewDef;
+import org.opensingular.lib.commons.net.WebRef;
 
 public class SingularWebRef implements WebRef {
 
