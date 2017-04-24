@@ -18,6 +18,7 @@ package org.opensingular.server.commons.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.SingularIcon;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 
@@ -29,7 +30,7 @@ public class ItemAction implements Serializable {
     private boolean defaultAction;
 
     private String         label;
-    private Icone          icon;
+    private SingularIcon   icon;
     private ItemActionType type;
     private String         controllerClassName;
 
@@ -102,7 +103,7 @@ public class ItemAction implements Serializable {
         this.label = label;
     }
 
-    public Icone getIcon() {
+    public SingularIcon getIcon() {
         return icon;
     }
 

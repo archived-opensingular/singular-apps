@@ -30,12 +30,11 @@ public abstract class FlowInitializer {
         return SingularServerFlowConfigurationBean.class;
     }
 
-    public abstract String[] definitionsBasePackage();
-
-    public abstract String processGroupCod();
-
     public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
         ProcessDefinitionCache.invalidateAll();
         applicationContext.register(singularFlowConfiguration());
     }
+
+    public abstract String processGroupCod();
+
 }
