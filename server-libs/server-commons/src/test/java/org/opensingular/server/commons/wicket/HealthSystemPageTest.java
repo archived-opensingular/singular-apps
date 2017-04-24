@@ -44,6 +44,7 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
+    @Ignore("DELFINO")
     public void testClickDbButton() {
         clickButtonAndCheckPanel("buttonDb", DbPanel.class);
     }

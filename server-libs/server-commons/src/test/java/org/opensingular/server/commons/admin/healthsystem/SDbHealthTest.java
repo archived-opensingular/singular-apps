@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.admin.healthsystem;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
@@ -33,6 +34,7 @@ public class SDbHealthTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
+    @Ignore("DELFINO")
     public void validateTablesWithErrorTest(){
         reachDbPanel();
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonDB").isNotNull().getTarget(), "click");
