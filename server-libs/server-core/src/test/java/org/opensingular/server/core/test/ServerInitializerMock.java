@@ -53,11 +53,6 @@ public class ServerInitializerMock extends CommonsInitializerMock {
     }
 
     @Override
-    public PFlowInitializer flowConfiguration() {
-        return null;
-    }
-
-    @Override
     public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override

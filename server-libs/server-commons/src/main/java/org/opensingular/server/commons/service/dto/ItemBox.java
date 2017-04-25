@@ -36,12 +36,6 @@ public class ItemBox implements Serializable {
     private Icone                icone;
     private List<DatatableField> fieldsDatatable;
 
-    // Ações disponíveis para todos os processos
-    private LinkedHashMap<String, ItemAction> actions;
-
-    // Ações específicas para um processo
-    private LinkedHashMap<String, ItemAction> processActions;
-
     public ItemBox() {
     }
 
@@ -93,37 +87,6 @@ public class ItemBox implements Serializable {
         this.showDraft = showDraft;
     }
 
-    public LinkedHashMap<String, ItemAction> getActions() {
-        if (actions == null) {
-            actions = new LinkedHashMap<>();
-        }
-        return actions;
-    }
-
-    public void setActions(LinkedHashMap<String, ItemAction> actions) {
-        this.actions = actions;
-    }
-
-    public ItemBox addAction(ItemAction itemAction) {
-        getActions().put(itemAction.getName(), itemAction);
-        return this;
-    }
-
-    public LinkedHashMap<String, ItemAction> getProcessActions() {
-        if (processActions == null) {
-            processActions = new LinkedHashMap<>();
-        }
-        return processActions;
-    }
-
-    public void setProcessActions(LinkedHashMap<String, ItemAction> processActions) {
-        this.processActions = processActions;
-    }
-
-    public ItemBox addProcessAction(ProcessDTO processDTO, ItemAction itemAction) {
-        getProcessActions().put(processDTO.getName(), itemAction);
-        return this;
-    }
 
     public Icone getIcone() {
         return icone;

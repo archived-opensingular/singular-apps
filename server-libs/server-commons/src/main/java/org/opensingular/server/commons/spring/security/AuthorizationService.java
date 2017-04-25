@@ -25,6 +25,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -79,13 +80,13 @@ public class AuthorizationService implements Loggable {
         }
     }
 
-    public void filterActions(String formType, Long petitionId, List<BoxItemAction> actions, String idUsuario) {
+    public void filterActions(String formType, Long petitionId, BoxItemActionList actions, String idUsuario) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
         filterActions(formType, petitionId, actions, idUsuario, permissions);
     }
 
     @SuppressWarnings("unchecked")
-    private void filterActions(String formType, Long petitionId, List<BoxItemAction> actions, String idUsuario, List<SingularPermission> permissions) {
+    private void filterActions(String formType, Long petitionId, BoxItemActionList actions, String idUsuario, List<SingularPermission> permissions) {
         PetitionAuthMetadataDTO petitionAuthMetadataDTO = null;
         if (petitionId != null) {
             petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);

@@ -1,9 +1,10 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.form.SInstance;
+import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 
 public interface PetitionSender {
 
-    void send(PetitionInstance petition, SInstance instance, String codResponsavel);
+    PetitionSendedFeedback send(PetitionInstance petition, SInstance instance, String codResponsavel);
 
 }
