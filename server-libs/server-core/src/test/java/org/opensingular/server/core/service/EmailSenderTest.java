@@ -22,11 +22,13 @@ public class EmailSenderTest extends SingularServerBaseTest {
     @Test
     @Transactional
     public void testJobWithoutEmailToSend(){
+        emailSenderJob.setEmailsPerPage(20);
+
         Object run = emailSenderJob.run();
         Assert.assertEquals("0 sent from total of 0", run);
 
         Assert.assertEquals("EmailSenderScheduledJob [getScheduleData()="
-                +emailSenderJob.getScheduleData().toString()+", getId()="+emailSenderJob.getId()+"]",
+                        +emailSenderJob.getScheduleData().toString()+", getId()="+emailSenderJob.getId()+"]",
                 emailSenderJob.toString());
     }
 
@@ -43,17 +45,38 @@ public class EmailSenderTest extends SingularServerBaseTest {
         Date date = new Date();
 
         Email email = createMockEmail();
+        Assert.assertNull(email.getCreationDate());
+
         EmailAddresseeEntity entity = createMockEmailAddresseeEntity(date);
 
         Email.Addressee addressee = new Email.Addressee(email, entity);
 
-        Assert.assertFalse(emailSender.send(addressee));
-
         addressee.setSentDate(date);
         Assert.assertEquals(date, addressee.getSentDate());
+        addressee.setSentDate(null);
+
+        emailSender.setPort(null);
+        Assert.assertEquals(-1, emailSender.getPort());
+
+        emailSender.setPort("8080");
+        Assert.assertEquals(8080, emailSender.getPort());
+
+
+        Assert.assertFalse(emailSender.send(addressee));
+
+    }
+
+    public void testEmailAddresseEntity(){
+        Date date = new Date();
+        EmailAddresseeEntity entity = createMockEmailAddresseeEntity(date);
 
         entity.setSentDate(date);
         Assert.assertEquals(date, entity.getSentDate());
+
+        Assert.assertEquals(new Long(1), entity.getCod());
+
+        Assert.assertEquals("mirante.teste@gmail.com", entity.getAddress());
+
     }
 
     private EmailAddresseeEntity createMockEmailAddresseeEntity(Date date) {
