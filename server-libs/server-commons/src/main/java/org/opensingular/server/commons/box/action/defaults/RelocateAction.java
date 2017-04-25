@@ -3,6 +3,7 @@ package org.opensingular.server.commons.box.action.defaults;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.box.action.AbstractExecuteItemAction;
+import org.opensingular.server.commons.flow.controllers.DefaultAssignController;
 import org.opensingular.server.commons.flow.controllers.DefaultDeleteController;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 
@@ -15,6 +16,6 @@ public class RelocateAction extends AbstractExecuteItemAction {
 
 
     public RelocateAction(BoxItemData line) {
-        super("relocate", "Realocar", Icone.SHARE_SQUARE, null, CONFIRMATION_RELOCATE, line);
+        super("relocate", "Realocar", Icone.SHARE_SQUARE, DefaultAssignController.class, CONFIRMATION_RELOCATE, line);
     }
 }
