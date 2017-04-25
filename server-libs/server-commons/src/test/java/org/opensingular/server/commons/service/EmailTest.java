@@ -1,8 +1,12 @@
 package org.opensingular.server.commons.service;
 
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
+import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.server.commons.service.dto.Email;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
@@ -14,14 +18,17 @@ import java.io.IOException;
 import java.util.Date;
 import java.util.List;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class EmailTest extends SingularCommonsBaseTest {
 
     @Inject
     private EmailPersistenceService emailPersistenceService;
 
+    @Inject
+    private EmailAddresseeDao<EmailAddresseeEntity> emailAddresseeDao;
+
     @Test
     @Transactional
-    @Rollback
     public void testSendEmail() throws IOException {
         Email e = new Email();
         e.setCreationDate(new Date());
@@ -57,6 +64,18 @@ public class EmailTest extends SingularCommonsBaseTest {
         List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 10);
 
         Assert.assertEquals(2, list.size());
+    }
+
+    @Test
+    @Rollback
+    public void testSentMarked(){
+        List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 1);
+
+        Email.Addressee addressee = list.get(0);
+
+        emailPersistenceService.markAsSent(addressee);
+
+        Assert.assertNotNull(addressee.getSentDate());
     }
 
     private void generateMockEmailAddresseEntitties() {
