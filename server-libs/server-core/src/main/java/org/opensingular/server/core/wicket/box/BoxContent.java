@@ -54,7 +54,6 @@ import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
@@ -134,14 +133,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 for (Map.Entry<String, BoxItemAction> entry : actions) {
                     BoxItemAction itemAction = entry.getValue();
 
-                    if (itemAction.getType() == ItemActionType.POPUP) {
+                    if (itemAction.getType() == ItemActionType.URL_POPUP) {
                         appendStaticAction(
                                 $m.ofValue(itemAction.getLabel()),
                                 itemAction.getIcon(),
                                 linkFunction(itemAction, getBaseUrl(), getLinkParams()),
                                 visibleFunction(itemAction),
                                 c -> c.styleClasses($m.ofValue("worklist-action-btn")));
-                    } else if (itemAction.getType() == ItemActionType.ENDPOINT) {
+                    } else if (itemAction.getType() == ItemActionType.EXECUTE) {
                         appendAction(
                                 $m.ofValue(itemAction.getLabel()),
                                 itemAction.getIcon(),
@@ -192,7 +191,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
             String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
 
@@ -207,7 +206,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return boxItemModel.getObject();
     }
 
-    private String mountStaticUrl(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemDataMap> boxItemModel) {
+    private String mountStaticUrl(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemDataMap> boxItemModel) {
         final BoxItemAction action = boxItemModelObject(boxItemModel).getActionByName(itemAction.getName());
         if (action.getEndpoint().startsWith("http")) {
             return action.getEndpoint();
@@ -218,7 +217,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    private IBSAction<BoxItemDataMap> dynamicLinkFunction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
                 getDataModel().setObject(model.getObject());
@@ -231,7 +230,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    protected void executeDynamicAction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target) {
+    protected void executeDynamicAction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
         String url = baseUrl
@@ -248,7 +247,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    protected void relocate(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target, Actor actor) {
+    protected void relocate(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target, Actor actor) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
         String url = baseUrl
@@ -301,7 +300,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return actionRequest;
     }
 
-    protected BSModalBorder construirModalConfirmationBorder(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    protected BSModalBorder construirModalConfirmationBorder(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         final ItemActionConfirmation confirmation      = itemAction.getConfirmation();
         BSModalBorder                confirmationModal = new BSModalBorder("confirmationModal", $m.ofValue(confirmation.getTitle()));
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
@@ -347,7 +346,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return confirmationModal;
     }
 
-    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
 
     }
 
@@ -387,7 +386,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return paramsValue.toString();
     }
 
-    private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(ItemAction itemAction) {
+    private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
             BoxItemDataMap boxItemDataMap = boxItemModelObject(model);
             boolean visible = boxItemDataMap.hasAction(itemAction);

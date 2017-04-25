@@ -9,6 +9,5 @@ public interface RESTPaths {
     String PATH_BOX_SEARCH         = "/box/search";
     String USERS                   = "/listarUsuarios";
     String PATH_BOX_ACTION         = "/box/action";
-    String DELETE                  = "/delete";
     String EXECUTE                 = "/executar";
 }

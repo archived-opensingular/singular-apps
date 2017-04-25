@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
 
-import static org.opensingular.server.commons.RESTPaths.DELETE;
 import static org.opensingular.server.commons.RESTPaths.EXECUTE;
 import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
 import static org.opensingular.server.commons.RESTPaths.PATH_BOX_ACTION;
@@ -45,12 +44,6 @@ public class RESTModuleConnector implements ModuleConnector {
     @RequestMapping(value = PATH_BOX_ACTION + EXECUTE, method = RequestMethod.POST)
     public ActionResponse execute(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
         return restBackstageService.executar(id, actionRequest);
-    }
-
-    @Override
-    @RequestMapping(value = PATH_BOX_ACTION + DELETE, method = RequestMethod.POST)
-    public ActionResponse delete(@RequestParam Long id, @RequestBody ActionRequest actionRequest) {
-        return restBackstageService.excluir(id, actionRequest);
     }
 
     @Override

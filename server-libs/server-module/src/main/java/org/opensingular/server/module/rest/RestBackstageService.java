@@ -69,36 +69,11 @@ public class RestBackstageService implements Loggable {
         return listMenu(IServerContext.getContextFromName(context, singularServerConfiguration.getContexts()), user);
     }
 
-    /**
-     * @param id
-     * @param actionRequest
-     * @return
-     * @deprecated unificar para utilizar um action controller
-     */
-    @Deprecated
-    public ActionResponse excluir(Long id, ActionRequest actionRequest) {
-        try {
-            boolean hasPermission = authorizationService.hasPermission(id, null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
-            if (hasPermission) {
-                petitionService.deletePetition(id);
-                return new ActionResponse("Registro excluído com sucesso", true);
-            } else {
-                return new ActionResponse("Você não tem permissão para executar esta ação.", false);
-            }
-        } catch (Exception e) {
-            final String msg = "Erro ao excluir o item.";
-            getLogger().error(msg, e);
-            return new ActionResponse(msg, false);
-        }
-    }
 
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
-            PetitionInstance petition = petitionService.getPetition(id);
-            ProcessDefinition<?> processDefinition = petition.getProcessDefinition();
-
-            IController controller = getActionController(processDefinition, actionRequest);
-            return controller.run(petition, actionRequest);
+            IController controller = getActionController(actionRequest);
+            return controller.run(petitionService.getPetition(id), actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR
@@ -107,7 +82,7 @@ public class RestBackstageService implements Loggable {
 
     }
 
-    private IController getActionController(ProcessDefinition<?> processDefinition, ActionRequest actionRequest) {
+    private IController getActionController(ActionRequest actionRequest) {
         try {
             return ApplicationContextProvider.get().getBean(actionRequest.getAction().getController());
         } catch (Exception e) {

@@ -19,7 +19,7 @@ package org.opensingular.server.core.wicket.model;
 import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
-import org.opensingular.server.commons.service.dto.ItemAction;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -74,7 +74,7 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
         return getActionsMap().get(actionName);
     }
 
-    public boolean hasAction(ItemAction itemAction) {
+    public boolean hasAction(BoxItemAction itemAction) {
         return getActionsMap().containsKey(itemAction.getName());
     }
 

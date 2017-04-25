@@ -16,37 +16,52 @@
 
 package org.opensingular.server.commons.service.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.SingularIcon;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;
 
-public class BoxItemAction extends ItemAction {
+import java.io.Serializable;
 
-    private String     endpoint;
-    private FormAction formAction;
-    private String     requirementId;
-    private boolean useExecute = false;
+public class BoxItemAction implements Serializable {
+
+    private String                 endpoint;
+    private FormAction             formAction;
+    private String                 requirementId;
+    private String                 name;
+    private boolean                defaultAction;
+    private ItemActionConfirmation confirmation;
+    private String                 label;
+    private SingularIcon           icon;
+    private ItemActionType         type;
+    private String                 controllerClassName;
 
 
     public BoxItemAction() {
     }
 
-    public BoxItemAction(String name) {
-        super(name);
+    public BoxItemAction(String name, String label, SingularIcon icon, ItemActionType type, String endpoint, Class<? extends IController> controller, ItemActionConfirmation confirmation) {
+        this.name = name;
+        this.endpoint = endpoint;
+        this.label = label;
+        this.icon = icon;
+        this.type = type;
+        this.controllerClassName = controller != null ? controller.getName() : null;
+        this.confirmation = confirmation;
     }
 
-    public BoxItemAction(String name, String label, Icone icon, ItemActionType type) {
-        super(name, label, icon, type);
+    public BoxItemAction(String name, String label, SingularIcon icon, ItemActionType type, FormAction fomAction, String endpoint) {
+        this.name = name;
+        this.label = label;
+        this.icon = icon;
+        this.type = type;
+        this.formAction = fomAction;
+        this.endpoint = endpoint;
+        defaultAction = false;
     }
 
-    public BoxItemAction(String name, String label, Icone icon, ItemActionType type, ItemActionConfirmation confirmation) {
-        super(name, label, icon, type, confirmation);
-    }
-
-    public BoxItemAction(String name, String label, Icone icon, ItemActionType type, Class<? extends IController> defaultAssignControllerClass) {
-        super(name, label, icon, type, defaultAssignControllerClass, null);
-        this.useExecute = true;
-    }
 
     @Deprecated
     public String getEndpoint() {
@@ -58,13 +73,11 @@ public class BoxItemAction extends ItemAction {
         this.endpoint = endpoint;
     }
 
+    @JsonIgnore
     public boolean isUseExecute() {
-        return useExecute;
+        return ItemActionType.EXECUTE == type;
     }
 
-    public void setUseExecute(boolean useExecute) {
-        this.useExecute = useExecute;
-    }
 
     public FormAction getFormAction() {
         return formAction;
@@ -80,5 +93,73 @@ public class BoxItemAction extends ItemAction {
 
     public void setRequirementId(String requirementId) {
         this.requirementId = requirementId;
+    }
+
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public boolean isDefaultAction() {
+        return defaultAction;
+    }
+
+    public void setDefaultAction(boolean defaultAction) {
+        this.defaultAction = defaultAction;
+    }
+
+    public ItemActionType getType() {
+        return type;
+    }
+
+    public void setType(ItemActionType type) {
+        this.type = type;
+    }
+
+    public String getLabel() {
+        return label;
+    }
+
+    public void setLabel(String label) {
+        this.label = label;
+    }
+
+    public SingularIcon getIcon() {
+        return icon;
+    }
+
+    public void setIcon(Icone icon) {
+        this.icon = icon;
+    }
+
+    public ItemActionConfirmation getConfirmation() {
+        return confirmation;
+    }
+
+    public void setConfirmation(ItemActionConfirmation confirmation) {
+        this.confirmation = confirmation;
+    }
+
+
+    @SuppressWarnings("unchecked")
+    @JsonIgnore
+    public Class<IController> getController() {
+        try {
+            return (Class<IController>) Class.forName(controllerClassName);
+        } catch (ClassNotFoundException e) {
+            throw SingularServerException.rethrow(e.getMessage(), e);
+        }
+    }
+
+    public String getControllerClassName() {
+        return controllerClassName;
+    }
+
+    public void setControllerClassName(String controllerClassName) {
+        this.controllerClassName = controllerClassName;
     }
 }
