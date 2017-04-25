@@ -1,20 +1,24 @@
 package org.opensingular.server.commons.wicket;
 
+import javax.inject.Inject;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.TextField;
 import org.jetbrains.annotations.NotNull;
-import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.form.util.transformer.Value;
+import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
@@ -26,10 +30,10 @@ import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import net.vidageek.mirror.dsl.Mirror;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class FormPageTest extends SingularCommonsBaseTest {
@@ -72,11 +76,11 @@ public class FormPageTest extends SingularCommonsBaseTest {
         SInstance fooInstance = tester.getAssertionsInstance().getTarget();
         FormKey   formKey     = FormKey.from(fooInstance);
 
-        Assert.assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
-        Assert.assertNotNull(formService.loadFormEntity(formKey));
+        assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
+        assertNotNull(formService.loadFormEntity(formKey));
 
         SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
-        Assert.assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
+        assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
     }
 
     private FormPage saveDraft() {
@@ -101,7 +105,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         FormPage p = sendDraft();
 
         PetitionInstance petition = getPetitionFrom(p);
-        Assert.assertNotNull(petition.getProcessInstance());
+        assertNotNull(petition.getProcessInstance());
     }
 
     @NotNull
@@ -139,11 +143,50 @@ public class FormPageTest extends SingularCommonsBaseTest {
         tester.assertRenderedPage(FormPage.class);
 
         TextField<String> t2 = (TextField<String>) new AssertionsWComponent(p2).getSubComponents(TextField.class).first().getTarget();
-        Assert.assertEquals(SUPER_TESTE_STRING, t2.getDefaultModelObject());
+        assertEquals(SUPER_TESTE_STRING, t2.getDefaultModelObject());
     }
 
     public PetitionInstance getPetitionFrom(FormPage p) {
         return (PetitionInstance) new Mirror().on(p).invoke().method("getPetition").withoutArgs();
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void testExecuteTransition() {
+        tester = new SingularWicketTester(singularApplication);
+
+        FormPage p = sendDraft();
+
+        PetitionInstance petition = getPetitionFrom(p);
+
+        ActionContext context = new ActionContext();
+        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormAction(FormAction.FORM_ANALYSIS);
+        context.setPetitionId(petition.getCod());
+
+        FormPage p2 = new FormPage(context);
+        tester.startPage(p2);
+        tester.assertRenderedPage(FormPage.class);
+
+        Component transitionButton = new AssertionsWComponent(p2)
+                .getSubCompomentWithId("custom-buttons")
+                .getSubComponents(SingularButton.class)
+                .first()
+                .getTarget();
+        tester.executeAjaxEvent(transitionButton, "click");
+
+        Component confirmationButton = new AssertionsWComponent(p2)
+                .getSubCompomentWithId("modals")
+                .getSubComponents(TemplatePanel.class)
+                .last()
+                .getSubComponents(SingularButton.class)
+                .first()
+                .getTarget();
+        tester.executeAjaxEvent(confirmationButton, "click");
+
+        PetitionInstance petitionFrom = getPetitionFrom(p2);
+        TaskInstance     currentTask = petitionFrom.getCurrentTaskOrException();
+        assertEquals("No more bar", currentTask.getName());
     }
 
     @WithUserDetails("vinicius.nunes")
