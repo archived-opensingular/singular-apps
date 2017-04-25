@@ -1,9 +1,14 @@
 package org.opensingular.server.commons;
 
+import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Module connector interface for server communication
@@ -41,4 +46,6 @@ public interface ModuleConnector {
     ActionResponse execute(Long id, ActionRequest actionRequest);
 
     WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
+
+    List<Actor> listUsers(Map<String, Object> selectedTask);
 }

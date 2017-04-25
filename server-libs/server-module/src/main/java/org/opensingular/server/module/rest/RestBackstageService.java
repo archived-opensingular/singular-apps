@@ -5,6 +5,7 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.STask;
+import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
@@ -170,5 +171,9 @@ public class RestBackstageService implements Loggable {
             return boxController.get().searchItens(filter);
         }
         return new BoxItemDataList();
+    }
+
+    public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
+        return petitionService.listAllocableUsers(selectedTask);
     }
 }
