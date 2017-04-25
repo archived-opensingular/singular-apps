@@ -6,7 +6,9 @@ import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
+import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.server.commons.service.dto.Email;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
@@ -23,9 +25,6 @@ public class EmailTest extends SingularCommonsBaseTest {
 
     @Inject
     private EmailPersistenceService emailPersistenceService;
-
-    @Inject
-    private EmailAddresseeDao<EmailAddresseeEntity> emailAddresseeDao;
 
     @Test
     @Transactional
@@ -79,12 +78,17 @@ public class EmailTest extends SingularCommonsBaseTest {
     }
 
     private void generateMockEmailAddresseEntitties() {
-        Email email = new Email();
-        email.withSubject("teste");
+        Email email = emailPersistenceService.createEmail("teste");
         email.withContent("conteudo de teste");
         email.setCreationDate(new Date());
         email.addTo("mock.entity@teste.com", "mock.entity2@teste.com");
 
         emailPersistenceService.send(email);
+    }
+
+    @Test
+    public void testEmailDaoAndEmailAddresseeDaoConstructos(){
+        Assert.assertNotNull(new EmailDao<>(EmailEntity.class));
+        Assert.assertNotNull(new EmailAddresseeDao<>(EmailAddresseeEntity.class));
     }
 }

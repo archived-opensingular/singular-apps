@@ -47,5 +47,7 @@ public class ParameterServiceTest extends SingularCommonsBaseTest {
         testParameter = parameterService.findByNameAndProcessGroup("testParameter", groupEntity);
         Assert.assertEquals(entity, testParameter.get());
 
+        Assert.assertEquals(entity.getName(), testParameter.get().getName());
+        Assert.assertEquals(entity.getCod(), testParameter.get().getCod());
     }
 }
