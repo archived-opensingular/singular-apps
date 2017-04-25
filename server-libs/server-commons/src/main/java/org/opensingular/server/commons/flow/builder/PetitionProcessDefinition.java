@@ -55,7 +55,6 @@ public abstract class PetitionProcessDefinition<I extends ProcessInstance> exten
                 throw new SingularFlowException(
                         "O método " + getClass().getSimpleName() + ".buildFlow(flowBuilder) retornou null");
             }
-            configureActions(flowMap);
             return flowMap;
         } catch (Exception e) {
             SingularFlowException ex = new SingularFlowException("Erro criando fluxo do processo '" + getName() + '\'', e);
@@ -68,9 +67,6 @@ public abstract class PetitionProcessDefinition<I extends ProcessInstance> exten
      * Método a ser implementado com a criação do fluxo de processo.
      */
     protected abstract void buildFlow(@Nonnull FlowBuilderPetition flow);
-
-    protected void configureActions(FlowMap flowMap){
-    }
 
 
     /**

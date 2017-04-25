@@ -7,24 +7,25 @@ public class ItemActionTest {
 
     @Test
     public void constructorTest(){
-        ItemAction action = new ItemAction();
-        ItemAction action2 = new ItemAction("name");
+        BoxItemAction action = new BoxItemAction();
+        BoxItemAction action2 = new BoxItemAction();
+        action2.setName("name");
         Assert.assertNotEquals(action, action2);
     }
 
     @Test
     public void allMethodsTest(){
-        ItemAction action = new ItemAction();
+        BoxItemAction action = new BoxItemAction();
 
         action.setName("name");
         action.setLabel("label");
-        action.setType(ItemActionType.ENDPOINT);
+        action.setType(ItemActionType.EXECUTE);
         action.setDefaultAction(false);
         action.setConfirmation(new ItemActionConfirmation());
 
         Assert.assertEquals("name", action.getName());
         Assert.assertEquals("label", action.getLabel());
-        Assert.assertEquals(ItemActionType.ENDPOINT, action.getType());
+        Assert.assertEquals(ItemActionType.EXECUTE, action.getType());
         Assert.assertFalse(action.isDefaultAction());
         Assert.assertNotNull(action.getConfirmation());
     }

@@ -3,11 +3,10 @@ package org.opensingular.server.p.module.workspace;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
-import org.opensingular.server.module.provider.PetitionItemBoxDataProvider;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.PetitionBoxItemDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -27,13 +26,13 @@ public class DefaultEverythingbox implements ItemBoxFactory {
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Petições em andamento");
         acompanhamento.setIcone(Icone.CLOCK);
-        acompanhamento.addAction(DefaultActions.VIEW);
+//        acompanhamento.addAction(DefaultActions.VIEW);
         return acompanhamento;
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return ApplicationContextProvider.get().getBean(PetitionItemBoxDataProvider.class);
+    public BoxItemDataProvider getDataProvider() {
+        return ApplicationContextProvider.get().getBean(PetitionBoxItemDataProvider.class);
     }
 
     @Override

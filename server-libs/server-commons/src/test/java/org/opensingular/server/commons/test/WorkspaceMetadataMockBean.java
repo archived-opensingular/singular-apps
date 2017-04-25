@@ -3,7 +3,6 @@ package org.opensingular.server.commons.test;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
@@ -61,9 +60,9 @@ public class WorkspaceMetadataMockBean {
         teste.setShowNewButton(true);
         teste.setShowDraft(true);
         teste.setId("1");
-        teste.addAction(DefaultActions.EDIT)
-                .addAction(DefaultActions.VIEW)
-                .addAction(DefaultActions.DELETE);
+//        teste.addAction(DefaultActions.EDIT)
+//                .addAction(DefaultActions.VIEW)
+//                .addAction(DefaultActions.DELETE);
         teste.setFieldsDatatable(getDatatableFields());
         boxDefinitionData.setRequirements(new ArrayList<>());
         RequirementData req = new RequirementData();

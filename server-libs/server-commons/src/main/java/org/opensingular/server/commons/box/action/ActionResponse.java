@@ -14,11 +14,26 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.p.commons.config;
+package org.opensingular.server.commons.box.action;
 
-import org.opensingular.server.commons.config.FlowInitializer;
+public class ActionResponse {
 
-@Deprecated
-public abstract class PFlowInitializer extends FlowInitializer {
+    private String resultMessage;
+    private boolean successful;
 
+    public ActionResponse() {
+    }
+
+    public ActionResponse(String resultMessage, boolean successful) {
+        this.resultMessage = resultMessage;
+        this.successful = successful;
+    }
+
+    public String getResultMessage() {
+        return resultMessage;
+    }
+
+    public boolean isSuccessful() {
+        return successful;
+    }
 }
