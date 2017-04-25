@@ -1,6 +1,8 @@
 package org.opensingular.server.core.wicket;
 
+import javax.inject.Inject;
 
+import org.apache.wicket.Component;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.ContextUtil;
@@ -11,8 +13,6 @@ import org.opensingular.server.core.wicket.box.BoxPage;
 import org.opensingular.server.p.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class BoxPageTest extends SingularServerBaseTest {
@@ -33,7 +33,77 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test
     public void renderTestPageWithMenu() {
         tester = new SingularWicketTester(singularApplication);
-        tester.startPage(BoxPage.class);
+        BoxPage boxPage = new BoxPage();
+        tester.startPage(boxPage);
+        tester.assertRenderedPage(BoxPage.class);
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void deleteItem() {
+        tester = new SingularWicketTester(singularApplication);
+        BoxPage boxPage = new BoxPage();
+        tester.startPage(boxPage);
+        tester.assertRenderedPage(BoxPage.class);
+
+        Component deleteButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("actions")
+                .getSubCompomentWithId("3")
+                .getSubCompomentWithId("link")
+                .getTarget();
+        tester.executeAjaxEvent(deleteButton, "click");
+
+        Component confirmButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("delete-btn")
+                .getTarget();
+        tester.executeAjaxEvent(confirmButton, "click");
+
+        tester.assertRenderedPage(BoxPage.class);
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void cancelDeleteItem() {
+        tester = new SingularWicketTester(singularApplication);
+        BoxPage boxPage = new BoxPage();
+        tester.startPage(boxPage);
+        tester.assertRenderedPage(BoxPage.class);
+
+        Component deleteButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("actions")
+                .getSubCompomentWithId("3")
+                .getSubCompomentWithId("link")
+                .getTarget();
+        tester.executeAjaxEvent(deleteButton, "click");
+
+        Component confirmButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("cancel-delete-btn")
+                .getTarget();
+        tester.executeAjaxEvent(confirmButton, "click");
+
+        tester.assertRenderedPage(BoxPage.class);
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void relocateItem() {
+        tester = new SingularWicketTester(singularApplication);
+        BoxPage boxPage = new BoxPage();
+        tester.startPage(boxPage);
+        tester.assertRenderedPage(BoxPage.class);
+
+        Component deleteButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("actions")
+                .getSubCompomentWithId("4")
+                .getSubCompomentWithId("link")
+                .getTarget();
+        tester.executeAjaxEvent(deleteButton, "click");
+
+        Component confirmButton = tester.getAssertionsPage()
+                .getSubCompomentWithId("delete-btn")
+                .getTarget();
+        tester.executeAjaxEvent(confirmButton, "click");
+
         tester.assertRenderedPage(BoxPage.class);
     }
 }
