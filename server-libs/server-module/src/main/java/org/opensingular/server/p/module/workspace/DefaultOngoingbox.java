@@ -13,7 +13,7 @@ import org.opensingular.server.p.commons.config.PServerContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultEverythingbox implements ItemBoxFactory {
+public class DefaultOngoingbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
@@ -24,9 +24,8 @@ public class DefaultEverythingbox implements ItemBoxFactory {
     public ItemBox build(IServerContext context) {
         final ItemBox acompanhamento = new ItemBox();
         acompanhamento.setName("Acompanhamento");
-        acompanhamento.setDescription("Petições em andamento");
+        acompanhamento.setDescription("Requerimentos em andamento");
         acompanhamento.setIcone(Icone.CLOCK);
-//        acompanhamento.addAction(DefaultActions.VIEW);
         return acompanhamento;
     }
 
