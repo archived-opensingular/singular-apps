@@ -27,8 +27,6 @@ import org.springframework.test.context.TestExecutionListeners;
 import static org.mockito.Mockito.*;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.*;
 
-
-@ContextConfiguration(classes = {CommonsConfigurationMock.class, ModuleConfigurationMock.class}, loader = SingularCommonsContextLoader.class)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {
 
