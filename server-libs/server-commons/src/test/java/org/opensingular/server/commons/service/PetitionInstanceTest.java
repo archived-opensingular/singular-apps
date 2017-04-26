@@ -45,8 +45,6 @@ public class PetitionInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(petitionInitial.getMainFormCurrentFormVersion());
 
-        Assert.assertEquals(new Long(1), petitionInitial.getMainFormCurrentFormVersionCod());
-
         Assert.assertEquals(STypeFOO.FULL_NAME, petitionInitial.getMainFormTypeName());
     }
 }

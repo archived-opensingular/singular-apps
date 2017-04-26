@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.server.commons.admin.healthsystem.validation.database.IValidatorDatabase;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.springframework.cache.annotation.EnableCaching;
@@ -40,4 +41,9 @@ public class CommonsConfigurationMock {
         return spy(AuthorizationService.class);
     }
 
+    @Primary
+    @Bean
+    public IValidatorDatabase validatorDatabase() {
+        return spy(ValidatorOracleMock.class);
+    }
 }
