@@ -426,8 +426,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String                   name  = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
-            return Objects.equals(name, trasitionName);
+
+            if (tasks.size() > 1) {
+                String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
+                return Objects.equals(name, trasitionName);
+            }
         }
         return false;
     }

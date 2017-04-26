@@ -217,10 +217,11 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void listTasks() {
-        sendPetition("Descrição XYZ única - " + System.nanoTime());
+        String description = "Descrição XYZ única - " + System.nanoTime();
+        sendPetition(description);
 
         QuickFilter           filter           = new QuickFilter();
-        filter.withFilter("Descrição XYZ única - " + System.nanoTime());
+        filter.withFilter(description);
         List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, Collections.emptyList());
 
         assertEquals(1, taskInstanceDTOS.size());
@@ -230,7 +231,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         assertEquals("Do bar", task.getTaskName());
         assertEquals(TaskType.PEOPLE, task.getTaskType());
         assertEquals("foooooo.StypeFoo", task.getType());
-        assertEquals("Descrição XYZ única - " + System.nanoTime(), task.getDescription());
+        assertEquals(description, task.getDescription());
     }
 
     public PetitionInstance sendPetition(String description) {
@@ -274,8 +275,32 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     @Test
     public void searchPetitionHistory() {
         PetitionInstance petition = sendPetition("Descrição XYZ única - " + System.nanoTime());
-        List<PetitionHistoryDTO> histories = petitionService.listPetitionContentHistoryByPetitionCod(petition.getCod(), "null", true);
+        List<PetitionHistoryDTO> histories = petitionService.listPetitionContentHistoryByPetitionCod(petition.getCod(), "", true);
 
         assertTrue(histories.isEmpty());
+    }
+
+    @Test
+    public void previousTransition() {
+        PetitionInstance petition = sendPetition("Descrição XYZ única - " + System.nanoTime());
+        boolean          isPreviousTransition    = petitionService.isPreviousTransition(petition.getCod(), "teste");
+
+        assertFalse(isPreviousTransition);
+    }
+
+    @Test
+    public void findLastestFormInstanceByType() {
+        PetitionInstance petition = sendPetition("Descrição XYZ única - " + System.nanoTime());
+        Optional<SIComposite> lastestFormInstanceByType = petitionService.findLastestFormInstanceByType(petition, STypeFOO.class);
+
+        assertTrue(lastestFormInstanceByType.isPresent());
+    }
+
+    @Test
+    public void findLastestFormInstanceByTypes() {
+        PetitionInstance petition = sendPetition("Descrição XYZ única - " + System.nanoTime());
+        Optional<SIComposite> lastestFormInstanceByType = petitionService.findLastestFormInstanceByType(petition, Collections.singletonList(STypeFOO.class));
+
+        assertTrue(lastestFormInstanceByType.isPresent());
     }
 }
