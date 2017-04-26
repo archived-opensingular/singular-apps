@@ -27,6 +27,7 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -216,18 +217,10 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void listTasks() {
-        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        String description = "Descrição XYZ única - " + System.nanoTime();
-        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
-        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
-        petitionInstance.setDescription(description);
-        petitionService.saveOrUpdate(petitionInstance, instance, true);
-        petitionInstance.setProcessDefinition(FOOFlow.class);
-        petitionSender.send(petitionInstance, instance, "vinicius.nunes");
+        sendPetition("Descrição XYZ única - " + System.nanoTime());
 
         QuickFilter           filter           = new QuickFilter();
-        filter.withFilter(description);
+        filter.withFilter("Descrição XYZ única - " + System.nanoTime());
         List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, Collections.emptyList());
 
         assertEquals(1, taskInstanceDTOS.size());
@@ -237,20 +230,25 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         assertEquals("Do bar", task.getTaskName());
         assertEquals(TaskType.PEOPLE, task.getTaskType());
         assertEquals("foooooo.StypeFoo", task.getType());
-        assertEquals(description, task.getDescription());
+        assertEquals("Descrição XYZ única - " + System.nanoTime(), task.getDescription());
     }
 
-    @Test
-    public void testSearchs() {
+    public PetitionInstance sendPetition(String description) {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        String description = "Descrição XYZ única - " + System.nanoTime();
-        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
-        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionInstance.setDescription(description);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
         petitionInstance.setProcessDefinition(FOOFlow.class);
         petitionSender.send(petitionInstance, instance, "vinicius.nunes");
+
+        return petitionInstance;
+    }
+
+    @Test
+    public void testSearchs() {
+        PetitionInstance petitionInstance = sendPetition("Descrição XYZ única - " + System.nanoTime());
         ProcessInstance  processInstance = petitionInstance.getProcessInstance();
 
         PetitionInstance p2 = petitionService.getPetitionInstance(processInstance);
@@ -266,16 +264,18 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void createPetitionWithoutSave() {
-        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
-        PetitionInstance parent = petitionService.newPetitionInstance(petitionEntity);
-        petitionService.saveOrUpdate(parent, instance, true);
-        parent.setProcessDefinition(FOOFlow.class);
-        petitionSender.send(parent, instance, "vinicius.nunes");
+        PetitionInstance parent = sendPetition("Descrição XYZ única - " + System.nanoTime());
 
         PetitionInstance petition = petitionService.createNewPetitionWithoutSave(FOOFlow.class, parent, PetitionInstance::getCod);
 
         assertNull(petition.getCod());
+    }
+
+    @Test
+    public void searchPetitionHistory() {
+        PetitionInstance petition = sendPetition("Descrição XYZ única - " + System.nanoTime());
+        List<PetitionHistoryDTO> histories = petitionService.listPetitionContentHistoryByPetitionCod(petition.getCod(), "null", true);
+
+        assertTrue(histories.isEmpty());
     }
 }

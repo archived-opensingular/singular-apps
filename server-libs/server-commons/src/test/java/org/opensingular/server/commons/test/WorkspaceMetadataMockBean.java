@@ -17,6 +17,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -48,8 +49,7 @@ public class WorkspaceMetadataMockBean {
         box.setId("id-teste-SingularServerSessionConfigurationMock");
         box.setLabel("super caixa");
         box.setProcesses(new ArrayList<>());
-        ProcessDTO p = new ProcessDTO();
-        p.setName("ajaaja");
+        ProcessDTO p = new ProcessDTO("ajaaja", "ajaaja", null, Collections.emptyList());
         box.getProcesses().add(p);
         box.setBoxesDefinition(new ArrayList<>());
         BoxDefinitionData boxDefinitionData = new BoxDefinitionData();

@@ -33,7 +33,7 @@ public class MenuServiceMock implements MenuService {
 
     @Override
     public BoxConfigurationData getMenuByLabel(String label) {
-        return null;
+        return workspaceMetadataMockBean.gimmeSomeMock().getBoxesConfiguration().get(0);
     }
 
     @Override
