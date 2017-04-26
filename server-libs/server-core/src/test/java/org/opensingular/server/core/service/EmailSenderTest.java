@@ -3,11 +3,14 @@ package org.opensingular.server.core.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.server.commons.persistence.entity.enums.AddresseType;
 import org.opensingular.server.commons.service.dto.Email;
 import org.opensingular.server.core.test.SingularServerBaseTest;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
@@ -61,11 +64,13 @@ public class EmailSenderTest extends SingularServerBaseTest {
         emailSender.setPort("8080");
         Assert.assertEquals(8080, emailSender.getPort());
 
+        emailSender.setUsername("test@email.com");
 
         Assert.assertFalse(emailSender.send(addressee));
 
     }
 
+    @Test
     public void testEmailAddresseEntity(){
         Date date = new Date();
         EmailAddresseeEntity entity = createMockEmailAddresseeEntity(date);
@@ -88,6 +93,7 @@ public class EmailSenderTest extends SingularServerBaseTest {
         Assert.assertNull(emailEntity.getAddresseType());
 
         emailEntity.setAddress("mirante.teste@gmail.com");
+        emailEntity.setAddresseType(AddresseType.TO);
         return emailEntity;
     }
 
@@ -102,6 +108,15 @@ public class EmailSenderTest extends SingularServerBaseTest {
 
         email.addBcc(Arrays.asList("email1@email.com", "email2@email.com", "email3@email.com"));
         email.addBcc("email1@email.com", "email2@email.com", "email3@email.com");
+
+        File f = null;
+        try {
+            f = File.createTempFile("nada","de nada");
+        } catch (IOException e) {
+            getLogger().error("erro ao criar arquivo temporario");
+        }
+        f.deleteOnExit();
+        email.addAttachment(f, "lada");
 
         return email;
     }
