@@ -19,6 +19,7 @@ import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
@@ -26,6 +27,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -204,5 +206,17 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void listTasks() {
         List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(new QuickFilter(), Collections.emptyList());
         assertTrue(taskInstanceDTOS.isEmpty());
+    }
+
+    @Test
+    @Rollback
+    public void countTasks(){
+        QuickFilter filter = new QuickFilter();
+        filter.withFilter("filter");
+        filter.withProcessesAbbreviation(Arrays.asList("task1", "task2"));
+
+        SingularPermission permission = new SingularPermission("singularId", "internalId");
+
+        Assert.assertEquals(new Long(0), petitionService.countTasks(filter, Arrays.asList(permission)));
     }
 }
