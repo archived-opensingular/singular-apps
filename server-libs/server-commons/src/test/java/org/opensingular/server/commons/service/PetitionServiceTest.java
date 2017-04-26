@@ -1,10 +1,21 @@
 package org.opensingular.server.commons.service;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
@@ -24,18 +35,7 @@ import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Transactional
 public class PetitionServiceTest extends SingularCommonsBaseTest {
@@ -212,5 +212,62 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         SingularPermission permission = new SingularPermission("singularId", "internalId");
 
         Assert.assertEquals(new Long(0), petitionService.countTasks(filter, Arrays.asList(permission)));
+    }
+
+    @Test
+    public void listTasks() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        String description = "Descrição XYZ única - " + System.nanoTime();
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionInstance.setDescription(description);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+        petitionInstance.setProcessDefinition(FOOFlow.class);
+        petitionSender.send(petitionInstance, instance, "vinicius.nunes");
+
+        QuickFilter           filter           = new QuickFilter();
+        filter.withFilter(description);
+        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, Collections.emptyList());
+
+        assertEquals(1, taskInstanceDTOS.size());
+        TaskInstanceDTO task = taskInstanceDTOS.get(0);
+        assertNull(task.getCodUsuarioAlocado());
+        assertNull(task.getNomeUsuarioAlocado());
+        assertEquals("Do bar", task.getTaskName());
+        assertEquals(TaskType.PEOPLE, task.getTaskType());
+        assertEquals("foooooo.StypeFoo", task.getType());
+        assertEquals(description, task.getDescription());
+    }
+
+    @Test
+    public void testSearchs() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        String description = "Descrição XYZ única - " + System.nanoTime();
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
+        petitionInstance.setDescription(description);
+        petitionService.saveOrUpdate(petitionInstance, instance, true);
+        petitionInstance.setProcessDefinition(FOOFlow.class);
+        petitionSender.send(petitionInstance, instance, "vinicius.nunes");
+        ProcessInstance  processInstance = petitionInstance.getProcessInstance();
+
+        PetitionInstance p2 = petitionService.getPetitionInstance(processInstance);
+        PetitionInstance p3 = petitionService.getPetitionInstance(processInstance.getCurrentTaskOrException());
+        PetitionInstance p4 = petitionService.getPetition(processInstance);
+        PetitionInstance p5 = petitionService.getPetition(processInstance.getCurrentTaskOrException());
+
+        assertEquals(petitionInstance.getCod(), p2.getCod());
+        assertEquals(petitionInstance.getCod(), p3.getCod());
+        assertEquals(petitionInstance.getCod(), p4.getCod());
+        assertEquals(petitionInstance.getCod(), p5.getCod());
+    }
+
+    @Test
+    public void createPetitionWithoutSave() {
+        PetitionInstance petition = petitionService.createNewPetitionWithoutSave(null, null, null);
+
+        assertNull(petition.getCod());
     }
 }
