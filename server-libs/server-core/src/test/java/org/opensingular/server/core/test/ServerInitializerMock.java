@@ -2,10 +2,10 @@ package org.opensingular.server.core.test;
 
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
-import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
+import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.wicket.SingularApplication;
-import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -35,8 +35,8 @@ public class ServerInitializerMock extends CommonsInitializerMock {
     }
 
     @Override
-    public PSpringHibernateInitializer springHibernateConfiguration() {
-        return new PSpringHibernateInitializer() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
+        return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;

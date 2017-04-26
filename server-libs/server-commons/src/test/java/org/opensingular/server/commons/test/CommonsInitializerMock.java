@@ -3,17 +3,17 @@ package org.opensingular.server.commons.test;
 import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
+import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.p.commons.config.PSingularInitializer;
-import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
 public class CommonsInitializerMock implements PSingularInitializer {
 
-    public static final String   TESTE                      = "Teste";
-    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
+    public static final String TESTE                      = "Teste";
+    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
@@ -34,8 +34,8 @@ public class CommonsInitializerMock implements PSingularInitializer {
     }
 
     @Override
-    public PSpringHibernateInitializer springHibernateConfiguration() {
-        return new PSpringHibernateInitializer() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
+        return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;
