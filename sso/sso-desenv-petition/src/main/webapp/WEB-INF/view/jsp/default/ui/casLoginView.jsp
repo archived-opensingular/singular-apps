@@ -24,7 +24,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <script src="/singular-static/resources/comum/plugins/jquery.min.js" type="text/javascript"></script>
     <script src="/singular-static/resources/comum/scripts/singular-resource-handler.js" type="text/javascript"></script>
-    <link rel="stylesheet" href="/resources/login.css" type="text/css">
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/login.css" type="text/css">
 </head>
 
 <body class="login">
