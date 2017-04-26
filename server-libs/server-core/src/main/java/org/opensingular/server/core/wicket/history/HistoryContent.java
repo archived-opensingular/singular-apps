@@ -18,10 +18,10 @@ package org.opensingular.server.core.wicket.history;
 
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.opensingular.server.commons.wicket.historico.AbstractHistoricoContent;
+import org.opensingular.server.commons.wicket.historico.AbstractHistoryContent;
 
 
-public class HistoryContent extends AbstractHistoricoContent {
+public class HistoryContent extends AbstractHistoryContent {
 
 
     public HistoryContent(String id) {

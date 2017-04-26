@@ -50,7 +50,7 @@ import java.util.Optional;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_VERSION_KEY;
 
-public abstract class AbstractHistoricoContent extends Content {
+public abstract class AbstractHistoryContent extends Content {
 
     private static final long serialVersionUID = 8587873133590041152L;
 
@@ -61,7 +61,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private String processGroupPK;
     private String menu;
 
-    public AbstractHistoricoContent(String id) {
+    public AbstractHistoryContent(String id) {
         super(id);
     }
 
