@@ -24,6 +24,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <script src="/singular-static/resources/comum/plugins/jquery.min.js" type="text/javascript"></script>
     <script src="/singular-static/resources/comum/scripts/singular-resource-handler.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="/resources/login.css" type="text/css">
 
 </head>
 
@@ -50,7 +51,7 @@
             .addScript("/global/plugins/jquery-validation/js/jquery.validate.min.js")
             .addScript("/global/scripts/app.js")
             .addScript("/layout4/scripts/layout.js")
-            .setFavicon("/singular-static/resources/singular/img/favicon.png")
+            .setFavicon("/resources/singular/img/favicon.png")
             .apply();
 </script>
 
@@ -59,8 +60,8 @@
 
 <div class="logo">
     <a>
-        <img alt="logo" class="logo-default" id="brandLogo3"
-             src="/singular-static/resources/singular/img/logo_singular.png">>
+        <img alt="logo" class="logo-default logo-sso" id="brandLogo3"
+             src="/singular-static/resources/singular/img/logo_singular.png">
     </a>
 </div>
 
