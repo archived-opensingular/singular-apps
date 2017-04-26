@@ -16,6 +16,7 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.test.FOOFlow;
@@ -25,6 +26,7 @@ import org.springframework.test.annotation.Rollback;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -196,5 +198,11 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         QuickFilter f3 = new QuickFilter();
         Long        count = petitionService.countQuickSearch(f3);
         assertTrue(count == qtdEnviada);
+    }
+
+    @Test
+    public void listTasks() {
+        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(new QuickFilter(), Collections.emptyList());
+        assertTrue(taskInstanceDTOS.isEmpty());
     }
 }
