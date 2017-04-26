@@ -203,12 +203,6 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     }
 
     @Test
-    public void listTasks() {
-        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(new QuickFilter(), Collections.emptyList());
-        assertTrue(taskInstanceDTOS.isEmpty());
-    }
-
-    @Test
     @Rollback
     public void countTasks(){
         QuickFilter filter = new QuickFilter();
