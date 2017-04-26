@@ -70,7 +70,7 @@ public class BoxService implements Loggable {
 
     public List<BoxItemDataMap> quickSearch(ProcessGroupEntity processGroup, ItemBox itemBox, QuickFilter filter) {
         final String connectionURL = processGroup.getConnectionURL();
-        final String url           = connectionURL + itemBox.getCountEndpoint();
+        final String url           = connectionURL + itemBox.getSearchEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
                     .getBoxItemDataList()
