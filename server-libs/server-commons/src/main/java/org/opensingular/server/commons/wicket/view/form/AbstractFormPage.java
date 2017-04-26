@@ -64,6 +64,7 @@ import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService;
 import org.opensingular.server.commons.service.SingularRequirementService;
+import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.builder.MarkupCreator;
 import org.opensingular.server.commons.wicket.view.template.Content;
@@ -571,9 +572,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 Class<? extends PetitionSender> senderClass = config.getPetitionSender();
                 PetitionSender sender = ApplicationContextProvider.get().getBean(senderClass);
                 if(sender != null) {
-                    sender.send(petition, instance, username);
+                    PetitionSendedFeedback sendedFeedback = sender.send(petition, instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
-                    onAfterSend(ajxrt, sm);
+                    onAfterSend(ajxrt, sm, sendedFeedback);
                 } else {
                     throw new SingularServerException("O PetitionSender não foi configurado corretamente");
                 }
@@ -593,7 +594,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
 
-    protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal) {
+    protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal, PetitionSendedFeedback sendedFeedback) {
         atualizarContentWorklist(target);
         addAfterSendSuccessMessage();
         target.appendJavaScript("; window.close();");

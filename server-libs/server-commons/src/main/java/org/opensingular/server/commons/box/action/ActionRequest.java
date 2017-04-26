@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.flow.actions;
+package org.opensingular.server.commons.box.action;
 
 import com.fasterxml.jackson.annotation.JsonSubTypes;
 import com.fasterxml.jackson.annotation.JsonTypeInfo;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 @JsonTypeInfo(use = JsonTypeInfo.Id.NAME, include = JsonTypeInfo.As.PROPERTY)
 @JsonSubTypes({
@@ -26,16 +27,16 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo;
 })
 public class ActionRequest {
 
-    private String name;
-    private String idUsuario;
-    private Integer lastVersion;
+    private BoxItemAction action;
+    private String        idUsuario;
+    private Integer       lastVersion;
 
-    public String getName() {
-        return name;
+    public BoxItemAction getAction() {
+        return action;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setAction(BoxItemAction action) {
+        this.action = action;
     }
 
     public String getIdUsuario() {
