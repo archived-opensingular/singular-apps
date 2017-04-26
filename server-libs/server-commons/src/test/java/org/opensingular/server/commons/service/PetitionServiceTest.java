@@ -266,7 +266,15 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void createPetitionWithoutSave() {
-        PetitionInstance petition = petitionService.createNewPetitionWithoutSave(null, null, null);
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionInstance parent = petitionService.newPetitionInstance(petitionEntity);
+        petitionService.saveOrUpdate(parent, instance, true);
+        parent.setProcessDefinition(FOOFlow.class);
+        petitionSender.send(parent, instance, "vinicius.nunes");
+
+        PetitionInstance petition = petitionService.createNewPetitionWithoutSave(FOOFlow.class, parent, PetitionInstance::getCod);
 
         assertNull(petition.getCod());
     }
