@@ -25,6 +25,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
      */
     private static IConsumer<SkinOptions> skinOptionsIConsumer;
 
+    @Override
     public PWebInitializer webConfiguration() {
         skinOptionsIConsumer = this::initSkins;
         return new PWebInitializer() {
@@ -49,7 +50,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 AnnotationConfigWebApplicationContext context = super.newApplicationContext();
-                context.scan(ArrayUtils.add(ServerInitializer.this.springPackagesToScan(), "org.opensingular"));
+                context.scan(ServerInitializer.this.springPackagesToScan());
                 return context;
             }
 
@@ -82,6 +83,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
         return null;
     }
 
+    @Override
     public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override
