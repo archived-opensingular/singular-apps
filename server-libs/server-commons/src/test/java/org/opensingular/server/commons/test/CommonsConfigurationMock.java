@@ -13,7 +13,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableCaching
@@ -37,7 +37,7 @@ public class CommonsConfigurationMock {
     @Primary
     @Bean
     public AuthorizationService authorizationService() {
-        return mock(AuthorizationService.class);
+        return spy(AuthorizationService.class);
     }
 
 }
