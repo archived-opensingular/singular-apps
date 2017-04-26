@@ -3,8 +3,8 @@ package org.opensingular.server.commons.wicket;
 import javax.inject.Inject;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.TextField;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SInstance;
@@ -102,26 +102,15 @@ public class FormPageTest extends SingularCommonsBaseTest {
     @Test
     public void testSendForm() {
         tester = new SingularWicketTester(singularApplication);
-        FormPage p = sendDraft();
+        FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
 
         PetitionInstance petition = getPetitionFrom(p);
         assertNotNull(petition.getProcessInstance());
     }
 
-    @NotNull
-    public FormPage sendDraft() {
-        ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
-        context.setFormAction(FormAction.FORM_FILL);
-        FormPage p = new FormPage(context);
-        tester.startPage(p);
-        tester.assertRenderedPage(FormPage.class);
-
-        TextField<String> t = (TextField<String>) new AssertionsWComponent(p).getSubComponents(TextField.class).first().getTarget();
+    private void fillForm(Page page) {
+        TextField<String> t = (TextField<String>) new AssertionsWComponent(page).getSubComponents(TextField.class).first().getTarget();
         t.getModel().setObject(SUPER_TESTE_STRING);
-        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("send-btn").getTarget(), "click");
-        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("confirm-btn").getTarget(), "click");
-        return p;
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -155,7 +144,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     public void testExecuteTransition() {
         tester = new SingularWicketTester(singularApplication);
 
-        FormPage p = sendDraft();
+        FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
 
         PetitionInstance petition = getPetitionFrom(p);
 

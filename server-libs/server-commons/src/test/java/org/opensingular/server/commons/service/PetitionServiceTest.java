@@ -199,10 +199,4 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         Long        count = petitionService.countQuickSearch(f3);
         assertTrue(count == qtdEnviada);
     }
-
-    @Test
-    public void listTasks() {
-        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(new QuickFilter(), Collections.emptyList());
-        assertTrue(taskInstanceDTOS.isEmpty());
-    }
 }
