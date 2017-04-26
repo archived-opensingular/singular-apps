@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.junit.Test;
+import org.opensingular.form.wicket.helpers.SingularFormTester;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.ContextUtil;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
@@ -36,6 +37,7 @@ public class BoxPageTest extends SingularServerBaseTest {
         BoxPage boxPage = new BoxPage();
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
+        tester.assertNoErrorMessage();
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -45,6 +47,7 @@ public class BoxPageTest extends SingularServerBaseTest {
         BoxPage boxPage = new BoxPage();
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
+        tester.assertNoErrorMessage();
 
         Component deleteButton = tester.getAssertionsPage()
                 .getSubCompomentWithId("actions")
@@ -52,13 +55,16 @@ public class BoxPageTest extends SingularServerBaseTest {
                 .getSubCompomentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
+        tester.assertNoErrorMessage();
 
         Component confirmButton = tester.getAssertionsPage()
                 .getSubCompomentWithId("delete-btn")
                 .getTarget();
         tester.executeAjaxEvent(confirmButton, "click");
+        tester.assertNoErrorMessage();
 
         tester.assertRenderedPage(BoxPage.class);
+        tester.assertNoErrorMessage();
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -75,6 +81,7 @@ public class BoxPageTest extends SingularServerBaseTest {
                 .getSubCompomentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
+        tester.assertNoErrorMessage();
 
         Component confirmButton = tester.getAssertionsPage()
                 .getSubCompomentWithId("cancel-delete-btn")
@@ -82,6 +89,7 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester.executeAjaxEvent(confirmButton, "click");
 
         tester.assertRenderedPage(BoxPage.class);
+        tester.assertNoErrorMessage();
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -98,6 +106,13 @@ public class BoxPageTest extends SingularServerBaseTest {
                 .getSubCompomentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
+        tester.assertNoErrorMessage();
+
+        Component confirmationForm = tester.getAssertionsPage()
+                .getSubCompomentWithId("confirmationForm")
+                .getTarget();
+        SingularFormTester formTester = tester.newSingularFormTester(confirmationForm.getPageRelativePath());
+        formTester.select("selecao", 0);
 
         Component confirmButton = tester.getAssertionsPage()
                 .getSubCompomentWithId("delete-btn")
@@ -105,5 +120,6 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester.executeAjaxEvent(confirmButton, "click");
 
         tester.assertRenderedPage(BoxPage.class);
+        tester.assertNoErrorMessage();
     }
 }

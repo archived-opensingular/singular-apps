@@ -2,11 +2,11 @@ package org.opensingular.server.core.service;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.wicket.model.IModel;
@@ -14,7 +14,6 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.action.ActionResponse;
-import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
@@ -25,12 +24,10 @@ import org.springframework.context.annotation.Primary;
 @Named
 public class BoxServiceMock extends BoxService {
 
-    @Inject
-    private ActorDAO actorDAO;
-
     @Override
     public List<Actor> buscarUsuarios(ProcessGroupEntity processGroup, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
-        return actorDAO.listAll();
+        Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
+        return Collections.singletonList(actor);
     }
 
     @Override
