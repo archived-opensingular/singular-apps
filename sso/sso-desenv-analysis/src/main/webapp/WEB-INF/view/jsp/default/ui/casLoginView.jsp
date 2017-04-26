@@ -60,7 +60,7 @@
 <div class="logo">
     <a>
         <img alt="logo" class="logo-default" id="brandLogo3"
-             src="/singular-static/resources/singular/img/logo_singular_gray.svg">
+             src="/singular-static/resources/singular/img/logo_singular.png">>
     </a>
 </div>
 
