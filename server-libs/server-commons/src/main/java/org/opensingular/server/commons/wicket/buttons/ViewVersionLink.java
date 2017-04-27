@@ -22,8 +22,8 @@ public class ViewVersionLink extends Panel {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                this.add($b.attr("target", String.format("version%s", context.getFormVersionId().get())));
-                this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
+                this.add($b.attr("target", String.format("version%s", ViewVersionLink.this.context.getFormVersionId().get())));
+                this.add($b.attr("href", DispatcherPageUtil.buildFullURL(ViewVersionLink.this.context)));
                 this.setBody(labelModel);
             }
 
