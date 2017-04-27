@@ -1,11 +1,11 @@
 package org.opensingular.server.module.workspace;
 
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.provider.TaskBoxItemDataProvider;
 
@@ -16,7 +16,7 @@ public class DefaultDonebox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST == context;
+        return ServerContext.WORKLIST.isSameContext(context);
     }
 
     @Override
@@ -26,13 +26,15 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
         concluidas.setEndedTasks(Boolean.TRUE);
-//        concluidas.addAction(DefaultActions.VIEW);
         return concluidas;
     }
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return ApplicationContextProvider.get().getBean(TaskBoxItemDataProvider.class);
+        return new TaskBoxItemDataProvider(
+                new ActionProviderBuilder()
+                        .addViewAction()
+        );
     }
 
     @Override

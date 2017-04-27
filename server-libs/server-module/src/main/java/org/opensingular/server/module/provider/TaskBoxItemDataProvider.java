@@ -1,6 +1,7 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -18,18 +19,22 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Named
 public class TaskBoxItemDataProvider implements BoxItemDataProvider {
 
-    @Inject
-    private PetitionService<?, ?> petitionService;
 
-    @Inject
-    private PermissionResolverService permissionResolverService;
+    private ActionProvider actionProvider = new DefaultActionProvider();
 
+    public TaskBoxItemDataProvider(ActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+    }
+
+    public TaskBoxItemDataProvider() {
+    }
+
+    @SuppressWarnings("unchecked")
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
-        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, searchPermissions(filter));
+        List<TaskInstanceDTO> taskInstanceDTOS = ApplicationContextProvider.get().getBean(PetitionService.class).listTasks(filter, searchPermissions(filter));
         return getSingularObjectMapper().toStringSerializableMap(taskInstanceDTOS);
     }
 
@@ -40,16 +45,16 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
 
     @Override
     public Long count(QuickFilter filter, BoxInfo boxInfo) {
-        return petitionService.countTasks(filter, searchPermissions(filter));
+        return ApplicationContextProvider.get().getBean(PetitionService.class).countTasks(filter, searchPermissions(filter));
     }
 
     @Override
     public ActionProvider getActionProvider() {
-        return new DefaultActionProvider();
+        return actionProvider;
     }
 
     private List<SingularPermission> searchPermissions(QuickFilter filter) {
-        return permissionResolverService.searchPermissions(filter.getIdUsuarioLogado());
+        return ApplicationContextProvider.get().getBean(PermissionResolverService.class).searchPermissions(filter.getIdUsuarioLogado());
     }
 
 }

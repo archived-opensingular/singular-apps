@@ -69,11 +69,15 @@ public class BoxPage extends ServerTemplate {
                     processGroupCod = entry.getKey().getCod();
                     BoxConfigurationData mg = entry.getValue().get(0);
                     menu = mg.getLabel();
-                    item = mg.getItemBoxes().get(0).getName();
                     PageParameters pageParameters = new PageParameters();
+
+                    if (!mg.getBoxesDefinition().isEmpty()){
+                        item = mg.getItemBoxes().get(0).getName();
+                        pageParameters.add(ITEM_PARAM_NAME, item);
+                    }
+
                     pageParameters.add(PROCESS_GROUP_PARAM_NAME, processGroupCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
-                    pageParameters.add(ITEM_PARAM_NAME, item);
                     throw new RestartResponseException(getPage().getClass(), pageParameters);
                 }
             }
