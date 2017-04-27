@@ -24,7 +24,6 @@ import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.service.dto.RequirementData;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.List;
@@ -33,6 +32,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class NewRequirementLink extends Panel {
 
@@ -100,7 +100,7 @@ public class NewRequirementLink extends Panel {
                 .baseURL(url)
                 .formAction(FormAction.FORM_FILL.getId())
                 .petitionId(null)
-                .param(DispatcherPageParameters.REQUIREMENT_ID, requirement.getId())
+                .param(REQUIREMENT_ID, requirement.getId())
                 .params(params)
                 .build();
         return result;

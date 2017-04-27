@@ -16,18 +16,18 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.model.IModel;
+import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.model.IModel;
-
-import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.dto.PetitionDTO;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
 
 /**
  * Classe base para construição de caixas do servidor de petições

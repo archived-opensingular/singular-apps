@@ -5,26 +5,23 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
-
-import java.util.List;
-import java.util.Optional;
-
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
-
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.lib.wicket.util.behavior.BSSelectInitBehaviour;
 import org.opensingular.lib.wicket.util.behavior.FormComponentAjaxUpdateBehavior;
 import org.opensingular.lib.wicket.util.menu.AbstractMenuItem;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
+import org.opensingular.server.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
+import java.util.List;
+
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class SelecaoMenuItem extends AbstractMenuItem {
 

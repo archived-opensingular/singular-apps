@@ -35,6 +35,8 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
 
     public final static String REQUIREMENT_DEFINITION = "r";
 
+    public static final String REQUIREMENT_ID = "r";
+
     public final static String FORM_VERSION_KEY = "v";
 
     public final static String DIFF = "d";
