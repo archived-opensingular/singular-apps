@@ -7,8 +7,8 @@ import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.REQUIREMENT_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
 
@@ -33,7 +33,7 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
                 .formAction(formAction.getId())
                 .petitionId(line.getPetitionId())
                 .param(FORM_NAME, line.getType())
-                .param(REQUIREMENT_ID, line.getRequirementDefinitionId())
+                .param(REQUIREMENT_DEFINITION_ID, line.getRequirementDefinitionId())
                 .build();
 
     }

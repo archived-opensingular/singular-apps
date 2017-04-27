@@ -17,27 +17,31 @@ import java.util.Optional;
  */
 public class ActionContext implements Serializable, Cloneable, Loggable {
 
-    private static final String ACTION = "a";
+    public static final String ACTION = "a";
 
-    private static final String PETITION_ID = "k";
+    public static final String PETITION_ID = "k";
 
-    private static final String PARENT_PETITION_ID = "p";
+    public static final String PARENT_PETITION_ID = "p";
 
-    private static final String FORM_NAME = "f";
+    public static final String FORM_NAME = "f";
 
-    private static final String INSTANCE_ID = "i";
+    public static final String INSTANCE_ID = "i";
 
-    private static final String PROCESS_GROUP_PARAM_NAME = "c";
+    public static final String PROCESS_GROUP_PARAM_NAME = "c";
 
-    private static final String MENU_PARAM_NAME = "m";
+    public static final String MENU_PARAM_NAME = "m";
 
-    private static final String ITEM_PARAM_NAME = "t";
+    public static final String ITEM_PARAM_NAME = "t";
 
-    private final static String FORM_VERSION_KEY = "v";
+    public static final String REQUIREMENT_DEFINITION_ID = "r";
 
-    private final static String REQUIREMENT_DEFINITION = "r";
+    public final static String FORM_VERSION_KEY = "v";
 
-    private final static String DIFF = "d";
+    public final static String DIFF = "d";
+
+    public final static String FORM_PAGE_CLASS = "w";
+
+    public final static String INHERIT_PARENT_FORM_DATA = "b";
 
     private LinkedHashMap<String, String> params = new LinkedHashMap<>();
 
@@ -84,7 +88,7 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     }
 
     public Optional<Boolean> getInheritParentFormData() {
-        return Optional.ofNullable(this.params.get(DispatcherPageParameters.INHERIT_PARENT_FORM_DATA)).map(Boolean::valueOf);
+        return Optional.ofNullable(this.params.get(INHERIT_PARENT_FORM_DATA)).map(Boolean::valueOf);
     }
 
     public ActionContext setParentPetitionId(Long parentPetitionId) {
@@ -93,11 +97,11 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     }
 
     public Optional<String> getRequirementId() {
-        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION));
+        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID));
     }
 
     public void setRequirementId(String requirementId) {
-        this.params.put(REQUIREMENT_DEFINITION, requirementId);
+        this.params.put(REQUIREMENT_DEFINITION_ID, requirementId);
     }
 
     public Optional<String> getFormName() {
@@ -182,7 +186,7 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     }
 
     public Optional<Class<? extends AbstractFormPage<?, ?>>> getFormPageClass() {
-        String formPageClassName = params.get(DispatcherPageParameters.FORM_PAGE_CLASS);
+        String formPageClassName = params.get(FORM_PAGE_CLASS);
         if (formPageClassName != null) {
             try {
                 return Optional.ofNullable((Class<? extends AbstractFormPage<?, ?>>) Class.forName(formPageClassName));
