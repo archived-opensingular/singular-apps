@@ -42,7 +42,7 @@ public class DispatcherPageParameters {
 
     public final static String FORM_VERSION_KEY = "v";
 
-    public final static String DIFF = "diff";
+    public final static String DIFF = "d";
 
     public final static String FORM_PAGE_CLASS = "fpc";
 
