@@ -100,7 +100,7 @@ public class NewRequirementLink extends Panel {
                 .baseURL(url)
                 .formAction(FormAction.FORM_FILL.getId())
                 .petitionId(null)
-                .param(REQUIREMENT_ID, requirement.getId())
+                .param(REQUIREMENT_DEFINITION_ID, requirement.getId())
                 .params(params)
                 .build();
         return result;

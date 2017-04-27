@@ -33,9 +33,7 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
 
     public static final String ITEM_PARAM_NAME = "t";
 
-    public final static String REQUIREMENT_DEFINITION = "r";
-
-    public static final String REQUIREMENT_ID = "r";
+    public static final String REQUIREMENT_DEFINITION_ID = "r";
 
     public final static String FORM_VERSION_KEY = "v";
 
@@ -99,11 +97,11 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     }
 
     public Optional<String> getRequirementId() {
-        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION));
+        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID));
     }
 
     public void setRequirementId(String requirementId) {
-        this.params.put(REQUIREMENT_DEFINITION, requirementId);
+        this.params.put(REQUIREMENT_DEFINITION_ID, requirementId);
     }
 
     public Optional<String> getFormName() {
