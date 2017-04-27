@@ -59,7 +59,6 @@ import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemDataMap;
@@ -78,7 +77,11 @@ import java.util.stream.Collectors;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -168,10 +171,10 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         BoxItemDataMap boxItem        = boxItemModelObject(boxItemModel);
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
-            pageParameters.add(DispatcherPageParameters.PETITION_ID, boxItem.getCod());
-            pageParameters.add(DispatcherPageParameters.INSTANCE_ID, boxItem.getProcessInstanceId());
-            pageParameters.add(DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME, getProcessGroup().getCod());
-            pageParameters.add(DispatcherPageParameters.MENU_PARAM_NAME, getMenu());
+            pageParameters.add(PETITION_ID, boxItem.getCod());
+            pageParameters.add(INSTANCE_ID, boxItem.getProcessInstanceId());
+            pageParameters.add(PROCESS_GROUP_PARAM_NAME, getProcessGroup().getCod());
+            pageParameters.add(MENU_PARAM_NAME, getMenu());
         }
         BookmarkablePageLink<?> historiLink = new BookmarkablePageLink<>(id, getHistoricoPage(), pageParameters);
         historiLink.setVisible(boxItem.getProcessBeginDate() != null);

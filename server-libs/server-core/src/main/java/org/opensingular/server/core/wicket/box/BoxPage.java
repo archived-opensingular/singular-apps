@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class BoxPage extends ServerTemplate {
 
