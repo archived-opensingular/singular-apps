@@ -349,7 +349,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return taskInstanceDAO.countTasks(filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
+        return taskInstanceDAO.countTasks(filter.getTasks(), filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
     }
 
     public List<STransition> listCurrentTaskTransitions(Long petitionId) {

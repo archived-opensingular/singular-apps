@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.persistence.dao.flow;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Query;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
@@ -27,7 +28,6 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.util.JPAQueryUtil;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,21 +61,15 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
         return PetitionEntity.class;
     }
 
-    public List<? extends TaskInstanceDTO> findTasks(int first, int count, String sortProperty, boolean ascending,
-                                                     String siglaFluxo, List<SingularPermission> permissions, String filtroRapido,
-                                                     boolean concluidas) {
-        return buildQuery(sortProperty, ascending, Collections.singletonList(siglaFluxo), permissions, filtroRapido, concluidas, false)
-                .setMaxResults(count).setFirstResult(first).list();
-    }
 
     public List<TaskInstanceDTO> findTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return buildQuery(filter.getSortProperty(), filter.isAscending(), filter.getProcessesAbbreviation(), permissions, filter.getFilter(), filter.getEndedTasks(), false)
+        return buildQuery(filter.getTasks(), filter.getSortProperty(), filter.isAscending(), filter.getProcessesAbbreviation(), permissions, filter.getFilter(), filter.getEndedTasks(), false)
                 .setMaxResults(filter.getCount())
                 .setFirstResult(filter.getFirst())
                 .list();
     }
 
-    protected Query buildQuery(String sortProperty, boolean ascending, List<String> processTypes, List<SingularPermission> permissions,
+    protected Query buildQuery(List<String> tasks, String sortProperty, boolean ascending, List<String> processTypes, List<SingularPermission> permissions,
                                String filtroRapido, Boolean concluidas, boolean count) {
         String selectClause =
                 count ?
@@ -106,6 +100,11 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
             condition = " and ti.endDate is null ";
         }
 
+        String taskFilter = "";
+        if (!CollectionUtils.isEmpty(tasks)) {
+            taskFilter += " AND tv.name in (:tasks)";
+        }
+
         StringBuilder sb = new StringBuilder();
 
         sb.append(" select ")
@@ -124,13 +123,16 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
                 .append(" left join formPetitionEntity.form form ")
                 .append(" where 1 = 1")
                 .append(condition)
+                .append(taskFilter)
                 .append(addQuickFilter(filtroRapido))
                 .append(getOrderBy(sortProperty, ascending, count));
 
 
         Query query = getSession().createQuery(sb.toString());
 
-
+        if (!CollectionUtils.isEmpty(tasks)) {
+            query.setParameterList("tasks", tasks);
+        }
 
         query.setParameter("sim", SimNao.SIM);
 
@@ -174,8 +176,8 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
 
-    public Long countTasks(List<String> processTypes, List<SingularPermission> permissions, String filtroRapido, Boolean concluidas) {
-        return ((Number) buildQuery(null, true, processTypes, permissions, filtroRapido, concluidas, true).uniqueResult()).longValue();
+    public Long countTasks(List<String> tasks, List<String> processTypes, List<SingularPermission> permissions, String filtroRapido, Boolean concluidas) {
+        return ((Number) buildQuery(tasks, null, true, processTypes, permissions, filtroRapido, concluidas, true).uniqueResult()).longValue();
     }
 
     @SuppressWarnings("unchecked")
