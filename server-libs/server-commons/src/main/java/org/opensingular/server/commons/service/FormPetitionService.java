@@ -541,7 +541,7 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     public FormKey formKeyFromFormEntity(@Nonnull FormEntity formEntity) {
-        return Objects.requireNonNull(formPersistenceService.keyFromObject(formEntity.getCod()));
+        return formPersistenceService.keyFromObject(formEntity.getCod());
     }
 
     /**
@@ -612,7 +612,7 @@ public class FormPetitionService<P extends PetitionEntity> {
 
     /**
      * Atualiza a instância na base de dados, com base no atributo FormmKey contido na instância informada.
-     * <p>Veja {@link org.opensingular.form.persistence.BasicFormPersistence#update(SInstance, Integer)}</p>
+     * <p>Veja {@link IFormService#update(SInstance, Integer)}</p>
      */
     public void update(@Nonnull SInstance instance, Integer inclusionActor) {
         formPersistenceService.update(instance, inclusionActor);
