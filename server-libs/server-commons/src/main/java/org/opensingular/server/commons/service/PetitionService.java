@@ -412,7 +412,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
-        Integer taskInstanceId = (Integer) selectedTask.get("taskInstanceId");
+        Integer taskInstanceId = Integer.valueOf(String.valueOf(selectedTask.get("taskInstanceId")));
         return actorDAO.listAllocableUsers(taskInstanceId);
     }
 
