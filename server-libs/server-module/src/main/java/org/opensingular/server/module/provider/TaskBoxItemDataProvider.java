@@ -1,6 +1,7 @@
 package org.opensingular.server.module.provider;
 
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
@@ -13,16 +14,18 @@ import org.opensingular.server.module.BoxInfo;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.DefaultActionProvider;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class TaskBoxItemDataProvider implements BoxItemDataProvider {
 
 
-    private ActionProvider actionProvider = new DefaultActionProvider();
+    private ActionProvider        actionProvider = new DefaultActionProvider();
+    private List<ITaskDefinition> tasksFilter    = new ArrayList<>();
 
     public TaskBoxItemDataProvider(ActionProvider actionProvider) {
         this.actionProvider = actionProvider;
@@ -31,9 +34,15 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
     public TaskBoxItemDataProvider() {
     }
 
+    public TaskBoxItemDataProvider(ActionProvider actionProvider, ITaskDefinition... taskDefinitions) {
+        this.actionProvider = actionProvider;
+        tasksFilter.addAll(Arrays.asList(taskDefinitions));
+    }
+
     @SuppressWarnings("unchecked")
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
+        filter.forTasks(tasksFilter.stream().map(ITaskDefinition::getName).collect(Collectors.toList()).toArray(new String[0]));
         List<TaskInstanceDTO> taskInstanceDTOS = ApplicationContextProvider.get().getBean(PetitionService.class).listTasks(filter, searchPermissions(filter));
         return getSingularObjectMapper().toStringSerializableMap(taskInstanceDTOS);
     }
@@ -45,6 +54,7 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
 
     @Override
     public Long count(QuickFilter filter, BoxInfo boxInfo) {
+        filter.forTasks(tasksFilter.stream().map(ITaskDefinition::getName).collect(Collectors.toList()).toArray(new String[0]));
         return ApplicationContextProvider.get().getBean(PetitionService.class).countTasks(filter, searchPermissions(filter));
     }
 
