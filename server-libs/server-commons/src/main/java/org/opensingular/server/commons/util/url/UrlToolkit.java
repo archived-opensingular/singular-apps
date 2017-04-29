@@ -13,7 +13,7 @@ public class UrlToolkit {
     public String concatServerAdressWithContext(String context) {
         String contextPrefix = "";
         if (!context.startsWith("/")) {
-            context = "/";
+            context = "/" + context;
         }
         return url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + contextPrefix + context;
     }

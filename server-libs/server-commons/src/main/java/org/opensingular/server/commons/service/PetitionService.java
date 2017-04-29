@@ -236,10 +236,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return petitionDAO.countQuickSearch(filter, siglasProcesso, formNames);
     }
 
-    public List<PetitionDTO> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return petitionDAO.quickSearch(filter, siglasProcesso, formNames);
-    }
-
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
         return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
     }
@@ -430,8 +426,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-            String                   name  = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
-            return Objects.equals(name, trasitionName);
+
+            if (tasks.size() > 1) {
+                String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
+                return Objects.equals(name, trasitionName);
+            }
         }
         return false;
     }

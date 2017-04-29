@@ -52,7 +52,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.MEN
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
-public abstract class AbstractHistoricoContent extends Content {
+public abstract class AbstractHistoryContent extends Content {
 
     private static final long serialVersionUID = 8587873133590041152L;
 
@@ -63,7 +63,7 @@ public abstract class AbstractHistoricoContent extends Content {
     private String processGroupPK;
     private String menu;
 
-    public AbstractHistoricoContent(String id) {
+    public AbstractHistoryContent(String id) {
         super(id);
     }
 

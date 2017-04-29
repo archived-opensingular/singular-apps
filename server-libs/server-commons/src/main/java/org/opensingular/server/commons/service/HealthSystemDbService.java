@@ -34,7 +34,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class HealthPanelDbService implements Loggable {
+public class HealthSystemDbService implements Loggable {
 	@Inject
 	private HealthSystemDAO saudeDao;
 
@@ -86,8 +86,9 @@ public class HealthPanelDbService implements Loggable {
 		String hibernateDialect = saudeDao.getHibernateDialect();
 
 		try{
-			return ValidatorFactory.getDriver(hibernateDialect);
+			return ValidatorFactory.getValidator(hibernateDialect);
 		}catch (Exception e){
+			getLogger().error(e.getMessage());
 			return null;
 		}
 	}

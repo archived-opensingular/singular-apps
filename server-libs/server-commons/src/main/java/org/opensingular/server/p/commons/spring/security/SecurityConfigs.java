@@ -54,7 +54,7 @@ public class SecurityConfigs {
     @Configuration
     @EnableWebMvc
     @Order(105)
-    public static class AdministrationSecuriry extends WebSecurityConfigurerAdapter {
+    public static class AdministrationSecurity extends WebSecurityConfigurerAdapter {
 
         @Inject
         private AdminCredentialChecker credentialChecker;

@@ -60,6 +60,7 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
+import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 import org.springframework.web.client.RestTemplate;
@@ -74,6 +75,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import javax.inject.Inject;
+
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
@@ -84,6 +87,9 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.PET
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
+
+    @Inject
+    private BoxService boxService;
 
     private Pair<String, SortOrder>   sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
@@ -185,15 +191,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return HistoryPage.class;
     }
 
-    @Override
-    protected WebMarkupContainer criarLinkEdicao(String id, IModel<BoxItemDataMap> peticao) {
-        if (boxItemModelObject(peticao).getProcessBeginDate() == null) {
-            return criarLink(id, peticao, FormAction.FORM_FILL);
-        } else {
-            return criarLink(id, peticao, FormAction.FORM_FILL_WITH_ANALYSIS);
-        }
-    }
-
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
             String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
@@ -284,7 +281,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(String url, Object arg) {
-        ActionResponse response = new RestTemplate().postForObject(url, arg, ActionResponse.class);
+        ActionResponse response = boxService.callModule(url, arg, ActionResponse.class);
         if (response.isSuccessful()) {
             addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -309,7 +306,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
 
         Model<Actor>        actorModel     = new Model<>();
-        IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(getDataModel(), confirmation));
+        IModel<List<Actor>> actorsModel    = $m.get(() -> boxService.buscarUsuarios(getProcessGroup(), getDataModel(), confirmation));
         DropDownChoice      dropDownChoice = criarDropDown(actorsModel, actorModel);
         dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
         confirmationModal.addOrReplace(dropDownChoice);
@@ -364,19 +361,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 new ChoiceRenderer<>("nome", "codUsuario"));
         dropDownChoice.setRequired(true);
         return dropDownChoice;
-    }
-
-    @SuppressWarnings("unchecked")
-    private List<Actor> buscarUsuarios(IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
-
-        try {
-            return Arrays.asList(new RestTemplate().postForObject(url, boxItemModelObject(currentModel), Actor[].class));
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
     }
 
     private String appendParameters(Map<String, String> additionalParams) {
@@ -454,42 +438,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + getSearchEndpoint();
-        try {
-            return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
-                    .getBoxItemDataList()
-                    .stream()
-                    .map(BoxItemDataMap::new)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
+        return boxService.quickSearch(getProcessGroup(), getItemBoxModelObject(), filter);
     }
 
     @Override
     protected WebMarkupContainer criarLink(String id, IModel<BoxItemDataMap> itemModel, FormAction formAction) {
-        BoxItemDataMap item = boxItemModelObject(itemModel);
-        String href = DispatcherPageUtil
-                .baseURL(getBaseUrl())
-                .formAction(formAction.getId())
-                .petitionId(item.getCod())
-                .param(FORM_NAME, item.get("type"))
-                .params(getCriarLinkParameters(item))
-                .build();
-
-        WebMarkupContainer link = new WebMarkupContainer(id);
-        link.add($b.attr("target", String.format("_%s_%s", formAction.getId(), item.getCod())));
-        link.add($b.attr("href", href));
-        return link;
-    }
-
-    @Override
-    protected Map<String, String> getCriarLinkParameters(BoxItemDataMap item) {
-        final Map<String, String> linkParameters = new HashMap<>();
-        linkParameters.putAll(getLinkParams());
-        return linkParameters;
+        // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
+        throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
     }
 
     private Map<String, String> getLinkParams() {
@@ -499,14 +454,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + getCountEndpoint();
-        try {
-            return new RestTemplate().postForObject(url, filter, Long.class);
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return 0;
-        }
+        return boxService.countQuickSearch(getProcessGroup(), getItemBoxModelObject(), filter);
     }
 
     @Override
