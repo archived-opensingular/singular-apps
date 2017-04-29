@@ -27,11 +27,12 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 
-public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> implements FlowConfirmModal {
+public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends FlowConfirmPanel {
 
     private final AbstractFormPage<PE, PI> formPage;
 
-    public AbstractFlowConfirmModal(AbstractFormPage<PE, PI> formPage) {
+    public AbstractFlowConfirmModal(String id, String transition, AbstractFormPage<PE, PI> formPage) {
+        super(id, transition);
         this.formPage = formPage;
     }
 
@@ -43,7 +44,7 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
      * @return the new AjaxButton
      */
     protected FlowConfirmButton<PE, PI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m){
+        return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form form, IModel model) {
                 super.onValidationSuccess(ajaxRequestTarget, form, model);
@@ -56,8 +57,13 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
 
     }
 
-    protected void addDefaultConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder modal) {
-        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.confirm", newFlowConfirmButton(tn, im, vm, modal));
+    protected void addDefaultConfirmButton(BSModalBorder modal) {
+        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
+                "label.button.confirm",
+                newFlowConfirmButton(getTransition(),
+                        formPage.getInstanceModel(),
+                        getFormPage().getConfig().getViewMode(),
+                        modal));
     }
 
     protected void addDefaultCancelButton(final BSModalBorder modal) {
