@@ -76,6 +76,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -660,7 +661,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Map<String, String> getTransitionParameters(String transition) {
-        return null;
+        return new HashMap<>();
     }
 
     protected void onTransition(PetitionInstance pe, String transitionName) {
