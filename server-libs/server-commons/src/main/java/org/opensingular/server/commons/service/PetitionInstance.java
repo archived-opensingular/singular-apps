@@ -146,7 +146,7 @@ public class PetitionInstance implements Serializable {
         return processInstance;
     }
 
-    public final PetitionEntity getEntity() {
+    public PetitionEntity getEntity() {
         return petitionEntity;
     }
 
