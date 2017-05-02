@@ -40,6 +40,7 @@ public class DefaultOngoingbox implements ItemBoxFactory {
     public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
+        fields.add(DatatableField.of("Descrição", "description"));
         fields.add(DatatableField.of("Dt. Entrada", "processBeginDate"));
         fields.add(DatatableField.of("Situação", "situation"));
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
