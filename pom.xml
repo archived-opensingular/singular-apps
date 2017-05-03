@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-server</artifactId>
 
-    <version>1.6.1-SNAPSHOT</version>
+    <version>1.6.0-SNAPSHOT</version>
     <name>[singular-server]</name>
     <description>Singular server</description>
     <url>http://opensingular.org</url>
@@ -413,15 +413,14 @@
         <sonar.language>java</sonar.language>
 
         <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.url>
-        <project.scm.connection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.connection>
-        <project.scm.developerConnection>scm:git:http://10.0.0.22/r/SINGULAR/singular-server.git
-        </project.scm.developerConnection>
+        <project.scm.connection>scm:git:http://10.0.0.22/SINGULAR/singular-server.git</project.scm.connection>
+        <project.scm.developerConnection>scm:git:ssh://10.0.0.22/SINGULAR/singular-server.git</project.scm.developerConnection>
         <sonar.exclusions>**/*.less, **/*.sass, **/*.html, **/*.xml **/*.js, **/*.css</sonar.exclusions>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.1.0</wicket.version>
-        <singular.version>1.6.1-SNAPSHOT</singular.version>
+        <singular.version>1.6.0</singular.version>
         <spring.security.version>4.0.3.RELEASE</spring.security.version>
         <cas.version>4.0.4</cas.version>
         <cas.client.version>3.4.1</cas.client.version>
