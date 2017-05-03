@@ -16,42 +16,43 @@
 
 package org.opensingular.server.commons.wicket.listener;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.request.IRequestHandler;
-import org.apache.wicket.request.Url;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
-import org.opensingular.server.commons.spring.security.SecurityUtil;
+import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
+import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.error.Page500;
 
+import javax.servlet.http.HttpServletRequest;
+
 /**
  * Listener para impedir que páginas de um contexto do wicket sejam acessadas por uma sessão
  * criada em outro contexto  wicket.
  */
-public class SingularServerContextListener extends AbstractRequestCycleListener {
+public class SingularServerContextListener extends AbstractRequestCycleListener implements Loggable {
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
         SingularServerConfiguration singularServerConfiguration = SingularApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
-            IServerContext     context = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
+            IServerContext context = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
             if (!SingularSession.get().getServerContext().equals(context)) {
                 resetLogin(cycle);
             }
@@ -59,8 +60,10 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     }
 
     private void resetLogin(RequestCycle cycle) {
-        final Url    url         = cycle.getUrlRenderer().getBaseUrl();
-        final String redirectURL = url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + SecurityUtil.getLogoutPath();
+        SecurityAuthPathsFactory securityAuthPathsFactory = new SecurityAuthPathsFactory();
+        SecurityAuthPaths        securityAuthPaths        = securityAuthPathsFactory.get();
+        String                   redirectURL              = securityAuthPaths.getLogoutPath(cycle);
+        getLogger().info("Redirecting to {}", redirectURL);
         throw new RedirectToUrlException(redirectURL);
     }
 

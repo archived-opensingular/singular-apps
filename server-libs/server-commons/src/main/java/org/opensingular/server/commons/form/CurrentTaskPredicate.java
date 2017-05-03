@@ -16,25 +16,23 @@
 
 package org.opensingular.server.commons.form;
 
+import org.opensingular.flow.core.ITaskDefinition;
+import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.form.SInstance;
+import org.opensingular.server.commons.service.PetitionUtil;
+
 import java.util.Optional;
 import java.util.function.Predicate;
 
-import org.opensingular.flow.core.builder.ITaskDefinition;
-import org.opensingular.form.SInstance;
-import org.opensingular.form.document.SDocument;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.server.commons.wicket.view.form.AbstractFormContent;
-
 /**
- * Used to match Current Task, retrieved from ProcessFormService, and those
+ * Used to match Current Task, retrieved from ServerSIntanceProcessAwareService, and those
  * informed.
  * Helper methods in and notIn are here to help.
  */
 public class CurrentTaskPredicate implements Predicate<SInstance>{
     private final ITaskDefinition[] referenceTasks;
     private final boolean negate;
-    private TaskInstanceEntity currentTask;
+    private TaskInstance currentTask;
 
     public static CurrentTaskPredicate  in(ITaskDefinition ... referenceTask){
         return new CurrentTaskPredicate(false, referenceTask);
@@ -69,43 +67,21 @@ public class CurrentTaskPredicate implements Predicate<SInstance>{
         return result ;
     }
 
-    protected Optional<TaskInstanceEntity> getCurrentTask() {
+    protected Optional<TaskInstance> getCurrentTask() {
         return Optional.ofNullable(currentTask);
     }
 
-    private boolean matchesReferenceTask(TaskInstanceEntity t) {
+    private boolean matchesReferenceTask(TaskInstance t) {
         for(ITaskDefinition ref : referenceTasks){
-            if(ref.getName().equalsIgnoreCase(t.getTask().getName())){
+            if (ref.getName().equalsIgnoreCase(t.getName())) {
                 return true;
             }
         }
         return false;
     }
 
-    protected void updateCurrentTask(SInstance x) {
-        currentTask = currentTask(x);
-    }
-
-    /**
-     * If instance have a Task Associated with it, returns it.
-     * @param x Instance where document contains task instance
-     * @return Task if exists
-     */
-    //TODO: Fabs: This could be extracted right? Where to?
-    public static TaskInstanceEntity currentTask(SInstance x) {
-        return currentTask(taskService(x));
-    }
-
-
-    private static TaskInstanceEntity currentTask(AbstractFormContent.ProcessFormService s) {
-        return Optional.ofNullable(s)
-                .map(AbstractFormContent.ProcessFormService::getProcessInstance)
-                .map(ProcessInstanceEntity::getCurrentTask).orElse(null);
-    }
-
-    private static AbstractFormContent.ProcessFormService taskService(SInstance x) {
-        SDocument d = x.getDocument();
-        return d.lookupService(AbstractFormContent.ProcessFormService.class);
+    protected void updateCurrentTask(SInstance instance) {
+        currentTask = PetitionUtil.getCurrentTaskEntity(instance).orElse(null);
     }
 }
 

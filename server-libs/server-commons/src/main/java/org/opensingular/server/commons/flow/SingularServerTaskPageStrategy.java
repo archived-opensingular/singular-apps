@@ -16,10 +16,10 @@
 
 package org.opensingular.server.commons.flow;
 
-import org.opensingular.flow.core.ITaskPageStrategy;
-import org.opensingular.flow.core.MUser;
-import org.opensingular.flow.core.TaskInstance;
 import org.apache.wicket.markup.html.WebPage;
+import org.opensingular.flow.core.ITaskPageStrategy;
+import org.opensingular.flow.core.SUser;
+import org.opensingular.flow.core.TaskInstance;
 
 public class SingularServerTaskPageStrategy implements ITaskPageStrategy {
 
@@ -38,7 +38,7 @@ public class SingularServerTaskPageStrategy implements ITaskPageStrategy {
     }
 
     @Override
-    public SingularWebRef getPageFor(TaskInstance taskInstance, MUser user) {
+    public SingularWebRef getPageFor(TaskInstance taskInstance, SUser user) {
         return webRef;
     }
 

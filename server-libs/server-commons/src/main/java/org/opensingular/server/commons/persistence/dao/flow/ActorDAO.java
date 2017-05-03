@@ -21,7 +21,7 @@ import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
-import org.opensingular.flow.core.MUser;
+import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.persistence.BaseDAO;
@@ -30,8 +30,11 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.transformer.FindActorByUserCodResultTransformer;
 
+import javax.annotation.Nonnull;
 import java.sql.PreparedStatement;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 
 public class ActorDAO extends BaseDAO<Actor, Integer> {
@@ -58,29 +61,29 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
     }
 
-    public MUser saveUserIfNeeded(MUser mUser) {
-        if (mUser == null) {
+    public SUser saveUserIfNeeded(SUser sUser) {
+        if (sUser == null) {
             return null;
         }
 
-        Integer cod        = mUser.getCod();
-        String  codUsuario = mUser.getCodUsuario();
+        Integer cod        = sUser.getCod();
+        String  codUsuario = sUser.getCodUsuario();
 
-        return saveUserIfNeeded(cod, codUsuario);
+        return saveUserIfNeeded(cod, codUsuario).orElse(null);
     }
 
-    public MUser saveUserIfNeeded(String codUsuario) {
-        return saveUserIfNeeded(null, codUsuario);
+    public Optional<SUser> saveUserIfNeeded(@Nonnull String codUsuario) {
+        return saveUserIfNeeded(null, Objects.requireNonNull(codUsuario));
     }
 
-    private MUser saveUserIfNeeded(Integer cod, String codUsuario) {
-        MUser result = null;
+    private Optional<SUser> saveUserIfNeeded(Integer cod, String codUsuario) {
+        SUser result = null;
         if (cod != null) {
-            result = (MUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("cod", cod)).uniqueResult();
+            result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("cod", cod)).uniqueResult();
         }
 
         if (result == null && codUsuario != null) {
-            result = (MUser) getSession().createCriteria(Actor.class).add(Restrictions.ilike("codUsuario", codUsuario)).uniqueResult();
+            result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.ilike("codUsuario", codUsuario)).uniqueResult();
         }
 
         if (result == null && cod == null) {
@@ -100,13 +103,13 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                 });
             }
             getSession().flush();
-            result = (MUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("codUsuario", codUsuario)).uniqueResult();
+            result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("codUsuario", codUsuario)).uniqueResult();
 
             if (result == null) {
                 throw SingularServerException.rethrow("Usuário que deveria ter sido criado não pode ser recuperado.");
             }
         }
-        return result;
+        return Optional.ofNullable(result);
     }
 
     @SuppressWarnings("unchecked")

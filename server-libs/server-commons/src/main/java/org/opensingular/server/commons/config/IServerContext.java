@@ -41,8 +41,7 @@ public interface IServerContext extends Serializable {
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
-    public static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
-        String contextPath = request.getContextPath();
+    public static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {String contextPath = request.getContextPath();
         String context = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
             if (context.startsWith(ctx.getUrlPath())) {
@@ -78,6 +77,7 @@ public interface IServerContext extends Serializable {
      */
     public String getUrlPath();
 
+    @Deprecated
     public String getPropertiesBaseKey();
 
     public String getName();

@@ -19,6 +19,7 @@ package org.opensingular.server.commons.config;
 import org.opensingular.form.SType;
 import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.form.spring.SpringTypeLoader;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.form.SingularServerDocumentFactory;
 import org.opensingular.server.commons.form.SingularServerFormConfigFactory;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
@@ -27,12 +28,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
+import java.util.ArrayList;
 import java.util.List;
 
-public abstract class FormInitializer {
+public class FormInitializer {
 
     public static final Logger logger        = LoggerFactory.getLogger(FormInitializer.class);
     static final        String SINGULAR_FORM = "[SINGULAR][FORM] {}";
+    private List<Class<? extends SType<?>>> types = null;
 
     protected Class<? extends SpringSDocumentFactory> documentFactory() {
         return SingularServerDocumentFactory.class;
@@ -46,7 +49,17 @@ public abstract class FormInitializer {
         return SingularServerFormConfigFactory.class;
     }
 
-    protected abstract List<Class<? extends SType<?>>> getTypes();
+    @SuppressWarnings("unchecked")
+    protected synchronized List<Class<? extends SType<?>>> getTypes() {
+        if (types == null){
+            types = new ArrayList<>();
+            SingularClassPathScanner.INSTANCE
+                    .findSubclassesOf(SType.class)
+                    .stream()
+                    .forEach(f -> types.add((Class<? extends SType<?>>) f));
+        }
+        return types;
+    }
 
     public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
         Class<?> documentFactory = documentFactory();

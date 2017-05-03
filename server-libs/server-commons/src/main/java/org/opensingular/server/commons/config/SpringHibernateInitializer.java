@@ -37,8 +37,12 @@ public class SpringHibernateInitializer {
 
     }
 
+    protected AnnotationConfigWebApplicationContext newApplicationContext(){
+        return new AnnotationConfigWebApplicationContext();
+    }
+
     public AnnotationConfigWebApplicationContext init(ServletContext ctx) {
-        AnnotationConfigWebApplicationContext applicationContext = new AnnotationConfigWebApplicationContext();
+        AnnotationConfigWebApplicationContext applicationContext = newApplicationContext();
         applicationContext.register(springConfigurationClass());
         Optional.ofNullable(swaggerConfig()).ifPresent(applicationContext::register);
         applicationContext.register(beanFactory());

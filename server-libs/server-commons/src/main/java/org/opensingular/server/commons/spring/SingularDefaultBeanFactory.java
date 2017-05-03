@@ -35,13 +35,14 @@ import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceH
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
-import org.opensingular.server.commons.file.FileInputStreamAndHashFactory;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
+import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
+import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.GrupoProcessoDAO;
+import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
@@ -50,10 +51,14 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.server.commons.service.DefaultPetitionSender;
+import org.opensingular.server.commons.service.DefaultPetitionService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
+import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
@@ -79,6 +84,7 @@ import org.springframework.core.io.ClassPathResource;
 @SuppressWarnings("rawtypes")
 public class SingularDefaultBeanFactory {
 
+    @Primary
     @Bean(name = "peticionamentoUserDetailService")
     public SingularUserDetailsService worklistUserDetailServiceFactory() {
         return new DefaultUserDetailService();
@@ -105,8 +111,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends PetitionEntity> PetitionService<T> worklistPetitionServiceFactory() {
-        return new PetitionService<>();
+    public PetitionService<?, ?> worklistPetitionServiceFactory() {
+        return new DefaultPetitionService();
     }
 
     @Bean
@@ -120,8 +126,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public GrupoProcessoDAO grupoProcessoDAO() {
-        return new GrupoProcessoDAO();
+    public ProcessGroupDAO grupoProcessoDAO() {
+        return new ProcessGroupDAO();
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)
@@ -266,23 +272,28 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public FileInputStreamAndHashFactory fileInputStreamAndHashFactory() {
-        return new FileInputStreamAndHashFactory();
-    }
-
-    @Bean
     public IAttachmentPersistenceHelper serverAttachmentPersistenceHelper(IFormService formService, IFormAttachmentService attachmentService) {
         return new ServerAttachmentPersistenceHelper(formService, attachmentService);
     }
 
     @Bean
-    public RestUserDetailsService restUserDetailsService(){
+    public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
     }
 
     @Bean
-    public AdminCredentialChecker adminCredentialChecker(ParameterService parameterService){
-        return new DatabaseAdminCredentialChecker(parameterService, null);
+    public AdminCredentialChecker adminCredentialChecker() {
+        return new DatabaseAdminCredentialChecker(null);
+    }
+
+    @Bean
+    public SingularServerMetadata singularServerMetadata() {
+        return new DefaultSingularServerMetadata();
+    }
+
+    @Bean
+    public DefaultPetitionSender defaultPetitionSender(){
+        return new DefaultPetitionSender();
     }
 
 }

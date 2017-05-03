@@ -23,7 +23,7 @@ import org.opensingular.lib.commons.base.SingularException;
  */
 public class SingularServerException extends SingularException {
 
-    protected SingularServerException(String msg) {
+    public SingularServerException(String msg) {
         super(msg);
     }
 
@@ -40,16 +40,22 @@ public class SingularServerException extends SingularException {
         return rethrow(null, e);
     }
 
+    @Deprecated
     public static SingularServerException rethrow(String message) {
         return rethrow(message, null);
     }
 
     public static SingularServerException rethrow(String message, Throwable e) {
         if (e instanceof SingularServerException) {
-            return (SingularServerException) e;
-        } else {
-            return new SingularServerException(message, e);
+            if (message == null) {
+                return (SingularServerException) e;
+            }
+        } else if (message == null){
+            return new SingularServerException(e);
+        } else if (e == null) {
+            return new SingularServerException(message);
         }
+        return new SingularServerException(message, e);
     }
 
 }

@@ -16,24 +16,23 @@
 
 package org.opensingular.server.commons.config;
 
-import java.util.Optional;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import java.util.Optional;
+
 public interface SingularInitializer extends WebApplicationInitializer {
 
-    public static final Logger logger = LoggerFactory.getLogger(SingularInitializer.class);
-    static final String SINGULAR = "[SINGULAR] {}";
-    static final String SERVLET_ATTRIBUTE_WEB_CONFIGURATION = "Singular-webInitializer";
-    static final String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION = "Singular-springHibernateInitializer";
-    static final String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
-    static final String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
+    public static final Logger logger                                             = LoggerFactory.getLogger(SingularInitializer.class);
+    static final        String SINGULAR                                           = "[SINGULAR] {}";
+    static final        String SERVLET_ATTRIBUTE_WEB_CONFIGURATION                = "Singular-webInitializer";
+    static final        String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION   = "Singular-springHibernateInitializer";
+    static final        String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
+    static final        String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
 
 
     @Override
@@ -48,8 +47,8 @@ public interface SingularInitializer extends WebApplicationInitializer {
         }
 
         logger.info(SINGULAR, " Initializing SpringHibernateConfiguration ");
-        SpringHibernateInitializer springHibernateInitializer = springHibernateConfiguration();
-        AnnotationConfigWebApplicationContext applicationContext = null;
+        SpringHibernateInitializer            springHibernateInitializer = springHibernateConfiguration();
+        AnnotationConfigWebApplicationContext applicationContext         = null;
         if (springHibernateInitializer != null) {
             applicationContext = springHibernateInitializer.init(ctx);
         } else {
@@ -95,7 +94,7 @@ public interface SingularInitializer extends WebApplicationInitializer {
             logger.info(SINGULAR, " Null SchedulerInitializer, skipping Singular Scheduler configuration");
         }
 
-        if (applicationContext != null){
+        if (applicationContext != null) {
             applicationContext.register(SingularServerConfiguration.class);
             ctx.setAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION, webInitializer);
             ctx.setAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION, springHibernateInitializer);
@@ -105,12 +104,13 @@ public interface SingularInitializer extends WebApplicationInitializer {
     }
 
 
-
     public WebInitializer webConfiguration();
 
     public SpringHibernateInitializer springHibernateConfiguration();
 
-    public FormInitializer formConfiguration();
+    default public FormInitializer formConfiguration() {
+        return new FormInitializer();
+    }
 
     public FlowInitializer flowConfiguration();
 

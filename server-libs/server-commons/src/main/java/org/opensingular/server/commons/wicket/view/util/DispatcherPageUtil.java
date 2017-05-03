@@ -32,9 +32,9 @@ public class DispatcherPageUtil {
 
     public static final String DISPATCHER_PAGE_PATH = "/";
     public static final String ACTION_ID = "a";
-    public static final String  PETITION_ID = "k";
-    private static final Logger LOGGER      = LoggerFactory.getLogger(DispatcherPageUtil.class);
-    private static final String ENCODING    = StandardCharsets.UTF_8.name();
+    public static final String PETITION_ID = "k";
+    private static final Logger LOGGER = LoggerFactory.getLogger(DispatcherPageUtil.class);
+    private static final String ENCODING = StandardCharsets.UTF_8.name();
 
     private String url;
 
@@ -55,10 +55,32 @@ public class DispatcherPageUtil {
         }
     }
 
+    public static String buildFullURL(ActionContext actionContext) {
+        return new StringBuilder(getBaseURL()).append('?').append(actionContext.toURL()).toString();
+    }
+
+    public static String getBaseURL() {
+
+        final RequestCycle requestCycle = RequestCycle.get();
+        final Request request = requestCycle.getRequest();
+        final String currentPath = request.getUrl().toString();
+
+        String fullUrl = requestCycle.getUrlRenderer().renderFullUrl(request.getUrl());
+
+        if (org.apache.commons.lang3.StringUtils.isNotBlank(currentPath)) {
+            final int beginPath = fullUrl.lastIndexOf(currentPath);
+            fullUrl = fullUrl.substring(0, beginPath - 1);
+        }
+
+        final Optional<String> contextPath = Optional.ofNullable(requestCycle.getRequest().getContextPath());
+        final Optional<String> filterPath = Optional.ofNullable(requestCycle.getRequest().getFilterPath());
+
+        return fullUrl + contextPath.orElse("") + filterPath.orElse("");
+    }
+
     public DispatcherPageUrlBuilder formAction(Object formAction) {
         return new DispatcherPageUrlBuilder(this.url + "?" + ACTION_ID + "=" + encodeParameter(formAction));
     }
-
 
     public static class DispatcherPageUrlBuilder {
 
@@ -90,7 +112,9 @@ public class DispatcherPageUtil {
         }
 
         public DispatcherPageUrlAdditionalParamsBuilder param(String name, Object value) {
-            this.url += "&" + name + "=" + encodeParameter(value);
+            if (name != null && value != null) {
+                this.url += "&" + name + "=" + encodeParameter(value);
+            }
             return this;
         }
 
@@ -98,24 +122,5 @@ public class DispatcherPageUtil {
             return this.url;
         }
 
-    }
-
-    public static String getBaseURL() {
-
-        final RequestCycle requestCycle = RequestCycle.get();
-        final Request      request      = requestCycle.getRequest();
-        final String       currentPath  = request.getUrl().toString();
-
-        String fullUrl = requestCycle.getUrlRenderer().renderFullUrl(request.getUrl());
-
-        if (org.apache.commons.lang3.StringUtils.isNotBlank(currentPath)) {
-            final int beginPath = fullUrl.lastIndexOf(currentPath);
-            fullUrl = fullUrl.substring(0, beginPath - 1);
-        }
-
-        final Optional<String> contextPath = Optional.ofNullable(requestCycle.getRequest().getContextPath());
-        final Optional<String> filterPath  = Optional.ofNullable(requestCycle.getRequest().getFilterPath());
-
-        return fullUrl + contextPath.orElse("") + filterPath.orElse("");
     }
 }
