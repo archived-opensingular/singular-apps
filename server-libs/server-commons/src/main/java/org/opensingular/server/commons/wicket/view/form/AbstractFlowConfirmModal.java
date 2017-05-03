@@ -47,8 +47,8 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
         return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form form, IModel model) {
-                super.onValidationSuccess(ajaxRequestTarget, form, model);
                 onConfirm(tn, im);
+                super.onValidationSuccess(ajaxRequestTarget, form, model);
             }
         };
     }
