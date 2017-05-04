@@ -329,6 +329,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             protected Component buildExtraContent(String id) {
                 return Optional.ofNullable(AbstractFormPage.this.buildExtraContent(id)).orElse(super.buildExtraContent(id));
             }
+
+            @Override
+            protected ServerSendButton makeServerSendButton(String id, BSModalBorder enviarModal) {
+                return AbstractFormPage.this.makeServerSendButton(id, getFormInstance(), enviarModal);
+            }
         };
 
         final RefType refType = formPetitionService.loadRefType(config.getFormName());
@@ -337,6 +342,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         onBuildSingularFormPanel(content.singularFormPanel);
 
         return content;
+    }
+
+    protected ServerSendButton makeServerSendButton(String id, IModel<? extends SInstance> formInstance, BSModalBorder enviarModal) {
+        return new ServerSendButton(id, formInstance, enviarModal);
     }
 
     private Component buildExtraContent(String id) {
