@@ -43,7 +43,7 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @Test
     public void httpCheckerTest() throws Exception {
         SIComposite url = reachWebPanelAndGetNewCompositeInstance();
-        url.getField(0).setValue("http://www.opensingular.org/");
+        url.getField(0).setValue("http://www.naoexisteabc.com.br");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
         Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
