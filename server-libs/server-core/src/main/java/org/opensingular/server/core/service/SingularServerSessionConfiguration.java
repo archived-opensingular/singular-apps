@@ -47,9 +47,13 @@ public class SingularServerSessionConfiguration implements Loggable {
         try {
             RestTemplate restTemplate = new RestTemplate();
             for (ProcessGroupEntity processGroup : buscarCategorias()) {
-                final String url = processGroup.getConnectionURL() + WORKSPACE_CONFIGURATION
-                        + "?" + MENU_CONTEXT + "=" + getMenuContext().getName()
-                        + "&" + USER + "=" + getUserDetails().getUserPermissionKey();
+                String url = processGroup.getConnectionURL() + WORKSPACE_CONFIGURATION
+                        + "?" + MENU_CONTEXT + "=" + getMenuContext().getName();
+
+                SingularUserDetails userDetails = getUserDetails();
+                if (userDetails != null) {
+                    url += "&" + USER + "=" + userDetails.getUserPermissionKey();
+                }
 
                 configMaps.put(processGroup, restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class));
 

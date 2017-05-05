@@ -37,7 +37,7 @@ public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C ex
         if (!(ref instanceof AttachmentRef)) {
             return super.copy(ref, sdoc);
         }
-        if (sdoc != null && sdoc.getRoot() != null) {
+        if (sdoc != null) {
             formAttachmentService.saveNewFormAttachmentEntity(getAttachmentEntity(ref), formService.findCurrentFormVersion(sdoc).get());
         }
         return new AttachmentCopyContext<>((AttachmentRef) ref).setDeleteOldFiles(false).setUpdateFileId(false);
