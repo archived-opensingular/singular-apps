@@ -8,12 +8,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.BoxInfo;
+import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,8 +24,11 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.anyListOf;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class TaskBoxDefinitionDataProviderTest {
@@ -35,13 +40,17 @@ public class TaskBoxDefinitionDataProviderTest {
     private PermissionResolverService permissionResolverService;
 
     @InjectMocks
-    private TaskBoxItemDataProvider taskItemBoxDataProvider;
+    private TaskBoxItemDataProvider taskItemBoxDataProvider = new TaskBoxItemDataProvider();
 
     private QuickFilter filter;
 
     @Before
     public void setUp() {
         filter = new QuickFilter();
+        ApplicationContext mock = Mockito.mock(ApplicationContext.class);
+        Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
+        Mockito.when(mock.getBean(PermissionResolverService.class)).thenReturn(permissionResolverService);
+        new ApplicationContextProvider().setApplicationContext(mock);
     }
 
     @Test
