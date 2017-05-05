@@ -4,11 +4,14 @@ import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.server.commons.exception.SingularServerException;
+
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -37,8 +40,11 @@ public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C ex
         if (!(ref instanceof AttachmentRef)) {
             return super.copy(ref, sdoc);
         }
-        if (sdoc != null) {
-            formAttachmentService.saveNewFormAttachmentEntity(getAttachmentEntity(ref), formService.findCurrentFormVersion(sdoc).get());
+        if (sdoc != null ) {
+            Optional<FormVersionEntity> fve = formService.findCurrentFormVersion(sdoc);
+            if(fve.isPresent()){
+                formAttachmentService.saveNewFormAttachmentEntity(getAttachmentEntity(ref), fve.get());
+            }
         }
         return new AttachmentCopyContext<>((AttachmentRef) ref).setDeleteOldFiles(false).setUpdateFileId(false);
     }
