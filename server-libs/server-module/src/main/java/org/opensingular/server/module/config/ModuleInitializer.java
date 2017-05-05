@@ -32,9 +32,8 @@ public abstract class ModuleInitializer implements PSingularInitializer {
         return new PWebInitializer() {
             @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return WorklistApplication.class;
-                } else if (PServerContext.PETITION.isSameContext(iServerContext)) {
+                if (PServerContext.WORKLIST.isSameContext(iServerContext)
+                        || PServerContext.PETITION.isSameContext(iServerContext)) {
                     return WorklistApplication.class;
                 } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;
