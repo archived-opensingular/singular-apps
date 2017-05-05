@@ -42,6 +42,8 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sun.tools.javac.main.JavacOption.Option;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -288,7 +290,9 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         if (! formPetitionEntity.isPresent()) {
             formPetitionEntity = Optional.of(newFormPetitionEntity(petition.getEntity(), mainForm));
-            petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
+            if(formPetitionEntity.isPresent()){
+                petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
+            }
         }
 
         DraftEntity currentDraftEntity = formPetitionEntity.get().getCurrentDraftEntity();
@@ -551,10 +555,13 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     private SDocumentFactory getFactory(@Nullable SDocumentConsumer extraFactorySetupSteps) {
+        SFormConfig<String> form = singularFormConfig
+                .orElseThrow(() -> new SingularServerException("singularFormConfig não encontrado !"));
         if (extraFactorySetupSteps != null) {
-            return singularFormConfig.get().getDocumentFactory().extendAddingSetupStep(extraFactorySetupSteps);
+            return form.getDocumentFactory().extendAddingSetupStep(extraFactorySetupSteps);
+        } else {
+            return form.getDocumentFactory();
         }
-        return singularFormConfig.get().getDocumentFactory();
     }
 
     /** Veja {@link #newTransientSInstance(FormKey, RefType, boolean, SDocumentConsumer)}. */
@@ -631,7 +638,10 @@ public class FormPetitionService<P extends PetitionEntity> {
     /** Retorna a referência para tipo indicado ou dispara exception senão for possível */
     @Nonnull
     public RefType loadRefType(@Nonnull String typeName) {
-        return singularFormConfig.get().getTypeLoader().loadRefTypeOrException(Objects.requireNonNull(typeName));
+        if(singularFormConfig.isPresent()){
+            return singularFormConfig.get().getTypeLoader().loadRefTypeOrException(Objects.requireNonNull(typeName));
+        }
+        throw new SingularServerException("singularFormConfig não encontrado !");
     }
 
     /** Retorna a referência para tipo indicado ou dispara exception senão for possível */

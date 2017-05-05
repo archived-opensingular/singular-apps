@@ -27,7 +27,9 @@ public class PetitionBoxItemDataProvider implements BoxItemDataProvider {
 
     public PetitionBoxItemDataProvider(ActionProvider actionProvider, ITaskDefinition... taskDefinitions) {
         this.actionProvider = actionProvider;
-        tasksFilter.addAll(Arrays.asList(taskDefinitions));
+        if (taskDefinitions != null) {
+            tasksFilter.addAll(Arrays.asList(taskDefinitions));
+        }
     }
 
 

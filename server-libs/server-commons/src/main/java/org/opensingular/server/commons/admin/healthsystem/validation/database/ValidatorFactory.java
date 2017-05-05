@@ -15,7 +15,10 @@
  */
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
+import java.util.NoSuchElementException;
+
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.exception.SingularServerException;
 
 /**
  * Created by vitor.rego on 17/02/2017.
@@ -36,12 +39,12 @@ public enum ValidatorFactory {
         this.descricao = descricao;
     }
 
-    public static IValidatorDatabase getValidator(String driverDialect) throws Exception{
+    public static IValidatorDatabase getValidator(String driverDialect) {
         for (ValidatorFactory value: ValidatorFactory.values()) {
             if(driverDialect.contains(value.descricao)){
                 return value.getValidator();
             }
         }
-        throw new Exception("Validator não encontrado");
+        throw new SingularServerException("Validator não encontrado");
     }
 }
