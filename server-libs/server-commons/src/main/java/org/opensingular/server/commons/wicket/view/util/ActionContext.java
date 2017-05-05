@@ -52,6 +52,10 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     public ActionContext() {
     }
 
+    public ActionContext(ActionContext actionContext) {
+        this.params = actionContext.params;
+    }
+
     /**
      * Used by {@link this#clone()} method only
      *
@@ -179,10 +183,6 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
 
     public String toURL() {
         return ParameterHttpSerializer.encode(params);
-    }
-
-    public ActionContext clone() {
-        return new ActionContext(params);
     }
 
     public Optional<Class<? extends AbstractFormPage<?, ?>>> getFormPageClass() {

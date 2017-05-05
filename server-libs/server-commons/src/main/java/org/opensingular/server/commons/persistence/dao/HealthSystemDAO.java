@@ -1,16 +1,14 @@
 package org.opensingular.server.commons.persistence.dao;
 
-import java.util.Map;
-
-import javax.transaction.Transactional;
-
-import org.hibernate.dialect.Dialect;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.opensingular.lib.support.persistence.SimpleDAO;
-import org.springframework.stereotype.Repository;
 
-@Repository
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.util.Map;
+
+@Named
 public class HealthSystemDAO extends SimpleDAO {
 
 	@Transactional
@@ -20,8 +18,7 @@ public class HealthSystemDAO extends SimpleDAO {
 	
 	@Transactional
 	public String getHibernateDialect(){
-		Dialect dialect = ((SessionFactoryImpl)sessionFactory).getDialect();
-		
-		return dialect.toString();
+		return ((SessionFactoryImpl)sessionFactory).getDialect().toString();
 	}
+
 }

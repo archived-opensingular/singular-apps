@@ -65,18 +65,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return (Long) createQuery(filtro, siglasProcesso, true, formNames).uniqueResult();
     }
 
-    public List<PetitionDTO> quickSearch(QuickFilter filtro, List<String> siglasProcesso, List<String> formNames) {
-        final Query query = createQuery(filtro, siglasProcesso, false, formNames);
-        query.setFirstResult(filtro.getFirst());
-        query.setMaxResults(filtro.getCount());
-        query.setResultTransformer(new AliasToBeanResultTransformer(getResultClass()));
-        return query.list();
-    }
-
-    protected Class<? extends PetitionDTO> getResultClass() {
-        return PetitionDTO.class;
-    }
-
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
         final Query query = createQuery(filter, processesAbbreviation, false, formNames);
         query.setFirstResult(filter.getFirst());

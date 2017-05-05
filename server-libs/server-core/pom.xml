@@ -46,6 +46,14 @@
             <artifactId>singular-server-commons</artifactId>
             <version>1.6.0-SNAPSHOT</version>
         </dependency>
+
+        <dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.5.5</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
 

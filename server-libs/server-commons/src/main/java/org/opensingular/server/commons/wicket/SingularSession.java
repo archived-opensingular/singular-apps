@@ -88,7 +88,8 @@ public class SingularSession extends AuthenticatedWebSession {
 
 
     public <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
+        if (SecurityContextHolder.getContext().getAuthentication() != null
+                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
             return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         }
         return null;

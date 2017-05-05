@@ -1,6 +1,5 @@
 package org.opensingular.server.module.rest;
 
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
@@ -41,7 +40,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
-
 
 @Service
 public class RestBackstageService implements Loggable {

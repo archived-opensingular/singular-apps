@@ -6,6 +6,9 @@ import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
+import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
+import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -54,12 +57,12 @@ public class ServerInitializerMock extends CommonsInitializerMock {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
-                return Object.class;
+                return MailSenderSchedulerInitializer.class;
             }
 
             @Override
             public Class<?> attachmentGCConfiguration() {
-                return Object.class;
+                return AttachmentGCSchedulerInitializer.class;
             }
         };
     }

@@ -1,13 +1,13 @@
 package org.opensingular.server.core.test;
 
 
-import org.opensingular.server.commons.test.SingularCommonsContextLoader;
+import javax.servlet.ServletException;
+
+import org.opensingular.server.commons.test.AbstractSingularContextLoader;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import javax.servlet.ServletException;
-
-public class SingularServerContextLoader extends SingularCommonsContextLoader {
+public class SingularServerContextLoader extends AbstractSingularContextLoader {
 
 
     @Override

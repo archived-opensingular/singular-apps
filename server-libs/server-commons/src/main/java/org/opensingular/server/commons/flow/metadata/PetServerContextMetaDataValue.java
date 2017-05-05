@@ -16,13 +16,14 @@
 
 package org.opensingular.server.commons.flow.metadata;
 
-import org.opensingular.flow.core.property.MetaDataRef;
-import org.opensingular.server.commons.config.IServerContext;
-
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-public class PetServerContextMetaDataValue {
+import org.opensingular.flow.core.property.MetaDataRef;
+import org.opensingular.server.commons.config.IServerContext;
+
+public class PetServerContextMetaDataValue implements Serializable{
 
     public static final PetServerMetaDataKey KEY = new PetServerMetaDataKey(PetServerMetaDataKey.class.getName(), PetServerContextMetaDataValue.class);
 
