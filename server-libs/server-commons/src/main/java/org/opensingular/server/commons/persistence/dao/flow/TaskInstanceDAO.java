@@ -165,14 +165,15 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
     protected String getOrderBy(String sortProperty, boolean ascending, boolean count) {
+        boolean asc = ascending;
         if (count) {
             return "";
         }
         if (sortProperty == null) {
             sortProperty = "processBeginDate";
-            ascending = true;
+            asc = true;
         }
-        return " order by " + getSortPropertyToAliases().get(sortProperty) + (ascending ? " ASC " : " DESC ");
+        return " order by " + getSortPropertyToAliases().get(sortProperty) + (asc ? " ASC " : " DESC ");
     }
 
 
