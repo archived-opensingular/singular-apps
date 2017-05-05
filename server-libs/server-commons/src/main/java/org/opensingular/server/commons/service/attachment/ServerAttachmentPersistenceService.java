@@ -8,6 +8,7 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
+import org.opensingular.server.commons.exception.SingularServerException;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -51,7 +52,9 @@ public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C ex
      */
     @Override
     public void deleteAttachment(String id, SDocument document) {
-        formAttachmentService.deleteFormAttachmentEntity(getAttachmentEntity(id), formService.findCurrentFormVersion(document).get());
+        formAttachmentService.deleteFormAttachmentEntity(getAttachmentEntity(id),
+                formService.findCurrentFormVersion(document)
+                        .orElseThrow(() -> new SingularServerException("FormVersion não encontrado")));
     }
 
     @Override

@@ -24,7 +24,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     /**
      * Está classe é um singleton, apenas uma instância por módulo war
      */
-    private static IConsumer<SkinOptions> skinOptionsIConsumer;
+    private IConsumer<SkinOptions> skinOptionsIConsumer;
 
     @Override
     public PWebInitializer webConfiguration() {
@@ -99,7 +99,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
 
     }
 
-    public static class WorklistApplication extends SingularApplication {
+    public class WorklistApplication extends SingularApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {

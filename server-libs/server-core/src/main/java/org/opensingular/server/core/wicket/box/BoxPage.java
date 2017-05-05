@@ -71,10 +71,7 @@ public class BoxPage extends ServerTemplate {
                     menu = mg.getLabel();
                     PageParameters pageParameters = new PageParameters();
 
-                    if (!mg.getBoxesDefinition().isEmpty()){
-                        item = mg.getItemBoxes().get(0).getName();
-                        pageParameters.add(ITEM_PARAM_NAME, item);
-                    }
+                    addItemParam(mg, pageParameters);
 
                     pageParameters.add(PROCESS_GROUP_PARAM_NAME, processGroupCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
@@ -104,6 +101,13 @@ public class BoxPage extends ServerTemplate {
          */
         LOGGER.warn("Não existe correspondencia para o label {}", String.valueOf(item));
         return new AccessDeniedContent(id);
+    }
+
+    private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
+        if (!mg.getBoxesDefinition().isEmpty()){
+            String item = mg.getItemBoxes().get(0).getName();
+            pageParameters.add(ITEM_PARAM_NAME, item);
+        }
     }
 
     protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {

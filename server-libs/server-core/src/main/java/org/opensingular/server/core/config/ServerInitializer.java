@@ -1,6 +1,5 @@
 package org.opensingular.server.core.config;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.wicket.Page;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
@@ -23,7 +22,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
     /**
      * Está classe é um singleton, apenas uma instância por módulo war
      */
-    private static IConsumer<SkinOptions> skinOptionsIConsumer;
+    IConsumer<SkinOptions> skinOptionsIConsumer;
 
     @Override
     public PWebInitializer webConfiguration() {
@@ -103,7 +102,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
     }
 
 
-    public static class AnalysisApplication extends SingularApplication {
+    public class AnalysisApplication extends SingularApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
@@ -116,7 +115,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
         }
     }
 
-    public static class PetitionApplication extends SingularApplication {
+    public class PetitionApplication extends SingularApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
