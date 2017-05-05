@@ -23,7 +23,7 @@ public class LdapChecker implements IProtocolChecker, Loggable {
         DirContext dirContext;
         try {
             dirContext = new InitialDirContext(new Hashtable<>(ldapInfo));
-            dirContext.close();tes
+            dirContext.close();
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
             validatable.error(e.getMessage());
