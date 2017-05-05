@@ -119,14 +119,21 @@ public class DispatcherPage extends WebPage implements Loggable {
         Optional<TaskInstance> ti = actionContext.getPetitionId().flatMap(this::findCurrentTaskByPetitionId);
         Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
+            
+            FormAction fa;
+            if(actionContext.getFormAction().isPresent()){
+                fa = actionContext.getFormAction().get();
+            }
+            
             if (task.get() instanceof STaskUserExecutable) {
                 final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
-                    return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(ti.get(), null));
+                    return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(
+                            ti.orElseThrow(() -> new SingularServerException("TaskInstance não encontrada")), null));
                 } else {
                     getLogger().warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
                 }
-            } else if (!(ViewMode.READ_ONLY == actionContext.getFormAction().get().getViewMode())) {
+            } else if (actionContext.getFormAction().isPresent() && !(ViewMode.READ_ONLY == actionContext.getFormAction().get().getViewMode()) ) {
                 throw new SingularServerException("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
             }
         }
@@ -168,7 +175,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long formVersionPK;
+        Long formVersionPK = null;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 

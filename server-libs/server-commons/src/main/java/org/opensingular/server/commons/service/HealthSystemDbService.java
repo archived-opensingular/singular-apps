@@ -32,64 +32,59 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class HealthSystemDbService implements Loggable {
-	@Inject
-	private HealthSystemDAO saudeDao;
+    @Inject
+    private HealthSystemDAO saudeDao;
 
-	public HealthInfoDTO getAllDbMetaData(){
-		IValidatorDatabase validator = verificaDialetoUtilizado();
-		List<TableInfoDTO> tabelas = new ArrayList<>();
+    public HealthInfoDTO getAllDbMetaData() {
+        List<TableInfoDTO> tabelas = new ArrayList<>();
+        try {
+            Map<String, ClassMetadata> map = saudeDao.getAllDbMetaData();
+            map.forEach((k, v) -> tabelas.add(getTableInfo((AbstractEntityPersister) v)));
 
-		Map<String, ClassMetadata> map = saudeDao.getAllDbMetaData();
-		map.forEach((k,v)->tabelas.add(getTableInfo((AbstractEntityPersister) v)));
+            Optional<IValidatorDatabase> validator = verificaDialetoUtilizado();
+            if (validator.isPresent()) {
+                validator.get().checkAllInfoTable(tabelas);
+            }
+        } catch (Exception e) {
+            getLogger().error(e.getMessage(), e);
+            tabelas.clear();
+        }
+        return new HealthInfoDTO(tabelas);
+    }
 
-		try{
-			validator.checkAllInfoTable(tabelas);
-		} catch (Exception e){
-			tabelas.clear();
-			getLogger().error(e.getMessage());
-		}
+    private TableInfoDTO getTableInfo(AbstractEntityPersister persister) {
+        TableInfoDTO tableInfoDTO = new TableInfoDTO();
 
-		return new HealthInfoDTO(tabelas);
-	}
+        String[] name = SqlUtil.replaceSchemaName(persister.getTableName()).split("\\.");
+        tableInfoDTO.setSchema(name[0]);
+        tableInfoDTO.setTableName(name[1]);
 
-	private TableInfoDTO getTableInfo(AbstractEntityPersister persister) {
-		TableInfoDTO tableInfoDTO = new TableInfoDTO();
+        List<String> colunas = new ArrayList<>();
 
-		String[] name = SqlUtil.replaceSchemaName(persister.getTableName()).split("\\.");
-		tableInfoDTO.setSchema(name[0]);
-		tableInfoDTO.setTableName(name[1]);
-		
-		List<String> colunas = new ArrayList<>();
+        String[] propertyNames = persister.getPropertyNames();
 
-		String[] propertyNames = persister.getPropertyNames();
-		
-		Arrays.asList(propertyNames).forEach(propertyName->
-			colunas.add(persister.getPropertyColumnNames(propertyName)[0]));
+        Arrays.asList(propertyNames).forEach(propertyName ->
+                colunas.add(persister.getPropertyColumnNames(propertyName)[0]));
 
-		Arrays.asList(persister.getIdentifierColumnNames()).forEach(chave->{
-			if(!colunas.contains(chave)){
-				colunas.add(chave);
-			}
-		});
-		
-		List<ColumnInfoDTO> colunasTypes = new ArrayList<>();
-		colunas.forEach(col->colunasTypes.add(new ColumnInfoDTO(col, true)));
-		tableInfoDTO.setColumnsInfo(colunasTypes);
-		
-		return tableInfoDTO;
-	}
+        Arrays.asList(persister.getIdentifierColumnNames()).forEach(chave -> {
+            if (!colunas.contains(chave)) {
+                colunas.add(chave);
+            }
+        });
 
-	private IValidatorDatabase  verificaDialetoUtilizado(){
-		String hibernateDialect = saudeDao.getHibernateDialect();
+        List<ColumnInfoDTO> colunasTypes = new ArrayList<>();
+        colunas.forEach(col -> colunasTypes.add(new ColumnInfoDTO(col, true)));
+        tableInfoDTO.setColumnsInfo(colunasTypes);
 
-		try{
-			return ValidatorFactory.getValidator(hibernateDialect);
-		}catch (Exception e){
-			getLogger().error(e.getMessage());
-			return null;
-		}
-	}
+        return tableInfoDTO;
+    }
+
+    private Optional<IValidatorDatabase> verificaDialetoUtilizado() {
+        String hibernateDialect = saudeDao.getHibernateDialect();
+        return Optional.ofNullable(ValidatorFactory.getValidator(hibernateDialect));
+    }
 }
