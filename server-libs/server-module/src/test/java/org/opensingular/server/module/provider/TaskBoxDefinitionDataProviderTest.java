@@ -32,7 +32,6 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@Ignore
 public class TaskBoxDefinitionDataProviderTest {
 
     @Mock
