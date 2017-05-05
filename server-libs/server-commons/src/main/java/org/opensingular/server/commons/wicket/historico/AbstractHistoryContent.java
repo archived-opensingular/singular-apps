@@ -34,7 +34,6 @@ import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
 import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
@@ -47,15 +46,18 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public abstract class AbstractHistoryContent extends Content {
 
     private static final long serialVersionUID = 8587873133590041152L;
 
     @Inject
-    private PetitionService<?,?> petitionService;
+    private PetitionService<?, ?> petitionService;
 
     private long   petitionPK;
     private String processGroupPK;
@@ -78,9 +80,9 @@ public abstract class AbstractHistoryContent extends Content {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        petitionPK = getPage().getPageParameters().get(DispatcherPageParameters.PETITION_ID).toLong();
-        processGroupPK = getPage().getPageParameters().get(DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME).toString();
-        menu = getPage().getPageParameters().get(DispatcherPageParameters.MENU_PARAM_NAME).toString();
+        petitionPK = getPage().getPageParameters().get(PETITION_ID).toLong();
+        processGroupPK = getPage().getPageParameters().get(PROCESS_GROUP_PARAM_NAME).toString();
+        menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         queue(setupDataTable(createDataProvider()));
         queue(getBtnCancelar());
     }

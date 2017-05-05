@@ -16,20 +16,21 @@
 
 package org.opensingular.server.p.commons.config;
 
+import org.opensingular.server.commons.config.FormInitializer;
 import org.opensingular.server.commons.config.SingularInitializer;
+import org.opensingular.server.commons.config.SpringHibernateInitializer;
 
-@Deprecated
 public interface PSingularInitializer extends SingularInitializer {
 
     @Override
     public PWebInitializer webConfiguration();
 
     @Override
-    public PSpringHibernateInitializer springHibernateConfiguration();
+    public SpringHibernateInitializer springHibernateConfiguration();
 
     @Override
-    default PFormInitializer formConfiguration() {
-        return new PFormInitializer();
+    default FormInitializer formConfiguration() {
+        return new FormInitializer();
     }
 
     @Override

@@ -42,6 +42,7 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
@@ -56,9 +57,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
 
@@ -136,7 +137,7 @@ public class Menu extends Panel implements Loggable {
             pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
             pageParameters.add(ITEM_PARAM_NAME, t.name);
 
-            MetronicMenuItem i = new MetronicMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
+            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
             group.addItem(i);
             itens.add(Pair.of(i.getHelper(), t.counterSupplier));
         }

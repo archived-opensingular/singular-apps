@@ -3,9 +3,9 @@ package org.opensingular.server.commons.test;
 import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
+import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.p.commons.config.PSingularInitializer;
-import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -34,8 +34,8 @@ public class CommonsInitializerMock implements PSingularInitializer {
     }
 
     @Override
-    public PSpringHibernateInitializer springHibernateConfiguration() {
-        return new PSpringHibernateInitializer() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
+        return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;

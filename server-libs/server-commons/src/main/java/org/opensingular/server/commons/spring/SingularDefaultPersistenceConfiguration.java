@@ -37,9 +37,7 @@ import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
-import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
-import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
+import static org.opensingular.lib.commons.base.SingularProperties.*;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
@@ -114,12 +112,18 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Bean
     public DataSource dataSource() {
-        if (SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE)) {
+        boolean useEmbedded = true;
+
+        if (SingularProperties.get().getProperty(USE_EMBEDDED_DATABASE) != null) {
+            useEmbedded = SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE);
+        } else if (SingularProperties.get().isTrue(SINGULAR_DEV_MODE)) {
+            useEmbedded = false;
+        }
+
+        if (useEmbedded) {
             return embeddedDataSourceConfiguration();
-        } else if (SingularProperties.get().isFalse(USE_EMBEDDED_DATABASE) || SingularProperties.get().isFalse(SingularProperties.SINGULAR_DEV_MODE)) {
-            return jndiDataSourceConfiguration();
         } else {
-            return embeddedDataSourceConfiguration();
+            return jndiDataSourceConfiguration();
         }
     }
 

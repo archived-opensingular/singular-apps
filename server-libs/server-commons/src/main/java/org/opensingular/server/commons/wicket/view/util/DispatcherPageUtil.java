@@ -31,8 +31,6 @@ import java.util.Optional;
 public class DispatcherPageUtil {
 
     public static final String DISPATCHER_PAGE_PATH = "/";
-    public static final String ACTION_ID = "a";
-    public static final String PETITION_ID = "k";
     private static final Logger LOGGER = LoggerFactory.getLogger(DispatcherPageUtil.class);
     private static final String ENCODING = StandardCharsets.UTF_8.name();
 
@@ -79,7 +77,7 @@ public class DispatcherPageUtil {
     }
 
     public DispatcherPageUrlBuilder formAction(Object formAction) {
-        return new DispatcherPageUrlBuilder(this.url + "?" + ACTION_ID + "=" + encodeParameter(formAction));
+        return new DispatcherPageUrlBuilder(this.url + "?" + ActionContext.ACTION + "=" + encodeParameter(formAction));
     }
 
     public static class DispatcherPageUrlBuilder {
@@ -92,7 +90,7 @@ public class DispatcherPageUtil {
 
         public DispatcherPageUrlAdditionalParamsBuilder petitionId(Object formId) {
             if (!StringUtils.isEmpty(formId)) {
-                return new DispatcherPageUrlAdditionalParamsBuilder(this.url + "&" + PETITION_ID + "=" + encodeParameter(formId));
+                return new DispatcherPageUrlAdditionalParamsBuilder(this.url + "&" + ActionContext.PETITION_ID + "=" + encodeParameter(formId));
             }
             return new DispatcherPageUrlAdditionalParamsBuilder(this.url);
         }

@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.wicket.view.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.opensingular.server.commons.exception.SingularServerException;
 
@@ -37,6 +38,9 @@ public class ParameterHttpSerializer {
 
     public static LinkedHashMap<String, String> decode(String query) {
         try {
+            if (StringUtils.isEmpty(query)){
+                return new LinkedHashMap<>();
+            }
             String cleanQueryString = clearQueryString(query);
             LinkedHashMap<String, String> decoded = new LinkedHashMap<>();
             String[] params = cleanQueryString.split("&");

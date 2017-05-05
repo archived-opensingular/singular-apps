@@ -81,7 +81,7 @@ public class FormPageExecutionContext implements Serializable {
     }
 
     public ActionContext copyOfInnerActionContext() {
-        return actionContext.clone();
+        return new ActionContext(actionContext);
     }
 
     public Class<? extends PetitionSender> getPetitionSender() {

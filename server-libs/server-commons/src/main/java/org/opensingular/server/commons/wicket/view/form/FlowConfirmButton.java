@@ -52,10 +52,10 @@ public class FlowConfirmButton<PE extends PetitionEntity, PI extends PetitionIns
         try {
             formPage.executeTransition(ajaxRequestTarget, form, transitionName, model);
         } catch (HibernateOptimisticLockingFailureException | PetitionConcurrentModificationException e) {
-            getLogger().debug(e.getMessage());
+            getLogger().debug(e.getMessage(), e);
             configureBackDropAndShowError(ajaxRequestTarget, "message.save.concurrent_error");
         } catch (SingularServerFormValidationError ex){
-            getLogger().debug(ex.getMessage());
+            getLogger().debug(ex.getMessage(), ex);
             configureBackDropAndShowError(ajaxRequestTarget, "message.send.error");
         }
     }

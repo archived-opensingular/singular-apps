@@ -56,7 +56,10 @@ public class SingularModuleConfiguration {
         if (modules.stream().count() != 1) {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
-        SingularModule module = modules.stream().findFirst().get().newInstance();
+        SingularModule module = null;
+        if(modules.stream().findFirst().isPresent()){
+            module = modules.stream().findFirst().get().newInstance();
+        }
         return module;
     }
 

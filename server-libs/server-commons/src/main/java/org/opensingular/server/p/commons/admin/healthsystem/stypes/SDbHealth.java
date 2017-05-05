@@ -81,7 +81,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         	.asAtrBootstrap()
         		.colPreference(2);
         privs.setView(()->new SViewListByTable().disableNew().disableDelete());
-        
+
 		tabela.addInstanceValidator(validatable -> {
 			Optional<SIBoolean> foundTableInstance = validatable.getInstance().findNearest(foundTableField);
 			if (!foundTableInstance.isPresent() || !foundTableInstance.get().getValue()) {
@@ -98,8 +98,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
 				validatable.error(ValidationErrorLevel.ERROR, "Schema not found!");
 			}else{
 				if (SqlUtil.isSingularSchema(foundSchemaField.get().getValue())
-						&& (!vals.contains("SELECT") || !vals.contains("UPDATE")
-							|| !vals.contains("DELETE") || !vals.contains("INSERT"))) {
+						&& SqlUtil.hasCompleteCrud(vals)) {
 					validatable.error("Singular table without complete CRUD!");
 				}
 			}
@@ -179,9 +178,9 @@ public class SDbHealth extends STypeComposite<SIComposite> {
 			Optional<SIBoolean> hibernateFieldInstance = validatable.getInstance().findNearest(foundHibernateField);
 
 			// Encontrado no hibernate e nao no banco
-			if(hibernateFieldInstance.get().getValue() && !databaseFieldInstance.get().getValue()){
+			if (hibernateFieldInstance.get().getValue() && !databaseFieldInstance.get().getValue()) {
 				validatable.error("Inconsistency between database and Hibernate!");
-			}else{
+			} else {
 				// Encontrado no banco e nao no hibernate
 				Optional<SIBoolean> nullableFieldInstance = validatable.getInstance().findNearest(nullableField);
 				Optional<SIList<SIString>> listObj = validatable.getInstance().findNearest(privs);
@@ -189,10 +188,8 @@ public class SDbHealth extends STypeComposite<SIComposite> {
 				List<String> vals = new ArrayList<>();
 				listPrivs.forEach(obj -> vals.add((String) obj));
 
-				if(!vals.contains("SELECT") || !vals.contains("DELETE")){
-					if(!nullableFieldInstance.get().getValue() && (!vals.contains("INSERT") || !vals.contains("UPDATE"))){
-						validatable.error("Column NOT NULL without SELECT or UPDATE permissions");
-					}
+				if (!nullableFieldInstance.get().getValue() && (!vals.contains("INSERT") || !vals.contains("UPDATE"))) {
+					validatable.error("Column NOT NULL without SELECT or UPDATE permissions");
 				}
 			}
 		});

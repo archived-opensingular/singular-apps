@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -196,8 +197,7 @@
         <url>${project.scm.url}</url>
         <connection>${project.scm.connection}</connection>
         <developerConnection>${project.scm.developerConnection}</developerConnection>
-      <tag>HEAD</tag>
-  </scm>
+    </scm>
 
     <dependencies>
         <!-- FOR JAVADOC GENERATION -->
@@ -412,7 +412,7 @@
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.1.0</wicket.version>
-        <singular.version>1.6.1</singular.version>
+        <singular.version>1.6.2-SNAPSHOT</singular.version>
         <spring.security.version>4.0.3.RELEASE</spring.security.version>
         <cas.version>4.0.4</cas.version>
         <cas.client.version>3.4.1</cas.client.version>
