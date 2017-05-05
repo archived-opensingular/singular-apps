@@ -15,7 +15,7 @@ import java.util.Optional;
  * Representa o contexto de execução de uma página de um módulo.
  * Armazena as informações passadas como parâmetros pelo server para o módulo.
  */
-public class ActionContext implements Serializable, Cloneable, Loggable {
+public class ActionContext implements Serializable, Loggable {
 
     public static final String ACTION = "a";
 
@@ -56,14 +56,6 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
         this.params = actionContext.params;
     }
 
-    /**
-     * Used by {@link this#clone()} method only
-     *
-     * @param params
-     */
-    private ActionContext(LinkedHashMap<String, String> params) {
-        this.params = params;
-    }
 
     public static ActionContext fromFormConfig(FormPageExecutionContext config) {
         return config.copyOfInnerActionContext();
