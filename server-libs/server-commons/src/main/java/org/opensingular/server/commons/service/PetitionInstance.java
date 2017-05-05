@@ -42,7 +42,6 @@ import java.util.Optional;
  */
 public class PetitionInstance implements Serializable {
 
-    @Nonnull
     private final PetitionEntity petitionEntity;
 
     private transient ProcessInstance processInstance;

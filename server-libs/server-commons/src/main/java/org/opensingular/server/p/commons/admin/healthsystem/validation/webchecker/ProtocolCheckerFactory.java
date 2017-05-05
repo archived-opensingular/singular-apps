@@ -16,62 +16,64 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.validation.webchecker;
 
+import org.opensingular.server.commons.exception.SingularServerException;
+
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public enum ProtocolCheckerFactory {
 
-	IP {
-		@Override
-		public IProtocolChecker checker() {
-			return new IpChecker();
-		}
-	}, TCP {
-		@Override
-		public IProtocolChecker checker() {
-			return new TcpChecker();
-		}
-	}, HTTP {
-		@Override
-		public IProtocolChecker checker() {
-			return new HttpChecker();
-		}
-	}, HTTPS {
-		@Override
-		public IProtocolChecker checker() {
-			return new HttpChecker();
-		}
-	}, LDAP {
-		@Override
-		public IProtocolChecker checker() {
-			return new LdapChecker();
-		}
-	}, LDAPS {
-		@Override
-		public IProtocolChecker checker() {
-			return new LdapChecker();
-		}
-	};
+    IP {
+        @Override
+        public IProtocolChecker checker() {
+            return new IpChecker();
+        }
+    }, TCP {
+        @Override
+        public IProtocolChecker checker() {
+            return new TcpChecker();
+        }
+    }, HTTP {
+        @Override
+        public IProtocolChecker checker() {
+            return new HttpChecker();
+        }
+    }, HTTPS {
+        @Override
+        public IProtocolChecker checker() {
+            return new HttpChecker();
+        }
+    }, LDAP {
+        @Override
+        public IProtocolChecker checker() {
+            return new LdapChecker();
+        }
+    }, LDAPS {
+        @Override
+        public IProtocolChecker checker() {
+            return new LdapChecker();
+        }
+    };
 
-	public abstract IProtocolChecker checker();
+    /**
+     * Retorna uma implementação de IProtocolChecker de acordo com a url informada, caso não encontre uma implementação
+     * do protocolo, retornará uma excecão
+     *
+     * @param url
+     * @return
+     * @throws Exception
+     */
+    public static IProtocolChecker getProtocolChecker(String url) {
+        for (ProtocolCheckerFactory checkerFactory : ProtocolCheckerFactory.values()) {
+            Pattern pattern = Pattern.compile("^(?i)" + checkerFactory + "(?i)");
+            Matcher matcher = pattern.matcher(url);
 
-	/**
-	 * Retorna uma implementação de IProtocolChecker de acordo com a url informada, caso não encontre uma implementação 
-	 * do protocolo, retornará uma excecão 
-	 * 
-	 * @param url
-	 * @return
-	 * @throws Exception
-	 */
-	public static IProtocolChecker getProtocolChecker(String url) throws Exception{
-		for (ProtocolCheckerFactory checkerFactory : ProtocolCheckerFactory.values()) {
-			Pattern pattern = Pattern.compile("^(?i)"+checkerFactory+"(?i)");
-			Matcher matcher = pattern.matcher(url);
-			
-			if(matcher.find()){
-				return checkerFactory.checker();
-			}
-		}
-		throw new Exception("Protocolo não suportado!");
-	}
+            if (matcher.find()) {
+                return checkerFactory.checker();
+            }
+        }
+        throw new SingularServerException(String.format("Protocolo não suportado na url: %s", url));
+    }
+
+    public abstract IProtocolChecker checker();
 }

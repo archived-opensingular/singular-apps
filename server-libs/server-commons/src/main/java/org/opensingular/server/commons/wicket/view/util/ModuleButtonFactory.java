@@ -13,7 +13,7 @@ public class ModuleButtonFactory {
     private ActionContext context = new ActionContext();
 
     public ModuleButtonFactory(ActionContext context, Map<String, String> param) {
-        this.context = context.clone();
+        this.context = new ActionContext(context);
         for (Map.Entry<String, String> s : param.entrySet()) {
             this.context.setParam(s.getKey(), s.getValue());
         }

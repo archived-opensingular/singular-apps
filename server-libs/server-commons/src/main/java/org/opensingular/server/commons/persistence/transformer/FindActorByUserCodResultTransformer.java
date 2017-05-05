@@ -38,6 +38,7 @@ public class FindActorByUserCodResultTransformer implements ResultTransformer {
                 case EMAIL:
                     actor.setEmail((String) rawObject);
                     break;
+                default:
             }
         }
 

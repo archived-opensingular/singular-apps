@@ -41,11 +41,7 @@ public abstract class IController {
     }
 
     private boolean hasPermission(PetitionInstance petition, ActionRequest actionRequest) {
-        if (getType() == Type.PROCESS) {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
-        } else {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
-        }
+        return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
     }
 
     protected abstract ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest);

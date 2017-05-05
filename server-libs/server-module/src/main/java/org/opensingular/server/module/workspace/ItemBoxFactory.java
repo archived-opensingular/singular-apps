@@ -10,6 +10,7 @@ import java.util.List;
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
  */
+//TODO vinicius.nunes renomear para Box.....
 public interface ItemBoxFactory {
 
     /**

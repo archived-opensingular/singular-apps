@@ -24,6 +24,7 @@
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <script src="/singular-static/resources/comum/plugins/jquery.min.js" type="text/javascript"></script>
     <script src="/singular-static/resources/comum/scripts/singular-resource-handler.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/login.css" type="text/css">
 </head>
 
 <body class="login">
@@ -59,8 +60,8 @@
 
 <div class="logo">
     <a>
-        <img alt="logo" class="logo-default" id="brandLogo3"
-             src="/singular-static/resources/singular/img/logo_singular_gray.svg">
+        <img alt="logo" class="logo-default logo-sso" id="brandLogo3"
+             src="/singular-static/resources/singular/img/logo_singular.png">
     </a>
 </div>
 
@@ -70,7 +71,7 @@
     <form:form id="form4" method="post" commandName="${commandName}" htmlEscape="true"
                cssClass="login-form"
                novalidate="">
-        <h3 class="form-title">Login Peticionamento</h3>
+        <h3 class="form-title">Login Requerimento</h3>
         <form:errors path="*" id="loginErrorC" element="div"
                      cssClass="alert alert-danger input-error"/>
         <div class="alert alert-danger display-hide">
