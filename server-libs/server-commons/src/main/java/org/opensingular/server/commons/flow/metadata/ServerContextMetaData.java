@@ -16,9 +16,11 @@
 
 package org.opensingular.server.commons.flow.metadata;
 
+import java.io.Serializable;
+
 import org.opensingular.flow.core.property.MetaDataRef;
 
-public class ServerContextMetaData extends MetaDataRef<PetServerContextMetaDataValue> {
+public class ServerContextMetaData extends MetaDataRef<PetServerContextMetaDataValue> implements Serializable {
 
     public static final ServerContextMetaData KEY = new ServerContextMetaData(ServerContextMetaData.class.getName(), PetServerContextMetaDataValue.class);
 

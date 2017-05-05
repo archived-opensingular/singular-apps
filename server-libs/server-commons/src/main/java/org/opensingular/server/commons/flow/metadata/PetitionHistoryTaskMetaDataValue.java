@@ -16,9 +16,11 @@
 
 package org.opensingular.server.commons.flow.metadata;
 
+import java.io.Serializable;
+
 import org.opensingular.flow.core.property.MetaDataRef;
 
-public class PetitionHistoryTaskMetaDataValue {
+public class PetitionHistoryTaskMetaDataValue implements Serializable{
 
     public static final PetitionHistoryTaskMetaDataKey KEY = new PetitionHistoryTaskMetaDataKey(PetitionHistoryTaskMetaDataKey.class.getName(), PetitionHistoryTaskMetaDataValue.class);
     public static final PetitionHistoryTaskMetaDataValue ON = new PetitionHistoryTaskMetaDataValue();
