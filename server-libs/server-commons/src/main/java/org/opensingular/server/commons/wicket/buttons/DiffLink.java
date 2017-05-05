@@ -8,6 +8,8 @@ import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
+import java.util.Optional;
+
 public class DiffLink extends Panel {
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
@@ -16,11 +18,12 @@ public class DiffLink extends Panel {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                if(context.getPetitionId().isPresent()){
-                    this.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
+                Optional<Long> petitionId = context.getPetitionId();
+                if(petitionId.isPresent()){
+                    this.add($b.attr("target", String.format("diff%s", petitionId.get())));
+                    this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
+                    this.setBody(labelModel);
                 }
-                this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
-                this.setBody(labelModel);
             }
 
             @Override
