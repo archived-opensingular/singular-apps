@@ -294,15 +294,17 @@ public class FormPetitionService<P extends PetitionEntity> {
                 petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
             }
         }
-
-        DraftEntity currentDraftEntity = formPetitionEntity.get().getCurrentDraftEntity();
+        
+        FormPetitionEntity fpe = formPetitionEntity.orElseThrow(()-> new SingularServerException("FormPetitionEntity não encontrado !"));
+        
+        DraftEntity currentDraftEntity = fpe.getCurrentDraftEntity();
         if (currentDraftEntity == null) {
             currentDraftEntity = createNewDraftWithoutSave();
         }
 
         saveOrUpdateDraft(instance, currentDraftEntity, codActor);
-        formPetitionEntity.get().setCurrentDraftEntity(currentDraftEntity);
-        formPetitionDAO.saveOrUpdate(formPetitionEntity.get());
+        fpe.setCurrentDraftEntity(currentDraftEntity);
+        formPetitionDAO.saveOrUpdate(fpe);
         return formKeyFromFormEntity(currentDraftEntity.getForm());
     }
 
