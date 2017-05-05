@@ -63,7 +63,7 @@ public enum ProtocolCheckerFactory {
      * @return
      * @throws Exception
      */
-    public static IProtocolChecker getProtocolChecker(String url) throws Exception {
+    public static IProtocolChecker getProtocolChecker(String url) {
         for (ProtocolCheckerFactory checkerFactory : ProtocolCheckerFactory.values()) {
             Pattern pattern = Pattern.compile("^(?i)" + checkerFactory + "(?i)");
             Matcher matcher = pattern.matcher(url);
@@ -72,7 +72,7 @@ public enum ProtocolCheckerFactory {
                 return checkerFactory.checker();
             }
         }
-        throw new SingularServerException("Protocolo não suportado!");
+        throw new SingularServerException(String.format("Protocolo não suportado na url: %s", url));
     }
 
     public abstract IProtocolChecker checker();

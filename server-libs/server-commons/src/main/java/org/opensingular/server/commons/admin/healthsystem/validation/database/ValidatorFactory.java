@@ -15,8 +15,6 @@
  */
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.util.NoSuchElementException;
-
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 
