@@ -16,7 +16,9 @@ public class DiffLink extends Panel {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                this.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
+                if(context.getPetitionId().isPresent()){
+                    this.add($b.attr("target", String.format("diff%s", context.getPetitionId().get())));
+                }
                 this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
                 this.setBody(labelModel);
             }
