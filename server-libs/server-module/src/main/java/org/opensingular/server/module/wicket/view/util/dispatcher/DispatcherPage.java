@@ -171,7 +171,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long formVersionPK = null;
+        Long formVersionPK;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
