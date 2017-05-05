@@ -72,7 +72,7 @@ public enum ProtocolCheckerFactory {
                 return checkerFactory.checker();
             }
         }
-        throw new SingularServerException("Protocolo não suportado!");
+        throw new SingularServerException(String.format("Protocolo não suportado na url: %s", url));
     }
 
     public abstract IProtocolChecker checker();
