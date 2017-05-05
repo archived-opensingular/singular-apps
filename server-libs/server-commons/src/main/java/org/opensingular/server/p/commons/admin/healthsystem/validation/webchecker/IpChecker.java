@@ -15,7 +15,7 @@ public class IpChecker implements IProtocolChecker, Loggable {
 
         try {
             if (!InetAddress.getByName(piecesUrl[0]).isReachable(2000)) {
-                throw new Exception("Address not reacheble!");
+                validatable.error("Address not reacheable!");
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
