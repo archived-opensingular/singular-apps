@@ -32,28 +32,28 @@ import java.util.Arrays;
 public class SWebHealth extends STypeComposite<SIComposite> {
 	public static final String TYPE_NAME = "webhealth";
 	public static final String TYPE_FULL_NAME = SSystemHealthPackage.PACKAGE_NAME+"."+TYPE_NAME;
-	
+
 	@Override
 	protected void onLoadType(TypeBuilder tb) {
-		
+
         STypeList<STypeComposite<SIComposite>, SIComposite> urlsList = this.addFieldListOfComposite("urls", "urlsList");
         urlsList.setView(()->new SViewListByTable());
-        
+
         this
         	.asAtr()
-        		.label("Url (Protocolos suportados: "+
-						Arrays.asList(ProtocolCheckerFactory.values()).toString().replace("[", "").replace("]", "")
-        				+")");
-        
+        		.label("Url (Protocolos suportados: " +
+                        Arrays.asList(ProtocolCheckerFactory.values()).toString().replace("[", "").replace("]", "")
+                        + ")");
+
         STypeComposite<SIComposite> tabela = urlsList.getElementsType();
-        
+
         STypeString urlField = tabela.addFieldString("url");
 		urlField
 	        .asAtr()
 	        	.maxLength(100)
 	        .asAtrBootstrap()
 	        	.colPreference(3);
-		
+
 		urlField.addInstanceValidator(validatable->{
 			try {
 				IProtocolChecker protocolChecker = ProtocolCheckerFactory.getProtocolChecker(validatable.getInstance().getValue());

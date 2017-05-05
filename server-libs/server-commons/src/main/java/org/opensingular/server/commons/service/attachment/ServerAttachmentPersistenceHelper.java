@@ -3,6 +3,7 @@ package org.opensingular.server.commons.service.attachment;
 import org.opensingular.form.SInstances;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.SIAttachment;
@@ -10,7 +11,10 @@ import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersis
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
@@ -52,7 +56,12 @@ public class ServerAttachmentPersistenceHelper extends DefaultAttachmentPersiste
     }
 
     private List<FormAttachmentEntity> getCurrentFormAttachmentEntities(SDocument document) {
-        return formAttachmentService.findAllByVersion(formService.findCurrentFormVersion(document).get());
+        List<FormAttachmentEntity> result = new ArrayList<FormAttachmentEntity>();
+        Optional<FormVersionEntity> formVersionEntity = formService.findCurrentFormVersion(document);
+        if(formVersionEntity.isPresent()){
+            result = formAttachmentService.findAllByVersion(formVersionEntity.get());
+        }
+        return result;
     }
 
     protected List<SIAttachment> findAttachments(SDocument document) {
