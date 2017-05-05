@@ -15,7 +15,7 @@ public class ViewVersionLink extends Panel {
 
     public ViewVersionLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
-        this.context = context.clone();
+        this.context = new ActionContext(context);
         this.context.setDiffEnabled(false);
         this.context.setFormAction(FormAction.FORM_ANALYSIS_VIEW);
         Link<String> link = new Link<String>("oldVersionLink") {
