@@ -59,6 +59,7 @@ public class SWebHealth extends STypeComposite<SIComposite> {
 				IProtocolChecker protocolChecker = ProtocolCheckerFactory.getProtocolChecker(validatable.getInstance().getValue());
 				protocolChecker.protocolCheck(validatable);
 			} catch (Exception e) {
+				getLogger().error(e.getMessage(), e);
 				validatable.error(e.getMessage());
 			}
 		});
