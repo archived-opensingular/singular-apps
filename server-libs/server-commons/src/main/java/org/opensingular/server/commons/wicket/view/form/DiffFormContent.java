@@ -29,7 +29,6 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
@@ -102,7 +101,7 @@ public class DiffFormContent extends Content {
 
             } else {
                 List<FormVersionEntity> formPetitionEntities = petitionService
-                        .buscarDuasUltimasVersoesForm(config.getPetitionId().get());
+                        .buscarDuasUltimasVersoesForm(petitionId.get());
 
                 originalFormVersion = formPetitionEntities.get(1);
                 original = formPetitionService.getSInstance(originalFormVersion);

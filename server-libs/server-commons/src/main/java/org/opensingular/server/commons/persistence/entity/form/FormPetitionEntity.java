@@ -17,18 +17,25 @@
 package org.opensingular.server.commons.persistence.entity.form;
 
 
-import org.opensingular.form.persistence.entity.FormEntity;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
+import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-import org.hibernate.annotations.GenericGenerator;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
-import java.util.Optional;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO")
@@ -108,7 +115,12 @@ public class FormPetitionEntity extends BaseEntity<Long> implements Comparable<F
 
     @Override
     public int compareTo(FormPetitionEntity o) {
-        return Optional.ofNullable(this.getCod()).orElse(0l).compareTo(Optional.ofNullable(o).map(BaseEntity::getCod).orElse(0l));
+        return BaseEntity.compare(this, o);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        return super.equals(o); //Apenas para o Sonar não reclamar
     }
 
     public DraftEntity getCurrentDraftEntity() {
