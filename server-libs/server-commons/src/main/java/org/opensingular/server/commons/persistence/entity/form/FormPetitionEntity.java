@@ -123,6 +123,11 @@ public class FormPetitionEntity extends BaseEntity<Long> implements Comparable<F
         return super.equals(o); //Apenas para o Sonar não reclamar
     }
 
+    @Override
+    public int hashCode() {
+        return super.hashCode(); //Apenas para o Sonar não reclamar
+    }
+
     public DraftEntity getCurrentDraftEntity() {
         return currentDraftEntity;
     }
