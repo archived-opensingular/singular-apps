@@ -119,14 +119,17 @@ public class DispatcherPage extends WebPage implements Loggable {
         Optional<TaskInstance> ti = actionContext.getPetitionId().flatMap(this::findCurrentTaskByPetitionId);
         Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
+            
+           
             if (task.get() instanceof STaskUserExecutable) {
                 final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
-                    return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(ti.get(), null));
+                    return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(
+                            ti.orElseThrow(() -> new SingularServerException("TaskInstance não encontrada")), null));
                 } else {
                     getLogger().warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
                 }
-            } else if (!(ViewMode.READ_ONLY == actionContext.getFormAction().get().getViewMode())) {
+            } else if (actionContext.getFormAction().isPresent() && ViewMode.READ_ONLY != actionContext.getFormAction().get().getViewMode() ) {
                 throw new SingularServerException("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
             }
         }
@@ -172,10 +175,13 @@ public class DispatcherPage extends WebPage implements Loggable {
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
-        if (context.getFormVersionId().isPresent()) {
-            formVersionPK = context.getFormVersionId().get();
-        } else if (context.getPetitionId().isPresent()) {
-            PetitionEntity p = petitionService.getPetitionByCod(context.getPetitionId().get());
+        Optional<Long> formVersionId = context.getFormVersionId();
+        Optional<Long> petitionId = context.getPetitionId();
+        
+        if (formVersionId.isPresent()) {
+            formVersionPK = formVersionId.get();
+        } else if (petitionId.isPresent()) {
+            PetitionEntity p = petitionService.getPetitionByCod(petitionId.get());
             formVersionPK = p.getMainForm().getCurrentFormVersionEntity().getCod();
         } else {
             formVersionPK = null;
@@ -185,7 +191,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations));
         }
 
-        throw SingularServerException.rethrow("Não foi possivel identificar qual é o formulario a ser exibido");
+        throw new SingularServerException("Não foi possivel identificar qual é o formulario a ser exibido");
     }
 
     private boolean isAnnotationModeReadOnly(ActionContext context) {
@@ -242,7 +248,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private boolean isViewModeEdit(ActionContext context) {
         return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
     }
-
+ 
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
         String username = SingularSession.get().getUsername();
         if (config.getPetitionId().isPresent()) {

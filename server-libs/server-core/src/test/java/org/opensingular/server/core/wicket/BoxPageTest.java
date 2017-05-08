@@ -19,6 +19,8 @@ import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.p.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+import org.springframework.test.context.web.WebAppConfiguration;
+
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class BoxPageTest extends SingularServerBaseTest {
