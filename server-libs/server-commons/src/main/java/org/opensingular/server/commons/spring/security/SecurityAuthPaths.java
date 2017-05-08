@@ -53,9 +53,10 @@ public class SecurityAuthPaths implements Serializable {
         Request    request    = requestCycle.getRequest();
         Url        url        = request.getUrl();
         UrlToolkit urlToolkit = urlToolkitBuilder.build(url);
-        baseUrl = urlToolkit.concatServerAdressWithContext(baseUrl);
-        baseUrl += "?service=" + urlToolkit.concatServerAdressWithContext(contextPath);
-        return baseUrl;
+
+        String logoutPath = urlToolkit.concatServerAdressWithContext(baseUrl);
+        logoutPath += "?service=" + urlToolkit.concatServerAdressWithContext(contextPath);
+        return logoutPath;
     }
 
 }

@@ -1,14 +1,10 @@
 package org.opensingular.server.commons.wicket.view.template;
 
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.lib.commons.lambda.ISupplier;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 public interface MenuService {
 
@@ -23,17 +19,4 @@ public interface MenuService {
     void reset();
 
     BoxConfigurationData getDefaultSelectedMenu(ProcessGroupEntity categoriaSelecionada);
-
-    @Deprecated //vinicius.nunes
-    class MenuServiceSupplier implements ISupplier<Optional<MenuService>> {
-        @Override
-        public Optional<MenuService> get() {
-            try {
-                return Optional.ofNullable(ApplicationContextProvider.get().getBean(MenuService.class));
-            } catch (NoSuchBeanDefinitionException ex) {
-                return Optional.empty();
-            }
-        }
-    }
-
 }

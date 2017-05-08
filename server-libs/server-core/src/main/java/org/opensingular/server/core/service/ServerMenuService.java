@@ -4,7 +4,9 @@ import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -16,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 
 @Named
-@Scope("session")
+@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class ServerMenuService implements MenuService, Loggable {
 
     @Inject

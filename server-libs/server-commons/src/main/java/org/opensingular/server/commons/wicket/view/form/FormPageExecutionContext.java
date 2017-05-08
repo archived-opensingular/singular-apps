@@ -18,7 +18,9 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.FlowResolver;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
@@ -51,11 +53,11 @@ public class FormPageExecutionContext implements Serializable {
 
 
     public ViewMode getViewMode() {
-        return actionContext.getFormAction().get().getViewMode();
+        return actionContext.getFormAction().orElseThrow(()-> new SingularServerException("FormAction não encontrado !")).getViewMode();
     }
 
     public AnnotationMode getAnnotationMode() {
-        return actionContext.getFormAction().get().getAnnotationMode();
+        return actionContext.getFormAction().orElseThrow(()-> new SingularServerException("FormAction não encontrado !")).getAnnotationMode();
     }
 
     public Optional<Long> getPetitionId() {
@@ -81,7 +83,7 @@ public class FormPageExecutionContext implements Serializable {
     }
 
     public ActionContext copyOfInnerActionContext() {
-        return actionContext.clone();
+        return new ActionContext(actionContext);
     }
 
     public Class<? extends PetitionSender> getPetitionSender() {

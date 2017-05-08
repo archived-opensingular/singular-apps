@@ -15,9 +15,6 @@ package org.opensingular.server.commons.test;
  * limitations under the License.
  */
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.context.ApplicationContext;
@@ -26,6 +23,8 @@ import org.springframework.context.annotation.AnnotationConfigUtils;
 import org.springframework.core.io.DefaultResourceLoader;
 import org.springframework.core.io.FileSystemResourceLoader;
 import org.springframework.core.io.ResourceLoader;
+import org.springframework.mock.web.MockHttpServletRequest;
+import org.springframework.mock.web.MockHttpSession;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.MergedContextConfiguration;
 import org.springframework.test.context.support.AbstractContextLoader;
@@ -33,13 +32,18 @@ import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 /**
  * Abstract, generic extension of {@link AbstractContextLoader} that loads a
  * {@link GenericWebApplicationContext}.
- * <p>
+ * <p/>
  * <p>If instances of concrete subclasses are invoked via the
  * {@link org.springframework.test.context.SmartContextLoader SmartContextLoader}
  * SPI, the context will be loaded from the {@link MergedContextConfiguration}
@@ -49,7 +53,7 @@ import org.springframework.web.context.support.GenericWebApplicationContext;
  * AbstractGenericWebContextLoader} does not support the {@code
  * loadContext(String... locations)} method from the legacy
  * {@link org.springframework.test.context.ContextLoader ContextLoader} SPI.
- * <p>
+ * <p/>
  * <p>Concrete subclasses must provide an appropriate implementation of
  * {@link #loadBeanDefinitions}.
  *
@@ -68,9 +72,9 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
     /**
      * Load a Spring {@link WebApplicationContext} from the supplied
      * {@link MergedContextConfiguration}.
-     * <p>
+     * <p/>
      * <p>Implementation details:
-     * <p>
+     * <p/>
      * <ul>
      * <li>Calls {@link #validateMergedContextConfiguration(WebMergedContextConfiguration)}
      * to allow subclasses to validate the supplied configuration before proceeding.</li>
@@ -127,9 +131,20 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
         prepareContext(context, webMergedConfig);
         loadBeanDefinitions(context, webMergedConfig);
         customizeContext(context, webMergedConfig);
+        mockRequest();
         context.refresh();
         context.registerShutdownHook();
         return context;
+    }
+
+    private void mockRequest() {
+        MockHttpSession        session;
+        MockHttpServletRequest request;
+        session = new MockHttpSession();
+        request = new MockHttpServletRequest();
+        request.setSession(session);
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
+
     }
 
     /**
@@ -149,20 +164,20 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
 
     /**
      * Configures web resources for the supplied web application context (WAC).
-     * <p>
+     * <p/>
      * <h4>Implementation Details</h4>
-     * <p>
+     * <p/>
      * <p>If the supplied WAC has no parent or its parent is not a WAC, the
      * supplied WAC will be configured as the Root WAC (see "<em>Root WAC
      * Configuration</em>" below).
-     * <p>
+     * <p/>
      * <p>Otherwise the context hierarchy of the supplied WAC will be traversed
      * to find the top-most WAC (i.e., the root); and the {@link ServletContext}
      * of the Root WAC will be set as the {@code ServletContext} for the supplied
      * WAC.
-     * <p>
+     * <p/>
      * <h4>Root WAC Configuration</h4>
-     * <p>
+     * <p/>
      * <ul>
      * <li>The resource base path is retrieved from the supplied
      * {@code WebMergedContextConfiguration}.</li>
@@ -218,7 +233,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
     /**
      * Load bean definitions into the supplied {@link GenericWebApplicationContext context}
      * from the locations or classes in the supplied {@code WebMergedContextConfiguration}.
-     * <p>
+     * <p/>
      * <p>Concrete subclasses must provide an appropriate implementation.
      *
      * @param context         the context into which the bean definitions should be loaded
@@ -238,6 +253,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
 
     /**
      * Customização para iniciar o singular
+     *
      * @param context
      * @param webMergedConfig
      */

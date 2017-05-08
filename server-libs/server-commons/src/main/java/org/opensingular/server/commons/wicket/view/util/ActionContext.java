@@ -15,7 +15,7 @@ import java.util.Optional;
  * Representa o contexto de execução de uma página de um módulo.
  * Armazena as informações passadas como parâmetros pelo server para o módulo.
  */
-public class ActionContext implements Serializable, Cloneable, Loggable {
+public class ActionContext implements Serializable, Loggable {
 
     public static final String ACTION = "a";
 
@@ -52,14 +52,10 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
     public ActionContext() {
     }
 
-    /**
-     * Used by {@link this#clone()} method only
-     *
-     * @param params
-     */
-    private ActionContext(LinkedHashMap<String, String> params) {
-        this.params = params;
+    public ActionContext(ActionContext actionContext) {
+        this.params = actionContext.params;
     }
+
 
     public static ActionContext fromFormConfig(FormPageExecutionContext config) {
         return config.copyOfInnerActionContext();
@@ -179,10 +175,6 @@ public class ActionContext implements Serializable, Cloneable, Loggable {
 
     public String toURL() {
         return ParameterHttpSerializer.encode(params);
-    }
-
-    public ActionContext clone() {
-        return new ActionContext(params);
     }
 
     public Optional<Class<? extends AbstractFormPage<?, ?>>> getFormPageClass() {

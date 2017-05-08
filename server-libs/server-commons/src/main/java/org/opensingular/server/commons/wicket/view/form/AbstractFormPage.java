@@ -244,16 +244,18 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private PI loadPetition() {
         PI petition;
-        if (config.getPetitionId().isPresent()) {
-            petition = petitionService.getPetition(config.getPetitionId().get());
+        Optional<Long> petitionId = config.getPetitionId();
+        if (petitionId.isPresent()) {
+            petition = petitionService.getPetition(petitionId.get());
             FormEntity formEntityDraftOrPetition = getDraftOrFormEntity(petition);
             if (formEntityDraftOrPetition != null) {
                 formKeyModel.setObject(formPetitionService.formKeyFromFormEntity(formEntityDraftOrPetition));
             }
         } else {
             PI parentPetition = null;
-            if (config.getParentPetitionId().isPresent()) {
-                parentPetition = petitionService.getPetition(config.getParentPetitionId().get());
+            Optional<Long> parentPetitionId = config.getParentPetitionId();
+            if (parentPetitionId.isPresent()) {
+                parentPetition = petitionService.getPetition(parentPetitionId.get());
                 parentPetitionformKeyModel.setObject(formPetitionService.formKeyFromFormEntity(parentPetition.getEntity().getMainForm()));
             }
             petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation);
@@ -386,11 +388,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
         List<STransition> trans = null;
-        if (config.getPetitionId().isPresent()) {
-            trans = petitionService.listCurrentTaskTransitions(config.getPetitionId().get());
+        Optional<Long> petitionId = config.getPetitionId();
+        if (petitionId.isPresent()) {
+            trans = petitionService.listCurrentTaskTransitions(petitionId.get());
 
-            if (hasMultipleVersionsAndIsMainForm(config.getPetitionId().get())) {
-                appendButtonViewDiff(buttonContainer, config.getPetitionId().get(), currentInstance);
+            if (hasMultipleVersionsAndIsMainForm(petitionId.get())) {
+                appendButtonViewDiff(buttonContainer, petitionId.get(), currentInstance);
             }
         }
 

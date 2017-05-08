@@ -28,9 +28,11 @@ import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
@@ -42,10 +44,12 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -64,10 +68,12 @@ public class Menu extends Panel implements Loggable {
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(Menu.class);
 
-    private MenuService.MenuServiceSupplier menuServiceSupplier = new MenuService.MenuServiceSupplier();
+    @Inject
+    @SpringBean(required = false)
+    private MenuService menuService;
 
     private Class<? extends WebPage> boxPageClass;
-    private MetronicMenu menu;
+    private MetronicMenu             menu;
 
     public Menu(String id, Class<? extends WebPage> boxPageClass) {
         super(id);
@@ -84,18 +90,17 @@ public class Menu extends Panel implements Loggable {
 
     protected void buildMenuSelecao() {
         List<ProcessGroupEntity> categories = new ArrayList<>(0);
-        menuServiceSupplier.get().ifPresent(menuService -> {
+        if (menuService != null){
             categories.addAll(menuService.getCategories());
-        });
+        }
         SelecaoMenuItem selecaoMenuItem = new SelecaoMenuItem(categories);
         menu.addItem(selecaoMenuItem);
     }
 
     protected List<ProcessGroupEntity> getSelectedCategoryOrAll() {
         final ProcessGroupEntity categoriaSelecionada = SingularSession.get().getCategoriaSelecionada();
-        Optional<MenuService> menuService = menuServiceSupplier.get();
-        if (categoriaSelecionada == null && menuService.isPresent()) {
-            return menuService.get().getCategories();
+        if (categoriaSelecionada == null && menuService != null) {
+            return menuService.getCategories();
         } else {
             return Collections.singletonList(categoriaSelecionada);
         }
@@ -103,7 +108,7 @@ public class Menu extends Panel implements Loggable {
 
 
     protected void buildMenuGroup(MetronicMenu menu, ProcessGroupEntity processGroup) {
-        menuServiceSupplier.get()
+        Optional.ofNullable(menuService)
                 .map(menuService -> menuService.getMenusByCategory(processGroup))
                 .map(Collection::stream)
                 .orElse(Stream.empty())
@@ -136,7 +141,7 @@ public class Menu extends Panel implements Loggable {
             pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
             pageParameters.add(ITEM_PARAM_NAME, t.name);
 
-            MetronicMenuItem i = new MetronicMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
+            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
             group.addItem(i);
             itens.add(Pair.of(i.getHelper(), t.counterSupplier));
         }
