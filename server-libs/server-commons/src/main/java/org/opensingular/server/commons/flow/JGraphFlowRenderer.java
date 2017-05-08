@@ -127,6 +127,9 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
 
         final mxHierarchicalLayout layout = new mxHierarchicalLayout(graph);
         layout.setOrientation(SwingConstants.WEST);
+        layout.setIntraCellSpacing(30);
+        layout.setInterRankCellSpacing(50);
+        layout.setDisableEdgeStyle(false);
         layout.execute(parent);
         final mxParallelEdgeLayout layoutParalelo = new mxParallelEdgeLayout(graph);
         layoutParalelo.execute(parent);

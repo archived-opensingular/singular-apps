@@ -83,9 +83,13 @@ abstract class AbstractFormContent extends Content {
         return new WebMarkupContainer(id).setVisible(false);
     }
 
-    private final ViewMode getViewMode() { return singularFormPanel.getViewMode(); }
+    private final ViewMode getViewMode() {
+        return singularFormPanel.getViewMode();
+    }
 
-    private final AnnotationMode getAnnotationMode() { return singularFormPanel.getAnnotationMode(); }
+    private final AnnotationMode getAnnotationMode() {
+        return singularFormPanel.getAnnotationMode();
+    }
 
     private IReadOnlyModel<SInstance> getInstanceModel() {
         return (IReadOnlyModel<SInstance>) () -> singularFormPanel.getInstance();
@@ -105,16 +109,11 @@ abstract class AbstractFormContent extends Content {
     }
 
     private Component buildSendButton(final BSModalBorder enviarModal) {
-        final Component button = new SingularButton("send-btn", getFormInstance()) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
-                enviarModal.show(target);
-            }
-
-        };
+        final Component button = makeServerSendButton("send-btn", enviarModal);
         return button.add(visibleOnlyIfDraftInEditionBehaviour());
     }
+
+    protected abstract ServerSendButton makeServerSendButton(String id, BSModalBorder enviarModal);
 
     private Component buildSaveButton() {
         final Component button = new SingularButton("save-btn", getFormInstance()) {
