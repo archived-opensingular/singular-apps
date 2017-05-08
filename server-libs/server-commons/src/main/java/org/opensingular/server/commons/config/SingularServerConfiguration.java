@@ -18,7 +18,9 @@ package org.opensingular.server.commons.config;
 
 
 import org.opensingular.form.SType;
+import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.p.commons.flow.definition.ServerProcessDefinition;
 import org.springframework.web.context.ServletContextAware;
