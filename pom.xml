@@ -265,6 +265,14 @@
                     </plugin>
                 </plugins>
             </build>
+
+            <properties>
+                <project.scm.url>https://github.com/opensingular/singular-server/tree/master</project.scm.url>
+                <project.scm.connection>scm:git:https://github.com/opensingular/singular-server.git
+                </project.scm.connection>
+                <project.scm.developerConnection>scm:git:https://github.com/opensingular/singular-server.git
+                </project.scm.developerConnection>
+            </properties>
         </profile>
 
         <profile>

@@ -76,6 +76,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -127,7 +128,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
-        if(formType != null){
+        if (formType != null) {
             return PetitionUtil.getTypeName(formType);
         }
         return null;
@@ -207,6 +208,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Nonnull
     protected final SIComposite getInstance() {
         return (SIComposite) getSingularFormPanel().getInstance();
+    }
+
+    @Nonnull
+    protected final IModel<? extends SInstance> getInstanceModel() {
+        return getSingularFormPanel().getInstanceModel();
     }
 
     /**
@@ -325,6 +331,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             protected Component buildExtraContent(String id) {
                 return Optional.ofNullable(AbstractFormPage.this.buildExtraContent(id)).orElse(super.buildExtraContent(id));
             }
+
+            @Override
+            protected ServerSendButton makeServerSendButton(String id, BSModalBorder enviarModal) {
+                return AbstractFormPage.this.makeServerSendButton(id, getFormInstance(), enviarModal);
+            }
         };
 
         final RefType refType = formPetitionService.loadRefType(config.getFormName());
@@ -333,6 +344,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         onBuildSingularFormPanel(content.singularFormPanel);
 
         return content;
+    }
+
+    protected ServerSendButton makeServerSendButton(String id, IModel<? extends SInstance> formInstance, BSModalBorder enviarModal) {
+        return new ServerSendButton(id, formInstance, enviarModal);
     }
 
     private Component buildExtraContent(String id) {
@@ -413,7 +428,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
             // Verifica se existe rascunho
             PetitionInstance petition = petitionService.getPetition(petitionId);
-            String typeName = PetitionUtil.getTypeName(petition);
+            String           typeName = PetitionUtil.getTypeName(petition);
             if (petition.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -438,8 +453,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      */
     protected void appendButtonViewDiff(BSContainer<?> buttonContainer, Long petitionId, IModel<? extends SInstance> currentInstance) {
         buttonContainer.appendComponent(id ->
-                        new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
-                                .getDiffButton(id)
+                new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
+                        .getDiffButton(id)
         );
     }
 
@@ -458,7 +473,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
         return petition;
     }
-
 
 
     @NotNull
@@ -573,8 +587,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             try {
                 //executa o envio, iniciando o fluxo informado
                 Class<? extends PetitionSender> senderClass = config.getPetitionSender();
-                PetitionSender sender = ApplicationContextProvider.get().getBean(senderClass);
-                if(sender != null) {
+                PetitionSender                  sender      = ApplicationContextProvider.get().getBean(senderClass);
+                if (sender != null) {
                     PetitionSendedFeedback sendedFeedback = sender.send(petition, instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
                     onAfterSend(ajxrt, sm, sendedFeedback);
@@ -659,7 +673,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Map<String, String> getTransitionParameters(String transition) {
-        return null;
+        return new HashMap<>();
     }
 
     protected void onTransition(PetitionInstance pe, String transitionName) {
@@ -689,7 +703,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                  String transitionName,
                                  BSModalBorder confirmarAcaoFlowModal) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
-                        "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
+                "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, content.getFormInstance()) {
             @Override
@@ -706,27 +720,25 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     /**
-     * @param idSuffix -> button id suffix
-     * @param mc       -> modal container
-     * @param tn       -> transition name
-     * @param im       -> instance model
-     * @param vm       -> view mode
+     * @param idSuffix  -> button id suffix
+     * @param container -> modal container
+     * @param tn        -> transition name
+     * @param im        -> instance model
+     * @param vm        -> view mode
      * @return
      */
-    private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> mc, String tn, IModel<? extends SInstance> im, ViewMode vm) {
-        final FlowConfirmModal flowConfirmModal   = resolveFlowConfirmModal(tn);
-        final TemplatePanel    modalTemplatePanel = mc.newTemplateTag(t -> flowConfirmModal.getMarkup(idSuffix));
-        final BSModalBorder    modal              = flowConfirmModal.init(idSuffix, tn, im, vm);
-        modalTemplatePanel.add(modal);
-        return modal;
+    private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> container, String tn, IModel<? extends SInstance> im, ViewMode vm) {
+        final FlowConfirmPanel flowConfirmPanel = resolveFlowConfirmModal("confirmPanel" + idSuffix, tn);
+        container.appendTag("div", flowConfirmPanel);
+        return flowConfirmPanel.getModalBorder();
     }
 
     /**
      * @param tn -> the transition name
-     * @return the FlowConfirmModal
+     * @return the FlowConfirmPanel
      */
-    protected FlowConfirmModal resolveFlowConfirmModal(String tn) {
-        return new SimpleMessageFlowConfirmModal<>(this);
+    protected FlowConfirmPanel resolveFlowConfirmModal(String id, String tn) {
+        return new SimpleMessageFlowConfirmModal<>(id, tn, this);
     }
 
     private boolean isMainForm() {
