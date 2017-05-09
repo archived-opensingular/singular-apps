@@ -1,6 +1,5 @@
 package org.opensingular.server.core.config;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.wicket.Page;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
@@ -8,6 +7,7 @@ import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
 import org.opensingular.server.commons.config.SpringHibernateInitializer;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.server.commons.wicket.SingularApplication;
@@ -37,15 +37,14 @@ public abstract class ServerInitializer implements PSingularInitializer {
 
             @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
-
-                if (PServerContext.WORKLIST.equals(iServerContext)) {
+                if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
                     return AnalysisApplication.class;
-                } else if (PServerContext.PETITION.equals(iServerContext)) {
+                } else if (PServerContext.PETITION.isSameContext(iServerContext)) {
                     return PetitionApplication.class;
-                } else if (PServerContext.ADMINISTRATION.equals(iServerContext)) {
+                } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;
                 }
-                return null;
+                throw new SingularServerException("Contexto inválido");
             }
         };
     }
