@@ -173,4 +173,9 @@ public class PetitionInstance implements Serializable {
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
 
+    public String getPetitionerName(){
+        return getEntity().getPetitioner().getName();
+    }
+
+
 }
