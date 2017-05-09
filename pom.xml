@@ -197,7 +197,8 @@
         <url>${project.scm.url}</url>
         <connection>${project.scm.connection}</connection>
         <developerConnection>${project.scm.developerConnection}</developerConnection>
-    </scm>
+      <tag>HEAD</tag>
+  </scm>
 
     <dependencies>
         <!-- FOR JAVADOC GENERATION -->
