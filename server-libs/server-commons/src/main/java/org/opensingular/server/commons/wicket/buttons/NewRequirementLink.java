@@ -60,9 +60,12 @@ public class NewRequirementLink extends Panel {
     }
 
     protected void addSingleButton(ISupplier<Boolean> visibleSupplier) {
-        Link<String> newButton = buildLink("_botao", labelModel, requirements.getObject().stream().findFirst().get());
-        newButton.add($b.visibleIf(visibleSupplier));
-        this.add(newButton);
+        Optional<RequirementData> findFirst = requirements.getObject().stream().findFirst();
+        if(findFirst.isPresent()){
+            Link<String> newButton = buildLink("_botao", labelModel, findFirst.get());
+            newButton.add($b.visibleIf(visibleSupplier));
+            this.add(newButton);
+        }
     }
 
     private Link<String> buildLink(String id, IModel<String> labelModel, RequirementData requirement) {

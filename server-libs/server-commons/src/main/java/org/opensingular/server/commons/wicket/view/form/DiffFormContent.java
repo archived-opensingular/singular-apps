@@ -29,7 +29,6 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
@@ -71,48 +70,55 @@ public class DiffFormContent extends Content {
     @Override
     protected void onConfigure() {
         super.onConfigure();
+        Optional<Long> petitionId = config.getPetitionId();
+        
+        if (petitionId.isPresent()) {
+          
+            PetitionInstance petition = petitionService.getPetition(petitionId.get());
+            String typeName = PetitionUtil.getTypeName(petition);
+            Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
 
-        PetitionInstance      petition    = petitionService.getPetition(config.getPetitionId().get());
-        String                typeName    = PetitionUtil.getTypeName(petition);
-        Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
+            SInstance original = null;
+            SInstance newer;
 
-        SInstance original = null;
-        SInstance newer;
+            Date originalDate = null;
+            Date newerDate;
 
-        Date originalDate = null;
-        Date newerDate;
+            if (draftEntity.isPresent()) {
+                Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition,
+                        typeName);
+                if (lastForm.isPresent()) {
+                    FormEntity originalForm = lastForm.get().getForm();
+                    original = formPetitionService.getSInstance(originalForm);
+                    originalFormVersion = originalForm.getCurrentFormVersionEntity();
+                    originalDate = originalFormVersion.getInclusionDate();
+                }
 
-        if (draftEntity.isPresent()) {
-            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition, typeName);
-            if (lastForm.isPresent()) {
-                FormEntity originalForm = lastForm.get().getForm();
-                original = formPetitionService.getSInstance(originalForm);
-                originalFormVersion = originalForm.getCurrentFormVersionEntity();
+                FormVersionEntity newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
+                FormEntity newerForm = newerFormVersion.getFormEntity();
+                newer = formPetitionService.getSInstance(newerForm);
+                newerDate = draftEntity.get().getEditionDate();
+
+            } else {
+                List<FormVersionEntity> formPetitionEntities = petitionService
+                        .buscarDuasUltimasVersoesForm(petitionId.get());
+
+                originalFormVersion = formPetitionEntities.get(1);
+                original = formPetitionService.getSInstance(originalFormVersion);
                 originalDate = originalFormVersion.getInclusionDate();
+
+                FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
+                newer = formPetitionService.getSInstance(newerFormVersion);
+                newerDate = newerFormVersion.getInclusionDate();
             }
 
-            FormVersionEntity newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
-            FormEntity newerForm = newerFormVersion.getFormEntity();
-            newer = formPetitionService.getSInstance(newerForm);
-            newerDate = draftEntity.get().getEditionDate();
+            diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
 
-        } else {
-            List<FormVersionEntity> formPetitionEntities = petitionService.buscarDuasUltimasVersoesForm(config.getPetitionId().get());
+            queue(contentGrid);
+            adicionarDatas(originalDate, newerDate);
+            queue(new DiffVisualizer("diff", diff));
 
-            originalFormVersion = formPetitionEntities.get(1);
-            original = formPetitionService.getSInstance(originalFormVersion);
-            originalDate = originalFormVersion.getInclusionDate();
-
-            FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
-            newer = formPetitionService.getSInstance(newerFormVersion);
-            newerDate = newerFormVersion.getInclusionDate();
         }
-
-        diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
-
-        queue(contentGrid);
-        adicionarDatas(originalDate, newerDate);
-        queue(new DiffVisualizer("diff", diff));
     }
 
     private void adicionarDatas(Date originalDate, Date newerDate) {

@@ -175,10 +175,13 @@ public class DispatcherPage extends WebPage implements Loggable {
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
-        if (context.getFormVersionId().isPresent()) {
-            formVersionPK = context.getFormVersionId().get();
-        } else if (context.getPetitionId().isPresent()) {
-            PetitionEntity p = petitionService.getPetitionByCod(context.getPetitionId().get());
+        Optional<Long> formVersionId = context.getFormVersionId();
+        Optional<Long> petitionId = context.getPetitionId();
+        
+        if (formVersionId.isPresent()) {
+            formVersionPK = formVersionId.get();
+        } else if (petitionId.isPresent()) {
+            PetitionEntity p = petitionService.getPetitionByCod(petitionId.get());
             formVersionPK = p.getMainForm().getCurrentFormVersionEntity().getCod();
         } else {
             formVersionPK = null;

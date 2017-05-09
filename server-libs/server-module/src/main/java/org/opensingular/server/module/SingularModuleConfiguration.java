@@ -58,7 +58,10 @@ public class SingularModuleConfiguration {
         }
         SingularModule module = null;
         if(modules.stream().findFirst().isPresent()){
-            module = modules.stream().findFirst().get().newInstance();
+            Optional<Class<? extends SingularModule>> first = modules.stream().findFirst();
+            if(first.isPresent()){
+                module = first.get().newInstance();
+            }
         }
         return module;
     }

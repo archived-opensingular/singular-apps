@@ -145,7 +145,7 @@ public class PetitionInstance implements Serializable {
         return processInstance;
     }
 
-    public final PetitionEntity getEntity() {
+    public PetitionEntity getEntity() {
         return petitionEntity;
     }
 
@@ -172,5 +172,10 @@ public class PetitionInstance implements Serializable {
     public String getMainFormTypeName(){
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
+
+    public String getPetitionerName(){
+        return getEntity().getPetitioner().getName();
+    }
+
 
 }

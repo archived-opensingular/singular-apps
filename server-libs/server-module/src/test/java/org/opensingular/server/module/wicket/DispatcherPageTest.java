@@ -15,14 +15,11 @@ import org.opensingular.server.module.wicket.view.util.dispatcher.DispatcherPage
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import javax.inject.Inject;
-
-import static org.mockito.Mockito.any;
+import javax.inject.Inject;import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.ACTION;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
-
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {

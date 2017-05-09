@@ -15,27 +15,26 @@
  */
 package org.opensingular.server.core.service;
 
-import javax.inject.Inject;
-
+import org.opensingular.flow.schedule.IScheduleService;
+import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.server.commons.service.IMailSenderREST;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
-import org.opensingular.flow.schedule.IScheduleService;
-import org.opensingular.server.commons.service.IMailSenderREST;
-import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import javax.inject.Inject;
 
 @AutoScanDisabled
 @RequestMapping(IMailSenderREST.PATH)
 @RestController
-public class DefaultMailSenderREST implements IMailSenderREST{
+public class DefaultMailSenderREST implements IMailSenderREST {
 
     @Inject
     private IScheduleService scheduleService;
-    
+
     @Inject
     private EmailSenderScheduledJob emailSenderScheduledJob;
-    
+
     @Override
     @RequestMapping(value = PATH_SEND_ALL, method = RequestMethod.GET)
     public boolean sendAll() {

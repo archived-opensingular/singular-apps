@@ -14,8 +14,13 @@ public abstract class FlowRenderTest implements Loggable {
 
     private static final Object lock = new Object();
 
-
-    protected void render() {
+    /**
+     * Método para ser sobrescrito para a geração do gráfico para
+     * o desenvolvedor
+     * Deve ser ignorado pois impede a execução dos testes em ferramentas de
+     * build
+     */
+    public void render() {
         openJFrame(renderImage(getInstanceToRender()));
     }
 
