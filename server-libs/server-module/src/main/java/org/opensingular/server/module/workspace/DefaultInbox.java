@@ -32,10 +32,10 @@ public class DefaultInbox implements ItemBoxFactory {
     @Override
     public BoxItemDataProvider getDataProvider() {
         return new TaskBoxItemDataProvider(new ActionProviderBuilder()
-                .addViewAction()
                 .addAssignAction()
                 .addAnalyseAction()
-                .addRelocateAction());
+                .addRelocateAction()
+                .addViewAction());
     }
 
     @Override

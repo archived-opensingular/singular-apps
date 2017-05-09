@@ -17,25 +17,31 @@ import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 public abstract class ServerInitializer implements PSingularInitializer {
 
-    /**
-     * Está classe é um singleton, apenas uma instância por módulo war
-     */
-    IConsumer<SkinOptions> skinOptionsIConsumer;
+    private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override
     public PWebInitializer webConfiguration() {
-        skinOptionsIConsumer = this::initSkins;
         return new PWebInitializer() {
 
             @Override
+            public void onStartup(ServletContext servletContext) throws ServletException {
+                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>)ServerInitializer.this::initSkins);
+                super.onStartup(servletContext);
+            }
+
+            @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (PServerContext.WORKLIST.equals(iServerContext)) {
+
+                if (PServerContext.WORKLIST == iServerContext) {
                     return AnalysisApplication.class;
-                } else if (PServerContext.PETITION.equals(iServerContext)) {
+                } else if (PServerContext.PETITION == iServerContext) {
                     return PetitionApplication.class;
-                } else if (PServerContext.ADMINISTRATION.equals(iServerContext)) {
+                } else if (PServerContext.ADMINISTRATION == iServerContext) {
                     return AdministrationApplication.class;
                 }
                 return null;
@@ -102,29 +108,33 @@ public abstract class ServerInitializer implements PSingularInitializer {
     }
 
 
-    public class AnalysisApplication extends SingularApplication {
+    public static class AnalysisApplication extends SingularApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
             return BoxPage.class;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            skinOptionsIConsumer.accept(skinOptions);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_PARAM);
+            initSKin.accept(skinOptions);
         }
     }
 
-    public class PetitionApplication extends SingularApplication {
+    public static class PetitionApplication extends SingularApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
             return BoxPage.class;
         }
 
+        @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            skinOptionsIConsumer.accept(skinOptions);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_PARAM);
+            initSKin.accept(skinOptions);
         }
 
     }

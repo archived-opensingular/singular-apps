@@ -18,6 +18,7 @@ package org.opensingular.server.core.config;
 
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
+import org.opensingular.server.commons.service.IMailSenderREST;
 import org.opensingular.server.core.service.DefaultMailSenderREST;
 import org.opensingular.server.core.service.EmailSender;
 import org.opensingular.server.core.service.EmailSenderScheduledJob;
@@ -27,20 +28,20 @@ import org.springframework.context.annotation.DependsOn;
 public class MailSenderSchedulerInitializer {
 
     @Bean
-    public EmailSender emailSender(){
+    public EmailSender emailSender() {
         return new EmailSender();
     }
-    
+
     @Bean
     @DependsOn({"emailSender", "scheduleService", "emailService"})
-    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService){
+    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
         EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
         scheduleService.schedule(emailSenderScheduledJob);
         return emailSenderScheduledJob;
     }
-    
+
     @Bean
-    public DefaultMailSenderREST mailSenderREST(){
+    public IMailSenderREST mailSenderREST() {
         return new DefaultMailSenderREST();
     }
 }

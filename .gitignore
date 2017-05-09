@@ -1,6 +1,7 @@
 # Arquivos H2/HSQL   #
 ######################
 **/*.h2.db
+**/*.mv.db
 **/*.trace.db
 **/*.tmp
 
@@ -51,3 +52,7 @@ local.properties
 ######################
 **/rebel.xml
 out/**
+
+# Aid Diagramas      #
+######################
+**/*.ucls
