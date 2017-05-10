@@ -14,14 +14,14 @@ import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
-import org.opensingular.server.commons.service.attachment.FormAttachmentService;
-import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceService;
 
 import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 
 @RunWith(MockitoJUnitRunner.class)
@@ -57,7 +57,6 @@ public class ServerAttachmentPersistenceServiceTest {
         final Long             myAttachmenyID   = 1L;
         final AttachmentEntity attachmentEntity = new AttachmentEntity();
 
-        when(document.getRoot()).thenReturn(root);
         when(attachmentRef.getId()).thenReturn(String.valueOf(myAttachmenyID));
         when(formService.findCurrentFormVersion(eq(document))).thenReturn(Optional.of(formVersionEntity));
         when(attachmentDao.findOrException(myAttachmenyID)).thenReturn(attachmentEntity);
