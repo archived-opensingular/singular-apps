@@ -7,7 +7,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opensingular.form.SType;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
@@ -75,7 +74,7 @@ public class BoxDefinitionDataServiceTest {
 
 
         when(singularModuleConfiguration.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
-        when(singularModuleConfiguration.findRequirmentByFormType(any(SType.class))).thenReturn(Optional.of(mock(SingularRequirementRef.class)));
+
         when(singularModuleConfiguration.findRequirmentByFormType(any(String.class))).thenReturn(Optional.of(mock(SingularRequirementRef.class)));
         when(context.getBean(eq(SingularModuleConfiguration.class))).thenReturn(singularModuleConfiguration);
 
