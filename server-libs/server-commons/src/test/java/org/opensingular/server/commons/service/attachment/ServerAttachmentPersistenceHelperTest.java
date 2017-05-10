@@ -13,15 +13,16 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.SIAttachment;
 import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersistenceHelper;
-import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
-import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerAttachmentPersistenceHelperTest {
@@ -79,7 +80,6 @@ public class ServerAttachmentPersistenceHelperTest {
         when(obsoletAttachmentEntity.getCod()).thenReturn(1L);
         when(normalAttachmentEntity.getCod()).thenReturn(2L);
 
-        when(obsoletAttachment.getFileId()).thenReturn("1");
         when(normalAttachment.getFileId()).thenReturn("2");
 
         when(formService.findCurrentFormVersion(document)).thenReturn(Optional.of(formVersionEntity));
