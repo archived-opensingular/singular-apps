@@ -16,6 +16,7 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.stypes;
 
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
 import org.opensingular.form.SInfoType;
@@ -27,12 +28,12 @@ import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.type.core.STypeBoolean;
 import org.opensingular.form.type.core.STypeString;
 import org.opensingular.form.validation.IInstanceValidatable;
-import org.opensingular.form.validation.ValidationErrorLevel;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewListByTable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,7 +50,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
     public STypeList<STypeComposite<SIComposite>, SIComposite> columnsInfo;
 
     @Override
-    protected void onLoadType(TypeBuilder tb) {
+    protected void onLoadType(@NotNull TypeBuilder tb) {
 
         tablesList = this.addFieldListOfComposite("tablesList", "tabela");
         tablesList.setView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
@@ -163,28 +164,31 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         coluna.addInstanceValidator(this::columnValidation);
     }
 
-    protected void columnValidation(IInstanceValidatable<SIComposite> validatable) {
+    private void columnValidation(IInstanceValidatable<SIComposite> validatable) {
         Optional<SIBoolean> databaseFieldInstance  = validatable.getInstance().findNearest(foundDataBase);
         Optional<SIBoolean> hibernateFieldInstance = validatable.getInstance().findNearest(foundHibernate);
 
         // Encontrado no hibernate e nao no banco
-        if (hibernateFieldInstance.get().getValue() && !databaseFieldInstance.get().getValue()) {
+        if (hibernateFieldInstance.isPresent()
+                && hibernateFieldInstance.get().getValue()
+                && databaseFieldInstance.isPresent()
+                && !databaseFieldInstance.get().getValue()) {
             validatable.error("Inconsistency between database and Hibernate!");
         } else {
             // Encontrado no banco e nao no hibernate
-            Optional<SIBoolean> nullableFieldInstance = validatable.getInstance().findNearest(nullable);
-            Optional<SIList<SIString>> listObj = validatable.getInstance().findNearest(userPrivs);
-            List<Object> listPrivs = listObj.get().getValue();
-            List<String> vals = new ArrayList<>();
+            Optional<SIBoolean>        nullableFieldInstance = validatable.getInstance().findNearest(nullable);
+            Optional<SIList<SIString>> listObj               = validatable.getInstance().findNearest(userPrivs);
+            List<Object>               listPrivs             = listObj.map(SIList::getValue).orElse(Collections.emptyList());
+            List<String>               vals                  = new ArrayList<>();
             listPrivs.forEach(obj -> vals.add((String) obj));
 
-            if (!nullableFieldInstance.get().getValue() && (!vals.contains("INSERT") || !vals.contains("UPDATE"))) {
+            if (nullableFieldInstance.isPresent() && !nullableFieldInstance.get().getValue() && (!vals.contains("INSERT") || !vals.contains("UPDATE"))) {
                 validatable.error("Column NOT NULL without SELECT or UPDATE permissions");
             }
         }
     }
 
-    protected void tableValidation(IInstanceValidatable<SIComposite> validatable) {
+    private void tableValidation(IInstanceValidatable<SIComposite> validatable) {
 
         Optional<SIBoolean> foundTableInstance = validatable.getInstance().findNearest(found);
         if (!foundTableInstance.isPresent() || !foundTableInstance.get().getValue()) {
@@ -193,14 +197,13 @@ public class SDbHealth extends STypeComposite<SIComposite> {
 
         Optional<SIString>         foundSchemaField = validatable.getInstance().findNearest(schema);
         Optional<SIList<SIString>> listObj          = validatable.getInstance().findNearest(userPrivs);
-        List<Object>               listPrivs        = listObj.get().getValue();
+        List<Object>               listPrivs        = listObj.map(SIList::getValue).orElse(Collections.emptyList());
         List<String>               vals             = new ArrayList<>();
         listPrivs.forEach(obj -> vals.add((String) obj));
 
-        if (foundSchemaField.get() == null) {
-            validatable.error(ValidationErrorLevel.ERROR, "Schema not found!");
-        } else {
-            if (SqlUtil.isSingularSchema(foundSchemaField.get().getValue())
+        if(foundSchemaField.isPresent()) {
+            SIString foundSchemaFieldInstance = foundSchemaField.get();
+            if (SqlUtil.isSingularSchema(foundSchemaFieldInstance.getValue())
                     && SqlUtil.hasCompleteCrud(vals)) {
                 validatable.error("Singular table without complete CRUD!");
             }
