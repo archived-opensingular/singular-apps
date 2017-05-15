@@ -54,7 +54,7 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
     @Test
     public void httpsCheckerTest() throws Exception {
         SIComposite url = reachWebPanelAndGetNewCompositeInstance();
-        url.getField(0).setValue("https://www.gmail.com");
+        url.getField(0).setValue("https://wwwasdsadasdasdadsad");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
         Assert.assertEquals(1, url.getField(0).getValidationErrors().size());
