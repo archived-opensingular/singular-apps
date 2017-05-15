@@ -38,7 +38,7 @@ public abstract class FlowRenderTest implements Loggable {
 
     protected void openJFrame(byte[] image) {
         final JFrame frame     = new JFrame();
-        JPanel       mainPanel = new JPanel(new BorderLayout());
+        JPanel       mainPanel = new JPanel(new BorderLayout(5,5));
         JLabel       lblimage  = new JLabel(new ImageIcon(image));
         mainPanel.add(lblimage);
         frame.add(mainPanel);
