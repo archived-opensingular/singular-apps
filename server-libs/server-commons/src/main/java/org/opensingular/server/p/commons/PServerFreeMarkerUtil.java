@@ -45,7 +45,7 @@ public class PServerFreeMarkerUtil {
     static {
         final BeansWrapper wrapper = new BeansWrapperBuilder(VERSION).build();
         cfg.setObjectWrapper(wrapper);
-        cfg.setTemplateLoader(new ClassTemplateLoader(PServerFreeMarkerUtil.class.getClassLoader(), "templates"));
+        cfg.setTemplateLoader(new ClassTemplateLoader(PServerFreeMarkerUtil.class.getClassLoader(), "templates"));//NOSONAR
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
     }
 
