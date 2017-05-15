@@ -6,8 +6,9 @@ import org.opensingular.server.commons.wicket.SingularApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 
 import javax.servlet.ServletContext;
+import java.io.Serializable;
 
-public class SecurityAuthPathsFactory {
+public class SecurityAuthPathsFactory implements Serializable{
 
     public SecurityAuthPaths get() {
 
