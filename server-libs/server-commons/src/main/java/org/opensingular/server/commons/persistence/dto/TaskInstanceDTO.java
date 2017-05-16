@@ -29,24 +29,24 @@ import java.util.List;
 
 public class TaskInstanceDTO implements Serializable {
 
-    private Integer taskInstanceId;
-    private Integer versionStamp;
-    private Integer processInstanceId;
-    private Integer taskId;
-    private String taskName;
-    private Date creationDate;
-    private String description;
-    private String codUsuarioAlocado;
-    private String nomeUsuarioAlocado;
-    private String type;
-    private String processType;
-    private Long codPeticao;
-    private Date situationBeginDate;
-    private Date processBeginDate;
+    private Integer  taskInstanceId;
+    private Integer  versionStamp;
+    private Integer  processInstanceId;
+    private Integer  taskId;
+    private String   taskName;
+    private Date     creationDate;
+    private String   description;
+    private String   codUsuarioAlocado;
+    private String   nomeUsuarioAlocado;
+    private String   type;
+    private String   processType;
+    private Long     codPeticao;
+    private Date     situationBeginDate;
+    private Date     processBeginDate;
     private TaskType taskType;
     private boolean possuiPermissao = true;
-    private String processGroupCod;
-    private String processGroupContext;
+    private String              processGroupCod;
+    private String              processGroupContext;
     private List<BoxItemAction> actions;
 
 
@@ -71,8 +71,10 @@ public class TaskInstanceDTO implements Serializable {
         setTaskType(taskType);
         setProcessGroupCod(processGroupCod);
         try {
-            final String path = new URL(processGroupContext).getPath();
-            setProcessGroupContext(path.substring(0, path.indexOf('/', 1)));
+            if (processGroupContext != null) {
+                final String path = new URL(processGroupContext).getPath();
+                setProcessGroupContext(path.substring(0, path.indexOf('/', 1)));
+            }
         } catch (Exception e) {
             throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", processGroupContext), e);
         }

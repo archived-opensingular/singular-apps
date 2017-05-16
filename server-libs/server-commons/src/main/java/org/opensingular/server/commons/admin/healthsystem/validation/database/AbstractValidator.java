@@ -59,7 +59,7 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 
 		List<ColumnInfoDTO> colunas = getColumnsInfoFromTable(tableInfoDTO.getTableName());
 
-		// Verifica se as colunas encontradas no banco foi encontrada no hibernate
+		// Verifica se as columnsInfo encontradas no banco foi encontrada no hibernate
 		// caso nao tenha sido, indica isso
 		colunas.forEach(coluna->{
 			boolean colunaDoBancoEncontradaNoHibernate = false;
@@ -76,7 +76,7 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 			}
 		});
 
-		// Verifica se as colunas encontradas no hibernate foram encontradas no banco
+		// Verifica se as columnsInfo encontradas no hibernate foram encontradas no banco
 		// caso nao tenha sido, indica isso
 		tableInfoDTO.getColumnsInfo().forEach(tableCol->{
 			boolean colunaDoHibernateEncontradaNoBanco = false;
@@ -98,7 +98,7 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 	}
 
 	/**
-	 * Recupera a lista de colunas para a respectiva tabela.
+	 * Recupera a lista de columnsInfo para a respectiva tabela.
 	 * @param table
 	 * @return
 	 */
