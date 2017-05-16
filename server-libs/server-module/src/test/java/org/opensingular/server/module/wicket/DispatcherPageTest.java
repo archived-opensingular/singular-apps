@@ -2,6 +2,7 @@ package org.opensingular.server.module.wicket;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.form.FormAction;
@@ -51,6 +52,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
 
     @WithUserDetails("vinicius.nunes")
     @Test
+    @Ignore
     public void accessGranted() {
         when(authorizationService.hasPermission(any(), any(), any(), any())).thenReturn(true);
         tester = new SingularWicketTester(singularApplication);

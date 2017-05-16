@@ -264,7 +264,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private FormEntity getDraftOrFormEntity(PI petition) {
-        return petition.getEntity().currentEntityDraftByType(getFormType())
+        return petition.getEntity()
+                .currentEntityDraftByType(getFormType())
                 .map(DraftEntity::getForm)
                 .orElseGet(() -> getFormPetitionEntity(petition).map(FormPetitionEntity::getForm).orElse(null));
     }
@@ -695,7 +696,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected IModel<?> getContentTitleModel() {
-        return new ResourceModel("label.form.content.title");
+        return new ResourceModel("label.form.content.title", "Nova Solicitação");
     }
 
     private void buildFlowButton(String buttonId,

@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Provider responsavel por fornecer dados e metadados para exibição das tabelas no server
+ * Provider responsavel por fornecer dados e metadados para exibição das tablesList no server
  */
 public interface BoxItemDataProvider {
 
