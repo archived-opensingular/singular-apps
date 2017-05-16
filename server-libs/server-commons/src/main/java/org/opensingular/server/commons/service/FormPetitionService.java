@@ -42,6 +42,8 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.sun.tools.javac.main.JavacOption.Option;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -288,17 +290,21 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         if (! formPetitionEntity.isPresent()) {
             formPetitionEntity = Optional.of(newFormPetitionEntity(petition.getEntity(), mainForm));
-            petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
+            if(formPetitionEntity.isPresent()){
+                petition.getEntity().getFormPetitionEntities().add(formPetitionEntity.get());
+            }
         }
-
-        DraftEntity currentDraftEntity = formPetitionEntity.get().getCurrentDraftEntity();
+        
+        FormPetitionEntity fpe = formPetitionEntity.orElseThrow(()-> new SingularServerException("FormPetitionEntity não encontrado !"));
+        
+        DraftEntity currentDraftEntity = fpe.getCurrentDraftEntity();
         if (currentDraftEntity == null) {
             currentDraftEntity = createNewDraftWithoutSave();
         }
 
         saveOrUpdateDraft(instance, currentDraftEntity, codActor);
-        formPetitionEntity.get().setCurrentDraftEntity(currentDraftEntity);
-        formPetitionDAO.saveOrUpdate(formPetitionEntity.get());
+        fpe.setCurrentDraftEntity(currentDraftEntity);
+        formPetitionDAO.saveOrUpdate(fpe);
         return formKeyFromFormEntity(currentDraftEntity.getForm());
     }
 
@@ -541,7 +547,7 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     public FormKey formKeyFromFormEntity(@Nonnull FormEntity formEntity) {
-        return Objects.requireNonNull(formPersistenceService.keyFromObject(formEntity.getCod()));
+        return formPersistenceService.keyFromObject(formEntity.getCod());
     }
 
     /**
@@ -551,10 +557,13 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     private SDocumentFactory getFactory(@Nullable SDocumentConsumer extraFactorySetupSteps) {
+        SFormConfig<String> form = singularFormConfig
+                .orElseThrow(() -> new SingularServerException("singularFormConfig não encontrado !"));
         if (extraFactorySetupSteps != null) {
-            return singularFormConfig.get().getDocumentFactory().extendAddingSetupStep(extraFactorySetupSteps);
+            return form.getDocumentFactory().extendAddingSetupStep(extraFactorySetupSteps);
+        } else {
+            return form.getDocumentFactory();
         }
-        return singularFormConfig.get().getDocumentFactory();
     }
 
     /** Veja {@link #newTransientSInstance(FormKey, RefType, boolean, SDocumentConsumer)}. */
@@ -612,7 +621,7 @@ public class FormPetitionService<P extends PetitionEntity> {
 
     /**
      * Atualiza a instância na base de dados, com base no atributo FormmKey contido na instância informada.
-     * <p>Veja {@link org.opensingular.form.persistence.BasicFormPersistence#update(SInstance, Integer)}</p>
+     * <p>Veja {@link IFormService#update(SInstance, Integer)}</p>
      */
     public void update(@Nonnull SInstance instance, Integer inclusionActor) {
         formPersistenceService.update(instance, inclusionActor);
@@ -631,7 +640,10 @@ public class FormPetitionService<P extends PetitionEntity> {
     /** Retorna a referência para tipo indicado ou dispara exception senão for possível */
     @Nonnull
     public RefType loadRefType(@Nonnull String typeName) {
-        return singularFormConfig.get().getTypeLoader().loadRefTypeOrException(Objects.requireNonNull(typeName));
+        if(singularFormConfig.isPresent()){
+            return singularFormConfig.get().getTypeLoader().loadRefTypeOrException(Objects.requireNonNull(typeName));
+        }
+        throw new SingularServerException("singularFormConfig não encontrado !");
     }
 
     /** Retorna a referência para tipo indicado ou dispara exception senão for possível */

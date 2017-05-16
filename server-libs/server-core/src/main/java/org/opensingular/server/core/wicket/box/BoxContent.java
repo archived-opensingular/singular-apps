@@ -18,6 +18,7 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -31,65 +32,76 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
+import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.server.commons.flow.actions.ActionAtribuirRequest;
-import org.opensingular.server.commons.flow.actions.ActionRequest;
-import org.opensingular.server.commons.flow.actions.ActionResponse;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.box.BoxItemDataList;
+import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
+import org.opensingular.server.commons.box.action.ActionRequest;
+import org.opensingular.server.commons.box.action.ActionResponse;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.util.DispatcherPageParameters;
+import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
-import org.opensingular.server.core.wicket.ModuleLink;
+import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
-import org.opensingular.server.core.wicket.model.BoxItemModel;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.inject.Inject;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.service.IServerMetadataREST.PATH_BOX_SEARCH;
-import static org.opensingular.server.commons.util.DispatcherPageParameters.FORM_NAME;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
-public class BoxContent extends AbstractBoxContent<BoxItemModel> {
+public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(BoxContent.class);
-    protected IModel<BoxItemModel>    currentModel;
-    private   Pair<String, SortOrder> sortProperty;
-    private   ItemBox                 itemBoxDTO;
+    @Inject
+    private BoxService boxService;
 
-    public BoxContent(String id, String processGroupCod, String menu, ItemBox itemBoxDTO) {
+    private Pair<String, SortOrder>   sortProperty;
+    private IModel<BoxDefinitionData> definitionModel;
+
+    public BoxContent(String id, String processGroupCod, String menu, BoxDefinitionData itemBox) {
         super(id, processGroupCod, menu);
-        this.itemBoxDTO = itemBoxDTO;
+        this.definitionModel = new Model<>(itemBox);
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        showNew();
         configureQuickFilter();
     }
 
@@ -98,80 +110,77 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         getPesquisarButton().setVisible(isShowQuickFilter());
     }
 
-    private void showNew() {
+    @Override
+    public Component buildNewPetitionButton(String id) {
         if (isShowNew() && getMenu() != null) {
-            List<FormDTO> forms = getForms().stream().filter(FormDTO::isNewable).collect(Collectors.toList());
-            for (FormDTO form : forms) {
-                String url = DispatcherPageUtil
-                        .baseURL(getBaseUrl())
-                        .formAction(FormActions.FORM_FILL.getId())
-                        .petitionId(null)
-                        .param(DispatcherPageParameters.FORM_NAME, form.getName())
-                        .params(getLinkParams())
-                        .build();
-
-                if (forms.size() > 1) {
-                    dropdownMenu.adicionarMenu(id -> new ModuleLink(id, $m.ofValue(form.getDescription()), url));
-                } else {
-                    adicionarBotaoGlobal(id -> new ModuleLink(id, getMessage("label.button.insert"), url));
-                }
-            }
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(definitionModel, "requirements"));
+        } else {
+            return super.buildNewPetitionButton(id);
         }
-
     }
 
     @Override
-    protected void appendPropertyColumns(BSDataTableBuilder<BoxItemModel, String, IColumn<BoxItemModel, String>> builder) {
+    protected void appendPropertyColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
         for (DatatableField entry : getFieldsDatatable()) {
             builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getLabel(), entry.getLabel());
         }
     }
 
     @Override
-    protected void appendActionColumns(BSDataTableBuilder<BoxItemModel, String, IColumn<BoxItemModel, String>> builder) {
-        BSActionColumn<BoxItemModel, String> actionColumn = new BSActionColumn<>(getMessage("label.table.column.actions"));
+    protected void appendActionColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
+        BSActionColumn<BoxItemDataMap, String> actionColumn = new BSActionColumn<BoxItemDataMap, String>(getMessage("label.table.column.actions")) {
+            @Override
+            protected void onPopulateActions(IModel<BoxItemDataMap> rowModel, BSActionPanel<BoxItemDataMap> actionPanel) {
+                resetActions();
+                Set<Map.Entry<String, BoxItemAction>> actions = Optional
+                        .ofNullable(rowModel)
+                        .map(IModel::getObject)
+                        .map(BoxItemDataMap::getActionsMap)
+                        .map(Map::entrySet)
+                        .orElse(new HashSet<>(0));
 
-        if (getLogger().isDebugEnabled()) {
-            getLogger().debug(String.format("A caixa %s permite a apresentação apenas das ações %s", itemBoxDTO.getName(), Arrays.toString(itemBoxDTO.getActions().keySet().toArray())));
-        }
-        for (ItemAction itemAction : itemBoxDTO.getActions().values()) {
+                for (Map.Entry<String, BoxItemAction> entry : actions) {
+                    BoxItemAction itemAction = entry.getValue();
 
-            if (itemAction.getType() == ItemActionType.POPUP) {
-                actionColumn.appendStaticAction(
-                        $m.ofValue(itemAction.getLabel()),
-                        itemAction.getIcon(),
-                        linkFunction(itemAction, getBaseUrl(), getLinkParams()),
-                        visibleFunction(itemAction),
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
-            } else if (itemAction.getType() == ItemActionType.ENDPOINT) {
-                actionColumn.appendAction(
-                        $m.ofValue(itemAction.getLabel()),
-                        itemAction.getIcon(),
-                        dynamicLinkFunction(itemAction, getProcessGroup().getConnectionURL(), getLinkParams()),
-                        visibleFunction(itemAction),
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
-            }
-        }
+                    if (itemAction.getType() == ItemActionType.URL_POPUP) {
+                        appendStaticAction(
+                                $m.ofValue(itemAction.getLabel()),
+                                itemAction.getIcon(),
+                                linkFunction(itemAction, getBaseUrl(), getLinkParams()),
+                                visibleFunction(itemAction),
+                                c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+                    } else if (itemAction.getType() == ItemActionType.EXECUTE) {
+                        appendAction(
+                                $m.ofValue(itemAction.getLabel()),
+                                itemAction.getIcon(),
+                                dynamicLinkFunction(itemAction, getProcessGroup().getConnectionURL(), getLinkParams()),
+                                visibleFunction(itemAction),
+                                c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+                    }
+                }
 
-        actionColumn
-                .appendStaticAction(
+                appendStaticAction(
                         getMessage("label.table.column.history"),
                         Icone.HISTORY,
-                        this::criarLinkHistorico,
+                        BoxContent.this::criarLinkHistorico,
                         (x) -> Boolean.TRUE,
                         c -> c.styleClasses($m.ofValue("worklist-action-btn")));
+
+                super.onPopulateActions(rowModel, actionPanel);
+            }
+        };
 
         builder.appendColumn(actionColumn);
     }
 
-    private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemModel> boxItemModel) {
-        BoxItemModel   boxItem        = boxItemModel.getObject();
+    private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
+        BoxItemDataMap boxItem        = boxItemModelObject(boxItemModel);
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
-            pageParameters.add(DispatcherPageParameters.PETITION_ID, boxItem.getCod());
-            pageParameters.add(DispatcherPageParameters.INSTANCE_ID, boxItem.getProcessInstanceId());
-            pageParameters.add(DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME, getProcessGroup().getCod());
-            pageParameters.add(DispatcherPageParameters.MENU_PARAM_NAME, getMenu());
+            pageParameters.add(PETITION_ID, boxItem.getCod());
+            pageParameters.add(INSTANCE_ID, boxItem.getProcessInstanceId());
+            pageParameters.add(PROCESS_GROUP_PARAM_NAME, getProcessGroup().getCod());
+            pageParameters.add(MENU_PARAM_NAME, getMenu());
         }
         BookmarkablePageLink<?> historiLink = new BookmarkablePageLink<>(id, getHistoricoPage(), pageParameters);
         historiLink.setVisible(boxItem.getProcessBeginDate() != null);
@@ -182,28 +191,23 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         return HistoryPage.class;
     }
 
-    @Override
-    protected WebMarkupContainer criarLinkEdicao(String id, IModel<BoxItemModel> peticao) {
-        if (peticao.getObject().getProcessBeginDate() == null) {
-            return criarLink(id, peticao, FormActions.FORM_FILL);
-        } else {
-            return criarLink(id, peticao, FormActions.FORM_FILL_WITH_ANALYSIS);
-        }
-    }
-
-    public IBiFunction<String, IModel<BoxItemModel>, MarkupContainer> linkFunction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
             String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
 
             WebMarkupContainer link = new WebMarkupContainer(id);
-            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
+            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModelObject(boxItemModel).getCod())));
             link.add($b.attr("href", url));
             return link;
         };
     }
 
-    private String mountStaticUrl(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemModel> boxItemModel) {
-        final BoxItemAction action = boxItemModel.getObject().getActionByName(itemAction.getName());
+    private BoxItemDataMap boxItemModelObject(IModel<BoxItemDataMap> boxItemModel) {
+        return boxItemModel.getObject();
+    }
+
+    private String mountStaticUrl(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemDataMap> boxItemModel) {
+        final BoxItemAction action = boxItemModelObject(boxItemModel).getActionByName(itemAction.getName());
         if (action.getEndpoint().startsWith("http")) {
             return action.getEndpoint();
         } else {
@@ -213,20 +217,20 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         }
     }
 
-    private IBSAction<BoxItemModel> dynamicLinkFunction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
-                currentModel = model;
+                getDataModel().setObject(model.getObject());
                 final BSModalBorder confirmationModal = construirModalConfirmationBorder(itemAction, baseUrl, additionalParams);
                 confirmationForm.addOrReplace(confirmationModal);
                 confirmationModal.show(target);
             };
         } else {
-            return (target, model) -> executeDynamicAction(itemAction, baseUrl, additionalParams, model.getObject(), target);
+            return (target, model) -> executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(model), target);
         }
     }
 
-    protected void executeDynamicAction(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemModel boxItem, AjaxRequestTarget target) {
+    protected void executeDynamicAction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
         String url = baseUrl
@@ -236,14 +240,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
         }
     }
 
-    protected void relocate(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemModel boxItem, AjaxRequestTarget target, Actor actor) {
+    protected void relocate(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target, Actor actor) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
         String url = baseUrl
@@ -253,14 +257,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
+            getLogger().error("Erro ao acessar serviço: " + url, e);
             addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
         }
     }
 
-    protected Object buildCallAtribuirObject(BoxItemAction boxAction, BoxItemModel boxItem, Actor actor) {
+    protected Object buildCallAtribuirObject(BoxItemAction boxAction, BoxItemDataMap boxItem, Actor actor) {
         ActionAtribuirRequest actionRequest = new ActionAtribuirRequest();
         actionRequest.setIdUsuario(getBoxPage().getIdUsuario());
         if (actor == null) {
@@ -269,7 +273,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             actionRequest.setIdUsuarioDestino(actor.getCodUsuario());
         }
         if (boxAction.isUseExecute()) {
-            actionRequest.setName(boxAction.getName());
+            actionRequest.setAction(boxAction);
             actionRequest.setLastVersion(boxItem.getVersionStamp());
         }
 
@@ -277,7 +281,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     private void callModule(String url, Object arg) {
-        ActionResponse response = new RestTemplate().postForObject(url, arg, ActionResponse.class);
+        ActionResponse response = boxService.callModule(url, arg, ActionResponse.class);
         if (response.isSuccessful()) {
             addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -285,24 +289,24 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         }
     }
 
-    private Object buildCallObject(BoxItemAction boxAction, BoxItemModel boxItem) {
+    private Object buildCallObject(BoxItemAction boxAction, BoxItemDataMap boxItem) {
         ActionRequest actionRequest = new ActionRequest();
         actionRequest.setIdUsuario(getBoxPage().getIdUsuario());
         if (boxAction.isUseExecute()) {
-            actionRequest.setName(boxAction.getName());
+            actionRequest.setAction(boxAction);
             actionRequest.setLastVersion(boxItem.getVersionStamp());
         }
 
         return actionRequest;
     }
 
-    protected BSModalBorder construirModalConfirmationBorder(ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    protected BSModalBorder construirModalConfirmationBorder(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         final ItemActionConfirmation confirmation      = itemAction.getConfirmation();
         BSModalBorder                confirmationModal = new BSModalBorder("confirmationModal", $m.ofValue(confirmation.getTitle()));
         confirmationModal.addOrReplace(new Label("message", $m.ofValue(confirmation.getConfirmationMessage())));
 
         Model<Actor>        actorModel     = new Model<>();
-        IModel<List<Actor>> actorsModel    = $m.get(() -> buscarUsuarios(currentModel, confirmation));
+        IModel<List<Actor>> actorsModel    = $m.get(() -> boxService.buscarUsuarios(getProcessGroup(), getDataModel(), confirmation));
         DropDownChoice      dropDownChoice = criarDropDown(actorsModel, actorModel);
         dropDownChoice.setVisible(StringUtils.isNotBlank(confirmation.getSelectEndpoint()));
         confirmationModal.addOrReplace(dropDownChoice);
@@ -310,7 +314,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, $m.ofValue(confirmation.getCancelButtonLabel()), new AjaxButton("cancel-delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                currentModel = null;
+                getDataModel().setObject(null);
                 confirmationModal.hide(target);
             }
         }.setDefaultFormProcessing(false));
@@ -321,7 +325,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    relocate(itemAction, baseUrl, additionalParams, currentModel.getObject(), target, actorModel.getObject());
+                    relocate(itemAction, baseUrl, additionalParams, boxItemModelObject(getDataModel()), target, actorModel.getObject());
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -331,7 +335,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
             confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.ofValue(confirmation.getConfirmationButtonLabel()), new AjaxButton("delete-btn", confirmationForm) {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    executeDynamicAction(itemAction, baseUrl, additionalParams, currentModel.getObject(), target);
+                    executeDynamicAction(itemAction, baseUrl, additionalParams, boxItemModelObject(getDataModel()), target);
                     target.add(tabela);
                     atualizarContadores(target);
                     confirmationModal.hide(target);
@@ -342,7 +346,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         return confirmationModal;
     }
 
-    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, ItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
 
     }
 
@@ -359,19 +363,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         return dropDownChoice;
     }
 
-    @SuppressWarnings("unchecked")
-    private List<Actor> buscarUsuarios(IModel<BoxItemModel> currentModel, ItemActionConfirmation confirmation) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
-
-        try {
-            return Arrays.asList(new RestTemplate().postForObject(url, currentModel.getObject(), Actor[].class));
-        } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
-    }
-
     private String appendParameters(Map<String, String> additionalParams) {
         StringBuilder paramsValue = new StringBuilder();
         if (!additionalParams.isEmpty()) {
@@ -382,12 +373,12 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
         return paramsValue.toString();
     }
 
-    private IFunction<IModel<BoxItemModel>, Boolean> visibleFunction(ItemAction itemAction) {
+    private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
-            BoxItemModel boxItemModel = model.getObject();
-            boolean visible = boxItemModel.hasAction(itemAction);
+            BoxItemDataMap boxItemDataMap = boxItemModelObject(model);
+            boolean visible = boxItemDataMap.hasAction(itemAction);
             if (!visible) {
-                getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemModel.getCod());
+                getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemDataMap.getCod());
             }
 
             return visible;
@@ -404,7 +395,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     @Override
-    protected void onDelete(BoxItemModel peticao) {
+    protected void onDelete(BoxItemDataMap peticao) {
 
     }
 
@@ -416,7 +407,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
                 .withProcessesAbbreviation(getProcessesNames())
                 .withTypesNames(getFormNames())
                 .withRascunho(isWithRascunho())
-                .withEndedTasks(itemBoxDTO.getEndedTasks());
+                .withEndedTasks(getItemBoxModelObject().getEndedTasks());
     }
 
     private BoxPage getBoxPage() {
@@ -446,43 +437,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
     }
 
     @Override
-    protected List<BoxItemModel> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getSearchEndpoint();
-        try {
-            return (List<BoxItemModel>) Arrays
-                    .asList(new RestTemplate().postForObject(url, filter, Map[].class))
-                    .stream()
-                    .map(BoxItemModel::new)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
+    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
+        return boxService.quickSearch(getProcessGroup(), getItemBoxModelObject(), filter);
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<BoxItemModel> itemModel, FormActions formActions) {
-        BoxItemModel item = itemModel.getObject();
-        String href = DispatcherPageUtil
-                .baseURL(getBaseUrl())
-                .formAction(formActions.getId())
-                .petitionId(item.getCod())
-                .param(FORM_NAME, item.get("type"))
-                .params(getCriarLinkParameters(item))
-                .build();
-
-        WebMarkupContainer link = new WebMarkupContainer(id);
-        link.add($b.attr("target", String.format("_%s_%s", formActions.getId(), item.getCod())));
-        link.add($b.attr("href", href));
-        return link;
-    }
-
-    @Override
-    protected Map<String, String> getCriarLinkParameters(BoxItemModel item) {
-        final Map<String, String> linkParameters = new HashMap<>();
-        linkParameters.putAll(getLinkParams());
-        return linkParameters;
+    protected WebMarkupContainer criarLink(String id, IModel<BoxItemDataMap> itemModel, FormAction formAction) {
+        // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
+        throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
     }
 
     private Map<String, String> getLinkParams() {
@@ -492,47 +454,45 @@ public class BoxContent extends AbstractBoxContent<BoxItemModel> {
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        final String connectionURL = getProcessGroup().getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + getCountEndpoint();
-        try {
-            return new RestTemplate().postForObject(url, filter, Long.class);
-        } catch (Exception e) {
-            LOGGER.error("Erro ao acessar serviço: " + url, e);
-            return 0;
-        }
+        return boxService.countQuickSearch(getProcessGroup(), getItemBoxModelObject(), filter);
     }
 
     @Override
     public IModel<?> getContentTitleModel() {
-        return $m.ofValue(itemBoxDTO.getName());
+        return $m.ofValue(getItemBoxModelObject().getName());
     }
 
     @Override
     public IModel<?> getContentSubtitleModel() {
-        return $m.ofValue(itemBoxDTO.getDescription());
+        return $m.ofValue(getItemBoxModelObject().getDescription());
     }
 
     public boolean isShowNew() {
-        return itemBoxDTO.isShowNewButton();
+        return getItemBoxModelObject().isShowNewButton();
     }
 
     public boolean isShowQuickFilter() {
-        return itemBoxDTO.isQuickFilter();
+        return getItemBoxModelObject().isQuickFilter();
     }
 
     public List<DatatableField> getFieldsDatatable() {
-        return itemBoxDTO.getFieldsDatatable();
+        return getItemBoxModelObject().getFieldsDatatable();
     }
 
     public String getSearchEndpoint() {
-        return itemBoxDTO.getSearchEndpoint();
+        return getItemBoxModelObject().getSearchEndpoint();
     }
 
     public String getCountEndpoint() {
-        return itemBoxDTO.getCountEndpoint();
+        return getItemBoxModelObject().getCountEndpoint();
     }
 
     public boolean isWithRascunho() {
-        return itemBoxDTO.isShowDraft();
+        return getItemBoxModelObject().isShowDraft();
     }
+
+    private ItemBox getItemBoxModelObject() {
+        return definitionModel.getObject().getItemBox();
+    }
+
 }

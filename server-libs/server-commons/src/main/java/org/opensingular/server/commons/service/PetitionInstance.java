@@ -25,7 +25,10 @@ import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.SingularFormException;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.persistence.entity.enums.PersonType;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 
@@ -35,12 +38,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- *
  * @author Daniel C. Bordin on 07/03/2017.
  */
 public class PetitionInstance implements Serializable {
 
-    @Nonnull
     private final PetitionEntity petitionEntity;
 
     private transient ProcessInstance processInstance;
@@ -51,15 +52,15 @@ public class PetitionInstance implements Serializable {
         this.petitionEntity = Objects.requireNonNull(petitionEntity);
     }
 
-    final void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
-    }
-
     public ProcessInstance getProcessInstance() {
         if (processInstance == null && petitionEntity.getProcessInstanceEntity() != null) {
             processInstance = PetitionUtil.getProcessInstance(petitionEntity);
         }
         return processInstance;
+    }
+
+    final void setProcessInstance(ProcessInstance processInstance) {
+        this.processInstance = processInstance;
     }
 
     public boolean hasProcessInstance() {
@@ -79,12 +80,28 @@ public class PetitionInstance implements Serializable {
         return FormPetitionService.checkIfExpectedType(getMainForm(), expectedType);
     }
 
-    private PetitionService<?,?> getPetitionService() {
+    @Nonnull
+    public <I extends SInstance> I getMainFormAndCast(@Nonnull Class<I> expectedType) {
+        SIComposite i = getMainForm();
+        if(expectedType.isAssignableFrom(i.getClass())) {
+            return (I) i;
+        }
+        throw new SingularFormException(
+                "Era esperado a instância recuperada fosse do tipo " + expectedType.getName() +
+                        " mas ela é do tipo " + i.getClass(), i);
+    }
+
+    private PetitionService<?, ?> getPetitionService() {
         return ApplicationContextProvider.get().getBean(PetitionService.class);
     }
 
     public ProcessDefinition<?> getProcessDefinition() {
         return PetitionUtil.getProcessDefinition(petitionEntity);
+    }
+
+    public void setProcessDefinition(Class<? extends ProcessDefinition> clazz) {
+        ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(clazz);
+        petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) processDefinition.getEntityProcessDefinition());
     }
 
     public Optional<ProcessDefinition<?>> getProcessDefinitionOpt() {
@@ -99,13 +116,21 @@ public class PetitionInstance implements Serializable {
         return getProcessInstance().getCurrentTaskOrException();
     }
 
+    public String getCurrentTaskNameOrException() {
+        return getProcessInstance().getCurrentTaskOrException().getName();
+    }
+
     public Optional<PetitionInstance> getParentPetition() {
         return Optional.ofNullable(petitionEntity.getParentPetition()).map(
-                parent -> ((PetitionService<PetitionEntity,?>) getPetitionService()).newPetitionInstance(parent));
+                parent -> ((PetitionService<PetitionEntity, ?>) getPetitionService()).newPetitionInstance(parent));
     }
 
     public String getDescription() {
         return petitionEntity.getDescription();
+    }
+
+    public void setDescription(String description) {
+        petitionEntity.setDescription(description);
     }
 
     public void setNewProcess(ProcessInstance newPrcesssInstance) {
@@ -120,7 +145,7 @@ public class PetitionInstance implements Serializable {
         return processInstance;
     }
 
-    public final PetitionEntity getEntity() {
+    public PetitionEntity getEntity() {
         return petitionEntity;
     }
 
@@ -128,12 +153,29 @@ public class PetitionInstance implements Serializable {
         return petitionEntity.getPetitioner();
     }
 
-    public void setProcessDefinition(Class<? extends ProcessDefinition> clazz) {
-        ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(clazz);
-        petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) processDefinition.getEntityProcessDefinition());
+    //TODO REFACTOR
+    public String getIdPessoaSeForPessoaJuridica() {
+        if (PersonType.JURIDICA == getPetitioner().getPersonType()) {
+            return getPetitioner().getIdPessoa();
+        }
+        return null;
     }
 
-    public void setDescription(String description) {
-        petitionEntity.setDescription(description);
+    public FormVersionEntity getMainFormCurrentFormVersion() {
+        return petitionEntity.getMainForm().getCurrentFormVersionEntity();
     }
+
+    public Long getMainFormCurrentFormVersionCod() {
+        return getMainFormCurrentFormVersion().getCod();
+    }
+
+    public String getMainFormTypeName(){
+        return getEntity().getMainForm().getFormType().getAbbreviation();
+    }
+
+    public String getPetitionerName(){
+        return getEntity().getPetitioner().getName();
+    }
+
+
 }

@@ -19,7 +19,7 @@ package org.opensingular.server.commons.flow;
 
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.form.SIComposite;
-import org.opensingular.server.commons.wicket.view.form.FormPageConfig;
+import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
 import java.io.Serializable;
 import java.util.Optional;
@@ -40,6 +40,6 @@ public interface FlowResolver extends Serializable {
      *  form input data
      * @return
      */
-    Optional<Class<? extends ProcessDefinition>> resolve(FormPageConfig cfg, SIComposite iRoot);
+    Optional<Class<? extends ProcessDefinition>> resolve(FormPageExecutionContext cfg, SIComposite iRoot);
 
 }

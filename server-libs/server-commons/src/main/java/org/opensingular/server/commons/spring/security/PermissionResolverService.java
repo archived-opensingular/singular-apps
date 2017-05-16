@@ -25,9 +25,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.cache.SingularCacheForever;
 import org.opensingular.server.commons.cache.SingularSessionCache;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.flow.actions.ActionConfig;
-import org.opensingular.server.commons.flow.actions.ActionDefinition;
-import org.opensingular.server.commons.form.FormActions;
+import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
@@ -46,7 +44,7 @@ import java.util.stream.Collectors;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected PetitionService<PetitionEntity,PetitionInstance> petitionService;
+    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
@@ -65,8 +63,8 @@ public class PermissionResolverService implements Loggable {
     }
 
     @SingularCacheForever
-    public List<? extends SingularPermission> listAllCategoryPermissions(){
-        return Flow.getDefinitions().stream().map( d -> buildCategoryPermission(d.getCategory())).distinct().collect(Collectors.toList());
+    public List<? extends SingularPermission> listAllCategoryPermissions() {
+        return Flow.getDefinitions().stream().map(d -> buildCategoryPermission(d.getCategory())).distinct().collect(Collectors.toList());
     }
 
     @SingularCacheForever
@@ -76,7 +74,7 @@ public class PermissionResolverService implements Loggable {
         List<String> typeNames = listAllTypeNames();
 
         for (String typeName : typeNames) {
-            for (FormActions action : FormActions.values()) {
+            for (FormAction action : FormAction.values()) {
                 String singularId = action + "_" + typeName;
                 permissions.add(new SingularPermission(singularId, null));
             }
@@ -108,20 +106,7 @@ public class PermissionResolverService implements Loggable {
 
     @SingularCacheForever
     private List<? extends SingularPermission> listPermissions(Class<? extends ProcessDefinition> clazz) {
-        ProcessDefinition processDefinition = Flow.getProcessDefinition(clazz);
-        ActionConfig actionConfig      = (ActionConfig) processDefinition.getMetaDataValue(ActionConfig.KEY);
-
-        if (actionConfig == null) {
-            return Collections.emptyList();
-        }
-
-        List<ActionDefinition> actions = new ArrayList<>();
-        actions.addAll(actionConfig.getDefaultActions());
-        actions.addAll(actionConfig.getCustomActions().keySet());
-
-        return actions.stream()
-                .map(n -> buildActionPermission(n.getName(), processDefinition.getKey()))
-                .collect(Collectors.toList());
+        return Collections.emptyList();
     }
 
     public SingularPermission buildCategoryPermission(String cateogryName) {

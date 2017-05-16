@@ -18,7 +18,17 @@ package org.opensingular.server.commons.service.dto;
 
 public enum ItemActionType {
 
-    POPUP,
-    ENDPOINT;
+    /**
+     * Popup URL based action
+     */
+    URL_POPUP,
+    /**
+     * Same tab URL
+     */
+    URL,
+    /**
+     * INTERNAL EXECUTION CALL
+     */
+    EXECUTE;
 
 }

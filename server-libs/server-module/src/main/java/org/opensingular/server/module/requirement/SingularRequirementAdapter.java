@@ -1,5 +1,7 @@
 package org.opensingular.server.module.requirement;
 
+import org.opensingular.server.commons.requirement.SingularRequirement;
+
 /**
  * Basic singular requirement adapter.
  */

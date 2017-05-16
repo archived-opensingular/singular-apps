@@ -36,6 +36,7 @@ import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.util.JPAQueryUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -64,19 +65,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return (Long) createQuery(filtro, siglasProcesso, true, formNames).uniqueResult();
     }
 
-    public List<PetitionDTO> quickSearch(QuickFilter filtro, List<String> siglasProcesso, List<String> formNames) {
-        final Query query = createQuery(filtro, siglasProcesso, false, formNames);
-        query.setFirstResult(filtro.getFirst());
-        query.setMaxResults(filtro.getCount());
-        query.setResultTransformer(new AliasToBeanResultTransformer(getResultClass()));
-        return query.list();
-    }
-
-    protected Class<? extends PetitionDTO> getResultClass() {
-        return PetitionDTO.class;
-    }
-
-    public List<Map<String, Object>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
         final Query query = createQuery(filter, processesAbbreviation, false, formNames);
         query.setFirstResult(filter.getFirst());
         query.setMaxResults(filter.getCount());
@@ -99,6 +88,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             hql.append(" , pie.beginDate as processBeginDate ");
             hql.append(" , currentDraftEntity.editionDate as editionDate ");
             hql.append(" , pie.cod as processInstanceId ");
+            hql.append(" , p.rootPetition.id as rootPetition ");
+            hql.append(" , p.parentPetition.id as parentPetition ");
             appendCustomSelectClauses(hql, filter);
         }
     }
@@ -143,7 +134,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
         hql.append(" WHERE 1=1 ");
 
-        if(filtro.getIdPessoa() != null) {
+        if (filtro.getIdPessoa() != null) {
             hql.append(" AND petitioner.idPessoa = :idPessoa ");
             params.put("idPessoa", filtro.getIdPessoa());
         }
@@ -221,7 +212,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
     private Query createQuery(QuickFilter filtro, List<String> siglasProcesso, boolean count, List<String> formNames) {
 
-        final StringBuilder       hql    = new StringBuilder(   );
+        final StringBuilder hql = new StringBuilder();
         final Map<String, Object> params = new HashMap<>();
 
         buildSelectClause(hql, count, filtro);
@@ -323,4 +314,29 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .list();
     }
 
+    public boolean containChildren(Long petitionCod) {
+        return ((Long) getSession()
+                .createQuery("select count(p) from PetitionEntity p where p.parentPetition.cod = :petitionCod")
+                .setParameter("petitionCod", petitionCod)
+                .uniqueResult()) > 0;
+    }
+
+    public T findPetitionInstanceByRootPetitionAndType(Long rootPetition, String type) {
+        return (T) getSession()
+                .createQuery(" select p from PetitionEntity p" +
+                        " inner join p.formPetitionEntities formPetitionEntity " +
+                        " inner join formPetitionEntity.form form " +
+                        " inner join form.formType formType " +
+                        " where 1=1 " +
+                        " and formPetitionEntity.mainForm = :sim  " +
+                        " and p.rootPetition.id = :rootPetition " +
+                        " and formType.abbreviation = :type ")
+                .setParameter("sim", SimNao.SIM)
+                .setParameter("rootPetition", rootPetition)
+                .setParameter("type", type)
+                .setMaxResults(1)
+                .uniqueResult();
+
+
+    }
 }

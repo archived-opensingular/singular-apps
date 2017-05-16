@@ -3,22 +3,20 @@ package org.opensingular.server.module.workspace;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
+import org.opensingular.server.module.ActionProviderBuilder;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.TaskBoxItemDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.opensingular.server.commons.rest.DefaultServerREST.COUNT_TASKS;
-import static org.opensingular.server.commons.rest.DefaultServerREST.SEARCH_TASKS;
 
 public class DefaultDonebox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.equals(context);
+        return ServerContext.WORKLIST.isSameContext(context);
     }
 
     @Override
@@ -27,20 +25,20 @@ public class DefaultDonebox implements ItemBoxFactory {
         concluidas.setName("Concluídas");
         concluidas.setDescription("Petições concluídas");
         concluidas.setIcone(Icone.DOCS);
-        concluidas.setSearchEndpoint(SEARCH_TASKS);
-        concluidas.setCountEndpoint(COUNT_TASKS);
         concluidas.setEndedTasks(Boolean.TRUE);
-        concluidas.setFieldsDatatable(criarFieldsDatatableWorklistConcluidas());
-        concluidas.addAction(DefaultActions.VIEW);
         return concluidas;
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return null;
+    public BoxItemDataProvider getDataProvider() {
+        return new TaskBoxItemDataProvider(
+                new ActionProviderBuilder()
+                        .addViewAction()
+        );
     }
 
-    protected List<DatatableField> criarFieldsDatatableWorklistConcluidas() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
         fields.add(DatatableField.of("Dt. de Entrada", "creationDate"));
@@ -50,6 +48,5 @@ public class DefaultDonebox implements ItemBoxFactory {
         fields.add(DatatableField.of("Situação", "taskName"));
         return fields;
     }
-
 
 }

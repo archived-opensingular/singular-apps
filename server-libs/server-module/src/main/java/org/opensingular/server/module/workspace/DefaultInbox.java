@@ -3,23 +3,20 @@ package org.opensingular.server.module.workspace;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
+import org.opensingular.server.module.ActionProviderBuilder;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.TaskBoxItemDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ASSIGN;
-import static org.opensingular.server.commons.rest.DefaultServerREST.COUNT_TASKS;
-import static org.opensingular.server.commons.rest.DefaultServerREST.SEARCH_TASKS;
 
 public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.equals(context);
+        return ServerContext.WORKLIST.isSameContext(context);
     }
 
     @Override
@@ -28,23 +25,21 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.setName("Caixa de Entrada");
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
-        caixaEntrada.setSearchEndpoint(SEARCH_TASKS);
-        caixaEntrada.setCountEndpoint(COUNT_TASKS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
-        caixaEntrada.setFieldsDatatable(criarFieldsDatatableWorklist());
-        caixaEntrada.addAction(ASSIGN);
-        caixaEntrada.addAction(DefaultActions.ANALYSE);
-        caixaEntrada.addAction(DefaultActions.RELOCATE);
-        caixaEntrada.addAction(DefaultActions.VIEW);
         return caixaEntrada;
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return null;
+    public BoxItemDataProvider getDataProvider() {
+        return new TaskBoxItemDataProvider(new ActionProviderBuilder()
+                .addAssignAction()
+                .addAnalyseAction()
+                .addRelocateAction()
+                .addViewAction());
     }
 
-    protected List<DatatableField> criarFieldsDatatableWorklist() {
+    @Override
+    public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
         fields.add(DatatableField.of("Dt. de Entrada", "creationDate"));
@@ -55,5 +50,6 @@ public class DefaultInbox implements ItemBoxFactory {
         fields.add(DatatableField.of("Alocado", "nomeUsuarioAlocado"));
         return fields;
     }
+
 }
 

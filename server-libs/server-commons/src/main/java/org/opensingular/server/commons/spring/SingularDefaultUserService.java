@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.spring;
 
 import org.apache.wicket.Application;
-import org.opensingular.flow.core.MUser;
+import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -34,7 +34,7 @@ public class SingularDefaultUserService implements IUserService {
     private ActorDAO actorDAO;
 
     @Override
-    public MUser getUserIfAvailable() {
+    public SUser getUserIfAvailable() {
         String username = null;
 
         if (Application.exists() && SingularSession.exists()) {
@@ -50,31 +50,31 @@ public class SingularDefaultUserService implements IUserService {
     }
 
     @Override
-    public boolean canBeAllocated(MUser mUser) {
+    public boolean canBeAllocated(SUser sUser) {
         return true;
     }
 
     @Override
-    public MUser findUserByCod(String username) {
+    public SUser findUserByCod(String username) {
         return actorDAO.buscarPorCodUsuario(username);
     }
 
     @Override
     @Transactional
-    public MUser saveUserIfNeeded(MUser mUser) {
-        return actorDAO.saveUserIfNeeded(mUser);
+    public SUser saveUserIfNeeded(SUser sUser) {
+        return actorDAO.saveUserIfNeeded(sUser);
     }
 
     @Override
     @Transactional
-    public Optional<MUser> saveUserIfNeeded(String codUsuario) {
+    public Optional<SUser> saveUserIfNeeded(String codUsuario) {
         Objects.requireNonNull(codUsuario);
         return actorDAO.saveUserIfNeeded(codUsuario);
     }
 
     @Override
     @Transactional
-    public MUser findByCod(Integer cod) {
+    public SUser findByCod(Integer cod) {
         return actorDAO.get(cod).orElse(null);
     }
 }

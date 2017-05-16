@@ -29,12 +29,13 @@ public class SingularAnnotatedMountScanner {
 
     private void validatePaths(List<Class<?>> classes) {
         Map<String, Class<?>> mountPaths = new HashMap<>();
+        List<String>          paths      = new ArrayList<>();
         for (Class<?> clazz : classes) {
-            List<String> paths = new ArrayList<>();
+            paths.clear();
             paths.add(clazz.getAnnotation(MountPath.class).value());
             paths.addAll(Arrays.asList(clazz.getAnnotation(MountPath.class).alt()));
             for (String path : paths) {
-                StringUtils.removeStart("/", StringUtils.removeEnd(path, "/"));
+                path = StringUtils.removeStart(StringUtils.removeEnd(path, "/"), "/");
                 if (mountPaths.containsKey(path)) {
                     throw SingularServerException
                             .rethrow(
