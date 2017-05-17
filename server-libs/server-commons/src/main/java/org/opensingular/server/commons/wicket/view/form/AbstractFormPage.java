@@ -29,6 +29,7 @@ import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.RefService;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -425,7 +426,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                     btnId, buttonContainer,
                                     modalContainer, t.getName(),
                                     currentInstance, viewMode,
-                                    isTransitionButtonEnabled(t, getCurrentTaskInstance().get()));
+                                    getButtonAccess(t, getCurrentTaskInstance().get()));
                         });
 
             } else {
@@ -483,7 +484,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     /**
-     *
      * @param transition
      * @param t
      * @return
@@ -495,8 +495,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
 
-    protected Boolean isTransitionButtonEnabled(STransition transition, TaskInstance t) {
-        return transition.getAccessFor(t).isEnabled();
+    protected TransitionAccess getButtonAccess(STransition transition, TaskInstance t) {
+        return transition.getAccessFor(t);
     }
 
     protected final PI getUpdatedPetitionFromInstance(IModel<? extends SInstance> currentInstance, boolean mainForm) {
@@ -528,7 +528,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, ViewMode viewMode, Boolean transitionButtonEnabled) {
+    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, ViewMode viewMode, TransitionAccess transitionButtonEnabled) {
         final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel, viewMode);
         buildFlowButton(buttonId, buttonContainer, transitionName, modal, transitionButtonEnabled);
     }
@@ -734,7 +734,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private void buildFlowButton(String buttonId,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
-                                 BSModalBorder confirmarAcaoFlowModal, Boolean transitionButtonEnabled) {
+                                 BSModalBorder confirmarAcaoFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                         "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
@@ -745,8 +745,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
 
             @Override
-            protected void onConfigure() {
-                this.setEnabled(transitionButtonEnabled);
+            protected void onInitialize() {
+                super.onInitialize();
+                this.setEnabled(access.isEnabled());
+                if (access.getMessage().isPresent()) {
+                    this.add($b.attr("data-toggle", "tooltip"));
+                    this.add($b.attr("data-placement", "top"));
+                    this.add($b.attr("title", access.getMessage().get()));
+                }
             }
         };
         singularButton.add(new Label("flowButtonLabel", transitionName).setRenderBodyOnly(true));
