@@ -401,13 +401,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (CollectionUtils.isNotEmpty(trans) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
             int index = 0;
             trans.stream().filter(this::isTransitionButtonVisibible).forEach(t -> {//NOSONAR
-                if (t.getMetaDataValue(ServerContextMetaData.KEY) != null && t.getMetaDataValue(ServerContextMetaData.KEY).isEnabledOn(SingularSession.get().getServerContext())) {
+//                if (t.getMetaDataValue(ServerContextMetaData.KEY) != null && t.getMetaDataValue(ServerContextMetaData.KEY).isEnabledOn(SingularSession.get().getServerContext())) {
                     String btnId = "flow-btn" + index;
                     buildFlowTransitionButton(
                             btnId, buttonContainer,
                             modalContainer, t.getName(),
                             currentInstance, viewMode);
-                }
+//                }
             });
 
         } else {
