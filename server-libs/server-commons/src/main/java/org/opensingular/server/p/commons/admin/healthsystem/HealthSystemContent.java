@@ -168,31 +168,36 @@ public class HealthSystemContent extends Content {
 
     @NotNull
     private java.io.File makeZip(IModel<URI> logUriModel) throws IOException {
-        byte[]           buffer  = new byte[1024];
-        Path             logPath = Paths.get(logUriModel.getObject());
-        java.io.File     zip     = File.createTempFile("log", ".zip");
-        FileOutputStream fos     = new FileOutputStream(zip);
-        ZipEntry         ze      = new ZipEntry(logPath.getFileName().toString());
-        ZipOutputStream  zos     = new ZipOutputStream(fos);
-        zos.putNextEntry(ze);
-        FileInputStream in = new FileInputStream(logPath.toFile());
-        int             len;
-        while ((len = in.read(buffer)) > 0) {
-            zos.write(buffer, 0, len);
+        byte[]       buffer  = new byte[1024];
+        Path         logPath = Paths.get(logUriModel.getObject());
+        java.io.File zip     = File.createTempFile("log", ".zip");
+        try (FileOutputStream fos = new FileOutputStream(zip)) {
+            makeZip(buffer, logPath, fos);
         }
-        in.close();
-        zos.closeEntry();
-        zos.close();
-        fos.close();
         return zip;
+    }
+
+    private void makeZip(byte[] buffer, Path logPath, FileOutputStream fos) throws IOException {
+        ZipEntry ze = new ZipEntry(logPath.getFileName().toString());
+        try (ZipOutputStream zos = new ZipOutputStream(fos)) {
+            zos.putNextEntry(ze);
+            try (FileInputStream in = new FileInputStream(logPath.toFile())) {
+                int len;
+                while ((len = in.read(buffer)) > 0) {
+                    zos.write(buffer, 0, len);
+                }
+                zos.closeEntry();
+            }
+        }
     }
 
     @NotNull
     private ArrayList<URI> resolveLogsURIs() throws IOException {
-        ArrayList<URI> uris = new ArrayList<>();
+        ArrayList<URI>        uris     = new ArrayList<>();
         Path                  logDir   = resolveLogDirPath();
         DirectoryStream<Path> children = Files.newDirectoryStream(logDir);
         children.forEach(path -> uris.add(path.toUri()));
+        children.close();
         return uris;
     }
 
