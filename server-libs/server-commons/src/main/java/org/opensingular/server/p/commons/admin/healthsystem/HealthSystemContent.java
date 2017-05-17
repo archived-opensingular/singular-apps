@@ -132,9 +132,9 @@ public class HealthSystemContent extends Content {
 
     @NotNull
     private Fragment makeLogFragment() throws IOException {
-        return new Fragment(CONTAINER_ALL_CONTENT, "logContainer", HealthSystemContent.this) {{
-            add(makeLogListView());
-        }};
+        Fragment fragment = new Fragment(CONTAINER_ALL_CONTENT, "logContainer", HealthSystemContent.this);
+        fragment.add(makeLogListView());
+        return fragment;
     }
 
     @NotNull
@@ -144,9 +144,8 @@ public class HealthSystemContent extends Content {
             protected void populateItem(ListItem<URI> item) {
                 ResourceStreamResource lopZipStream = makeZipLogStream(item.getModel());
                 lopZipStream.setFileName("log.zip");
-                ResourceLink downloadLink = new ResourceLink("log", lopZipStream) {{
-                    add(new Label("label", Paths.get(item.getModelObject()).getFileName().toString()));
-                }};
+                ResourceLink downloadLink = new ResourceLink("log", lopZipStream);
+                downloadLink.add(new Label("label", Paths.get(item.getModelObject()).getFileName().toString()));
                 item.add(downloadLink);
             }
         };
@@ -184,16 +183,17 @@ public class HealthSystemContent extends Content {
         in.close();
         zos.closeEntry();
         zos.close();
+        fos.close();
         return zip;
     }
 
     @NotNull
     private ArrayList<URI> resolveLogsURIs() throws IOException {
-        return new ArrayList<URI>() {{
-            Path                  logDir   = resolveLogDirPath();
-            DirectoryStream<Path> children = Files.newDirectoryStream(logDir);
-            children.forEach(path -> add(path.toUri()));
-        }};
+        ArrayList<URI> uris = new ArrayList<>();
+        Path                  logDir   = resolveLogDirPath();
+        DirectoryStream<Path> children = Files.newDirectoryStream(logDir);
+        children.forEach(path -> uris.add(path.toUri()));
+        return uris;
     }
 
     private Path resolveLogDirPath() {

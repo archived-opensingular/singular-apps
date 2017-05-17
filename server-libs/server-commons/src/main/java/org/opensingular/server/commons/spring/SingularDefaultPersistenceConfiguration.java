@@ -147,7 +147,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     protected DataSource embeddedDataSourceConfiguration() {
         try {
             getLogger().warn("Usando datasource banco embarcado H2");
-            HikariDataSource dataSource = new HikariDataSource();
+            HikariDataSource dataSource = new HikariDataSource();//NOSONAR
             dataSource.setJdbcUrl(getUrlConnection());
 
             dataSource.setUsername("sa");
