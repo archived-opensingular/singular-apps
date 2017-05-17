@@ -25,10 +25,10 @@ public class FOOFlow extends ServerProcessDefinition<ProcessInstance> {
         ITaskDefinition endbarDef = () -> "No more bar";
 
         flow.addEnd(endbarDef);
-        worklist(flow.addPeopleTask(dobarDef)
+        flow.addPeopleTask(dobarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy())
-                .go(endbarDef));
+                .go(endbarDef);
 
         flow.setStart(dobarDef);
 

@@ -20,8 +20,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.STask;
-import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
@@ -64,7 +62,6 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -261,7 +258,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
-        Optional<TaskInstanceEntity> taskInstance = findCurrentTaskByPetitionId(petition.getCod());
+        Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByPetitionId(petition.getCod());
         FormEntity                   formEntity   = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
@@ -348,16 +345,13 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return taskInstanceDAO.countTasks(filter.getTasks(), filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
     }
 
-    public List<STransition> listCurrentTaskTransitions(Long petitionId) {
-        return findCurrentTaskByPetitionId(petitionId)
-                .map(Flow::getTaskInstance)
-                .flatMap(TaskInstance::getFlowTask)
-                .map(STask::getTransitions)
-                .orElse(Collections.emptyList());
+    public Optional<TaskInstance> findCurrentTaskInstanceByPetitionId(Long petitionId) {
+        return findCurrentTaskEntityByPetitionId(petitionId)
+                .map(Flow::getTaskInstance);
     }
 
     @Nonnull
-    public Optional<TaskInstanceEntity> findCurrentTaskByPetitionId(@Nonnull Long petitionId) {
+    public Optional<TaskInstanceEntity> findCurrentTaskEntityByPetitionId(@Nonnull Long petitionId) {
         //TODO (Daniel) Por que usar essa entidade em vez de TaskIntnstace ?
         Objects.requireNonNull(petitionId);
         List<TaskInstanceEntity> taskInstances = taskInstanceDAO.findCurrentTasksByPetitionId(petitionId);
@@ -423,7 +417,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public boolean isPreviousTransition(@Nonnull Long petitionCod, @Nonnull String trasitionName) {
         //TODO (Daniel) Esse código
-        Optional<TaskInstanceEntity> currentTask = findCurrentTaskByPetitionId(petitionCod);
+        Optional<TaskInstanceEntity> currentTask = findCurrentTaskEntityByPetitionId(petitionCod);
         if (currentTask.isPresent()) {
             List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
 
