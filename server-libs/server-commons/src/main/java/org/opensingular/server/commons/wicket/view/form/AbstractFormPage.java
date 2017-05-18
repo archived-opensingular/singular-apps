@@ -138,7 +138,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        if (currentTaskInstance == null) {
+        if (currentTaskInstance == null) {//NOSONAR
             if (config.getPetitionId().isPresent()) {
                 currentTaskInstance = petitionService.findCurrentTaskInstanceByPetitionId(config.getPetitionId().get());
             } else {
