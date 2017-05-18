@@ -417,18 +417,20 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                     .orElse(Collections.emptyList());
             if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
                 int index = 0;
-                transitions
-                        .stream()
-                        .filter(t -> isTransitionButtonVisible(t, getCurrentTaskInstance().get()))
-                        .forEach(t -> {
-                            String btnId = "flow-btn" + index;
-                            buildFlowTransitionButton(
-                                    btnId, buttonContainer,
-                                    modalContainer, t.getName(),
-                                    currentInstance, viewMode,
-                                    getButtonAccess(t, getCurrentTaskInstance().get()));
-                        });
-
+                for (STransition t : transitions) {
+                    TransitionAccess transitionAccess = getButtonAccess(t, getCurrentTaskInstance().get());
+                    if (transitionAccess.isVisible()) {
+                        String btnId = "flow-btn" + index;
+                        buildFlowTransitionButton(
+                                btnId,
+                                buttonContainer,
+                                modalContainer,
+                                t.getName(),
+                                currentInstance,
+                                viewMode,
+                                transitionAccess);
+                    }
+                }
             } else {
                 buttonContainer.setVisible(false).setEnabled(false);
             }
@@ -483,19 +485,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return Collections.emptyMap();
     }
 
-    /**
-     * @param transition
-     * @param t
-     * @return
-     * @deprecated deve ser private final.
-     */
-    @Deprecated
-    protected Boolean isTransitionButtonVisible(STransition transition, TaskInstance t) {
-        return transition.getAccessFor(t).isVisible();
-    }
 
-
-    protected TransitionAccess getButtonAccess(STransition transition, TaskInstance t) {
+    protected final TransitionAccess getButtonAccess(STransition transition, TaskInstance t) {
         return transition.getAccessFor(t);
     }
 

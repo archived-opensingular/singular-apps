@@ -291,7 +291,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     @Test
     public void previousTransition() {
         PetitionInstance petition             = sendPetition("Descrição XYZ única - " + System.nanoTime());
-        boolean          isPreviousTransition = petitionService.isPreviousTransition(petition.getCod(), "teste");
+        boolean          isPreviousTransition = petitionService.isPreviousTransition(petition.getCurrentTaskOrException(), "teste");
 
         assertFalse(isPreviousTransition);
     }

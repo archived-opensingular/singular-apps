@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
@@ -411,19 +412,13 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     @Nonnull
-    public boolean isPreviousTransition(@Nonnull PI petition, @Nonnull String trasitionName) {
-        return isPreviousTransition(petition.getCod(), trasitionName);
-    }
-
-    public boolean isPreviousTransition(@Nonnull Long petitionCod, @Nonnull String trasitionName) {
-        //TODO (Daniel) Esse código
-        Optional<TaskInstanceEntity> currentTask = findCurrentTaskEntityByPetitionId(petitionCod);
-        if (currentTask.isPresent()) {
-            List<TaskInstanceEntity> tasks = currentTask.get().getProcessInstance().getTasks();
-
-            if (tasks.size() > 1) {
-                String name = tasks.get(tasks.indexOf(currentTask.get()) - 1).getExecutedTransition().getName();
-                return Objects.equals(name, trasitionName);
+    public boolean isPreviousTransition(@Nonnull TaskInstance taskInstance, @Nonnull String trasitionName) {
+        Optional<TaskInstance> lastTaskOpt = taskInstance.getProcessInstance().getLastFinishedTask();
+        if (lastTaskOpt.isPresent()) {
+            TaskInstance lastTask = lastTaskOpt.get();
+            if (lastTask.getExecutedTransition().isPresent()) {
+                STransition transition = lastTask.getExecutedTransition().get();
+                return trasitionName.equals(transition.getName());
             }
         }
         return false;
