@@ -18,7 +18,10 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.FlowResolver;
+import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 import java.io.Serializable;
@@ -27,32 +30,34 @@ import java.util.Optional;
 public class FormPageExecutionContext implements Serializable {
 
     private ActionContext actionContext;
-    private String        formType;
-    private FlowResolver  resolver;
+    private String formType;
+    private FlowResolver resolver;
     private boolean mainForm = true;
+    private Class<? extends PetitionSender> petitionSender;
 
-    public FormPageExecutionContext(ActionContext context, Optional<String> formName, FlowResolver resolver) {
+    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver, Class<? extends PetitionSender> petitionSender) {
         this(context);
         this.resolver = resolver;
-        formName.ifPresent(f -> {
+        if (formName != null) {
             this.mainForm = false;
-            this.formType = formName.get();
-        });
+            this.formType = formName;
+        }
+        this.petitionSender = petitionSender;
     }
 
     public FormPageExecutionContext(ActionContext context) {
         this.actionContext = context;
-        this.formType = actionContext.getFormName().get();
+        actionContext.getFormName().ifPresent(f -> formType = f);
         this.mainForm = true;
     }
 
 
     public ViewMode getViewMode() {
-        return actionContext.getFormAction().get().getViewMode();
+        return actionContext.getFormAction().orElseThrow(()-> new SingularServerException("FormAction não encontrado !")).getViewMode();
     }
 
     public AnnotationMode getAnnotationMode() {
-        return actionContext.getFormAction().get().getAnnotationMode();
+        return actionContext.getFormAction().orElseThrow(()-> new SingularServerException("FormAction não encontrado !")).getAnnotationMode();
     }
 
     public Optional<Long> getPetitionId() {
@@ -78,7 +83,10 @@ public class FormPageExecutionContext implements Serializable {
     }
 
     public ActionContext copyOfInnerActionContext() {
-        return actionContext.clone();
+        return new ActionContext(actionContext);
     }
 
+    public Class<? extends PetitionSender> getPetitionSender() {
+        return petitionSender;
+    }
 }

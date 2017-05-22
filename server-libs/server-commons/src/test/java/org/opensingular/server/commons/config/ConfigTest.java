@@ -18,7 +18,6 @@ public class ConfigTest extends SingularCommonsBaseTest {
 
         Assert.assertEquals(singularServerConfiguration.getContexts().length, 3);
         Assert.assertNotNull(singularServerConfiguration.getDefaultPublicUrls());
-        Assert.assertArrayEquals(singularServerConfiguration.getDefinitionsPackages(), CommonsInitializerMock.DEFINITIONS_PACKS_ARRAY);
         Assert.assertNotNull(singularServerConfiguration.getFormTypes());
         Assert.assertEquals(singularServerConfiguration.getProcessGroupCod(), CommonsInitializerMock.TESTE);
         Assert.assertEquals(singularServerConfiguration.getSpringMVCServletMapping(), CommonsInitializerMock.SPRING_MVC_SERVLET_MAPPING);

@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.flow.controllers;
 
-import org.opensingular.server.commons.flow.actions.ActionRequest;
-import org.opensingular.server.commons.flow.actions.ActionResponse;
+import org.opensingular.server.commons.box.action.ActionRequest;
+import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 
@@ -26,6 +26,9 @@ import javax.inject.Inject;
 
 public abstract class IController {
 
+    protected enum Type {
+        PROCESS, FORM
+    }
     @Inject
     private AuthorizationService authorizationService;
 
@@ -38,22 +41,12 @@ public abstract class IController {
     }
 
     private boolean hasPermission(PetitionInstance petition, ActionRequest actionRequest) {
-        if (getType() == Type.PROCESS) {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), getActionName());
-        } else {
-            return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), getActionName());
-        }
+        return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
     }
-
-    public abstract String getActionName();
 
     protected abstract ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest);
 
     protected Type getType() {
         return Type.PROCESS;
-    }
-
-    protected enum Type {
-        PROCESS, FORM
     }
 }

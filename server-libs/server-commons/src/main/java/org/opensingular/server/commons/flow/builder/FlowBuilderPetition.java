@@ -369,7 +369,7 @@ public class FlowBuilderPetition extends
         //        }
 
         //        public BuilderTransitionPetition showInExecution() {
-        //            getTransition().withAccessControl(TransitionAccessStrategyImpl.enabled(true));
+        //            getTransition().setAccessControl(TransitionAccessStrategyImpl.enabled(true));
         //            return self();
         //        }
     }

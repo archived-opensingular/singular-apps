@@ -6,14 +6,20 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.module.BoxInfo;
+import org.springframework.context.ApplicationContext;
 
 import java.util.List;
 
 import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class PetitionBoxDefinitionDataProviderTest {
@@ -22,7 +28,7 @@ public class PetitionBoxDefinitionDataProviderTest {
     private PetitionService<?, ?> petitionService;
 
     @InjectMocks
-    private PetitionItemBoxDataProvider petitionItemBoxDataProvider;
+    private PetitionBoxItemDataProvider petitionItemBoxDataProvider = new PetitionBoxItemDataProvider();
 
     private QuickFilter filter;
 
@@ -31,6 +37,9 @@ public class PetitionBoxDefinitionDataProviderTest {
     @Before
     public void setUp() {
         filter = new QuickFilter();
+        ApplicationContext mock = Mockito.mock(ApplicationContext.class);
+        Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
+        new ApplicationContextProvider().setApplicationContext(mock);
     }
 
     @Test
@@ -38,14 +47,14 @@ public class PetitionBoxDefinitionDataProviderTest {
         List resultList = mock(List.class);
         when(resultList.size()).thenReturn(count.intValue());
         when(petitionService.quickSearchMap(eq(filter))).thenReturn(resultList);
-        assertThat(petitionItemBoxDataProvider.search(filter).size(), Matchers.is(count.intValue()));
+        assertThat(petitionItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class)).size(), Matchers.is(count.intValue()));
 
     }
 
     @Test
     public void testCount() throws Exception {
         when(petitionService.countQuickSearch(eq(filter))).thenReturn(count);
-        assertThat(petitionItemBoxDataProvider.count(filter), Matchers.is(count));
+        assertThat(petitionItemBoxDataProvider.count(filter, Mockito.mock(BoxInfo.class)), Matchers.is(count));
     }
 
 }

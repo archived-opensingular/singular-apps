@@ -2,11 +2,12 @@ package org.opensingular.server.core.test;
 
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SchedulerInitializer;
-import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
+import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.wicket.SingularApplication;
-import org.opensingular.server.p.commons.config.PFlowInitializer;
-import org.opensingular.server.p.commons.config.PSpringHibernateInitializer;
+import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
+import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
 import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -36,8 +37,8 @@ public class ServerInitializerMock extends CommonsInitializerMock {
     }
 
     @Override
-    public PSpringHibernateInitializer springHibernateConfiguration() {
-        return new PSpringHibernateInitializer() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
+        return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;
@@ -51,21 +52,16 @@ public class ServerInitializerMock extends CommonsInitializerMock {
     }
 
     @Override
-    public PFlowInitializer flowConfiguration() {
-        return null;
-    }
-
-    @Override
     public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
-                return Object.class;
+                return MailSenderSchedulerInitializer.class;
             }
 
             @Override
             public Class<?> attachmentGCConfiguration() {
-                return Object.class;
+                return AttachmentGCSchedulerInitializer.class;
             }
         };
     }

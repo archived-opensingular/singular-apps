@@ -20,6 +20,7 @@ import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
@@ -29,6 +30,7 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -36,7 +38,8 @@ import java.util.stream.Collectors;
 
 public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEntity, Long> {
 
-    private MenuService.MenuServiceSupplier menuServiceSupplier = new MenuService.MenuServiceSupplier();
+    @Inject
+    private Optional<MenuService> menuService;
 
     public PetitionContentHistoryDAO() {
         super(PetitionContentHistoryEntity.class);
@@ -76,7 +79,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
 
         BoxConfigurationData boxConfigurationMetadata;
 
-        boxConfigurationMetadata = menuServiceSupplier.get().map(ms -> ms.getMenuByLabel(menu)).orElse(null);
+        boxConfigurationMetadata = menuService.map(ms -> ms.getMenuByLabel(menu)).orElse(null);
 
         return petitionHistoryDTOs
                 .stream()
@@ -85,6 +88,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
                 .collect(Collectors.toList());
 
     }
+
 
     private boolean filterAllowedHistoryTasks(PetitionHistoryDTO petitionHistoryDTO, BoxConfigurationData boxConfigurationMetadata, boolean filter) {
         if (!filter) {

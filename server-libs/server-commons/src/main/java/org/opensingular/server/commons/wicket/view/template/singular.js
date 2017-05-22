@@ -21,27 +21,25 @@
         window.Singular = {};
     }
 
-    jQuery.extend(true, Singular, {
+    window.Singular.opener = window.opener;
 
-        opener: window.opener,
+    window.Singular.exibirMensagem = function (mensagem, settings) {
+        jQuery.extend(true, toastr.options, settings);
 
-        exibirMensagem: function (mensagem, settings) {
-            jQuery.extend(true, toastr.options, settings);
+        toastr[toastr.options.toastrType](mensagem);
+    };
 
-            toastr[toastr.options.toastrType](mensagem);
-        },
-
-        exibirMensagemWorklist: function (mensagem, options) {
-            if (opener && opener.Singular) {
-                opener.Singular.exibirMensagem(mensagem, options);
-            }
-        },
-
-        atualizarContentWorklist: function () {
-            if (opener && opener.Singular) {
-                opener.Singular.reloadContent();
-            }
+    window.Singular.exibirMensagemWorklist = function (mensagem, options) {
+        if (opener && opener.Singular) {
+            opener.Singular.exibirMensagem(mensagem, options);
         }
-    });
+    };
 
-})(jQuery);
+    window.Singular.atualizarContentWorklist = function () {
+        if (opener && opener.Singular) {
+            opener.Singular.reloadContent();
+        }
+    };
+
+})
+(jQuery);

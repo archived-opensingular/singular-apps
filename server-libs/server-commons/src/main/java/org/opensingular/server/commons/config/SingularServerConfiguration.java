@@ -17,16 +17,23 @@
 package org.opensingular.server.commons.config;
 
 
+import org.opensingular.form.SType;
+import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.p.commons.flow.definition.ServerProcessDefinition;
+import org.springframework.web.context.ServletContextAware;
+
+import javax.servlet.ServletContext;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-
-import javax.servlet.ServletContext;
-
-import org.opensingular.form.SType;
-import org.springframework.web.context.ServletContextAware;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Spring Bean para guardar parametros de configuração reutilizáveis
@@ -34,14 +41,13 @@ import org.springframework.web.context.ServletContextAware;
  */
 public class SingularServerConfiguration implements ServletContextAware {
 
-
     private IServerContext[] contexts;
     private String           springMVCServletMapping;
     private Map<String, Object> attrs = new HashMap<>();
     private List<Class<? extends SType<?>>> formTypes;
     private String                          processGroupCod;
     private String[]                        definitionsPackages;
-    private String[] defaultPublicUrls;
+    private String[]                        defaultPublicUrls;
 
     public String[] getDefaultPublicUrls() {
         return defaultPublicUrls;
@@ -64,7 +70,7 @@ public class SingularServerConfiguration implements ServletContextAware {
     }
 
     public List<Class<? extends SType<?>>> getFormTypes() {
-        if (formTypes == null){
+        if (formTypes == null) {
             return Collections.emptyList();
         } else {
             return Collections.unmodifiableList(formTypes);
@@ -90,9 +96,19 @@ public class SingularServerConfiguration implements ServletContextAware {
         this.springMVCServletMapping = springHibernateInitializer.springMVCServletMapping();
         Optional.ofNullable(formInitializer)
                 .ifPresent(fi -> this.formTypes = fi.getTypes());
+
         Optional.ofNullable(flowInitializer)
-                .ifPresent(fi -> this.processGroupCod = fi.processGroupCod());
-        Optional.ofNullable(flowInitializer)
-                .ifPresent(fi -> this.definitionsPackages = fi.definitionsBasePackage());
+                .ifPresent(fi -> this.processGroupCod = flowInitializer.processGroupCod());
+
+
+        Set<Class<? extends ServerProcessDefinition>> processes = SingularClassPathScanner.INSTANCE.findSubclassesOf(ServerProcessDefinition.class);
+        initDefinitionsPackages(processes.stream());
+
+
     }
+
+    private void initDefinitionsPackages(Stream<Class<? extends ServerProcessDefinition>> stream) {
+        definitionsPackages = stream.map(c -> c.getPackage().getName()).collect(Collectors.toSet()).toArray(new String[0]);
+    }
+
 }

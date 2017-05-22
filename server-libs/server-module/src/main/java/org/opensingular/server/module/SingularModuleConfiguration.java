@@ -1,12 +1,15 @@
 package org.opensingular.server.module;
 
 
+import org.jetbrains.annotations.NotNull;
+import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.requirement.SingularRequirement;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
+import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 
 import javax.annotation.PostConstruct;
@@ -24,11 +27,11 @@ import java.util.stream.Collectors;
 public class SingularModuleConfiguration {
 
     private List<SingularRequirementRef> requirements;
-    private List<BoxCofiguration> itemBoxes;
+    private List<BoxController>          itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {
-        SingularModule module = resolveModule();
+        SingularModule           module                   = resolveModule();
         RequirementConfiguration requirementConfiguration = resolveRequirements(module);
         resolveWorkspace(module, requirementConfiguration);
     }
@@ -53,7 +56,13 @@ public class SingularModuleConfiguration {
         if (modules.stream().count() != 1) {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
-        SingularModule module = modules.stream().findFirst().get().newInstance();
+        SingularModule module = null;
+        if(modules.stream().findFirst().isPresent()){
+            Optional<Class<? extends SingularModule>> first = modules.stream().findFirst();
+            if(first.isPresent()){
+                module = first.get().newInstance();
+            }
+        }
         return module;
     }
 
@@ -74,20 +83,43 @@ public class SingularModuleConfiguration {
                 .map(stringItemBoxFactoryEntry -> {
                     ItemBoxFactory factory = stringItemBoxFactoryEntry.getItemBoxFactory();
                     ItemBox itemBox = factory.build(context);
-                    itemBox.setId(stringItemBoxFactoryEntry.getId());
+                    itemBox.setId(stringItemBoxFactoryEntry.getBoxId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());
                     return new BoxDefinitionData(itemBox, stringItemBoxFactoryEntry.getRequirementsData());
                 })
                 .collect(Collectors.toList());
     }
 
-    public Optional<ItemBoxFactory> getItemBoxFactory(String id) {
-        return itemBoxes.stream().filter(boxCofiguration -> boxCofiguration.getId().equals(id)).map(BoxCofiguration::getItemBoxFactory).findFirst();
+    public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
+        return itemBoxes.stream().filter(b -> b.getBoxId().equals(boxId)).findFirst();
+    }
+
+
+    public List<SingularRequirementRef> getRequirements() {
+        return requirements;
     }
 
     @Deprecated
-    public List<SingularRequirementRef> getRequirements() {
-        return requirements;
+    public Optional<SingularRequirementRef> findRequirmentByFormType(SType<?> type) {
+        return findRequirmentByFormType(type.getName());
+    }
+
+    @Deprecated
+    public Optional<SingularRequirementRef> findRequirmentByFormType(String typeName) {
+        return requirements
+                .stream()
+                .filter(requirementRef -> isSameType(typeName, requirementRef))
+                .findFirst();
+    }
+
+    private boolean isSameType(String type, SingularRequirementRef requirementRef) {
+        return getMainFormName(requirementRef.getRequirement()).equals(type);
+    }
+
+    @SuppressWarnings("unchecked")
+    @NotNull
+    private String getMainFormName(SingularRequirement requirement) {
+        return SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
     }
 
 }

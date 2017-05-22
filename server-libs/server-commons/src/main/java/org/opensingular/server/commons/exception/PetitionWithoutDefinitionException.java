@@ -19,7 +19,7 @@ package org.opensingular.server.commons.exception;
 public class PetitionWithoutDefinitionException extends SingularServerException {
 
     public PetitionWithoutDefinitionException() {
-        super("Nenhuma definição está vinculada a petição");
+        super("Nenhuma definição de processo está vinculada a petição");
     }
 
 }

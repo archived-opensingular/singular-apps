@@ -36,7 +36,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 @EnableWebMvc
 @EnableWebSecurity
 @ComponentScan(
-        basePackages = {"org.opensingular"},
+        basePackages = {"org.opensingular", "com.opensingular"},
         excludeFilters = {
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)

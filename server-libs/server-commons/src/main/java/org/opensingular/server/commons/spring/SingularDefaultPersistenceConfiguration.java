@@ -16,16 +16,16 @@
 
 package org.opensingular.server.commons.spring;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.EntityInterceptor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jndi.JndiTemplate;
@@ -40,42 +40,41 @@ import java.util.Properties;
 
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_DEV_MODE;
 import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
 
 @EnableTransactionManagement(proxyTargetClass = true)
-public class SingularDefaultPersistenceConfiguration {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(SingularDefaultPersistenceConfiguration.class);
+public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Value("classpath:db/ddl/drops.sql")
-    protected Resource drops;
+    private Resource drops;
 
     @Value("classpath:db/ddl/create-tables-form.sql")
-    protected Resource sqlCreateTablesForm;
+    private Resource sqlCreateTablesForm;
 
     @Value("classpath:db/ddl/create-tables.sql")
-    protected Resource sqlCreateTables;
+    private Resource sqlCreateTables;
 
     @Value("classpath:db/ddl/create-constraints.sql")
-    protected Resource sqlCreateConstraints;
+    private Resource sqlCreateConstraints;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
-    protected Resource sqlCreateConstraintsForm;
+    private Resource sqlCreateConstraintsForm;
 
     @Value("classpath:db/ddl/create-sequences-form.sql")
-    protected Resource sqlCreateSequencesForm;
+    private Resource sqlCreateSequencesForm;
 
     @Value("classpath:db/ddl/create-function.sql")
-    private   Resource sqlCreateFunction;
+    private Resource sqlCreateFunction;
 
     @Value("classpath:db/ddl/create-tables-actor.sql")
-    private   Resource sqlCreateTablesActor;
+    private Resource sqlCreateTablesActor;
 
     @Value("classpath:db/ddl/create-sequences-server.sql")
-    private   Resource sqlCreateSequencesServer;
+    private Resource sqlCreateSequencesServer;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
-    private   Resource insertDadosSingular;
+    private Resource insertDadosSingular;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -117,44 +116,48 @@ public class SingularDefaultPersistenceConfiguration {
 
     @Bean
     public DataSource dataSource() {
-        if (SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE)) {
+        boolean useEmbedded = true;
+
+        if (SingularProperties.get().getProperty(USE_EMBEDDED_DATABASE) != null) {
+            useEmbedded = SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE);
+        } else if (SingularProperties.get().isTrue(SINGULAR_DEV_MODE)) {
+            useEmbedded = false;
+        }
+
+        if (useEmbedded) {
             return embeddedDataSourceConfiguration();
-        } else if (SingularProperties.get().isFalse(USE_EMBEDDED_DATABASE) || SingularProperties.get().isFalse(SingularProperties.SINGULAR_DEV_MODE)) {
-            return jndiDataSourceConfiguration();
         } else {
-            return embeddedDataSourceConfiguration();
+            return jndiDataSourceConfiguration();
         }
     }
 
     protected DataSource jndiDataSourceConfiguration() {
-        LOGGER.info("Usando datasource configurado via JNDI");
+        getLogger().info("Usando datasource configurado via JNDI");
         DataSource   dataSource     = null;
         JndiTemplate jndi           = new JndiTemplate();
         String       dataSourceName = SingularProperties.get().getProperty(JNDI_DATASOURCE, "java:jboss/datasources/singular");
         try {
             dataSource = (DataSource) jndi.lookup(dataSourceName);
         } catch (NamingException e) {
-            LOGGER.error(String.format("Datasource %s not found.", dataSourceName), e);
+            getLogger().error(String.format("Datasource %s not found.", dataSourceName), e);
         }
         return dataSource;
     }
 
     protected DataSource embeddedDataSourceConfiguration() {
-        LOGGER.warn("Usando datasource banco embarcado H2");
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(getUrlConnection());
+        try {
+            getLogger().warn("Usando datasource banco embarcado H2");
+            HikariDataSource dataSource = new HikariDataSource();//NOSONAR
+            dataSource.setJdbcUrl(getUrlConnection());
 
-        dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
-        dataSource.setDriverClassName("org.h2.Driver");
+            dataSource.setUsername("sa");
+            dataSource.setPassword("sa");
+            dataSource.setDriverClassName("org.h2.Driver");
 
-        final Properties connectionProperties = new Properties();
-        connectionProperties.setProperty("removeAbandoned", "true");
-        connectionProperties.setProperty("initialSize", "5");
-        connectionProperties.setProperty("maxActive", "10");
-        connectionProperties.setProperty("minIdle", "1");
-        dataSource.setConnectionProperties(connectionProperties);
-        return dataSource;
+            return dataSource;
+        } catch (Exception e) {
+            throw SingularServerException.rethrow(e.getMessage(), e);
+        }
     }
 
     protected String getUrlConnection() {
@@ -169,7 +172,7 @@ public class SingularDefaultPersistenceConfiguration {
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
         sessionFactoryBean.setPackagesToScan(hibernatePackagesToScan());
         if (SingularProperties.get().containsKey(CUSTOM_SCHEMA_NAME)) {
-            LOGGER.info("Utilizando schema customizado: {}", SingularProperties.get().getProperty(CUSTOM_SCHEMA_NAME));
+            getLogger().info("Utilizando schema customizado: {}", SingularProperties.get().getProperty(CUSTOM_SCHEMA_NAME));
             sessionFactoryBean.setEntityInterceptor(new EntityInterceptor());
         }
         return sessionFactoryBean;

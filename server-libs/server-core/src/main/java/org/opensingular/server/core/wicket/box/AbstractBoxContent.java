@@ -16,6 +16,18 @@
 
 package org.opensingular.server.core.wicket.box;
 
+import java.io.Serializable;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -48,17 +60,6 @@ import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
-
-import javax.inject.Inject;
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -107,19 +108,22 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
             onFiltroRapido(filtroRapido.getModel(), target);
         }
     };
-    private IModel<T> currentModel;
 
+    private IModel<T>     dataModel         = new Model<>();
     /**
      * Modal de confirmação de ação
      */
     private BSModalBorder confirmationModal = new BSModalBorder("confirmationModal");
-
     private ProcessGroupEntity processGroup;
 
     public AbstractBoxContent(String id, String processGroupCod, String menu) {
         super(id);
         this.processGroupCod = processGroupCod;
         this.menu = menu;
+    }
+
+    public IModel<T> getDataModel() {
+        return dataModel;
     }
 
     protected String getBaseUrl() {
@@ -188,7 +192,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
     protected abstract WebMarkupContainer criarLink(String id, IModel<T> peticao, FormAction formAction);
 
-    protected abstract Map<String, String> getCriarLinkParameters(T peticao);
+    protected Map<String, String> getCriarLinkParameters(T peticao) {
+        return Collections.emptyMap();
+    }
 
     protected BSModalBorder construirModalDeleteBorder(IConsumer<T> action) {
         BSModalBorder confirmationModal = new BSModalBorder("confirmationModal", getMessage("label.title.delete.draft"));
@@ -196,15 +202,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxButton("cancel-delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                currentModel = null;
+                dataModel = null;
                 confirmationModal.hide(target);
             }
         });
         confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.delete", new AjaxButton("delete-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                action.accept(currentModel.getObject());
-                currentModel = null;
+                action.accept(dataModel.getObject());
+                dataModel = null;
                 target.add(tabela);
                 confirmationModal.hide(target);
             }
@@ -214,7 +220,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     }
 
     private void deleteSelected(AjaxRequestTarget target, IModel<T> model) {
-        currentModel = model;
+        dataModel = model;
         confirmationModal = construirModalDeleteBorder(this::onDelete);
         confirmationForm.addOrReplace(confirmationModal);
         confirmationModal.show(target);

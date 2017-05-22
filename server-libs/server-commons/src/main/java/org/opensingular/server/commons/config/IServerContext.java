@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.config;
 
-import org.opensingular.server.commons.exception.SingularServerException;
 import org.apache.wicket.request.Request;
+import org.opensingular.server.commons.exception.SingularServerException;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -41,8 +41,9 @@ public interface IServerContext extends Serializable {
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
-    public static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {String contextPath = request.getContextPath();
-        String context = request.getPathInfo().replaceFirst(contextPath, "");
+    public static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
+        String contextPath = request.getContextPath();
+        String context     = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
             if (context.startsWith(ctx.getUrlPath())) {
                 return ctx;
@@ -81,5 +82,9 @@ public interface IServerContext extends Serializable {
     public String getPropertiesBaseKey();
 
     public String getName();
+
+    public default boolean isSameContext(IServerContext context) {
+        return context != null && this.getName().equals(context.getName());
+    }
 
 }

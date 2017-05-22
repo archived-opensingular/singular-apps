@@ -16,6 +16,7 @@
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.exception.SingularServerException;
 
 /**
  * Created by vitor.rego on 17/02/2017.
@@ -23,12 +24,12 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 public enum ValidatorFactory {
     ORACLE("Oracle"){
         @Override
-        public IValidatorDatabase getDriver() {
+        public IValidatorDatabase getValidator() {
             return ApplicationContextProvider.get().getBean(ValidatorOracle.class);
         }
     };
 
-    public abstract IValidatorDatabase getDriver();
+    public abstract IValidatorDatabase getValidator();
 
     private String descricao;
 
@@ -36,12 +37,12 @@ public enum ValidatorFactory {
         this.descricao = descricao;
     }
 
-    public static IValidatorDatabase getDriver(String driverDialect) throws Exception{
+    public static IValidatorDatabase getValidator(String driverDialect) {
         for (ValidatorFactory value: ValidatorFactory.values()) {
             if(driverDialect.contains(value.descricao)){
-                return value.getDriver();
+                return value.getValidator();
             }
         }
-        throw new Exception("Driver não encontrado");
+        throw new SingularServerException("Validator não encontrado");
     }
 }

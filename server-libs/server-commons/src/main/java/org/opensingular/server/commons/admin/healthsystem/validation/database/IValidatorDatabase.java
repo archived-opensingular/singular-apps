@@ -22,16 +22,16 @@ import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO
 
 public interface IValidatorDatabase {
 	/**
-	 * Metodo para pegar as permissoes encontradas no banco baseado no nome das tabelas
+	 * Metodo para pegar as permissoes encontradas no banco baseado no nome das tablesList
 	 * obtidas pelo Hibernate
 	 * 
-	 * @param tables Lista de tabelas, todas com o nome informado.
+	 * @param tables Lista de tablesList, todas com o nome informado.
 	 * @return tables retorna a mesma lista recebida, com as informações de permissão atualizados
 	 */
 	public List<TableInfoDTO> getTablesPermission(List<TableInfoDTO> tables);
 	
 	/**
-	 * 	Metodo para verificar se os valores das colunas encontrados no hibernate são 
+	 * 	Metodo para verificar se os valores das columnsInfo encontrados no hibernate são
 	 * 	os mesmos existentes no banco que está sendo utilizado.
 	 *  
 	 *  Quem utilizar, deve garantir que o nome da tabela e a lista de columnInfo
@@ -54,7 +54,7 @@ public interface IValidatorDatabase {
 	public List<SequenceInfoDTO> checkSequences(List<String> sequencesName);
 	
 	/**
-	 * Pega todas as informações que conseguir sobre as tabelas
+	 * Pega todas as informações que conseguir sobre as tablesList
 	 * 
 	 * @param tabelas
 	 * @return List de TableInfoDTO com todas as informações obtidas.
@@ -64,7 +64,7 @@ public interface IValidatorDatabase {
 	/**
 	 * Metodo para comparar uma lista de TableInfoDTO PREENCHIDA com os valores existentes no banco
 	 * 
-	 * @param tables Uma lista de colunas previamente preenchidas para verificar com o banco
+	 * @param tables Uma lista de columnsInfo previamente preenchidas para verificar com o banco
 	 */
 	public void checkAllInfoTable(List<TableInfoDTO> tables);
 }

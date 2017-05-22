@@ -12,10 +12,11 @@ public class UrlToolkit {
 
     public String concatServerAdressWithContext(String context) {
         String contextPrefix = "";
-        if (!context.startsWith("/")) {
-            context = "/";
+        String fullContext = context;
+        if (!fullContext.startsWith("/")) {
+            fullContext = "/" + fullContext;
         }
-        return url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + contextPrefix + context;
+        return url.getProtocol() + "://" + url.getHost() + ":" + url.getPort() + contextPrefix + fullContext;
     }
 
 }

@@ -42,7 +42,6 @@ import java.util.Optional;
  */
 public class PetitionInstance implements Serializable {
 
-    @Nonnull
     private final PetitionEntity petitionEntity;
 
     private transient ProcessInstance processInstance;
@@ -117,6 +116,10 @@ public class PetitionInstance implements Serializable {
         return getProcessInstance().getCurrentTaskOrException();
     }
 
+    public String getCurrentTaskNameOrException() {
+        return getProcessInstance().getCurrentTaskOrException().getName();
+    }
+
     public Optional<PetitionInstance> getParentPetition() {
         return Optional.ofNullable(petitionEntity.getParentPetition()).map(
                 parent -> ((PetitionService<PetitionEntity, ?>) getPetitionService()).newPetitionInstance(parent));
@@ -142,7 +145,7 @@ public class PetitionInstance implements Serializable {
         return processInstance;
     }
 
-    public final PetitionEntity getEntity() {
+    public PetitionEntity getEntity() {
         return petitionEntity;
     }
 
@@ -165,5 +168,14 @@ public class PetitionInstance implements Serializable {
     public Long getMainFormCurrentFormVersionCod() {
         return getMainFormCurrentFormVersion().getCod();
     }
+
+    public String getMainFormTypeName(){
+        return getEntity().getMainForm().getFormType().getAbbreviation();
+    }
+
+    public String getPetitionerName(){
+        return getEntity().getPetitioner().getName();
+    }
+
 
 }

@@ -1,25 +1,22 @@
 package org.opensingular.server.module.workspace;
 
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
-import org.opensingular.server.module.provider.TaskItemBoxDataProvider;
+import org.opensingular.server.module.ActionProviderBuilder;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.TaskBoxItemDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.opensingular.server.commons.flow.actions.DefaultActions.ASSIGN;
 
 public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST == context;
+        return ServerContext.WORKLIST.isSameContext(context);
     }
 
     @Override
@@ -29,16 +26,16 @@ public class DefaultInbox implements ItemBoxFactory {
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
         caixaEntrada.setIcone(Icone.DOCS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
-        caixaEntrada.addAction(ASSIGN);
-        caixaEntrada.addAction(DefaultActions.ANALYSE);
-        caixaEntrada.addAction(DefaultActions.RELOCATE);
-        caixaEntrada.addAction(DefaultActions.VIEW);
         return caixaEntrada;
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return ApplicationContextProvider.get().getBean(TaskItemBoxDataProvider.class);
+    public BoxItemDataProvider getDataProvider() {
+        return new TaskBoxItemDataProvider(new ActionProviderBuilder()
+                .addAssignAction()
+                .addAnalyseAction()
+                .addRelocateAction()
+                .addViewAction());
     }
 
     @Override

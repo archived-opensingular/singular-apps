@@ -38,9 +38,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.DispatcherPageParameters.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
 
 public class BoxPage extends ServerTemplate {
 
@@ -69,11 +69,12 @@ public class BoxPage extends ServerTemplate {
                     processGroupCod = entry.getKey().getCod();
                     BoxConfigurationData mg = entry.getValue().get(0);
                     menu = mg.getLabel();
-                    item = mg.getItemBoxes().get(0).getName();
                     PageParameters pageParameters = new PageParameters();
+
+                    addItemParam(mg, pageParameters);
+
                     pageParameters.add(PROCESS_GROUP_PARAM_NAME, processGroupCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
-                    pageParameters.add(ITEM_PARAM_NAME, item);
                     throw new RestartResponseException(getPage().getClass(), pageParameters);
                 }
             }
@@ -100,6 +101,13 @@ public class BoxPage extends ServerTemplate {
          */
         LOGGER.warn("Não existe correspondencia para o label {}", String.valueOf(item));
         return new AccessDeniedContent(id);
+    }
+
+    private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
+        if (!mg.getBoxesDefinition().isEmpty()){
+            String item = mg.getItemBoxes().get(0).getName();
+            pageParameters.add(ITEM_PARAM_NAME, item);
+        }
     }
 
     protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {

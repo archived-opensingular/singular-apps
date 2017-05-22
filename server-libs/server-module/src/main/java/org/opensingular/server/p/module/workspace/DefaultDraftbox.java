@@ -1,13 +1,12 @@
 package org.opensingular.server.p.module.workspace;
 
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.resource.Icone;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.flow.actions.DefaultActions;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.ItemBoxDataProvider;
-import org.opensingular.server.module.provider.PetitionItemBoxDataProvider;
+import org.opensingular.server.module.ActionProviderBuilder;
+import org.opensingular.server.module.BoxItemDataProvider;
+import org.opensingular.server.module.provider.PetitionBoxItemDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -18,7 +17,7 @@ public class DefaultDraftbox implements ItemBoxFactory {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return PServerContext.PETITION == context;
+        return PServerContext.PETITION.isSameContext(context);
     }
 
     @Override
@@ -29,15 +28,15 @@ public class DefaultDraftbox implements ItemBoxFactory {
         rascunho.setIcone(Icone.DOCS);
         rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
-        rascunho.addAction(DefaultActions.EDIT)
-                .addAction(DefaultActions.VIEW)
-                .addAction(DefaultActions.DELETE);
         return rascunho;
     }
 
     @Override
-    public ItemBoxDataProvider getDataProvider() {
-        return ApplicationContextProvider.get().getBean(PetitionItemBoxDataProvider.class);
+    public BoxItemDataProvider getDataProvider() {
+        return new PetitionBoxItemDataProvider(new ActionProviderBuilder()
+                .addEditAction()
+                .addViewAction()
+                .addDeleteAction());
     }
 
     @Override
