@@ -45,8 +45,10 @@
 
     <form wicket:id="confirmationForm">
         <div wicket:id="confirmationModal" class="portlet-body form">
-            <span wicket:id="message" />
-            <select wicket:id="selecao" />
+            <div class="form-group">
+                <label wicket:id="message"></label>
+                <select wicket:id="selecao" class="form-control"></select>
+            </div>
         </div>
     </form>
 </wicket:extend>
