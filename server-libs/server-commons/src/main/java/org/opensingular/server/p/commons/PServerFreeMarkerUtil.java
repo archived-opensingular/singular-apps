@@ -17,8 +17,6 @@
 package org.opensingular.server.p.commons;
 
 
-import org.opensingular.form.SingularFormException;
-import org.opensingular.form.provider.FreemarkerUtil;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.ext.beans.BeansWrapper;
@@ -26,13 +24,18 @@ import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.form.SingularFormException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.HtmlUtils;
 
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import static freemarker.template.Configuration.VERSION_2_3_22;
 
@@ -45,7 +48,7 @@ public class PServerFreeMarkerUtil {
     static {
         final BeansWrapper wrapper = new BeansWrapperBuilder(VERSION).build();
         cfg.setObjectWrapper(wrapper);
-        cfg.setTemplateLoader(new ClassTemplateLoader(PServerFreeMarkerUtil.class.getClassLoader(), "templates"));
+        cfg.setTemplateLoader(new ClassTemplateLoader(Thread.currentThread().getContextClassLoader(), "templates"));//NOSONAR
         cfg.setDefaultEncoding(StandardCharsets.UTF_8.name());
     }
 

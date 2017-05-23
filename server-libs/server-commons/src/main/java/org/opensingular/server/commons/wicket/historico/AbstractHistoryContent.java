@@ -123,7 +123,7 @@ public abstract class AbstractHistoryContent extends Content {
                             final DropDownButtonPanel dropDownButtonPanel;
 
                             dropDownButtonPanel = new DropDownButtonPanel(id)
-                                    .setDropdownLabel(Model.of("Formularios"))
+                                    .setDropdownLabel(Model.of("Formulários"))
                                     .setInvisibleIfEmpty(Boolean.TRUE)
                                     .setPullRight(Boolean.TRUE);
 
