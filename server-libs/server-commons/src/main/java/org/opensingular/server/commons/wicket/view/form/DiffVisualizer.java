@@ -16,6 +16,8 @@
 
 package org.opensingular.server.commons.wicket.view.form;
 
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -27,6 +29,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
 import org.apache.wicket.extensions.markup.html.repeater.tree.ISortableTreeProvider;
 import org.apache.wicket.extensions.markup.html.repeater.tree.Node;
 import org.apache.wicket.extensions.markup.html.repeater.util.SingleSortState;
+import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.util.diff.DiffInfo;
@@ -36,8 +39,6 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BSTableTree;
 import org.opensingular.lib.wicket.util.datatable.column.BSFolder;
 import org.opensingular.lib.wicket.util.datatable.column.BSTreeColumn;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class DiffVisualizer extends Panel {
 
@@ -53,10 +54,19 @@ public class DiffVisualizer extends Panel {
     protected void onConfigure() {
         super.onConfigure();
 
-        createTreeTable();
+        String id = "tree";
+        
+        Component result;
+        if(documentDiff.getQtdChanges() > 0){
+            result = createTreeTable(id);
+        }else{
+            result = new Label(id, "Não há diferenças");
+        }
+        
+        queue(result);
     }
 
-    private void createTreeTable() {
+    private Component createTreeTable(String id) {
 
         BSTreeColumn<DiffInfo, Integer> treeColumn = new DiffBSTreeColumn($m.ofValue("Item"));
         treeColumn.setContentLabelFunction(DiffInfo::getLabel);
@@ -66,10 +76,10 @@ public class DiffVisualizer extends Panel {
                 .setStripedRows(false)
                 .appendColumn(treeColumn)
                 .appendPropertyColumn($m.ofValue("Detalhe"), "detail")
-                .buildTree("tree");
+                .buildTree(id);
 
         tableTree.setModel(new DiffModel(documentDiff.getDiffRoot()));
-        queue(tableTree);
+        return tableTree;
     }
 
     private ISortableTreeProvider<DiffInfo, Integer> createProvider() {
