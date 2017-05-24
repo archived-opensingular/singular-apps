@@ -601,7 +601,7 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     public SInstance createInstance(@Nonnull RefType refType, @Nullable  SDocumentConsumer extraFactorySetupSteps) {
-        return getFactory(extraFactorySetupSteps).createInstance(refType);
+        return getFactory(extraFactorySetupSteps).createInstance(refType, false);
     }
 
     /**
