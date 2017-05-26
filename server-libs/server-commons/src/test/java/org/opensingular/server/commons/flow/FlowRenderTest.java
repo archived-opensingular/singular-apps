@@ -21,8 +21,11 @@ public abstract class FlowRenderTest implements Loggable {
 
     private static final Object lock = new Object();
 
+    private ApplicationContext backup;
+
     @Before
     public void setUp(){
+        backup = ApplicationContextProvider.get();
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(){
             @Override
             public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
@@ -40,7 +43,7 @@ public abstract class FlowRenderTest implements Loggable {
 
     @After
     public void unset(){
-        new ApplicationContextProvider().setApplicationContext(null);
+        new ApplicationContextProvider().setApplicationContext(backup);
     }
 
     /**
