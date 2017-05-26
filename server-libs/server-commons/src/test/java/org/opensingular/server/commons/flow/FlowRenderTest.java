@@ -25,7 +25,9 @@ public abstract class FlowRenderTest implements Loggable {
 
     @Before
     public void setUp(){
-        backup = ApplicationContextProvider.get();
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(){
             @Override
             public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
