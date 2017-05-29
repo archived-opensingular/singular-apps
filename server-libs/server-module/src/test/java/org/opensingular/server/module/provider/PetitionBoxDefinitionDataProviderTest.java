@@ -38,7 +38,9 @@ public class PetitionBoxDefinitionDataProviderTest {
 
     @Before
     public void setUp() {
-        backup = ApplicationContextProvider.get();
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
         filter = new QuickFilter();
         ApplicationContext mock = Mockito.mock(ApplicationContext.class);
         Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);

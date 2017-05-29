@@ -52,7 +52,9 @@ public class BoxDefinitionDataServiceTest {
     private ApplicationContext backup;
 
     public void setUpApplicationContextMock() {
-        backup = ApplicationContextProvider.get();
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
     }
