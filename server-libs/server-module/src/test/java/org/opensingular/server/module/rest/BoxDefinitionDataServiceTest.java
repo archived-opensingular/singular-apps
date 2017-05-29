@@ -1,6 +1,7 @@
 package org.opensingular.server.module.rest;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -48,8 +49,10 @@ public class BoxDefinitionDataServiceTest {
     private Long countSize = 1L;
 
     private String boxId = "123456";
+    private ApplicationContext backup;
 
     public void setUpApplicationContextMock() {
+        backup = ApplicationContextProvider.get();
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
     }
@@ -82,6 +85,11 @@ public class BoxDefinitionDataServiceTest {
 
 
         setUpApplicationContextMock();
+    }
+
+    @After
+    private void restoreApplicationContext() {
+        new ApplicationContextProvider().setApplicationContext(backup);
     }
 
     @Test
