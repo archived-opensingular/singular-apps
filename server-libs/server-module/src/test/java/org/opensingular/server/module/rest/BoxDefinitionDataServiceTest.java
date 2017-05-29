@@ -90,7 +90,7 @@ public class BoxDefinitionDataServiceTest {
     }
 
     @After
-    private void restoreApplicationContext() {
+    public void restoreApplicationContext() {
         new ApplicationContextProvider().setApplicationContext(backup);
     }
 
