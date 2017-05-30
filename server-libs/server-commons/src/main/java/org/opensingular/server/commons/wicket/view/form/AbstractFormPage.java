@@ -430,7 +430,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                     viewMode,
                                     transitionAccess);
                         }
-                    }
+                    });
                 }
             } else {
                 buttonContainer.setVisible(false).setEnabled(false);
