@@ -139,11 +139,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
         if (currentTaskInstance == null) {//NOSONAR
-            if (config.getPetitionId().isPresent()) {
+            currentTaskInstance = Optional.empty();
+            config.getPetitionId().ifPresent(si -> {
                 currentTaskInstance = petitionService.findCurrentTaskInstanceByPetitionId(config.getPetitionId().get());
-            } else {
-                currentTaskInstance = Optional.empty();
-            }
+            });
         }
         return currentTaskInstance;
     }
@@ -418,17 +417,20 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
                 int index = 0;
                 for (STransition t : transitions) {
-                    TransitionAccess transitionAccess = getButtonAccess(t, getCurrentTaskInstance().get());
-                    if (transitionAccess.isVisible()) {
-                        String btnId = "flow-btn" + index;
-                        buildFlowTransitionButton(
-                                btnId,
-                                buttonContainer,
-                                modalContainer,
-                                t.getName(),
-                                currentInstance,
-                                viewMode,
-                                transitionAccess);
+                    Optional<TaskInstance> taskInstanceOptional = getCurrentTaskInstance();
+                    if (taskInstanceOptional.isPresent()) {
+                        TransitionAccess transitionAccess = getButtonAccess(t, taskInstanceOptional.get());
+                        if (transitionAccess.isVisible()) {
+                            String btnId = "flow-btn" + index;
+                            buildFlowTransitionButton(
+                                    btnId,
+                                    buttonContainer,
+                                    modalContainer,
+                                    t.getName(),
+                                    currentInstance,
+                                    viewMode,
+                                    transitionAccess);
+                        }
                     }
                 }
             } else {
@@ -739,10 +741,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             protected void onInitialize() {
                 super.onInitialize();
                 this.setEnabled(access.isEnabled());
-                if (access.getMessage().isPresent()) {
+                Optional<String> messageOpt = access.getMessage();
+                if (messageOpt.isPresent()) {
                     this.add($b.attr("data-toggle", "tooltip"));
                     this.add($b.attr("data-placement", "top"));
-                    this.add($b.attr("title", access.getMessage().get()));
+                    this.add($b.attr("title", messageOpt.get()));
                 }
             }
         };
