@@ -63,14 +63,12 @@ public class SelecaoMenuItem extends AbstractMenuItem {
     }
 
     private BoxConfigurationData getDefaultMenuSelection(ProcessGroupEntity categoriaSelecionada) {
-        if(menuService != null){
-            return menuService.getDefaultSelectedMenu(categoriaSelecionada);
-        }
-        return null;
+        return menuService.getDefaultSelectedMenu(categoriaSelecionada);
     }
 
     @Override
     protected boolean configureActiveItem() {
         return false;
     }
+
 }

@@ -16,15 +16,16 @@
 
 package org.opensingular.server.commons.spring;
 
+import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.EntityInterceptor;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.core.io.Resource;
-import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jndi.JndiTemplate;
@@ -37,7 +38,10 @@ import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
-import static org.opensingular.lib.commons.base.SingularProperties.*;
+import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
+import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_DEV_MODE;
+import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
@@ -141,21 +145,19 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     }
 
     protected DataSource embeddedDataSourceConfiguration() {
-        getLogger().warn("Usando datasource banco embarcado H2");
-        final DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setUrl(getUrlConnection());
+        try {
+            getLogger().warn("Usando datasource banco embarcado H2");
+            HikariDataSource dataSource = new HikariDataSource();//NOSONAR
+            dataSource.setJdbcUrl(getUrlConnection());
 
-        dataSource.setUsername("sa");
-        dataSource.setPassword("sa");
-        dataSource.setDriverClassName("org.h2.Driver");
+            dataSource.setUsername("sa");
+            dataSource.setPassword("sa");
+            dataSource.setDriverClassName("org.h2.Driver");
 
-        final Properties connectionProperties = new Properties();
-        connectionProperties.setProperty("removeAbandoned", "true");
-        connectionProperties.setProperty("initialSize", "5");
-        connectionProperties.setProperty("maxActive", "10");
-        connectionProperties.setProperty("minIdle", "1");
-        dataSource.setConnectionProperties(connectionProperties);
-        return dataSource;
+            return dataSource;
+        } catch (Exception e) {
+            throw SingularServerException.rethrow(e.getMessage(), e);
+        }
     }
 
     protected String getUrlConnection() {
