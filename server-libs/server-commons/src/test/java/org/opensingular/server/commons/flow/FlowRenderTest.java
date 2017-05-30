@@ -1,9 +1,16 @@
 package org.opensingular.server.commons.flow;
 
+import org.junit.After;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mockito;
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.swing.*;
 import java.awt.*;
@@ -13,6 +20,33 @@ import java.awt.event.WindowEvent;
 public abstract class FlowRenderTest implements Loggable {
 
     private static final Object lock = new Object();
+
+    private ApplicationContext backup;
+
+    @Before
+    public void setUp(){
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
+        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(){
+            @Override
+            public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
+                return Mockito.mock(requiredType);
+            }
+
+            @Override
+            public  <T> T getBean(Class<T> requiredType) throws BeansException {
+                return Mockito.mock(requiredType);
+            }
+        };
+        context.refresh();
+        new ApplicationContextProvider().setApplicationContext(context);
+    }
+
+    @After
+    public void unset(){
+        new ApplicationContextProvider().setApplicationContext(backup);
+    }
 
     /**
      * Método para ser sobrescrito para a geração do gráfico para

@@ -17,16 +17,38 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <meta charset="utf-8"/>
 <wicket:extend>
+    <style>
+        .blockgrid {
+            width: 200px;
+            min-height: 30px;
+            display: inline-block;
+            margin: 5px;
+            text-align: left;
+            border: 1px solid tan;
+            padding: 4px;
+        }
+    </style>
     <form wicket:id="form">
-    	<div class="singular-container">
-    		<button wicket:id="buttonCache" class="btn btn-info">Caches</button>
-    		<button wicket:id="buttonDb" class="btn btn-info">Database</button>
-    		<button wicket:id="buttonJobs" class="btn btn-info">Jobs</button>
-    		<button wicket:id="buttonPermissions" class="btn btn-info">Permissions</button>
-    		<button wicket:id="buttonWeb" class="btn btn-info">Web</button>
-    	</div>
-    	
-    	<div wicket:id="containerAllContent"></div>
+        <div class="singular-container">
+            <button wicket:id="buttonCache" class="btn btn-info">Caches</button>
+            <button wicket:id="buttonDb" class="btn btn-info">Database</button>
+            <button wicket:id="buttonJobs" class="btn btn-info">Jobs</button>
+            <button wicket:id="buttonPermissions" class="btn btn-info">Permissions</button>
+            <button wicket:id="buttonWeb" class="btn btn-info">Web</button>
+            <button wicket:id="buttonLog" class="btn btn-info">Logs</button>
+        </div>
+        <div wicket:id="containerAllContent"></div>
     </form>
+    <wicket:fragment wicket:id="logContainer">
+        <div class="singular-container">
+            <ul>
+                <li class="blockgrid" wicket:id="logs">
+                    <a wicket:id="log">
+                        <span wicket:id="label"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </wicket:fragment>
 </wicket:extend>
 </html>

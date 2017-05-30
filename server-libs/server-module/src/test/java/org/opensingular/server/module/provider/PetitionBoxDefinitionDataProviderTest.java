@@ -1,6 +1,7 @@
 package org.opensingular.server.module.provider;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,13 +34,22 @@ public class PetitionBoxDefinitionDataProviderTest {
     private QuickFilter filter;
 
     private Long count = 10L;
+    private ApplicationContext backup;
 
     @Before
     public void setUp() {
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
         filter = new QuickFilter();
         ApplicationContext mock = Mockito.mock(ApplicationContext.class);
         Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
         new ApplicationContextProvider().setApplicationContext(mock);
+    }
+
+    @After
+    public void restore() {
+        new ApplicationContextProvider().setApplicationContext(backup);
     }
 
     @Test
