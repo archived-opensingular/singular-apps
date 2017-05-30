@@ -417,9 +417,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
                 int index = 0;
                 for (STransition t : transitions) {
-                    Optional<TaskInstance> taskInstanceOptional = getCurrentTaskInstance();
-                    if (taskInstanceOptional.isPresent()) {
-                        TransitionAccess transitionAccess = getButtonAccess(t, taskInstanceOptional.get());
+                    getCurrentTaskInstance().ifPresent( ti -> {
+                        TransitionAccess transitionAccess = getButtonAccess(t, ti);
                         if (transitionAccess.isVisible()) {
                             String btnId = "flow-btn" + index;
                             buildFlowTransitionButton(
