@@ -16,13 +16,11 @@
 
 package org.opensingular.server.commons.wicket.error;
 
-import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.Template;
 import org.wicketstuff.annotation.mount.MountPath;
 
-@StatelessComponent
 @MountPath("public/error/410")
 public class Page410 extends Template {
 
