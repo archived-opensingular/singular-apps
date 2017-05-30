@@ -1,11 +1,8 @@
 package org.opensingular.server.commons.wicket;
 
-import org.apache.commons.collections.map.HashedMap;
 import org.apache.wicket.Page;
 import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
-import org.opensingular.flow.core.ProcessInstance;
-import org.opensingular.flow.core.entity.IEntityTaskInstance;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
@@ -18,7 +15,6 @@ import org.opensingular.server.commons.service.DefaultPetitionSender;
 import org.opensingular.server.commons.service.DefaultPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
-import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.FOOFlowWithTransition;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
@@ -29,6 +25,7 @@ import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.HashMap;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DiffFormTest extends SingularCommonsBaseTest {
@@ -87,7 +84,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         petitionService.saveOrUpdate(petitionInitial, instance, true);
 
         sender.send(petitionInitial, instance, "vinicius.nunes");
-        petitionService.executeTransition("Transition bar", petitionInitial, this::onTransition, new HashedMap());
+        petitionService.executeTransition("Transition bar", petitionInitial, this::onTransition, new HashMap());
         return petitionInitial;
     }
 
@@ -96,7 +93,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         mainFormAsInstance.getField(0).setValue("new value");
         petitionService.saveOrUpdate(petitionInitial, mainFormAsInstance, true);
 
-        petitionService.executeTransition("End bar", petitionInitial, this::onTransition, new HashedMap());
+        petitionService.executeTransition("End bar", petitionInitial, this::onTransition, new HashMap());
     }
 
     private void onTransition(PetitionInstance petitionInstance, String s) {

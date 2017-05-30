@@ -9,14 +9,18 @@ import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 public class ServerMenuItem extends MetronicMenuItem {
 
-
     public ServerMenuItem(Icone icon, String title, Class<? extends IRequestablePage> responsePageClass, IRequestablePage page, PageParameters parameters) {
         super(icon, title, responsePageClass, page, parameters);
     }
 
-
     @Override
-    protected boolean configureActiveItem() {
-        return RequestCycle.get().getRequest().getRequestParameters().getParameterValue(ActionContext.ITEM_PARAM_NAME).toString("").equals(this.title);
+    protected boolean isActive() {
+        return RequestCycle.get()
+                .getRequest()
+                .getRequestParameters()
+                .getParameterValue(ActionContext.ITEM_PARAM_NAME)
+                .toString("")
+                .equals(this.title);
     }
+
 }

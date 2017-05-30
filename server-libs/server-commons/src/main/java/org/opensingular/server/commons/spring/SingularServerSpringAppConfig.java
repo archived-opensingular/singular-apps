@@ -31,6 +31,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
+import javax.annotation.Nonnull;
+
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableCaching
 @EnableWebMvc
@@ -44,6 +46,7 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class SingularServerSpringAppConfig  {
 
     @Bean
+    @Nonnull
     public SpringServiceRegistry getSpringServiceRegistry() {
         return new SpringServiceRegistry();
     }

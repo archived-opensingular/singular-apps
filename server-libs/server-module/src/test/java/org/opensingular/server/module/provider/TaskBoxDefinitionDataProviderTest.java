@@ -1,6 +1,7 @@
 package org.opensingular.server.module.provider;
 
 import org.hamcrest.Matchers;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -44,15 +45,26 @@ public class TaskBoxDefinitionDataProviderTest {
     private TaskBoxItemDataProvider taskItemBoxDataProvider = new TaskBoxItemDataProvider();
 
     private QuickFilter filter;
+    private ApplicationContext backup;
 
     @Before
     public void setUp() {
+        if (ApplicationContextProvider.isConfigured()) {
+            backup = ApplicationContextProvider.get();
+        }
         filter = new QuickFilter();
         ApplicationContext mock = Mockito.mock(ApplicationContext.class);
         Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
         Mockito.when(mock.getBean(PermissionResolverService.class)).thenReturn(permissionResolverService);
         new ApplicationContextProvider().setApplicationContext(mock);
     }
+
+
+    @After
+    public void restore() {
+        new ApplicationContextProvider().setApplicationContext(backup);
+    }
+
 
     @Test
     public void testSearch() throws Exception {

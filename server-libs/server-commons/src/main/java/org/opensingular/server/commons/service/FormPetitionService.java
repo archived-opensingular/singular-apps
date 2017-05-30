@@ -328,7 +328,7 @@ public class FormPetitionService<P extends PetitionEntity> {
         if (draftEntity.getForm() != null) {
             draft = getSInstance(draftEntity.getForm());
         } else {
-            draft = createInstance(loadRefType(instance.getType().getName()));
+            draft = createInstance(loadRefType(instance.getType().getName()), null, false);
         }
 
         copyValuesAndAnnotations(instance.getDocument(), draft.getDocument());
@@ -389,7 +389,7 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         isFirstVersion = formPetitionEntity.getForm() == null;
         if (isFirstVersion) {
-            formInstance = createInstance(loadRefType(PetitionUtil.getTypeName(draft)));
+            formInstance = createInstance(loadRefType(PetitionUtil.getTypeName(draft)), null, false);
         } else {
             formInstance = getSInstance(formPetitionEntity.getForm());
         }
@@ -601,7 +601,11 @@ public class FormPetitionService<P extends PetitionEntity> {
      */
     @Nonnull
     public SInstance createInstance(@Nonnull RefType refType, @Nullable  SDocumentConsumer extraFactorySetupSteps) {
-        return getFactory(extraFactorySetupSteps).createInstance(refType);
+        return createInstance(refType, extraFactorySetupSteps, true);
+    }
+
+    private SInstance createInstance(@Nonnull RefType refType, @Nullable  SDocumentConsumer extraFactorySetupSteps, boolean init) {
+        return getFactory(extraFactorySetupSteps).createInstance(refType, init);
     }
 
     /**

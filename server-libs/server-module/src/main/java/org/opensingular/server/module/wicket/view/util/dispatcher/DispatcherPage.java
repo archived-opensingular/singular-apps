@@ -117,8 +117,8 @@ public class DispatcherPage extends WebPage implements Loggable {
         Optional<TaskInstance> ti = actionContext.getPetitionId().flatMap(this::findCurrentTaskByPetitionId);
         Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
-            
-           
+
+            Optional<FormAction> formActionOpt = actionContext.getFormAction();
             if (task.get() instanceof STaskUserExecutable) {
                 final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
                 if (pageStrategy instanceof SingularServerTaskPageStrategy) {
@@ -127,7 +127,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                 } else {
                     getLogger().warn("Atividade atual possui uma estratégia de página não suportada. A página default será utilizada.");
                 }
-            } else if (actionContext.getFormAction().isPresent() && ViewMode.READ_ONLY != actionContext.getFormAction().get().getViewMode() ) {
+            } else if (formActionOpt.isPresent() && ViewMode.READ_ONLY != formActionOpt.get().getViewMode()) {
                 throw new SingularServerException("Página invocada para uma atividade que não é do tipo MTaskUserExecutable");
             }
         }
@@ -249,7 +249,8 @@ public class DispatcherPage extends WebPage implements Loggable {
  
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
         String username = SingularSession.get().getUsername();
-        if (config.getPetitionId().isPresent()) {
+        Optional<Long> petitionIdOpt =  config.getPetitionId();
+        if (petitionIdOpt.isPresent()) {
             return petitionService.findCurrentTaskEntityByPetitionId(config.getPetitionId().get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
                     .filter(histories -> !histories.isEmpty())

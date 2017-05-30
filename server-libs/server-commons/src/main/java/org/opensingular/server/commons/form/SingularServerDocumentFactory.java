@@ -27,11 +27,11 @@ public class SingularServerDocumentFactory extends SpringSDocumentFactory  {
     @Override
     @SuppressWarnings("unchecked")
     protected void setupDocument(SDocument document) {
-        getServiceRegistry().lookupService(SDocument.FILE_TEMPORARY_SERVICE, IAttachmentPersistenceHandler.class)
+        getExternalServiceRegistry().lookupService(SDocument.FILE_TEMPORARY_SERVICE, IAttachmentPersistenceHandler.class)
                 .ifPresent(h -> document.setAttachmentPersistenceTemporaryHandler(
                         RefService.ofToBeDescartedIfSerialized((IAttachmentPersistenceHandler<?>) h)));
 
-        getServiceRegistry().lookupService(SDocument.FILE_PERSISTENCE_SERVICE, IAttachmentPersistenceHandler.class)
+        getExternalServiceRegistry().lookupService(SDocument.FILE_PERSISTENCE_SERVICE, IAttachmentPersistenceHandler.class)
                 .ifPresent(h -> document.setAttachmentPersistencePermanentHandler(
                         RefService.ofToBeDescartedIfSerialized((IAttachmentPersistenceHandler<?>) h)));
     }
