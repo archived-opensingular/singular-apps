@@ -404,36 +404,41 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
-            if (hasMultipleVersionsAndIsMainForm(petitionId.get())) {
-                appendButtonViewDiff(buttonContainer, petitionId.get(), currentInstance);
-            }
+            configureDiffButton(petitionId.get(), buttonContainer, currentInstance);
         }
 
-        if (getCurrentTaskInstance().isPresent()) {
-            List<STransition> transitions = getCurrentTaskInstance()
-                    .flatMap(TaskInstance::getFlowTask)
-                    .map(STask::getTransitions)
-                    .orElse(Collections.emptyList());
-            if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
-                int index = 0;
-                for (STransition t : transitions) {
-                    getCurrentTaskInstance().ifPresent( ti -> {
-                        TransitionAccess transitionAccess = getButtonAccess(t, ti);
-                        if (transitionAccess.isVisible()) {
-                            String btnId = "flow-btn" + index;
-                            buildFlowTransitionButton(
-                                    btnId,
-                                    buttonContainer,
-                                    modalContainer,
-                                    t.getName(),
-                                    currentInstance,
-                                    viewMode,
-                                    transitionAccess);
-                        }
-                    });
+        if (!getCurrentTaskInstance().isPresent()) {
+            buttonContainer.setVisible(false).setEnabled(false);
+        } else {
+            configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, getCurrentTaskInstance().get());
+        }
+    }
+
+    private void configureDiffButton(Long petitionId, BSContainer<?> buttonContainer, IModel<? extends SInstance> currentInstance) {
+        if (hasMultipleVersionsAndIsMainForm(petitionId)) {
+            appendButtonViewDiff(buttonContainer, petitionId, currentInstance);
+        }
+    }
+
+    private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
+
+        List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
+        if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
+            int index = 0;
+            for (STransition t : transitions) {
+                TransitionAccess transitionAccess = getButtonAccess(t, taskInstance);
+                if (transitionAccess.isVisible()) {
+                    String btnId = "flow-btn" + index;
+                    buildFlowTransitionButton(
+                            btnId,
+                            buttonContainer,
+                            modalContainer,
+                            t.getName(),
+                            currentInstance,
+                            viewMode,
+                            transitionAccess);
                 }
-            } else {
-                buttonContainer.setVisible(false).setEnabled(false);
+
             }
         }
     }
