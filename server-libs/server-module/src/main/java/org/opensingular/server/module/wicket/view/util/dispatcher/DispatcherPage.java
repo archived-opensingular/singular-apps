@@ -251,7 +251,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         String username = SingularSession.get().getUsername();
         Optional<Long> petitionIdOpt =  config.getPetitionId();
         if (petitionIdOpt.isPresent()) {
-            return petitionService.findCurrentTaskEntityByPetitionId(config.getPetitionId().get())
+            return petitionService.findCurrentTaskEntityByPetitionId(petitionIdOpt.get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
