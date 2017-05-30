@@ -413,13 +413,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     @Nonnull
     public boolean isPreviousTransition(@Nonnull TaskInstance taskInstance, @Nonnull String trasitionName) {
-        Optional<TaskInstance> lastTaskOpt = taskInstance.getProcessInstance().getLastFinishedTask();
-        if (lastTaskOpt.isPresent()) {
-            TaskInstance lastTask = lastTaskOpt.get();
-            if (lastTask.getExecutedTransition().isPresent()) {
-                STransition transition = lastTask.getExecutedTransition().get();
-                return trasitionName.equals(transition.getName());
-            }
+        Optional<STransition> executedTransition = taskInstance.getProcessInstance().getLastFinishedTask().map(TaskInstance::getExecutedTransition).orElse(Optional.<STransition>empty());
+        if (executedTransition.isPresent()) {
+            STransition transition = executedTransition.get();
+            return trasitionName.equals(transition.getName());
+
         }
         return false;
     }
