@@ -30,8 +30,6 @@ import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskUserExecutable;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceHistoryEntity;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -253,7 +251,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         String username = SingularSession.get().getUsername();
         Optional<Long> petitionIdOpt =  config.getPetitionId();
         if (petitionIdOpt.isPresent()) {
-            return petitionService.findCurrentTaskByPetitionId(petitionIdOpt.get())
+            return petitionService.findCurrentTaskEntityByPetitionId(petitionIdOpt.get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
@@ -302,7 +300,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     protected Optional<TaskInstance> findCurrentTaskByPetitionId(Long petitionId) {
         if (petitionId != null) {
-            return petitionService.findCurrentTaskByPetitionId(petitionId).map(Flow::getTaskInstance);
+            return petitionService.findCurrentTaskEntityByPetitionId(petitionId).map(Flow::getTaskInstance);
         } else {
             return Optional.empty();
         }

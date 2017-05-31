@@ -18,11 +18,9 @@ package org.opensingular.server.commons.wicket.error;
 
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.Template;
-import org.apache.wicket.devutils.stateless.StatelessComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.wicketstuff.annotation.mount.MountPath;
 
-@StatelessComponent
 @MountPath("public/error/500")
 public class Page500 extends Template {
 

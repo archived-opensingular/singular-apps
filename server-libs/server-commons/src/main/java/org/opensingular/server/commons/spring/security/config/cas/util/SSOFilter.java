@@ -60,9 +60,9 @@ public class SSOFilter extends SSOConfigurableFilter {
     /**
      * Constante URL_EXCLUDE_PATTERN_PARAM.
      */
-    private static final String URL_EXCLUDE_PATTERN_PARAM = "urlExcludePattern";
+    public static final String URL_EXCLUDE_PATTERN_PARAM = "urlExcludePattern";
 
-    private static final String CLIENT_LOGOUT_URL = "logoutUrl";
+    public static final String CLIENT_LOGOUT_URL = "logoutUrl";
     /**
      * The Internal filter chain.
      */

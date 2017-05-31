@@ -18,9 +18,9 @@ public class WSClientDefaultFactory<T> implements WSClientSafeWrapper.WSClientFa
 
     private Supplier<T> supplier;
 
-    public WSClientDefaultFactory(String property, Supplier<T> supplier) {
+    public WSClientDefaultFactory(String property, Supplier<T> portTypeSupplier) {
         this.property = property;
-        this.supplier = supplier;
+        this.supplier = portTypeSupplier;
     }
 
     @Override
