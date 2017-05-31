@@ -407,10 +407,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             configureDiffButton(petitionId.get(), buttonContainer, currentInstance);
         }
 
-        if (!getCurrentTaskInstance().isPresent()) {
+        Optional<TaskInstance> currentTaskInstanceOpt = getCurrentTaskInstance();
+        if (!currentTaskInstanceOpt.isPresent()) {
             buttonContainer.setVisible(false).setEnabled(false);
         } else {
-            configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, getCurrentTaskInstance().get());
+            configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, currentTaskInstanceOpt.get());
         }
     }
 
