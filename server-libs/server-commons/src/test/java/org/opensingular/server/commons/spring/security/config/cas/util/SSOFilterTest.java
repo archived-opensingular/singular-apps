@@ -37,8 +37,8 @@ public class SSOFilterTest {
 
         request = new MockHttpServletRequest(application, new MockHttpSession(context), context){
             @Override
-            public String getServletPath() {
-                return ServerContext.WORKLIST.getContextPath();
+            public String getContextPath() {
+                return ServerContext.WORKLIST.getUrlPath();
             }
         };
 
