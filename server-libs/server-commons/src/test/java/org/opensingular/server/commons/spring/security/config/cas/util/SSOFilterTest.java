@@ -56,7 +56,30 @@ public class SSOFilterTest {
         filter.doFilter(request, response, filterChain);
 
         verify(filterChain, new Times(0)).doFilter(request, response);
+    }
 
 
+    @Test
+    public void testExcluded() throws Exception {
+        SSOFilter   filter      = spy(SSOFilter.class);
+        FilterChain filterChain = mock(FilterChain.class);
+        filter.init(filterConfig);
+
+        request.setURL("/worklist/rest");
+        filter.doFilter(request, response, filterChain);
+
+        verify(filterChain, new Times(1)).doFilter(request, response);
+    }
+
+    @Test
+    public void testAnother() throws Exception {
+        SSOFilter   filter      = spy(SSOFilter.class);
+        FilterChain filterChain = mock(FilterChain.class);
+        filter.init(filterConfig);
+
+        request.setURL("/worklist/whatever");
+        filter.doFilter(request, response, filterChain);
+
+        verify(filterChain, new Times(0)).doFilter(request, response);
     }
 }
