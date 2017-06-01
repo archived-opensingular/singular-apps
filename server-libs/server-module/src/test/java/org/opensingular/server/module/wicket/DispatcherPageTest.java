@@ -52,7 +52,6 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
 
     @WithUserDetails("vinicius.nunes")
     @Test
-    @Ignore
     public void accessGranted() {
         when(authorizationService.hasPermission(any(), any(), any(), any())).thenReturn(true);
         tester = new SingularWicketTester(singularApplication);
