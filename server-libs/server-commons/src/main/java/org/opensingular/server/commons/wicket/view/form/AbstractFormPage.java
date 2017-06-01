@@ -26,7 +26,10 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
+import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.RefService;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -51,7 +54,6 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.flow.metadata.ServerContextMetaData;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
@@ -101,8 +103,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Inject
     private SingularServerMetadata singularServerMetadata;
 
-    private IModel<PI>          currentModel;
-    private AbstractFormContent content;
+
+    private           IModel<PI>             currentModel;
+    private transient Optional<TaskInstance> currentTaskInstance;
+    private           AbstractFormContent    content;
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -127,17 +131,27 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
+    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
+        //É um método estático para garantir que nada inesperado vai ser serializado junto
+        return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
+                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
+    }
+
+    protected Optional<TaskInstance> getCurrentTaskInstance() {
+        if (currentTaskInstance == null) {//NOSONAR
+            currentTaskInstance = Optional.empty();
+            config.getPetitionId().ifPresent(si -> {
+                currentTaskInstance = petitionService.findCurrentTaskInstanceByPetitionId(config.getPetitionId().get());
+            });
+        }
+        return currentTaskInstance;
+    }
+
     private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
         if (formType != null) {
             return PetitionUtil.getTypeName(formType);
         }
         return null;
-    }
-
-    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
-        //É um método estático para garantir que nada inesperado vai ser serializado junto
-        return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
-                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
     }
 
     private FlowResolver getFlowResolver(@Nullable ActionContext context) {
@@ -243,7 +257,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private PI loadPetition() {
-        PI petition;
+        PI             petition;
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
             petition = petitionService.getPetition(petitionId.get());
@@ -388,30 +402,45 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
-        List<STransition> trans = null;
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
-            trans = petitionService.listCurrentTaskTransitions(petitionId.get());
-
-            if (hasMultipleVersionsAndIsMainForm(petitionId.get())) {
-                appendButtonViewDiff(buttonContainer, petitionId.get(), currentInstance);
-            }
+            configureDiffButton(petitionId.get(), buttonContainer, currentInstance);
         }
 
-        if (CollectionUtils.isNotEmpty(trans) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
+        Optional<TaskInstance> currentTaskInstanceOpt = getCurrentTaskInstance();
+        if (!currentTaskInstanceOpt.isPresent()) {
+            buttonContainer.setVisible(false).setEnabled(false);
+        } else {
+            configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, currentTaskInstanceOpt.get());
+        }
+    }
+
+    private void configureDiffButton(Long petitionId, BSContainer<?> buttonContainer, IModel<? extends SInstance> currentInstance) {
+        if (hasMultipleVersionsAndIsMainForm(petitionId)) {
+            appendButtonViewDiff(buttonContainer, petitionId, currentInstance);
+        }
+    }
+
+    private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
+
+        List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
+        if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
             int index = 0;
-            trans.stream().filter(this::isTransitionButtonVisibible).forEach(t -> {//NOSONAR
-                if (t.getMetaDataValue(ServerContextMetaData.KEY) != null && t.getMetaDataValue(ServerContextMetaData.KEY).isEnabledOn(SingularSession.get().getServerContext())) {
+            for (STransition t : transitions) {
+                TransitionAccess transitionAccess = getButtonAccess(t, taskInstance);
+                if (transitionAccess.isVisible()) {
                     String btnId = "flow-btn" + index;
                     buildFlowTransitionButton(
-                            btnId, buttonContainer,
-                            modalContainer, t.getName(),
-                            currentInstance, viewMode);
+                            btnId,
+                            buttonContainer,
+                            modalContainer,
+                            t.getName(),
+                            currentInstance,
+                            viewMode,
+                            transitionAccess);
                 }
-            });
 
-        } else {
-            buttonContainer.setVisible(false).setEnabled(false);
+            }
         }
     }
 
@@ -429,7 +458,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
             // Verifica se existe rascunho
             PetitionInstance petition = petitionService.getPetition(petitionId);
-            String           typeName = PetitionUtil.getTypeName(petition);
+            String typeName = PetitionUtil.getTypeName(petition);
             if (petition.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -454,8 +483,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      */
     protected void appendButtonViewDiff(BSContainer<?> buttonContainer, Long petitionId, IModel<? extends SInstance> currentInstance) {
         buttonContainer.appendComponent(id ->
-                new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
-                        .getDiffButton(id)
+                        new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
+                                .getDiffButton(id)
         );
     }
 
@@ -463,8 +492,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return Collections.emptyMap();
     }
 
-    protected Boolean isTransitionButtonVisibible(STransition transition) {
-        return Boolean.TRUE;
+
+    protected final TransitionAccess getButtonAccess(STransition transition, TaskInstance t) {
+        return transition.getAccessFor(t);
     }
 
     protected final PI getUpdatedPetitionFromInstance(IModel<? extends SInstance> currentInstance, boolean mainForm) {
@@ -496,9 +526,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, ViewMode viewMode) {
+    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, ViewMode viewMode, TransitionAccess transitionButtonEnabled) {
         final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel, viewMode);
-        buildFlowButton(buttonId, buttonContainer, transitionName, modal);
+        buildFlowButton(buttonId, buttonContainer, transitionName, modal, transitionButtonEnabled);
     }
 
     public void atualizarContentWorklist(AjaxRequestTarget target) {
@@ -588,7 +618,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             try {
                 //executa o envio, iniciando o fluxo informado
                 Class<? extends PetitionSender> senderClass = config.getPetitionSender();
-                PetitionSender                  sender      = ApplicationContextProvider.get().getBean(senderClass);
+                PetitionSender sender = ApplicationContextProvider.get().getBean(senderClass);
                 if (sender != null) {
                     PetitionSendedFeedback sendedFeedback = sender.send(petition, instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
@@ -702,14 +732,26 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private void buildFlowButton(String buttonId,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
-                                 BSModalBorder confirmarAcaoFlowModal) {
+                                 BSModalBorder confirmarAcaoFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
-                "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
+                        "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, content.getFormInstance()) {
             @Override
             protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
                 showConfirmModal(transitionName, confirmarAcaoFlowModal, ajaxRequestTarget);
+            }
+
+            @Override
+            protected void onInitialize() {
+                super.onInitialize();
+                this.setEnabled(access.isEnabled());
+                Optional<String> messageOpt = access.getMessage();
+                if (messageOpt.isPresent()) {
+                    this.add($b.attr("data-toggle", "tooltip"));
+                    this.add($b.attr("data-placement", "top"));
+                    this.add($b.attr("title", messageOpt.get()));
+                }
             }
         };
         singularButton.add(new Label("flowButtonLabel", transitionName).setRenderBodyOnly(true));
