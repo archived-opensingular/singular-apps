@@ -227,11 +227,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public Long countQuickSearch(QuickFilter filter) {
-        return countQuickSearch(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
-    }
-
-    public Long countQuickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return petitionDAO.countQuickSearch(filter, siglasProcesso, formNames);
+        return petitionDAO.countQuickSearch(filter);
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
@@ -343,7 +339,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return taskInstanceDAO.countTasks(filter.getTasks(), filter.getProcessesAbbreviation(), authorizationService.filterListTaskPermissions(permissions), filter.getFilter(), filter.getEndedTasks());
+        return taskInstanceDAO.countTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
     public Optional<TaskInstance> findCurrentTaskInstanceByPetitionId(Long petitionId) {

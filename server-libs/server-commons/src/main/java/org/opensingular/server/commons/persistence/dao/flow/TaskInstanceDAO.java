@@ -63,14 +63,14 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
 
 
     public List<TaskInstanceDTO> findTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return buildQuery(filter.getTasks(), filter.getSortProperty(), filter.isAscending(), filter.getProcessesAbbreviation(), permissions, filter.getFilter(), filter.getEndedTasks(), false)
+        return buildQuery(filter, permissions, false)
                 .setMaxResults(filter.getCount())
                 .setFirstResult(filter.getFirst())
                 .list();
     }
 
-    protected Query buildQuery(List<String> tasks, String sortProperty, boolean ascending, List<String> processTypes, List<SingularPermission> permissions,
-                               String filtroRapido, Boolean concluidas, boolean count) {
+    protected Query buildQuery(QuickFilter quickFilter, List<SingularPermission> permissions, boolean count) {
+
         String selectClause =
                 count ?
                         " count( distinct ti )" :
@@ -92,57 +92,53 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
 
         String condition;
 
-        if (concluidas == null) {
+        if (quickFilter.getEndedTasks() == null) {
             condition = " and (tv.type = :tipoEnd or (tv.type <> :tipoEnd and ti.endDate is null)) ";
-        } else if (concluidas) {
+        } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
             condition = " and tv.type = :tipoEnd ";
         } else {
             condition = " and ti.endDate is null ";
         }
 
         String taskFilter = "";
-        if (!CollectionUtils.isEmpty(tasks)) {
+        if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
             taskFilter += " AND tv.name in (:tasks)";
         }
 
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(" select ")
-                .append(selectClause)
-                .append(" from ")
-                .append(getPetitionEntityClass().getName()).append(" p ")
-                .append(" inner join p.processInstanceEntity pi ")
-                .append(" inner join pi.processVersion pv ")
-                .append(" inner join pv.processDefinition pd ")
-                .append(" inner join pd.processGroup pg ")
-                .append(" left join pi.tasks ti ")
-                .append(" left join ti.allocatedUser au ")
-                .append(" left join ti.task tv ")
-                .append(" left join tv.taskDefinition td  ")
-                .append(" left join p.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ")
-                .append(" left join formPetitionEntity.form form ")
-                .append(" where 1 = 1")
-                .append(condition)
-                .append(taskFilter)
-                .append(addQuickFilter(filtroRapido))
-                .append(getOrderBy(sortProperty, ascending, count));
+        String sb = " select " +
+                selectClause +
+                " from " +
+                getPetitionEntityClass().getName() + " p " +
+                " inner join p.processInstanceEntity pi " +
+                " inner join pi.processVersion pv " +
+                " inner join pv.processDefinition pd " +
+                " inner join pd.processGroup pg " +
+                " left join pi.tasks ti " +
+                " left join ti.allocatedUser au " +
+                " left join ti.task tv " +
+                " left join tv.taskDefinition td  " +
+                " left join p.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim " +
+                " left join formPetitionEntity.form form " +
+                " where 1 = 1" +
+                condition +
+                taskFilter +
+                addQuickFilter(quickFilter.getFilter()) +
+                getOrderBy(quickFilter.getSortProperty(), quickFilter.isAscending(), count);
 
 
-        Query query = getSession().createQuery(sb.toString());
+        Query query = getSession().createQuery(sb);
 
-        if (!CollectionUtils.isEmpty(tasks)) {
-            query.setParameterList("tasks", tasks);
+        if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
+            query.setParameterList("tasks", quickFilter.getTasks());
         }
 
         query.setParameter("sim", SimNao.SIM);
 
-        if (concluidas == null || concluidas) {
+        if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
             query.setParameter("tipoEnd", TaskType.END);
         }
 
-        return addFilterParameter(query,
-                filtroRapido
-        );
+        return addFilterParameter(query, quickFilter.getFilter());
     }
 
     protected Query addFilterParameter(Query query, String filter) {
@@ -165,8 +161,8 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
     protected String getOrderBy(String sortProperty, boolean ascending, boolean count) {
-        boolean asc = ascending;
-        String sort = sortProperty;
+        boolean asc  = ascending;
+        String  sort = sortProperty;
         if (count) {
             return "";
         }
@@ -178,25 +174,23 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
 
-    public Long countTasks(List<String> tasks, List<String> processTypes, List<SingularPermission> permissions, String filtroRapido, Boolean concluidas) {
-        return ((Number) buildQuery(tasks, null, true, processTypes, permissions, filtroRapido, concluidas, true).uniqueResult()).longValue();
+    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
+        return ((Number) buildQuery(filter, permissions, true).uniqueResult()).longValue();
     }
 
     @SuppressWarnings("unchecked")
     public List<TaskInstanceEntity> findCurrentTasksByPetitionId(Long petitionId) {
-        StringBuilder sb = new StringBuilder();
+        String sb = " select ti " + " from " + getPetitionEntityClass().getName() + " pet " +
+                " inner join pet.processInstanceEntity pi " +
+                " inner join pi.tasks ti " +
+                " inner join ti.task task " +
+                " where pet.cod = :petitionId  " +
+                "   and (ti.endDate is null OR task.type = :tipoEnd)  ";
 
-        sb
-                .append(" select ti ").append(" from ").append(getPetitionEntityClass().getName()).append(" pet ")
-                .append(" inner join pet.processInstanceEntity pi ")
-                .append(" inner join pi.tasks ti ")
-                .append(" inner join ti.task task ")
-                .append(" where pet.cod = :petitionId  ")
-                .append("   and (ti.endDate is null OR task.type = :tipoEnd)  ");
-
-        final Query query = getSession().createQuery(sb.toString());
+        final Query query = getSession().createQuery(sb);
         query.setParameter("petitionId", petitionId);
         query.setParameter("tipoEnd", TaskType.END);
         return query.list();
     }
+
 }
