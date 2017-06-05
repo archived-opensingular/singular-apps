@@ -235,7 +235,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        return petitionDAO.quickSearchMap(filter, filter.getProcessesAbbreviation(), filter.getTypesNames());
+        return petitionDAO.quickSearchMap(filter);
     }
 
     @Nonnull

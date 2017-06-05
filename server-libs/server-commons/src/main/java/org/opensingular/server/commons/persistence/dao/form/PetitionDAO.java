@@ -21,7 +21,6 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
@@ -30,7 +29,6 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
@@ -61,12 +59,12 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return crit.list();
     }
 
-    public Long countQuickSearch(QuickFilter filtro, List<String> siglasProcesso, List<String> formNames) {
-        return (Long) createQuery(filtro, siglasProcesso, true, formNames).uniqueResult();
+    public Long countQuickSearch(QuickFilter filtro) {
+        return (Long) createQuery(filtro, true).uniqueResult();
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
-        final Query query = createQuery(filter, processesAbbreviation, false, formNames);
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
+        final Query query = createQuery(filter, false);
         query.setFirstResult(filter.getFirst());
         query.setMaxResults(filter.getCount());
         query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
@@ -128,9 +126,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     private void buildWhereClause(StringBuilder hql,
                                   Map<String, Object> params,
                                   QuickFilter filtro,
-                                  List<String> siglasProcesso,
-                                  List<String> formNames, boolean count) {
-
+                                  boolean count) {
 
         hql.append(" WHERE 1=1 ");
 
@@ -141,12 +137,12 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
         params.put("sim", SimNao.SIM);
 
-        if (!filtro.isRascunho() && siglasProcesso != null && !siglasProcesso.isEmpty()) {
+        if (!filtro.isRascunho() && filtro.getProcessesAbbreviation() != null && !filtro.getProcessesAbbreviation().isEmpty()) {
             hql.append(" AND ( processDefinitionEntity.key  in (:siglasProcesso) ");
-            params.put("siglasProcesso", siglasProcesso);
-            if (formNames != null && !formNames.isEmpty()) {
+            params.put("siglasProcesso", filtro.getProcessesAbbreviation());
+            if (filtro.getTypesNames() != null && !filtro.getTypesNames().isEmpty()) {
                 hql.append(" OR formType.abbreviation in (:formNames)) ");
-                params.put("formNames", formNames);
+                params.put("formNames", filtro.getTypesNames());
             } else {
                 hql.append(" ) ");
             }
@@ -210,14 +206,14 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         }
     }
 
-    private Query createQuery(QuickFilter filtro, List<String> siglasProcesso, boolean count, List<String> formNames) {
+    private Query createQuery(QuickFilter filtro, boolean count) {
 
-        final StringBuilder hql = new StringBuilder();
+        final StringBuilder       hql    = new StringBuilder();
         final Map<String, Object> params = new HashMap<>();
 
         buildSelectClause(hql, count, filtro);
         buildFromClause(hql, filtro);
-        buildWhereClause(hql, params, filtro, siglasProcesso, formNames, count);
+        buildWhereClause(hql, params, filtro, count);
 
         final Query query = getSession().createQuery(hql.toString());
         setParametersQuery(query, params);
@@ -252,7 +248,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     @Override
     public void delete(T obj) {
         findFormAttachmentByPetitionCod(obj.getCod()).forEach(getSession()::delete);
-        FormEntity mainForm = obj.getMainForm();
+        FormEntity        mainForm          = obj.getMainForm();
         FormVersionEntity formVersionEntity = mainForm.getCurrentFormVersionEntity();
         getSession().delete(formVersionEntity);
         mainForm.setCurrentFormVersionEntity(null);
