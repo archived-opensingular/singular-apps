@@ -333,11 +333,13 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
+        return petitionDAO.quickSearchMap(filter);
+//        return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return taskInstanceDAO.countTasks(filter, authorizationService.filterListTaskPermissions(permissions));
+        return petitionDAO.countQuickSearch(filter);
+//        return taskInstanceDAO.countTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
 
     public Optional<TaskInstance> findCurrentTaskInstanceByPetitionId(Long petitionId) {

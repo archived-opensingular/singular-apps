@@ -64,30 +64,41 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        final Query query = createQuery(filter, false);
-        query.setFirstResult(filter.getFirst());
-        query.setMaxResults(filter.getCount());
-        query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        return query.list();
+        return createQuery(filter, false)
+                .setFirstResult(filter.getFirst())
+                .setMaxResults(filter.getCount())
+                .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
+                .list();
     }
 
     private void buildSelectClause(StringBuilder hql, boolean count, QuickFilter filter) {
         if (count) {
             hql.append("SELECT count(petition) ");
         } else {
-            hql.append(" SELECT petition.cod as codPeticao ");
+            hql.append(" SELECT");
+            hql.append("   petition.cod as codPeticao ");
             hql.append(" , petition.description as description ");
             hql.append(" , taskVersion.name as situation ");
+            hql.append(" , taskVersion.name as taskName ");
+            hql.append(" , taskVersion.type as taskType ");
             hql.append(" , processDefinitionEntity.name as processName ");
             hql.append(" , case when currentFormDraftVersionEntity is null then currentFormVersion.inclusionDate else currentFormDraftVersionEntity.inclusionDate end as creationDate ");
             hql.append(" , case when formType.abbreviation is null then formDraftType.abbreviation else formType.abbreviation end as type ");
             hql.append(" , processDefinitionEntity.key as processType ");
             hql.append(" , task.beginDate as situationBeginDate ");
+            hql.append(" , task.cod as taskInstanceId ");
             hql.append(" , processInstance.beginDate as processBeginDate ");
+            hql.append(" , processInstance.beginDate as creationDate ");
             hql.append(" , currentDraftEntity.editionDate as editionDate ");
             hql.append(" , processInstance.cod as processInstanceId ");
             hql.append(" , petition.rootPetition.id as rootPetition ");
             hql.append(" , petition.parentPetition.id as parentPetition ");
+            hql.append(" , taskDefinition.cod as taskId");
+            hql.append(" , task.versionStamp as versionStamp");
+            hql.append(" , allocatedUser.codUsuario as codUsuarioAlocado");
+            hql.append(" , allocatedUser.nome as nomeUsuarioAlocado");
+            hql.append(" , processGroup.cod as processGroupCod");
+            hql.append(" , processGroup.connectionURL as processGroupContext");
             appendCustomSelectClauses(hql, filter);
         }
     }
@@ -109,10 +120,13 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         hql.append(" LEFT JOIN formDraftEntity.currentFormVersionEntity currentFormDraftVersionEntity");
         hql.append(" LEFT JOIN formEntity.currentFormVersionEntity currentFormVersion ");
         hql.append(" LEFT JOIN petition.processDefinitionEntity processDefinitionEntity ");
+        hql.append(" LEFT JOIN processDefinitionEntity.processGroup processGroup ");
         hql.append(" LEFT JOIN formEntity.formType formType  ");
         hql.append(" LEFT JOIN formDraftEntity.formType formDraftType  ");
         hql.append(" LEFT JOIN processInstance.tasks task ");
         hql.append(" LEFT JOIN task.task taskVersion ");
+        hql.append(" LEFT JOIN taskVersion.taskDefinition taskDefinition ");
+        hql.append(" LEFT JOIN task.allocatedUser allocatedUser ");
         appendCustomFromClauses(hql, filtro);
     }
 
@@ -159,8 +173,15 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             hql.append(" AND petition.processInstanceEntity is null ");
         } else {
             hql.append(" AND petition.processInstanceEntity is not null ");
-            hql.append(" AND (task.endDate is null OR taskVersion.type = :tipoEnd) ");
-            params.put("tipoEnd", TaskType.END);
+            if (filtro.getEndedTasks() == null) {
+                hql.append(" and (taskVersion.type = :tipoEnd or (taskVersion.type <> :tipoEnd and task.endDate is null)) ");
+                params.put("tipoEnd", TaskType.END);
+            } else if (Boolean.TRUE.equals(filtro.getEndedTasks())) {
+                hql.append(" and taskVersion.type = :tipoEnd ");
+                params.put("tipoEnd", TaskType.END);
+            } else {
+                hql.append(" and task.endDate is null ");
+            }
         }
 
         appendCustomWhereClauses(hql, params, filtro);
@@ -332,7 +353,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .setParameter("type", type)
                 .setMaxResults(1)
                 .uniqueResult();
-
-
     }
+
 }
