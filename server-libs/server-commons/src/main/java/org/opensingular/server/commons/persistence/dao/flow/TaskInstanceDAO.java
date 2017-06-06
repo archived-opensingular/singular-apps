@@ -139,7 +139,7 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
 
         query.setParameter("sim", SimNao.SIM);
 
-        if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
+        if (quickFilter.getEndedTasks() == null || Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
             query.setParameter("tipoEnd", TaskType.END);
         }
 
