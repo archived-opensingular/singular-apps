@@ -105,7 +105,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             query.append(" , task.beginDate as situationBeginDate ");
             query.append(" , task.cod as taskInstanceId ");
             query.append(" , processInstance.beginDate as processBeginDate ");
-            query.append(" , processInstance.beginDate as creationDate ");
             query.append(" , currentDraftEntity.editionDate as editionDate ");
             query.append(" , processInstance.cod as processInstanceId ");
             query.append(" , petition.rootPetition.id as rootPetition ");

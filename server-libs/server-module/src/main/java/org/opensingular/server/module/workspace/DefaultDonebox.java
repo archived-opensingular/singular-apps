@@ -41,7 +41,7 @@ public class DefaultDonebox implements ItemBoxFactory {
     public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codPeticao"));
-        fields.add(DatatableField.of("Dt. de Entrada", "creationDate"));
+        fields.add(DatatableField.of("Dt. de Entrada", "processBeginDate"));
         fields.add(DatatableField.of("Solicitante", "solicitante"));
         fields.add(DatatableField.of("Descrição", "description"));
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
