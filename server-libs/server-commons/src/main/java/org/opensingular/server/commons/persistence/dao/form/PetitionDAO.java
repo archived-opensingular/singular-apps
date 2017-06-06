@@ -61,7 +61,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public Long countQuickSearch(QuickFilter filter, List<SingularPermission> permissions) {
-        return countQuickSearch(new PetitionSearchQuery(filter).setCount(Boolean.TRUE).setEvaluatePermissions(true).addPermissions(permissions));
+        return countQuickSearch(new PetitionSearchQuery(filter).setCount(Boolean.TRUE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
     }
 
     public Long countQuickSearch(QuickFilter filter) {
@@ -77,7 +77,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<SingularPermission> permissions) {
-        return quickSearchMap(new PetitionSearchQuery(filter).setCount(Boolean.FALSE).setEvaluatePermissions(true).addPermissions(permissions));
+        return quickSearchMap(new PetitionSearchQuery(filter).setCount(Boolean.FALSE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
     }
 
     public List<Map<String, Serializable>> quickSearchMap(PetitionSearchQuery query) {
