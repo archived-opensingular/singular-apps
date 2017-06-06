@@ -10,7 +10,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
@@ -19,6 +18,7 @@ import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -66,8 +66,8 @@ public class TaskBoxDefinitionDataProviderTest {
 
     @Test
     public void testSearch() throws Exception {
-        Integer               taskId           = 10;
-        List<TaskInstanceDTO> taskInstanceDTOS = listOfTaskInstanceDTOForIDsAndTodayDate(taskId);
+        Integer                         taskId           = 10;
+        List<Map<String, Serializable>> taskInstanceDTOS = listOfTaskInstanceDTOForIDsAndTodayDate(taskId);
 
         when(petitionService.listTasks(eq(filter), anyList())).thenReturn(taskInstanceDTOS);
 
@@ -85,14 +85,14 @@ public class TaskBoxDefinitionDataProviderTest {
         assertThat(taskItemBoxDataProvider.count(filter, Mockito.mock(BoxInfo.class)), Matchers.equalTo(taskCount));
     }
 
-    private List<TaskInstanceDTO> listOfTaskInstanceDTOForIDsAndTodayDate(Integer... ids) {
+    private List<Map<String, Serializable>> listOfTaskInstanceDTOForIDsAndTodayDate(Integer... ids) {
         return Stream.of(ids).map(this::taskInstanceDTOForIDAndTodayDate).collect(Collectors.toList());
     }
 
-    private TaskInstanceDTO taskInstanceDTOForIDAndTodayDate(Integer taskId) {
-        TaskInstanceDTO taskInstanceDTO = new TaskInstanceDTO();
-        taskInstanceDTO.setTaskId(taskId);
-        taskInstanceDTO.setCreationDate(new Date());
+    private Map<String, Serializable> taskInstanceDTOForIDAndTodayDate(Integer taskId) {
+        Map<String, Serializable> taskInstanceDTO = new LinkedHashMap<>();
+        taskInstanceDTO.put("taskId", taskId);
+        taskInstanceDTO.put("creationDate", new Date());
         return taskInstanceDTO;
     }
 

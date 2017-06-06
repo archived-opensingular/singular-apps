@@ -46,7 +46,6 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
@@ -333,10 +332,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         }
     }
 
-    public List<TaskInstanceDTO> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
+    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.findTasks(filter, authorizationService.filterListTaskPermissions(permissions));
     }
-
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return taskInstanceDAO.countTasks(filter, authorizationService.filterListTaskPermissions(permissions));
@@ -537,7 +535,6 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public boolean containChildren(Long petitionCod) {
         return petitionDAO.containChildren(petitionCod);
     }
-
 
     public void updatePetitionDescription(SInstance currentInstance, PI petition) {
         String description = currentInstance.toStringDisplay();

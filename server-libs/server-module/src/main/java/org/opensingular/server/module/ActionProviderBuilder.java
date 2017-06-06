@@ -31,7 +31,7 @@ public class ActionProviderBuilder implements ActionProvider {
 
     public ActionProviderBuilder addAssignAction() {
         actionConfigurers.add((boxInfo, line, filter, list) -> {
-            if (line.getAllocatedSUserId() == null && TaskType.PEOPLE.name().equals(line.getTaskType())) {
+            if (line.getAllocatedSUserId() == null && TaskType.PEOPLE.equals(line.getTaskType())) {
                 list.addAssignAction(line);
             }
         });
@@ -40,7 +40,7 @@ public class ActionProviderBuilder implements ActionProvider {
 
     public ActionProviderBuilder addRelocateAction() {
         actionConfigurers.add((boxInfo, line, filter, list) -> {
-            if (TaskType.PEOPLE.name().equals(line.getTaskType())) {
+            if (TaskType.PEOPLE.equals(line.getTaskType())) {
                 list.addRelocateAction(line);
             }
         });

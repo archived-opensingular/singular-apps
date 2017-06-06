@@ -18,16 +18,17 @@ package org.opensingular.server.commons.persistence.dao.flow;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Query;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.util.JPAQueryUtil;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -62,10 +63,11 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
 
-    public List<TaskInstanceDTO> findTasks(QuickFilter filter, List<SingularPermission> permissions) {
+    public List<Map<String, Serializable>> findTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return buildQuery(filter, permissions, false)
                 .setMaxResults(filter.getCount())
                 .setFirstResult(filter.getFirst())
+                .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
                 .list();
     }
 
@@ -74,21 +76,24 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
         String selectClause =
                 count ?
                         " count( distinct ti )" :
-                        " new " + TaskInstanceDTO.class.getName() + " (pi.cod," +
-                                " ti.cod, td.cod, ti.versionStamp, " +
-                                " pi.beginDate," +
-                                " pi.description, " +
-                                " au , " +
-                                " tv.name, " +
+                        " pi.cod as processInstanceId," +
+                                " ti.cod as taskInstanceId," +
+                                " td.cod as taskId," +
+                                " ti.versionStamp as versionStamp, " +
+                                " pi.beginDate as creationDate," +
+                                " pi.description as description, " +
+                                " au.codUsuario as codUsuarioAlocado, " +
+                                " au.nome as nomeUsuarioAlocado, " +
+                                " tv.name as taskName, " +
                                 " form.formType.abbreviation as type, " +
-                                " pd.key, " +
-                                " p.cod," +
-                                " ti.beginDate,  " +
-                                " pi.beginDate, " +
-                                " tv.type," +
-                                " pg.cod, " +
-                                " pg.connectionURL " +
-                                ") ";
+                                " pd.key as processType, " +
+                                " p.cod as codPeticao," +
+                                " ti.beginDate as situationBeginDate,  " +
+                                " pi.beginDate as processBeginDate, " +
+                                " tv.type as taskType," +
+                                " pg.cod as processGroupCod, " +
+                                " pg.connectionURL as processGroupContext" +
+                                " ";
 
         String condition;
 

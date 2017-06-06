@@ -20,7 +20,6 @@ import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -230,16 +229,16 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
         QuickFilter filter = new QuickFilter();
         filter.withFilter(description);
-        List<TaskInstanceDTO> taskInstanceDTOS = petitionService.listTasks(filter, Collections.emptyList());
+        List<Map<String, Serializable>> maps = petitionService.listTasks(filter, Collections.emptyList());
 
-        assertEquals(1, taskInstanceDTOS.size());
-        TaskInstanceDTO task = taskInstanceDTOS.get(0);
-        assertNull(task.getCodUsuarioAlocado());
-        assertNull(task.getNomeUsuarioAlocado());
-        assertEquals("Do bar", task.getTaskName());
-        assertEquals(TaskType.PEOPLE, task.getTaskType());
-        assertEquals("foooooo.StypeFoo", task.getType());
-        assertEquals(description, task.getDescription());
+        assertEquals(1, maps.size());
+        Map<String, Serializable> task = maps.get(0);
+        assertNull(task.get("codUsuarioAlocado"));
+        assertNull(task.get("nomeUsuarioAlocado"));
+        assertEquals("Do bar", task.get("taskName"));
+        assertEquals(TaskType.PEOPLE, task.get("taskType"));
+        assertEquals("foooooo.StypeFoo", task.get("type"));
+        assertEquals(description, task.get("descricao"));
     }
 
     public PetitionInstance sendPetition(String description) {

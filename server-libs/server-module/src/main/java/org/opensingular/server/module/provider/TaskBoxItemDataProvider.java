@@ -4,7 +4,6 @@ import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
@@ -43,8 +42,7 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
         filter.forTasks(tasksFilter.stream().map(ITaskDefinition::getName).collect(Collectors.toList()).toArray(new String[0]));
-        List<TaskInstanceDTO> taskInstanceDTOS = ApplicationContextProvider.get().getBean(PetitionService.class).listTasks(filter, searchPermissions(filter));
-        return getSingularObjectMapper().toStringSerializableMap(taskInstanceDTOS);
+        return ApplicationContextProvider.get().getBean(PetitionService.class).listTasks(filter, searchPermissions(filter));
     }
 
     @NotNull
