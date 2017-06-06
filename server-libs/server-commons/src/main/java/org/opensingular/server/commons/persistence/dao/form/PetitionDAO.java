@@ -73,21 +73,21 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
     private void buildSelectClause(StringBuilder hql, boolean count, QuickFilter filter) {
         if (count) {
-            hql.append("SELECT count(p) ");
+            hql.append("SELECT count(petition) ");
         } else {
-            hql.append(" SELECT p.cod as codPeticao ");
-            hql.append(" , p.description as description ");
-            hql.append(" , task.name as situation ");
+            hql.append(" SELECT petition.cod as codPeticao ");
+            hql.append(" , petition.description as description ");
+            hql.append(" , taskVersion.name as situation ");
             hql.append(" , processDefinitionEntity.name as processName ");
             hql.append(" , case when currentFormDraftVersionEntity is null then currentFormVersion.inclusionDate else currentFormDraftVersionEntity.inclusionDate end as creationDate ");
             hql.append(" , case when formType.abbreviation is null then formDraftType.abbreviation else formType.abbreviation end as type ");
             hql.append(" , processDefinitionEntity.key as processType ");
-            hql.append(" , ta.beginDate as situationBeginDate ");
-            hql.append(" , pie.beginDate as processBeginDate ");
+            hql.append(" , task.beginDate as situationBeginDate ");
+            hql.append(" , processInstance.beginDate as processBeginDate ");
             hql.append(" , currentDraftEntity.editionDate as editionDate ");
-            hql.append(" , pie.cod as processInstanceId ");
-            hql.append(" , p.rootPetition.id as rootPetition ");
-            hql.append(" , p.parentPetition.id as parentPetition ");
+            hql.append(" , processInstance.cod as processInstanceId ");
+            hql.append(" , petition.rootPetition.id as rootPetition ");
+            hql.append(" , petition.parentPetition.id as parentPetition ");
             appendCustomSelectClauses(hql, filter);
         }
     }
@@ -99,20 +99,20 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     private void buildFromClause(StringBuilder hql, QuickFilter filtro) {
-        hql.append(" FROM ").append(tipo.getName()).append(" p ");
-        hql.append(" LEFT JOIN p.petitioner petitioner ");
-        hql.append(" LEFT JOIN p.processInstanceEntity pie ");
-        hql.append(" LEFT JOIN p.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ");
+        hql.append(" FROM ").append(tipo.getName()).append(" petition ");
+        hql.append(" LEFT JOIN petition.petitioner petitioner ");
+        hql.append(" LEFT JOIN petition.processInstanceEntity processInstance ");
+        hql.append(" LEFT JOIN petition.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ");
         hql.append(" LEFT JOIN formPetitionEntity.form formEntity ");
         hql.append(" LEFT JOIN formPetitionEntity.currentDraftEntity currentDraftEntity ");
         hql.append(" LEFT JOIN currentDraftEntity.form formDraftEntity");
         hql.append(" LEFT JOIN formDraftEntity.currentFormVersionEntity currentFormDraftVersionEntity");
         hql.append(" LEFT JOIN formEntity.currentFormVersionEntity currentFormVersion ");
-        hql.append(" LEFT JOIN p.processDefinitionEntity processDefinitionEntity ");
+        hql.append(" LEFT JOIN petition.processDefinitionEntity processDefinitionEntity ");
         hql.append(" LEFT JOIN formEntity.formType formType  ");
         hql.append(" LEFT JOIN formDraftEntity.formType formDraftType  ");
-        hql.append(" LEFT JOIN pie.tasks ta ");
-        hql.append(" LEFT JOIN ta.task task ");
+        hql.append(" LEFT JOIN processInstance.tasks task ");
+        hql.append(" LEFT JOIN task.task taskVersion ");
         appendCustomFromClauses(hql, filtro);
     }
 
@@ -151,15 +151,15 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         appendCustomQuickFilter(hql, params, filtro);
 
         if (!CollectionUtils.isEmpty(filtro.getTasks())) {
-            hql.append(" AND task.name in (:tasks)");
+            hql.append(" AND taskVersion.name in (:tasks)");
             params.put("tasks", filtro.getTasks());
         }
 
         if (filtro.isRascunho()) {
-            hql.append(" AND p.processInstanceEntity is null ");
+            hql.append(" AND petition.processInstanceEntity is null ");
         } else {
-            hql.append(" AND p.processInstanceEntity is not null ");
-            hql.append(" AND (ta.endDate is null OR task.type = :tipoEnd) ");
+            hql.append(" AND petition.processInstanceEntity is not null ");
+            hql.append(" AND (task.endDate is null OR taskVersion.type = :tipoEnd) ");
             params.put("tipoEnd", TaskType.END);
         }
 
@@ -191,17 +191,17 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
      */
     protected void appendCustomQuickFilter(StringBuilder hql, Map<String, Object> params, QuickFilter filter) {
         if (filter.hasFilter()) {
-            hql.append(" AND ( upper(p.description) like upper(:filter) ");
+            hql.append(" AND ( upper(petition.description) like upper(:filter) ");
             hql.append(" OR upper(processDefinitionEntity.name) like upper(:filter) ");
-            hql.append(" OR upper(task.name) like upper(:filter) ");
+            hql.append(" OR upper(taskVersion.name) like upper(:filter) ");
             if (filter.isRascunho()) {
                 hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentFormVersion.inclusionDate", "filter"));
                 hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentDraftEntity.editionDate", "filter"));
             } else {
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("ta.beginDate", "filter"));
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("pie.beginDate", "filter"));
+                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("task.beginDate", "filter"));
+                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("processInstance.beginDate", "filter"));
             }
-            hql.append(" OR p.id like :filter ) ");
+            hql.append(" OR petition.id like :filter ) ");
             params.put("filter", "%" + filter.getFilter() + "%");
         }
     }
