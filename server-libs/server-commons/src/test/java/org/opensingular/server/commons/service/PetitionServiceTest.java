@@ -238,7 +238,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         assertEquals("Do bar", task.get("taskName"));
         assertEquals(TaskType.PEOPLE, task.get("taskType"));
         assertEquals("foooooo.StypeFoo", task.get("type"));
-        assertEquals(description, task.get("descricao"));
+        assertEquals(description, task.get("description"));
     }
 
     public PetitionInstance sendPetition(String description) {
