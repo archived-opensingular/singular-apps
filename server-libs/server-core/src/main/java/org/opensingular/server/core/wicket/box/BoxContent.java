@@ -319,6 +319,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             }
         }.setDefaultFormProcessing(false));
 
+        addButtonRelocate(confirmationModal, itemAction, baseUrl, additionalParams);
+
         appendExtraButtons(confirmationModal, actorModel, itemAction, baseUrl, additionalParams);
 
         if (StringUtils.isNotBlank(confirmation.getSelectEndpoint())) {
@@ -346,8 +348,26 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return confirmationModal;
     }
 
-    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    private void addButtonRelocate(BSModalBorder confirmationModal, BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+        AjaxButton btn = new AjaxButton("realocar-btn", confirmationForm) {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                relocate(itemAction, baseUrl, additionalParams, getDataModel().getObject(), target, null);
+                target.add(tabela);
+                atualizarContadores(target);
+                confirmationModal.hide(target);
+            }
+        };
 
+        boolean visible = getDataModel().getObject().get("codUsuarioAlocado") != null;
+        btn.setDefaultFormProcessing(false)
+                .setVisible(visible)
+                .setRenderBodyOnly(!visible);
+
+        confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, $m.ofValue("Desalocar"), btn);
+    }
+
+    protected void appendExtraButtons(BSModalBorder confirmationModal, Model<Actor> actorModel, BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
     }
 
     protected void atualizarContadores(AjaxRequestTarget target) {
