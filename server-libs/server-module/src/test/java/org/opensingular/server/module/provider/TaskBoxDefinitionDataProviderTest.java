@@ -75,7 +75,7 @@ public class TaskBoxDefinitionDataProviderTest {
         Map<String, Serializable>       taskInstanceMap = itemBoxes.get(0);
 
         assertEquals(taskId, taskInstanceMap.get("taskId"));
-        assertEquals(String.class, taskInstanceMap.get("creationDate").getClass());
+        assertEquals(Date.class, taskInstanceMap.get("creationDate").getClass());
     }
 
     @Test
