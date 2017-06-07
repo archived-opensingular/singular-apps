@@ -305,7 +305,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     public List<FormAttachmentEntity> findFormAttachmentByPetitionCod(Long petitionCod) {
         QPetitionEntity       petition       = new QPetitionEntity("petitionEntity");
         QFormPetitionEntity   formPetition   = new QFormPetitionEntity("formPetitionEntity");
-        QFormEntity           formEntity     = new QFormEntity("formEntity");
+        QFormEntity           form           = new QFormEntity("formEntity");
         QDraftEntity          currentDraft   = new QDraftEntity("draftEntity");
         QFormEntity           draftForm      = new QFormEntity("draftFormEntity");
         QFormVersionEntity    formVersion    = new QFormVersionEntity("formVersionEntity");
@@ -315,12 +315,14 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .selectDistinct(formAttachment)
                 .from(petition)
                 .innerJoin(petition.formPetitionEntities, formPetition)
-                .leftJoin(formPetition.form, formEntity)
+                .leftJoin(formPetition.form, form)
                 .leftJoin(formPetition.currentDraftEntity, currentDraft)
                 .leftJoin(currentDraft.form, draftForm)
                 .from(formVersion)
                 .from(formAttachment)
-                .where((formVersion.cod.eq(formEntity.cod).or(formVersion.formEntity.cod.eq(currentDraft.cod)))
+                .where(new BooleanBuilder()
+                        .and(formVersion.formEntity.cod.eq(form.cod)
+                                .or(formVersion.formEntity.cod.eq(draftForm.cod)))
                         .and(formAttachment.formVersionEntity.cod.eq(formVersion.cod))
                         .and(petition.cod.eq(petitionCod)))
                 .fetch();
