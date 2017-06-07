@@ -221,7 +221,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             if (quickFilter.isRascunho()) {
                 query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
             } else {
-                query.orderBy(new OrderSpecifier<>(Order.DESC, Expressions.stringPath("processBeginDate")));
+                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
             }
         }
 
