@@ -56,7 +56,7 @@ public class PetitionSearchContext {
     }
 
     public RequirementQuery createQuery(Session session) {
-        return query = new RequirementQuery(session);
+        return query = new RequirementQuery(session, quickFilter, count);
     }
 
     public RequirementQuery getQuery() {

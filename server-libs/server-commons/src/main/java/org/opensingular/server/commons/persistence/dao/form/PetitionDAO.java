@@ -178,21 +178,9 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             whereClause.and(expr);
         }
 
-        String filterAnywhere = "%" + ctx.getQuickFilter().getFilter() + "%";
         if (ctx.getQuickFilter().hasFilter()) {
-            quickFilterClause.or(aliases.petition.description.likeIgnoreCase(filterAnywhere));
-            quickFilterClause.or(aliases.processDefinitionEntity.name.likeIgnoreCase(filterAnywhere));
-            quickFilterClause.or(aliases.taskVersion.name.likeIgnoreCase(filterAnywhere));
-            quickFilterClause.or(aliases.petition.cod.like(filterAnywhere));
-            String toCharDate = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
-            if (quickFilter.isRascunho()) {
-                quickFilterClause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormVersion.inclusionDate).like(filterAnywhere));
-                quickFilterClause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormDraftVersionEntity.inclusionDate).like(filterAnywhere));
-                quickFilterClause.or(Expressions.stringTemplate(toCharDate, aliases.currentDraftEntity.editionDate).like(filterAnywhere));
-            } else {
-                quickFilterClause.or(Expressions.stringTemplate(toCharDate, aliases.task.beginDate).like(filterAnywhere));
-                quickFilterClause.or(Expressions.stringTemplate(toCharDate, aliases.processInstance.beginDate).like(filterAnywhere));
-            }
+            configureQuickFilter(aliases, quickFilterClause, quickFilter.filterWithAnywhereMatchMode());
+            configureQuickFilter(aliases, quickFilterClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
         }
 
         if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
@@ -228,10 +216,22 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return query.toHibernateQuery();
     }
 
+    private void configureQuickFilter(PetitionSearchAliases aliases, BooleanBuilder clause, String filter) {
+        String toCharDate = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
+        clause.or(aliases.petition.description.likeIgnoreCase(filter));
+        clause.or(aliases.processDefinitionEntity.name.likeIgnoreCase(filter));
+        clause.or(aliases.taskVersion.name.likeIgnoreCase(filter));
+        clause.or(aliases.petition.cod.like(filter));
+        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormVersion.inclusionDate).like(filter));
+        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormDraftVersionEntity.inclusionDate).like(filter));
+        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentDraftEntity.editionDate).like(filter));
+        clause.or(Expressions.stringTemplate(toCharDate, aliases.task.beginDate).like(filter));
+        clause.or(Expressions.stringTemplate(toCharDate, aliases.processInstance.beginDate).like(filter));
+    }
+
     protected void customizeQuery(PetitionSearchContext ctx) {
 
     }
-
 
     public T findByProcessCodOrException(Integer cod) {
         return findByProcessCod(cod).orElseThrow(
