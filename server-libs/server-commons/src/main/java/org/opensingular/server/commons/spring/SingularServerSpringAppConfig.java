@@ -56,17 +56,6 @@ public class SingularServerSpringAppConfig implements Loggable {
         return new SpringServiceRegistry();
     }
 
-    @PostConstruct
-    public void init() {
-        getLogger().info("Configurando Singular Server ServiceRegistryLocator -> SpringServiceRegistry ");
-        ServiceRegistryLocator.setup(new ServiceRegistryLocator() {
-            @Override
-            protected ServiceRegistry getRegistry() {
-                return ApplicationContextProvider.get().getBean(SpringServiceRegistry.class);
-            }
-        });
-    }
-
     @Bean
     public SingularFormConfigWicket getSingularFormConfig(SpringServiceRegistry springServiceRegistry) {
         SingularFormConfigWicket singularFormConfigWicket = new SingularFormConfigWicketImpl();
