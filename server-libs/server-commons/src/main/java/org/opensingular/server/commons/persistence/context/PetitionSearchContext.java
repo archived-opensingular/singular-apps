@@ -1,17 +1,13 @@
 package org.opensingular.server.commons.persistence.context;
 
 
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.DslExpression;
-import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Session;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.persistence.query.RequirementQuery;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 public class PetitionSearchContext {
 
@@ -21,11 +17,7 @@ public class PetitionSearchContext {
     private Boolean evaluatePermissions = Boolean.FALSE;
     private Boolean count               = Boolean.FALSE;
 
-    private PetitionSearchAliases         petitionSearchAliases = new PetitionSearchAliases();
-    private List<BooleanExpression>       whereClasuses         = new ArrayList<>();
-    private Map<String, DslExpression<?>> selects               = new LinkedHashMap<>();
-
-    private HibernateQuery<Map<String, Object>> query;
+    private RequirementQuery query;
 
     public PetitionSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
@@ -63,23 +55,11 @@ public class PetitionSearchContext {
         return this;
     }
 
-    public PetitionSearchAliases getPetitionSearchAliases() {
-        return petitionSearchAliases;
+    public RequirementQuery createQuery(Session session) {
+        return query = new RequirementQuery(session);
     }
 
-    public HibernateQuery<Map<String, Object>> createQuery(Session session) {
-        return query = new HibernateQuery<>(session);
-    }
-
-    public List<BooleanExpression> getWhereClasuses() {
-        return whereClasuses;
-    }
-
-    public Map<String, DslExpression<?>> getSelects() {
-        return selects;
-    }
-
-    public HibernateQuery<Map<String, Object>> getQuery() {
+    public RequirementQuery getQuery() {
         return query;
     }
 }

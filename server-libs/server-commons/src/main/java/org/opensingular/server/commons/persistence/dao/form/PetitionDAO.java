@@ -16,12 +16,13 @@
 package org.opensingular.server.commons.persistence.dao.form;
 
 
+import com.querydsl.core.types.ExpressionUtils;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.core.types.dsl.DslExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -31,13 +32,21 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormAttachmentEntity;
+import org.opensingular.form.persistence.entity.QFormEntity;
+import org.opensingular.form.persistence.entity.QFormTypeEntity;
+import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.context.PetitionSearchAliases;
 import org.opensingular.server.commons.persistence.context.PetitionSearchContext;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QDraftEntity;
+import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.persistence.query.RequirementQuery;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 
@@ -46,8 +55,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
@@ -75,8 +82,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return countQuickSearch(new PetitionSearchContext(filter).setCount(Boolean.TRUE));
     }
 
-    public Long countQuickSearch(PetitionSearchContext query) {
-        return (Long) createQuery(query).uniqueResult();
+    private Long countQuickSearch(PetitionSearchContext query) {
+        return (Long) mountSearchpetitionQuery(query).uniqueResult();
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
@@ -87,8 +94,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return quickSearchMap(new PetitionSearchContext(filter).setCount(Boolean.FALSE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(PetitionSearchContext query) {
-        return createQuery(query)
+    private List<Map<String, Serializable>> quickSearchMap(PetitionSearchContext query) {
+        return mountSearchpetitionQuery(query)
                 .setFirstResult(query.getQuickFilter().getFirst())
                 .setMaxResults(query.getQuickFilter().getCount())
                 .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
@@ -96,38 +103,42 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
 
-    private void mountSearchpetitionQuery(PetitionSearchContext ctx) {
+    private Query mountSearchpetitionQuery(PetitionSearchContext ctx) {
 
-        HibernateQuery<Map<String, Object>> query         = ctx.createQuery(getSession());
-        PetitionSearchAliases               aliases       = ctx.getPetitionSearchAliases();
-        Map<String, DslExpression<?>>       selects       = ctx.getSelects();
-        List<BooleanExpression>             whereClasuses = ctx.getWhereClasuses();
+        RequirementQuery      query   = ctx.createQuery(getSession());
+        PetitionSearchAliases aliases = query.getRequirementAliases();
 
         if (Boolean.TRUE.equals(ctx.getCount())) {
-            selects.put("total", aliases.petition.count());
+            query.addSelect(aliases.petition.count());
         } else {
-            selects.put("codPeticao", aliases.petition.cod);
-            selects.put("description", aliases.petition.description);
-            selects.put("situation", aliases.taskVersion.name);
-            selects.put("taskName", aliases.taskVersion.name);
-            selects.put("taskType", aliases.taskVersion.type);
-            selects.put("processName", aliases.processDefinitionEntity.name);
-            selects.put("creationDate", new CaseBuilder().when(aliases.currentFormDraftVersionEntity.isNull()).then(aliases.currentFormVersion.inclusionDate).otherwise(aliases.currentFormDraftVersionEntity.inclusionDate));
-            selects.put("type", new CaseBuilder().when(aliases.formType.abbreviation.isNull()).then(aliases.formDraftType.abbreviation).otherwise(aliases.formType.abbreviation));
-            selects.put("processType", aliases.processDefinitionEntity.key);
-            selects.put("situationBeginDate", aliases.task.beginDate);
-            selects.put("taskInstanceId", aliases.task.cod);
-            selects.put("processBeginDate", aliases.processInstance.beginDate);
-            selects.put("editionDate", aliases.currentDraftEntity.editionDate);
-            selects.put("processInstanceId", aliases.processInstance.cod);
-            selects.put("rootPetition", aliases.petition.rootPetition.cod);
-            selects.put("parentPetition", aliases.petition.parentPetition.cod);
-            selects.put("taskId", aliases.taskDefinition.cod);
-            selects.put("versionStamp", aliases.task.versionStamp);
-            selects.put("codUsuarioAlocado", aliases.allocatedUser.codUsuario);
-            selects.put("nomeUsuarioAlocado", aliases.allocatedUser.nome);
-            selects.put("processGroupCod", aliases.processGroup.cod);
-            selects.put("processGroupContext", aliases.processGroup.connectionURL);
+            query.addSelect(aliases.petition.cod.as("codPeticao"))
+                    .addSelect(aliases.petition.description.as("description"))
+                    .addSelect(aliases.taskVersion.name.as("situation"))
+                    .addSelect(aliases.taskVersion.name.as("taskName"))
+                    .addSelect(aliases.taskVersion.type.as("taskType"))
+                    .addSelect(aliases.processDefinitionEntity.name.as("processName"))
+                    .addSelectCase($case -> $case
+                            .when(aliases.currentFormDraftVersionEntity.isNull())
+                            .then(aliases.currentFormVersion.inclusionDate)
+                            .otherwise(aliases.currentFormDraftVersionEntity.inclusionDate).as("creationDate"))
+                    .addSelectCase($case -> $case
+                            .when(aliases.formType.abbreviation.isNull())
+                            .then(aliases.formDraftType.abbreviation)
+                            .otherwise(aliases.formType.abbreviation).as("type"))
+                    .addSelect(aliases.processDefinitionEntity.key.as("processType"))
+                    .addSelect(aliases.task.beginDate.as("situationBeginDate"))
+                    .addSelect(aliases.task.cod.as("taskInstanceId"))
+                    .addSelect(aliases.processInstance.beginDate.as("processBeginDate"))
+                    .addSelect(aliases.currentDraftEntity.editionDate.as("editionDate"))
+                    .addSelect(aliases.processInstance.cod.as("processInstanceId"))
+                    .addSelect(aliases.petition.rootPetition.cod.as("rootPetition"))
+                    .addSelect(aliases.petition.parentPetition.cod.as("parentPetition"))
+                    .addSelect(aliases.taskDefinition.cod.as("taskId"))
+                    .addSelect(aliases.task.versionStamp.as("versionStamp"))
+                    .addSelect(aliases.allocatedUser.codUsuario.as("codUsuarioAlocado"))
+                    .addSelect(aliases.allocatedUser.nome.as("nomeUsuarioAlocado"))
+                    .addSelect(aliases.processGroup.cod.as("processGroupCod"))
+                    .addSelect(aliases.processGroup.connectionURL.as("processGroupContext"));
         }
 
         query
@@ -152,7 +163,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         QuickFilter quickFilter = ctx.getQuickFilter();
 
         if (quickFilter.getIdPessoa() != null) {
-            whereClasuses.add(aliases.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+            query.addWhereClasuses(aliases.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
 
         if (!quickFilter.isRascunho()
@@ -162,7 +173,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
                 expr = expr.or(aliases.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
-            whereClasuses.add(expr);
+            query.addWhereClasuses(expr);
         }
 
         String filterAnywhere = "%" + ctx.getQuickFilter().getFilter() + "%";
@@ -171,7 +182,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             expr = expr.or(aliases.processDefinitionEntity.name.likeIgnoreCase(filterAnywhere));
             expr = expr.or(aliases.taskVersion.name.likeIgnoreCase(filterAnywhere));
             expr = expr.or(aliases.petition.cod.like(filterAnywhere));
-            whereClasuses.add(expr);
+            query.addWhereClasuses(expr);
 //            if (quickFilter.isRascunho()) {
 //                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentFormVersion.inclusionDate", "filter"));
 //                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentDraftEntity.editionDate", "filter"));
@@ -182,19 +193,19 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         }
 
         if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            whereClasuses.add(aliases.taskVersion.name.in(quickFilter.getTasks()));
+            query.addWhereClasuses(aliases.taskVersion.name.in(quickFilter.getTasks()));
         }
 
         if (quickFilter.isRascunho()) {
-            whereClasuses.add(aliases.petition.processInstanceEntity.isNull());
+            query.addWhereClasuses(aliases.petition.processInstanceEntity.isNull());
         } else {
-            whereClasuses.add(aliases.petition.processInstanceEntity.isNotNull());
+            query.addWhereClasuses(aliases.petition.processInstanceEntity.isNotNull());
             if (quickFilter.getEndedTasks() == null) {
-                whereClasuses.add(aliases.taskVersion.type.eq(TaskType.END).or(aliases.taskVersion.type.ne(TaskType.END).and(aliases.task.endDate.isNull())));
+                query.addWhereClasuses(aliases.taskVersion.type.eq(TaskType.END).or(aliases.taskVersion.type.ne(TaskType.END).and(aliases.task.endDate.isNull())));
             } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-                whereClasuses.add(aliases.taskVersion.type.eq(TaskType.END));
+                query.addWhereClasuses(aliases.taskVersion.type.eq(TaskType.END));
             } else {
-                whereClasuses.add(aliases.task.endDate.isNull());
+                query.addWhereClasuses(aliases.task.endDate.isNull());
             }
         }
 
@@ -202,44 +213,22 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
         if (quickFilter.getSortProperty() != null) {
             Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
-            query.orderBy(new OrderSpecifier(order, selects.get(quickFilter.getSortProperty())));
+            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
         } else if (!Boolean.TRUE.equals(ctx.getCount())) {
             if (quickFilter.isRascunho()) {
-                query.orderBy(new OrderSpecifier(Order.ASC, selects.get("creationDate")));
+                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
             } else {
-                query.orderBy(new OrderSpecifier(Order.ASC, selects.get("processBeginDate")));
+                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
             }
         }
 
-        DslExpression<?>[] selectExpressions = selects.entrySet()
-                .stream()
-                .map((entry) -> entry.getValue().as(entry.getKey()))
-                .collect(Collectors.toList())
-                .toArray(new DslExpression<?>[]{});
-
-        if (selectExpressions.length > 1) {
-            query.select(selectExpressions);
-        } else if (selects.size() == 1) {
-            query.select(selectExpressions[0]);
-        }
-
-        query.where(whereClasuses.toArray(new BooleanExpression[]{}));
-
+        return query.toHibernateQuery();
     }
 
     protected void customizeQuery(PetitionSearchContext ctx) {
 
     }
 
-
-    private Query createQuery(PetitionSearchContext ctx) {
-        mountSearchpetitionQuery(ctx);
-        return ctx.getQuery().createQuery();
-    }
-
-    protected String mountSort(String sortProperty, boolean ascending) {
-        return " ORDER BY " + sortProperty + (ascending ? " asc " : " desc ");
-    }
 
     public T findByProcessCodOrException(Integer cod) {
         return findByProcessCod(cod).orElseThrow(
@@ -311,22 +300,49 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByPetitionCod(Long petitionCod) {
-        return getSession()
-                .createQuery(" select distinct(fa) from PetitionEntity p " +
-                        " inner join p.formPetitionEntities fp " +
-                        " left join fp.form f " +
-                        " left join fp.currentDraftEntity cd " +
-                        " left join cd.form cdf, " +
-                        " FormVersionEntity fv," +
-                        " FormAttachmentEntity fa  " +
-                        " where (fv.formEntity.cod = f.cod or fv.formEntity.cod = cdf.cod) " +
-                        " and fa.formVersionEntity.cod = fv.cod " +
-                        " and p.cod = :petitionCod ")
-                .setParameter("petitionCod", petitionCod)
-                .list();
+        QPetitionEntity       petition       = new QPetitionEntity("petitionEntity");
+        QFormPetitionEntity   formPetition   = new QFormPetitionEntity("formPetitionEntity");
+        QFormEntity           formEntity     = new QFormEntity("formEntity");
+        QDraftEntity          currentDraft   = new QDraftEntity("draftEntity");
+        QFormEntity           draftForm      = new QFormEntity("draftFormEntity");
+        QFormVersionEntity    formVersion    = new QFormVersionEntity("formVersionEntity");
+        QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
+
+        return new HibernateQueryFactory(getSession())
+                .selectDistinct(formAttachment)
+                .from(petition)
+                .innerJoin(petition.formPetitionEntities, formPetition)
+                .leftJoin(formPetition.form, formEntity)
+                .leftJoin(formPetition.currentDraftEntity, currentDraft)
+                .leftJoin(currentDraft.form, draftForm)
+                .from(formVersion)
+                .from(formAttachment)
+                .where((formVersion.cod.eq(formEntity.cod).or(formVersion.formEntity.cod.eq(currentDraft.cod)))
+                        .and(formAttachment.formVersionEntity.cod.eq(formVersion.cod))
+                        .and(petition.cod.eq(petitionCod)))
+                .fetch();
+
+//        return getSession()
+//                .createQuery(" select distinct(fa) from PetitionEntity p " +
+//                        " inner join p.formPetitionEntities fp " +
+//                        " left join fp.form f " +
+//                        " left join fp.currentDraftEntity cd " +
+//                        " left join cd.form cdf, " +
+//                        " FormVersionEntity fv," +
+//                        " FormAttachmentEntity fa  " +
+//                        " where (fv.formEntity.cod = f.cod or fv.formEntity.cod = cdf.cod) " +
+//                        " and fa.formVersionEntity.cod = fv.cod " +
+//                        " and p.cod = :petitionCod ")
+//                .setParameter("petitionCod", petitionCod)
+//                .list();
     }
 
     public boolean containChildren(Long petitionCod) {
+//        QPetitionEntity petitionEntity = QPetitionEntity.petitionEntity;
+//        return new HibernateQueryFactory(getSession())
+//                .selectFrom(petitionEntity)
+//                .where(petitionEntity.parentPetition.cod.eq(petitionCod))
+//                .fetchCount() > 0;
         return ((Long) getSession()
                 .createQuery("select count(p) from PetitionEntity p where p.parentPetition.cod = :petitionCod")
                 .setParameter("petitionCod", petitionCod)
@@ -334,20 +350,36 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public T findPetitionInstanceByRootPetitionAndType(Long rootPetition, String type) {
-        return (T) getSession()
-                .createQuery(" select p from PetitionEntity p" +
-                        " inner join p.formPetitionEntities formPetitionEntity " +
-                        " inner join formPetitionEntity.form form " +
-                        " inner join form.formType formType " +
-                        " where 1=1 " +
-                        " and formPetitionEntity.mainForm = :sim  " +
-                        " and p.rootPetition.id = :rootPetition " +
-                        " and formType.abbreviation = :type ")
-                .setParameter("sim", SimNao.SIM)
-                .setParameter("rootPetition", rootPetition)
-                .setParameter("type", type)
-                .setMaxResults(1)
-                .uniqueResult();
+        QPetitionEntity     petition       = new QPetitionEntity("petition");
+        QFormPetitionEntity formPetition   = new QFormPetitionEntity("formPetition");
+        QFormEntity         form           = new QFormEntity("form");
+        QFormTypeEntity     formTypeEntity = new QFormTypeEntity("formType");
+
+        HibernateQuery<PetitionEntity> hibernateQuery = new HibernateQueryFactory(getSession())
+                .selectFrom(petition)
+                .innerJoin(petition.formPetitionEntities, formPetition)
+                .innerJoin(formPetition.form, form)
+                .innerJoin(form.formType, formTypeEntity)
+                .where(formPetition.mainForm.eq(SimNao.SIM)
+                        .and(petition.rootPetition.cod.eq(rootPetition))
+                        .and(formTypeEntity.abbreviation.eq(type)));
+        hibernateQuery.getMetadata().setLimit(1L);
+
+        return (T) hibernateQuery.fetchOne();
+//        return (T) getSession()
+//                .createQuery(" select p from PetitionEntity p" +
+//                        " inner join p.formPetitionEntities formPetitionEntity " +
+//                        " inner join formPetitionEntity.form form " +
+//                        " inner join form.formType formType " +
+//                        " where 1=1 " +
+//                        " and formPetitionEntity.mainForm = :sim  " +
+//                        " and p.rootPetition.id = :rootPetition " +
+//                        " and formType.abbreviation = :type ")
+//                .setParameter("sim", SimNao.SIM)
+//                .setParameter("rootPetition", rootPetition)
+//                .setParameter("type", type)
+//                .setMaxResults(1)
+//                .uniqueResult();
     }
 
 }
