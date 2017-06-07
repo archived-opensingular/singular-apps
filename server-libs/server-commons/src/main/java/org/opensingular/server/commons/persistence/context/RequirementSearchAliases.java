@@ -15,7 +15,7 @@ import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEnti
 import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.QPetitionerEntity;
 
-public class PetitionSearchAliases {
+public class RequirementSearchAliases {
 
     public QPetitionEntity          petition                      = new QPetitionEntity("petition");
     public QPetitionerEntity        petitionerEntity              = new QPetitionerEntity("petitionerEntity");

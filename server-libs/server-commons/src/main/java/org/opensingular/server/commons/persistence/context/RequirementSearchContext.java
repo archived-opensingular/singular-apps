@@ -3,13 +3,13 @@ package org.opensingular.server.commons.persistence.context;
 
 import org.hibernate.Session;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.persistence.query.RequirementQuery;
+import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class PetitionSearchContext {
+public class RequirementSearchContext {
 
     private final QuickFilter              quickFilter;
     private final List<SingularPermission> permissions;
@@ -17,9 +17,9 @@ public class PetitionSearchContext {
     private Boolean evaluatePermissions = Boolean.FALSE;
     private Boolean count               = Boolean.FALSE;
 
-    private RequirementQuery query;
+    private RequirementSearchQuery query;
 
-    public PetitionSearchContext(QuickFilter quickFilter) {
+    public RequirementSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
         this.permissions = new ArrayList<>();
     }
@@ -36,7 +36,7 @@ public class PetitionSearchContext {
         return evaluatePermissions;
     }
 
-    public PetitionSearchContext setEvaluatePermissions(Boolean evaluatePermissions) {
+    public RequirementSearchContext setEvaluatePermissions(Boolean evaluatePermissions) {
         this.evaluatePermissions = evaluatePermissions;
         return this;
     }
@@ -45,21 +45,21 @@ public class PetitionSearchContext {
         return count;
     }
 
-    public PetitionSearchContext setCount(Boolean count) {
+    public RequirementSearchContext setCount(Boolean count) {
         this.count = count;
         return this;
     }
 
-    public PetitionSearchContext addPermissions(List<SingularPermission> permissions) {
+    public RequirementSearchContext addPermissions(List<SingularPermission> permissions) {
         this.permissions.addAll(permissions);
         return this;
     }
 
-    public RequirementQuery createQuery(Session session) {
-        return query = new RequirementQuery(session, quickFilter, count);
+    public RequirementSearchQuery createQuery(Session session) {
+        return query = new RequirementSearchQuery(session);
     }
 
-    public RequirementQuery getQuery() {
+    public RequirementSearchQuery getQuery() {
         return query;
     }
 }
