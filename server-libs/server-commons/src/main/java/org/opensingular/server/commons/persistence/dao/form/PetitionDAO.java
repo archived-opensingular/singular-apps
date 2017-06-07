@@ -5,8 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http: *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,6 +16,12 @@
 package org.opensingular.server.commons.persistence.dao.form;
 
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.core.types.dsl.DslExpression;
+import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -29,18 +34,20 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.context.PetitionSearchQuery;
+import org.opensingular.server.commons.persistence.context.PetitionSearchAliases;
+import org.opensingular.server.commons.persistence.context.PetitionSearchContext;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.commons.util.JPAQueryUtil;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
@@ -61,26 +68,26 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public Long countQuickSearch(QuickFilter filter, List<SingularPermission> permissions) {
-        return countQuickSearch(new PetitionSearchQuery(filter).setCount(Boolean.TRUE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
+        return countQuickSearch(new PetitionSearchContext(filter).setCount(Boolean.TRUE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
     }
 
     public Long countQuickSearch(QuickFilter filter) {
-        return countQuickSearch(new PetitionSearchQuery(filter).setCount(Boolean.TRUE));
+        return countQuickSearch(new PetitionSearchContext(filter).setCount(Boolean.TRUE));
     }
 
-    public Long countQuickSearch(PetitionSearchQuery query) {
+    public Long countQuickSearch(PetitionSearchContext query) {
         return (Long) createQuery(query).uniqueResult();
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        return quickSearchMap(new PetitionSearchQuery(filter).setCount(Boolean.FALSE));
+        return quickSearchMap(new PetitionSearchContext(filter).setCount(Boolean.FALSE));
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<SingularPermission> permissions) {
-        return quickSearchMap(new PetitionSearchQuery(filter).setCount(Boolean.FALSE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
+        return quickSearchMap(new PetitionSearchContext(filter).setCount(Boolean.FALSE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(PetitionSearchQuery query) {
+    public List<Map<String, Serializable>> quickSearchMap(PetitionSearchContext query) {
         return createQuery(query)
                 .setFirstResult(query.getQuickFilter().getFirst())
                 .setMaxResults(query.getQuickFilter().getCount())
@@ -88,168 +95,146 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .list();
     }
 
-    private void buildSelectClause(PetitionSearchQuery query) {
-        if (Boolean.TRUE.equals(query.getCount())) {
-            query.append("SELECT count(petition) ");
+
+    private void mountSearchpetitionQuery(PetitionSearchContext ctx) {
+
+        HibernateQuery<Map<String, Object>> query         = ctx.createQuery(getSession());
+        PetitionSearchAliases               aliases       = ctx.getPetitionSearchAliases();
+        Map<String, DslExpression<?>>       selects       = ctx.getSelects();
+        List<BooleanExpression>             whereClasuses = ctx.getWhereClasuses();
+
+        if (Boolean.TRUE.equals(ctx.getCount())) {
+            selects.put("total", aliases.petition.count());
         } else {
-            query.append(" SELECT");
-            query.append("   petition.cod as codPeticao ");
-            query.append(" , petition.description as description ");
-            query.append(" , taskVersion.name as situation ");
-            query.append(" , taskVersion.name as taskName ");
-            query.append(" , taskVersion.type as taskType ");
-            query.append(" , processDefinitionEntity.name as processName ");
-            query.append(" , case when currentFormDraftVersionEntity is null then currentFormVersion.inclusionDate else currentFormDraftVersionEntity.inclusionDate end as creationDate ");
-            query.append(" , case when formType.abbreviation is null then formDraftType.abbreviation else formType.abbreviation end as type ");
-            query.append(" , processDefinitionEntity.key as processType ");
-            query.append(" , task.beginDate as situationBeginDate ");
-            query.append(" , task.cod as taskInstanceId ");
-            query.append(" , processInstance.beginDate as processBeginDate ");
-            query.append(" , currentDraftEntity.editionDate as editionDate ");
-            query.append(" , processInstance.cod as processInstanceId ");
-            query.append(" , petition.rootPetition.id as rootPetition ");
-            query.append(" , petition.parentPetition.id as parentPetition ");
-            query.append(" , taskDefinition.cod as taskId");
-            query.append(" , task.versionStamp as versionStamp");
-            query.append(" , allocatedUser.codUsuario as codUsuarioAlocado");
-            query.append(" , allocatedUser.nome as nomeUsuarioAlocado");
-            query.append(" , processGroup.cod as processGroupCod");
-            query.append(" , processGroup.connectionURL as processGroupContext");
-            appendCustomSelectClauses(query);
+            selects.put("codPeticao", aliases.petition.cod);
+            selects.put("description", aliases.petition.description);
+            selects.put("situation", aliases.taskVersion.name);
+            selects.put("taskName", aliases.taskVersion.name);
+            selects.put("taskType", aliases.taskVersion.type);
+            selects.put("processName", aliases.processDefinitionEntity.name);
+            selects.put("creationDate", new CaseBuilder().when(aliases.currentFormDraftVersionEntity.isNull()).then(aliases.currentFormVersion.inclusionDate).otherwise(aliases.currentFormDraftVersionEntity.inclusionDate));
+            selects.put("type", new CaseBuilder().when(aliases.formType.abbreviation.isNull()).then(aliases.formDraftType.abbreviation).otherwise(aliases.formType.abbreviation));
+            selects.put("processType", aliases.processDefinitionEntity.key);
+            selects.put("situationBeginDate", aliases.task.beginDate);
+            selects.put("taskInstanceId", aliases.task.cod);
+            selects.put("processBeginDate", aliases.processInstance.beginDate);
+            selects.put("editionDate", aliases.currentDraftEntity.editionDate);
+            selects.put("processInstanceId", aliases.processInstance.cod);
+            selects.put("rootPetition", aliases.petition.rootPetition.cod);
+            selects.put("parentPetition", aliases.petition.parentPetition.cod);
+            selects.put("taskId", aliases.taskDefinition.cod);
+            selects.put("versionStamp", aliases.task.versionStamp);
+            selects.put("codUsuarioAlocado", aliases.allocatedUser.codUsuario);
+            selects.put("nomeUsuarioAlocado", aliases.allocatedUser.nome);
+            selects.put("processGroupCod", aliases.processGroup.cod);
+            selects.put("processGroupContext", aliases.processGroup.connectionURL);
         }
-    }
 
-    /**
-     * Append Custom Select Clauses
-     */
-    protected void appendCustomSelectClauses(PetitionSearchQuery query) {
-    }
+        query
+                .from(aliases.petition)
+                .leftJoin(aliases.petition.petitioner, aliases.petitionerEntity)
+                .leftJoin(aliases.petition.processInstanceEntity, aliases.processInstance)
+                .leftJoin(aliases.petition.formPetitionEntities, aliases.formPetitionEntity).on(aliases.formPetitionEntity.mainForm.eq(SimNao.SIM))
+                .leftJoin(aliases.formPetitionEntity.form, aliases.formEntity)
+                .leftJoin(aliases.formPetitionEntity.currentDraftEntity, aliases.currentDraftEntity)
+                .leftJoin(aliases.currentDraftEntity.form, aliases.formDraftEntity)
+                .leftJoin(aliases.formDraftEntity.currentFormVersionEntity, aliases.currentFormDraftVersionEntity)
+                .leftJoin(aliases.formEntity.currentFormVersionEntity, aliases.currentFormVersion)
+                .leftJoin(aliases.petition.processDefinitionEntity, aliases.processDefinitionEntity)
+                .leftJoin(aliases.processDefinitionEntity.processGroup, aliases.processGroup)
+                .leftJoin(aliases.formEntity.formType, aliases.formType)
+                .leftJoin(aliases.formDraftEntity.formType, aliases.formDraftType)
+                .leftJoin(aliases.processInstance.tasks, aliases.task)
+                .leftJoin(aliases.task.task, aliases.taskVersion)
+                .leftJoin(aliases.taskVersion.taskDefinition, aliases.taskDefinition)
+                .leftJoin(aliases.task.allocatedUser, aliases.allocatedUser);
 
-    private void buildFromClause(PetitionSearchQuery query) {
-        query.append(" FROM ").append(tipo.getName()).append(" petition ");
-        query.append(" LEFT JOIN petition.petitioner petitioner ");
-        query.append(" LEFT JOIN petition.processInstanceEntity processInstance ");
-        query.append(" LEFT JOIN petition.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ");
-        query.append(" LEFT JOIN formPetitionEntity.form formEntity ");
-        query.append(" LEFT JOIN formPetitionEntity.currentDraftEntity currentDraftEntity ");
-        query.append(" LEFT JOIN currentDraftEntity.form formDraftEntity");
-        query.append(" LEFT JOIN formDraftEntity.currentFormVersionEntity currentFormDraftVersionEntity");
-        query.append(" LEFT JOIN formEntity.currentFormVersionEntity currentFormVersion ");
-        query.append(" LEFT JOIN petition.processDefinitionEntity processDefinitionEntity ");
-        query.append(" LEFT JOIN processDefinitionEntity.processGroup processGroup ");
-        query.append(" LEFT JOIN formEntity.formType formType  ");
-        query.append(" LEFT JOIN formDraftEntity.formType formDraftType  ");
-        query.append(" LEFT JOIN processInstance.tasks task ");
-        query.append(" LEFT JOIN task.task taskVersion ");
-        query.append(" LEFT JOIN taskVersion.taskDefinition taskDefinition ");
-        query.append(" LEFT JOIN task.allocatedUser allocatedUser ");
-        appendCustomFromClauses(query);
-    }
-
-    /**
-     * Append Custom From Clauses
-     */
-    protected void appendCustomFromClauses(PetitionSearchQuery query) {
-    }
-
-
-    private void buildWhereClause(PetitionSearchQuery query) {
-
-        QuickFilter quickFilter = query.getQuickFilter();
-
-        query.append(" WHERE 1=1 ");
+        QuickFilter quickFilter = ctx.getQuickFilter();
 
         if (quickFilter.getIdPessoa() != null) {
-            query.append(" AND petitioner.idPessoa = :idPessoa ");
-            query.addParam("idPessoa", quickFilter.getIdPessoa());
+            whereClasuses.add(aliases.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
-
-        query.addParam("sim", SimNao.SIM);
 
         if (!quickFilter.isRascunho()
                 && quickFilter.getProcessesAbbreviation() != null
                 && !quickFilter.getProcessesAbbreviation().isEmpty()) {
-            query.append(" AND ( processDefinitionEntity.key  in (:siglasProcesso) ");
-            query.addParam("siglasProcesso", quickFilter.getProcessesAbbreviation());
+            BooleanExpression expr = aliases.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
-                query.append(" OR formType.abbreviation in (:formNames)) ");
-                query.addParam("formNames", quickFilter.getTypesNames());
-            } else {
-                query.append(" ) ");
+                expr = expr.or(aliases.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
+            whereClasuses.add(expr);
         }
 
-        appendCustomQuickFilter(query);
+        String filterAnywhere = "%" + ctx.getQuickFilter().getFilter() + "%";
+        if (ctx.getQuickFilter().hasFilter()) {
+            BooleanExpression expr = aliases.petition.description.likeIgnoreCase(filterAnywhere);
+            expr = expr.or(aliases.processDefinitionEntity.name.likeIgnoreCase(filterAnywhere));
+            expr = expr.or(aliases.taskVersion.name.likeIgnoreCase(filterAnywhere));
+            expr = expr.or(aliases.petition.cod.like(filterAnywhere));
+            whereClasuses.add(expr);
+//            if (quickFilter.isRascunho()) {
+//                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentFormVersion.inclusionDate", "filter"));
+//                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentDraftEntity.editionDate", "filter"));
+//            } else {
+//                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("task.beginDate", "filter"));
+//                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("processInstance.beginDate", "filter"));
+//            }
+        }
 
         if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            query.append(" AND taskVersion.name in (:tasks)");
-            query.addParam("tasks", quickFilter.getTasks());
+            whereClasuses.add(aliases.taskVersion.name.in(quickFilter.getTasks()));
         }
 
         if (quickFilter.isRascunho()) {
-            query.append(" AND petition.processInstanceEntity is null ");
+            whereClasuses.add(aliases.petition.processInstanceEntity.isNull());
         } else {
-            query.append(" AND petition.processInstanceEntity is not null ");
+            whereClasuses.add(aliases.petition.processInstanceEntity.isNotNull());
             if (quickFilter.getEndedTasks() == null) {
-                query.append(" and (taskVersion.type = :tipoEnd or (taskVersion.type <> :tipoEnd and task.endDate is null)) ");
-                query.addParam("tipoEnd", TaskType.END);
+                whereClasuses.add(aliases.taskVersion.type.eq(TaskType.END).or(aliases.taskVersion.type.ne(TaskType.END).and(aliases.task.endDate.isNull())));
             } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-                query.append(" and taskVersion.type = :tipoEnd ");
-                query.addParam("tipoEnd", TaskType.END);
+                whereClasuses.add(aliases.taskVersion.type.eq(TaskType.END));
             } else {
-                query.append(" and task.endDate is null ");
+                whereClasuses.add(aliases.task.endDate.isNull());
             }
         }
 
-        appendCustomWhereClauses(query);
-        appendSort(query);
-    }
+        customizeQuery(ctx);
 
-    private void appendSort(PetitionSearchQuery query) {
-        QuickFilter quickFilter = query.getQuickFilter();
         if (quickFilter.getSortProperty() != null) {
-            query.append(mountSort(quickFilter.getSortProperty(), quickFilter.isAscending()));
-        } else if (!Boolean.TRUE.equals(query.getCount())) {
+            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
+            query.orderBy(new OrderSpecifier(order, selects.get(quickFilter.getSortProperty())));
+        } else if (!Boolean.TRUE.equals(ctx.getCount())) {
             if (quickFilter.isRascunho()) {
-                query.append(mountSort("creationDate", false));
+                query.orderBy(new OrderSpecifier(Order.ASC, selects.get("creationDate")));
             } else {
-                query.append(mountSort("processBeginDate", false));
+                query.orderBy(new OrderSpecifier(Order.ASC, selects.get("processBeginDate")));
             }
         }
-    }
 
-    /**
-     * Append Custom Where Clauses
-     */
-    protected void appendCustomWhereClauses(PetitionSearchQuery query) {
-    }
+        DslExpression<?>[] selectExpressions = selects.entrySet()
+                .stream()
+                .map((entry) -> entry.getValue().as(entry.getKey()))
+                .collect(Collectors.toList())
+                .toArray(new DslExpression<?>[]{});
 
-    /**
-     * Append Custom Quick Filter
-     */
-    protected void appendCustomQuickFilter(PetitionSearchQuery query) {
-        QuickFilter quickFilter = query.getQuickFilter();
-        if (quickFilter.hasFilter()) {
-            query.append(" AND ( upper(petition.description) like upper(:filter) ");
-            query.append(" OR upper(processDefinitionEntity.name) like upper(:filter) ");
-            query.append(" OR upper(taskVersion.name) like upper(:filter) ");
-            if (quickFilter.isRascunho()) {
-                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentFormVersion.inclusionDate", "filter"));
-                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentDraftEntity.editionDate", "filter"));
-            } else {
-                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("task.beginDate", "filter"));
-                query.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("processInstance.beginDate", "filter"));
-            }
-            query.append(" OR petition.id like :filter ) ");
-            query.addParam("filter", "%" + quickFilter.getFilter() + "%");
+        if (selectExpressions.length > 1) {
+            query.select(selectExpressions);
+        } else if (selects.size() == 1) {
+            query.select(selectExpressions[0]);
         }
+
+        query.where(whereClasuses.toArray(new BooleanExpression[]{}));
+
     }
 
-    private Query createQuery(PetitionSearchQuery query) {
-        buildSelectClause(query);
-        buildFromClause(query);
-        buildWhereClause(query);
-        return setParametersQuery(getSession().createQuery(query.getHqlQueryString()), query.getParams());
+    protected void customizeQuery(PetitionSearchContext ctx) {
+
+    }
+
+
+    private Query createQuery(PetitionSearchContext ctx) {
+        mountSearchpetitionQuery(ctx);
+        return ctx.getQuery().createQuery();
     }
 
     protected String mountSort(String sortProperty, boolean ascending) {
