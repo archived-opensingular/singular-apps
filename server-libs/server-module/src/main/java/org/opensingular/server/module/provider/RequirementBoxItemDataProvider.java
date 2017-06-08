@@ -118,7 +118,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return this;
     }
 
-    public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> filters) {
+    public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> tasks) {
         tasks.forEach(this::addTask);
         return this;
     }
