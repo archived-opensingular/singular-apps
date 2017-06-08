@@ -19,8 +19,10 @@ package org.opensingular.server.commons.persistence.dao.form;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.apache.commons.collections.CollectionUtils;
@@ -28,7 +30,9 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -219,17 +223,22 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return query.toHibernateQuery();
     }
 
-    private void configureQuickFilter(RequirementSearchAliases aliases, BooleanBuilder booleanBuilder, String filter) {
+    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder booleanBuilder, String filter) {
         booleanBuilder
-                .or(aliases.petition.description.likeIgnoreCase(filter))
-                .or(aliases.processDefinitionEntity.name.likeIgnoreCase(filter))
-                .or(aliases.taskVersion.name.likeIgnoreCase(filter))
-                .or(aliases.petition.cod.like(filter))
-                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentFormVersion.inclusionDate).like(filter))
-                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentFormDraftVersionEntity.inclusionDate).like(filter))
-                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentDraftEntity.editionDate).like(filter))
-                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.task.beginDate).like(filter))
-                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.processInstance.beginDate).like(filter));
+                .or($.petition.description.likeIgnoreCase(filter))
+                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
+                .or($.taskVersion.name.likeIgnoreCase(filter))
+                .or($.petition.cod.like(filter))
+                .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
+                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
+                .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
+                .or(toCharDate($.task.beginDate).like(filter))
+                .or(toCharDate($.processInstance.beginDate).like(filter));
+    }
+
+    @NotNull
+    private StringTemplate toCharDate(Path<?> path) {
+        return Expressions.stringTemplate(TO_CHAR_DATE, path);
     }
 
     protected void customizeQuery(RequirementSearchContext ctx) {
