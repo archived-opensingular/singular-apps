@@ -29,22 +29,18 @@ import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.opensingular.internal.form.wicket.util.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
-import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.ApplicationContextAware;
-import org.springframework.web.context.support.WebApplicationContextUtils;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
 public abstract class SingularApplication extends AuthenticatedWebApplication
-        implements ApplicationContextAware, SkinnableApplication {
-
-    private ApplicationContext applicationContext;
+        implements SkinnableApplication {
 
     public static SingularApplication get() {
         return (SingularApplication) WebApplication.get();
@@ -73,12 +69,9 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
             component.setOutputMarkupId(outputId).setOutputMarkupPlaceholderTag(outputId);
         });
 
-        if (applicationContext != null) {
-            getComponentInstantiationListeners().add(new SpringComponentInjector(this, applicationContext, true));
-        } else {
-            getComponentInstantiationListeners().add(new SpringComponentInjector(this));
-            applicationContext = WebApplicationContextUtils.getWebApplicationContext(getServletContext());
-        }
+
+        getComponentInstantiationListeners().add(new SpringComponentInjector(this, getApplicationContext(), true));
+
 
         new SingularAnnotatedMountScanner().mountPages(this);
         getDebugSettings().setComponentPathAttributeName("wicketpath");
@@ -112,12 +105,7 @@ public abstract class SingularApplication extends AuthenticatedWebApplication
 
 
     public ApplicationContext getApplicationContext() {
-        return applicationContext;
-    }
-
-    @Override
-    public void setApplicationContext(ApplicationContext ctx) throws BeansException {
-        this.applicationContext = ctx;
+        return ApplicationContextProvider.get();
     }
 
 
