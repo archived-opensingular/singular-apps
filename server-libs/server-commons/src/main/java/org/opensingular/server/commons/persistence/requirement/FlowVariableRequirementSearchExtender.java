@@ -1,6 +1,8 @@
 package org.opensingular.server.commons.persistence.requirement;
 
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -26,19 +28,24 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
         QVariableInstanceEntity var   = new QVariableInstanceEntity(variableName);
         RequirementSearchQuery  query = context.getQuery();
 
-        query.leftJoin(query.getAliases().processInstance.variables, var).on(var.name.eq(variableName));
-
         if (Boolean.FALSE.equals(context.getCount())) {
             query.getSelectBuilder()
-                    .add(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).as(queryAlias));
+                    .add(toChar(var).as(queryAlias));
         }
+
+        query.leftJoin(query.getAliases().processInstance.variables, var).on(var.name.eq(variableName));
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {
             query.getQuickFilterWhereBuilder()
-                    .or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
-                    .or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
+                    .or(toChar(var).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
+                    .or(toChar(var).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
         }
+    }
+
+    @NotNull
+    private StringTemplate toChar(QVariableInstanceEntity var) {
+        return Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value);
     }
 
 }
