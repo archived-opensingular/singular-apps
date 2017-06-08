@@ -59,6 +59,8 @@ import java.util.Optional;
 
 public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
+    private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
+
     public PetitionDAO() {
         super((Class<T>) PetitionEntity.class);
     }
@@ -105,98 +107,99 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
 
-        RequirementSearchQuery   query             = ctx.createQuery(getSession());
-        RequirementSearchAliases aliases           = query.getRequirementAliases();
-        BooleanBuilder           whereClause       = query.getWhereClause();
-        BooleanBuilder           quickFilterClause = query.getQuickFilterClause();
+        RequirementSearchQuery   query = ctx.createQuery(getSession());
+        RequirementSearchAliases $     = query.getAliases();
 
         if (Boolean.TRUE.equals(ctx.getCount())) {
-            query.addSelect(aliases.petition.count());
+            query.getSelectBuilder()
+                    .add($.petition.count());
         } else {
-            query.addSelect(aliases.petition.cod.as("codPeticao"))
-                    .addSelect(aliases.petition.description.as("description"))
-                    .addSelect(aliases.taskVersion.name.as("situation"))
-                    .addSelect(aliases.taskVersion.name.as("taskName"))
-                    .addSelect(aliases.taskVersion.type.as("taskType"))
-                    .addSelect(aliases.processDefinitionEntity.name.as("processName"))
-                    .addSelectCase($case -> $case
-                            .when(aliases.currentFormDraftVersionEntity.isNull())
-                            .then(aliases.currentFormVersion.inclusionDate)
-                            .otherwise(aliases.currentFormDraftVersionEntity.inclusionDate).as("creationDate"))
-                    .addSelectCase($case -> $case
-                            .when(aliases.formType.abbreviation.isNull())
-                            .then(aliases.formDraftType.abbreviation)
-                            .otherwise(aliases.formType.abbreviation).as("type"))
-                    .addSelect(aliases.processDefinitionEntity.key.as("processType"))
-                    .addSelect(aliases.task.beginDate.as("situationBeginDate"))
-                    .addSelect(aliases.task.cod.as("taskInstanceId"))
-                    .addSelect(aliases.processInstance.beginDate.as("processBeginDate"))
-                    .addSelect(aliases.currentDraftEntity.editionDate.as("editionDate"))
-                    .addSelect(aliases.processInstance.cod.as("processInstanceId"))
-                    .addSelect(aliases.petition.rootPetition.cod.as("rootPetition"))
-                    .addSelect(aliases.petition.parentPetition.cod.as("parentPetition"))
-                    .addSelect(aliases.taskDefinition.cod.as("taskId"))
-                    .addSelect(aliases.task.versionStamp.as("versionStamp"))
-                    .addSelect(aliases.allocatedUser.codUsuario.as("codUsuarioAlocado"))
-                    .addSelect(aliases.allocatedUser.nome.as("nomeUsuarioAlocado"))
-                    .addSelect(aliases.processGroup.cod.as("processGroupCod"))
-                    .addSelect(aliases.processGroup.connectionURL.as("processGroupContext"));
+            query.getSelectBuilder()
+                    .add($.petition.cod.as("codPeticao"))
+                    .add($.petition.description.as("description"))
+                    .add($.taskVersion.name.as("situation"))
+                    .add($.taskVersion.name.as("taskName"))
+                    .add($.taskVersion.type.as("taskType"))
+                    .add($.processDefinitionEntity.name.as("processName"))
+                    .addCase($case -> $case
+                            .when($.currentFormDraftVersionEntity.isNull())
+                            .then($.currentFormVersion.inclusionDate)
+                            .otherwise($.currentFormDraftVersionEntity.inclusionDate).as("creationDate"))
+                    .addCase($case -> $case
+                            .when($.formType.abbreviation.isNull())
+                            .then($.formDraftType.abbreviation)
+                            .otherwise($.formType.abbreviation).as("type"))
+                    .add($.processDefinitionEntity.key.as("processType"))
+                    .add($.task.beginDate.as("situationBeginDate"))
+                    .add($.task.cod.as("taskInstanceId"))
+                    .add($.processInstance.beginDate.as("processBeginDate"))
+                    .add($.currentDraftEntity.editionDate.as("editionDate"))
+                    .add($.processInstance.cod.as("processInstanceId"))
+                    .add($.petition.rootPetition.cod.as("rootPetition"))
+                    .add($.petition.parentPetition.cod.as("parentPetition"))
+                    .add($.taskDefinition.cod.as("taskId"))
+                    .add($.task.versionStamp.as("versionStamp"))
+                    .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
+                    .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
+                    .add($.processGroup.cod.as("processGroupCod"))
+                    .add($.processGroup.connectionURL.as("processGroupContext"));
         }
 
         query
-                .from(aliases.petition)
-                .leftJoin(aliases.petition.petitioner, aliases.petitionerEntity)
-                .leftJoin(aliases.petition.processInstanceEntity, aliases.processInstance)
-                .leftJoin(aliases.petition.formPetitionEntities, aliases.formPetitionEntity).on(aliases.formPetitionEntity.mainForm.eq(SimNao.SIM))
-                .leftJoin(aliases.formPetitionEntity.form, aliases.formEntity)
-                .leftJoin(aliases.formPetitionEntity.currentDraftEntity, aliases.currentDraftEntity)
-                .leftJoin(aliases.currentDraftEntity.form, aliases.formDraftEntity)
-                .leftJoin(aliases.formDraftEntity.currentFormVersionEntity, aliases.currentFormDraftVersionEntity)
-                .leftJoin(aliases.formEntity.currentFormVersionEntity, aliases.currentFormVersion)
-                .leftJoin(aliases.petition.processDefinitionEntity, aliases.processDefinitionEntity)
-                .leftJoin(aliases.processDefinitionEntity.processGroup, aliases.processGroup)
-                .leftJoin(aliases.formEntity.formType, aliases.formType)
-                .leftJoin(aliases.formDraftEntity.formType, aliases.formDraftType)
-                .leftJoin(aliases.processInstance.tasks, aliases.task)
-                .leftJoin(aliases.task.task, aliases.taskVersion)
-                .leftJoin(aliases.taskVersion.taskDefinition, aliases.taskDefinition)
-                .leftJoin(aliases.task.allocatedUser, aliases.allocatedUser);
+                .from($.petition)
+                .leftJoin($.petition.petitioner, $.petitionerEntity)
+                .leftJoin($.petition.processInstanceEntity, $.processInstance)
+                .leftJoin($.petition.formPetitionEntities, $.formPetitionEntity).on($.formPetitionEntity.mainForm.eq(SimNao.SIM))
+                .leftJoin($.formPetitionEntity.form, $.formEntity)
+                .leftJoin($.formPetitionEntity.currentDraftEntity, $.currentDraftEntity)
+                .leftJoin($.currentDraftEntity.form, $.formDraftEntity)
+                .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
+                .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
+                .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
+                .leftJoin($.processDefinitionEntity.processGroup, $.processGroup)
+                .leftJoin($.formEntity.formType, $.formType)
+                .leftJoin($.formDraftEntity.formType, $.formDraftType)
+                .leftJoin($.processInstance.tasks, $.task)
+                .leftJoin($.task.task, $.taskVersion)
+                .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
+                .leftJoin($.task.allocatedUser, $.allocatedUser);
 
-        QuickFilter quickFilter = ctx.getQuickFilter();
-
+        QuickFilter    quickFilter  = ctx.getQuickFilter();
+        BooleanBuilder whereBuilder = query.getWhereBuilder();
         if (quickFilter.getIdPessoa() != null) {
-            whereClause.and(aliases.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+            whereBuilder.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
 
         if (!quickFilter.isRascunho()
                 && quickFilter.getProcessesAbbreviation() != null
                 && !quickFilter.getProcessesAbbreviation().isEmpty()) {
-            BooleanExpression expr = aliases.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
+            BooleanExpression expr = $.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
-                expr = expr.or(aliases.formType.abbreviation.in(quickFilter.getTypesNames()));
+                expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
-            whereClause.and(expr);
+            whereBuilder.and(expr);
         }
 
         if (ctx.getQuickFilter().hasFilter()) {
-            configureQuickFilter(aliases, quickFilterClause, quickFilter.filterWithAnywhereMatchMode());
-            configureQuickFilter(aliases, quickFilterClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
+            BooleanBuilder quickFilterWhereBuilder = query.getQuickFilterWhereBuilder();
+            configureQuickFilter($, quickFilterWhereBuilder, quickFilter.filterWithAnywhereMatchMode());
+            configureQuickFilter($, quickFilterWhereBuilder, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
         }
 
         if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            whereClause.and(aliases.taskVersion.name.in(quickFilter.getTasks()));
+            whereBuilder.and($.taskVersion.name.in(quickFilter.getTasks()));
         }
 
         if (quickFilter.isRascunho()) {
-            whereClause.and(aliases.petition.processInstanceEntity.isNull());
+            whereBuilder.and($.petition.processInstanceEntity.isNull());
         } else {
-            whereClause.and(aliases.petition.processInstanceEntity.isNotNull());
+            whereBuilder.and($.petition.processInstanceEntity.isNotNull());
             if (quickFilter.getEndedTasks() == null) {
-                whereClause.and(aliases.taskVersion.type.eq(TaskType.END).or(aliases.taskVersion.type.ne(TaskType.END).and(aliases.task.endDate.isNull())));
+                whereBuilder.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
             } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-                whereClause.and(aliases.taskVersion.type.eq(TaskType.END));
+                whereBuilder.and($.taskVersion.type.eq(TaskType.END));
             } else {
-                whereClause.and(aliases.task.endDate.isNull());
+                whereBuilder.and($.task.endDate.isNull());
             }
         }
 
@@ -216,17 +219,17 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return query.toHibernateQuery();
     }
 
-    private void configureQuickFilter(RequirementSearchAliases aliases, BooleanBuilder clause, String filter) {
-        String toCharDate = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
-        clause.or(aliases.petition.description.likeIgnoreCase(filter));
-        clause.or(aliases.processDefinitionEntity.name.likeIgnoreCase(filter));
-        clause.or(aliases.taskVersion.name.likeIgnoreCase(filter));
-        clause.or(aliases.petition.cod.like(filter));
-        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormVersion.inclusionDate).like(filter));
-        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentFormDraftVersionEntity.inclusionDate).like(filter));
-        clause.or(Expressions.stringTemplate(toCharDate, aliases.currentDraftEntity.editionDate).like(filter));
-        clause.or(Expressions.stringTemplate(toCharDate, aliases.task.beginDate).like(filter));
-        clause.or(Expressions.stringTemplate(toCharDate, aliases.processInstance.beginDate).like(filter));
+    private void configureQuickFilter(RequirementSearchAliases aliases, BooleanBuilder booleanBuilder, String filter) {
+        booleanBuilder
+                .or(aliases.petition.description.likeIgnoreCase(filter))
+                .or(aliases.processDefinitionEntity.name.likeIgnoreCase(filter))
+                .or(aliases.taskVersion.name.likeIgnoreCase(filter))
+                .or(aliases.petition.cod.like(filter))
+                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentFormVersion.inclusionDate).like(filter))
+                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentFormDraftVersionEntity.inclusionDate).like(filter))
+                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.currentDraftEntity.editionDate).like(filter))
+                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.task.beginDate).like(filter))
+                .or(Expressions.stringTemplate(TO_CHAR_DATE, aliases.processInstance.beginDate).like(filter));
     }
 
     protected void customizeQuery(RequirementSearchContext ctx) {

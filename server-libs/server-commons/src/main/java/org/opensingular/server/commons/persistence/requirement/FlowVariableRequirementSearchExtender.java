@@ -26,16 +26,18 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
         QVariableInstanceEntity var   = new QVariableInstanceEntity(variableName);
         RequirementSearchQuery  query = context.getQuery();
 
-        query.leftJoin(query.getRequirementAliases().processInstance.variables, var).on(var.name.eq(variableName));
+        query.leftJoin(query.getAliases().processInstance.variables, var).on(var.name.eq(variableName));
 
         if (Boolean.FALSE.equals(context.getCount())) {
-            query.addSelect(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).as(queryAlias));
+            query.getSelectBuilder()
+                    .add(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).as(queryAlias));
         }
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {
-            query.getQuickFilterClause().or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()));
-            query.getQuickFilterClause().or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
+            query.getQuickFilterWhereBuilder()
+                    .or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
+                    .or(Expressions.stringTemplate(TO_CHAR_TEMPLATE, var.value).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
         }
     }
 
