@@ -69,7 +69,7 @@ public class TaskBoxDefinitionDataProviderTest {
         Integer                         taskId           = 10;
         List<Map<String, Serializable>> taskInstanceDTOS = listOfTaskInstanceDTOForIDsAndTodayDate(taskId);
 
-        when(petitionService.listTasks(eq(filter), anyList())).thenReturn(taskInstanceDTOS);
+        when(petitionService.listTasks(eq(filter), anyList(), anyList())).thenReturn(taskInstanceDTOS);
 
         List<Map<String, Serializable>> itemBoxes       = taskItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class));
         Map<String, Serializable>       taskInstanceMap = itemBoxes.get(0);
@@ -81,7 +81,7 @@ public class TaskBoxDefinitionDataProviderTest {
     @Test
     public void testCount() throws Exception {
         Long taskCount = 10L;
-        when(petitionService.countTasks(eq(filter), anyList())).thenReturn(taskCount);
+        when(petitionService.countTasks(eq(filter), anyList(), anyList())).thenReturn(taskCount);
         assertThat(taskItemBoxDataProvider.count(filter, Mockito.mock(BoxInfo.class)), Matchers.equalTo(taskCount));
     }
 
