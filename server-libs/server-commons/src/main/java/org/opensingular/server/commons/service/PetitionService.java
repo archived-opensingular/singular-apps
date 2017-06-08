@@ -228,7 +228,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public Long countQuickSearch(QuickFilter filter) {
-        return countQuickSearch(filter);
+        return countQuickSearch(filter, Collections.emptyList());
     }
 
     public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
