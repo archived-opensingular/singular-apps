@@ -52,6 +52,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionerEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -62,6 +63,7 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -226,12 +228,21 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public Long countQuickSearch(QuickFilter filter) {
-        return petitionDAO.countQuickSearch(filter);
+        return countQuickSearch(filter);
+    }
+
+    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+        return petitionDAO.countQuickSearch(filter, extenders);
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        return petitionDAO.quickSearchMap(filter);
+        return quickSearchMap(filter, Collections.emptyList());
     }
+
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+        return petitionDAO.quickSearchMap(filter, extenders);
+    }
+
 
     @Nonnull
     public FormKey saveOrUpdate(@Nonnull PI petition, @Nonnull SInstance instance, boolean mainForm) {
@@ -333,11 +344,19 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return petitionDAO.quickSearchMap(filter, authorizationService.filterListTaskPermissions(permissions));
+        return listTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
     }
 
     public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return petitionDAO.countQuickSearch(filter, authorizationService.filterListTaskPermissions(permissions));
+        return countTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
+    }
+
+    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+        return petitionDAO.quickSearchMap(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
+    }
+
+    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+        return petitionDAO.countQuickSearch(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 
     public Optional<TaskInstance> findCurrentTaskInstanceByPetitionId(Long petitionId) {

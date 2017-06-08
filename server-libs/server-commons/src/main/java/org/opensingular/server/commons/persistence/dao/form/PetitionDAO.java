@@ -32,7 +32,6 @@ import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -51,6 +50,7 @@ import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEnti
 import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
+import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 
@@ -80,24 +80,41 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return crit.list();
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<SingularPermission> permissions) {
-        return countQuickSearch(new RequirementSearchContext(filter).setCount(Boolean.TRUE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
+    public Long countQuickSearch(QuickFilter filter,
+                                 List<SingularPermission> permissions,
+                                 List<RequirementSearchExtender> extenders) {
+        return countQuickSearch(new RequirementSearchContext(filter)
+                .setCount(Boolean.TRUE)
+                .setEvaluatePermissions(Boolean.TRUE)
+                .setExtenders(extenders)
+                .addPermissions(permissions));
     }
 
-    public Long countQuickSearch(QuickFilter filter) {
-        return countQuickSearch(new RequirementSearchContext(filter).setCount(Boolean.TRUE));
+    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+        return countQuickSearch(new RequirementSearchContext(filter)
+                .setExtenders(extenders)
+                .setCount(Boolean.TRUE));
     }
 
     private Long countQuickSearch(RequirementSearchContext query) {
         return (Long) makeRequirementSearchQuery(query).uniqueResult();
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
-        return quickSearchMap(new RequirementSearchContext(filter).setCount(Boolean.FALSE));
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+                                                          List<RequirementSearchExtender> extenders) {
+        return quickSearchMap(new RequirementSearchContext(filter)
+                .setExtenders(extenders)
+                .setCount(Boolean.FALSE));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<SingularPermission> permissions) {
-        return quickSearchMap(new RequirementSearchContext(filter).setCount(Boolean.FALSE).setEvaluatePermissions(Boolean.TRUE).addPermissions(permissions));
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+                                                          List<SingularPermission> permissions,
+                                                          List<RequirementSearchExtender> extenders) {
+        return quickSearchMap(new RequirementSearchContext(filter)
+                .setCount(Boolean.FALSE)
+                .setEvaluatePermissions(Boolean.TRUE)
+                .setExtenders(extenders)
+                .addPermissions(permissions));
     }
 
     private List<Map<String, Serializable>> quickSearchMap(RequirementSearchContext query) {
@@ -107,7 +124,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
                 .list();
     }
-
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
 
@@ -207,7 +223,9 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             }
         }
 
-        customizeQuery(ctx);
+        if (ctx.getExtenders() != null) {
+            ctx.getExtenders().forEach(extender -> extender.extend(ctx));
+        }
 
         if (quickFilter.getSortProperty() != null) {
             Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
@@ -239,10 +257,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     @NotNull
     private StringTemplate toCharDate(Path<?> path) {
         return Expressions.stringTemplate(TO_CHAR_DATE, path);
-    }
-
-    protected void customizeQuery(RequirementSearchContext ctx) {
-
     }
 
     public T findByProcessCodOrException(Integer cod) {
