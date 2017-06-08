@@ -7,7 +7,7 @@ import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
-import org.opensingular.server.module.provider.TaskBoxItemDataProvider;
+import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,7 +31,7 @@ public class DefaultInbox implements ItemBoxFactory {
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new TaskBoxItemDataProvider(new ActionProviderBuilder()
+        return new RequirementBoxItemDataProvider(Boolean.TRUE, new ActionProviderBuilder()
                 .addAssignAction()
                 .addAnalyseAction()
                 .addRelocateAction()

@@ -14,6 +14,7 @@ public class RequirementSearchContext {
 
     private final QuickFilter              quickFilter;
     private final List<SingularPermission> permissions;
+    private final RequirementSearchAliases aliases;
 
     private Boolean evaluatePermissions = Boolean.FALSE;
     private Boolean count               = Boolean.FALSE;
@@ -24,6 +25,7 @@ public class RequirementSearchContext {
     public RequirementSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
         this.permissions = new ArrayList<>();
+        aliases = new RequirementSearchAliases();
     }
 
     public QuickFilter getQuickFilter() {
@@ -74,4 +76,7 @@ public class RequirementSearchContext {
         return this;
     }
 
+    public RequirementSearchAliases getAliases() {
+        return aliases;
+    }
 }

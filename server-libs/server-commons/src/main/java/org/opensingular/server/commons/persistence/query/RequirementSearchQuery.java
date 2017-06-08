@@ -1,50 +1,53 @@
 package org.opensingular.server.commons.persistence.query;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.dsl.BeanPath;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
+import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.query.SelectBuilder;
 
 import java.util.Map;
 
 public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
 
-    private RequirementSearchAliases aliases                 = new RequirementSearchAliases();
-    private SelectBuilder            selectBuilder           = new SelectBuilder();
-    private BooleanBuilder           whereBuilder            = new BooleanBuilder();
-    private BooleanBuilder           quickFilterWhereBuilder = new BooleanBuilder();
+    private SelectBuilder  select                 = new SelectBuilder();
+    private BooleanBuilder whereClause            = new BooleanBuilder();
+    private BooleanBuilder quickFilterWhereClause = new BooleanBuilder();
+    private BeanPath<?>    countPath              = null;
 
     public RequirementSearchQuery(Session session) {
         super(session);
     }
 
-    public RequirementSearchAliases getAliases() {
-        return aliases;
+    public BooleanBuilder getWhereClause() {
+        return whereClause;
     }
 
-    public BooleanBuilder getWhereBuilder() {
-        return whereBuilder;
-    }
-
-    public Query toHibernateQuery() {
-        Expression<?>[] columnsArray = selectBuilder.build();
-        if (columnsArray.length > 1) {
-            select(columnsArray);
-        } else if (columnsArray.length == 1) {
-            select(columnsArray[0]);
+    public Query toHibernateQuery(Boolean count) {
+        if (Boolean.TRUE.equals(count)) {
+            select(countPath.count());
+        } else {
+            select(select.build());
         }
-        where(whereBuilder.and(quickFilterWhereBuilder.getValue()));
+        where(whereClause.and(quickFilterWhereClause.getValue()));
         return createQuery();
     }
 
-    public BooleanBuilder getQuickFilterWhereBuilder() {
-        return quickFilterWhereBuilder;
+    public BooleanBuilder getQuickFilterWhereClause() {
+        return quickFilterWhereClause;
     }
 
-    public SelectBuilder getSelectBuilder() {
-        return selectBuilder;
+    public SelectBuilder getSelect() {
+        return select;
     }
+
+    public void countBy(BeanPath<?> entityPath) {
+        this.countPath = entityPath;
+    }
+
 }

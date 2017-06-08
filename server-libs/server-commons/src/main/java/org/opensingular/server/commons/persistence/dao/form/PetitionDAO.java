@@ -128,13 +128,12 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
 
         RequirementSearchQuery   query = ctx.createQuery(getSession());
-        RequirementSearchAliases $     = query.getAliases();
+        RequirementSearchAliases $     = ctx.getAliases();
 
         if (Boolean.TRUE.equals(ctx.getCount())) {
-            query.getSelectBuilder()
-                    .add($.petition.count());
+            query.countBy($.petition);
         } else {
-            query.getSelectBuilder()
+            query.getSelect()
                     .add($.petition.cod.as("codPeticao"))
                     .add($.petition.description.as("description"))
                     .add($.taskVersion.name.as("situation"))
@@ -184,10 +183,10 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
                 .leftJoin($.task.allocatedUser, $.allocatedUser);
 
-        QuickFilter    quickFilter  = ctx.getQuickFilter();
-        BooleanBuilder whereBuilder = query.getWhereBuilder();
+        QuickFilter    quickFilter = ctx.getQuickFilter();
+        BooleanBuilder whereClause = query.getWhereClause();
         if (quickFilter.getIdPessoa() != null) {
-            whereBuilder.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+            whereClause.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
 
         if (!quickFilter.isRascunho()
@@ -197,29 +196,29 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
                 expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
-            whereBuilder.and(expr);
+            whereClause.and(expr);
         }
 
         if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder quickFilterWhereBuilder = query.getQuickFilterWhereBuilder();
-            configureQuickFilter($, quickFilterWhereBuilder, quickFilter.filterWithAnywhereMatchMode());
-            configureQuickFilter($, quickFilterWhereBuilder, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
+            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
+            configureQuickFilter($, quickFilterWhereClause, quickFilter.filterWithAnywhereMatchMode());
+            configureQuickFilter($, quickFilterWhereClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
         }
 
         if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            whereBuilder.and($.taskVersion.name.in(quickFilter.getTasks()));
+            whereClause.and($.taskVersion.name.in(quickFilter.getTasks()));
         }
 
         if (quickFilter.isRascunho()) {
-            whereBuilder.and($.petition.processInstanceEntity.isNull());
+            whereClause.and($.petition.processInstanceEntity.isNull());
         } else {
-            whereBuilder.and($.petition.processInstanceEntity.isNotNull());
+            whereClause.and($.petition.processInstanceEntity.isNotNull());
             if (quickFilter.getEndedTasks() == null) {
-                whereBuilder.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
+                whereClause.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
             } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-                whereBuilder.and($.taskVersion.type.eq(TaskType.END));
+                whereClause.and($.taskVersion.type.eq(TaskType.END));
             } else {
-                whereBuilder.and($.task.endDate.isNull());
+                whereClause.and($.task.endDate.isNull());
             }
         }
 
@@ -238,11 +237,11 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
             }
         }
 
-        return query.toHibernateQuery();
+        return query.toHibernateQuery(ctx.getCount());
     }
 
-    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder booleanBuilder, String filter) {
-        booleanBuilder
+    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
+        quickFilterWhereClause
                 .or($.petition.description.likeIgnoreCase(filter))
                 .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))

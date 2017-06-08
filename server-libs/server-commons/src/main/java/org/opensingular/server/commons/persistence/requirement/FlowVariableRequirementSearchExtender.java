@@ -4,6 +4,7 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
+import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
@@ -25,21 +26,20 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
     @Override
     public void extend(RequirementSearchContext context) {
-        QVariableInstanceEntity var   = new QVariableInstanceEntity(variableName);
-        RequirementSearchQuery  query = context.getQuery();
+        QVariableInstanceEntity  variableEntity = new QVariableInstanceEntity(variableName);
+        RequirementSearchQuery   query          = context.getQuery();
+        RequirementSearchAliases $              = context.getAliases();
 
-        if (Boolean.FALSE.equals(context.getCount())) {
-            query.getSelectBuilder()
-                    .add(toChar(var).as(queryAlias));
-        }
+        query.getSelect()
+                .add(toChar(variableEntity).as(queryAlias));
 
-        query.leftJoin(query.getAliases().processInstance.variables, var).on(var.name.eq(variableName));
+        query.leftJoin($.processInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {
-            query.getQuickFilterWhereBuilder()
-                    .or(toChar(var).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
-                    .or(toChar(var).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
+            query.getQuickFilterWhereClause()
+                    .or(toChar(variableEntity).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
+                    .or(toChar(variableEntity).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
         }
     }
 
