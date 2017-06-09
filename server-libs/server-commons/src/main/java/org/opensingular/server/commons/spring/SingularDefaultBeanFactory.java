@@ -33,7 +33,6 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
-import org.opensingular.lib.context.singleton.SpringBoundedSingletonStrategy;
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
@@ -59,8 +58,6 @@ import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
@@ -84,8 +81,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Priority;
+
 
 
 @SuppressWarnings("rawtypes")
