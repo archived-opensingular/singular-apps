@@ -21,6 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 public class ApplicationContextMock extends AnnotationConfigWebApplicationContext {
 
@@ -38,7 +39,7 @@ public class ApplicationContextMock extends AnnotationConfigWebApplicationContex
     public void configureSpringServiceRegistry(){
         SpringServiceRegistry springServiceRegistry = new SpringServiceRegistry();
         springServiceRegistry.init();
-        putBean(springServiceRegistry);
+        putOrReplaceBean(springServiceRegistry);
     }
 
     /**
@@ -47,11 +48,7 @@ public class ApplicationContextMock extends AnnotationConfigWebApplicationContex
      * @param name
      * @param bean
      */
-    public void putBean(final String name, final Object bean) {
-        if (beans.containsKey(name)) {
-            throw new IllegalArgumentException("a bean with name [" + name +
-                    "] has already been added to the context");
-        }
+    public void putOrReplaceBean(final String name, final Object bean) {
         beans.put(name, bean);
     }
 
@@ -60,8 +57,8 @@ public class ApplicationContextMock extends AnnotationConfigWebApplicationContex
      *
      * @param bean
      */
-    public void putBean(final Object bean) {
-        putBean(bean.getClass().getName(), bean);
+    public void putOrReplaceBean(final Object bean) {
+        putOrReplaceBean(bean.getClass().getName(), bean);
     }
 
     @Override
@@ -336,4 +333,7 @@ public class ApplicationContextMock extends AnnotationConfigWebApplicationContex
         throw new UnsupportedOperationException();
     }
 
+    public Set<String> listAllBeans() {
+        return beans.keySet();
+    }
 }
