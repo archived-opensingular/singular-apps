@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.spring.security;
 
+import org.opensingular.form.spring.SpringServiceRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
@@ -30,7 +31,14 @@ public class ApplicationContextMock extends AnnotationConfigWebApplicationContex
 
     public ApplicationContextMock() {
         super();
+        configureSpringServiceRegistry();
         refresh();
+    }
+
+    public void configureSpringServiceRegistry(){
+        SpringServiceRegistry springServiceRegistry = new SpringServiceRegistry();
+        springServiceRegistry.init();
+        putBean(springServiceRegistry);
     }
 
     /**
