@@ -30,8 +30,10 @@ import org.opensingular.form.persistence.dao.FormTypeDAO;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormService;
+import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
+import org.opensingular.lib.context.singleton.SpringBoundedSingletonStrategy;
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
@@ -77,12 +79,24 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Priority;
 
 
 @SuppressWarnings("rawtypes")
 public class SingularDefaultBeanFactory {
+
+    @Order(1)
+    @Bean
+    @Lazy(false)
+    public SpringServiceRegistry getSpringServiceRegistry() {
+        return new SpringServiceRegistry();
+    }
 
     @Primary
     @Bean(name = "peticionamentoUserDetailService")

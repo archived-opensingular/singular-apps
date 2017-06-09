@@ -9,7 +9,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.module.BoxInfo;
@@ -22,7 +24,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class PetitionBoxDefinitionDataProviderTest {
 
     @Mock
@@ -38,18 +40,11 @@ public class PetitionBoxDefinitionDataProviderTest {
 
     @Before
     public void setUp() {
-        if (ApplicationContextProvider.isConfigured()) {
-            backup = ApplicationContextProvider.get();
-        }
         filter = new QuickFilter();
         ApplicationContext mock = Mockito.mock(ApplicationContext.class);
         Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
+        SingularContextSetup.reset();
         new ApplicationContextProvider().setApplicationContext(mock);
-    }
-
-    @After
-    public void restore() {
-        new ApplicationContextProvider().setApplicationContext(backup);
     }
 
     @Test
