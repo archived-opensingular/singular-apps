@@ -128,9 +128,9 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
             context.setParent(parent);
         }
         configureWebResources(context, webMergedConfig);
+        customizeContext(context, webMergedConfig);
         prepareContext(context, webMergedConfig);
         loadBeanDefinitions(context, webMergedConfig);
-        customizeContext(context, webMergedConfig);
         mockRequest();
         context.refresh();
         context.registerShutdownHook();
