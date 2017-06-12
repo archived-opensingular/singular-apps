@@ -5,8 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * http: *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -17,27 +16,45 @@
 package org.opensingular.server.commons.persistence.dao.form;
 
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Path;
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
+import com.querydsl.jpa.hibernate.HibernateQuery;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToBeanResultTransformer;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormAttachmentEntity;
+import org.opensingular.form.persistence.entity.QFormEntity;
+import org.opensingular.form.persistence.entity.QFormTypeEntity;
+import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
+import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QDraftEntity;
+import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
+import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
-import org.opensingular.server.commons.util.JPAQueryUtil;
+import org.opensingular.server.commons.spring.security.SingularPermission;
 
 import java.io.Serializable;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -45,6 +62,8 @@ import java.util.Optional;
 
 
 public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
+
+    private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
 
     public PetitionDAO() {
         super((Class<T>) PetitionEntity.class);
@@ -61,172 +80,184 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return crit.list();
     }
 
-    public Long countQuickSearch(QuickFilter filtro, List<String> siglasProcesso, List<String> formNames) {
-        return (Long) createQuery(filtro, siglasProcesso, true, formNames).uniqueResult();
+    public Long countQuickSearch(QuickFilter filter,
+                                 List<SingularPermission> permissions,
+                                 List<RequirementSearchExtender> extenders) {
+        return countQuickSearch(new RequirementSearchContext(filter)
+                .setCount(Boolean.TRUE)
+                .setEvaluatePermissions(Boolean.TRUE)
+                .setExtenders(extenders)
+                .addPermissions(permissions));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<String> processesAbbreviation, List<String> formNames) {
-        final Query query = createQuery(filter, processesAbbreviation, false, formNames);
-        query.setFirstResult(filter.getFirst());
-        query.setMaxResults(filter.getCount());
-        query.setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE);
-        return query.list();
+    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+        return countQuickSearch(new RequirementSearchContext(filter)
+                .setExtenders(extenders)
+                .setCount(Boolean.TRUE));
     }
 
-    private void buildSelectClause(StringBuilder hql, boolean count, QuickFilter filter) {
-        if (count) {
-            hql.append("SELECT count(p) ");
+    private Long countQuickSearch(RequirementSearchContext query) {
+        return (Long) makeRequirementSearchQuery(query).uniqueResult();
+    }
+
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+                                                          List<RequirementSearchExtender> extenders) {
+        return quickSearchMap(new RequirementSearchContext(filter)
+                .setExtenders(extenders)
+                .setCount(Boolean.FALSE));
+    }
+
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+                                                          List<SingularPermission> permissions,
+                                                          List<RequirementSearchExtender> extenders) {
+        return quickSearchMap(new RequirementSearchContext(filter)
+                .setCount(Boolean.FALSE)
+                .setEvaluatePermissions(Boolean.TRUE)
+                .setExtenders(extenders)
+                .addPermissions(permissions));
+    }
+
+    private List<Map<String, Serializable>> quickSearchMap(RequirementSearchContext query) {
+        return makeRequirementSearchQuery(query)
+                .setFirstResult(query.getQuickFilter().getFirst())
+                .setMaxResults(query.getQuickFilter().getCount())
+                .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
+                .list();
+    }
+
+    private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
+
+        RequirementSearchQuery   query = ctx.createQuery(getSession());
+        RequirementSearchAliases $     = ctx.getAliases();
+
+        if (Boolean.TRUE.equals(ctx.getCount())) {
+            query.countBy($.petition);
         } else {
-            hql.append(" SELECT p.cod as codPeticao ");
-            hql.append(" , p.description as description ");
-            hql.append(" , task.name as situation ");
-            hql.append(" , processDefinitionEntity.name as processName ");
-            hql.append(" , case when currentFormDraftVersionEntity is null then currentFormVersion.inclusionDate else currentFormDraftVersionEntity.inclusionDate end as creationDate ");
-            hql.append(" , case when formType.abbreviation is null then formDraftType.abbreviation else formType.abbreviation end as type ");
-            hql.append(" , processDefinitionEntity.key as processType ");
-            hql.append(" , ta.beginDate as situationBeginDate ");
-            hql.append(" , pie.beginDate as processBeginDate ");
-            hql.append(" , currentDraftEntity.editionDate as editionDate ");
-            hql.append(" , pie.cod as processInstanceId ");
-            hql.append(" , p.rootPetition.id as rootPetition ");
-            hql.append(" , p.parentPetition.id as parentPetition ");
-            appendCustomSelectClauses(hql, filter);
-        }
-    }
-
-    /**
-     * Append Custom Select Clauses
-     */
-    protected void appendCustomSelectClauses(StringBuilder hql, QuickFilter filter) {
-    }
-
-    private void buildFromClause(StringBuilder hql, QuickFilter filtro) {
-        hql.append(" FROM ").append(tipo.getName()).append(" p ");
-        hql.append(" LEFT JOIN p.petitioner petitioner ");
-        hql.append(" LEFT JOIN p.processInstanceEntity pie ");
-        hql.append(" LEFT JOIN p.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ");
-        hql.append(" LEFT JOIN formPetitionEntity.form formEntity ");
-        hql.append(" LEFT JOIN formPetitionEntity.currentDraftEntity currentDraftEntity ");
-        hql.append(" LEFT JOIN currentDraftEntity.form formDraftEntity");
-        hql.append(" LEFT JOIN formDraftEntity.currentFormVersionEntity currentFormDraftVersionEntity");
-        hql.append(" LEFT JOIN formEntity.currentFormVersionEntity currentFormVersion ");
-        hql.append(" LEFT JOIN p.processDefinitionEntity processDefinitionEntity ");
-        hql.append(" LEFT JOIN formEntity.formType formType  ");
-        hql.append(" LEFT JOIN formDraftEntity.formType formDraftType  ");
-        hql.append(" LEFT JOIN pie.tasks ta ");
-        hql.append(" LEFT JOIN ta.task task ");
-        appendCustomFromClauses(hql, filtro);
-    }
-
-    /**
-     * Append Custom From Clauses
-     */
-    protected void appendCustomFromClauses(StringBuilder hql, QuickFilter filtro) {
-    }
-
-
-    private void buildWhereClause(StringBuilder hql,
-                                  Map<String, Object> params,
-                                  QuickFilter filtro,
-                                  List<String> siglasProcesso,
-                                  List<String> formNames, boolean count) {
-
-
-        hql.append(" WHERE 1=1 ");
-
-        if (filtro.getIdPessoa() != null) {
-            hql.append(" AND petitioner.idPessoa = :idPessoa ");
-            params.put("idPessoa", filtro.getIdPessoa());
+            query.getSelect()
+                    .add($.petition.cod.as("codPeticao"))
+                    .add($.petition.description.as("description"))
+                    .add($.taskVersion.name.as("situation"))
+                    .add($.taskVersion.name.as("taskName"))
+                    .add($.taskVersion.type.as("taskType"))
+                    .add($.processDefinitionEntity.name.as("processName"))
+                    .addCase($case -> $case
+                            .when($.currentFormDraftVersionEntity.isNull())
+                            .then($.currentFormVersion.inclusionDate)
+                            .otherwise($.currentFormDraftVersionEntity.inclusionDate)
+                            .as("creationDate"))
+                    .addCase($case -> $case
+                            .when($.formType.abbreviation.isNull())
+                            .then($.formDraftType.abbreviation)
+                            .otherwise($.formType.abbreviation)
+                            .as("type"))
+                    .add($.processDefinitionEntity.key.as("processType"))
+                    .add($.task.beginDate.as("situationBeginDate"))
+                    .add($.task.cod.as("taskInstanceId"))
+                    .add($.processInstance.beginDate.as("processBeginDate"))
+                    .add($.currentDraftEntity.editionDate.as("editionDate"))
+                    .add($.processInstance.cod.as("processInstanceId"))
+                    .add($.petition.rootPetition.cod.as("rootPetition"))
+                    .add($.petition.parentPetition.cod.as("parentPetition"))
+                    .add($.taskDefinition.cod.as("taskId"))
+                    .add($.task.versionStamp.as("versionStamp"))
+                    .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
+                    .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
+                    .add($.processGroup.cod.as("processGroupCod"))
+                    .add($.processGroup.connectionURL.as("processGroupContext"));
         }
 
-        params.put("sim", SimNao.SIM);
+        query
+                .from($.petition)
+                .leftJoin($.petition.petitioner, $.petitionerEntity)
+                .leftJoin($.petition.processInstanceEntity, $.processInstance)
+                .leftJoin($.petition.formPetitionEntities, $.formPetitionEntity).on($.formPetitionEntity.mainForm.eq(SimNao.SIM))
+                .leftJoin($.formPetitionEntity.form, $.formEntity)
+                .leftJoin($.formPetitionEntity.currentDraftEntity, $.currentDraftEntity)
+                .leftJoin($.currentDraftEntity.form, $.formDraftEntity)
+                .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
+                .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
+                .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
+                .leftJoin($.processDefinitionEntity.processGroup, $.processGroup)
+                .leftJoin($.formEntity.formType, $.formType)
+                .leftJoin($.formDraftEntity.formType, $.formDraftType)
+                .leftJoin($.processInstance.tasks, $.task)
+                .leftJoin($.task.task, $.taskVersion)
+                .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
+                .leftJoin($.task.allocatedUser, $.allocatedUser);
 
-        if (!filtro.isRascunho() && siglasProcesso != null && !siglasProcesso.isEmpty()) {
-            hql.append(" AND ( processDefinitionEntity.key  in (:siglasProcesso) ");
-            params.put("siglasProcesso", siglasProcesso);
-            if (formNames != null && !formNames.isEmpty()) {
-                hql.append(" OR formType.abbreviation in (:formNames)) ");
-                params.put("formNames", formNames);
-            } else {
-                hql.append(" ) ");
+        QuickFilter    quickFilter = ctx.getQuickFilter();
+        BooleanBuilder whereClause = query.getWhereClause();
+        if (quickFilter.getIdPessoa() != null) {
+            whereClause.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+        }
+
+        if (!quickFilter.isRascunho()
+                && quickFilter.getProcessesAbbreviation() != null
+                && !quickFilter.getProcessesAbbreviation().isEmpty()) {
+            BooleanExpression expr = $.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
+            if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
+                expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
+            whereClause.and(expr);
         }
 
-        appendCustomQuickFilter(hql, params, filtro);
-
-        if (!CollectionUtils.isEmpty(filtro.getTasks())) {
-            hql.append(" AND task.name in (:tasks)");
-            params.put("tasks", filtro.getTasks());
+        if (ctx.getQuickFilter().hasFilter()) {
+            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
+            configureQuickFilter($, quickFilterWhereClause, quickFilter.filterWithAnywhereMatchMode());
+            configureQuickFilter($, quickFilterWhereClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
         }
 
-        if (filtro.isRascunho()) {
-            hql.append(" AND p.processInstanceEntity is null ");
+        if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
+            whereClause.and($.taskVersion.name.in(quickFilter.getTasks()));
+        }
+
+        if (quickFilter.isRascunho()) {
+            whereClause.and($.petition.processInstanceEntity.isNull());
         } else {
-            hql.append(" AND p.processInstanceEntity is not null ");
-            hql.append(" AND (ta.endDate is null OR task.type = :tipoEnd) ");
-            params.put("tipoEnd", TaskType.END);
-        }
-
-        appendCustomWhereClauses(hql, params, filtro);
-
-        appendSort(hql, filtro, count);
-    }
-
-    private void appendSort(StringBuilder hql, QuickFilter filtro, boolean count) {
-        if (filtro.getSortProperty() != null) {
-            hql.append(mountSort(filtro.getSortProperty(), filtro.isAscending()));
-        } else if (!count) {
-            if (filtro.isRascunho()) {
-                hql.append(mountSort("creationDate", false));
+            whereClause.and($.petition.processInstanceEntity.isNotNull());
+            if (quickFilter.getEndedTasks() == null) {
+                whereClause.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
+            } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
+                whereClause.and($.taskVersion.type.eq(TaskType.END));
             } else {
-                hql.append(mountSort("processBeginDate", false));
+                whereClause.and($.task.endDate.isNull());
             }
         }
-    }
 
-    /**
-     * Append Custom Where Clauses
-     */
-    protected void appendCustomWhereClauses(StringBuilder hql, Map<String, Object> params, QuickFilter filter) {
-    }
-
-    /**
-     * Append Custom Quick Filter
-     */
-    protected void appendCustomQuickFilter(StringBuilder hql, Map<String, Object> params, QuickFilter filter) {
-        if (filter.hasFilter()) {
-            hql.append(" AND ( upper(p.description) like upper(:filter) ");
-            hql.append(" OR upper(processDefinitionEntity.name) like upper(:filter) ");
-            hql.append(" OR upper(task.name) like upper(:filter) ");
-            if (filter.isRascunho()) {
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentFormVersion.inclusionDate", "filter"));
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("currentDraftEntity.editionDate", "filter"));
-            } else {
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("ta.beginDate", "filter"));
-                hql.append(" OR ").append(JPAQueryUtil.formattDateTimeClause("pie.beginDate", "filter"));
-            }
-            hql.append(" OR p.id like :filter ) ");
-            params.put("filter", "%" + filter.getFilter() + "%");
+        if (ctx.getExtenders() != null) {
+            ctx.getExtenders().forEach(extender -> extender.extend(ctx));
         }
+
+        if (quickFilter.getSortProperty() != null) {
+            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
+            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
+        } else if (!Boolean.TRUE.equals(ctx.getCount())) {
+            if (quickFilter.isRascunho()) {
+                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
+            } else {
+                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
+            }
+        }
+
+        return query.toHibernateQuery(ctx.getCount());
     }
 
-    private Query createQuery(QuickFilter filtro, List<String> siglasProcesso, boolean count, List<String> formNames) {
-
-        final StringBuilder hql = new StringBuilder();
-        final Map<String, Object> params = new HashMap<>();
-
-        buildSelectClause(hql, count, filtro);
-        buildFromClause(hql, filtro);
-        buildWhereClause(hql, params, filtro, siglasProcesso, formNames, count);
-
-        final Query query = getSession().createQuery(hql.toString());
-        setParametersQuery(query, params);
-
-        return query;
+    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
+        quickFilterWhereClause
+                .or($.petition.description.likeIgnoreCase(filter))
+                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
+                .or($.taskVersion.name.likeIgnoreCase(filter))
+                .or($.petition.cod.like(filter))
+                .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
+                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
+                .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
+                .or(toCharDate($.task.beginDate).like(filter))
+                .or(toCharDate($.processInstance.beginDate).like(filter));
     }
 
-    protected String mountSort(String sortProperty, boolean ascending) {
-        return " ORDER BY " + sortProperty + (ascending ? " asc " : " desc ");
+    @NotNull
+    private StringTemplate toCharDate(Path<?> path) {
+        return Expressions.stringTemplate(TO_CHAR_DATE, path);
     }
 
     public T findByProcessCodOrException(Integer cod) {
@@ -252,7 +283,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     @Override
     public void delete(T obj) {
         findFormAttachmentByPetitionCod(obj.getCod()).forEach(getSession()::delete);
-        FormEntity mainForm = obj.getMainForm();
+        FormEntity        mainForm          = obj.getMainForm();
         FormVersionEntity formVersionEntity = mainForm.getCurrentFormVersionEntity();
         getSession().delete(formVersionEntity);
         mainForm.setCurrentFormVersionEntity(null);
@@ -299,44 +330,56 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByPetitionCod(Long petitionCod) {
-        return getSession()
-                .createQuery(" select distinct(fa) from PetitionEntity p " +
-                        " inner join p.formPetitionEntities fp " +
-                        " left join fp.form f " +
-                        " left join fp.currentDraftEntity cd " +
-                        " left join cd.form cdf, " +
-                        " FormVersionEntity fv," +
-                        " FormAttachmentEntity fa  " +
-                        " where (fv.formEntity.cod = f.cod or fv.formEntity.cod = cdf.cod) " +
-                        " and fa.formVersionEntity.cod = fv.cod " +
-                        " and p.cod = :petitionCod ")
-                .setParameter("petitionCod", petitionCod)
-                .list();
+        QPetitionEntity       petition       = new QPetitionEntity("petitionEntity");
+        QFormPetitionEntity   formPetition   = new QFormPetitionEntity("formPetitionEntity");
+        QFormEntity           form           = new QFormEntity("formEntity");
+        QDraftEntity          currentDraft   = new QDraftEntity("draftEntity");
+        QFormEntity           draftForm      = new QFormEntity("draftFormEntity");
+        QFormVersionEntity    formVersion    = new QFormVersionEntity("formVersionEntity");
+        QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
+
+        return new HibernateQueryFactory(getSession())
+                .selectDistinct(formAttachment)
+                .from(petition)
+                .innerJoin(petition.formPetitionEntities, formPetition)
+                .leftJoin(formPetition.form, form)
+                .leftJoin(formPetition.currentDraftEntity, currentDraft)
+                .leftJoin(currentDraft.form, draftForm)
+                .from(formVersion)
+                .from(formAttachment)
+                .where(new BooleanBuilder()
+                        .and(formVersion.formEntity.cod.eq(form.cod)
+                                .or(formVersion.formEntity.cod.eq(draftForm.cod)))
+                        .and(formAttachment.formVersionEntity.cod.eq(formVersion.cod))
+                        .and(petition.cod.eq(petitionCod)))
+                .fetch();
     }
 
     public boolean containChildren(Long petitionCod) {
-        return ((Long) getSession()
-                .createQuery("select count(p) from PetitionEntity p where p.parentPetition.cod = :petitionCod")
-                .setParameter("petitionCod", petitionCod)
-                .uniqueResult()) > 0;
+        QPetitionEntity petitionEntity = QPetitionEntity.petitionEntity;
+        return new HibernateQueryFactory(getSession())
+                .selectFrom(petitionEntity)
+                .where(petitionEntity.parentPetition.cod.eq(petitionCod))
+                .fetchCount() > 0;
     }
 
     public T findPetitionInstanceByRootPetitionAndType(Long rootPetition, String type) {
-        return (T) getSession()
-                .createQuery(" select p from PetitionEntity p" +
-                        " inner join p.formPetitionEntities formPetitionEntity " +
-                        " inner join formPetitionEntity.form form " +
-                        " inner join form.formType formType " +
-                        " where 1=1 " +
-                        " and formPetitionEntity.mainForm = :sim  " +
-                        " and p.rootPetition.id = :rootPetition " +
-                        " and formType.abbreviation = :type ")
-                .setParameter("sim", SimNao.SIM)
-                .setParameter("rootPetition", rootPetition)
-                .setParameter("type", type)
-                .setMaxResults(1)
-                .uniqueResult();
+        QPetitionEntity     petition       = new QPetitionEntity("petition");
+        QFormPetitionEntity formPetition   = new QFormPetitionEntity("formPetition");
+        QFormEntity         form           = new QFormEntity("form");
+        QFormTypeEntity     formTypeEntity = new QFormTypeEntity("formType");
 
+        HibernateQuery<PetitionEntity> hibernateQuery = new HibernateQueryFactory(getSession())
+                .selectFrom(petition)
+                .innerJoin(petition.formPetitionEntities, formPetition)
+                .innerJoin(formPetition.form, form)
+                .innerJoin(form.formType, formTypeEntity)
+                .where(formPetition.mainForm.eq(SimNao.SIM)
+                        .and(petition.rootPetition.cod.eq(rootPetition))
+                        .and(formTypeEntity.abbreviation.eq(type)));
+        hibernateQuery.getMetadata().setLimit(1L);
 
+        return (T) hibernateQuery.fetchOne();
     }
+
 }

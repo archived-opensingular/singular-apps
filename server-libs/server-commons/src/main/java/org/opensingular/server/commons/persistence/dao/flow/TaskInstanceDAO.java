@@ -16,187 +16,37 @@
 
 package org.opensingular.server.commons.persistence.dao.flow;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Query;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
-import org.opensingular.lib.support.persistence.enums.SimNao;
-import org.opensingular.server.commons.persistence.dto.TaskInstanceDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.spring.security.SingularPermission;
-import org.opensingular.server.commons.util.JPAQueryUtil;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
 
-
     public TaskInstanceDAO() {
         super(TaskInstanceEntity.class);
-    }
-
-    protected Map<String, String> getSortPropertyToAliases() {
-        Map<String, String> sortProperties = new HashMap<>();
-
-        sortProperties.put("id", "ti.cod");
-        sortProperties.put("creationDate", "pi.beginDate");
-        sortProperties.put("protocolDate", "pi.beginDate");
-        sortProperties.put("description", "pi.description");
-        sortProperties.put("state", "tv.name");
-        sortProperties.put("taskName", "tv.name");
-        sortProperties.put("user", "au.nome");
-        sortProperties.put("nomeUsuarioAlocado", "au.nome");
-        sortProperties.put("codUsuarioAlocado", "au.cod");
-        sortProperties.put("situationBeginDate", "ti.beginDate");
-        sortProperties.put("processBeginDate", "pi.beginDate");
-
-        return sortProperties;
     }
 
     protected Class<? extends PetitionEntity> getPetitionEntityClass() {
         return PetitionEntity.class;
     }
 
-
-    public List<TaskInstanceDTO> findTasks(QuickFilter filter, List<SingularPermission> permissions) {
-        return buildQuery(filter.getTasks(), filter.getSortProperty(), filter.isAscending(), filter.getProcessesAbbreviation(), permissions, filter.getFilter(), filter.getEndedTasks(), false)
-                .setMaxResults(filter.getCount())
-                .setFirstResult(filter.getFirst())
-                .list();
-    }
-
-    protected Query buildQuery(List<String> tasks, String sortProperty, boolean ascending, List<String> processTypes, List<SingularPermission> permissions,
-                               String filtroRapido, Boolean concluidas, boolean count) {
-        String selectClause =
-                count ?
-                        " count( distinct ti )" :
-                        " new " + TaskInstanceDTO.class.getName() + " (pi.cod," +
-                                " ti.cod, td.cod, ti.versionStamp, " +
-                                " pi.beginDate," +
-                                " pi.description, " +
-                                " au , " +
-                                " tv.name, " +
-                                " form.formType.abbreviation as type, " +
-                                " pd.key, " +
-                                " p.cod," +
-                                " ti.beginDate,  " +
-                                " pi.beginDate, " +
-                                " tv.type," +
-                                " pg.cod, " +
-                                " pg.connectionURL " +
-                                ") ";
-
-        String condition;
-
-        if (concluidas == null) {
-            condition = " and (tv.type = :tipoEnd or (tv.type <> :tipoEnd and ti.endDate is null)) ";
-        } else if (concluidas) {
-            condition = " and tv.type = :tipoEnd ";
-        } else {
-            condition = " and ti.endDate is null ";
-        }
-
-        String taskFilter = "";
-        if (!CollectionUtils.isEmpty(tasks)) {
-            taskFilter += " AND tv.name in (:tasks)";
-        }
-
-        StringBuilder sb = new StringBuilder();
-
-        sb.append(" select ")
-                .append(selectClause)
-                .append(" from ")
-                .append(getPetitionEntityClass().getName()).append(" p ")
-                .append(" inner join p.processInstanceEntity pi ")
-                .append(" inner join pi.processVersion pv ")
-                .append(" inner join pv.processDefinition pd ")
-                .append(" inner join pd.processGroup pg ")
-                .append(" left join pi.tasks ti ")
-                .append(" left join ti.allocatedUser au ")
-                .append(" left join ti.task tv ")
-                .append(" left join tv.taskDefinition td  ")
-                .append(" left join p.formPetitionEntities formPetitionEntity on formPetitionEntity.mainForm = :sim ")
-                .append(" left join formPetitionEntity.form form ")
-                .append(" where 1 = 1")
-                .append(condition)
-                .append(taskFilter)
-                .append(addQuickFilter(filtroRapido))
-                .append(getOrderBy(sortProperty, ascending, count));
-
-
-        Query query = getSession().createQuery(sb.toString());
-
-        if (!CollectionUtils.isEmpty(tasks)) {
-            query.setParameterList("tasks", tasks);
-        }
-
-        query.setParameter("sim", SimNao.SIM);
-
-        if (concluidas == null || concluidas) {
-            query.setParameter("tipoEnd", TaskType.END);
-        }
-
-        return addFilterParameter(query,
-                filtroRapido
-        );
-    }
-
-    protected Query addFilterParameter(Query query, String filter) {
-        return filter == null ? query : query
-                .setParameter("filter", "%" + filter + "%");
-    }
-
-    protected String addQuickFilter(String filtro) {
-        if (filtro != null) {
-            String like = " like upper(:filter) ";
-            return " and (  " +
-                    "    ( " + JPAQueryUtil.formattDateTimeClause("ti.beginDate", "filter") + " ) " +
-                    " or ( " + JPAQueryUtil.formattDateTimeClause("pi.beginDate", "filter") + " ) " +
-                    " or ( upper(pi.description)  " + like + " ) " +
-                    " or ( upper(tv.name) " + like + " ) " +
-                    " or ( upper(au.nome) " + like + " ) " +
-                    ") ";
-        }
-        return "";
-    }
-
-    protected String getOrderBy(String sortProperty, boolean ascending, boolean count) {
-        boolean asc = ascending;
-        String sort = sortProperty;
-        if (count) {
-            return "";
-        }
-        if (sort == null) {
-            sort = "processBeginDate";
-            asc = true;
-        }
-        return " order by " + getSortPropertyToAliases().get(sort) + (asc ? " ASC " : " DESC ");
-    }
-
-
-    public Long countTasks(List<String> tasks, List<String> processTypes, List<SingularPermission> permissions, String filtroRapido, Boolean concluidas) {
-        return ((Number) buildQuery(tasks, null, true, processTypes, permissions, filtroRapido, concluidas, true).uniqueResult()).longValue();
-    }
-
     @SuppressWarnings("unchecked")
     public List<TaskInstanceEntity> findCurrentTasksByPetitionId(Long petitionId) {
-        StringBuilder sb = new StringBuilder();
+        String sb = " select ti " + " from " + getPetitionEntityClass().getName() + " pet " +
+                " inner join pet.processInstanceEntity pi " +
+                " inner join pi.tasks ti " +
+                " inner join ti.task task " +
+                " where pet.cod = :petitionId  " +
+                "   and (ti.endDate is null OR task.type = :tipoEnd)  ";
 
-        sb
-                .append(" select ti ").append(" from ").append(getPetitionEntityClass().getName()).append(" pet ")
-                .append(" inner join pet.processInstanceEntity pi ")
-                .append(" inner join pi.tasks ti ")
-                .append(" inner join ti.task task ")
-                .append(" where pet.cod = :petitionId  ")
-                .append("   and (ti.endDate is null OR task.type = :tipoEnd)  ");
-
-        final Query query = getSession().createQuery(sb.toString());
+        final Query query = getSession().createQuery(sb);
         query.setParameter("petitionId", petitionId);
         query.setParameter("tipoEnd", TaskType.END);
         return query.list();
     }
+
 }
