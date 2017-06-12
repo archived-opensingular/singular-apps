@@ -67,9 +67,6 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
 
     protected static final Log logger = LogFactory.getLog(AbstractSingularContextLoader.class);
 
-    public AbstractSingularContextLoader() {
-        SingularContextSetup.reset();
-    }
 
     // --- SmartContextLoader -----------------------------------------------
 
@@ -110,6 +107,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      */
     @Override
     public final AnnotationConfigWebApplicationContext loadContext(MergedContextConfiguration mergedConfig) throws Exception {
+        SingularContextSetup.reset();
 
         if (!(mergedConfig instanceof WebMergedContextConfiguration)) {
             throw new IllegalArgumentException(String.format(
