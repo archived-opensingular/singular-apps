@@ -143,11 +143,13 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                     .addCase($case -> $case
                             .when($.currentFormDraftVersionEntity.isNull())
                             .then($.currentFormVersion.inclusionDate)
-                            .otherwise($.currentFormDraftVersionEntity.inclusionDate).as("creationDate"))
+                            .otherwise($.currentFormDraftVersionEntity.inclusionDate)
+                            .as("creationDate"))
                     .addCase($case -> $case
                             .when($.formType.abbreviation.isNull())
                             .then($.formDraftType.abbreviation)
-                            .otherwise($.formType.abbreviation).as("type"))
+                            .otherwise($.formType.abbreviation)
+                            .as("type"))
                     .add($.processDefinitionEntity.key.as("processType"))
                     .add($.task.beginDate.as("situationBeginDate"))
                     .add($.task.cod.as("taskInstanceId"))
