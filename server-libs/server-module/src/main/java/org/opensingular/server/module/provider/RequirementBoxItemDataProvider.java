@@ -33,8 +33,8 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions,
                                           @Nonnull ActionProvider actionProvider) {
-        this.actionProvider = actionProvider;
         this.evalPermissions = evalPermissions;
+        this.actionProvider = actionProvider;
     }
 
     @Override
