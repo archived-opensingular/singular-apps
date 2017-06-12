@@ -18,10 +18,14 @@ package org.opensingular.server.commons.spring;
 
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.persistence.service.ProcessRetrieveService;
+import org.opensingular.form.context.ServiceRegistry;
+import org.opensingular.form.context.ServiceRegistryLocator;
 import org.opensingular.form.context.SingularFormContext;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.wicket.SingularFormConfigWicket;
 import org.opensingular.form.wicket.SingularFormConfigWicketImpl;
+import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -32,6 +36,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableCaching
@@ -43,12 +48,23 @@ import javax.annotation.Nonnull;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)
         })
-public class SingularServerSpringAppConfig  {
+public class SingularServerSpringAppConfig implements Loggable {
 
     @Bean
     @Nonnull
     public SpringServiceRegistry getSpringServiceRegistry() {
         return new SpringServiceRegistry();
+    }
+
+    @PostConstruct
+    public void init() {
+        getLogger().info("Configurando Singular Server ServiceRegistryLocator -> SpringServiceRegistry ");
+        ServiceRegistryLocator.setup(new ServiceRegistryLocator() {
+            @Override
+            protected ServiceRegistry getRegistry() {
+                return ApplicationContextProvider.get().getBean(SpringServiceRegistry.class);
+            }
+        });
     }
 
     @Bean
