@@ -12,7 +12,7 @@ public class SelectBuilder {
 
     private List<Expression<?>> columns = new ArrayList<>();
 
-    public <T extends Expression<X>, X> SelectBuilder add(@Nonnull Expression<?> exp) {
+    public SelectBuilder add(@Nonnull Expression<?> exp) {
         columns.add(exp);
         return this;
     }
