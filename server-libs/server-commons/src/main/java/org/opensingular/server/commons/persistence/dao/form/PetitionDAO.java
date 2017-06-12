@@ -126,10 +126,17 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
+        RequirementSearchQuery query = ctx.createQuery(getSession());
+        configureRequirementSearchSelectClause(ctx);
+        configureRequirementSearchWhereClause(ctx);
+        applyRequirementSearchExtenders(ctx);
+        configureRequirementSearchOrder(ctx);
+        return query.toHibernateQuery(ctx.getCount());
+    }
 
-        RequirementSearchQuery   query = ctx.createQuery(getSession());
+    private void configureRequirementSearchSelectClause(RequirementSearchContext ctx) {
+        RequirementSearchQuery   query = ctx.getQuery();
         RequirementSearchAliases $     = ctx.getAliases();
-
         if (Boolean.TRUE.equals(ctx.getCount())) {
             query.countBy($.petition);
         } else {
@@ -184,9 +191,14 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .leftJoin($.task.task, $.taskVersion)
                 .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
                 .leftJoin($.task.allocatedUser, $.allocatedUser);
+    }
 
-        QuickFilter    quickFilter = ctx.getQuickFilter();
-        BooleanBuilder whereClause = query.getWhereClause();
+    @NotNull
+    private QuickFilter configureRequirementSearchWhereClause(RequirementSearchContext ctx) {
+        RequirementSearchQuery   query       = ctx.getQuery();
+        RequirementSearchAliases $           = ctx.getAliases();
+        QuickFilter              quickFilter = ctx.getQuickFilter();
+        BooleanBuilder           whereClause = query.getWhereClause();
         if (quickFilter.getIdPessoa() != null) {
             whereClause.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
@@ -223,11 +235,18 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 whereClause.and($.task.endDate.isNull());
             }
         }
+        return quickFilter;
+    }
 
+    private void applyRequirementSearchExtenders(RequirementSearchContext ctx) {
         if (ctx.getExtenders() != null) {
             ctx.getExtenders().forEach(extender -> extender.extend(ctx));
         }
+    }
 
+    private void configureRequirementSearchOrder(RequirementSearchContext ctx) {
+        RequirementSearchQuery query       = ctx.getQuery();
+        QuickFilter            quickFilter = ctx.getQuickFilter();
         if (quickFilter.getSortProperty() != null) {
             Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
             query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
@@ -238,8 +257,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
             }
         }
-
-        return query.toHibernateQuery(ctx.getCount());
     }
 
     private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {

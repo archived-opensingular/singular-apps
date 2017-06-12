@@ -20,10 +20,10 @@ import java.util.Map;
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     @Nonnull
-    private final ActionProvider actionProvider;
+    private final Boolean evalPermissions;
 
     @Nonnull
-    private final Boolean evalPermissions;
+    private final ActionProvider actionProvider;
 
     private List<String> tasks;
 
@@ -31,9 +31,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private List<IConsumer<List<Map<String, Serializable>>>> filters;
 
-    public RequirementBoxItemDataProvider(@Nonnull ActionProvider actionProvider, @Nonnull Boolean evalPermissions) {
-        this.actionProvider = actionProvider;
+    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
         this.evalPermissions = evalPermissions;
+        this.actionProvider = actionProvider;
     }
 
     @Override
