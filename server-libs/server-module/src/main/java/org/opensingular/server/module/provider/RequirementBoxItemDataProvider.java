@@ -31,10 +31,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private List<IConsumer<List<Map<String, Serializable>>>> filters;
 
-    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions,
-                                          @Nonnull ActionProvider actionProvider) {
-        this.evalPermissions = evalPermissions;
+    public RequirementBoxItemDataProvider(@Nonnull ActionProvider actionProvider, @Nonnull Boolean evalPermissions) {
         this.actionProvider = actionProvider;
+        this.evalPermissions = evalPermissions;
     }
 
     @Override
