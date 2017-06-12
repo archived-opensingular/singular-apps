@@ -19,10 +19,8 @@ import java.util.Map;
 
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
-    @Nonnull
     private final Boolean evalPermissions;
 
-    @Nonnull
     private final ActionProvider actionProvider;
 
     private List<String> tasks;
