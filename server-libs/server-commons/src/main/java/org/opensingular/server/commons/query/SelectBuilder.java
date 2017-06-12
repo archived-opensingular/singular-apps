@@ -4,11 +4,12 @@ import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.CaseBuilder;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
 
-public class SelectBuilder {
+public class SelectBuilder implements Serializable {
 
     private List<Expression<?>> columns = new ArrayList<>();
 

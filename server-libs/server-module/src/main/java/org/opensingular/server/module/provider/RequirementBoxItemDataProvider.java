@@ -1,7 +1,5 @@
 package org.opensingular.server.module.provider;
 
-
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -34,7 +32,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private List<IConsumer<List<Map<String, Serializable>>>> filters;
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions,
-                                          @NotNull ActionProvider actionProvider) {
+                                          @Nonnull ActionProvider actionProvider) {
         this.actionProvider = actionProvider;
         this.evalPermissions = evalPermissions;
     }
@@ -64,7 +62,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         }
     }
 
-    @NotNull
+    @Nonnull
     @Override
     public ActionProvider getActionProvider() {
         return actionProvider;
