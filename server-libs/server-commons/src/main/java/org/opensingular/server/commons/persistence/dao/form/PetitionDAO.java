@@ -50,6 +50,7 @@ import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEnti
 import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
+import org.opensingular.server.commons.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
 import org.opensingular.server.commons.spring.security.PetitionAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -62,8 +63,6 @@ import java.util.Optional;
 
 
 public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
-
-    private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
 
     public PetitionDAO() {
         super((Class<T>) PetitionEntity.class);
@@ -100,6 +99,12 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         return (Long) makeRequirementSearchQuery(query).uniqueResult();
     }
 
+    private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
+        RequirementSearchQueryFactory searchQueryFactory     = new RequirementSearchQueryFactory(ctx);
+        RequirementSearchQuery        requirementSearchQuery = searchQueryFactory.make(getSession());
+        return requirementSearchQuery.toHibernateQuery(ctx.getCount());
+    }
+
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
@@ -123,158 +128,6 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
                 .setMaxResults(query.getQuickFilter().getCount())
                 .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
                 .list();
-    }
-
-    private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
-        RequirementSearchQuery query = ctx.createQuery(getSession());
-        configureRequirementSearchSelectClause(ctx);
-        configureRequirementSearchWhereClause(ctx);
-        applyRequirementSearchExtenders(ctx);
-        configureRequirementSearchOrder(ctx);
-        return query.toHibernateQuery(ctx.getCount());
-    }
-
-    private void configureRequirementSearchSelectClause(RequirementSearchContext ctx) {
-        RequirementSearchQuery   query = ctx.getQuery();
-        RequirementSearchAliases $     = ctx.getAliases();
-        if (Boolean.TRUE.equals(ctx.getCount())) {
-            query.countBy($.petition);
-        } else {
-            query.getSelect()
-                    .add($.petition.cod.as("codPeticao"))
-                    .add($.petition.description.as("description"))
-                    .add($.taskVersion.name.as("situation"))
-                    .add($.taskVersion.name.as("taskName"))
-                    .add($.taskVersion.type.as("taskType"))
-                    .add($.processDefinitionEntity.name.as("processName"))
-                    .addCase($case -> $case
-                            .when($.currentFormDraftVersionEntity.isNull())
-                            .then($.currentFormVersion.inclusionDate)
-                            .otherwise($.currentFormDraftVersionEntity.inclusionDate)
-                            .as("creationDate"))
-                    .addCase($case -> $case
-                            .when($.formType.abbreviation.isNull())
-                            .then($.formDraftType.abbreviation)
-                            .otherwise($.formType.abbreviation)
-                            .as("type"))
-                    .add($.processDefinitionEntity.key.as("processType"))
-                    .add($.task.beginDate.as("situationBeginDate"))
-                    .add($.task.cod.as("taskInstanceId"))
-                    .add($.processInstance.beginDate.as("processBeginDate"))
-                    .add($.currentDraftEntity.editionDate.as("editionDate"))
-                    .add($.processInstance.cod.as("processInstanceId"))
-                    .add($.petition.rootPetition.cod.as("rootPetition"))
-                    .add($.petition.parentPetition.cod.as("parentPetition"))
-                    .add($.taskDefinition.cod.as("taskId"))
-                    .add($.task.versionStamp.as("versionStamp"))
-                    .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
-                    .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
-                    .add($.processGroup.cod.as("processGroupCod"))
-                    .add($.processGroup.connectionURL.as("processGroupContext"));
-        }
-
-        query
-                .from($.petition)
-                .leftJoin($.petition.petitioner, $.petitionerEntity)
-                .leftJoin($.petition.processInstanceEntity, $.processInstance)
-                .leftJoin($.petition.formPetitionEntities, $.formPetitionEntity).on($.formPetitionEntity.mainForm.eq(SimNao.SIM))
-                .leftJoin($.formPetitionEntity.form, $.formEntity)
-                .leftJoin($.formPetitionEntity.currentDraftEntity, $.currentDraftEntity)
-                .leftJoin($.currentDraftEntity.form, $.formDraftEntity)
-                .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
-                .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
-                .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
-                .leftJoin($.processDefinitionEntity.processGroup, $.processGroup)
-                .leftJoin($.formEntity.formType, $.formType)
-                .leftJoin($.formDraftEntity.formType, $.formDraftType)
-                .leftJoin($.processInstance.tasks, $.task)
-                .leftJoin($.task.task, $.taskVersion)
-                .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
-                .leftJoin($.task.allocatedUser, $.allocatedUser);
-    }
-
-    @NotNull
-    private QuickFilter configureRequirementSearchWhereClause(RequirementSearchContext ctx) {
-        RequirementSearchQuery   query       = ctx.getQuery();
-        RequirementSearchAliases $           = ctx.getAliases();
-        QuickFilter              quickFilter = ctx.getQuickFilter();
-        BooleanBuilder           whereClause = query.getWhereClause();
-        if (quickFilter.getIdPessoa() != null) {
-            whereClause.and($.petitionerEntity.idPessoa.eq(quickFilter.getIdPessoa()));
-        }
-
-        if (!quickFilter.isRascunho()
-                && quickFilter.getProcessesAbbreviation() != null
-                && !quickFilter.getProcessesAbbreviation().isEmpty()) {
-            BooleanExpression expr = $.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
-            if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
-                expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
-            }
-            whereClause.and(expr);
-        }
-
-        if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.filterWithAnywhereMatchMode());
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
-        }
-
-        if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            whereClause.and($.taskVersion.name.in(quickFilter.getTasks()));
-        }
-
-        if (quickFilter.isRascunho()) {
-            whereClause.and($.petition.processInstanceEntity.isNull());
-        } else {
-            whereClause.and($.petition.processInstanceEntity.isNotNull());
-            if (quickFilter.getEndedTasks() == null) {
-                whereClause.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
-            } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-                whereClause.and($.taskVersion.type.eq(TaskType.END));
-            } else {
-                whereClause.and($.task.endDate.isNull());
-            }
-        }
-        return quickFilter;
-    }
-
-    private void applyRequirementSearchExtenders(RequirementSearchContext ctx) {
-        if (ctx.getExtenders() != null) {
-            ctx.getExtenders().forEach(extender -> extender.extend(ctx));
-        }
-    }
-
-    private void configureRequirementSearchOrder(RequirementSearchContext ctx) {
-        RequirementSearchQuery query       = ctx.getQuery();
-        QuickFilter            quickFilter = ctx.getQuickFilter();
-        if (quickFilter.getSortProperty() != null) {
-            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
-            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
-        } else if (!Boolean.TRUE.equals(ctx.getCount())) {
-            if (quickFilter.isRascunho()) {
-                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
-            } else {
-                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
-            }
-        }
-    }
-
-    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
-        quickFilterWhereClause
-                .or($.petition.description.likeIgnoreCase(filter))
-                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
-                .or($.taskVersion.name.likeIgnoreCase(filter))
-                .or($.petition.cod.like(filter))
-                .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
-                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
-                .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
-                .or(toCharDate($.task.beginDate).like(filter))
-                .or(toCharDate($.processInstance.beginDate).like(filter));
-    }
-
-    @NotNull
-    private StringTemplate toCharDate(Path<?> path) {
-        return Expressions.stringTemplate(TO_CHAR_DATE, path);
     }
 
     public T findByProcessCodOrException(Integer cod) {

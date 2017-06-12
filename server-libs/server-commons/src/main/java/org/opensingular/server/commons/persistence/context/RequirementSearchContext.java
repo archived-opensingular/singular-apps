@@ -59,8 +59,9 @@ public class RequirementSearchContext {
         return this;
     }
 
-    public RequirementSearchQuery createQuery(Session session) {
-        return query = new RequirementSearchQuery(session);
+    public RequirementSearchContext setQuery(RequirementSearchQuery query) {
+        this.query = query;
+        return this;
     }
 
     public RequirementSearchQuery getQuery() {
