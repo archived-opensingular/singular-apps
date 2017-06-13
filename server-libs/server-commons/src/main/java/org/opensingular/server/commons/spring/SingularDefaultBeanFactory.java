@@ -32,6 +32,7 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
+import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
@@ -141,12 +142,12 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)
-    public IAttachmentPersistenceHandler attachmentPersistenceService() {
+    public IAttachmentPersistenceHandler<IAttachmentRef> attachmentPersistenceService() {
         return new ServerAttachmentPersistenceService();
     }
 
     @Bean(name = SDocument.FILE_TEMPORARY_SERVICE)
-    public IAttachmentPersistenceHandler attachmentTemporaryService() {
+    public IAttachmentPersistenceHandler<IAttachmentRef> attachmentTemporaryService() {
         return new ServerTemporaryAttachmentPersistenceService();
     }
 
