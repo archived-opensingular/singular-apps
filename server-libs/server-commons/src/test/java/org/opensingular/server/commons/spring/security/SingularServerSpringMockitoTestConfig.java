@@ -27,7 +27,7 @@ import java.util.Set;
 
 public class SingularServerSpringMockitoTestConfig implements Loggable {
 
-    private static TestScan testClasspathScanner = new TestScan();
+    private TestScan testClasspathScanner = new TestScan();
     private Object myTestClass;
 
     public SingularServerSpringMockitoTestConfig(Object myTestClass) {
