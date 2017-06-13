@@ -29,6 +29,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.exception.PetitionWithoutDefinitionException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
@@ -89,7 +90,7 @@ public final class PetitionUtil {
      */
     @Nonnull
     public static Optional<TaskInstance> getCurrentTaskEntity(@Nonnull SInstance instance) {
-        return Optional.of(instance.getDocument().lookupServiceOrException(ServerSIntanceProcessAwareService.class))
+        return Optional.of(instance.getDocument().lookupLocalServiceOrException(ServerSIntanceProcessAwareService.class))
                 .map(ServerSIntanceProcessAwareService::getProcessInstance).flatMap(ProcessInstance::getCurrentTask);
     }
 
@@ -116,8 +117,8 @@ public final class PetitionUtil {
 
 
     @Nonnull
-    public static PetitionService<?,?> getPetitionServiceOrException(@Nonnull SInstance instance) {
-        return instance.getDocument().lookupServiceOrException(PetitionService.class);
+    public static PetitionService<?,?> getPetitionServiceOrException() {
+        return ApplicationContextProvider.get().getBean(PetitionService.class);
     }
 
     /** Retorna o nome do tipo associado a essa entidade. */

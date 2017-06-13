@@ -6,7 +6,7 @@ import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
-import org.opensingular.server.module.provider.PetitionBoxItemDataProvider;
+import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -33,7 +33,7 @@ public class DefaultDraftbox implements ItemBoxFactory {
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new PetitionBoxItemDataProvider(new ActionProviderBuilder()
+        return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder()
                 .addEditAction()
                 .addViewAction()
                 .addDeleteAction());
