@@ -16,6 +16,8 @@
 
 package org.opensingular.server.commons.persistence.filter;
 
+import org.apache.wicket.util.lang.Objects;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
@@ -157,4 +159,13 @@ public class QuickFilter implements Serializable {
         this.endedTasks = endedTasks;
         return this;
     }
+
+    public String filterWithAnywhereMatchMode() {
+        return "%" + Objects.defaultIfNull(filter, "") + "%";
+    }
+
+    public String numberAndLettersFilterWithAnywhereMatchMode() {
+        return "%" + Objects.defaultIfNull(filter, "").replaceAll("[^\\da-zA-Z]", "") + "%";
+    }
+
 }
