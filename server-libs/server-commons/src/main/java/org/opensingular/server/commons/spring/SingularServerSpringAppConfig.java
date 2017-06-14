@@ -62,9 +62,9 @@ public class SingularServerSpringAppConfig implements Loggable {
     @SuppressWarnings("AccessStaticViaInstance")
     @PostConstruct
     public void init(){
-        getLogger().error("initializing Singular-Spring configuration");
+        getLogger().info("initializing Singular-Spring configuration");
         /*forced intialization */
-        getLogger().error("ApplicationContextProvider configured:" + applicationContextProvider.isConfigured());//NOSONAR
+        getLogger().info("ApplicationContextProvider configured:" + applicationContextProvider.isConfigured());//NOSONAR
     }
 
     @Order(1)
