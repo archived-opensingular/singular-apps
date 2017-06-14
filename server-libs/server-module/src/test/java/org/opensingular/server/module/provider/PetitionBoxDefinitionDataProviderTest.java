@@ -20,6 +20,7 @@ import org.springframework.context.ApplicationContext;
 import java.util.List;
 
 import static org.junit.Assert.assertThat;
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -51,14 +52,14 @@ public class PetitionBoxDefinitionDataProviderTest {
     public void testSearch() throws Exception {
         List resultList = mock(List.class);
         when(resultList.size()).thenReturn(count.intValue());
-        when(petitionService.quickSearchMap(eq(filter))).thenReturn(resultList);
+        when(petitionService.quickSearchMap(eq(filter), anyList())).thenReturn(resultList);
         assertThat(petitionItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class)).size(), Matchers.is(count.intValue()));
 
     }
 
     @Test
     public void testCount() throws Exception {
-        when(petitionService.countQuickSearch(eq(filter))).thenReturn(count);
+        when(petitionService.countQuickSearch(eq(filter), anyList())).thenReturn(count);
         assertThat(petitionItemBoxDataProvider.count(filter, Mockito.mock(BoxInfo.class)), Matchers.is(count));
     }
 
