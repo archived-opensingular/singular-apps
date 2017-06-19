@@ -47,7 +47,7 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
     protected void postConstruct() {
         this.setProcessGroupCod(singularServerConfiguration.getProcessGroupCod());
         this.setDefinitionsPackages(singularServerConfiguration.getDefinitionsPackages());
-        Flow.setConf(this);
+        Flow.setConf(this, true);
         initializeFlowDefinitionsDatabase();
     }
 

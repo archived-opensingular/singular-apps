@@ -8,6 +8,8 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.opensingular.lib.commons.context.SingularContext;
+import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
@@ -32,7 +34,7 @@ import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class BoxDefinitionDataServiceTest {
 
     @Mock
@@ -49,19 +51,16 @@ public class BoxDefinitionDataServiceTest {
     private Long countSize = 1L;
 
     private String boxId = "123456";
-    private ApplicationContext backup;
 
     public void setUpApplicationContextMock() {
-        if (ApplicationContextProvider.isConfigured()) {
-            backup = ApplicationContextProvider.get();
-        }
+
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
     }
 
     @Before
     public void setUp() {
-
+        SingularContextSetup.reset();
         ItemBoxFactory                  itemBoxFactory      = mock(ItemBoxFactory.class);
         BoxItemDataProvider             boxItemDataProvider = mock(BoxItemDataProvider.class);
         List<Map<String, Serializable>> searchResult        = new ArrayList<>();
@@ -87,11 +86,6 @@ public class BoxDefinitionDataServiceTest {
 
 
         setUpApplicationContextMock();
-    }
-
-    @After
-    public void restoreApplicationContext() {
-        new ApplicationContextProvider().setApplicationContext(backup);
     }
 
     @Test
