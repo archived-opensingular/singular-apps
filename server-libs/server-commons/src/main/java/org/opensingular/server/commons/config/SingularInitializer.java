@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.config;
 
+import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
@@ -37,6 +38,7 @@ public interface SingularInitializer extends WebApplicationInitializer {
 
     @Override
     default void onStartup(ServletContext ctx) throws ServletException {
+        SingularContextSetup.reset();
         logger.info(SINGULAR, " Initializing Singular.... ");
         logger.info(SINGULAR, " Initializing WebConfiguration ");
         WebInitializer webInitializer = webConfiguration();

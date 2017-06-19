@@ -52,7 +52,7 @@ public class SingularModuleConfiguration {
     }
 
     private SingularModule resolveModule() throws IllegalAccessException, InstantiationException {
-        Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.INSTANCE.findSubclassesOf(SingularModule.class);
+        Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.get().findSubclassesOf(SingularModule.class);
         if (modules.stream().count() != 1) {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }

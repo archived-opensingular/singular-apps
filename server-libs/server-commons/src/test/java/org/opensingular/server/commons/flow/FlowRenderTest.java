@@ -6,6 +6,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
 import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.springframework.beans.BeansException;
@@ -21,13 +22,9 @@ public abstract class FlowRenderTest implements Loggable {
 
     private static final Object lock = new Object();
 
-    private ApplicationContext backup;
-
     @Before
     public void setUp(){
-        if (ApplicationContextProvider.isConfigured()) {
-            backup = ApplicationContextProvider.get();
-        }
+        SingularContextSetup.reset();
         AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(){
             @Override
             public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
@@ -43,10 +40,6 @@ public abstract class FlowRenderTest implements Loggable {
         new ApplicationContextProvider().setApplicationContext(context);
     }
 
-    @After
-    public void unset(){
-        new ApplicationContextProvider().setApplicationContext(backup);
-    }
 
     /**
      * Método para ser sobrescrito para a geração do gráfico para

@@ -53,7 +53,7 @@ public class FormInitializer {
     protected synchronized List<Class<? extends SType<?>>> getTypes() {
         if (types == null){
             types = new ArrayList<>();
-            SingularClassPathScanner.INSTANCE
+            SingularClassPathScanner.get()
                     .findSubclassesOf(SType.class)
                     .stream()
                     .forEach(f -> types.add((Class<? extends SType<?>>) f));
