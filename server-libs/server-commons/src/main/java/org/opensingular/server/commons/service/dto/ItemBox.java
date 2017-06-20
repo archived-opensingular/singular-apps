@@ -16,10 +16,9 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.SingularIcon;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ItemBox implements Serializable {
@@ -33,7 +32,7 @@ public class ItemBox implements Serializable {
     private boolean quickFilter   = true;
     private boolean showDraft     = false;
     private Boolean              endedTasks;
-    private Icone                icone;
+    private SingularIcon         singularIcon;
     private List<DatatableField> fieldsDatatable;
 
     public ItemBox() {
@@ -88,12 +87,12 @@ public class ItemBox implements Serializable {
     }
 
 
-    public Icone getIcone() {
-        return icone;
+    public SingularIcon getIcone() {
+        return singularIcon;
     }
 
-    public void setIcone(Icone icone) {
-        this.icone = icone;
+    public void setIcone(SingularIcon singularIcon) {
+        this.singularIcon = singularIcon;
     }
 
     public Boolean getEndedTasks() {
