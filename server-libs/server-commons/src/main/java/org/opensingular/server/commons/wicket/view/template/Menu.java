@@ -35,8 +35,8 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
-import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.lib.wicket.util.resource.SingularIcon;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.lib.wicket.util.resource.Icon;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -130,7 +130,7 @@ public class Menu extends Panel implements Loggable {
 
     private void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
                             ProcessGroupEntity processGroup, List<MenuItemConfig> subMenus) {
-        MetronicMenuGroup group = new MetronicMenuGroup(Icone.LAYERS, boxConfigurationMetadata.getLabel());
+        MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, boxConfigurationMetadata.getLabel());
         menu.addItem(group);
         final List<Pair<Component, ISupplier<String>>> itens = new ArrayList<>();
 
@@ -266,10 +266,10 @@ public class Menu extends Panel implements Loggable {
         public IRequestablePage                  page;
         public String                            name;
         public Class<? extends IRequestablePage> pageClass;
-        public SingularIcon                      icon;
+        public Icon                              icon;
         public ISupplier<String>                 counterSupplier;
 
-        public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, SingularIcon icon, ISupplier<String> counterSupplier) {
+        public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, Icon icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();
             mic.pageClass = pageClass;
             mic.name = name;
@@ -278,7 +278,7 @@ public class Menu extends Panel implements Loggable {
             return mic;
         }
 
-        static MenuItemConfig of(IRequestablePage page, String name, SingularIcon icon, ISupplier<String> counterSupplier) {
+        static MenuItemConfig of(IRequestablePage page, String name, Icon icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();
             mic.page = page;
             mic.name = name;
