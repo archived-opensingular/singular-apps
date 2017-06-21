@@ -24,7 +24,7 @@ import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
@@ -39,7 +39,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
+import org.opensingular.server.commons.persistence.dao.flow.ModuleDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionContentHistoryDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
@@ -80,7 +80,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     protected PetitionDAO<PE> petitionDAO;
 
     @Inject
-    protected ProcessGroupDAO processGroupDAO;
+    protected ModuleDAO moduleDAO;
 
     @Inject
     protected TaskInstanceDAO taskInstanceDAO;
@@ -375,12 +375,12 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return Optional.of(taskInstances.get(0));
     }
 
-    public List<ProcessGroupEntity> listAllProcessGroups() {
-        return processGroupDAO.listAll();
+    public List<ModuleEntity> listAllModules() {
+        return moduleDAO.listAll();
     }
 
-    public ProcessGroupEntity findByProcessGroupCod(String cod) {
-        return processGroupDAO.get(cod).orElse(null);
+    public ModuleEntity findByModuleCod(String cod) {
+        return moduleDAO.get(cod).orElse(null);
     }
 
     @Nonnull

@@ -16,11 +16,11 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     @Inject
     private ParameterService parameterService;
 
-    private String           codProcessGroup;
+    private String           codModule;
 
 
-    public DatabaseAdminCredentialChecker(String codProcessGroup) {
-        this.codProcessGroup = codProcessGroup;
+    public DatabaseAdminCredentialChecker(String codModule) {
+        this.codModule = codModule;
     }
 
     @Override
@@ -43,8 +43,8 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     }
 
     private String retrieveParameter(String parameterName) {
-        if (codProcessGroup != null) {
-            return parameterService.findByNameAndProcessGroup(parameterName, codProcessGroup)
+        if (codModule != null) {
+            return parameterService.findByNameAndModule(parameterName, codModule)
                     .map(ParameterEntity::getValue)
                     .orElse(null);
         }

@@ -2,7 +2,7 @@ package org.opensingular.server.commons.persistence.context;
 
 import org.opensingular.flow.persistence.entity.QActor;
 import org.opensingular.flow.persistence.entity.QProcessDefinitionEntity;
-import org.opensingular.flow.persistence.entity.QProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.QModuleEntity;
 import org.opensingular.flow.persistence.entity.QProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.QTaskDefinitionEntity;
 import org.opensingular.flow.persistence.entity.QTaskInstanceEntity;
@@ -27,7 +27,7 @@ public class RequirementSearchAliases {
     public QFormVersionEntity       currentFormDraftVersionEntity = new QFormVersionEntity("currentFormDraftVersionEntity");
     public QFormVersionEntity       currentFormVersion            = new QFormVersionEntity("currentFormVersion");
     public QProcessDefinitionEntity processDefinitionEntity       = new QProcessDefinitionEntity("processDefinitionEntity");
-    public QProcessGroupEntity      processGroup                  = new QProcessGroupEntity("processGroup");
+    public QModuleEntity      module                  = new QModuleEntity("module");
     public QFormTypeEntity          formType                      = new QFormTypeEntity("formType");
     public QFormTypeEntity          formDraftType                 = new QFormTypeEntity("formDraftType");
     public QTaskInstanceEntity      task                          = new QTaskInstanceEntity("task");

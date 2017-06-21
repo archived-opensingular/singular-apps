@@ -11,7 +11,7 @@ import javax.inject.Named;
 
 import org.apache.wicket.model.IModel;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -25,7 +25,7 @@ import org.springframework.context.annotation.Primary;
 public class BoxServiceMock extends BoxService {
 
     @Override
-    public List<Actor> buscarUsuarios(ProcessGroupEntity processGroup, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
+    public List<Actor> buscarUsuarios(ModuleEntity module, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
         Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
         return Collections.singletonList(actor);
     }
@@ -37,12 +37,12 @@ public class BoxServiceMock extends BoxService {
     }
 
     @Override
-    public long countQuickSearch(ProcessGroupEntity processGroup, ItemBox itemBox, QuickFilter filter) {
+    public long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
         return 2L;
     }
 
     @Override
-    public List<BoxItemDataMap> quickSearch(ProcessGroupEntity processGroup, ItemBox itemBox, QuickFilter filter) {
+    public List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
         List<BoxItemDataMap> result = new ArrayList<>();
         result.add(createItem("1", "Descrição", "Situação", "Processo",
                 "25/04/2017 08:49", "Form tipo", "Chave processo",

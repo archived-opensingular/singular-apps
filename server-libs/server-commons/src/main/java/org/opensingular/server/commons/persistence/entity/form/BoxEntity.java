@@ -14,41 +14,53 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.persistence.entity.parameter;
+package org.opensingular.server.commons.persistence.entity.form;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-
+import org.opensingular.flow.persistence.entity.AbstractModuleEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
-@Entity
-@GenericGenerator(name = ParameterEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
-@Table(name = "TB_PARAMETRO", schema = Constants.SCHEMA)
-public class ParameterEntity extends BaseEntity<Long> {
+import static org.opensingular.server.commons.persistence.entity.form.BoxEntity.PK_GENERATOR_NAME;
 
-    public static final String PK_GENERATOR_NAME = "GENERATED_CO_PARAMETRO";
-    
+/**
+ *
+ */
+@Entity
+@Table(schema = Constants.SCHEMA, name = "TB_CAIXA")
+@GenericGenerator(name = PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+public class BoxEntity extends BaseEntity<Long> {
+
+    public static final String PK_GENERATOR_NAME = "GENERATED_CO_CAIXA";
+
     @Id
-    @Column(name = "CO_PARAMETRO")
+    @Column(name = "CO_CAIXA")
     @GeneratedValue(generator = PK_GENERATOR_NAME)
     private Long cod;
 
-    @Column(name = "CO_MODULO", nullable = false)
-    private String codModule;
-    
-    @Column(name = "NO_PARAMETRO", nullable = false)
+    @ManyToOne
+    @JoinColumn(name = "CO_MODULO")
+    private ModuleEntity module;
+
+    @Column(name = "NO_CAIXA")
     private String name;
 
-    @Column(name = "VL_PARAMETRO", nullable = false)
-    private String value;
-    
+    @Column(name = "DS_CAIXA")
+    private String description;
+
+    @Column(name = "NO_ICONE")
+    private String iconName;
+
     @Override
     public Long getCod() {
         return cod;
@@ -58,12 +70,12 @@ public class ParameterEntity extends BaseEntity<Long> {
         this.cod = cod;
     }
 
-    public String getCodModule() {
-        return codModule;
+    public ModuleEntity getModule() {
+        return module;
     }
 
-    public void setCodModule(String codModule) {
-        this.codModule = codModule;
+    public void setModule(ModuleEntity module) {
+        this.module = module;
     }
 
     public String getName() {
@@ -74,11 +86,19 @@ public class ParameterEntity extends BaseEntity<Long> {
         this.name = name;
     }
 
-    public String getValue() {
-        return value;
+    public String getDescription() {
+        return description;
     }
 
-    public void setValue(String value) {
-        this.value = value;
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public String getIconName() {
+        return iconName;
+    }
+
+    public void setIconName(String iconName) {
+        this.iconName = iconName;
     }
 }

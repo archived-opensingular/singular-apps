@@ -16,14 +16,13 @@
 
 package org.opensingular.server.commons.persistence.dao.flow;
 
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 
+public class ModuleDAO extends BaseDAO<ModuleEntity, String> {
 
-public class ProcessGroupDAO extends BaseDAO<ProcessGroupEntity, String> {
-
-    public ProcessGroupDAO() {
-        super(ProcessGroupEntity.class);
+    public ModuleDAO() {
+        super(ModuleEntity.class);
     }
 
 }

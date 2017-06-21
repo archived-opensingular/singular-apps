@@ -2,9 +2,9 @@ package org.opensingular.server.commons.service;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
-import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
+import org.opensingular.server.commons.persistence.dao.flow.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
@@ -21,30 +21,30 @@ public class ParameterServiceTest extends SingularCommonsBaseTest {
     private ParameterDAO parameterDAO;
 
     @Inject
-    private ProcessGroupDAO processGroupDAO;
+    private ModuleDAO moduleDAO;
 
     @Test
     @Transactional
     @Rollback
-    public void testFindByNameAndProcessGroup(){
-        ProcessGroupEntity groupEntity = new ProcessGroupEntity();
+    public void testFindByNameAndModule(){
+        ModuleEntity groupEntity = new ModuleEntity();
         groupEntity.setCod("1");
         groupEntity.setName("groupName");
         groupEntity.setConnectionURL("connectionUrl Test");
-        processGroupDAO.save(groupEntity);
+        moduleDAO.save(groupEntity);
 
         ParameterEntity entity = new ParameterEntity();
         entity.setName("testParameter");
-        entity.setCodProcessGroup(groupEntity.getCod());
+        entity.setCodModule(groupEntity.getCod());
         entity.setValue("valor teste");
 
         parameterDAO.save(entity);
 
         Optional<ParameterEntity> testParameter = parameterService
-                .findByNameAndProcessGroup("testParameter", groupEntity.getCod());
+                .findByNameAndModule("testParameter", groupEntity.getCod());
         Assert.assertEquals(entity, testParameter.get());
 
-        testParameter = parameterService.findByNameAndProcessGroup("testParameter", groupEntity);
+        testParameter = parameterService.findByNameAndModule("testParameter", groupEntity);
         Assert.assertEquals(entity, testParameter.get());
 
         Assert.assertEquals(entity.getName(), testParameter.get().getName());

@@ -23,7 +23,7 @@ import javax.inject.Inject;
 import org.springframework.transaction.annotation.Transactional;
 
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.flow.core.entity.IEntityProcessGroup;
+import org.opensingular.flow.core.entity.IEntityModule;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 
@@ -33,12 +33,12 @@ public class ParameterService implements Loggable {
     @Inject
     private ParameterDAO parameterDAO;
 
-    public Optional<ParameterEntity> findByNameAndProcessGroup(String name, IEntityProcessGroup processGroup) {
-        return Optional.ofNullable(parameterDAO.findByNameAndProcessGroup(name, processGroup));
+    public Optional<ParameterEntity> findByNameAndModule(String name, IEntityModule module) {
+        return Optional.ofNullable(parameterDAO.findByNameAndModule(name, module));
     }
 
-    public Optional<ParameterEntity> findByNameAndProcessGroup(String name, String processGroup) {
-        return Optional.ofNullable(parameterDAO.findByNameAndProcessGroup(name, processGroup));
+    public Optional<ParameterEntity> findByNameAndModule(String name, String module) {
+        return Optional.ofNullable(parameterDAO.findByNameAndModule(name, module));
     }
 
 }

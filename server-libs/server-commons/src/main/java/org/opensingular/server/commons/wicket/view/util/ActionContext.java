@@ -27,7 +27,7 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String INSTANCE_ID = "i";
 
-    public static final String PROCESS_GROUP_PARAM_NAME = "c";
+    public static final String MODULE_PARAM_NAME = "mod";
 
     public static final String MENU_PARAM_NAME = "m";
 
@@ -119,12 +119,12 @@ public class ActionContext implements Serializable, Loggable {
         return this;
     }
 
-    public Optional<String> getProcessGroupName() {
-        return Optional.ofNullable(this.params.get(PROCESS_GROUP_PARAM_NAME));
+    public Optional<String> getModuleName() {
+        return Optional.ofNullable(this.params.get(MODULE_PARAM_NAME));
     }
 
-    public ActionContext setProcessGroupName(String processGroupName) {
-        this.params.put(PROCESS_GROUP_PARAM_NAME, processGroupName);
+    public ActionContext setModuleName(String moduleName) {
+        this.params.put(MODULE_PARAM_NAME, moduleName);
         return this;
     }
 
