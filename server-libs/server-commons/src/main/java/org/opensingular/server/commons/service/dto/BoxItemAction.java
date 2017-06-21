@@ -17,10 +17,14 @@
 package org.opensingular.server.commons.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.wicket.util.resource.Icon;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.jackson.IconJsonDeserializer;
+import org.opensingular.server.commons.jackson.IconJsonSerializer;
 
 import java.io.Serializable;
 
@@ -127,10 +131,12 @@ public class BoxItemAction implements Serializable {
         this.label = label;
     }
 
+    @JsonSerialize(using = IconJsonSerializer.class)
     public Icon getIcon() {
         return icon;
     }
 
+    @JsonDeserialize(using = IconJsonDeserializer.class)
     public void setIcon(Icon icon) {
         this.icon = icon;
     }
