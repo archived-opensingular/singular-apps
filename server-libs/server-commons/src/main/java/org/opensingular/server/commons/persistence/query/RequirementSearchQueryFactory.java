@@ -23,9 +23,9 @@ public class RequirementSearchQueryFactory {
     private final RequirementSearchContext ctx;
 
     private RequirementSearchAliases $;
-    private RequirementSearchQuery   query;
-    private QuickFilter              quickFilter;
-    private BooleanBuilder           whereClause;
+    private RequirementSearchQuery query;
+    private QuickFilter quickFilter;
+    private BooleanBuilder whereClause;
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
@@ -146,8 +146,10 @@ public class RequirementSearchQueryFactory {
     private void appendFilterByQuickFilter() {
         if (ctx.getQuickFilter().hasFilter()) {
             BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.filterWithAnywhereMatchMode());
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
+            quickFilter.getFilterTokens().forEach(token -> {
+                configureQuickFilter($, quickFilterWhereClause, token.get());
+                configureQuickFilter($, quickFilterWhereClause, token.getOnlyNumersAndLetters());
+            });
         }
     }
 
@@ -190,9 +192,9 @@ public class RequirementSearchQueryFactory {
 
     private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
         quickFilterWhereClause
-                .or($.petition.description.likeIgnoreCase(filter))
-                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
-                .or($.taskVersion.name.likeIgnoreCase(filter))
+                .or($.petition.description.containsIgnoreCase(filter))
+                .or($.processDefinitionEntity.name.containsIgnoreCase(filter))
+                .or($.taskVersion.name.containsIgnoreCase(filter))
                 .or($.petition.cod.like(filter))
                 .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
                 .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))

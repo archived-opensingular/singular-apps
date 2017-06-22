@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.persistence.requirement;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
@@ -48,9 +49,10 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {
-            query.getQuickFilterWhereClause()
-                    .or(toChar(variableEntity).likeIgnoreCase(quickFilter.filterWithAnywhereMatchMode()))
-                    .or(toChar(variableEntity).likeIgnoreCase(quickFilter.numberAndLettersFilterWithAnywhereMatchMode()));
+            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
+            quickFilter.getFilterTokens().forEach(token -> quickFilterWhereClause
+                    .or(toChar(variableEntity).containsIgnoreCase(token.get()))
+                    .or(toChar(variableEntity).containsIgnoreCase(token.getOnlyNumersAndLetters())));
         }
     }
 

@@ -39,10 +39,6 @@ public class QuickFilter implements Serializable {
     private List<String> processesAbbreviation;
     private List<String> typesNames;
 
-    public String getFilter() {
-        return filter;
-    }
-
     public QuickFilter withFilter(String filter) {
         this.filter = filter;
         return this;
@@ -162,18 +158,11 @@ public class QuickFilter implements Serializable {
         return this;
     }
 
-    public String filterWithAnywhereMatchMode() {
-        return "%" + Objects.defaultIfNull(filter, "") + "%";
-    }
-
-    public String numberAndLettersFilterWithAnywhereMatchMode() {
-        return "%" + Objects.defaultIfNull(filter, "").replaceAll("[^\\da-zA-Z]", "") + "%";
-    }
-
     public List<FilterToken> getFilterTokens() {
         if(filter != null) {
             return Arrays.stream(filter.split(" ")).map(FilterToken::new).collect(Collectors.toList());
         }
         return Collections.emptyList();
     }
+
 }
