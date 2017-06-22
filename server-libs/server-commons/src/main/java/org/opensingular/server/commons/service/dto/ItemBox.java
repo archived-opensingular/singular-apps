@@ -16,7 +16,11 @@
 
 package org.opensingular.server.commons.service.dto;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.server.commons.jackson.IconJsonDeserializer;
+import org.opensingular.server.commons.jackson.IconJsonSerializer;
 
 import java.io.Serializable;
 import java.util.List;
@@ -86,11 +90,12 @@ public class ItemBox implements Serializable {
         this.showDraft = showDraft;
     }
 
-
+    @JsonSerialize(using = IconJsonSerializer.class)
     public Icon getIcone() {
         return icon;
     }
 
+    @JsonDeserialize(using = IconJsonDeserializer.class)
     public void setIcone(Icon icon) {
         this.icon = icon;
     }
