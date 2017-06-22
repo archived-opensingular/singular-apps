@@ -13,7 +13,7 @@ public class FooSingularModule implements SingularModule {
     private FooRequirement fooRequirement = new FooRequirement();
 
     @Override
-    public String category() {
+    public String abbreviation() {
         return "Foo";
     }
 

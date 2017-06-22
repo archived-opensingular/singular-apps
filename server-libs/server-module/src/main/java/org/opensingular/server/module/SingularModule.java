@@ -11,7 +11,7 @@ public interface SingularModule {
      * Textual key representing this module.
      * Should be a valid java identifier
      */
-    String category();
+    String abbreviation();
 
     /**
      *

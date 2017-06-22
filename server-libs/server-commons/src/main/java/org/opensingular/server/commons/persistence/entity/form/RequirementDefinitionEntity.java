@@ -25,14 +25,14 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.flow.persistence.entity.AbstractModuleEntity;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
-import static org.opensingular.server.commons.persistence.entity.form.PetitionDefinition.PK_GENERATOR_NAME;
+import static org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity.PK_GENERATOR_NAME;
 
 /**
  *
@@ -40,7 +40,7 @@ import static org.opensingular.server.commons.persistence.entity.form.PetitionDe
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO")
 @GenericGenerator(name = PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
-public class PetitionDefinition extends BaseEntity<Long> {
+public class RequirementDefinitionEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_DEFINICAO_REQUISICAO";
 
@@ -50,8 +50,8 @@ public class PetitionDefinition extends BaseEntity<Long> {
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_FORMULARIO")
-    private FormEntity formEntity;
+    @JoinColumn(name = "CO_TIPO_FORMULARIO")
+    private FormTypeEntity formType;
 
     @ManyToOne
     @JoinColumn(name = "CO_MODULO")
@@ -69,12 +69,12 @@ public class PetitionDefinition extends BaseEntity<Long> {
         this.cod = cod;
     }
 
-    public FormEntity getFormEntity() {
-        return formEntity;
+    public FormTypeEntity getFormType() {
+        return formType;
     }
 
-    public void setFormEntity(FormEntity formEntity) {
-        this.formEntity = formEntity;
+    public void setFormType(FormTypeEntity formType) {
+        this.formType = formType;
     }
 
     public ModuleEntity getModule() {

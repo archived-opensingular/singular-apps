@@ -19,6 +19,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import net.vidageek.mirror.dsl.Mirror;
+
 /**
  * Configuration bean from which the current module
  * requirements configurations are made available.
@@ -26,12 +28,13 @@ import java.util.stream.Collectors;
 @Named
 public class SingularModuleConfiguration {
 
+    private SingularModule module;
     private List<SingularRequirementRef> requirements;
     private List<BoxController>          itemBoxes;
 
     @PostConstruct
     private void init() throws IllegalAccessException, InstantiationException {
-        SingularModule           module                   = resolveModule();
+        module = resolveModule();
         RequirementConfiguration requirementConfiguration = resolveRequirements(module);
         resolveWorkspace(module, requirementConfiguration);
     }
@@ -122,4 +125,7 @@ public class SingularModuleConfiguration {
         return SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
     }
 
+    public SingularModule getModule() {
+        return module;
+    }
 }
