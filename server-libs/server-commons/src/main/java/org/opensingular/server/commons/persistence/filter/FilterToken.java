@@ -16,6 +16,17 @@ public class FilterToken {
         return token;
     }
 
+    public String getOnlyNumersAndLetters() {
+        return token.replaceAll("[^\\da-zA-Z]", "");
+    }
+
+    @Override
+    public String toString() {
+        return "FilterToken{" +
+                "token='" + token + '\'' +
+                '}';
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -27,10 +38,6 @@ public class FilterToken {
     @Override
     public int hashCode() {
         return Objects.hash(token);
-    }
-
-    public String getOnlyNumersAndLetters() {
-        return token.replaceAll("[^\\da-zA-Z]", "");
     }
 
 }

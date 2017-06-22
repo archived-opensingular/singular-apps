@@ -16,13 +16,10 @@
 
 package org.opensingular.server.commons.persistence.filter;
 
-import org.apache.wicket.util.lang.Objects;
-
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class QuickFilter implements Serializable {
 
@@ -159,8 +156,8 @@ public class QuickFilter implements Serializable {
     }
 
     public List<FilterToken> getFilterTokens() {
-        if(filter != null) {
-            return Arrays.stream(filter.split(" ")).map(FilterToken::new).collect(Collectors.toList());
+        if (filter != null) {
+            return new FilterTokenFactory(filter).make();
         }
         return Collections.emptyList();
     }
