@@ -20,19 +20,21 @@ import org.apache.wicket.util.lang.Objects;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class QuickFilter implements Serializable {
 
-    private String       filter;
-    private boolean      rascunho;
-    private String       idPessoa;
-    private String       idUsuarioLogado;
-    private int          first;
-    private int          count;
-    private String       sortProperty;
-    private boolean      ascending;
-    private Boolean      endedTasks;
+    private String filter;
+    private boolean rascunho;
+    private String idPessoa;
+    private String idUsuarioLogado;
+    private int first;
+    private int count;
+    private String sortProperty;
+    private boolean ascending;
+    private Boolean endedTasks;
     private List<String> tasks;
     private List<String> processesAbbreviation;
     private List<String> typesNames;
@@ -168,4 +170,10 @@ public class QuickFilter implements Serializable {
         return "%" + Objects.defaultIfNull(filter, "").replaceAll("[^\\da-zA-Z]", "") + "%";
     }
 
+    public List<FilterToken> getFilterTokens() {
+        if(filter != null) {
+            return Arrays.stream(filter.split(" ")).map(FilterToken::new).collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
 }
