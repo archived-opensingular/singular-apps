@@ -1,6 +1,6 @@
 package org.opensingular.server.p.module.workspace;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
@@ -25,7 +25,7 @@ public class DefaultOngoingbox implements ItemBoxFactory {
         final ItemBox acompanhamento = new ItemBox();
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Requerimentos em andamento");
-        acompanhamento.setIcone(Icone.CLOCK);
+        acompanhamento.setIcone(DefaultIcons.CLOCK);
         return acompanhamento;
     }
 

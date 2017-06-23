@@ -17,11 +17,14 @@
 package org.opensingular.server.commons.service.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import org.opensingular.lib.wicket.util.resource.Icone;
-import org.opensingular.lib.wicket.util.resource.SingularIcon;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.opensingular.lib.wicket.util.resource.Icon;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.server.commons.jackson.IconJsonDeserializer;
+import org.opensingular.server.commons.jackson.IconJsonSerializer;
 
 import java.io.Serializable;
 
@@ -34,7 +37,7 @@ public class BoxItemAction implements Serializable {
     private boolean                defaultAction;
     private ItemActionConfirmation confirmation;
     private String                 label;
-    private SingularIcon           icon;
+    private Icon                   icon;
     private ItemActionType         type;
     private String                 controllerClassName;
 
@@ -42,7 +45,7 @@ public class BoxItemAction implements Serializable {
     public BoxItemAction() {
     }
 
-    public BoxItemAction(String name, String label, SingularIcon icon, ItemActionType type, String endpoint, Class<? extends IController> controller, ItemActionConfirmation confirmation) {
+    public BoxItemAction(String name, String label, Icon icon, ItemActionType type, String endpoint, Class<? extends IController> controller, ItemActionConfirmation confirmation) {
         this.name = name;
         this.endpoint = endpoint;
         this.label = label;
@@ -52,7 +55,7 @@ public class BoxItemAction implements Serializable {
         this.confirmation = confirmation;
     }
 
-    public BoxItemAction(String name, String label, SingularIcon icon, ItemActionType type, FormAction fomAction, String endpoint) {
+    public BoxItemAction(String name, String label, Icon icon, ItemActionType type, FormAction fomAction, String endpoint) {
         this.name = name;
         this.label = label;
         this.icon = icon;
@@ -128,11 +131,13 @@ public class BoxItemAction implements Serializable {
         this.label = label;
     }
 
-    public SingularIcon getIcon() {
+    @JsonSerialize(using = IconJsonSerializer.class)
+    public Icon getIcon() {
         return icon;
     }
 
-    public void setIcon(Icone icon) {
+    @JsonDeserialize(using = IconJsonDeserializer.class)
+    public void setIcon(Icon icon) {
         this.icon = icon;
     }
 
