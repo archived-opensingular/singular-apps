@@ -1,7 +1,7 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
@@ -56,7 +56,7 @@ public class WorkspaceMetadataMockBean {
         final ItemBox     teste             = new ItemBox();
         teste.setName("Rascunho");
         teste.setDescription("Petições de rascunho");
-        teste.setIcone(Icone.DOCS);
+        teste.setIcone(DefaultIcons.DOCS);
         teste.setShowNewButton(true);
         teste.setShowDraft(true);
         teste.setId("1");

@@ -1,6 +1,6 @@
 package org.opensingular.server.commons.box.action;
 
-import org.opensingular.lib.wicket.util.resource.SingularIcon;
+import org.opensingular.lib.wicket.util.resource.Icon;
 import org.opensingular.server.commons.box.BoxItemData;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
@@ -13,15 +13,15 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQ
 public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
 
 
-    public AbstractURLPopupBoxItemAction(String name, String label, SingularIcon icon, FormAction action, String endpoint) {
+    public AbstractURLPopupBoxItemAction(String name, String label, Icon icon, FormAction action, String endpoint) {
         super(name, label, icon, ItemActionType.URL_POPUP, action, endpoint);
     }
 
-    public AbstractURLPopupBoxItemAction(String name, String label, SingularIcon icon, FormAction formAction, BoxItemData line) {
+    public AbstractURLPopupBoxItemAction(String name, String label, Icon icon, FormAction formAction, BoxItemData line) {
         this(name, label, icon, formAction, getEndpointPopUp(line, formAction));
     }
 
-    public AbstractURLPopupBoxItemAction(String name, String label, SingularIcon icon, String endpoint) {
+    public AbstractURLPopupBoxItemAction(String name, String label, Icon icon, String endpoint) {
         this(name, label, icon, null, endpoint);
     }
 

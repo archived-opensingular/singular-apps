@@ -2,7 +2,7 @@ package org.opensingular.server.module;
 
 /**
  * Main definition of a requirement Module.
- * Every singular server module must define exactly on {@link SingularModule}.
+ * Every singular server module must define exactly one {@link SingularModule}.
  */
 public interface SingularModule {
 

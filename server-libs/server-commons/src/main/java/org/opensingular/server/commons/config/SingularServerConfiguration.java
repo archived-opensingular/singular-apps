@@ -101,7 +101,7 @@ public class SingularServerConfiguration implements ServletContextAware {
                 .ifPresent(fi -> this.processGroupCod = flowInitializer.processGroupCod());
 
 
-        Set<Class<? extends ServerProcessDefinition>> processes = SingularClassPathScanner.INSTANCE.findSubclassesOf(ServerProcessDefinition.class);
+        Set<Class<? extends ServerProcessDefinition>> processes = SingularClassPathScanner.get().findSubclassesOf(ServerProcessDefinition.class);
         initDefinitionsPackages(processes.stream());
 
 

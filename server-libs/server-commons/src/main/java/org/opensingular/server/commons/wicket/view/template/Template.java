@@ -27,6 +27,7 @@ import org.apache.wicket.ajax.attributes.AjaxRequestAttributes;
 import org.apache.wicket.event.IEvent;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -86,6 +87,8 @@ public abstract class Template extends SingularTemplate {
         response.render(CssHeaderItem.forUrl("/singular-static/resources/singular/fonts/google/open-sans.css"));
         response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
         response.render(CssHeaderItem.forReference(new PackageResourceReference(Template.class, "Template.css")));
+        response.render(JavaScriptHeaderItem.forUrl(skinnableResource("/layout4/scripts/analytics.js")));
+        
         if (withSideBar()) {
             addQuickSidebar(response);
         }

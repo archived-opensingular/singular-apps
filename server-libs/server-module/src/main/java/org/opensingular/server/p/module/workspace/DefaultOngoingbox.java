@@ -1,12 +1,12 @@
 package org.opensingular.server.p.module.workspace;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
-import org.opensingular.server.module.provider.PetitionBoxItemDataProvider;
+import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.server.module.workspace.ItemBoxFactory;
 import org.opensingular.server.p.commons.config.PServerContext;
 
@@ -25,15 +25,13 @@ public class DefaultOngoingbox implements ItemBoxFactory {
         final ItemBox acompanhamento = new ItemBox();
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Requerimentos em andamento");
-        acompanhamento.setIcone(Icone.CLOCK);
+        acompanhamento.setIcone(DefaultIcons.CLOCK);
         return acompanhamento;
     }
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new PetitionBoxItemDataProvider(
-                new ActionProviderBuilder()
-                        .addViewAction());
+        return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder().addViewAction());
     }
 
     @Override

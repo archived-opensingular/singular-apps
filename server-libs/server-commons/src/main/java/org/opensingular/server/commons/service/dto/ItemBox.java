@@ -16,10 +16,13 @@
 
 package org.opensingular.server.commons.service.dto;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.server.commons.jackson.IconJsonDeserializer;
+import org.opensingular.server.commons.jackson.IconJsonSerializer;
 
 import java.io.Serializable;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 public class ItemBox implements Serializable {
@@ -33,7 +36,7 @@ public class ItemBox implements Serializable {
     private boolean quickFilter   = true;
     private boolean showDraft     = false;
     private Boolean              endedTasks;
-    private Icone                icone;
+    private Icon                 icon;
     private List<DatatableField> fieldsDatatable;
 
     public ItemBox() {
@@ -87,13 +90,14 @@ public class ItemBox implements Serializable {
         this.showDraft = showDraft;
     }
 
-
-    public Icone getIcone() {
-        return icone;
+    @JsonSerialize(using = IconJsonSerializer.class)
+    public Icon getIcone() {
+        return icon;
     }
 
-    public void setIcone(Icone icone) {
-        this.icone = icone;
+    @JsonDeserialize(using = IconJsonDeserializer.class)
+    public void setIcone(Icon icon) {
+        this.icon = icon;
     }
 
     public Boolean getEndedTasks() {
