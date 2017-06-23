@@ -19,7 +19,6 @@ package org.opensingular.server.module.service;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.transaction.Transactional;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SType;
@@ -27,6 +26,7 @@ import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
 import org.opensingular.server.commons.persistence.dao.flow.ModuleDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
@@ -39,7 +39,6 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 @Named
-@Transactional
 public class ModuleService implements Loggable {
 
     @Inject
@@ -68,6 +67,10 @@ public class ModuleService implements Loggable {
         serverStartExecutorBean.register(this::saveAllRequirementDefinitions);
     }
 
+    /**
+     * Percorre todos requerimentos contidos na configuração do módulo
+     * e os repassa para salvar/recuperar os dados do banco.
+     */
     public void saveAllRequirementDefinitions() {
         for (SingularRequirementRef singularRequirementRef : singularModuleConfiguration.getRequirements())
             try {
@@ -76,10 +79,16 @@ public class ModuleService implements Loggable {
                     return null;
                 });
             } catch (Exception e) {
-                getLogger().error(String.format("Erro ao salvar requerimento %s", singularRequirementRef.getRequirement().getName()), e);
+                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", singularRequirementRef.getRequirement().getName()), e);
             }
     }
 
+    /**
+     * Persiste se necessário o RequirementDefinitionEntity
+     * e atualiza no ref o valor que está em banco.
+     *
+     * @param ref - o ref a partir do qual o {@link RequirementDefinitionEntity} será criado
+     */
     public void save(SingularRequirementRef ref) {
         Class<? extends SType> mainForm = ref.getRequirement().getMainForm();
         SType<?>               tipo     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
@@ -87,6 +96,7 @@ public class ModuleService implements Loggable {
 
         RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(ref.getRequirement(), formType);
         requirementDefinitionDAO.save(requirementDefinitionEntity);
+        ref.setRequirementDefinitionEntity(requirementDefinitionEntity);
     }
 
     private RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType) {
@@ -103,6 +113,11 @@ public class ModuleService implements Loggable {
         return requirementDefinitionEntity;
     }
 
+    /**
+     * Retorna o módulo a que este código pertence.
+     *
+     * @return o módulo
+     */
     public ModuleEntity getModule() {
         SingularModule module = singularModuleConfiguration.getModule();
         return moduleDAO.findOrException(module.abbreviation());

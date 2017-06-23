@@ -21,6 +21,15 @@ import java.util.List;
 
 import org.springframework.context.SmartLifecycle;
 
+/**
+ * Bean que tem o método {@link #start()} chamado assim que o contexto
+ * do Spring é completamente levantado.
+ *
+ * Todas as classes interessadas em serem executadas podem chamar o método
+ * {@link #register(Runnable)} para executar algum código.
+ * Para outros beans do Spring a forma mais fácil é se auto-registrar
+ * utilizando @{@link javax.annotation.PostConstruct}
+ */
 public class ServerStartExecutorBean implements SmartLifecycle {
 
     private volatile boolean isRunning = false;
@@ -59,11 +68,18 @@ public class ServerStartExecutorBean implements SmartLifecycle {
         return 1;
     }
 
+    /**
+     * Método utilizado para registrar código
+     * que deve ser executado assim que o Singular Server
+     * terminar sua inicialização.
+     *
+     * @param runnable - callback a ser executado
+     */
     public void register(Runnable runnable) {
         getExecutaveis().add(runnable);
     }
 
-    public List<Runnable> getExecutaveis() {
+    private List<Runnable> getExecutaveis() {
         if (executaveis == null) {
             executaveis = new ArrayList<>();
         }

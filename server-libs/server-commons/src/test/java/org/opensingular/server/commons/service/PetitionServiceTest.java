@@ -2,12 +2,15 @@ package org.opensingular.server.commons.service;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
@@ -21,11 +24,14 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -52,9 +58,6 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public PetitionSender petitionSender;
 
     @Inject
-    public SessionFactory sessionFactory;
-
-    @Inject
     protected PetitionDAO<PetitionEntity> petitionDAO;
 
     @Test
@@ -73,13 +76,13 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void newPetitionEntity() {
-        PetitionEntity petitionEntity = petitionService.newPetitionEntity();
+        PetitionEntity petitionEntity = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         assertNotNull(petitionEntity);
     }
 
     @Test
     public void newPetitionInstance() {
-        PetitionEntity   petitionEntity   = petitionService.newPetitionEntity();
+        PetitionEntity   petitionEntity   = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance petitionInstance = petitionService.newPetitionInstance(petitionEntity);
         assertNotNull(petitionInstance);
         assertEquals(petitionEntity, petitionInstance.getEntity());
@@ -89,7 +92,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void saveNewPetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
 
         petitionService.saveOrUpdate(petitionInstance, instance, true);
@@ -102,7 +105,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void sendNewPetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
         petitionInstance.setProcessDefinition(FOOFlow.class);
@@ -115,7 +118,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void testFindPetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
@@ -126,7 +129,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void testGetPetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
@@ -138,7 +141,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void testDeletePetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
@@ -150,7 +153,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void testDeletePetitionWithPetitionDTO() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
@@ -165,7 +168,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void testListCurrentTaskTransitionsWithEmptyTransitions() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
@@ -244,7 +247,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public PetitionInstance sendPetition(String description) {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
-        PetitionEntity      petitionEntity     = petitionService.newPetitionEntity();
+        PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionInstance.setDescription(description);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
@@ -274,7 +277,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     public void createPetitionWithoutSave() {
         PetitionInstance parent = sendPetition("Descrição XYZ única - " + System.nanoTime());
 
-        PetitionInstance petition = petitionService.createNewPetitionWithoutSave(FOOFlow.class, parent, PetitionInstance::getCod);
+        PetitionInstance petition = petitionService.createNewPetitionWithoutSave(FOOFlow.class, parent, PetitionInstance::getCod, requirementDefinitionEntity);
 
         assertNull(petition.getCod());
     }

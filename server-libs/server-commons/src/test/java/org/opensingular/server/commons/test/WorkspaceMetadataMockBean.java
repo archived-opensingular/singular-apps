@@ -67,7 +67,7 @@ public class WorkspaceMetadataMockBean {
         boxDefinitionData.setRequirements(new ArrayList<>());
         RequirementData req = new RequirementData();
         req.setLabel("Super req");
-        req.setId("superreq");
+        req.setId(2L);
         boxDefinitionData.getRequirements().add(req);
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);

@@ -92,12 +92,12 @@ public class ActionContext implements Serializable, Loggable {
         return this;
     }
 
-    public Optional<String> getRequirementId() {
-        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID));
+    public Optional<Long> getRequirementId() {
+        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID)).map(Long::valueOf);
     }
 
-    public void setRequirementId(String requirementId) {
-        this.params.put(REQUIREMENT_DEFINITION_ID, requirementId);
+    public void setRequirementId(Long requirementId) {
+        this.params.put(REQUIREMENT_DEFINITION_ID, String.valueOf(requirementId));
     }
 
     public Optional<String> getFormName() {

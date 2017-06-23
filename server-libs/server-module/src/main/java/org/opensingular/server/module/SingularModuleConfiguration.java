@@ -15,6 +15,7 @@ import org.opensingular.server.module.workspace.ItemBoxFactory;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -69,8 +70,8 @@ public class SingularModuleConfiguration {
         return module;
     }
 
-    public SingularRequirement getRequirementById(String id) {
-        return requirements.stream().filter(r -> r.getId().equals(id)).map(SingularRequirementRef::getRequirement).findFirst().orElse(null);
+    public SingularRequirement getRequirementById(Long id) {
+        return requirements.stream().filter(r -> Objects.equals(r.getId(), id)).map(SingularRequirementRef::getRequirement).findFirst().orElse(null);
     }
 
     /**

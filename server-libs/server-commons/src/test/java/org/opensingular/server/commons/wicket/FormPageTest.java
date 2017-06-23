@@ -87,6 +87,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
+        context.setRequirementId(requirementDefinitionEntity.getCod());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

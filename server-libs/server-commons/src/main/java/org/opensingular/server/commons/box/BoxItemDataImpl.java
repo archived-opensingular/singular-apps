@@ -89,7 +89,7 @@ public class BoxItemDataImpl implements BoxItemData {
      * @deprecated para uso temporário enquanto a forma de identificar o requerimento não é definida
      */
     @Deprecated
-    public void setRequirementDefinitionId(String id) {
+    public void setRequirementDefinitionId(Long id) {
         rawMap.put("requirementDefinitionId", id);
     }
 
