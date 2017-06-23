@@ -14,12 +14,12 @@ public class FooSingularModule implements SingularModule {
 
     @Override
     public String abbreviation() {
-        return "Foo";
+        return "GRUPO_TESTE";
     }
 
     @Override
     public String name() {
-        return "Foozin";
+        return "Grupo Processo Teste";
     }
 
     @Override
