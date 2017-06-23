@@ -34,7 +34,9 @@ public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> ext
     public RequirementDefinitionEntity findByModuleAndName(ModuleEntity moduleEntity, FormTypeEntity formType) {
         StringBuilder hql = new StringBuilder();
 
-        hql.append(" FROM " + RequirementDefinitionEntity.class.getName() + " as req ");
+        hql.append(" FROM ");
+        hql.append(RequirementDefinitionEntity.class.getName());
+        hql.append(" as req ");
         hql.append(" WHERE req.module = :module ");
         hql.append("    AND req.formType = :formType ");
 
