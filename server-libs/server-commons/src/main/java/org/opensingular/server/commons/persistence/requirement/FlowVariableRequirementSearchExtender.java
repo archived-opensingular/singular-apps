@@ -6,6 +6,7 @@ import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
+import org.opensingular.server.commons.persistence.filter.FilterToken;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
 
@@ -16,7 +17,7 @@ import javax.annotation.Nonnull;
  */
 public class FlowVariableRequirementSearchExtender implements RequirementSearchExtender {
 
-    public static final String TO_CHAR_TEMPLATE      = "to_char({0})";
+    public static final String TO_CHAR_TEMPLATE = "to_char({0})";
     public static final String TO_CHAR_DATE_TEMPLATE = "to_char({0}, 'dd/MM/yyyy')";
 
     private final String variableName;
@@ -38,9 +39,9 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
     @Override
     public void extend(@Nonnull RequirementSearchContext context) {
-        QVariableInstanceEntity  variableEntity = new QVariableInstanceEntity(variableName);
-        RequirementSearchQuery   query          = context.getQuery();
-        RequirementSearchAliases $              = context.getAliases();
+        QVariableInstanceEntity variableEntity = new QVariableInstanceEntity(variableName);
+        RequirementSearchQuery query = context.getQuery();
+        RequirementSearchAliases $ = context.getAliases();
 
         query.getSelect()
                 .add(toChar(variableEntity).as(queryAlias));
@@ -49,10 +50,15 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {
-            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
-            quickFilter.getFilterTokens().forEach(token -> quickFilterWhereClause
-                    .or(toChar(variableEntity).containsIgnoreCase(token.get()))
-                    .or(toChar(variableEntity).containsIgnoreCase(token.getOnlyNumersAndLetters())));
+            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
+            for (FilterToken token : quickFilter.listFilterTokens()) {
+                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
+                for (String filter : token.getAllPossibleMatches()) {
+                    tokenBooleanBuilder.or(toChar(variableEntity).likeIgnoreCase(filter));
+                }
+                filterBooleanBuilder.and(tokenBooleanBuilder);
+            }
+            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
         }
     }
 

@@ -14,6 +14,7 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
+import org.opensingular.server.commons.persistence.filter.FilterToken;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 public class RequirementSearchQueryFactory {
@@ -145,11 +146,15 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByQuickFilter() {
         if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
-            quickFilter.getFilterTokens().forEach(token -> {
-                configureQuickFilter($, quickFilterWhereClause, token.get());
-                configureQuickFilter($, quickFilterWhereClause, token.getOnlyNumersAndLetters());
-            });
+            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
+            for (FilterToken token : quickFilter.listFilterTokens()) {
+                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
+                for (String filter : token.getAllPossibleMatches()) {
+                    tokenBooleanBuilder.or(buildQuickFilterBooleanExpression($, filter));
+                }
+                filterBooleanBuilder.and(tokenBooleanBuilder);
+            }
+            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
         }
     }
 
@@ -190,11 +195,11 @@ public class RequirementSearchQueryFactory {
         }
     }
 
-    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
-        quickFilterWhereClause
-                .or($.petition.description.containsIgnoreCase(filter))
-                .or($.processDefinitionEntity.name.containsIgnoreCase(filter))
-                .or($.taskVersion.name.containsIgnoreCase(filter))
+    private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
+        return new BooleanBuilder()
+                .or($.petition.description.likeIgnoreCase(filter))
+                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
+                .or($.taskVersion.name.likeIgnoreCase(filter))
                 .or($.petition.cod.like(filter))
                 .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
                 .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))

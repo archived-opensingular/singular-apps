@@ -155,11 +155,15 @@ public class QuickFilter implements Serializable {
         return this;
     }
 
-    public List<FilterToken> getFilterTokens() {
+    public List<FilterToken> listFilterTokens() {
         if (filter != null) {
             return new FilterTokenFactory(filter).make();
         }
         return Collections.emptyList();
+    }
+
+    public String getFilter() {
+        return filter;
     }
 
 }
