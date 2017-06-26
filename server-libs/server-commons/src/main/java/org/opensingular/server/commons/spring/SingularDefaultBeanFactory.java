@@ -45,7 +45,8 @@ import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.ModuleDAO;
+import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
+import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
@@ -139,8 +140,13 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ModuleDAO grupoProcessoDAO() {
+    public ModuleDAO moduleDAO() {
         return new ModuleDAO();
+    }
+
+    @Bean
+    public BoxDAO boxDAO() {
+        return new BoxDAO();
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)

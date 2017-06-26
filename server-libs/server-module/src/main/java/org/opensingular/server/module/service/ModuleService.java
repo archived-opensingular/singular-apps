@@ -16,7 +16,6 @@
 
 package org.opensingular.server.module.service;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -25,20 +24,18 @@ import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormService;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.config.ServerStartExecutorBean;
-import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
-import org.opensingular.server.commons.persistence.dao.flow.ModuleDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.SingularModule;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.springframework.transaction.annotation.Transactional;
 
 @Named
+@Transactional
 public class ModuleService implements Loggable {
 
     @Inject
@@ -55,33 +52,6 @@ public class ModuleService implements Loggable {
 
     @Inject
     private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
-
-    @Inject
-    private ServerStartExecutorBean serverStartExecutorBean;
-
-    @Inject
-    protected PlatformTransactionManager transactionManager;
-
-    @PostConstruct
-    public void init() {
-        serverStartExecutorBean.register(this::saveAllRequirementDefinitions);
-    }
-
-    /**
-     * Percorre todos requerimentos contidos na configuração do módulo
-     * e os repassa para salvar/recuperar os dados do banco.
-     */
-    public void saveAllRequirementDefinitions() {
-        for (SingularRequirementRef singularRequirementRef : singularModuleConfiguration.getRequirements())
-            try {
-                new TransactionTemplate(transactionManager).execute(status -> {
-                    save(singularRequirementRef);
-                    return null;
-                });
-            } catch (Exception e) {
-                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", singularRequirementRef.getRequirement().getName()), e);
-            }
-    }
 
     /**
      * Persiste se necessário o RequirementDefinitionEntity

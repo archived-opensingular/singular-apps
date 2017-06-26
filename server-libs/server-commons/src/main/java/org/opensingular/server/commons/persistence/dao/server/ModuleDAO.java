@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.persistence.dao.flow;
+package org.opensingular.server.commons.persistence.dao.server;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
