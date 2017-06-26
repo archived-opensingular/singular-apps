@@ -82,7 +82,8 @@ public class RequirementSearchQueryFactory {
                     .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
                     .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
                     .add($.module.cod.as("moduleCod"))
-                    .add($.module.connectionURL.as("moduleContext"));
+                    .add($.module.connectionURL.as("moduleContext"))
+                    .add($.requirementDefinition.cod.as("requirementDefinitionId"));
         }
 
         query
@@ -96,13 +97,14 @@ public class RequirementSearchQueryFactory {
                 .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
                 .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
                 .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
-                .leftJoin($.processDefinitionEntity.module, $.module)
                 .leftJoin($.formEntity.formType, $.formType)
                 .leftJoin($.formDraftEntity.formType, $.formDraftType)
                 .leftJoin($.processInstance.tasks, $.task)
                 .leftJoin($.task.task, $.taskVersion)
                 .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
-                .leftJoin($.task.allocatedUser, $.allocatedUser);
+                .leftJoin($.task.allocatedUser, $.allocatedUser)
+                .leftJoin($.petition.requirementDefinitionEntity, $.requirementDefinition)
+                .leftJoin($.requirementDefinition.module, $.module);
     }
 
     @NotNull

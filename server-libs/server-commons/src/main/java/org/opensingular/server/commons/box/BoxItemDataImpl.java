@@ -84,15 +84,6 @@ public class BoxItemDataImpl implements BoxItemData {
         return rawMap.get("requirementDefinitionId");
     }
 
-    /**
-     * @param id
-     * @deprecated para uso temporário enquanto a forma de identificar o requerimento não é definida
-     */
-    @Deprecated
-    public void setRequirementDefinitionId(Long id) {
-        rawMap.put("requirementDefinitionId", id);
-    }
-
     public void setRawMap(Map<String, Serializable> rawMap) {
         this.rawMap = rawMap;
     }
