@@ -79,11 +79,6 @@ public class BoxDefinitionDataServiceTest {
 
         when(singularModuleConfiguration.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
 
-        when(singularModuleConfiguration.findRequirmentByFormType(any(String.class))).thenReturn(Optional.of(mock(SingularRequirementRef.class)));
-        when(context.getBean(eq(SingularModuleConfiguration.class))).thenReturn(singularModuleConfiguration);
-
-        when(context.getBean(eq(AuthorizationService.class))).thenReturn(authorizationService);
-
 
         setUpApplicationContextMock();
     }
