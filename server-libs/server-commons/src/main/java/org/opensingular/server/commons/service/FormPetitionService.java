@@ -28,6 +28,7 @@ import org.opensingular.form.persistence.entity.FormAnnotationVersionEntity;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.transformer.Value;
 import org.opensingular.lib.commons.lambda.IConsumer;
@@ -61,6 +62,9 @@ public class FormPetitionService<P extends PetitionEntity> {
 
     @Inject
     protected IFormService formPersistenceService;
+
+    @Inject
+    private FormFieldService formFieldService;
 
     @Inject
     private IUserService userService;
@@ -407,7 +411,8 @@ public class FormPetitionService<P extends PetitionEntity> {
 
         formPersistenceService.update(formInstance, userCod);
 
-        formPetitionEntity.setForm(formPersistenceService.loadFormEntity(key));
+        FormEntity formEntity = formPersistenceService.loadFormEntity(key);
+        formPetitionEntity.setForm(formEntity);
         formPetitionEntity.setCurrentDraftEntity(null);
 
         formInstance.getDocument().persistFiles();
@@ -416,6 +421,7 @@ public class FormPetitionService<P extends PetitionEntity> {
         draftDAO.delete(draft);
         formPetitionDAO.save(formPetitionEntity);
 
+        formFieldService.saveFields(formInstance, formEntity.getFormType(), formEntity.getCurrentFormVersionEntity());
         return formPetitionEntity.getForm();
     }
 
