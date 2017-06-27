@@ -50,7 +50,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.FOR
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public abstract class AbstractHistoryContent extends Content {
 
@@ -60,7 +60,7 @@ public abstract class AbstractHistoryContent extends Content {
     private PetitionService<?, ?> petitionService;
 
     private long   petitionPK;
-    private String processGroupPK;
+    private String modulePK;
     private String menu;
 
     public AbstractHistoryContent(String id) {
@@ -81,7 +81,7 @@ public abstract class AbstractHistoryContent extends Content {
     protected void onInitialize() {
         super.onInitialize();
         petitionPK = getPage().getPageParameters().get(PETITION_ID).toLong();
-        processGroupPK = getPage().getPageParameters().get(PROCESS_GROUP_PARAM_NAME).toString();
+        modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
         menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         queue(setupDataTable(createDataProvider()));
         queue(getBtnCancelar());
@@ -204,7 +204,7 @@ public abstract class AbstractHistoryContent extends Content {
     }
 
     public String getModuleContext() {
-        final String groupConnectionURL = petitionService.findByProcessGroupCod(processGroupPK).getConnectionURL();
+        final String groupConnectionURL = petitionService.findByModuleCod(modulePK).getConnectionURL();
         try {
             final String path = new URL(groupConnectionURL).getPath();
             return path.substring(0, path.indexOf('/', 1));

@@ -19,7 +19,7 @@ package org.opensingular.server.core.wicket.box;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
@@ -40,7 +40,7 @@ import java.util.Optional;
 
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public class BoxPage extends ServerTemplate {
 
@@ -53,27 +53,27 @@ public class BoxPage extends ServerTemplate {
     @Override
     protected Content getContent(String id) {
 
-        String processGroupCod = getPageParameters().get(PROCESS_GROUP_PARAM_NAME).toOptionalString();
+        String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
         String menu            = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
         String item            = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
 
-        if (processGroupCod == null
+        if (moduleCod == null
                 && menu == null
                 && item == null
                 && menuService != null) {
 
-            for (Iterator<Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>>> it = menuService.getMap().entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> entry = it.next();
+            for (Iterator<Map.Entry<ModuleEntity, List<BoxConfigurationData>>> it = menuService.getMap().entrySet().iterator(); it.hasNext(); ) {
+                Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry = it.next();
                 if (!entry.getValue().isEmpty()) {
-                    processGroupCod = entry.getKey().getCod();
+                    moduleCod = entry.getKey().getCod();
                     BoxConfigurationData mg = entry.getValue().get(0);
                     menu = mg.getLabel();
                     PageParameters pageParameters = new PageParameters();
 
                     addItemParam(mg, pageParameters);
 
-                    pageParameters.add(PROCESS_GROUP_PARAM_NAME, processGroupCod);
+                    pageParameters.add(MODULE_PARAM_NAME, moduleCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
                     throw new RestartResponseException(getPage().getClass(), pageParameters);
                 }
@@ -92,7 +92,7 @@ public class BoxPage extends ServerTemplate {
              * itemBoxDTO pode ser nulo quando nenhum item está selecionado.
              */
             if (boxDefinitionData != null) {
-                return newBoxContent(id, processGroupCod, boxConfigurationMetadata, boxDefinitionData);
+                return newBoxContent(id, moduleCod, boxConfigurationMetadata, boxDefinitionData);
             }
         }
 
@@ -110,8 +110,8 @@ public class BoxPage extends ServerTemplate {
         }
     }
 
-    protected BoxContent newBoxContent(String id, String processGroupCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, processGroupCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
+    protected BoxContent newBoxContent(String id, String moduleCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
+        return new BoxContent(id, moduleCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

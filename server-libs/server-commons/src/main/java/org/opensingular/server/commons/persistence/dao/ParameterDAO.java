@@ -22,7 +22,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
 
-import org.opensingular.flow.core.entity.IEntityProcessGroup;
+import org.opensingular.flow.core.entity.IEntityModule;
 import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 
@@ -33,15 +33,15 @@ public class ParameterDAO extends BaseDAO<ParameterEntity, Long> {
         super(ParameterEntity.class);
     }
 
-    public ParameterEntity findByNameAndProcessGroup(String name, IEntityProcessGroup processGroup) {
-        getSession().refresh(processGroup);
-        return findByNameAndProcessGroup(name, processGroup.getCod());
+    public ParameterEntity findByNameAndModule(String name, IEntityModule module) {
+        getSession().refresh(module);
+        return findByNameAndModule(name, module.getCod());
     }
 
-    public ParameterEntity findByNameAndProcessGroup(String name, String codProcessGroup) {
+    public ParameterEntity findByNameAndModule(String name, String codModule) {
         Criteria c = getSession().createCriteria(tipo);
         c.add(Restrictions.eq("name", name));
-        c.add(Restrictions.eq("codProcessGroup", codProcessGroup));
+        c.add(Restrictions.eq("codModule", codModule));
         c.addOrder(Order.asc("cod"));
         c.setMaxResults(1);
         return (ParameterEntity) c.uniqueResult();

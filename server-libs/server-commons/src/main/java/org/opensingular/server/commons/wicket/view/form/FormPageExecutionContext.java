@@ -89,4 +89,8 @@ public class FormPageExecutionContext implements Serializable {
     public Class<? extends PetitionSender> getPetitionSender() {
         return petitionSender;
     }
+
+    public Optional<Long> getRequirementId() {
+        return actionContext.getRequirementId();
+    }
 }
