@@ -10,11 +10,10 @@ import java.util.List;
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
  */
-//TODO vinicius.nunes renomear para Box.....
-public interface ItemBoxFactory {
+public interface BoxDefinition {
 
     /**
-     * Checks is this {@link ItemBoxFactory} can be used under the given {@link IServerContext}
+     * Checks is this {@link BoxDefinition} can be used under the given {@link IServerContext}
      * this method can be called multiple times.
      * @param context
      *  the current {@link IServerContext}

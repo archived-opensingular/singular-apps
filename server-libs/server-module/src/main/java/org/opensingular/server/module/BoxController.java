@@ -4,7 +4,7 @@ import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.RequirementData;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -18,17 +18,17 @@ public class BoxController implements BoxInfo {
 
     private String                      id              = UUID.randomUUID().toString();
     private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
-    private ItemBoxFactory itemBoxFactory;
+    private BoxDefinition boxDefinition;
 
-    public BoxController(ItemBoxFactory itemBoxFactory, List<SingularRequirementRef> requirementRefs) {
+    public BoxController(BoxDefinition boxDefinition, List<SingularRequirementRef> requirementRefs) {
         for (SingularRequirementRef ref : requirementRefs) {
             this.requirementRefs.add(ref);
         }
-        this.itemBoxFactory = itemBoxFactory;
+        this.boxDefinition = boxDefinition;
     }
 
-    public BoxController(ItemBoxFactory itemBox) {
-        this.itemBoxFactory = itemBox;
+    public BoxController(BoxDefinition itemBox) {
+        this.boxDefinition = itemBox;
     }
 
     @Override
@@ -45,16 +45,16 @@ public class BoxController implements BoxInfo {
         this.requirementRefs.add(requirementRefs);
     }
 
-    ItemBoxFactory getItemBoxFactory() {
-        return itemBoxFactory;
+    BoxDefinition getBoxDefinition() {
+        return boxDefinition;
     }
 
     public Long countItens(QuickFilter filter) {
-        return itemBoxFactory.getDataProvider().count(filter, this);
+        return boxDefinition.getDataProvider().count(filter, this);
     }
 
     public BoxItemDataList searchItens(QuickFilter filter) {
-        BoxItemDataProvider             provider       = itemBoxFactory.getDataProvider();
+        BoxItemDataProvider             provider       = boxDefinition.getDataProvider();
         List<Map<String, Serializable>> itens          = provider.search(filter, this);
         BoxItemDataList                 result         = new BoxItemDataList();
 

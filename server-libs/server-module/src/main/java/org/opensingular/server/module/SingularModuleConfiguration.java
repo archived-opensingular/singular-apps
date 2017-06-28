@@ -7,7 +7,7 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
@@ -78,9 +78,9 @@ public class SingularModuleConfiguration {
     public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
         return itemBoxes
                 .stream()
-                .filter(boxCofiguration -> boxCofiguration.getItemBoxFactory().appliesTo(context))
+                .filter(boxCofiguration -> boxCofiguration.getBoxDefinition().appliesTo(context))
                 .map(stringItemBoxFactoryEntry -> {
-                    ItemBoxFactory factory = stringItemBoxFactoryEntry.getItemBoxFactory();
+                    BoxDefinition factory = stringItemBoxFactoryEntry.getBoxDefinition();
                     ItemBox itemBox = factory.build(context);
                     itemBox.setId(stringItemBoxFactoryEntry.getBoxId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());

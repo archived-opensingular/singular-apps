@@ -12,7 +12,7 @@ import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultInbox implements ItemBoxFactory {
+public class DefaultInbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {

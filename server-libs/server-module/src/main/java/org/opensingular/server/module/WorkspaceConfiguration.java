@@ -3,7 +3,7 @@ package org.opensingular.server.module;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -11,7 +11,7 @@ import java.util.List;
 
 
 /**
- * Configuration object for module {@link ItemBoxFactory} registrations.
+ * Configuration object for module {@link BoxDefinition} registrations.
  */
 public class WorkspaceConfiguration {
 
@@ -23,12 +23,12 @@ public class WorkspaceConfiguration {
     }
 
     /**
-     * Register a single {@link ItemBoxFactory}
+     * Register a single {@link BoxDefinition}
      *
      * @param itemBox the
      * @return
      */
-    public WorkspaceConfiguration addBox(ItemBoxFactory itemBox) {
+    public WorkspaceConfiguration addBox(BoxDefinition itemBox) {
         itemBoxes.add(new BoxController(itemBox));
         return this;
     }

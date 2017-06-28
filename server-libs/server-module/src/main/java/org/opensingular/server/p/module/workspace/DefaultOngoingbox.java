@@ -7,13 +7,13 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 import org.opensingular.server.p.commons.config.PServerContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultOngoingbox implements ItemBoxFactory {
+public class DefaultOngoingbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
