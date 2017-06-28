@@ -16,6 +16,18 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
@@ -37,6 +49,7 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -47,17 +60,6 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.client.RestTemplate;
-
-import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
@@ -94,6 +96,9 @@ public class Menu extends Panel implements Loggable {
         }
         SelecaoMenuItem selecaoMenuItem = new SelecaoMenuItem(categories);
         menu.addItem(selecaoMenuItem);
+        if(categories.size() == 1){
+            selecaoMenuItem.add(Shortcuts.$b.onConfigure( m -> m.setVisible(false)));
+        }
     }
 
     protected List<ModuleEntity> getSelectedCategoryOrAll() {
