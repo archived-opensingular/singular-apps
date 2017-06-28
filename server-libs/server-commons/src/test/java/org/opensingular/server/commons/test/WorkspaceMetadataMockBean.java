@@ -57,7 +57,6 @@ public class WorkspaceMetadataMockBean {
         teste.setName("Rascunho");
         teste.setDescription("Petições de rascunho");
         teste.setIcone(DefaultIcons.DOCS);
-        teste.setShowNewButton(true);
         teste.setShowDraft(true);
         teste.setId("1");
 //        teste.addAction(DefaultActions.EDIT)

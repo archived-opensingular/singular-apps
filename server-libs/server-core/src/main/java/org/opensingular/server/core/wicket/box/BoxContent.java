@@ -57,11 +57,13 @@ import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementData;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 
+import javax.inject.Inject;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -70,14 +72,12 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
-
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -105,8 +105,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     public Component buildNewPetitionButton(String id) {
-        if (isShowNew() && getMenu() != null) {
-            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), new PropertyModel<>(definitionModel, "requirements"));
+        IModel<List<RequirementData>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
+        if (requirementsModel.getObject().size() > 0 && getMenu() != null) {
+            return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewPetitionButton(id);
         }
@@ -472,10 +473,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     public IModel<?> getContentSubtitleModel() {
         return $m.ofValue(getItemBoxModelObject().getDescription());
-    }
-
-    public boolean isShowNew() {
-        return getItemBoxModelObject().isShowNewButton();
     }
 
     public boolean isShowQuickFilter() {

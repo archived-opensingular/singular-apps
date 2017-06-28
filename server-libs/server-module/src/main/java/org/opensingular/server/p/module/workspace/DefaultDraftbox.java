@@ -26,7 +26,6 @@ public class DefaultDraftbox implements BoxDefinition {
         rascunho.setName("Rascunho");
         rascunho.setDescription("Petições de rascunho");
         rascunho.setIcone(DefaultIcons.DOCS);
-        rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
         return rascunho;
     }
