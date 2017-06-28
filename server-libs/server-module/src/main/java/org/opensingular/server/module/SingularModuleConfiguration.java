@@ -1,9 +1,6 @@
 package org.opensingular.server.module;
 
 
-import org.jetbrains.annotations.NotNull;
-import org.opensingular.form.SFormUtil;
-import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.exception.SingularServerException;
@@ -20,8 +17,6 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import net.vidageek.mirror.dsl.Mirror;
-
 /**
  * Configuration bean from which the current module
  * requirements configurations are made available.
@@ -29,7 +24,7 @@ import net.vidageek.mirror.dsl.Mirror;
 @Named
 public class SingularModuleConfiguration {
 
-    private SingularModule module;
+    private SingularModule               module;
     private List<SingularRequirementRef> requirements;
     private List<BoxController>          itemBoxes;
 
@@ -61,9 +56,9 @@ public class SingularModuleConfiguration {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
         SingularModule module = null;
-        if(modules.stream().findFirst().isPresent()){
+        if (modules.stream().findFirst().isPresent()) {
             Optional<Class<? extends SingularModule>> first = modules.stream().findFirst();
-            if(first.isPresent()){
+            if (first.isPresent()) {
                 module = first.get().newInstance();
             }
         }
@@ -101,29 +96,6 @@ public class SingularModuleConfiguration {
 
     public List<SingularRequirementRef> getRequirements() {
         return requirements;
-    }
-
-    @Deprecated
-    public Optional<SingularRequirementRef> findRequirmentByFormType(SType<?> type) {
-        return findRequirmentByFormType(type.getName());
-    }
-
-    @Deprecated
-    public Optional<SingularRequirementRef> findRequirmentByFormType(String typeName) {
-        return requirements
-                .stream()
-                .filter(requirementRef -> isSameType(typeName, requirementRef))
-                .findFirst();
-    }
-
-    private boolean isSameType(String type, SingularRequirementRef requirementRef) {
-        return getMainFormName(requirementRef.getRequirement()).equals(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    @NotNull
-    private String getMainFormName(SingularRequirement requirement) {
-        return SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
     }
 
     public SingularModule getModule() {
