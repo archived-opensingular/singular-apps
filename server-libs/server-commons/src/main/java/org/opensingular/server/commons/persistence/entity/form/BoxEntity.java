@@ -49,16 +49,16 @@ public class BoxEntity extends BaseEntity<Long> {
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_MODULO")
+    @JoinColumn(name = "CO_MODULO", nullable = false)
     private ModuleEntity module;
 
-    @Column(name = "NO_CAIXA")
+    @Column(name = "NO_CAIXA", nullable = false)
     private String name;
 
     @Column(name = "DS_CAIXA")
     private String description;
 
-    @Column(name = "NO_ICONE")
+    @Column(name = "NO_ICONE", nullable = false)
     private String iconName;
 
     @Override
