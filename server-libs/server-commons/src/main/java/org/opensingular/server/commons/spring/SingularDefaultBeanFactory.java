@@ -34,7 +34,9 @@ import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormFieldService;
 import org.opensingular.form.service.IFormService;
+import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
+import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
@@ -61,8 +63,6 @@ import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
@@ -81,12 +81,23 @@ import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+
+
 
 
 @SuppressWarnings("rawtypes")
 public class SingularDefaultBeanFactory {
+
+    @Order(1)
+    @Bean
+    @Lazy(false)
+    public SpringServiceRegistry getSpringServiceRegistry() {
+        return new SpringServiceRegistry();
+    }
 
     @Primary
     @Bean(name = "peticionamentoUserDetailService")
@@ -135,12 +146,12 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)
-    public IAttachmentPersistenceHandler attachmentPersistenceService() {
+    public IAttachmentPersistenceHandler<IAttachmentRef> attachmentPersistenceService() {
         return new ServerAttachmentPersistenceService();
     }
 
     @Bean(name = SDocument.FILE_TEMPORARY_SERVICE)
-    public IAttachmentPersistenceHandler attachmentTemporaryService() {
+    public IAttachmentPersistenceHandler<IAttachmentRef> attachmentTemporaryService() {
         return new ServerTemporaryAttachmentPersistenceService();
     }
 

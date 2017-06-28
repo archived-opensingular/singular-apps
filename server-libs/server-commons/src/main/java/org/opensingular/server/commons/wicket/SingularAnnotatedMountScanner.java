@@ -15,11 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+/**
+ * Look for {@link MountPath} annotations in the entire classpath
+ * and mount the correspondent wicket page to the path.
+ * It also validates if the path is already registered an throws an {@link SingularServerException} in that case.
+ */
 public class SingularAnnotatedMountScanner {
 
     private List<Class<?>> lookupPages() {
         List<Class<?>> classes = SingularClassPathScanner
-                .INSTANCE
+                .get()
                 .findClassesAnnotatedWith(MountPath.class)
                 .stream()
                 .collect(Collectors.toList());
@@ -37,12 +42,12 @@ public class SingularAnnotatedMountScanner {
             for (String path : paths) {
                 path = StringUtils.removeStart(StringUtils.removeEnd(path, "/"), "/");
                 if (mountPaths.containsKey(path)) {
-                    throw SingularServerException
-                            .rethrow(
-                                    String
-                                            .format("Duas ou mais classes possuem o mesmo valor ou valor alternativo de @MountPath. Classes %s  e %s",
-                                                    clazz.getName(),
-                                                    mountPaths.get(path).getName()));
+                    throw new SingularServerException(
+                            String
+                                    .format("Duas ou mais classes possuem o mesmo valor ou valor alternativo de @MountPath. Classes %s  e %s",
+                                            clazz.getName(),
+                                            mountPaths.get(path).getName())
+                    );
                 }
                 mountPaths.put(path, clazz);
             }

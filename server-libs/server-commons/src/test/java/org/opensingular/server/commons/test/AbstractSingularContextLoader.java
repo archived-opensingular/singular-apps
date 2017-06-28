@@ -17,6 +17,7 @@ package org.opensingular.server.commons.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -106,6 +107,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      */
     @Override
     public final AnnotationConfigWebApplicationContext loadContext(MergedContextConfiguration mergedConfig) throws Exception {
+        SingularContextSetup.reset();
 
         if (!(mergedConfig instanceof WebMergedContextConfiguration)) {
             throw new IllegalArgumentException(String.format(
@@ -129,8 +131,8 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
         }
         configureWebResources(context, webMergedConfig);
         prepareContext(context, webMergedConfig);
-        loadBeanDefinitions(context, webMergedConfig);
         customizeContext(context, webMergedConfig);
+        loadBeanDefinitions(context, webMergedConfig);
         mockRequest();
         context.refresh();
         context.registerShutdownHook();

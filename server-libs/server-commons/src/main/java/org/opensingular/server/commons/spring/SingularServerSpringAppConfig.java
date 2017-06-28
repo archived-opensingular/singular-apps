@@ -18,20 +18,31 @@ package org.opensingular.server.commons.spring;
 
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.persistence.service.ProcessRetrieveService;
+import org.opensingular.form.context.ServiceRegistry;
+import org.opensingular.form.context.ServiceRegistryLocator;
 import org.opensingular.form.context.SingularFormContext;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.wicket.SingularFormConfigWicket;
 import org.opensingular.form.wicket.SingularFormConfigWicketImpl;
+import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.context.singleton.SpringBoundedSingletonStrategy;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.FilterType;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableCaching
@@ -43,12 +54,24 @@ import javax.annotation.Nonnull;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)
         })
-public class SingularServerSpringAppConfig  {
+public class SingularServerSpringAppConfig implements Loggable {
 
+    @Inject
+    ApplicationContextProvider applicationContextProvider;
+
+    @SuppressWarnings("AccessStaticViaInstance")
+    @PostConstruct
+    public void init(){
+        getLogger().info("initializing Singular-Spring configuration");
+        /*forced intialization */
+        getLogger().info("ApplicationContextProvider configured:" + applicationContextProvider.isConfigured());//NOSONAR
+    }
+
+    @Order(1)
     @Bean
-    @Nonnull
-    public SpringServiceRegistry getSpringServiceRegistry() {
-        return new SpringServiceRegistry();
+    @Lazy(false)
+    public SpringBoundedSingletonStrategy springBoundedSingletonStrategy(){
+        return new SpringBoundedSingletonStrategy();
     }
 
     @Bean

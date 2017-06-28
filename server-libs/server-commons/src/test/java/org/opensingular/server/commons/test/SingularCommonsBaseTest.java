@@ -11,6 +11,7 @@ import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.test.annotation.Commit;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -23,6 +24,7 @@ import javax.inject.Inject;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @ContextConfiguration(classes = CommonsConfigurationMock.class, loader = SingularCommonsContextLoader.class)
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @Transactional
 @Commit
 public abstract class SingularCommonsBaseTest implements Loggable {
