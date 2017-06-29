@@ -25,7 +25,7 @@ import javax.inject.Named;
 
 import org.apache.wicket.model.IModel;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.action.ActionResponse;
@@ -41,8 +41,8 @@ import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
 public class BoxService implements Loggable {
 
     @SuppressWarnings("unchecked")
-    public List<Actor> buscarUsuarios(ProcessGroupEntity processGroup, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
-        final String connectionURL = processGroup.getConnectionURL();
+    public List<Actor> buscarUsuarios(ModuleEntity module, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
+        final String connectionURL = module.getConnectionURL();
         final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
 
         try {
@@ -57,8 +57,8 @@ public class BoxService implements Loggable {
         return new RestTemplate().postForObject(url, arg, clazz);
     }
 
-    public long countQuickSearch(ProcessGroupEntity processGroup, ItemBox itemBox, QuickFilter filter) {
-        final String connectionURL = processGroup.getConnectionURL();
+    public long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+        final String connectionURL = module.getConnectionURL();
         final String url           = connectionURL + itemBox.getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
@@ -68,8 +68,8 @@ public class BoxService implements Loggable {
         }
     }
 
-    public List<BoxItemDataMap> quickSearch(ProcessGroupEntity processGroup, ItemBox itemBox, QuickFilter filter) {
-        final String connectionURL = processGroup.getConnectionURL();
+    public List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+        final String connectionURL = module.getConnectionURL();
         final String url           = connectionURL + itemBox.getSearchEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)

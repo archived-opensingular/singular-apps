@@ -42,14 +42,14 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -86,7 +86,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
      * Confirmation Form
      */
     protected Form<?> confirmationForm = new Form<>("confirmationForm");
-    private String           processGroupCod;
+    private String           moduleCod;
     private String           menu;
     private List<ProcessDTO> processes;
     private List<FormDTO>    forms;
@@ -114,11 +114,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
      * Modal de confirmação de ação
      */
     private BSModalBorder confirmationModal = new BSModalBorder("confirmationModal");
-    private ProcessGroupEntity processGroup;
+    private ModuleEntity module;
 
-    public AbstractBoxContent(String id, String processGroupCod, String menu) {
+    public AbstractBoxContent(String id, String moduleCod, String menu) {
         super(id);
-        this.processGroupCod = processGroupCod;
+        this.moduleCod = moduleCod;
         this.menu = menu;
     }
 
@@ -130,12 +130,12 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
     }
 
-    protected String getProcessGroupCod() {
-        return processGroupCod;
+    protected String getModuleCod() {
+        return moduleCod;
     }
 
-    public ProcessGroupEntity getProcessGroup() {
-        return processGroup;
+    public ModuleEntity getModule() {
+        return module;
     }
 
     protected Component buildNewPetitionButton(String id) {
@@ -160,15 +160,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     }
 
     protected void appendEditAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), Icone.PENCIL_SQUARE, this::criarLinkEdicao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), DefaultIcons.PENCIL_SQUARE, this::criarLinkEdicao);
     }
 
     protected void appendViewAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.view"), Icone.EYE, this::criarLinkVisualizacao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.view"), DefaultIcons.EYE, this::criarLinkVisualizacao);
     }
 
     protected void appendDeleteAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendAction(getMessage("label.table.column.delete"), Icone.MINUS, this::deleteSelected);
+        actionColumn.appendAction(getMessage("label.table.column.delete"), DefaultIcons.MINUS, this::deleteSelected);
     }
 
     protected BSDataTable<T, String> construirTabela(BSDataTableBuilder<T, String, IColumn<T, String>> builder) {
@@ -249,7 +249,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        processGroup = petitionService.findByProcessGroupCod(getProcessGroupCod());
+        module = petitionService.findByModuleCod(getModuleCod());
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(criarDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
@@ -324,7 +324,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
 
     public String getModuleContext() {
-        final String groupConnectionURL = getProcessGroup().getConnectionURL();
+        final String groupConnectionURL = getModule().getConnectionURL();
         try {
             final String path = new URL(groupConnectionURL).getPath();
             return path.substring(0, path.indexOf('/', 1));

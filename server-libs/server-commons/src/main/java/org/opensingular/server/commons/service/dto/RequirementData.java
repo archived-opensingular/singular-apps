@@ -4,22 +4,22 @@ import java.io.Serializable;
 
 public class RequirementData implements Serializable {
 
-    private String id;
+    private Long id;
     private String label;
 
     public RequirementData() {
     }
 
-    public RequirementData(String id) {
+    public RequirementData(Long id) {
         this.id = id;
     }
 
-    public RequirementData(String key, String requirementDescription) {
+    public RequirementData(Long key, String requirementDescription) {
         this.id = key;
         this.label = requirementDescription;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
@@ -27,7 +27,7 @@ public class RequirementData implements Serializable {
         return label;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
