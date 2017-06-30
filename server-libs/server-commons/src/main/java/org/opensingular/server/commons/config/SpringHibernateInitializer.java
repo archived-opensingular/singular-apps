@@ -19,7 +19,6 @@ package org.opensingular.server.commons.config;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.server.commons.spring.SingularServerSpringAppConfig;
-import org.opensingular.server.commons.spring.SpringFoxSwaggerConfig;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -44,17 +43,12 @@ public class SpringHibernateInitializer {
     public AnnotationConfigWebApplicationContext init(ServletContext ctx) {
         AnnotationConfigWebApplicationContext applicationContext = newApplicationContext();
         applicationContext.register(springConfigurationClass());
-        Optional.ofNullable(swaggerConfig()).ifPresent(applicationContext::register);
         applicationContext.register(beanFactory());
         Optional.ofNullable(persistenceConfiguration()).ifPresent(applicationContext::register);
         addSpringContextListener(ctx, applicationContext);
         addSpringRequestContextListener(ctx, applicationContext);
         addSpringMVCServlet(ctx, applicationContext);
         return applicationContext;
-    }
-
-    protected Class<? extends SpringFoxSwaggerConfig> swaggerConfig() {
-        return SpringFoxSwaggerConfig.class;
     }
 
     protected void addSpringContextListener(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
