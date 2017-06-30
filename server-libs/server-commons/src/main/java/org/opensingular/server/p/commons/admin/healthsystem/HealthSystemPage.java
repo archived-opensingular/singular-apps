@@ -6,7 +6,7 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import static org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage.HEALTH_SYSTEM_MOUNT_PATH;
 
-@MountPath(HEALTH_SYSTEM_MOUNT_PATH)
+
 public class HealthSystemPage extends Template {
 
 	public static final String HEALTH_SYSTEM_MOUNT_PATH = "healthsystem";
