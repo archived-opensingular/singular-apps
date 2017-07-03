@@ -16,13 +16,10 @@
 
 package org.opensingular.server.module.service;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.form.service.FormService;
+import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
@@ -34,12 +31,15 @@ import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 @Named
 @Transactional
 public class ModuleService implements Loggable {
 
     @Inject
-    private FormService formService;
+    private FormTypeService formTypeService;
 
     @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
@@ -62,7 +62,7 @@ public class ModuleService implements Loggable {
     public void save(SingularRequirementRef ref) {
         Class<? extends SType> mainForm = ref.getRequirement().getMainForm();
         SType<?>               tipo     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity         formType = formService.getOrCreateNewFormTypeEntity(tipo);
+        FormTypeEntity         formType = formTypeService.findFormTypeEntity(tipo);
 
         RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(ref.getRequirement(), formType);
         requirementDefinitionDAO.save(requirementDefinitionEntity);

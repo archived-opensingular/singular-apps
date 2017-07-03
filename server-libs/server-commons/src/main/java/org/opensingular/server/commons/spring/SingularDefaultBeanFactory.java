@@ -29,6 +29,7 @@ import org.opensingular.form.persistence.dao.FormDAO;
 import org.opensingular.form.persistence.dao.FormTypeDAO;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.service.FormService;
+import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
@@ -45,8 +46,6 @@ import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
@@ -54,6 +53,8 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionContentHisto
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
+import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultPetitionSender;
@@ -84,8 +85,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
-
-
 
 
 @SuppressWarnings("rawtypes")
@@ -172,6 +171,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IFormService formService() {
         return new FormService();
+    }
+
+    @Bean
+    public FormTypeService formTypeService() {
+        return new FormTypeService();
     }
 
     @Bean
@@ -316,7 +320,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public DefaultPetitionSender defaultPetitionSender(){
+    public DefaultPetitionSender defaultPetitionSender() {
         return new DefaultPetitionSender();
     }
 
