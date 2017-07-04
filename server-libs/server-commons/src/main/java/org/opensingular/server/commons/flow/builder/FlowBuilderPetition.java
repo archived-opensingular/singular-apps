@@ -23,13 +23,13 @@ import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STaskJava;
-import org.opensingular.flow.core.STaskPeople;
+import org.opensingular.flow.core.STaskHuman;
 import org.opensingular.flow.core.STaskWait;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.UserRoleSettingStrategy;
 import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderJava;
-import org.opensingular.flow.core.builder.BuilderPeople;
+import org.opensingular.flow.core.builder.BuilderHuman;
 import org.opensingular.flow.core.builder.BuilderProcessRole;
 import org.opensingular.flow.core.builder.BuilderTask;
 import org.opensingular.flow.core.builder.BuilderWait;
@@ -46,7 +46,7 @@ import org.opensingular.lib.commons.base.SingularUtil;
  */
 public class FlowBuilderPetition extends
         FlowBuilder<PetitionProcessDefinition<?>, FlowMapPetition, FlowBuilderPetition.BuilderTaskPetition,
-                FlowBuilderPetition.BuilderJavaTaskPetition, FlowBuilderPetition.BuilderPeopleTaskPetition,
+                FlowBuilderPetition.BuilderJavaTaskPetition, FlowBuilderPetition.BuilderHumanTaskPetition,
                 FlowBuilderPetition.BuilderWaitTaskPetition, FlowBuilderPetition.BuilderEndTaskPetition,
                 FlowBuilderPetition.BuilderStartPetition, FlowBuilderPetition.BuilderTransitionPetition,
                 FlowBuilderPetition.BuilderRolePetition, ITaskDefinition> {
@@ -71,8 +71,8 @@ public class FlowBuilderPetition extends
     }
 
     @Override
-    protected BuilderPeopleTaskPetition newPeopleTask(STaskPeople taskPeople) {
-        return new BuilderPeopleTaskPetition(this, (STaskPeoplePetition) taskPeople);
+    protected BuilderHumanTaskPetition newHumanTask(STaskHuman taskHuman) {
+        return new BuilderHumanTaskPetition(this, (STaskHumanPetition) taskHuman);
     }
 
     @Override
@@ -114,8 +114,8 @@ public class FlowBuilderPetition extends
                 userRoleSettingStrategy, automaticUserAllocation);
     }
 
-    //    public BuilderPeopleTaskPetition addPeopleTask(ITaskDefinition definition, DireitoProjeto direitoNecessario) {
-    //        return addPeopleTask(definition, EstrategiaAcessoTaskSimples.of(direitoNecessario));
+    //    public BuilderHumanTaskPetition addHumanTask(ITaskDefinition definition, DireitoProjeto direitoNecessario) {
+    //        return addHumanTask(definition, EstrategiaAcessoTaskSimples.of(direitoNecessario));
     //    }
 
     /**
@@ -232,56 +232,56 @@ public class FlowBuilderPetition extends
     }
 
     /**
-     * Builder (configurador) de {@link STaskPeople} especializado em requerimentos.
+     * Builder (configurador) de {@link STaskHuman} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
-     * <p>Trabalha com {@link STaskPeoplePetition}.</p>
+     * <p>Trabalha com {@link STaskHumanPetition}.</p>
      */
-    public static class BuilderPeopleTaskPetition
-            extends ImplBuilderTaskPetition<BuilderPeopleTaskPetition, STaskPeople>
-            implements BuilderPeople<BuilderPeopleTaskPetition> {
+    public static class BuilderHumanTaskPetition
+            extends ImplBuilderTaskPetition<BuilderHumanTaskPetition, STaskHuman>
+            implements BuilderHuman<BuilderHumanTaskPetition> {
 
-        BuilderPeopleTaskPetition(FlowBuilderPetition flowBuilder, STaskPeoplePetition task) {
+        BuilderHumanTaskPetition(FlowBuilderPetition flowBuilder, STaskHumanPetition task) {
             super(flowBuilder, task);
         }
 
-        //        public BuilderPeopleTaskPetition mapearClasseTela(Class<?> classeTela) {
+        //        public BuilderHumanTaskPetition mapearClasseTela(Class<?> classeTela) {
         //            return withExecutionPage(TelaExecucao.of(classeTela));
         //        }
 
-        //        public BuilderPeopleTaskPetition mapearTela(Class<? extends WebActionInstanciaMBPM> classeTela) {
+        //        public BuilderHumanTaskPetition mapearTela(Class<? extends WebActionInstanciaMBPM> classeTela) {
         //            return mapearClasseTela(classeTela);
         //        }
 
-        //        public BuilderPeopleTaskPetition mapearView(Class<? extends RelatorioAlocpro> classeTela) {
+        //        public BuilderHumanTaskPetition mapearView(Class<? extends RelatorioAlocpro> classeTela) {
         //            return mapearClasseTela(classeTela);
         //        }
 
-        //        public BuilderPeopleTaskPetition mapearTelaModeloFormularioEditar() {
+        //        public BuilderHumanTaskPetition mapearTelaModeloFormularioEditar() {
         //            return mapearClasseTela(ExecucaoDemandaFormularioEditarPage.class);
         //        }
 
-        //        public BuilderPeopleTaskPetition mapearTelaVisualizarSolicitacao() {
+        //        public BuilderHumanTaskPetition mapearTelaVisualizarSolicitacao() {
         //            return mapearClasseTela(ExecucaoDemandaVisualizarPage.class);
         //        }
 
-        //        public BuilderPeopleTaskPetition comPrazoDiasUteis(final int qtdDias) {
+        //        public BuilderHumanTaskPetition comPrazoDiasUteis(final int qtdDias) {
         //            return withTargetDate((processInstance, taskInstance) -> DiaSemanaUtil
         //                    .somarDiasUteis(taskInstance.getBeginDate(), qtdDias));
         //        }
 
-        //        public BuilderPeopleTaskPetition comAlerta(EstrategiaAlertaTarefa estrategiaAlerta) {
+        //        public BuilderHumanTaskPetition comAlerta(EstrategiaAlertaTarefa estrategiaAlerta) {
         //            getTask().setAlerta(estrategiaAlerta);
         //            return self();
         //        }
 
-        //        public BuilderPeopleTaskPetition setApareceNoPainelAtividades(Boolean valor) {
+        //        public BuilderHumanTaskPetition setApareceNoPainelAtividades(Boolean valor) {
         //            getTask().setMetaDataValue(PetitionProcessDefinition.PROP_EXIBIR_PAINEL_ATVS, valor);
         //            return self();
         //        }
 
         @Override
-        public STaskPeoplePetition getTask() {
-            return (STaskPeoplePetition) super.getTask();
+        public STaskHumanPetition getTask() {
+            return (STaskHumanPetition) super.getTask();
         }
     }
 

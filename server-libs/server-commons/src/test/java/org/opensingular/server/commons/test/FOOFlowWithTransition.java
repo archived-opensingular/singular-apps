@@ -29,11 +29,11 @@ public class FOOFlowWithTransition extends ProcessDefinition<ProcessInstance>{
         ITaskDefinition middlebarDef = () -> "Transition bar";
         ITaskDefinition endbarDef = () -> "End bar";
 
-        flow.addPeopleTask(startbarDef)
+        flow.addHumanTask(startbarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy());
 
-        flow.addPeopleTask(middlebarDef)
+        flow.addHumanTask(middlebarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy());
 

@@ -27,7 +27,7 @@ public class FooFlow extends ProcessDefinition<ProcessInstance> {
         ITaskDefinition endbarDef = () -> "No more bar";
 
         flow.addEnd(endbarDef);
-        flow.addPeopleTask(dobarDef)
+        flow.addHumanTask(dobarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy())
                 .go(endbarDef);
