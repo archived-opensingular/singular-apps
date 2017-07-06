@@ -31,10 +31,10 @@ public class AdministrationAuthenticationProviderTest {
         ParameterService       parameterService  = Mockito.mock(ParameterService.class);
         ParameterEntity        userParameterEntity = new ParameterEntity();
         userParameterEntity.setValue("USER");
-        Mockito.when(parameterService.findByNameAndProcessGroup(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));
+        Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));
         ParameterEntity passParameterEntity = new ParameterEntity();
         passParameterEntity.setValue(credentialChecker.getSHA1("123456"));
-        Mockito.when(parameterService.findByNameAndProcessGroup(DatabaseAdminCredentialChecker.PARAM_PASSHASHADMIN, "FooCategory")).thenReturn(Optional.of(passParameterEntity));
+        Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_PASSHASHADMIN, "FooCategory")).thenReturn(Optional.of(passParameterEntity));
         new Mirror().on(credentialChecker).set().field("parameterService").withValue(parameterService);
 
         administrationAuthenticationProvider = new AdministrationAuthenticationProvider(credentialChecker, ServerContext.WORKLIST);

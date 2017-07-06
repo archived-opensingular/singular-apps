@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 
 import javax.annotation.Nonnull;
 
@@ -35,7 +36,9 @@ public class DefaultPetitionService extends PetitionService<PetitionEntity, Peti
 
     @Override
     @Nonnull
-    protected PetitionEntity newPetitionEntity() {
-        return new PetitionEntity();
+    protected PetitionEntity newPetitionEntityFor(RequirementDefinitionEntity requirementDefinitionEntity) {
+        PetitionEntity petitionEntity = new PetitionEntity();
+        petitionEntity.setRequirementDefinitionEntity(requirementDefinitionEntity);
+        return petitionEntity;
     }
 }

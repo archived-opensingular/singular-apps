@@ -13,21 +13,21 @@ import java.util.Optional;
 public class AdminCredentialCheckerTest {
 
     @Test
-    public void testCheckWithNullProcessGroup() {
+    public void testCheckWithNullModule() {
         AdminCredentialChecker credentialChecker = new DatabaseAdminCredentialChecker(null);
         Assert.assertFalse(credentialChecker.check("FooUser", "BarPass"));
     }
 
     @Test
-    public void testCheckWithProcessGroup() {
+    public void testCheckWithModule() {
         AdminCredentialChecker credentialChecker   = new DatabaseAdminCredentialChecker("FooCategory");
         ParameterService       parameterService    = Mockito.mock(ParameterService.class);
         ParameterEntity        userParameterEntity = new ParameterEntity();
         userParameterEntity.setValue("FooUser");
-        Mockito.when(parameterService.findByNameAndProcessGroup(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));
+        Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));
         ParameterEntity passParameterEntity = new ParameterEntity();
         passParameterEntity.setValue(credentialChecker.getSHA1("BarPass"));
-        Mockito.when(parameterService.findByNameAndProcessGroup(DatabaseAdminCredentialChecker.PARAM_PASSHASHADMIN, "FooCategory")).thenReturn(Optional.of(passParameterEntity));
+        Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_PASSHASHADMIN, "FooCategory")).thenReturn(Optional.of(passParameterEntity));
         new Mirror().on(credentialChecker).set().field("parameterService").withValue(parameterService);
 
         Assert.assertTrue(credentialChecker.check("FooUser", "BarPass"));

@@ -21,6 +21,7 @@ import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.ACTION;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {
@@ -36,6 +37,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
 
     @Before
     public void setUp() {
+        super.setUp();
         reset(authorizationService);
     }
 
@@ -46,6 +48,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.StypeFoo");
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, requirementDefinitionEntity.getCod());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(AccessDeniedPage.class);
     }
@@ -58,6 +61,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.StypeFoo");
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, requirementDefinitionEntity.getCod());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(FormPage.class);
     }

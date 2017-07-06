@@ -35,6 +35,6 @@ public abstract class FlowInitializer {
         applicationContext.register(singularFlowConfiguration());
     }
 
-    public abstract String processGroupCod();
+    public abstract String moduleCod();
 
 }

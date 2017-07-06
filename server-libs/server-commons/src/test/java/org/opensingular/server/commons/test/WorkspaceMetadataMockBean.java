@@ -1,9 +1,9 @@
 package org.opensingular.server.commons.test;
 
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
+import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.DatatableField;
@@ -27,10 +27,10 @@ import java.util.Map;
 public class WorkspaceMetadataMockBean {
 
 
-    private Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> map = new HashMap<>();
+    private Map<ModuleEntity, WorkspaceConfigurationMetadata> map = new HashMap<>();
 
     @Inject
-    private ProcessGroupDAO processGroupDAO;
+    private ModuleDAO moduleDAO;
 
     @Inject
     private PlatformTransactionManager transactionManager;
@@ -56,8 +56,7 @@ public class WorkspaceMetadataMockBean {
         final ItemBox     teste             = new ItemBox();
         teste.setName("Rascunho");
         teste.setDescription("Petições de rascunho");
-        teste.setIcone(Icone.DOCS);
-        teste.setShowNewButton(true);
+        teste.setIcone(DefaultIcons.DOCS);
         teste.setShowDraft(true);
         teste.setId("1");
 //        teste.addAction(DefaultActions.EDIT)
@@ -67,7 +66,7 @@ public class WorkspaceMetadataMockBean {
         boxDefinitionData.setRequirements(new ArrayList<>());
         RequirementData req = new RequirementData();
         req.setLabel("Super req");
-        req.setId("superreq");
+        req.setId(2L);
         boxDefinitionData.getRequirements().add(req);
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);
@@ -86,22 +85,22 @@ public class WorkspaceMetadataMockBean {
 
     private void configBoxesMock() {
         try {
-            ProcessGroupEntity processGroupEntity = new ProcessGroupEntity();
+            ModuleEntity moduleEntity = new ModuleEntity();
             new TransactionTemplate(transactionManager).execute((transactionStatus) -> {
-                processGroupEntity.setName("Grupo Processo Teste");
-                processGroupEntity.setCod("GRUPO_TESTE");
-                processGroupEntity.setConnectionURL("http://localhost:8080/rest/nada");
-                processGroupDAO.saveOrUpdate(processGroupEntity);
+                moduleEntity.setName("Grupo Processo Teste");
+                moduleEntity.setCod("GRUPO_TESTE");
+                moduleEntity.setConnectionURL("http://localhost:8080/rest/nada");
+                moduleDAO.saveOrUpdate(moduleEntity);
                 return null;
             });
-            map.put(processGroupEntity, gimmeSomeMock());
+            map.put(moduleEntity, gimmeSomeMock());
 
         } catch (Throwable t) {
             throw new RuntimeException(t);
         }
     }
 
-    public Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> getMap() {
+    public Map<ModuleEntity, WorkspaceConfigurationMetadata> getMap() {
         return new LinkedHashMap<>(map);
     }
 }

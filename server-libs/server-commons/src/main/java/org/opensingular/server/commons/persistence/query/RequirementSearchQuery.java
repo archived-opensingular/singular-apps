@@ -1,14 +1,10 @@
 package org.opensingular.server.commons.persistence.query;
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.EntityPath;
-import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.dsl.BeanPath;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
 import org.opensingular.server.commons.query.SelectBuilder;
 
 import java.util.Map;
@@ -34,7 +30,7 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         } else {
             select(select.build());
         }
-        where(whereClause.and(quickFilterWhereClause.getValue()));
+        where(whereClause.and(quickFilterWhereClause));
         return createQuery();
     }
 

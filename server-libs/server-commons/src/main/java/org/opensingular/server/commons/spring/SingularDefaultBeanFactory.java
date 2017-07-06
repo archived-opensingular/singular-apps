@@ -33,6 +33,7 @@ import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.IFormFieldService;
+import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
@@ -41,6 +42,7 @@ import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceH
 import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.auth.DatabaseAdminCredentialChecker;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
+import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
@@ -48,13 +50,15 @@ import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
-import org.opensingular.server.commons.persistence.dao.flow.ProcessGroupDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
 import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionContentHistoryDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
+import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
+import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultPetitionSender;
@@ -85,8 +89,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
-
-
 
 
 @SuppressWarnings("rawtypes")
@@ -141,8 +143,13 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ProcessGroupDAO grupoProcessoDAO() {
-        return new ProcessGroupDAO();
+    public ModuleDAO moduleDAO() {
+        return new ModuleDAO();
+    }
+
+    @Bean
+    public BoxDAO boxDAO() {
+        return new BoxDAO();
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)
@@ -168,6 +175,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IFormService formService() {
         return new FormService();
+    }
+
+    @Bean
+    public FormTypeService formTypeService() {
+        return new FormTypeService();
     }
 
     @Bean
@@ -238,6 +250,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public EmailAddresseeDao<?> emailAddresseeDao() {
         return new EmailAddresseeDao<>();
+    }
+
+    @Bean
+    public RequirementDefinitionDAO<?> requirementDefinitionDAO() {
+        return new RequirementDefinitionDAO<>();
     }
 
     @Bean
@@ -322,8 +339,12 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public DefaultPetitionSender defaultPetitionSender(){
+    public DefaultPetitionSender defaultPetitionSender() {
         return new DefaultPetitionSender();
     }
 
+    @Bean
+    public ServerStartExecutorBean lifecycle() {
+        return new ServerStartExecutorBean();
+    }
 }

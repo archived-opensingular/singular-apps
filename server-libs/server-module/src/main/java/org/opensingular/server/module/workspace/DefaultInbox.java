@@ -1,6 +1,6 @@
 package org.opensingular.server.module.workspace;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
@@ -12,7 +12,7 @@ import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultInbox implements ItemBoxFactory {
+public class DefaultInbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
@@ -24,7 +24,7 @@ public class DefaultInbox implements ItemBoxFactory {
         final ItemBox caixaEntrada = new ItemBox();
         caixaEntrada.setName("Caixa de Entrada");
         caixaEntrada.setDescription("Petições aguardando ação do usuário");
-        caixaEntrada.setIcone(Icone.DOCS);
+        caixaEntrada.setIcone(DefaultIcons.DOCS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
         return caixaEntrada;
     }

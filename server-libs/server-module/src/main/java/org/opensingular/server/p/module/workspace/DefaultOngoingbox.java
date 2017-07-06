@@ -1,19 +1,19 @@
 package org.opensingular.server.p.module.workspace;
 
-import org.opensingular.lib.wicket.util.resource.Icone;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 import org.opensingular.server.p.commons.config.PServerContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultOngoingbox implements ItemBoxFactory {
+public class DefaultOngoingbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
@@ -25,7 +25,7 @@ public class DefaultOngoingbox implements ItemBoxFactory {
         final ItemBox acompanhamento = new ItemBox();
         acompanhamento.setName("Acompanhamento");
         acompanhamento.setDescription("Requerimentos em andamento");
-        acompanhamento.setIcone(Icone.CLOCK);
+        acompanhamento.setIcone(DefaultIcons.CLOCK);
         return acompanhamento;
     }
 

@@ -2,7 +2,7 @@ package org.opensingular.server.module;
 
 /**
  * Main definition of a requirement Module.
- * Every singular server module must define exactly on {@link SingularModule}.
+ * Every singular server module must define exactly one {@link SingularModule}.
  */
 public interface SingularModule {
 
@@ -11,7 +11,7 @@ public interface SingularModule {
      * Textual key representing this module.
      * Should be a valid java identifier
      */
-    String category();
+    String abbreviation();
 
     /**
      *
