@@ -179,55 +179,55 @@ public class FlowBuilderPetition extends
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSegunda
         // (ImplTaskBlock<T> implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 1));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 1));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalTerca(ImplTaskBlock<T>
         // implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 2));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 2));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalQuarta
         // (ImplTaskBlock<T> implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 3));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 3));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalQuinta
         // (ImplTaskBlock<T> implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 4));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 4));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSexta(ImplTaskBlock<T>
         // implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 5));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 5));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSabado
         // (ImplTaskBlock<T> implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 6));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 6));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalDomingo
         // (ImplTaskBlock<T> implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 0));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 0));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoMensal(ImplTaskBlock<T>
         // implBloco,
         //                int diaMes, int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildMonthly(diaMes, hora, minuto));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildMonthly(diaMes, hora, minuto));
         //        }
         //
         //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoDiario(ImplTaskBlock<T>
         // implBloco,
         //                int hora, int minuto) {
-        //            return callByBlock(implBloco, ScheduleDataBuilder.buildDaily(hora, minuto));
+        //            return batchCall(implBloco, ScheduleDataBuilder.buildDaily(hora, minuto));
         //        }
     }
 
