@@ -26,9 +26,7 @@ import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.eq;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class BoxDefinitionDataServiceTest {
@@ -52,6 +50,8 @@ public class BoxDefinitionDataServiceTest {
 
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
+        when(context.getBean(AuthorizationService.class)).thenReturn(authorizationService);
+
     }
 
     @Before
