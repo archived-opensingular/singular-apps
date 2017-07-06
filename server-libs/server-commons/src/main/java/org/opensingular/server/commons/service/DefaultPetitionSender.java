@@ -1,15 +1,16 @@
 package org.opensingular.server.commons.service;
 
+import java.util.List;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.List;
 
 @Transactional
 public class DefaultPetitionSender implements PetitionSender {
@@ -25,11 +26,11 @@ public class DefaultPetitionSender implements PetitionSender {
         final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
         final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
 
+        petitionService.savePetitionHistory(petition, consolidatedDrafts);
         petitionService.onBeforeStartProcess(petition, instance, codResponsavel);
         ProcessInstance processInstance = petitionService.startNewProcess(petition, processDefinition);
         petitionService.onAfterStartProcess(petition, instance, codResponsavel, processInstance);
 
-        petitionService.savePetitionHistory(petition, consolidatedDrafts);
 
         return new PetitionSendedFeedback(petition);
     }
