@@ -42,9 +42,6 @@ public class RequirementDefinitionUpdaterExecutor {
     private ServerStartExecutorBean serverStartExecutorBean;
 
     @Inject
-    private BoxService boxService;
-
-    @Inject
     private ModuleService moduleService;
 
     @PostConstruct
