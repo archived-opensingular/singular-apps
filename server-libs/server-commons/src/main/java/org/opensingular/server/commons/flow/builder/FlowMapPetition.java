@@ -39,7 +39,7 @@ public class FlowMapPetition extends FlowMap {
     }
 
     @Override
-    public STaskPeoplePetition addPeopleTask(ITaskDefinition definition) {
-        return addTask(new STaskPeoplePetition(this, definition.getName(), definition.getKey()));
+    public STaskHumanPetition addHumanTask(ITaskDefinition definition) {
+        return addTask(new STaskHumanPetition(this, definition.getName(), definition.getKey()));
     }
 }

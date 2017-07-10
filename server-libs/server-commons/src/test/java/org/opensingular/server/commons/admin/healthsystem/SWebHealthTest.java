@@ -5,7 +5,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
-import org.opensingular.form.validation.IValidationError;
+import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
@@ -80,7 +80,7 @@ public class SWebHealthTest extends SingularCommonsBaseTest {
         url.getField(0).setValue("ip://localhost:80");
 
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonWeb").getTarget(), "click");
-        Collection<IValidationError> validationErrors = url.getField(0).getValidationErrors();
+        Collection<ValidationError> validationErrors = url.getField(0).getValidationErrors();
         String message = validationErrors.stream().map(ve -> ve.getMessage() + "\n").reduce("", String::concat);
         Assert.assertEquals(message,0, url.getField(0).getValidationErrors().size());
     }

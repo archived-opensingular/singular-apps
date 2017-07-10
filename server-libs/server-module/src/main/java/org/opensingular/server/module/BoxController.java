@@ -57,14 +57,20 @@ public class BoxController implements BoxInfo {
         BoxItemDataProvider             provider       = boxDefinition.getDataProvider();
         List<Map<String, Serializable>> itens          = provider.search(filter, this);
         BoxItemDataList                 result         = new BoxItemDataList();
+        ActionProvider                  actionProvider = addBuiltInDecorators(provider.getActionProvider());
 
         for (Map<String, Serializable> item : itens) {
             BoxItemDataImpl line = new BoxItemDataImpl();
             line.setRawMap(item);
-            line.setBoxItemActions(provider.getActionProvider().getLineActions(this, line, filter));
+            line.setBoxItemActions(actionProvider.getLineActions(this, line, filter));
             result.getBoxItemDataList().add(line);
         }
         return result;
+    }
+
+    protected ActionProvider addBuiltInDecorators(ActionProvider actionProvider) {
+        return
+                new AuthorizationAwareActionProviderDecorator(actionProvider);
     }
 
 
