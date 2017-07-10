@@ -29,7 +29,7 @@ import org.opensingular.flow.core.entity.TransitionType;
  */
 public class FlowMapPetition extends FlowMap {
 
-    public FlowMapPetition(PetitionProcessDefinition<?> processDefinition) {
+    public FlowMapPetition(RequirementFlowDefinition<?> processDefinition) {
         super(processDefinition);
     }
 

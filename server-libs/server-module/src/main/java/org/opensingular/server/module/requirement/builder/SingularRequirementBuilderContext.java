@@ -1,6 +1,6 @@
 package org.opensingular.server.module.requirement.builder;
 
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
 import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
@@ -12,9 +12,9 @@ public class SingularRequirementBuilderContext {
 
     private String name;
     private Class<? extends SType<?>> mainForm;
-    private Set<Class<? extends ProcessDefinition>> flowClasses = new LinkedHashSet<>();
+    private Set<Class<? extends FlowDefinition>> flowClasses = new LinkedHashSet<>();
     private Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage;
-    private Class<? extends PetitionSender> petitionSenderBeanClass;
+    private Class<? extends PetitionSender>         petitionSenderBeanClass;
 
     public String getName() {
         return name;
@@ -34,11 +34,11 @@ public class SingularRequirementBuilderContext {
         return mainForm;
     }
 
-    public Set<Class<? extends ProcessDefinition>> getFlowClasses() {
+    public Set<Class<? extends FlowDefinition>> getFlowClasses() {
         return flowClasses;
     }
 
-    public SingularRequirementBuilderContext addFlowClass(Class<? extends ProcessDefinition> flowClass) {
+    public SingularRequirementBuilderContext addFlowClass(Class<? extends FlowDefinition> flowClass) {
         this.flowClasses.add(flowClass);
         return this;
     }

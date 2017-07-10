@@ -17,8 +17,8 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
@@ -44,7 +44,7 @@ public class PetitionInstance implements Serializable {
 
     private final PetitionEntity petitionEntity;
 
-    private transient ProcessInstance processInstance;
+    private transient FlowInstance flowInstance;
 
     private transient SIComposite mainForm;
 
@@ -52,15 +52,15 @@ public class PetitionInstance implements Serializable {
         this.petitionEntity = Objects.requireNonNull(petitionEntity);
     }
 
-    public ProcessInstance getProcessInstance() {
-        if (processInstance == null && petitionEntity.getProcessInstanceEntity() != null) {
-            processInstance = PetitionUtil.getProcessInstance(petitionEntity);
+    public FlowInstance getFlowInstance() {
+        if (flowInstance == null && petitionEntity.getProcessInstanceEntity() != null) {
+            flowInstance = PetitionUtil.getProcessInstance(petitionEntity);
         }
-        return processInstance;
+        return flowInstance;
     }
 
-    final void setProcessInstance(ProcessInstance processInstance) {
-        this.processInstance = processInstance;
+    final void setFlowInstance(FlowInstance flowInstance) {
+        this.flowInstance = flowInstance;
     }
 
     public boolean hasProcessInstance() {
@@ -83,7 +83,7 @@ public class PetitionInstance implements Serializable {
     @Nonnull
     public <I extends SInstance> I getMainFormAndCast(@Nonnull Class<I> expectedType) {
         SIComposite i = getMainForm();
-        if(expectedType.isAssignableFrom(i.getClass())) {
+        if (expectedType.isAssignableFrom(i.getClass())) {
             return (I) i;
         }
         throw new SingularFormException(
@@ -95,16 +95,16 @@ public class PetitionInstance implements Serializable {
         return ApplicationContextProvider.get().getBean(PetitionService.class);
     }
 
-    public ProcessDefinition<?> getProcessDefinition() {
+    public FlowDefinition<?> getProcessDefinition() {
         return PetitionUtil.getProcessDefinition(petitionEntity);
     }
 
-    public void setProcessDefinition(Class<? extends ProcessDefinition> clazz) {
-        ProcessDefinition<?> processDefinition = Flow.getProcessDefinition(clazz);
-        petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) processDefinition.getEntityProcessDefinition());
+    public void setProcessDefinition(Class<? extends FlowDefinition> clazz) {
+        FlowDefinition<?> flowDefinition = Flow.getProcessDefinition(clazz);
+        petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) flowDefinition.getEntityProcessDefinition());
     }
 
-    public Optional<ProcessDefinition<?>> getProcessDefinitionOpt() {
+    public Optional<FlowDefinition<?>> getProcessDefinitionOpt() {
         return PetitionUtil.getProcessDefinitionOpt(petitionEntity);
     }
 
@@ -113,11 +113,11 @@ public class PetitionInstance implements Serializable {
     }
 
     public TaskInstance getCurrentTaskOrException() {
-        return getProcessInstance().getCurrentTaskOrException();
+        return getFlowInstance().getCurrentTaskOrException();
     }
 
     public String getCurrentTaskNameOrException() {
-        return getProcessInstance().getCurrentTaskOrException().getName();
+        return getFlowInstance().getCurrentTaskOrException().getName();
     }
 
     public Optional<PetitionInstance> getParentPetition() {
@@ -133,16 +133,16 @@ public class PetitionInstance implements Serializable {
         petitionEntity.setDescription(description);
     }
 
-    public void setNewProcess(ProcessInstance newPrcesssInstance) {
+    public void setNewProcess(FlowInstance newPrcesssInstance) {
         ProcessInstanceEntity processEntity = newPrcesssInstance.saveEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
 
     }
 
-    public ProcessInstance startNewProcess(ProcessDefinition processDefinition) {
-        processInstance = getPetitionService().startNewProcess(this, processDefinition);
-        return processInstance;
+    public FlowInstance startNewProcess(FlowDefinition flowDefinition) {
+        flowInstance = getPetitionService().startNewProcess(this, flowDefinition);
+        return flowInstance;
     }
 
     public PetitionEntity getEntity() {

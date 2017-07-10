@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.spring.security;
 
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.base.SingularUtil;
@@ -96,7 +96,7 @@ public class PermissionResolverService implements Loggable {
         List<SingularPermission> permissions = new ArrayList<>();
 
         if (singularFlowConfigurationBean.isPresent()) {
-            for (ProcessDefinition pd : singularFlowConfigurationBean.get().getDefinitions()) {
+            for (FlowDefinition pd : singularFlowConfigurationBean.get().getDefinitions()) {
                 permissions.addAll(listPermissions(pd.getClass()));
             }
         }
@@ -105,7 +105,7 @@ public class PermissionResolverService implements Loggable {
     }
 
     @SingularCacheForever
-    private List<? extends SingularPermission> listPermissions(Class<? extends ProcessDefinition> clazz) {
+    private List<? extends SingularPermission> listPermissions(Class<? extends FlowDefinition> clazz) {
         return Collections.emptyList();
     }
 
