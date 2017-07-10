@@ -26,11 +26,11 @@ public class DefaultPetitionSender implements PetitionSender {
         final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
         final ProcessDefinition<?> processDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
 
-        petitionService.savePetitionHistory(petition, consolidatedDrafts);
         petitionService.onBeforeStartProcess(petition, instance, codResponsavel);
         ProcessInstance processInstance = petitionService.startNewProcess(petition, processDefinition);
         petitionService.onAfterStartProcess(petition, instance, codResponsavel, processInstance);
 
+        petitionService.savePetitionHistory(petition, consolidatedDrafts);
 
         return new PetitionSendedFeedback(petition);
     }
