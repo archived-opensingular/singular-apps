@@ -16,20 +16,20 @@
 
 package org.opensingular.server.commons.flow.builder;
 
-import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.SProcessRole;
 import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
-import org.opensingular.flow.core.STaskJava;
 import org.opensingular.flow.core.STaskHuman;
+import org.opensingular.flow.core.STaskJava;
 import org.opensingular.flow.core.STaskWait;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.UserRoleSettingStrategy;
 import org.opensingular.flow.core.builder.BuilderEnd;
-import org.opensingular.flow.core.builder.BuilderJava;
 import org.opensingular.flow.core.builder.BuilderHuman;
+import org.opensingular.flow.core.builder.BuilderJava;
 import org.opensingular.flow.core.builder.BuilderProcessRole;
 import org.opensingular.flow.core.builder.BuilderTask;
 import org.opensingular.flow.core.builder.BuilderWait;
@@ -55,7 +55,9 @@ public class RequirementFlowBuilder extends
         super(processDefinition);
     }
 
-    /** Cria um novo FlowBuilderPetition para a definição de processo em questão. */
+    /**
+     * Cria um novo FlowBuilderPetition para a definição de processo em questão.
+     */
     public static RequirementFlowBuilder of(RequirementFlowDefinition<?> processDefinition) {
         return new RequirementFlowBuilder(processDefinition);
     }
@@ -86,7 +88,7 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
-    protected BuilderStartPetition newStart(SStart start) {
+    protected BuilderStartPetition newStartTask(SStart start) {
         return new BuilderStartPetition(start);
     }
 
@@ -108,15 +110,11 @@ public class RequirementFlowBuilder extends
 
     @Override
     public BuilderRolePetition addRoleDefinition(String description,
-            UserRoleSettingStrategy<? extends FlowInstance> userRoleSettingStrategy,
-            boolean automaticUserAllocation) {
+                                                 UserRoleSettingStrategy<? extends FlowInstance> userRoleSettingStrategy,
+                                                 boolean automaticUserAllocation) {
         return addRoleDefinition(description, SingularUtil.convertToJavaIdentity(description, true, false),
                 userRoleSettingStrategy, automaticUserAllocation);
     }
-
-    //    public BuilderHumanTaskPetition addHumanTask(ITaskDefinition definition, DireitoProjeto direitoNecessario) {
-    //        return addHumanTask(definition, EstrategiaAcessoTaskSimples.of(direitoNecessario));
-    //    }
 
     /**
      * Builder (configurador) de {@link STask} especializado em requerimentos. Apresenta comportamentos
@@ -176,59 +174,6 @@ public class RequirementFlowBuilder extends
             super(flowBuilder, task);
         }
 
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSegunda
-        // (ImplTaskBlock<T> implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 1));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalTerca(ImplTaskBlock<T>
-        // implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 2));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalQuarta
-        // (ImplTaskBlock<T> implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 3));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalQuinta
-        // (ImplTaskBlock<T> implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 4));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSexta(ImplTaskBlock<T>
-        // implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 5));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalSabado
-        // (ImplTaskBlock<T> implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 6));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoSemanalDomingo
-        // (ImplTaskBlock<T> implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildWeekly(hora, minuto, 0));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoMensal(ImplTaskBlock<T>
-        // implBloco,
-        //                int diaMes, int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildMonthly(diaMes, hora, minuto));
-        //        }
-        //
-        //        public <T extends ProcessInstance> BuilderJavaTaskPetition callByBlocoDiario(ImplTaskBlock<T>
-        // implBloco,
-        //                int hora, int minuto) {
-        //            return batchCall(implBloco, ScheduleDataBuilder.buildDaily(hora, minuto));
-        //        }
     }
 
     /**
@@ -244,40 +189,6 @@ public class RequirementFlowBuilder extends
             super(flowBuilder, task);
         }
 
-        //        public BuilderHumanTaskPetition mapearClasseTela(Class<?> classeTela) {
-        //            return withExecutionPage(TelaExecucao.of(classeTela));
-        //        }
-
-        //        public BuilderHumanTaskPetition mapearTela(Class<? extends WebActionInstanciaMBPM> classeTela) {
-        //            return mapearClasseTela(classeTela);
-        //        }
-
-        //        public BuilderHumanTaskPetition mapearView(Class<? extends RelatorioAlocpro> classeTela) {
-        //            return mapearClasseTela(classeTela);
-        //        }
-
-        //        public BuilderHumanTaskPetition mapearTelaModeloFormularioEditar() {
-        //            return mapearClasseTela(ExecucaoDemandaFormularioEditarPage.class);
-        //        }
-
-        //        public BuilderHumanTaskPetition mapearTelaVisualizarSolicitacao() {
-        //            return mapearClasseTela(ExecucaoDemandaVisualizarPage.class);
-        //        }
-
-        //        public BuilderHumanTaskPetition comPrazoDiasUteis(final int qtdDias) {
-        //            return withTargetDate((processInstance, taskInstance) -> DiaSemanaUtil
-        //                    .somarDiasUteis(taskInstance.getBeginDate(), qtdDias));
-        //        }
-
-        //        public BuilderHumanTaskPetition comAlerta(EstrategiaAlertaTarefa estrategiaAlerta) {
-        //            getTask().setAlerta(estrategiaAlerta);
-        //            return self();
-        //        }
-
-        //        public BuilderHumanTaskPetition setApareceNoPainelAtividades(Boolean valor) {
-        //            getTask().setMetaDataValue(PetitionProcessDefinition.PROP_EXIBIR_PAINEL_ATVS, valor);
-        //            return self();
-        //        }
 
         @Override
         public STaskHumanPetition getTask() {
@@ -296,25 +207,6 @@ public class RequirementFlowBuilder extends
             super(flowBuilder, task);
         }
 
-        //        public BuilderWaitTaskPetition mapearClasseTela(Class<?> classeTela) {
-        //            return withExecutionPage(TelaExecucao.of(classeTela));
-        //        }
-
-        //        public BuilderWaitTaskPetition mapearTela(Class<? extends WebActionInstanciaMBPM> classeTela) {
-        //            return mapearClasseTela(classeTela);
-        //        }
-
-        //        public BuilderWaitTaskPetition mapearView(Class<? extends RelatorioAlocpro> classeTela) {
-        //            return mapearClasseTela(classeTela);
-        //        }
-
-        //        public BuilderWaitTaskPetition mapearTelaVariaveisDefinicao() {
-        //            return mapearClasseTela(ExecucaoDemandaVariaveisDefinicaoPage.class);
-        //        }
-
-        //        public BuilderWaitTaskPetition mapearTelaVisualizarSolicitacao() {
-        //            return mapearClasseTela(ExecucaoDemandaVisualizarPage.class);
-        //        }
     }
 
     /**
@@ -358,20 +250,6 @@ public class RequirementFlowBuilder extends
             return (STransitionPetition) super.getTransition();
         }
 
-        //        public BuilderTransitionPetition comMensagemConfirmacao(String mensagem) {
-        //            return setMetaDataValue(PetitionProcessDefinition.PROP_MSG_CONFIRMACAO_TRANSICAO, mensagem);
-        //        }
-
-        //        public BuilderTransitionPetition setFormularioTransicao(
-        //                Class<? extends IFormularioTransicao<?>> formularioTransicao) {
-        //            getTransition().setFormularioTransicao(formularioTransicao);
-        //            return this;
-        //        }
-
-        //        public BuilderTransitionPetition showInExecution() {
-        //            getTransition().setAccessControl(TransitionAccessStrategyImpl.enabled(true));
-        //            return self();
-        //        }
     }
 
     /**

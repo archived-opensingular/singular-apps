@@ -37,9 +37,9 @@ public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy());
 
-        flow.addEnd(endbarDef);
+        flow.addEndTask(endbarDef);
 
-        flow.setStart(startbarDef);
+        flow.setStartTask(startbarDef);
 
         flow.from(startbarDef).go(middlebarDef);
         flow.from(middlebarDef).go(endbarDef);

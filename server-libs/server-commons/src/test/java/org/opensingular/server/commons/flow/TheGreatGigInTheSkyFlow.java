@@ -25,12 +25,12 @@ public class TheGreatGigInTheSkyFlow extends FlowDefinition<FlowInstance> implem
         ITaskDefinition dobarDef  = () -> "The Great Gig";
         ITaskDefinition endbarDef = () -> "The Sky";
 
-        flow.addEnd(endbarDef);
+        flow.addEndTask(endbarDef);
         flow.addJavaTask(dobarDef)
                 .call(this::cryingSolo)
                 .go(endbarDef);
 
-        flow.setStart(dobarDef);
+        flow.setStartTask(dobarDef);
 
 
         return flow.build();
