@@ -2,9 +2,6 @@ package org.opensingular.server.p.commons.admin.healthsystem;
 
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.Template;
-import org.wicketstuff.annotation.mount.MountPath;
-
-import static org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage.HEALTH_SYSTEM_MOUNT_PATH;
 
 
 public class HealthSystemPage extends Template {
