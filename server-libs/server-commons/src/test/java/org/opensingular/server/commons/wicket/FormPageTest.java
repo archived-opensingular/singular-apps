@@ -106,7 +106,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
 
         PetitionInstance petition = getPetitionFrom(p);
-        assertNotNull(petition.getProcessInstance());
+        assertNotNull(petition.getFlowInstance());
     }
 
     private void fillForm(Page page) {

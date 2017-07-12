@@ -17,8 +17,8 @@
 package org.opensingular.server.commons.flow.builder;
 
 import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SingularFlowException;
 
 import javax.annotation.Nonnull;
@@ -29,25 +29,21 @@ import javax.annotation.Nonnull;
  *
  * @author Daniel C. Bordin on 22/03/2017.
  */
-public abstract class PetitionProcessDefinition<I extends ProcessInstance> extends ProcessDefinition<I> {
+public abstract class RequirementFlowDefinition<I extends FlowInstance> extends FlowDefinition<I> {
 
-    protected PetitionProcessDefinition(Class<I> instanceClass) {
+    protected RequirementFlowDefinition(Class<I> instanceClass) {
         super(instanceClass);
     }
 
-//    protected PetitionProcessDefinition(Class<I> processInstanceClass, VarService varService) {
-//        super(processInstanceClass, varService);
-//    }
-
     /**
-     * Delega a criação do fluxo do processo para {@link #buildFlow(FlowBuilderPetition)}.
-     * @see ProcessDefinition#createFlowMap()
+     * Delega a criação do fluxo do processo para {@link #buildFlow(RequirementFlowBuilder)}.
+     * @see FlowDefinition#createFlowMap()
      */
     @Override
     @Nonnull
     protected final FlowMap createFlowMap() {
         try {
-            FlowBuilderPetition flowBuilder = FlowBuilderPetition.of(this);
+            RequirementFlowBuilder flowBuilder = RequirementFlowBuilder.of(this);
             buildFlow(flowBuilder);
             onAfterBuildFlow(flowBuilder);
             FlowMap flowMap = flowBuilder.build();
@@ -66,14 +62,14 @@ public abstract class PetitionProcessDefinition<I extends ProcessInstance> exten
     /**
      * Método a ser implementado com a criação do fluxo de processo.
      */
-    protected abstract void buildFlow(@Nonnull FlowBuilderPetition flow);
+    protected abstract void buildFlow(@Nonnull RequirementFlowBuilder flow);
 
 
     /**
-     * Método chamado logo apos a execução de {@link #buildFlow(FlowBuilderPetition)} para uso como ponto de
+     * Método chamado logo apos a execução de {@link #buildFlow(RequirementFlowBuilder)} para uso como ponto de
      * extensão.
      */
     @Nonnull
-    protected void onAfterBuildFlow(@Nonnull FlowBuilderPetition flow) {
+    protected void onAfterBuildFlow(@Nonnull RequirementFlowBuilder flow) {
     }
 }

@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.flow.builder;
 
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SProcessRole;
 import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
@@ -44,20 +44,20 @@ import org.opensingular.lib.commons.base.SingularUtil;
  * @author Daniel C. Bordin on 23/03/2017.
  * @see FlowBuilder
  */
-public class FlowBuilderPetition extends
-        FlowBuilder<PetitionProcessDefinition<?>, FlowMapPetition, FlowBuilderPetition.BuilderTaskPetition,
-                FlowBuilderPetition.BuilderJavaTaskPetition, FlowBuilderPetition.BuilderHumanTaskPetition,
-                FlowBuilderPetition.BuilderWaitTaskPetition, FlowBuilderPetition.BuilderEndTaskPetition,
-                FlowBuilderPetition.BuilderStartPetition, FlowBuilderPetition.BuilderTransitionPetition,
-                FlowBuilderPetition.BuilderRolePetition, ITaskDefinition> {
+public class RequirementFlowBuilder extends
+        FlowBuilder<RequirementFlowDefinition<?>, FlowMapPetition, RequirementFlowBuilder.BuilderTaskPetition,
+                RequirementFlowBuilder.BuilderJavaTaskPetition, RequirementFlowBuilder.BuilderHumanTaskPetition,
+                RequirementFlowBuilder.BuilderWaitTaskPetition, RequirementFlowBuilder.BuilderEndTaskPetition,
+                RequirementFlowBuilder.BuilderStartPetition, RequirementFlowBuilder.BuilderTransitionPetition,
+                RequirementFlowBuilder.BuilderRolePetition, ITaskDefinition> {
 
-    private FlowBuilderPetition(PetitionProcessDefinition<?> processDefinition) {
+    private RequirementFlowBuilder(RequirementFlowDefinition<?> processDefinition) {
         super(processDefinition);
     }
 
     /** Cria um novo FlowBuilderPetition para a definição de processo em questão. */
-    public static FlowBuilderPetition of(PetitionProcessDefinition<?> processDefinition) {
-        return new FlowBuilderPetition(processDefinition);
+    public static RequirementFlowBuilder of(RequirementFlowDefinition<?> processDefinition) {
+        return new RequirementFlowBuilder(processDefinition);
     }
 
     @Override
@@ -101,14 +101,14 @@ public class FlowBuilderPetition extends
     }
 
     @Override
-    protected FlowMapPetition newFlowMap(PetitionProcessDefinition<?> definicaoProcesso) {
+    protected FlowMapPetition newFlowMap(RequirementFlowDefinition<?> definicaoProcesso) {
         return new FlowMapPetition(definicaoProcesso);
     }
 
 
     @Override
     public BuilderRolePetition addRoleDefinition(String description,
-            UserRoleSettingStrategy<? extends ProcessInstance> userRoleSettingStrategy,
+            UserRoleSettingStrategy<? extends FlowInstance> userRoleSettingStrategy,
             boolean automaticUserAllocation) {
         return addRoleDefinition(description, SingularUtil.convertToJavaIdentity(description, true, false),
                 userRoleSettingStrategy, automaticUserAllocation);
@@ -126,13 +126,13 @@ public class FlowBuilderPetition extends
             extends STask<?>>
             extends FlowBuilderImpl.ImplBuilderTask<SELF, TASK> implements BuilderTask {
 
-        ImplBuilderTaskPetition(FlowBuilderPetition fluxoBuilder, TASK task) {
+        ImplBuilderTaskPetition(RequirementFlowBuilder fluxoBuilder, TASK task) {
             super(fluxoBuilder, task);
         }
 
         @Override
-        protected FlowBuilderPetition getFlowBuilder() {
-            return (FlowBuilderPetition) super.getFlowBuilder();
+        protected RequirementFlowBuilder getFlowBuilder() {
+            return (RequirementFlowBuilder) super.getFlowBuilder();
         }
 
         /**
@@ -160,7 +160,7 @@ public class FlowBuilderPetition extends
      */
     public static class BuilderTaskPetition extends ImplBuilderTaskPetition<BuilderTaskPetition, STask<?>> {
 
-        BuilderTaskPetition(FlowBuilderPetition flowBuilder, STask<?> task) {
+        BuilderTaskPetition(RequirementFlowBuilder flowBuilder, STask<?> task) {
             super(flowBuilder, task);
         }
     }
@@ -172,7 +172,7 @@ public class FlowBuilderPetition extends
     public static class BuilderJavaTaskPetition extends ImplBuilderTaskPetition<BuilderJavaTaskPetition, STaskJava>
             implements BuilderJava<BuilderJavaTaskPetition> {
 
-        BuilderJavaTaskPetition(FlowBuilderPetition flowBuilder, STaskJava task) {
+        BuilderJavaTaskPetition(RequirementFlowBuilder flowBuilder, STaskJava task) {
             super(flowBuilder, task);
         }
 
@@ -240,7 +240,7 @@ public class FlowBuilderPetition extends
             extends ImplBuilderTaskPetition<BuilderHumanTaskPetition, STaskHuman>
             implements BuilderHuman<BuilderHumanTaskPetition> {
 
-        BuilderHumanTaskPetition(FlowBuilderPetition flowBuilder, STaskHumanPetition task) {
+        BuilderHumanTaskPetition(RequirementFlowBuilder flowBuilder, STaskHumanPetition task) {
             super(flowBuilder, task);
         }
 
@@ -292,7 +292,7 @@ public class FlowBuilderPetition extends
     public static class BuilderWaitTaskPetition extends ImplBuilderTaskPetition<BuilderWaitTaskPetition, STaskWait>
             implements BuilderWait<BuilderWaitTaskPetition> {
 
-        BuilderWaitTaskPetition(FlowBuilderPetition flowBuilder, STaskWait task) {
+        BuilderWaitTaskPetition(RequirementFlowBuilder flowBuilder, STaskWait task) {
             super(flowBuilder, task);
         }
 
@@ -324,7 +324,7 @@ public class FlowBuilderPetition extends
     public static class BuilderEndTaskPetition extends ImplBuilderTaskPetition<BuilderEndTaskPetition, STaskEnd>
             implements BuilderEnd<BuilderEndTaskPetition> {
 
-        BuilderEndTaskPetition(FlowBuilderPetition fluxoBuilder, STaskEnd task) {
+        BuilderEndTaskPetition(RequirementFlowBuilder fluxoBuilder, STaskEnd task) {
             super(fluxoBuilder, task);
         }
     }
