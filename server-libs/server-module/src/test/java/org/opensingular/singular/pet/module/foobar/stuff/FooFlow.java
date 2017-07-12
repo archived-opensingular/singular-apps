@@ -26,13 +26,13 @@ public class FooFlow extends FlowDefinition<FlowInstance> {
         ITaskDefinition dobarDef  = () -> "Do bar";
         ITaskDefinition endbarDef = () -> "No more bar";
 
-        flow.addEnd(endbarDef);
+        flow.addEndTask(endbarDef);
         flow.addHumanTask(dobarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy())
                 .go(endbarDef);
 
-        flow.setStart(dobarDef);
+        flow.setStartTask(dobarDef);
 
 
         return flow.build();
