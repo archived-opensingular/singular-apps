@@ -6,7 +6,7 @@ import org.opensingular.server.commons.wicket.view.template.Template;
 
 public class HealthSystemPage extends Template {
 
-	public static final String HEALTH_SYSTEM_MOUNT_PATH = "healthsystem";
+	public static final String HEALTH_SYSTEM_MOUNT_PATH = "/healthsystem";
 
     public HealthSystemPage(){
     }

@@ -42,9 +42,6 @@ public class BoxUpdaterExecutor {
     private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
-    private ServerStartExecutorBean serverStartExecutorBean;
-
-    @Inject
     private BoxService boxService;
 
     @Inject

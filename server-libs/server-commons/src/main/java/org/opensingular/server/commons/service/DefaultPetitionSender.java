@@ -31,6 +31,7 @@ public class DefaultPetitionSender implements PetitionSender {
         petitionService.onAfterStartProcess(petition, instance, codResponsavel, flowInstance);
         petitionService.savePetitionHistory(petition, consolidatedDrafts);
 
+        petitionService.savePetitionHistory(petition, consolidatedDrafts);
 
         return new PetitionSendedFeedback(petition);
     }
