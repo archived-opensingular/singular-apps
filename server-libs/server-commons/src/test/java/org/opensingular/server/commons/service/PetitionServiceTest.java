@@ -1,16 +1,12 @@
 package org.opensingular.server.commons.service;
 
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
@@ -24,14 +20,11 @@ import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
 import org.opensingular.server.commons.persistence.dto.PetitionDTO;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.test.FOOFlow;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -260,12 +253,12 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testSearchs() {
         PetitionInstance petitionInstance = sendPetition("Descrição XYZ única - " + System.nanoTime());
-        ProcessInstance  processInstance  = petitionInstance.getProcessInstance();
+        FlowInstance flowInstance = petitionInstance.getFlowInstance();
 
-        PetitionInstance p2 = petitionService.getPetitionInstance(processInstance);
-        PetitionInstance p3 = petitionService.getPetitionInstance(processInstance.getCurrentTaskOrException());
-        PetitionInstance p4 = petitionService.getPetition(processInstance);
-        PetitionInstance p5 = petitionService.getPetition(processInstance.getCurrentTaskOrException());
+        PetitionInstance p2 = petitionService.getPetitionInstance(flowInstance);
+        PetitionInstance p3 = petitionService.getPetitionInstance(flowInstance.getCurrentTaskOrException());
+        PetitionInstance p4 = petitionService.getPetition(flowInstance);
+        PetitionInstance p5 = petitionService.getPetition(flowInstance.getCurrentTaskOrException());
 
         assertEquals(petitionInstance.getCod(), p2.getCod());
         assertEquals(petitionInstance.getCod(), p3.getCod());

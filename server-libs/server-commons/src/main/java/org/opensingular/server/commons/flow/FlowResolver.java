@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.flow;
 
 
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.server.commons.wicket.view.form.FormPageExecutionContext;
 
@@ -25,21 +25,21 @@ import java.io.Serializable;
 import java.util.Optional;
 
 /**
- * Programmatically resolves the {@link ProcessDefinition} for a given input data.
+ * Programmatically resolves the {@link FlowDefinition} for a given input data.
  * When the users submits its initial application the Singular Server calls the proper
- * {@link FlowResolver} in order to select which {@link ProcessDefinition} it should start
+ * {@link FlowResolver} in order to select which {@link FlowDefinition} it should start
  */
 @FunctionalInterface
 public interface FlowResolver extends Serializable {
 
     /**
-     * return an optional {@link ProcessDefinition}
+     * return an optional {@link FlowDefinition}
      * @param cfg
      *
      * @param iRoot
      *  form input data
      * @return
      */
-    Optional<Class<? extends ProcessDefinition>> resolve(FormPageExecutionContext cfg, SIComposite iRoot);
+    Optional<Class<? extends FlowDefinition>> resolve(FormPageExecutionContext cfg, SIComposite iRoot);
 
 }

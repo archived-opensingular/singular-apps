@@ -1,7 +1,7 @@
 package org.opensingular.server.p.commons.admin.healthsystem.validation.webchecker;
 
 import org.opensingular.form.type.core.SIString;
-import org.opensingular.form.validation.IInstanceValidatable;
+import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.lib.commons.util.Loggable;
 
 import javax.naming.Context;
@@ -14,7 +14,7 @@ import java.util.Map;
 public class LdapChecker implements IProtocolChecker, Loggable {
 
     @Override
-    public void protocolCheck(IInstanceValidatable<SIString> validatable) {
+    public void protocolCheck(InstanceValidatable<SIString> validatable) {
         Map<String, String> ldapInfo = new HashMap<>();
         ldapInfo.put(Context.INITIAL_CONTEXT_FACTORY, "com.sun.jndi.ldap.LdapCtxFactory");
         ldapInfo.put(Context.PROVIDER_URL, validatable.getInstance().getValue());

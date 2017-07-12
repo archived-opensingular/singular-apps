@@ -2,7 +2,7 @@ package org.opensingular.server.module.rest;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.SFormUtil;
@@ -119,8 +119,8 @@ public class RestBackstageService implements Loggable {
         return groups;
     }
 
-    private Map<String, List<ProcessDefinition>> getDefinitionsMap() {
-        final Map<String, List<ProcessDefinition>> definitionMap = new HashMap<>();
+    private Map<String, List<FlowDefinition>> getDefinitionsMap() {
+        final Map<String, List<FlowDefinition>> definitionMap = new HashMap<>();
         Flow.getDefinitions().forEach(d -> {
             if (!definitionMap.containsKey(d.getCategory())) {
                 definitionMap.put(d.getCategory(), new ArrayList<>());

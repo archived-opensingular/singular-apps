@@ -17,17 +17,17 @@
 package org.opensingular.server.commons.flow.builder;
 
 import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.STaskPeople;
+import org.opensingular.flow.core.STaskHuman;
 
 /**
- * Representa uma {@link STaskPeople} especilizada em requerimentos. Apresenta comportamentos e configurações
+ * Representa uma {@link STaskHuman} especilizada em requerimentos. Apresenta comportamentos e configurações
  * adicionais específicos de requerimentos.
  *
  * @author Daniel C. Bordin on 23/03/2017.
  */
-public class STaskPeoplePetition extends STaskPeople {
+public class STaskHumanPetition extends STaskHuman {
 
-    STaskPeoplePetition(FlowMap flowMap, String name, String abbreviation) {
+    STaskHumanPetition(FlowMap flowMap, String name, String abbreviation) {
         super(flowMap, name, abbreviation);
     }
 }
