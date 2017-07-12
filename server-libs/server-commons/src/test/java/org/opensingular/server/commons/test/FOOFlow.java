@@ -4,33 +4,34 @@ import javax.annotation.Nonnull;
 
 import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
 import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
-import org.opensingular.server.commons.flow.builder.FlowBuilderPetition;
+import org.opensingular.server.commons.flow.builder.RequirementFlowBuilder;
+import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
-import org.opensingular.server.p.commons.flow.definition.ServerProcessDefinition;
+
 
 @DefinitionInfo("fooFlowCommons")
-public class FOOFlow extends ServerProcessDefinition<ProcessInstance> {
+public class FOOFlow extends RequirementFlowDefinition<FlowInstance> {
 
 
     public FOOFlow() {
-        super(ProcessInstance.class);
+        super(FlowInstance.class);
     }
 
     @Override
-    protected void buildFlow(@Nonnull FlowBuilderPetition flow) {
+    protected void buildFlow(@Nonnull RequirementFlowBuilder flow) {
         ITaskDefinition dobarDef  = () -> "Do bar";
         ITaskDefinition endbarDef = () -> "No more bar";
 
-        flow.addEnd(endbarDef);
-        flow.addPeopleTask(dobarDef)
+        flow.addEndTask(endbarDef);
+        flow.addHumanTask(dobarDef)
                 .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy())
                 .go(endbarDef);
 
-        flow.setStart(dobarDef);
+        flow.setStartTask(dobarDef);
 
     }
 

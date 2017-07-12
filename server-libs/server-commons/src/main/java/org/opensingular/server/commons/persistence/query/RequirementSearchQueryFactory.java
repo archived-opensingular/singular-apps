@@ -14,6 +14,7 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
+import org.opensingular.server.commons.persistence.filter.FilterToken;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 
 public class RequirementSearchQueryFactory {
@@ -23,9 +24,9 @@ public class RequirementSearchQueryFactory {
     private final RequirementSearchContext ctx;
 
     private RequirementSearchAliases $;
-    private RequirementSearchQuery   query;
-    private QuickFilter              quickFilter;
-    private BooleanBuilder           whereClause;
+    private RequirementSearchQuery query;
+    private QuickFilter quickFilter;
+    private BooleanBuilder whereClause;
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
@@ -81,8 +82,9 @@ public class RequirementSearchQueryFactory {
                     .add($.task.versionStamp.as("versionStamp"))
                     .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
                     .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
-                    .add($.processGroup.cod.as("processGroupCod"))
-                    .add($.processGroup.connectionURL.as("processGroupContext"));
+                    .add($.module.cod.as("moduleCod"))
+                    .add($.module.connectionURL.as("moduleContext"))
+                    .add($.requirementDefinition.cod.as("requirementDefinitionId"));
         }
 
         query
@@ -96,13 +98,14 @@ public class RequirementSearchQueryFactory {
                 .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
                 .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
                 .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
-                .leftJoin($.processDefinitionEntity.processGroup, $.processGroup)
                 .leftJoin($.formEntity.formType, $.formType)
                 .leftJoin($.formDraftEntity.formType, $.formDraftType)
                 .leftJoin($.processInstance.tasks, $.task)
                 .leftJoin($.task.task, $.taskVersion)
                 .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
-                .leftJoin($.task.allocatedUser, $.allocatedUser);
+                .leftJoin($.task.allocatedUser, $.allocatedUser)
+                .leftJoin($.petition.requirementDefinitionEntity, $.requirementDefinition)
+                .leftJoin($.requirementDefinition.module, $.module);
     }
 
     @NotNull
@@ -145,9 +148,15 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByQuickFilter() {
         if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder quickFilterWhereClause = query.getQuickFilterWhereClause();
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.filterWithAnywhereMatchMode());
-            configureQuickFilter($, quickFilterWhereClause, quickFilter.numberAndLettersFilterWithAnywhereMatchMode());
+            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
+            for (FilterToken token : quickFilter.listFilterTokens()) {
+                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
+                for (String filter : token.getAllPossibleMatches()) {
+                    tokenBooleanBuilder.or(buildQuickFilterBooleanExpression($, filter));
+                }
+                filterBooleanBuilder.and(tokenBooleanBuilder);
+            }
+            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
         }
     }
 
@@ -188,8 +197,8 @@ public class RequirementSearchQueryFactory {
         }
     }
 
-    private void configureQuickFilter(RequirementSearchAliases $, BooleanBuilder quickFilterWhereClause, String filter) {
-        quickFilterWhereClause
+    private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
+        return new BooleanBuilder()
                 .or($.petition.description.likeIgnoreCase(filter))
                 .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))

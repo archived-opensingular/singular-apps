@@ -16,30 +16,25 @@
 
 package org.opensingular.server.commons.persistence.filter;
 
-import org.apache.wicket.util.lang.Objects;
-
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class QuickFilter implements Serializable {
 
-    private String       filter;
-    private boolean      rascunho;
-    private String       idPessoa;
-    private String       idUsuarioLogado;
-    private int          first;
-    private int          count;
-    private String       sortProperty;
-    private boolean      ascending;
-    private Boolean      endedTasks;
+    private String filter;
+    private boolean rascunho;
+    private String idPessoa;
+    private String idUsuarioLogado;
+    private int first;
+    private int count;
+    private String sortProperty;
+    private boolean ascending;
+    private Boolean endedTasks;
     private List<String> tasks;
     private List<String> processesAbbreviation;
     private List<String> typesNames;
-
-    public String getFilter() {
-        return filter;
-    }
 
     public QuickFilter withFilter(String filter) {
         this.filter = filter;
@@ -160,12 +155,15 @@ public class QuickFilter implements Serializable {
         return this;
     }
 
-    public String filterWithAnywhereMatchMode() {
-        return "%" + Objects.defaultIfNull(filter, "") + "%";
+    public List<FilterToken> listFilterTokens() {
+        if (filter != null) {
+            return new FilterTokenFactory(filter).make();
+        }
+        return Collections.emptyList();
     }
 
-    public String numberAndLettersFilterWithAnywhereMatchMode() {
-        return "%" + Objects.defaultIfNull(filter, "").replaceAll("[^\\da-zA-Z]", "") + "%";
+    public String getFilter() {
+        return filter;
     }
 
 }

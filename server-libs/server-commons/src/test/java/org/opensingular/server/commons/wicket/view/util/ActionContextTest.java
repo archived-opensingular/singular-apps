@@ -17,7 +17,7 @@ public class ActionContextTest {
         actionContext.setParam("nada", "outro");
         actionContext.setParentPetitionId(2l);
         actionContext.setPetitionId(3l);
-        actionContext.setProcessGroupName("Tox");
+        actionContext.setModuleName("Tox");
         actionContext.setProcessInstanceId(4);
         actionContext.setSelectedMenuItem("menuzeira");
         return actionContext;
@@ -35,7 +35,7 @@ public class ActionContextTest {
         Assert.assertEquals(actionContext.getParam("nada").get(), "outro");
         Assert.assertEquals((long) actionContext.getParentPetitionId().get(), 2l);
         Assert.assertEquals((long) actionContext.getPetitionId().get(), 3l);
-        Assert.assertEquals(actionContext.getProcessGroupName().get(), "Tox");
+        Assert.assertEquals(actionContext.getModuleName().get(), "Tox");
         Assert.assertEquals((int) actionContext.getProcessInstanceId().get(), 4);
         Assert.assertEquals(actionContext.getSelectedMenuItem().get(), "menuzeira");
     }

@@ -53,7 +53,7 @@ public class CommonsInitializerMock implements PSingularInitializer {
         return new FlowInitializer() {
 
             @Override
-            public String processGroupCod() {
+            public String moduleCod() {
                 return TESTE;
             }
         };

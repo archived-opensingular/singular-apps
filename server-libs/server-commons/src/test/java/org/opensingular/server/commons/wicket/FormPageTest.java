@@ -87,6 +87,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
+        context.setRequirementId(requirementDefinitionEntity.getCod());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -105,7 +106,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
 
         PetitionInstance petition = getPetitionFrom(p);
-        assertNotNull(petition.getProcessInstance());
+        assertNotNull(petition.getFlowInstance());
     }
 
     private void fillForm(Page page) {

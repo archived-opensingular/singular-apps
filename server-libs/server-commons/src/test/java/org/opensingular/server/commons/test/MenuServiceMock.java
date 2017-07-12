@@ -1,6 +1,6 @@
 package org.opensingular.server.commons.test;
 
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
@@ -18,16 +18,16 @@ public class MenuServiceMock implements MenuService {
     WorkspaceMetadataMockBean workspaceMetadataMockBean;
 
     @Override
-    public Map<ProcessGroupEntity, List<BoxConfigurationData>> getMap() {
-        Map<ProcessGroupEntity, List<BoxConfigurationData>> map = new LinkedHashMap<>();
-        for (Map.Entry<ProcessGroupEntity, WorkspaceConfigurationMetadata> config : workspaceMetadataMockBean.getMap().entrySet()) {
+    public Map<ModuleEntity, List<BoxConfigurationData>> getMap() {
+        Map<ModuleEntity, List<BoxConfigurationData>> map = new LinkedHashMap<>();
+        for (Map.Entry<ModuleEntity, WorkspaceConfigurationMetadata> config : workspaceMetadataMockBean.getMap().entrySet()) {
             map.put(config.getKey(), config.getValue().getBoxesConfiguration());
         }
         return map;
     }
 
     @Override
-    public List<BoxConfigurationData> getMenusByCategory(ProcessGroupEntity categoria) {
+    public List<BoxConfigurationData> getMenusByCategory(ModuleEntity categoria) {
         return workspaceMetadataMockBean.gimmeSomeMock().getBoxesConfiguration();
     }
 
@@ -37,13 +37,13 @@ public class MenuServiceMock implements MenuService {
     }
 
     @Override
-    public List<ProcessGroupEntity> getCategories() {
-        List<ProcessGroupEntity> categories         = new ArrayList<>();
-        ProcessGroupEntity       processGroupEntity = new ProcessGroupEntity();
-        processGroupEntity.setConnectionURL("/nada/nada");
-        processGroupEntity.setCod("CATEGORIAMOCK");
-        processGroupEntity.setName("Categoria Mock");
-        categories.add(processGroupEntity);
+    public List<ModuleEntity> getCategories() {
+        List<ModuleEntity> categories         = new ArrayList<>();
+        ModuleEntity       moduleEntity = new ModuleEntity();
+        moduleEntity.setConnectionURL("/nada/nada");
+        moduleEntity.setCod("CATEGORIAMOCK");
+        moduleEntity.setName("Categoria Mock");
+        categories.add(moduleEntity);
         return categories;
     }
 
@@ -53,7 +53,7 @@ public class MenuServiceMock implements MenuService {
     }
 
     @Override
-    public BoxConfigurationData getDefaultSelectedMenu(ProcessGroupEntity categoriaSelecionada) {
+    public BoxConfigurationData getDefaultSelectedMenu(ModuleEntity categoriaSelecionada) {
         return null;
     }
 }

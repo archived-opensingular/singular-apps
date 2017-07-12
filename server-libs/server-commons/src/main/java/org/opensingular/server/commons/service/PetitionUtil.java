@@ -17,8 +17,8 @@
 package org.opensingular.server.commons.service;
 
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
@@ -51,13 +51,13 @@ public final class PetitionUtil {
 
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
-    public static ProcessDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
+    public static FlowDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
         return getProcessDefinitionOpt(petition).orElseThrow(() -> new PetitionWithoutDefinitionException());
     }
 
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
-    final static Optional<ProcessDefinition<?>> getProcessDefinitionOpt(@Nonnull PetitionEntity petition) {
+    final static Optional<FlowDefinition<?>> getProcessDefinitionOpt(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
         if (petition.getProcessDefinitionEntity() == null) {
             return Optional.empty();
@@ -91,12 +91,12 @@ public final class PetitionUtil {
     @Nonnull
     public static Optional<TaskInstance> getCurrentTaskEntity(@Nonnull SInstance instance) {
         return Optional.of(instance.getDocument().lookupLocalServiceOrException(ServerSIntanceProcessAwareService.class))
-                .map(ServerSIntanceProcessAwareService::getProcessInstance).flatMap(ProcessInstance::getCurrentTask);
+                .map(ServerSIntanceProcessAwareService::getProcessInstance).flatMap(FlowInstance::getCurrentTask);
     }
 
     /** Recupera a instância de processo associada à petição informada. */
     @Nonnull
-    public static ProcessInstance getProcessInstance(@Nonnull PetitionEntity petition) {
+    public static FlowInstance getProcessInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
         return Flow.getProcessInstance(petition.getProcessInstanceEntity());
     }

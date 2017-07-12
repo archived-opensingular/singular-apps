@@ -58,6 +58,7 @@ import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -134,7 +135,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
         //É um método estático para garantir que nada inesperado vai ser serializado junto
         return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
-                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
+                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getFlowInstance()));
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
@@ -272,9 +273,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 parentPetition = petitionService.getPetition(parentPetitionId.get());
                 parentPetitionformKeyModel.setObject(formPetitionService.formKeyFromFormEntity(parentPetition.getEntity().getMainForm()));
             }
-            petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation);
+
+            petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation, getRequirementDefinitionEntity());
         }
         return petition;
+    }
+
+    protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return getConfig().getRequirementId()
+                .map(petitionService::findRequirementDefinition).orElse(null);
     }
 
     private FormEntity getDraftOrFormEntity(PI petition) {

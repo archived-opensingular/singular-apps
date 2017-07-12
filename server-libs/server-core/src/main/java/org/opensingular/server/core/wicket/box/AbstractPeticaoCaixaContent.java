@@ -36,8 +36,8 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
 
     private static final long serialVersionUID = -3611649597709058163L;
 
-    public AbstractPeticaoCaixaContent(String id, String processGroupCod, String menu) {
-        super(id, processGroupCod, menu);
+    public AbstractPeticaoCaixaContent(String id, String moduleCod, String menu) {
+        super(id, moduleCod, menu);
     }
 
     @Override

@@ -75,8 +75,8 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     public FlowInitializer flowConfiguration() {
         return new FlowInitializer() {
             @Override
-            public String processGroupCod() {
-                return ModuleInitializer.this.processGroupCod();
+            public String moduleCod() {
+                return ModuleInitializer.this.moduleCod();
             }
         };
     }
@@ -86,7 +86,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
         return null;
     }
 
-    protected abstract String processGroupCod();
+    protected abstract String moduleCod();
 
 
     protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {

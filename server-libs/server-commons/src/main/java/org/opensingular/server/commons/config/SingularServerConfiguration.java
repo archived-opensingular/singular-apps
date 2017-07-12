@@ -18,11 +18,8 @@ package org.opensingular.server.commons.config;
 
 
 import org.opensingular.form.SType;
-import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.p.commons.flow.definition.ServerProcessDefinition;
+import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
@@ -45,7 +42,7 @@ public class SingularServerConfiguration implements ServletContextAware {
     private String           springMVCServletMapping;
     private Map<String, Object> attrs = new HashMap<>();
     private List<Class<? extends SType<?>>> formTypes;
-    private String                          processGroupCod;
+    private String                          moduleCod;
     private String[]                        definitionsPackages;
     private String[]                        defaultPublicUrls;
 
@@ -77,8 +74,8 @@ public class SingularServerConfiguration implements ServletContextAware {
         }
     }
 
-    public String getProcessGroupCod() {
-        return processGroupCod;
+    public String getModuleCod() {
+        return moduleCod;
     }
 
     public String[] getDefinitionsPackages() {
@@ -98,16 +95,16 @@ public class SingularServerConfiguration implements ServletContextAware {
                 .ifPresent(fi -> this.formTypes = fi.getTypes());
 
         Optional.ofNullable(flowInitializer)
-                .ifPresent(fi -> this.processGroupCod = flowInitializer.processGroupCod());
+                .ifPresent(fi -> this.moduleCod = flowInitializer.moduleCod());
 
 
-        Set<Class<? extends ServerProcessDefinition>> processes = SingularClassPathScanner.get().findSubclassesOf(ServerProcessDefinition.class);
+        Set<Class<? extends RequirementFlowDefinition>> processes = SingularClassPathScanner.get().findSubclassesOf(RequirementFlowDefinition.class);
         initDefinitionsPackages(processes.stream());
 
 
     }
 
-    private void initDefinitionsPackages(Stream<Class<? extends ServerProcessDefinition>> stream) {
+    private void initDefinitionsPackages(Stream<Class<? extends RequirementFlowDefinition>> stream) {
         definitionsPackages = stream.map(c -> c.getPackage().getName()).collect(Collectors.toSet()).toArray(new String[0]);
     }
 

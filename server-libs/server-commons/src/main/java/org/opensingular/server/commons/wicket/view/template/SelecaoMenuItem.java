@@ -10,7 +10,7 @@ import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.behavior.BSSelectInitBehaviour;
 import org.opensingular.lib.wicket.util.behavior.FormComponentAjaxUpdateBehavior;
 import org.opensingular.lib.wicket.util.menu.AbstractMenuItem;
@@ -21,7 +21,7 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PROCESS_GROUP_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public class SelecaoMenuItem extends AbstractMenuItem {
 
@@ -29,9 +29,9 @@ public class SelecaoMenuItem extends AbstractMenuItem {
     @SpringBean(required = false)
     private MenuService menuService;
 
-    private List<ProcessGroupEntity> categorias;
+    private List<ModuleEntity> categorias;
 
-    public SelecaoMenuItem(List<ProcessGroupEntity> categorias) {
+    public SelecaoMenuItem(List<ModuleEntity> categorias) {
         super("menu-item");
         this.categorias = categorias;
     }
@@ -39,17 +39,17 @@ public class SelecaoMenuItem extends AbstractMenuItem {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        Form                      form  = new Form<String>("form");
-        Model<ProcessGroupEntity> model = new Model<>(SingularSession.get().getCategoriaSelecionada());
-        final DropDownChoice<ProcessGroupEntity> select = new DropDownChoice<>("select", model, categorias,
+        Form                form  = new Form<String>("form");
+        Model<ModuleEntity> model = new Model<>(SingularSession.get().getCategoriaSelecionada());
+        final DropDownChoice<ModuleEntity> select = new DropDownChoice<>("select", model, categorias,
                 new ChoiceRenderer<>("name", "cod"));
 
         form.add(select);
         select.add(new BSSelectInitBehaviour());
         select.add(new FormComponentAjaxUpdateBehavior("change", (target, component) -> {
-            final ProcessGroupEntity categoriaSelecionada = (ProcessGroupEntity) component.getDefaultModelObject();
+            final ModuleEntity categoriaSelecionada = (ModuleEntity) component.getDefaultModelObject();
             SingularSession.get().setCategoriaSelecionada(categoriaSelecionada);
-            getPage().getPageParameters().set(PROCESS_GROUP_PARAM_NAME, categoriaSelecionada.getCod());
+            getPage().getPageParameters().set(MODULE_PARAM_NAME, categoriaSelecionada.getCod());
             final BoxConfigurationData boxConfigurationMetadataDTO = getDefaultMenuSelection(categoriaSelecionada);
             if (boxConfigurationMetadataDTO != null) {
                 getPage().getPageParameters().set(MENU_PARAM_NAME, boxConfigurationMetadataDTO.getLabel());
@@ -62,7 +62,7 @@ public class SelecaoMenuItem extends AbstractMenuItem {
         add(form);
     }
 
-    private BoxConfigurationData getDefaultMenuSelection(ProcessGroupEntity categoriaSelecionada) {
+    private BoxConfigurationData getDefaultMenuSelection(ModuleEntity categoriaSelecionada) {
         return menuService.getDefaultSelectedMenu(categoriaSelecionada);
     }
 

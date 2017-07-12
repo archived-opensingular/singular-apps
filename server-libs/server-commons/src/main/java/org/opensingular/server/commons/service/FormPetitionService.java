@@ -42,8 +42,6 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionContentHi
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.sun.tools.javac.main.JavacOption.Option;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
@@ -514,7 +512,7 @@ public class FormPetitionService<P extends PetitionEntity> {
     }
 
     public void removeFormPetitionEntity(@Nonnull PetitionInstance p, @Nonnull Class<? extends SType<?>> type) {
-        TaskInstance task = p.getProcessInstance().getCurrentTaskOrException();
+        TaskInstance task = p.getFlowInstance().getCurrentTaskOrException();
         Optional<FormPetitionEntity> formPetitionEntity = findFormPetitionEntityByTypeAndTask(p, type, task);
 
         formPetitionEntity.ifPresent(x -> {

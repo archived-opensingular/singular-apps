@@ -26,7 +26,7 @@ public class PetitionInstanceTest extends SingularCommonsBaseTest {
         SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {});
+        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
         petitionInitial.setProcessDefinition(FOOFlowWithTransition.class);
 
         petitionService.saveOrUpdate(petitionInitial, instance, true);

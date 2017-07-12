@@ -2,12 +2,12 @@ package org.opensingular.server.commons.flow;
 
 import org.junit.Ignore;
 import org.junit.Test;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 
 public class TheGreatGigInTheSkyFlowRenderTest extends FlowRenderTest {
 
     @Override
-    protected ProcessDefinition<?> getInstanceToRender() {
+    protected FlowDefinition<?> getInstanceToRender() {
         return new TheGreatGigInTheSkyFlow();
     }
 
