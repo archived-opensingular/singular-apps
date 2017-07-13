@@ -46,15 +46,15 @@ public abstract class FlowRenderTest implements Loggable {
      * build
      */
     public void render() {
-        openJFrame(renderImage(getInstanceToRender()));
+        openJFrame(renderImage(getFlowDefinition()));
     }
 
     @Test
     public void testRendering() {
-        Assert.assertNotNull(renderImage(getInstanceToRender()));
+        Assert.assertNotNull(renderImage(getFlowDefinition()));
     }
 
-    protected abstract FlowDefinition<?> getInstanceToRender();
+    protected abstract FlowDefinition<?> getFlowDefinition();
 
     protected byte[] renderImage(FlowDefinition<?> instanceToRender) {
         return JGraphFlowRenderer.INSTANCE.generateImage(instanceToRender);
