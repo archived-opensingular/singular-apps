@@ -7,7 +7,7 @@ import org.opensingular.flow.core.FlowDefinition;
 public class TheGreatGigInTheSkyFlowRenderTest extends FlowRenderTest {
 
     @Override
-    protected FlowDefinition<?> getInstanceToRender() {
+    protected FlowDefinition<?> getFlowDefinition() {
         return new TheGreatGigInTheSkyFlow();
     }
 
