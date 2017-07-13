@@ -115,12 +115,7 @@ public class HealthSystemContent extends Content {
         AjaxButton buttonFullIndex = new AjaxButton("buttonFullIndex") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                try {
-                    formIndexService.indexAllForms();
-                } catch (ClassNotFoundException e) {
-                    e.printStackTrace();
-                }
-                form.replace(new WebPanel(CONTAINER_ALL_CONTENT));
+                formIndexService.indexAllForms();
                 target.add(form);
             }
         };
