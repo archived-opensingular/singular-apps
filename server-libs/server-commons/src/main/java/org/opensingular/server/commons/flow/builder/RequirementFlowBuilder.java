@@ -18,7 +18,7 @@ package org.opensingular.server.commons.flow.builder;
 
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.SProcessRole;
+import org.opensingular.flow.core.SBusinessRole;
 import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
@@ -30,7 +30,7 @@ import org.opensingular.flow.core.UserRoleSettingStrategy;
 import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
 import org.opensingular.flow.core.builder.BuilderJava;
-import org.opensingular.flow.core.builder.BuilderProcessRole;
+import org.opensingular.flow.core.builder.BuilderBusinessRole;
 import org.opensingular.flow.core.builder.BuilderTask;
 import org.opensingular.flow.core.builder.BuilderWait;
 import org.opensingular.flow.core.builder.FlowBuilder;
@@ -98,7 +98,7 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
-    protected BuilderRolePetition newProcessRole(SProcessRole papel) {
+    protected BuilderRolePetition newProcessRole(SBusinessRole papel) {
         return new BuilderRolePetition(papel);
     }
 
@@ -253,13 +253,13 @@ public class RequirementFlowBuilder extends
     }
 
     /**
-     * Builder (configurador) de {@link SProcessRole} especializado em requerimentos.
+     * Builder (configurador) de {@link SBusinessRole} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderProcessRole<BuilderRolePetition>
-            implements BuilderProcessRole<BuilderRolePetition> {
+    public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderBusinessRole<BuilderRolePetition>
+            implements BuilderBusinessRole<BuilderRolePetition> {
 
-        BuilderRolePetition(SProcessRole papel) {
+        BuilderRolePetition(SBusinessRole papel) {
             super(papel);
         }
     }
