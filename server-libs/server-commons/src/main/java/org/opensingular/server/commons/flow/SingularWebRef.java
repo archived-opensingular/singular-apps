@@ -36,13 +36,13 @@ public class SingularWebRef implements WebRef {
 
 
     @Override
-    public String getNome() {
+    public String getName() {
         throw notImplementedException();
     }
 
 
     @Override
-    public String getNomeCurto() {
+    public String getShortName() {
         throw notImplementedException();
     }
 
@@ -54,25 +54,25 @@ public class SingularWebRef implements WebRef {
 
 
     @Override
-    public String getPathIcone() {
+    public String getIconPath() {
         throw notImplementedException();
     }
 
 
     @Override
-    public String getPathIconePequeno() {
+    public String getSmallIconPath() {
         throw notImplementedException();
     }
 
 
     @Override
-    public String getConfirmacao() {
+    public String getConfirmationMessage() {
         throw notImplementedException();
     }
 
 
     @Override
-    public boolean isPossuiDireitoAcesso() {
+    public boolean hasPermission() {
         throw notImplementedException();
     }
 
@@ -90,13 +90,13 @@ public class SingularWebRef implements WebRef {
 
 
     @Override
-    public boolean isAbrirEmNovaJanela() {
+    public boolean isPopup() {
         throw notImplementedException();
     }
 
 
     @Override
-    public boolean isSeAplicaAoContexto() {
+    public boolean appliesToContext() {
         throw notImplementedException();
     }
 
@@ -114,7 +114,7 @@ public class SingularWebRef implements WebRef {
 
 
     @Override
-    public String gerarHtml(String urlApp) {
+    public String generateHtml(String urlApp) {
         throw notImplementedException();
     }
 
