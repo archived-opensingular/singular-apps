@@ -8,7 +8,7 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
-import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
+import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 
 import javax.annotation.Nonnull;
@@ -30,11 +30,11 @@ public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {
         ITaskDefinition endbarDef = () -> "End bar";
 
         flow.addHumanTask(startbarDef)
-                .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
+                .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy());
 
         flow.addHumanTask(middlebarDef)
-                .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
+                .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
                 .addAccessStrategy(new NullTaskAccessStrategy());
 
         flow.addEndTask(endbarDef);
