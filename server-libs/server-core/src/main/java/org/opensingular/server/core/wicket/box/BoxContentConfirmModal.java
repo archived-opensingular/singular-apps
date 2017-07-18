@@ -64,7 +64,7 @@ public abstract class BoxContentConfirmModal<T extends Serializable> extends Pan
 
     protected void addCancelButton() {
         border.addButton(BSModalBorder.ButtonStyle.CANCEL, $m.get(this::getCancelButtonLabel),
-                cancelButton = (AjaxButton) new AjaxButton("cancel-delete-btn", confirmationForm) {
+                cancelButton = (AjaxButton) new AjaxButton("cancel-btn", confirmationForm) {
                     @Override
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         dataModel.setObject(null);

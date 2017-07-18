@@ -86,7 +86,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
 
     private void addDeallocate() {
         boolean visibleDesalocarButton = dataModel.getObject().get("codUsuarioAlocado") != null;
-        AjaxButton deallocateButton = new AjaxButton("realocar-btn", confirmationForm) {
+        AjaxButton deallocateButton = new AjaxButton("deallocate-btn", confirmationForm) {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 onDeallocate(target);
