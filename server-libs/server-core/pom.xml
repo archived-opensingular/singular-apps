@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-server-libs</artifactId>
-        <version>1.6.8-SNAPSHOT</version>
+        <version>1.6.8-ATHALAIA-SNAPSHOT</version>
     </parent>
 
     <artifactId>singular-server-core</artifactId>
@@ -36,14 +36,14 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-server-commons</artifactId>
-            <version>1.6.8-SNAPSHOT</version>
+            <version>1.6.8-ATHALAIA-SNAPSHOT</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-server-commons</artifactId>
-            <version>1.6.8-SNAPSHOT</version>
+            <version>1.6.8-ATHALAIA-SNAPSHOT</version>
         </dependency>
 
         <dependency>
