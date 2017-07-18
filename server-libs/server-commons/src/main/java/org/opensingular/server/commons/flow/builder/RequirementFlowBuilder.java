@@ -217,6 +217,12 @@ public class RequirementFlowBuilder extends
             super(flowBuilder, task);
         }
 
+        @Nonnull
+        public BuilderWaitTaskPetition withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
+            getTask().setExecutionPage(SingularRequirementTaskPageStrategy.of(pageClass));
+            return self();
+        }
+
     }
 
     /**
