@@ -22,7 +22,6 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.form.service.FormIndexService;
-import org.opensingular.server.commons.admin.AdminFacade;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 
 import javax.inject.Inject;
@@ -55,7 +54,7 @@ public class IndexPanel extends Panel {
 		add(new AjaxButton("fullIndex") {
 			@Override
 			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				formIndexService.indexForms();
+				formIndexService.indexAllForms();
 				target.add(form);
 
 				new SingularToastrHelper(this).
