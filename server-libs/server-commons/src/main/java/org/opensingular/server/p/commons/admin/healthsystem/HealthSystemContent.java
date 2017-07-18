@@ -36,6 +36,7 @@ import org.opensingular.form.service.FormIndexService;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.CachePanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.DbPanel;
+import org.opensingular.server.p.commons.admin.healthsystem.panel.IndexPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.JobPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.PermissionPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.WebPanel;
@@ -112,20 +113,21 @@ public class HealthSystemContent extends Content {
             }
         };
 
-        AjaxButton buttonFullIndex = new AjaxButton("buttonFullIndex") {
+        AjaxButton buttonIndexForms = new AjaxButton("buttonIndexForms") {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                formIndexService.indexAllForms();
+                form.replace(new IndexPanel(CONTAINER_ALL_CONTENT));
                 target.add(form);
             }
         };
+
 
         form.add(buttonCache);
         form.add(buttonDb);
         form.add(buttonPermissions);
         form.add(buttonJobs);
         form.add(buttonWeb);
-        form.add(buttonFullIndex);
+        form.add(buttonIndexForms);
         form.add(makeLogButton());
 
     }
