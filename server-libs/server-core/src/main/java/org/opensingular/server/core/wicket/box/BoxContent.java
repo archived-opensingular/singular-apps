@@ -287,7 +287,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
-            return new BoxContentAllocateModal(itemAction, getDataModel(), $m.ofValue(getProcessGroup())) {
+            return new BoxContentAllocateModal(itemAction, getDataModel(), $m.ofValue(getModule())) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
                     relocate(itemAction, baseUrl, additionalParams, getDataModel().getObject(), target, null);

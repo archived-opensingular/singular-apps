@@ -27,7 +27,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.core.service.BoxService;
@@ -39,7 +39,7 @@ import java.util.List;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<BoxItemDataMap> {
-    private final IModel<ProcessGroupEntity> processGroupEntity;
+    private final IModel<ModuleEntity> moduleEntity;
 
     @Inject
     private BoxService boxService;
@@ -47,9 +47,9 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     protected DropDownChoice<Actor> usersDropDownChoice;
 
     public BoxContentAllocateModal(BoxItemAction itemAction, IModel<BoxItemDataMap> dataModel,
-                                   IModel<ProcessGroupEntity> processGroupEntity) {
+                                   IModel<ModuleEntity> moduleEntity) {
         super(itemAction, dataModel);
-        this.processGroupEntity = processGroupEntity;
+        this.moduleEntity = moduleEntity;
     }
 
     protected abstract void onDeallocate(AjaxRequestTarget target);
@@ -69,7 +69,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     }
 
     private void addUsersDropDownChoice() {
-        IModel<List<Actor>> actorsModel = $m.get(() -> boxService.buscarUsuarios(processGroupEntity.getObject(),
+        IModel<List<Actor>> actorsModel = $m.get(() -> boxService.buscarUsuarios(moduleEntity.getObject(),
                 dataModel, itemAction.getConfirmation()));
         usersDropDownChoice = new DropDownChoice<>("usersDropDownChoice",
                 new Model<>(),
