@@ -20,6 +20,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
@@ -87,7 +89,9 @@ public abstract class Template extends SingularTemplate {
         response.render(CssHeaderItem.forUrl("/singular-static/resources/singular/fonts/google/open-sans.css"));
         response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
         response.render(CssHeaderItem.forReference(new PackageResourceReference(Template.class, "Template.css")));
-        response.render(JavaScriptHeaderItem.forUrl(skinnableResource("/layout4/scripts/analytics.js")));
+        if (SingularProperties.get().isTrue(SingularProperties.ANALYTICS_ENABLED)) {
+            response.render(JavaScriptHeaderItem.forUrl(skinnableResource("/layout4/scripts/analytics.js")));
+        }
         
         if (withSideBar()) {
             addQuickSidebar(response);

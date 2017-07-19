@@ -7,8 +7,8 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
-import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
-import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
+import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
+import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 
 @DefinitionInfo("fooooooooFlow")
@@ -28,8 +28,8 @@ public class FooFlow extends FlowDefinition<FlowInstance> {
 
         flow.addEndTask(endbarDef);
         flow.addHumanTask(dobarDef)
-                .withExecutionPage(SingularServerTaskPageStrategy.of(FormPage.class))
-                .addAccessStrategy(new NullTaskAccessStrategy())
+                .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
+                .uiAccess(new PermissiveTaskAccessStrategy())
                 .go(endbarDef);
 
         flow.setStartTask(dobarDef);

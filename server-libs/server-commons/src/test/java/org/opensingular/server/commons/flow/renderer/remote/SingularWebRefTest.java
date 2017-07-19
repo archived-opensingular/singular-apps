@@ -17,12 +17,12 @@ public class SingularWebRefTest {
 
     @Test(expected = NotImplementedException.class)
     public void getNomeTest(){
-        ref.getNome();
+        ref.getName();
     }
 
     @Test(expected = NotImplementedException.class)
     public void getNomeCurtoTest(){
-        ref.getNomeCurto();
+        ref.getShortName();
     }
 
     @Test(expected = NotImplementedException.class)
@@ -32,22 +32,22 @@ public class SingularWebRefTest {
 
     @Test(expected = NotImplementedException.class)
     public void getPathIconeTest(){
-        ref.getPathIcone();
+        ref.getIconPath();
     }
 
     @Test(expected = NotImplementedException.class)
     public void getPathIconePequenoTest(){
-        ref.getPathIconePequeno();
+        ref.getSmallIconPath();
     }
 
     @Test(expected = NotImplementedException.class)
     public void getConfirmacaoTest(){
-        ref.getConfirmacao();
+        ref.getConfirmationMessage();
     }
 
     @Test(expected = NotImplementedException.class)
     public void isPossuiDireitoAcessoTest(){
-        ref.isPossuiDireitoAcesso();
+        ref.hasPermission();
     }
 
     @Test(expected = NotImplementedException.class)
@@ -62,12 +62,12 @@ public class SingularWebRefTest {
 
     @Test(expected = NotImplementedException.class)
     public void isAbrirEmNovaJanelaTest(){
-        ref.isAbrirEmNovaJanela();
+        ref.isPopup();
     }
 
     @Test(expected = NotImplementedException.class)
     public void isSeAplicaAoContextoTest(){
-        ref.isSeAplicaAoContexto();
+        ref.appliesToContext();
     }
 
     @Test(expected = NotImplementedException.class)
@@ -82,6 +82,6 @@ public class SingularWebRefTest {
 
     @Test(expected = NotImplementedException.class)
     public void gerarHtmlTest(){
-        ref.gerarHtml("html to generate");
+        ref.generateHtml("html to generate");
     }
 }

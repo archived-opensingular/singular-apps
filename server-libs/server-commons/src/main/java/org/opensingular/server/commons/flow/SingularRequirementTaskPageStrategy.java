@@ -21,20 +21,20 @@ import org.opensingular.flow.core.ITaskPageStrategy;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.TaskInstance;
 
-public class SingularServerTaskPageStrategy implements ITaskPageStrategy {
+public class SingularRequirementTaskPageStrategy implements ITaskPageStrategy {
 
     private SingularWebRef webRef;
 
-    public SingularServerTaskPageStrategy(Class<? extends WebPage> page) {
+    public SingularRequirementTaskPageStrategy(Class<? extends WebPage> page) {
         this.webRef = new SingularWebRef(page);
     }
 
-    public SingularServerTaskPageStrategy() {
+    public SingularRequirementTaskPageStrategy() {
 
     }
 
-    public static final SingularServerTaskPageStrategy of(Class<? extends WebPage> page) {
-        return new SingularServerTaskPageStrategy(page);
+    public static final SingularRequirementTaskPageStrategy of(Class<? extends WebPage> page) {
+        return new SingularRequirementTaskPageStrategy(page);
     }
 
     @Override

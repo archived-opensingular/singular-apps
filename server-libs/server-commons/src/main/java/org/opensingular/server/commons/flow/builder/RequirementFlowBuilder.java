@@ -16,9 +16,11 @@
 
 package org.opensingular.server.commons.flow.builder;
 
+import org.apache.wicket.markup.html.WebPage;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.SProcessRole;
+import org.opensingular.flow.core.ITaskPageStrategy;
+import org.opensingular.flow.core.SBusinessRole;
 import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
@@ -27,15 +29,18 @@ import org.opensingular.flow.core.STaskJava;
 import org.opensingular.flow.core.STaskWait;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.UserRoleSettingStrategy;
+import org.opensingular.flow.core.builder.BuilderBusinessRole;
 import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
 import org.opensingular.flow.core.builder.BuilderJava;
-import org.opensingular.flow.core.builder.BuilderProcessRole;
 import org.opensingular.flow.core.builder.BuilderTask;
 import org.opensingular.flow.core.builder.BuilderWait;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.lib.commons.base.SingularUtil;
+import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
+
+import javax.annotation.Nonnull;
 
 /**
  * Construtor de fluxo especializado em fluxo para requerimentos. Apresenta configurações adicionais às encontradas
@@ -98,7 +103,7 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
-    protected BuilderRolePetition newProcessRole(SProcessRole papel) {
+    protected BuilderRolePetition newProcessRole(SBusinessRole papel) {
         return new BuilderRolePetition(papel);
     }
 
@@ -189,6 +194,11 @@ public class RequirementFlowBuilder extends
             super(flowBuilder, task);
         }
 
+        @Nonnull
+        public BuilderHumanTaskPetition withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
+            getTask().setExecutionPage(SingularRequirementTaskPageStrategy.of(pageClass));
+            return self();
+        }
 
         @Override
         public STaskHumanPetition getTask() {
@@ -205,6 +215,12 @@ public class RequirementFlowBuilder extends
 
         BuilderWaitTaskPetition(RequirementFlowBuilder flowBuilder, STaskWait task) {
             super(flowBuilder, task);
+        }
+
+        @Nonnull
+        public BuilderWaitTaskPetition withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
+            getTask().setExecutionPage(SingularRequirementTaskPageStrategy.of(pageClass));
+            return self();
         }
 
     }
@@ -253,13 +269,13 @@ public class RequirementFlowBuilder extends
     }
 
     /**
-     * Builder (configurador) de {@link SProcessRole} especializado em requerimentos.
+     * Builder (configurador) de {@link SBusinessRole} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderProcessRole<BuilderRolePetition>
-            implements BuilderProcessRole<BuilderRolePetition> {
+    public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderBusinessRole<BuilderRolePetition>
+            implements BuilderBusinessRole<BuilderRolePetition> {
 
-        BuilderRolePetition(SProcessRole papel) {
+        BuilderRolePetition(SBusinessRole papel) {
             super(papel);
         }
     }
