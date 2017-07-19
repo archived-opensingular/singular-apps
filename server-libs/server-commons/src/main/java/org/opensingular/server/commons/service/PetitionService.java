@@ -325,7 +325,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
             }
 
             savePetitionHistory(petition, formPetitionService.consolidateDrafts(petition));
-            ProcessInstance processInstance = petition.getProcessInstance();
+            FlowInstance processInstance = petition.getFlowInstance();
             checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), processInstance);
 
             if (processParameters != null && !processParameters.isEmpty()) {
