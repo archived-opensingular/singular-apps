@@ -99,7 +99,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     public Component buildNewPetitionButton(String id) {
         IModel<List<RequirementData>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
-        if (requirementsModel.getObject().size() > 0 && getMenu() != null) {
+        if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
             return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewPetitionButton(id);
