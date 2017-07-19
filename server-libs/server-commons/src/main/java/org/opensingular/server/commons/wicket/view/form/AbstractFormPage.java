@@ -685,13 +685,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         //petição atual, qualuer alteracao deve ser feita em onBeforeExecuteTransition
         PI petition = getPetition();
 
-        //busca os parametros de transicao do FLOW
-        Map<String, String> transitionParams = getTransitionParameters(tn);
+        //busca os parametros do FLOW
+        Map<String, String> flowParameters = getFlowParameters(tn);
+
+        //busca os parametros da transicao atual
+        Map<String, String> currentTransitionParameters = getCurrentTransitionParameters(tn);
 
         //Executa em bloco try, executa rollback da petição caso exista erro
         try {
             //executa a transicao informada
-            petitionService.executeTransition(tn, petition, this::onTransition, transitionParams);
+            petitionService.executeTransition(tn, petition, this::onTransition, flowParameters, currentTransitionParameters);
 
             //executa chamada, abrindo janela de oportunidade de executar ações apos execução da transicao
             onTransitionExecuted(ajxrt, tn);
@@ -703,7 +706,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    protected Map<String, String> getTransitionParameters(String transition) {
+    protected Map<String, String> getCurrentTransitionParameters(String currentTransition) {
+        return new HashMap<>();
+    }
+
+    /**
+     * Permite a configuração de parametros de instancia do flow durante a transição.
+     * @param transition a transicao sendo executada
+     * @return Mapa de parametros
+     */
+    protected Map<String, String> getFlowParameters(String transition) {
         return new HashMap<>();
     }
 

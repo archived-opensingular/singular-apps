@@ -22,6 +22,7 @@ import org.opensingular.flow.core.ProcessDefinition;
 import org.opensingular.flow.core.ProcessInstance;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
@@ -302,33 +303,38 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     /**
      * Executa a transição informada, consolidando todos os rascunhos, este metodo não salva a petição
      *
-     * @param tn           nome da transicao
+     * @param transitionName           nome da transicao
      * @param petition     peticao
-     * @param onTransition listener
+     * @param transitionListener listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void executeTransition(String tn, PI petition, BiConsumer<PI, String> onTransition, Map<String, String> params) {
+    public void executeTransition(String transitionName,
+                                  PI petition,
+                                  BiConsumer<PI, String> transitionListener,
+                                  Map<String, String> processParameters,
+                                  Map<String, String> transitionParameters) {
         try {
-            if (onTransition != null) {
-                onTransition.accept(petition, tn);
+            if (transitionListener != null) {
+                transitionListener.accept(petition, transitionName);
             }
 
-            final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
+            savePetitionHistory(petition, formPetitionService.consolidateDrafts(petition));
+            ProcessInstance processInstance = petition.getProcessInstance();
+            checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), processInstance);
 
-            savePetitionHistory(petition, consolidatedDrafts);
-
-            ProcessInstance pi = petition.getProcessInstance();
-
-            checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), pi);
-
-            if (params != null && !params.isEmpty()) {
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    pi.getVariables().addValueString(entry.getKey(), entry.getValue());
+            if (processParameters != null && !processParameters.isEmpty()) {
+                for (Map.Entry<String, String> entry : processParameters.entrySet()) {
+                    processInstance.getVariables().addValueString(entry.getKey(), entry.getValue());
                 }
             }
 
-            pi.prepareTransition(tn).go();
-
+            TransitionCall transitionCall = processInstance.prepareTransition(transitionName);
+            if(transitionParameters != null && !transitionParameters.isEmpty()){
+                for (Map.Entry<String, String> transitionParameter : transitionParameters.entrySet()) {
+                    transitionCall.addValueString(transitionParameter.getKey(), transitionParameter.getValue());
+                }
+            }
+            transitionCall.go();
         } catch (SingularException e) {
             throw e;
         } catch (Exception e) {
