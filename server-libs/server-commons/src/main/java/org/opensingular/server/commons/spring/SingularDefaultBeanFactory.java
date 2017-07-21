@@ -181,11 +181,6 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public FormFieldService formFieldService() {
-        return new FormFieldService();
-    }
-
-    @Bean
     public FormCacheFieldDAO formCacheFieldDAO() {
         return new FormCacheFieldDAO();
     }
