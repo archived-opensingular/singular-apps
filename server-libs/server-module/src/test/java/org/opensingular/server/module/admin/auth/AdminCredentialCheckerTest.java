@@ -1,28 +1,54 @@
-package org.opensingular.server.commons.auth;
+package org.opensingular.server.module.admin.auth;
 
 import net.vidageek.mirror.dsl.Mirror;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.opensingular.server.commons.auth.AdminCredentialChecker;
 import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.server.commons.service.ParameterService;
+import org.opensingular.server.module.SingularModule;
+import org.opensingular.server.module.SingularModuleConfiguration;
 
 import java.util.Optional;
 
+import static org.mockito.Mockito.when;
 
+@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class AdminCredentialCheckerTest {
+
+    @Mock
+    SingularModuleConfiguration moduleConfiguration;
+
+    @Mock
+    SingularModule module;
+
+    @Mock
+    ParameterService parameterService;
+
+    @InjectMocks
+    AdminCredentialChecker credentialChecker = new DatabaseAdminCredentialChecker();
+
+    @Before
+    public void setup(){
+        when(moduleConfiguration.getModule()).thenReturn(module);
+    }
 
     @Test
     public void testCheckWithNullModule() {
-        AdminCredentialChecker credentialChecker = new DatabaseAdminCredentialChecker(null);
+        when(module.abbreviation()).thenReturn(null);
         Assert.assertFalse(credentialChecker.check("FooUser", "BarPass"));
     }
 
     @Test
     public void testCheckWithModule() {
-        AdminCredentialChecker credentialChecker   = new DatabaseAdminCredentialChecker("FooCategory");
-        ParameterService       parameterService    = Mockito.mock(ParameterService.class);
-        ParameterEntity        userParameterEntity = new ParameterEntity();
+        when(module.abbreviation()).thenReturn("FooCategory");
+
+        ParameterEntity  userParameterEntity = new ParameterEntity();
         userParameterEntity.setValue("FooUser");
         Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));
         ParameterEntity passParameterEntity = new ParameterEntity();

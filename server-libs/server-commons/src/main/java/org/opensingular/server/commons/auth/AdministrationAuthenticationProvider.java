@@ -20,14 +20,14 @@ public class AdministrationAuthenticationProvider extends AbstractUserDetailsAut
     }
 
     @Override
-    protected void additionalAuthenticationChecks(UserDetails userDetails,
+    public void additionalAuthenticationChecks(UserDetails userDetails,
                                                   UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
     }
 
     @Override
-    protected UserDetails retrieveUser(String principal,
+    public UserDetails retrieveUser(String principal,
                                        UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         if (credentialChecker.check(principal, authentication.getCredentials().toString())) {

@@ -12,30 +12,21 @@ import java.io.Serializable;
 import java.util.Map;
 
 public interface TransitionController<T extends SType<?>> extends Serializable {
-
     Class<T> getType();
 
     boolean isValidatePageForm();
 
-    default Map<String, String> getTransitionParameters(SIComposite pageInstance, SInstance transitionInstance) {
+    default Map<String, String> getFlowParameters(SIComposite pageInstance, SInstance transitionInstance) {
         return null;
     }
 
-    default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {
+    default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {}
 
-    }
-
-    default void onTransition() {
-
-    }
+    default void onTransition() {}
 
     default boolean onShow(SIComposite pageInstance, SInstance transitionInstance, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
         return true;
     }
 
-
-    default void appendExtraContent(BSContainer extraContainer) {
-
-    }
-
+    default void appendExtraContent(BSContainer extraContainer) {}
 }

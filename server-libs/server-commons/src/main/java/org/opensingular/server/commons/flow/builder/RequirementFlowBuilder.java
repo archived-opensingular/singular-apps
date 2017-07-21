@@ -19,7 +19,6 @@ package org.opensingular.server.commons.flow.builder;
 import org.apache.wicket.markup.html.WebPage;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.ITaskPageStrategy;
 import org.opensingular.flow.core.SBusinessRole;
 import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
@@ -28,7 +27,7 @@ import org.opensingular.flow.core.STaskHuman;
 import org.opensingular.flow.core.STaskJava;
 import org.opensingular.flow.core.STaskWait;
 import org.opensingular.flow.core.STransition;
-import org.opensingular.flow.core.UserRoleSettingStrategy;
+import org.opensingular.flow.core.BusinessRoleStrategy;
 import org.opensingular.flow.core.builder.BuilderBusinessRole;
 import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
@@ -115,10 +114,10 @@ public class RequirementFlowBuilder extends
 
     @Override
     public BuilderRolePetition addRoleDefinition(String description,
-                                                 UserRoleSettingStrategy<? extends FlowInstance> userRoleSettingStrategy,
+                                                 BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
                                                  boolean automaticUserAllocation) {
         return addRoleDefinition(description, SingularUtil.convertToJavaIdentity(description, true, false),
-                userRoleSettingStrategy, automaticUserAllocation);
+                businessRoleStrategy, automaticUserAllocation);
     }
 
     /**
