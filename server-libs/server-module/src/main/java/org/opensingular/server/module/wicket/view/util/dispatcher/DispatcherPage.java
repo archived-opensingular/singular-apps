@@ -256,7 +256,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
                     .map(history -> history.getAllocatedUser() != null
-                            && history.getEndDateAllocation() == null
+                            && history.getAllocationEndDate() == null
                             && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
                     .orElse(Boolean.FALSE);
         }
