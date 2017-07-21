@@ -104,7 +104,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         petitionInstance.setProcessDefinition(FOOFlow.class);
 
         petitionSender.send(petitionInstance, instance, "vinicius.nunes");
-        petitionService.executeTransition("No more bar", petitionInstance, null, null);
+        petitionService.executeTransition("No more bar", petitionInstance, null, null, null);
     }
 
     @Test
