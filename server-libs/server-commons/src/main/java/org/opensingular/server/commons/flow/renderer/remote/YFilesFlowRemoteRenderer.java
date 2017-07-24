@@ -35,7 +35,7 @@ import java.util.ArrayList;
  */
 public class YFilesFlowRemoteRenderer implements IFlowRenderer {
 
-    private String url = "http://singular02.mirante.net.br/yfiles/graph";
+    private String url = "http://singular02/yfiles/graph";
 
     public YFilesFlowRemoteRenderer(String url) {
         if (url != null) {
