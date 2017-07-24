@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
  * Adiciona uma variavel nomeada a consulta de requerimentos
  */
 public class FlowVariableRequirementSearchExtender implements RequirementSearchExtender {
-
     public static final String TO_CHAR_TEMPLATE = "to_char({0})";
     public static final String TO_CHAR_DATE_TEMPLATE = "to_char({0}, 'dd/MM/yyyy')";
 
@@ -43,8 +42,7 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
         RequirementSearchQuery query = context.getQuery();
         RequirementSearchAliases $ = context.getAliases();
 
-        query.getSelect()
-                .add(toChar(variableEntity).as(queryAlias));
+        createSelect(variableEntity, context);
 
         query.leftJoin($.processInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
 
@@ -62,9 +60,14 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
         }
     }
 
+    protected void createSelect(QVariableInstanceEntity variableEntity, RequirementSearchContext context) {
+        context.getQuery()
+                .getSelect()
+                .add(toChar(variableEntity).as(queryAlias));
+    }
+
     @Nonnull
     private StringTemplate toChar(QVariableInstanceEntity var) {
         return Expressions.stringTemplate(toCharTemplate, var.value);
     }
-
 }
