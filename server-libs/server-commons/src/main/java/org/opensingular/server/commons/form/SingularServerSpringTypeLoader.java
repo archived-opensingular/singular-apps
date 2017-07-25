@@ -19,14 +19,17 @@ package org.opensingular.server.commons.form;
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
+import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.service.PetitionUtil;
 
+import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -62,4 +65,15 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     protected Optional<SType<?>> loadTypeImpl(String typeId) {
         return Optional.ofNullable(entries.get(typeId)).map(Supplier::get);
     }
+
+    public Optional<SType<?>> loadType(@Nonnull Class<? extends SType> typeClass) {
+        String typeId = SFormUtil.getTypeName((Class<? extends SType<?>>) typeClass);
+        return loadTypeImpl(typeId);
+    }
+
+    public SType<?> loadTypeOrException(@Nonnull Class<? extends SType> typeClass) {
+        Objects.requireNonNull(typeClass);
+        return loadType(typeClass).orElseThrow(() -> new SingularFormException("Não foi encontrado o tipo para a classe=" + typeClass));
+    }
+
 }

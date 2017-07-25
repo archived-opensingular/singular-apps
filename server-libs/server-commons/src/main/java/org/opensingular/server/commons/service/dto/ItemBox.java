@@ -32,7 +32,6 @@ public class ItemBox implements Serializable {
     private String id;
     private String name;
     private String description;
-    private boolean showNewButton = false;
     private boolean quickFilter   = true;
     private boolean showDraft     = false;
     private Boolean              endedTasks;
@@ -56,14 +55,6 @@ public class ItemBox implements Serializable {
 
     public void setDescription(String description) {
         this.description = description;
-    }
-
-    public boolean isShowNewButton() {
-        return showNewButton;
-    }
-
-    public void setShowNewButton(boolean showNewButton) {
-        this.showNewButton = showNewButton;
     }
 
     public boolean isQuickFilter() {

@@ -1,11 +1,7 @@
 package org.opensingular.server.commons.admin.healthsystem;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.junit.Test;
-import org.opensingular.form.SIComposite;
-import org.opensingular.form.SIList;
-import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;

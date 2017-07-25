@@ -27,7 +27,7 @@ import org.opensingular.form.type.core.SIBoolean;
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.type.core.STypeBoolean;
 import org.opensingular.form.type.core.STypeString;
-import org.opensingular.form.validation.IInstanceValidatable;
+import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewListByTable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
@@ -164,7 +164,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         coluna.addInstanceValidator(this::columnValidation);
     }
 
-    private void columnValidation(IInstanceValidatable<SIComposite> validatable) {
+    private void columnValidation(InstanceValidatable<SIComposite> validatable) {
         Optional<SIBoolean> databaseFieldInstance  = validatable.getInstance().findNearest(foundDataBase);
         Optional<SIBoolean> hibernateFieldInstance = validatable.getInstance().findNearest(foundHibernate);
 
@@ -188,7 +188,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         }
     }
 
-    private void tableValidation(IInstanceValidatable<SIComposite> validatable) {
+    private void tableValidation(InstanceValidatable<SIComposite> validatable) {
 
         Optional<SIBoolean> foundTableInstance = validatable.getInstance().findNearest(found);
         if (!foundTableInstance.isPresent() || !foundTableInstance.get().getValue()) {

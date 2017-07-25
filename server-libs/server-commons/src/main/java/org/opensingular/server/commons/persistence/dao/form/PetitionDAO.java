@@ -17,20 +17,12 @@ package org.opensingular.server.commons.persistence.dao.form;
 
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Order;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Path;
-import com.querydsl.core.types.dsl.BooleanExpression;
-import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringTemplate;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
-import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
@@ -42,7 +34,6 @@ import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.QDraftEntity;
@@ -100,8 +91,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
-        RequirementSearchQueryFactory searchQueryFactory     = new RequirementSearchQueryFactory(ctx);
-        RequirementSearchQuery        requirementSearchQuery = searchQueryFactory.make(getSession());
+        RequirementSearchQueryFactory searchQueryFactory = new RequirementSearchQueryFactory(ctx);
+        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.make(getSession());
         return requirementSearchQuery.toHibernateQuery(ctx.getCount());
     }
 
@@ -151,14 +142,21 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     @Override
-    public void delete(T obj) {
-        findFormAttachmentByPetitionCod(obj.getCod()).forEach(getSession()::delete);
-        FormEntity        mainForm          = obj.getMainForm();
-        FormVersionEntity formVersionEntity = mainForm.getCurrentFormVersionEntity();
-        getSession().delete(formVersionEntity);
-        mainForm.setCurrentFormVersionEntity(null);
+    public void delete(T petition) {
+        findFormAttachmentByPetitionCod(petition.getCod()).forEach(getSession()::delete);
+        petition.getFormPetitionEntities().forEach(formPetitionEntity -> {
+            FormEntity formEntity = formPetitionEntity.getForm();
+            if (formEntity == null && formPetitionEntity.getCurrentDraftEntity() != null) {
+                formEntity = formPetitionEntity.getCurrentDraftEntity().getForm();
+            }
+            if (formEntity != null) {
+                FormVersionEntity formVersionEntity = formEntity.getCurrentFormVersionEntity();
+                getSession().delete(formVersionEntity);
+                formEntity.setCurrentFormVersionEntity(null);
+            }
+        });
         getSession().flush();
-        super.delete(obj);
+        super.delete(petition);
     }
 
     public PetitionAuthMetadataDTO findPetitionAuthMetadata(Long petitionId) {
@@ -200,12 +198,12 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByPetitionCod(Long petitionCod) {
-        QPetitionEntity       petition       = new QPetitionEntity("petitionEntity");
-        QFormPetitionEntity   formPetition   = new QFormPetitionEntity("formPetitionEntity");
-        QFormEntity           form           = new QFormEntity("formEntity");
-        QDraftEntity          currentDraft   = new QDraftEntity("draftEntity");
-        QFormEntity           draftForm      = new QFormEntity("draftFormEntity");
-        QFormVersionEntity    formVersion    = new QFormVersionEntity("formVersionEntity");
+        QPetitionEntity petition = new QPetitionEntity("petitionEntity");
+        QFormPetitionEntity formPetition = new QFormPetitionEntity("formPetitionEntity");
+        QFormEntity form = new QFormEntity("formEntity");
+        QDraftEntity currentDraft = new QDraftEntity("draftEntity");
+        QFormEntity draftForm = new QFormEntity("draftFormEntity");
+        QFormVersionEntity formVersion = new QFormVersionEntity("formVersionEntity");
         QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
 
         return new HibernateQueryFactory(getSession())
@@ -234,10 +232,10 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
     }
 
     public T findPetitionInstanceByRootPetitionAndType(Long rootPetition, String type) {
-        QPetitionEntity     petition       = new QPetitionEntity("petition");
-        QFormPetitionEntity formPetition   = new QFormPetitionEntity("formPetition");
-        QFormEntity         form           = new QFormEntity("form");
-        QFormTypeEntity     formTypeEntity = new QFormTypeEntity("formType");
+        QPetitionEntity petition = new QPetitionEntity("petition");
+        QFormPetitionEntity formPetition = new QFormPetitionEntity("formPetition");
+        QFormEntity form = new QFormEntity("form");
+        QFormTypeEntity formTypeEntity = new QFormTypeEntity("formType");
 
         HibernateQuery<PetitionEntity> hibernateQuery = new HibernateQueryFactory(getSession())
                 .selectFrom(petition)

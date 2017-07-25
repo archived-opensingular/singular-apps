@@ -39,7 +39,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
                 if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
                     return AnalysisApplication.class;
-                } else if (PServerContext.PETITION.isSameContext(iServerContext)) {
+                } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
                     return PetitionApplication.class;
                 } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;

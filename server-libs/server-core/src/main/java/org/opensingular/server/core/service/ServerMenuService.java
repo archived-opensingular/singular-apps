@@ -1,10 +1,9 @@
 package org.opensingular.server.core.service;
 
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
-import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
@@ -24,8 +23,8 @@ public class ServerMenuService implements MenuService, Loggable {
     @Inject
     private SingularServerSessionConfiguration singularServerSessionConfiguration;
 
-    private Map<ProcessGroupEntity, List<BoxConfigurationData>> map;
-    private Map<String, BoxConfigurationData>                   mapMenu;
+    private Map<ModuleEntity, List<BoxConfigurationData>> map;
+    private Map<String, BoxConfigurationData>             mapMenu;
 
     @PostConstruct
     public void initialize() {
@@ -37,14 +36,14 @@ public class ServerMenuService implements MenuService, Loggable {
         map = new HashMap<>();
         mapMenu = null;
         singularServerSessionConfiguration.reload();
-        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> entry : singularServerSessionConfiguration.getProcessGroupBoxConfigurationMap().entrySet()) {
+        for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : singularServerSessionConfiguration.getModuleBoxConfigurationMap().entrySet()) {
             addMenu(entry.getKey(), entry.getValue());
         }
     }
 
     @Override
-    public BoxConfigurationData getDefaultSelectedMenu(ProcessGroupEntity processGroupEntity) {
-        final List<BoxConfigurationData> menusPorCategoria = getMenusByCategory(processGroupEntity);
+    public BoxConfigurationData getDefaultSelectedMenu(ModuleEntity moduleEntity) {
+        final List<BoxConfigurationData> menusPorCategoria = getMenusByCategory(moduleEntity);
         if (menusPorCategoria != null && !menusPorCategoria.isEmpty()) {
             return menusPorCategoria.get(0);
         }
@@ -52,7 +51,7 @@ public class ServerMenuService implements MenuService, Loggable {
     }
 
     @Override
-    public List<BoxConfigurationData> getMenusByCategory(ProcessGroupEntity categoria) {
+    public List<BoxConfigurationData> getMenusByCategory(ModuleEntity categoria) {
         return map.get(categoria);
     }
 
@@ -62,7 +61,7 @@ public class ServerMenuService implements MenuService, Loggable {
     }
 
     @Override
-    public List<ProcessGroupEntity> getCategories() {
+    public List<ModuleEntity> getCategories() {
         return new ArrayList<>(map.keySet());
     }
 
@@ -71,8 +70,8 @@ public class ServerMenuService implements MenuService, Loggable {
             mapMenu = new HashMap<>();
         }
 
-        for (Map.Entry<ProcessGroupEntity, List<BoxConfigurationData>> processGroupEntityListEntry : map.entrySet()) {
-            for (BoxConfigurationData boxConfigurationMetadataDTO : processGroupEntityListEntry.getValue()) {
+        for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> moduleEntityListEntry : map.entrySet()) {
+            for (BoxConfigurationData boxConfigurationMetadataDTO : moduleEntityListEntry.getValue()) {
                 mapMenu.put(boxConfigurationMetadataDTO.getLabel(), boxConfigurationMetadataDTO);
             }
         }
@@ -80,12 +79,12 @@ public class ServerMenuService implements MenuService, Loggable {
         return mapMenu;
     }
 
-    private void addMenu(ProcessGroupEntity categoria, List<BoxConfigurationData> menusGroupDTO) {
+    private void addMenu(ModuleEntity categoria, List<BoxConfigurationData> menusGroupDTO) {
         mapMenu = null;
         map.put(categoria, menusGroupDTO);
     }
 
-    public Map<ProcessGroupEntity, List<BoxConfigurationData>> getMap() {
+    public Map<ModuleEntity, List<BoxConfigurationData>> getMap() {
         return Collections.unmodifiableMap(map);
     }
 }

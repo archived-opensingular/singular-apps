@@ -58,6 +58,7 @@ import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -134,7 +135,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
         //É um método estático para garantir que nada inesperado vai ser serializado junto
         return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
-                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getProcessInstance()));
+                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getFlowInstance()));
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
@@ -272,9 +273,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 parentPetition = petitionService.getPetition(parentPetitionId.get());
                 parentPetitionformKeyModel.setObject(formPetitionService.formKeyFromFormEntity(parentPetition.getEntity().getMainForm()));
             }
-            petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation);
+
+            petition = petitionService.createNewPetitionWithoutSave(null, parentPetition, this::onNewPetitionCreation, getRequirementDefinitionEntity());
         }
         return petition;
+    }
+
+    protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return getConfig().getRequirementId()
+                .map(petitionService::findRequirementDefinition).orElse(null);
     }
 
     private FormEntity getDraftOrFormEntity(PI petition) {
@@ -685,13 +692,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         //petição atual, qualuer alteracao deve ser feita em onBeforeExecuteTransition
         PI petition = getPetition();
 
-        //busca os parametros de transicao do FLOW
-        Map<String, String> transitionParams = getTransitionParameters(tn);
+        //busca os parametros do FLOW
+        Map<String, String> flowParameters = getFlowParameters(tn);
+
+        //busca os parametros da transicao atual
+        Map<String, String> currentTransitionParameters = getCurrentTransitionParameters(tn);
 
         //Executa em bloco try, executa rollback da petição caso exista erro
         try {
             //executa a transicao informada
-            petitionService.executeTransition(tn, petition, this::onTransition, transitionParams);
+            petitionService.executeTransition(tn, petition, this::onTransition, flowParameters, currentTransitionParameters);
 
             //executa chamada, abrindo janela de oportunidade de executar ações apos execução da transicao
             onTransitionExecuted(ajxrt, tn);
@@ -703,7 +713,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    protected Map<String, String> getTransitionParameters(String transition) {
+    protected Map<String, String> getCurrentTransitionParameters(String currentTransition) {
+        return new HashMap<>();
+    }
+
+    /**
+     * Permite a configuração de parametros de instancia do flow durante a transição.
+     * @param transition a transicao sendo executada
+     * @return Mapa de parametros
+     */
+    protected Map<String, String> getFlowParameters(String transition) {
         return new HashMap<>();
     }
 

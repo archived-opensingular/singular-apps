@@ -36,19 +36,17 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
-import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
@@ -68,8 +66,8 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
  */
 public abstract class AbstractBoxContent<T extends Serializable> extends Content {
 
-    public static final  int  DEFAULT_ROWS_PER_PAGE = 15;
-    private static final long serialVersionUID      = -3611649597709058163L;
+    public static final int DEFAULT_ROWS_PER_PAGE = 15;
+    private static final long serialVersionUID = -3611649597709058163L;
 
     @Inject
     protected PetitionService<?, ?> petitionService;
@@ -85,23 +83,23 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     /**
      * Confirmation Form
      */
-    protected Form<?> confirmationForm = new Form<>("confirmationForm");
-    private String           processGroupCod;
+
+    private String           moduleCod;
     private String           menu;
     private List<ProcessDTO> processes;
-    private List<FormDTO>    forms;
+    private List<FormDTO> forms;
     /**
      * Form padrão
      */
-    private Form<?>           form            = new Form<>("form");
+    private Form<?> form = new Form<>("form");
     /**
      * Filtro Rapido
      */
-    private TextField<String> filtroRapido    = new TextField<>("filtroRapido", new Model<>());
+    private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
     /**
      * Botão de pesquisa do filtro rapido
      */
-    private AjaxButton        pesquisarButton = new AjaxButton("pesquisar") {
+    private AjaxButton pesquisarButton = new AjaxButton("pesquisar") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
             super.onSubmit(target, form);
@@ -109,16 +107,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         }
     };
 
-    private IModel<T>     dataModel         = new Model<>();
-    /**
-     * Modal de confirmação de ação
-     */
-    private BSModalBorder confirmationModal = new BSModalBorder("confirmationModal");
-    private ProcessGroupEntity processGroup;
+    private IModel<T> dataModel = new Model<>();
 
-    public AbstractBoxContent(String id, String processGroupCod, String menu) {
+    private WebMarkupContainer confirmModalWrapper = new WebMarkupContainer("confirmModalWrapper");
+
+    private ModuleEntity module;
+
+    public AbstractBoxContent(String id, String moduleCod, String menu) {
         super(id);
-        this.processGroupCod = processGroupCod;
+        this.moduleCod = moduleCod;
         this.menu = menu;
     }
 
@@ -130,12 +127,12 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
     }
 
-    protected String getProcessGroupCod() {
-        return processGroupCod;
+    protected String getModuleCod() {
+        return moduleCod;
     }
 
-    public ProcessGroupEntity getProcessGroup() {
-        return processGroup;
+    public ModuleEntity getModule() {
+        return module;
     }
 
     protected Component buildNewPetitionButton(String id) {
@@ -196,34 +193,26 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         return Collections.emptyMap();
     }
 
-    protected BSModalBorder construirModalDeleteBorder(IConsumer<T> action) {
-        BSModalBorder confirmationModal = new BSModalBorder("confirmationModal", getMessage("label.title.delete.draft"));
-        confirmationModal.addToBorder(new Label("message", getMessage("label.delete.message")));
-        confirmationModal.addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxButton("cancel-delete-btn", confirmationForm) {
+    protected BoxContentConfirmModal<T> construirModalDeleteBorder(IConsumer<T> action) {
+        return new BoxContentDeleteConfirmModal<T>(dataModel) {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                dataModel = null;
-                confirmationModal.hide(target);
-            }
-        });
-        confirmationModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.delete", new AjaxButton("delete-btn", confirmationForm) {
-            @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            protected void onConfirm(AjaxRequestTarget target) {
                 action.accept(dataModel.getObject());
-                dataModel = null;
+                dataModel.setObject(null);
                 target.add(tabela);
-                confirmationModal.hide(target);
             }
-        });
-
-        return confirmationModal;
+        };
     }
 
     private void deleteSelected(AjaxRequestTarget target, IModel<T> model) {
         dataModel = model;
-        confirmationModal = construirModalDeleteBorder(this::onDelete);
-        confirmationForm.addOrReplace(confirmationModal);
-        confirmationModal.show(target);
+        showConfirm(target, construirModalDeleteBorder(this::onDelete));
+    }
+
+    protected void showConfirm(AjaxRequestTarget target, BoxContentConfirmModal<T> boxContentConfirmModal) {
+        confirmModalWrapper.addOrReplace(boxContentConfirmModal);
+        boxContentConfirmModal.show(target);
+        target.add(confirmModalWrapper);
     }
 
     protected TextField<String> getFiltroRapido() {
@@ -249,7 +238,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        processGroup = petitionService.findByProcessGroupCod(getProcessGroupCod());
+        module = petitionService.findByModuleCod(getModuleCod());
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(criarDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
@@ -258,7 +247,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
         add(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
         add(tabela);
-        add(confirmationForm.add(confirmationModal));
+        add(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (menuService != null) {
                 BoxConfigurationData boxConfigurationMetadata = menuService.getMenuByLabel(getMenu());
@@ -324,7 +313,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
 
     public String getModuleContext() {
-        final String groupConnectionURL = getProcessGroup().getConnectionURL();
+        final String groupConnectionURL = getModule().getConnectionURL();
         try {
             final String path = new URL(groupConnectionURL).getPath();
             return path.substring(0, path.indexOf('/', 1));

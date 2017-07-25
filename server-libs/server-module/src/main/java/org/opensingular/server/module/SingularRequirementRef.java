@@ -2,10 +2,9 @@ package org.opensingular.server.module;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
-
-import java.util.UUID;
 
 /**
  * Requirement Reference to check equality against same requirements provided many times in configuration classes
@@ -15,7 +14,7 @@ public class SingularRequirementRef {
 
     private SingularRequirement                                        requirement;
     private IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider;
-    private String                                                     id;
+    private RequirementDefinitionEntity                                requirementDefinitionEntity;
 
     SingularRequirementRef(SingularRequirement requirement) {
         this.requirement = requirement;
@@ -26,7 +25,6 @@ public class SingularRequirementRef {
 
     }
 
-    //TODO vinicius.nunes modifiquei para public
     public SingularRequirement getRequirement() {
         if (requirement == null) {
             this.requirement = requirementProvider.apply(new SingularRequirementBuilder());
@@ -62,10 +60,18 @@ public class SingularRequirementRef {
         return requirement.getName();
     }
 
-    public String getId() {
-        if (id == null) {
-            id = UUID.randomUUID().toString();
+    public Long getId() {
+        if (getRequirementDefinitionEntity() == null) {
+            return null;
         }
-        return id;
+        return getRequirementDefinitionEntity().getCod();
+    }
+
+    public RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return requirementDefinitionEntity;
+    }
+
+    public void setRequirementDefinitionEntity(RequirementDefinitionEntity requirementDefinitionEntity) {
+        this.requirementDefinitionEntity = requirementDefinitionEntity;
     }
 }

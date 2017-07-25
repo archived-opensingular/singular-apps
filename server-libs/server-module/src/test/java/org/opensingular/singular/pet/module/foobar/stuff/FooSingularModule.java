@@ -13,13 +13,13 @@ public class FooSingularModule implements SingularModule {
     private FooRequirement fooRequirement = new FooRequirement();
 
     @Override
-    public String category() {
-        return "Foo";
+    public String abbreviation() {
+        return "GRUPO_TESTE";
     }
 
     @Override
     public String name() {
-        return "Foozin";
+        return "Grupo Processo Teste";
     }
 
     @Override

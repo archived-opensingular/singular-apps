@@ -1,7 +1,7 @@
 package org.opensingular.server.p.commons.admin.healthsystem.validation.webchecker;
 
 import org.opensingular.form.type.core.SIString;
-import org.opensingular.form.validation.IInstanceValidatable;
+import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.lib.commons.util.Loggable;
 
 import java.net.URL;
@@ -10,7 +10,7 @@ import java.net.URLConnection;
 public class HttpChecker implements IProtocolChecker, Loggable {
 
     @Override
-    public void protocolCheck(IInstanceValidatable<SIString> validatable) {
+    public void protocolCheck(InstanceValidatable<SIString> validatable) {
         URLConnection openConnection;
         try {
             openConnection = new URL(validatable.getInstance().getValue()).openConnection();

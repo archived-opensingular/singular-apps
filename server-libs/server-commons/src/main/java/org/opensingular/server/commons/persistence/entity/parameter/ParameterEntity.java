@@ -40,8 +40,8 @@ public class ParameterEntity extends BaseEntity<Long> {
     @GeneratedValue(generator = PK_GENERATOR_NAME)
     private Long cod;
 
-    @Column(name = "CO_GRUPO_PROCESSO", nullable = false)
-    private String codProcessGroup;
+    @Column(name = "CO_MODULO", nullable = false)
+    private String codModule;
     
     @Column(name = "NO_PARAMETRO", nullable = false)
     private String name;
@@ -58,12 +58,12 @@ public class ParameterEntity extends BaseEntity<Long> {
         this.cod = cod;
     }
 
-    public String getCodProcessGroup() {
-        return codProcessGroup;
+    public String getCodModule() {
+        return codModule;
     }
 
-    public void setCodProcessGroup(String codProcessGroup) {
-        this.codProcessGroup = codProcessGroup;
+    public void setCodModule(String codModule) {
+        this.codModule = codModule;
     }
 
     public String getName() {

@@ -1,7 +1,7 @@
 package org.opensingular.server.core.service;
 
 import org.fest.util.VisibleForTesting;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
@@ -33,7 +33,7 @@ import static org.opensingular.server.commons.RESTPaths.WORKSPACE_CONFIGURATION;
 @Scope("session")
 public class SingularServerSessionConfiguration implements Loggable {
 
-    private Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> configMaps = new HashMap<>();
+    private Map<ModuleEntity, WorkspaceConfigurationMetadata> configMaps = new HashMap<>();
 
     @Inject
     private PetitionService<?, ?> petitionService;
@@ -46,8 +46,8 @@ public class SingularServerSessionConfiguration implements Loggable {
     public void init() {
         try {
             RestTemplate restTemplate = new RestTemplate();
-            for (ProcessGroupEntity processGroup : buscarCategorias()) {
-                String url = processGroup.getConnectionURL() + WORKSPACE_CONFIGURATION
+            for (ModuleEntity module : buscarCategorias()) {
+                String url = module.getConnectionURL() + WORKSPACE_CONFIGURATION
                         + "?" + MENU_CONTEXT + "=" + getMenuContext().getName();
 
                 SingularUserDetails userDetails = getUserDetails();
@@ -55,7 +55,7 @@ public class SingularServerSessionConfiguration implements Loggable {
                     url += "&" + USER + "=" + userDetails.getUserPermissionKey();
                 }
 
-                configMaps.put(processGroup, restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class));
+                configMaps.put(module, restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class));
 
             }
         } catch (Exception e) {
@@ -69,8 +69,8 @@ public class SingularServerSessionConfiguration implements Loggable {
         init();
     }
 
-    public List<ProcessGroupEntity> buscarCategorias() {
-        return petitionService.listAllProcessGroups();
+    public List<ModuleEntity> buscarCategorias() {
+        return petitionService.listAllModules();
     }
 
     public IServerContext getMenuContext() {
@@ -87,19 +87,19 @@ public class SingularServerSessionConfiguration implements Loggable {
         return null;
     }
 
-    public LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> getProcessGroupBoxConfigurationMap() {
-        LinkedHashMap<ProcessGroupEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
-        List<ProcessGroupEntity>                                      categorias = buscarCategorias();
-        for (ProcessGroupEntity categoria : categorias) {
+    public LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> getModuleBoxConfigurationMap() {
+        LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
+        List<ModuleEntity>                                      categorias = buscarCategorias();
+        for (ModuleEntity categoria : categorias) {
             final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
             map.put(categoria, boxConfigurationMetadataDTOs);
         }
         return map;
     }
 
-    private List<BoxConfigurationData> listMenus(ProcessGroupEntity processGroup) {
-        if (configMaps.containsKey(processGroup)) {
-            return configMaps.get(processGroup).getBoxesConfiguration();
+    private List<BoxConfigurationData> listMenus(ModuleEntity module) {
+        if (configMaps.containsKey(module)) {
+            return configMaps.get(module).getBoxesConfiguration();
         } else {
             return new ArrayList<>(0);
         }
@@ -110,7 +110,7 @@ public class SingularServerSessionConfiguration implements Loggable {
      * @param configMaps
      */
     @VisibleForTesting
-    void setConfigMaps(Map<ProcessGroupEntity, WorkspaceConfigurationMetadata> configMaps) {
+    void setConfigMaps(Map<ModuleEntity, WorkspaceConfigurationMetadata> configMaps) {
         this.configMaps = configMaps;
     }
 }

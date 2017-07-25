@@ -78,13 +78,13 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     @NotNull
     private PetitionInstance createNewPetitionInstance(SInstance instance) {
-        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {});
+        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
         petitionInitial.setProcessDefinition(FOOFlowWithTransition.class);
 
         petitionService.saveOrUpdate(petitionInitial, instance, true);
 
         sender.send(petitionInitial, instance, "vinicius.nunes");
-        petitionService.executeTransition("Transition bar", petitionInitial, this::onTransition, new HashMap());
+        petitionService.executeTransition("Transition bar", petitionInitial, this::onTransition, null, null);
         return petitionInitial;
     }
 
@@ -93,7 +93,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         mainFormAsInstance.getField(0).setValue("new value");
         petitionService.saveOrUpdate(petitionInitial, mainFormAsInstance, true);
 
-        petitionService.executeTransition("End bar", petitionInitial, this::onTransition, new HashMap());
+        petitionService.executeTransition("End bar", petitionInitial, this::onTransition, null, null);
     }
 
     private void onTransition(PetitionInstance petitionInstance, String s) {

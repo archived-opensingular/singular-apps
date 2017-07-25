@@ -39,7 +39,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
             @Override
             protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
                 if (PServerContext.WORKLIST.isSameContext(iServerContext)
-                        || PServerContext.PETITION.isSameContext(iServerContext)) {
+                        || PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
                     return WorklistApplication.class;
                 } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;
@@ -75,8 +75,8 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     public FlowInitializer flowConfiguration() {
         return new FlowInitializer() {
             @Override
-            public String processGroupCod() {
-                return ModuleInitializer.this.processGroupCod();
+            public String moduleCod() {
+                return ModuleInitializer.this.moduleCod();
             }
         };
     }
@@ -86,7 +86,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
         return null;
     }
 
-    protected abstract String processGroupCod();
+    protected abstract String moduleCod();
 
 
     protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {

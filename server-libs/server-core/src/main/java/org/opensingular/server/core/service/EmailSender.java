@@ -42,7 +42,7 @@ import com.google.common.cache.CacheBuilder;
 
 public class EmailSender extends JavaMailSenderImpl implements Loggable {
 
-    private static final String EMAIL_DEVELOPMENT = "mirante.teste@gmail.com";
+    private static final String EMAIL_DEVELOPMENT = "opensingular@gmail.com";
 
     private String                from;
     private Cache<Class, Boolean> errorCache;

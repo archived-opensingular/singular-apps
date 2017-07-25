@@ -1,16 +1,14 @@
 package org.opensingular.server.commons.flow;
 
-import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.springframework.beans.BeansException;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.swing.*;
@@ -48,24 +46,24 @@ public abstract class FlowRenderTest implements Loggable {
      * build
      */
     public void render() {
-        openJFrame(renderImage(getInstanceToRender()));
+        openJFrame(renderImage(getFlowDefinition()));
     }
 
     @Test
     public void testRendering() {
-        Assert.assertNotNull(renderImage(getInstanceToRender()));
+        Assert.assertNotNull(renderImage(getFlowDefinition()));
     }
 
-    protected abstract ProcessDefinition<?> getInstanceToRender();
+    protected abstract FlowDefinition<?> getFlowDefinition();
 
-    protected byte[] renderImage(ProcessDefinition<?> instanceToRender) {
+    protected byte[] renderImage(FlowDefinition<?> instanceToRender) {
         return JGraphFlowRenderer.INSTANCE.generateImage(instanceToRender);
     }
 
 
     protected void openJFrame(byte[] image) {
         final JFrame frame     = new JFrame();
-        JPanel       mainPanel = new JPanel(new BorderLayout());
+        JPanel       mainPanel = new JPanel(new BorderLayout(5,5));
         JLabel       lblimage  = new JLabel(new ImageIcon(image));
         mainPanel.add(lblimage);
         frame.add(mainPanel);

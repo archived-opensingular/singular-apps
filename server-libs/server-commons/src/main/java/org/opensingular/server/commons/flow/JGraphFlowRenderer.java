@@ -27,7 +27,7 @@ import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STransition;
@@ -46,7 +46,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
 
     INSTANCE;
 
-    private static byte[] renderGraphImpl(ProcessDefinition<?> definicao) {
+    private static byte[] renderGraphImpl(FlowDefinition<?> definicao) {
         final mxGraph       graph = renderGraph(definicao);
         final RenderedImage img   = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
 
@@ -95,7 +95,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         foo.putCellStyle(nomeEstilo, def);
     }
 
-    private static mxGraph renderGraph(ProcessDefinition<?> definicao) {
+    private static mxGraph renderGraph(FlowDefinition<?> definicao) {
 
         final mxGraph graph  = new mxGraph();
         final Object  parent = graph.getDefaultParent();
@@ -192,7 +192,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
     }
 
     @Override
-    public byte[] generateImage(ProcessDefinition<?> definicao) {
+    public byte[] generateImage(FlowDefinition<?> definicao) {
         return renderGraphImpl(definicao);
     }
 }

@@ -21,7 +21,7 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.opensingular.flow.persistence.entity.ProcessGroupEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,7 +31,7 @@ import java.util.stream.Collectors;
 
 public class SingularSession extends AuthenticatedWebSession {
 
-    private ProcessGroupEntity categoriaSelecionada;
+    private ModuleEntity categoriaSelecionada;
 
     public SingularSession(Request request, Response response) {
         super(request);
@@ -95,11 +95,11 @@ public class SingularSession extends AuthenticatedWebSession {
         return null;
     }
 
-    public ProcessGroupEntity getCategoriaSelecionada() {
+    public ModuleEntity getCategoriaSelecionada() {
         return categoriaSelecionada;
     }
 
-    public void setCategoriaSelecionada(ProcessGroupEntity categoriaSelecionada) {
+    public void setCategoriaSelecionada(ModuleEntity categoriaSelecionada) {
         this.categoriaSelecionada = categoriaSelecionada;
     }
 

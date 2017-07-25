@@ -1,6 +1,6 @@
 package org.opensingular.server.module.requirement.builder;
 
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.server.module.requirement.BoundedFlowResolver;
 import org.opensingular.server.module.requirement.DynamicFormFlowSingularRequirement;
 import org.opensingular.server.commons.requirement.SingularRequirement;
@@ -15,12 +15,12 @@ public class SingularRequirementDefinitionFlows {
         this.builderContext = builderContext;
     }
 
-    public SingularRequirementDefinitionFlowResolver allowedFlow(Class<? extends ProcessDefinition> flowClass) {
+    public SingularRequirementDefinitionFlowResolver allowedFlow(Class<? extends FlowDefinition> flowClass) {
         return new SingularRequirementDefinitionFlowResolver(builderContext.addFlowClass(flowClass));
     }
 
     public SingularRequirement build() {
-        Set<Class<? extends ProcessDefinition>> flowClasses = builderContext.getFlowClasses();
+        Set<Class<? extends FlowDefinition>> flowClasses = builderContext.getFlowClasses();
         return new DynamicFormFlowSingularRequirement(
                 builderContext.getName(),
                 builderContext.getMainForm(),

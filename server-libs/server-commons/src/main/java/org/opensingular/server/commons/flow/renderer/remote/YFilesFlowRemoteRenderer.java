@@ -18,10 +18,11 @@ package org.opensingular.server.commons.flow.renderer.remote;
 
 import org.opensingular.flow.core.EventType;
 import org.opensingular.flow.core.ITaskPredicate;
-import org.opensingular.flow.core.ProcessDefinition;
+import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.server.commons.flow.renderer.remote.dto.FlowDefinitionRenderData;
 import org.opensingular.server.commons.flow.renderer.remote.dto.Task;
 import org.opensingular.server.commons.flow.renderer.remote.dto.Transition;
 import org.opensingular.server.commons.flow.renderer.remote.dto.TransitionTask;
@@ -34,7 +35,7 @@ import java.util.ArrayList;
  */
 public class YFilesFlowRemoteRenderer implements IFlowRenderer {
 
-    private String url = "http://singular02.mirante.net.br/yfiles/graph";
+    private String url = "http://singular02/yfiles/graph";
 
     public YFilesFlowRemoteRenderer(String url) {
         if (url != null) {
@@ -43,8 +44,8 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
     }
 
     @Override
-    public byte[] generateImage(ProcessDefinition<?> definicao) {
-        org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition pd = new org.opensingular.server.commons.flow.renderer.remote.dto.ProcessDefinition();
+    public byte[] generateImage(FlowDefinition<?> definicao) {
+        FlowDefinitionRenderData pd = new FlowDefinitionRenderData();
         pd.setTasks(new ArrayList<>());
         for (STask<?> task : definicao.getFlowMap().getAllTasks()) {
             pd.getTasks().add(from(task, definicao.getFlowMap().getStart().getTask()));

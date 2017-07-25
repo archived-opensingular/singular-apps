@@ -35,7 +35,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.flow.SingularServerTaskPageStrategy;
+import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
@@ -121,7 +121,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             Optional<FormAction> formActionOpt = actionContext.getFormAction();
             if (task.get() instanceof STaskUserExecutable) {
                 final ITaskPageStrategy pageStrategy = ((STaskUserExecutable) task.get()).getExecutionPage();
-                if (pageStrategy instanceof SingularServerTaskPageStrategy) {
+                if (pageStrategy instanceof SingularRequirementTaskPageStrategy) {
                     return Optional.ofNullable((SingularWebRef) pageStrategy.getPageFor(
                             ti.orElseThrow(() -> new SingularServerException("TaskInstance não encontrada")), null));
                 } else {
@@ -256,7 +256,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
                     .map(history -> history.getAllocatedUser() != null
-                            && history.getEndDateAllocation() == null
+                            && history.getAllocationEndDate() == null
                             && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
                     .orElse(Boolean.FALSE);
         }

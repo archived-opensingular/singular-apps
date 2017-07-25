@@ -15,6 +15,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 public class SecurityConfigs {
 
@@ -25,7 +26,7 @@ public class SecurityConfigs {
     public static class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.PETITION;
+            return PServerContext.REQUIREMENT;
         }
 
         @Override
@@ -57,7 +58,7 @@ public class SecurityConfigs {
     public static class AdministrationSecurity extends WebSecurityConfigurerAdapter {
 
         @Inject
-        private AdminCredentialChecker credentialChecker;
+        private Optional<AdminCredentialChecker> credentialChecker;
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -72,7 +73,8 @@ public class SecurityConfigs {
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-            auth.authenticationProvider(new AdministrationAuthenticationProvider(credentialChecker, PServerContext.ADMINISTRATION));
+            credentialChecker.ifPresent(cc ->
+                    auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, PServerContext.ADMINISTRATION)));
         }
 
     }

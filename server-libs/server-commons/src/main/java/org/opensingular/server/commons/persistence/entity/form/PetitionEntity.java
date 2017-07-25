@@ -85,6 +85,10 @@ public class PetitionEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_REQUISICAO_PAI")
     private PetitionEntity parentPetition;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinColumn(name =  "CO_DEFINICAO_REQUISICAO")
+    private RequirementDefinitionEntity requirementDefinitionEntity;
+
     @Override
     public Long getCod() {
         return cod;
@@ -140,6 +144,14 @@ public class PetitionEntity extends BaseEntity<Long> {
 
     public void setParentPetition(PetitionEntity parentPetition) {
         this.parentPetition = parentPetition;
+    }
+
+    public RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return requirementDefinitionEntity;
+    }
+
+    public void setRequirementDefinitionEntity(RequirementDefinitionEntity requirementDefinitionEntity) {
+        this.requirementDefinitionEntity = requirementDefinitionEntity;
     }
 
     public SortedSet<FormPetitionEntity> getFormPetitionEntities() {

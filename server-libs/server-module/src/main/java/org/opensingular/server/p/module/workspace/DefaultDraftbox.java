@@ -7,17 +7,17 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.server.module.workspace.ItemBoxFactory;
+import org.opensingular.server.module.workspace.BoxDefinition;
 import org.opensingular.server.p.commons.config.PServerContext;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultDraftbox implements ItemBoxFactory {
+public class DefaultDraftbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return PServerContext.PETITION.isSameContext(context);
+        return PServerContext.REQUIREMENT.isSameContext(context);
     }
 
     @Override
@@ -26,7 +26,6 @@ public class DefaultDraftbox implements ItemBoxFactory {
         rascunho.setName("Rascunho");
         rascunho.setDescription("Petições de rascunho");
         rascunho.setIcone(DefaultIcons.DOCS);
-        rascunho.setShowNewButton(true);
         rascunho.setShowDraft(true);
         return rascunho;
     }

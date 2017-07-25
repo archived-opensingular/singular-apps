@@ -28,7 +28,7 @@ public class PSpringSecurityInitializer extends SpringSecurityInitializer {
     protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
         if (context.equals(PServerContext.WORKLIST)) {
             return (Class<T>) SecurityConfigs.CASAnalise.class;
-        } else if (context.equals(PServerContext.PETITION)) {
+        } else if (context.equals(PServerContext.REQUIREMENT)) {
             return (Class<T>) SecurityConfigs.CASPeticionamento.class;
         } else if(context.equals(PServerContext.ADMINISTRATION)){
             return (Class<T>) SecurityConfigs.AdministrationSecurity.class;

@@ -4,20 +4,18 @@ import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.ExecutionContext;
 import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.ITaskDefinition;
-import org.opensingular.flow.core.ProcessDefinition;
-import org.opensingular.flow.core.ProcessInstance;
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
-import org.opensingular.flow.core.defaults.NullTaskAccessStrategy;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.wicket.view.form.FormPage;
 
 @DefinitionInfo("AhaaaaaaaaaaaAaaahhAhhhhAaaah")
-public class TheGreatGigInTheSkyFlow extends ProcessDefinition<ProcessInstance> implements Loggable {
+public class TheGreatGigInTheSkyFlow extends FlowDefinition<FlowInstance> implements Loggable {
 
 
     public TheGreatGigInTheSkyFlow() {
-        super(ProcessInstance.class);
+        super(FlowInstance.class);
     }
 
     @Override
@@ -27,12 +25,12 @@ public class TheGreatGigInTheSkyFlow extends ProcessDefinition<ProcessInstance> 
         ITaskDefinition dobarDef  = () -> "The Great Gig";
         ITaskDefinition endbarDef = () -> "The Sky";
 
-        flow.addEnd(endbarDef);
+        flow.addEndTask(endbarDef);
         flow.addJavaTask(dobarDef)
                 .call(this::cryingSolo)
                 .go(endbarDef);
 
-        flow.setStart(dobarDef);
+        flow.setStartTask(dobarDef);
 
 
         return flow.build();
