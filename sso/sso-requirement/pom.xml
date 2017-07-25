@@ -8,12 +8,12 @@
         <version>1.6.8-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-desenv-analysis ]</name>
-    <artifactId>singular-sso-desenv-analysis</artifactId>
+    <name>[singular-server :: sso :: sso-requirement ]</name>
+    <artifactId>singular-sso-requirement</artifactId>
     <packaging>war</packaging>
 
     <build>
-        <finalName>sso#analysis</finalName>
+        <finalName>sso#requirement</finalName>
     </build>
 
 </project>
