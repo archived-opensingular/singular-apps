@@ -32,13 +32,16 @@ import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
 import org.jetbrains.annotations.NotNull;
+import org.opensingular.form.service.FormIndexService;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.CachePanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.DbPanel;
+import org.opensingular.server.p.commons.admin.healthsystem.panel.IndexPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.JobPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.PermissionPanel;
 import org.opensingular.server.p.commons.admin.healthsystem.panel.WebPanel;
 
+import javax.inject.Inject;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -55,6 +58,9 @@ import java.util.zip.ZipOutputStream;
 public class HealthSystemContent extends Content {
 
     private static final String CONTAINER_ALL_CONTENT = "containerAllContent";
+
+    @Inject
+    private FormIndexService formIndexService;
 
     public HealthSystemContent(String id) {
         super(id);
@@ -107,11 +113,21 @@ public class HealthSystemContent extends Content {
             }
         };
 
+        AjaxButton buttonIndexForms = new AjaxButton("buttonIndexForms") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                form.replace(new IndexPanel(CONTAINER_ALL_CONTENT));
+                target.add(form);
+            }
+        };
+
+
         form.add(buttonCache);
         form.add(buttonDb);
         form.add(buttonPermissions);
         form.add(buttonJobs);
         form.add(buttonWeb);
+        form.add(buttonIndexForms);
         form.add(makeLogButton());
 
     }
