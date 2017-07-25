@@ -37,7 +37,7 @@ public class RestBackstageServiceTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
         doNothing().when(authorizationService).filterBoxWithPermissions(any(), any());
-        List<BoxConfigurationData> boxConfigurationData = restBackstageService.listMenu(PServerContext.PETITION.getName(), "vinicius.nunes");
+        List<BoxConfigurationData> boxConfigurationData = restBackstageService.listMenu(PServerContext.REQUIREMENT.getName(), "vinicius.nunes");
         assertFalse(boxConfigurationData.isEmpty());
     }
 
