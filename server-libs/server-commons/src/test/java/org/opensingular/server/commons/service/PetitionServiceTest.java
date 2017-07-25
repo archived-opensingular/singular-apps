@@ -232,7 +232,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         assertNull(task.get("codUsuarioAlocado"));
         assertNull(task.get("nomeUsuarioAlocado"));
         assertEquals("Do bar", task.get("taskName"));
-        assertEquals(TaskType.PEOPLE, task.get("taskType"));
+        assertEquals(TaskType.HUMAN, task.get("taskType"));
         assertEquals("foooooo.StypeFoo", task.get("type"));
         assertEquals(description, task.get("description"));
     }

@@ -228,10 +228,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public void deletePetition(@Nonnull Long idPeticao) {
-        Optional<PE> pp = petitionDAO.find(idPeticao);
-        if (pp.isPresent()) {
-            petitionDAO.delete(pp.get());
-        }
+        petitionDAO.find(idPeticao).ifPresent(pe -> petitionDAO.delete(pe));
     }
 
     public Long countQuickSearch(QuickFilter filter) {
@@ -273,7 +270,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByPetitionId(petition.getCod());
-        FormEntity                   formEntity   = petition.getEntity().getMainForm();
+        FormEntity formEntity = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -309,8 +306,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     /**
      * Executa a transição informada, consolidando todos os rascunhos, este metodo não salva a petição
      *
-     * @param transitionName           nome da transicao
-     * @param petition     peticao
+     * @param transitionName     nome da transicao
+     * @param petition           peticao
      * @param transitionListener listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
@@ -335,7 +332,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
             }
 
             TransitionCall transitionCall = processInstance.prepareTransition(transitionName);
-            if(transitionParameters != null && !transitionParameters.isEmpty()){
+            if (transitionParameters != null && !transitionParameters.isEmpty()) {
                 for (Map.Entry<String, String> transitionParameter : transitionParameters.entrySet()) {
                     transitionCall.addValueString(transitionParameter.getKey(), transitionParameter.getValue());
                 }
@@ -453,7 +450,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
-        FormEntity     mainForm       = petitionEntity.getMainForm();
+        FormEntity mainForm = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -548,8 +545,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(petition.getDescription());
 
-        ProcessInstanceEntity processEntity  = newFlowInstance.saveEntity();
-        PE                    petitionEntity = (PE) petition.getEntity();
+        ProcessInstanceEntity processEntity = newFlowInstance.saveEntity();
+        PE petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
         petitionDAO.saveOrUpdate(petitionEntity);

@@ -14,8 +14,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>sso-desenv-analysis</module>
-        <module>sso-desenv-petition</module>
+        <module>sso-analysis</module>
+        <module>sso-requirement</module>
     </modules>
 
 

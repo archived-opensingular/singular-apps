@@ -8,12 +8,12 @@
         <version>1.6.8-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-desenv-petition ]</name>
-    <artifactId>singular-sso-desenv-petition</artifactId>
+    <name>[singular-server :: sso :: sso-analysis ]</name>
+    <artifactId>singular-sso-analysis</artifactId>
     <packaging>war</packaging>
 
     <build>
-        <finalName>sso#petition</finalName>
+        <finalName>sso#analysis</finalName>
     </build>
 
 </project>

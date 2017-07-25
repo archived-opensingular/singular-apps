@@ -2,8 +2,8 @@
 <jboss-web>
     <session-config>
         <cookie-config>
-            <path>/sso/petition</path>
+            <path>/sso/requirement</path>
         </cookie-config>
     </session-config>
-    <context-root>/sso/petition</context-root>
+    <context-root>/sso/requirement</context-root>
 </jboss-web>
