@@ -22,6 +22,7 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -227,10 +228,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     public void deletePetition(@Nonnull Long idPeticao) {
-        Optional<PE> pp = petitionDAO.find(idPeticao);
-        if (pp.isPresent()) {
-            petitionDAO.delete(pp.get());
-        }
+        petitionDAO.find(idPeticao).ifPresent(pe -> petitionDAO.delete(pe));
     }
 
     public Long countQuickSearch(QuickFilter filter) {
@@ -272,7 +270,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByPetitionId(petition.getCod());
-        FormEntity                   formEntity   = petition.getEntity().getMainForm();
+        FormEntity formEntity = petition.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -308,18 +306,24 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     /**
      * Executa a transição informada, consolidando todos os rascunhos, este metodo não salva a petição
      *
-     * @param tn           nome da transicao
-     * @param petition     peticao
-     * @param onTransition listener
+     * @param transitionName     nome da transicao
+     * @param petition           peticao
+     * @param transitionListener listener
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void executeTransition(String tn, PI petition, BiConsumer<PI, String> onTransition, Map<String, String> params) {
+    public void executeTransition(String transitionName,
+                                  PI petition,
+                                  BiConsumer<PI, String> transitionListener,
+                                  Map<String, String> processParameters,
+                                  Map<String, String> transitionParameters) {
         try {
-            if (onTransition != null) {
-                onTransition.accept(petition, tn);
+            if (transitionListener != null) {
+                transitionListener.accept(petition, transitionName);
             }
 
-            final List<FormEntity> consolidatedDrafts = formPetitionService.consolidateDrafts(petition);
+            savePetitionHistory(petition, formPetitionService.consolidateDrafts(petition));
+            ProcessInstance processInstance = petition.getProcessInstance();
+            checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), processInstance);
 
             savePetitionHistory(petition, consolidatedDrafts);
 
@@ -333,8 +337,13 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 }
             }
 
-            pi.prepareTransition(tn).go();
-
+            TransitionCall transitionCall = processInstance.prepareTransition(transitionName);
+            if (transitionParameters != null && !transitionParameters.isEmpty()) {
+                for (Map.Entry<String, String> transitionParameter : transitionParameters.entrySet()) {
+                    transitionCall.addValueString(transitionParameter.getKey(), transitionParameter.getValue());
+                }
+            }
+            transitionCall.go();
         } catch (SingularException e) {
             throw e;
         } catch (Exception e) {
@@ -447,7 +456,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codPetition) {
         PetitionEntity petitionEntity = petitionDAO.findOrException(codPetition);
-        FormEntity     mainForm       = petitionEntity.getMainForm();
+        FormEntity mainForm = petitionEntity.getMainForm();
         return formPetitionService.findTwoLastFormVersions(mainForm.getCod());
     }
 
