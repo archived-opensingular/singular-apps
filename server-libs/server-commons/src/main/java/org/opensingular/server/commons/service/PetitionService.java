@@ -325,15 +325,9 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
             FlowInstance processInstance = petition.getFlowInstance();
             checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), processInstance);
 
-            savePetitionHistory(petition, consolidatedDrafts);
-
-            FlowInstance pi = petition.getFlowInstance();
-
-            checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), pi);
-
-            if (params != null && !params.isEmpty()) {
-                for (Map.Entry<String, String> entry : params.entrySet()) {
-                    pi.getVariables().addValueString(entry.getKey(), entry.getValue());
+            if (processParameters != null && !processParameters.isEmpty()) {
+                for (Map.Entry<String, String> entry : processParameters.entrySet()) {
+                    processInstance.getVariables().addValueString(entry.getKey(), entry.getValue());
                 }
             }
 
