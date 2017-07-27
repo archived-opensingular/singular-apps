@@ -5,15 +5,15 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-sso</artifactId>
-        <version>1.6.8-SNAPSHOT</version>
+        <version>1.6.9-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-desenv-petition ]</name>
-    <artifactId>singular-sso-desenv-petition</artifactId>
+    <name>[singular-server :: sso :: sso-requirement ]</name>
+    <artifactId>singular-sso-requirement</artifactId>
     <packaging>war</packaging>
 
     <build>
-        <finalName>sso#petition</finalName>
+        <finalName>sso#requirement</finalName>
     </build>
 
 </project>

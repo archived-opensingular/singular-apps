@@ -25,13 +25,13 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
 
 
     protected void addAssignAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
-        if (line.getAllocatedSUserId() == null && TaskType.PEOPLE == line.getTaskType()) {
+        if (line.getAllocatedSUserId() == null && TaskType.HUMAN == line.getTaskType()) {
             list.addAssignAction(line);
         }
     }
 
     protected void addRelocateAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
-        if (TaskType.PEOPLE == line.getTaskType()) {
+        if (TaskType.HUMAN == line.getTaskType()) {
             list.addRelocateAction(line);
         }
     }

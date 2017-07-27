@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-sso</artifactId>
-        <version>1.6.8-SNAPSHOT</version>
+        <version>1.6.9-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-desenv-analysis ]</name>
-    <artifactId>singular-sso-desenv-analysis</artifactId>
+    <name>[singular-server :: sso :: sso-analysis ]</name>
+    <artifactId>singular-sso-analysis</artifactId>
     <packaging>war</packaging>
 
     <build>

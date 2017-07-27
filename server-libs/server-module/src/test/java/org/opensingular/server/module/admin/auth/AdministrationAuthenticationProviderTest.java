@@ -1,34 +1,49 @@
-package org.opensingular.server.commons.auth;
+package org.opensingular.server.module.admin.auth;
 
-import java.util.Optional;
-
-import javax.inject.Inject;
-
+import net.vidageek.mirror.dsl.Mirror;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.opensingular.server.commons.auth.AdminCredentialChecker;
+import org.opensingular.server.commons.auth.AdministrationAuthenticationProvider;
 import org.opensingular.server.commons.config.ServerContext;
 import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.server.commons.service.ParameterService;
+import org.opensingular.server.module.SingularModule;
+import org.opensingular.server.module.SingularModuleConfiguration;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import net.vidageek.mirror.dsl.Mirror;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
 
+@RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class AdministrationAuthenticationProviderTest {
 
     private AdministrationAuthenticationProvider administrationAuthenticationProvider;
 
+    @Mock
+    SingularModuleConfiguration moduleConfiguration;
+
+    @Mock
+    SingularModule module;
+
+    @Mock
+    ParameterService       parameterService;
+
+    @InjectMocks
+    AdminCredentialChecker credentialChecker = new DatabaseAdminCredentialChecker();
+
     @Before
     public void setUp() {
-        AdminCredentialChecker credentialChecker = new DatabaseAdminCredentialChecker("FooCategory");
-        ParameterService       parameterService  = Mockito.mock(ParameterService.class);
+        when(module.abbreviation()).thenReturn("FooCategory");
+        when(moduleConfiguration.getModule()).thenReturn(module);
         ParameterEntity        userParameterEntity = new ParameterEntity();
         userParameterEntity.setValue("USER");
         Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));

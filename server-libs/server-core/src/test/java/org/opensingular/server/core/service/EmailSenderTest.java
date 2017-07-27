@@ -80,7 +80,7 @@ public class EmailSenderTest extends SingularServerBaseTest {
 
         Assert.assertEquals(new Long(1), entity.getCod());
 
-        Assert.assertEquals("mirante.teste@gmail.com", entity.getAddress());
+        Assert.assertEquals("opensingular@gmail.com", entity.getAddress());
 
     }
 
@@ -92,7 +92,7 @@ public class EmailSenderTest extends SingularServerBaseTest {
         Assert.assertNull(emailEntity.getAddress());
         Assert.assertNull(emailEntity.getAddresseType());
 
-        emailEntity.setAddress("mirante.teste@gmail.com");
+        emailEntity.setAddress("opensingular@gmail.com");
         emailEntity.setAddresseType(AddresseType.TO);
         return emailEntity;
     }

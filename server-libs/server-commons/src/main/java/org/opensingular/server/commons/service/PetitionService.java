@@ -322,7 +322,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
             }
 
             savePetitionHistory(petition, formPetitionService.consolidateDrafts(petition));
-            ProcessInstance processInstance = petition.getProcessInstance();
+            FlowInstance processInstance = petition.getFlowInstance();
             checkTaskIsEqual(petition.getEntity().getProcessInstanceEntity(), processInstance);
 
             savePetitionHistory(petition, consolidatedDrafts);
@@ -551,8 +551,8 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(petition.getDescription());
 
-        ProcessInstanceEntity processEntity  = newFlowInstance.saveEntity();
-        PE                    petitionEntity = (PE) petition.getEntity();
+        ProcessInstanceEntity processEntity = newFlowInstance.saveEntity();
+        PE petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
         petitionDAO.saveOrUpdate(petitionEntity);

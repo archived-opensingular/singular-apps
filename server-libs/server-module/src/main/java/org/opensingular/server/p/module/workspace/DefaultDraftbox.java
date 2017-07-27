@@ -17,7 +17,7 @@ public class DefaultDraftbox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return PServerContext.PETITION.isSameContext(context);
+        return PServerContext.REQUIREMENT.isSameContext(context);
     }
 
     @Override

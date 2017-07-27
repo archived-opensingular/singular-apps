@@ -20,6 +20,7 @@ import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SingularFlowException;
+import org.opensingular.flow.core.variable.VarDefinitionMap;
 
 import javax.annotation.Nonnull;
 
@@ -33,6 +34,7 @@ public abstract class RequirementFlowDefinition<I extends FlowInstance> extends 
 
     protected RequirementFlowDefinition(Class<I> instanceClass) {
         super(instanceClass);
+        declareVariables(getVariables());
     }
 
     /**
@@ -57,6 +59,13 @@ public abstract class RequirementFlowDefinition<I extends FlowInstance> extends 
             ex.add(this);
             throw ex;
         }
+    }
+
+    /**
+     * Utility method for variables declarations
+     * @param variables
+     */
+    protected void declareVariables(VarDefinitionMap<?> variables){
     }
 
     /**
