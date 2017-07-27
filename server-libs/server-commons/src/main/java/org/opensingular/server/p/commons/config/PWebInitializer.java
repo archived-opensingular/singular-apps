@@ -47,7 +47,7 @@ public abstract class PWebInitializer extends WebInitializer {
         super.onStartup(servletContext);
         if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
             addCASFilter(servletContext, PServerContext.WORKLIST);
-            addCASFilter(servletContext, PServerContext.PETITION);
+            addCASFilter(servletContext, PServerContext.REQUIREMENT);
             addSingleSignOutListener(servletContext);
         }
     }

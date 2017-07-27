@@ -25,7 +25,7 @@ import org.opensingular.server.commons.config.IServerContext;
  */
 public enum PServerContext implements IServerContext {
 
-    PETITION("/petition/*", "singular.petition"),
+    REQUIREMENT("/requirement/*", "singular.requirement"),
     WORKLIST("/worklist/*", "singular.worklist"),
     ADMINISTRATION("/administration/*", "singular.administration");
 

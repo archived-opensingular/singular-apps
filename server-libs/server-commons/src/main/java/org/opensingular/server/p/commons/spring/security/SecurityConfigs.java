@@ -26,7 +26,7 @@ public class SecurityConfigs {
     public static class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.PETITION;
+            return PServerContext.REQUIREMENT;
         }
 
         @Override
