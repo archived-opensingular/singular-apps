@@ -150,6 +150,11 @@ public class Menu extends Panel implements Loggable {
             itens.add(Pair.of(i.getHelper(), t.counterSupplier));
         }
         menu.add(new AddContadoresBehaviour(itens));
+        onBuildModuleGroup(group, menu);
+    }
+
+    protected void onBuildModuleGroup(MetronicMenuGroup group, MetronicMenu menu) {
+
     }
 
     private List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ModuleEntity module) {
