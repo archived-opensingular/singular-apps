@@ -208,7 +208,7 @@ CREATE TABLE DBSINGULAR.TB_TIPO_HISTORICO_TAREFA (
 /* Table: TB_TIPO_TAREFA                                        */
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_TIPO_TAREFA (
-  CO_TIPO_TAREFA BIGINT       NOT NULL,
+  CO_TIPO_TAREFA BIGINT       IDENTITY,
   DS_TIPO_TAREFA VARCHAR(100) NOT NULL,
   CONSTRAINT PK_TIPO_TAREFA PRIMARY KEY (CO_TIPO_TAREFA),
   CONSTRAINT AK_AK_TIPO_TAREFA_TB_TIPO_ UNIQUE (DS_TIPO_TAREFA)
@@ -287,7 +287,7 @@ CREATE TABLE DBSINGULAR.TB_MODULO (
 
 
 CREATE TABLE DBSINGULAR.TB_REQUISITANTE (
-   CO_REQUISITANTE      BIGINT                  NOT NULL,
+   CO_REQUISITANTE      BIGINT               IDENTITY,
    DS_NOME              VARCHAR(200)         NOT NULL,
    ID_PESSOA            VARCHAR(32)          NOT NULL,
    NU_CPF_CNPJ          VARCHAR(14)          NULL,
@@ -341,7 +341,7 @@ CREATE TABLE DBSINGULAR.RL_PAPEL_TAREFA (
 
 
 CREATE TABLE DBSINGULAR.TB_RASCUNHO (
-   CO_RASCUNHO           BIGINT               NOT NULL,
+   CO_RASCUNHO           BIGINT               IDENTITY,
    CO_FORMULARIO         BIGINT               NOT NULL,
    DT_INICIO             SMALLDATETIME        NOT NULL,
    DT_EDICAO             SMALLDATETIME        NOT NULL,
@@ -353,7 +353,7 @@ CREATE TABLE DBSINGULAR.TB_RASCUNHO (
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_REQUISICAO
 (
-   CO_REQUISICAO        NUMBER               NOT NULL,
+   CO_REQUISICAO        NUMBER               IDENTITY,
    CO_INSTANCIA_PROCESSO NUMBER               NULL,
    CO_DEFINICAO_PROCESSO NUMBER               NULL,
    CO_REQUISITANTE      NUMBER                NULL,
@@ -370,7 +370,7 @@ CREATE TABLE DBSINGULAR.TB_REQUISICAO
 /*==============================================================*/
 
 CREATE TABLE DBSINGULAR.TB_HISTORICO_CONTEUDO_REQUISIC (
-   CO_HISTORICO         BIGINT                  NOT NULL,
+   CO_HISTORICO         BIGINT                  IDENTITY,
    CO_REQUISICAO           BIGINT                  NOT NULL,
    DT_HISTORICO         SMALLDATETIME        NOT NULL,
    CO_AUTOR             BIGINT                  NULL,
@@ -404,7 +404,7 @@ ALTER TABLE DBSINGULAR.RL_HIST_CONT_REQ_VER_ANOTACAO
 
 CREATE TABLE DBSINGULAR.TB_FORMULARIO_REQUISICAO
 (
-   CO_FORMULARIO_REQUISICAO INTEGER             NOT NULL,
+   CO_FORMULARIO_REQUISICAO INTEGER            IDENTITY,
    CO_REQUISICAO           INTEGER              NOT NULL,
    CO_FORMULARIO        INTEGER              NULL,
    CO_DEFINICAO_TAREFA  INTEGER,
@@ -419,7 +419,7 @@ CREATE TABLE DBSINGULAR.TB_FORMULARIO_REQUISICAO
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_EMAIL
 (
-   CO_EMAIL             INTEGER              NOT NULL,
+   CO_EMAIL             INTEGER              IDENTITY,
    TX_RESPONDER_PARA    VARCHAR(200),
    TX_ASSUNTO           VARCHAR(200)         NOT NULL,
    TX_CONTEUDO          CLOB                 NOT NULL,
@@ -442,7 +442,7 @@ CREATE TABLE DBSINGULAR.TB_EMAIL_ARQUIVO
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_DESTINATARIO_EMAIL
 (
-   CO_DESTINATARIO_EMAIL INTEGER              NOT NULL,
+   CO_DESTINATARIO_EMAIL INTEGER             IDENTITY,
    CO_EMAIL             INTEGER              NOT NULL,
    TX_ENDERECO          VARCHAR(70)          NOT NULL,
    TP_ENVIO             CHAR(3)              NOT NULL
@@ -467,7 +467,7 @@ CREATE TABLE DBSINGULAR.TB_HISTORICO_VERSAO_FORMULARIO
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_PARAMETRO
 (
-   CO_PARAMETRO         INTEGER              NOT NULL,
+   CO_PARAMETRO         INTEGER              IDENTITY,
    CO_MODULO    VARCHAR2(30),
    NO_PARAMETRO         VARCHAR2(100)        NOT NULL,
    VL_PARAMETRO         VARCHAR2(1000)       NOT NULL,
@@ -479,7 +479,7 @@ CREATE TABLE DBSINGULAR.TB_PARAMETRO
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_CAIXA
 (
-   CO_CAIXA             NUMBER               NOT NULL,
+   CO_CAIXA             NUMBER               IDENTITY,
    CO_MODULO            VARCHAR2(30)         NOT NULL,
    NO_CAIXA             VARCHAR(100)         NOT NULL,
    DS_CAIXA             VARCHAR(500)         NULL,
@@ -492,7 +492,7 @@ CREATE TABLE DBSINGULAR.TB_CAIXA
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_DEFINICAO_REQUISICAO
 (
-   CO_DEFINICAO_REQUISICAO NUMBER               NOT NULL,
+   CO_DEFINICAO_REQUISICAO NUMBER              IDENTITY,
    CO_TIPO_FORMULARIO        NUMBER               NOT NULL,
    CO_MODULO            VARCHAR2(30)         NOT NULL,
    NO_DEFINICAO_REQUISICAO VARCHAR2(300)        NOT NULL,
