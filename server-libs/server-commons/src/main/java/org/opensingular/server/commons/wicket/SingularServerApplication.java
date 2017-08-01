@@ -39,11 +39,11 @@ import org.springframework.context.ApplicationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
-public abstract class SingularApplication extends AuthenticatedWebApplication
+public abstract class SingularServerApplication extends AuthenticatedWebApplication
         implements SkinnableApplication {
 
-    public static SingularApplication get() {
-        return (SingularApplication) WebApplication.get();
+    public static SingularServerApplication get() {
+        return (SingularServerApplication) WebApplication.get();
     }
 
     @Override
