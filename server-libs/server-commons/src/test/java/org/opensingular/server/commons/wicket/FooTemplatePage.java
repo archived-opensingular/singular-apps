@@ -17,6 +17,6 @@ public class FooTemplatePage extends ServerTemplate {
 
     @Override
     protected boolean isWithMenu() {
-        return false;
+        return true;
     }
 }
