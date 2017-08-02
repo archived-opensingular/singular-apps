@@ -123,8 +123,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         this.inheritParentFormData = $m.ofValue();
         this.typeName = config.getFormName();
         this.singularFormPanel = new SingularFormPanel("singular-panel");
-        this.singularFormPanel.setViewMode(config.getViewMode());
-        this.singularFormPanel.setAnnotationMode(config.getAnnotationMode());
+        this.singularFormPanel.setViewMode(getViewMode(config));
+        this.singularFormPanel.setAnnotationMode(getAnnotationMode(config));
 
         final RefType refType = formPetitionService.loadRefType(config.getFormName());
         singularFormPanel.setInstanceCreator(() -> createInstance(refType));
@@ -341,8 +341,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void appendBeforeFormContent(BSContainer container) {
     }
 
-    protected abstract IModel<?> getContentSubtitleModel();
-
+    @NotNull
     @Nonnull
     protected abstract Optional<String> getIdentifier();
 
@@ -686,10 +685,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return getPetition().hasProcessInstance();
     }
 
-    protected IModel<?> getContentTitleModel() {
-        return new ResourceModel("label.form.content.title", "Nova Solicitação");
-    }
-
     private void buildFlowButton(String buttonId,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
@@ -769,23 +764,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 .map(formEntity -> formPetitionService.formKeyFromFormEntity(formEntity));
     }
 
-    private final ViewMode getViewMode() {
-        return singularFormPanel.getViewMode();
-    }
-
-    private final AnnotationMode getAnnotationMode() {
-        return singularFormPanel.getAnnotationMode();
-    }
-
     private IReadOnlyModel<SInstance> getInstanceModel() {
-        return (IReadOnlyModel<SInstance>) () -> singularFormPanel.getInstance();
+        return (IReadOnlyModel<SInstance>) singularFormPanel::getInstance;
     }
 
     private Component buildFlowButtons() {
         BSContainer<?> buttonContainer = new BSContainer<>("custom-buttons");
         buttonContainer.setVisible(true);
 
-        configureCustomButtons(buttonContainer, modalContainer, getViewMode(), getAnnotationMode(), getFormInstance());
+        configureCustomButtons(buttonContainer, modalContainer, getViewMode(config), getAnnotationMode(config), getFormInstance());
 
         return buttonContainer;
     }
@@ -860,7 +847,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private boolean isReadOnly() {
-        return getViewMode() == ViewMode.READ_ONLY && getAnnotationMode() != AnnotationMode.EDIT;
+        return getViewMode(config) == ViewMode.READ_ONLY && getAnnotationMode(config) != AnnotationMode.EDIT;
     }
 
     protected BSModalBorder construirCloseModal() {
@@ -901,15 +888,15 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Behavior visibleOnlyInEditionBehaviour() {
-        return $b.visibleIf(() -> getViewMode().isEdition());
+        return $b.visibleIf(() -> getViewMode(config).isEdition());
     }
 
     protected Behavior visibleOnlyIfDraftInEditionBehaviour() {
-        return $b.visibleIf(() -> !hasProcess() && getViewMode().isEdition());
+        return $b.visibleIf(() -> !hasProcess() && getViewMode(config).isEdition());
     }
 
     protected Behavior visibleOnlyInAnnotationBehaviour() {
-        return $b.visibleIf(() -> getAnnotationMode().editable());
+        return $b.visibleIf(() -> getAnnotationMode(config).editable());
     }
 
     protected IModel<? extends SInstance> getFormInstance() {
