@@ -62,7 +62,7 @@ public abstract class SingularServerApplication extends AuthenticatedWebApplicat
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularServerContextListener());
 
-        Locale.setDefault(new Locale("pt", "BR"));
+        Locale.setDefault(new Locale("pt", "BR"));//NOSONAR
 
         getApplicationSettings().setAccessDeniedPage(Error403Page.class);
         getApplicationSettings().setPageExpiredErrorPage(Page410.class);
