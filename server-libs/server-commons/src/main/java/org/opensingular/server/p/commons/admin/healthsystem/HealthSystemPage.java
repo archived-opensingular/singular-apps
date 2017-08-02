@@ -65,7 +65,6 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
 
     private void buildContent() {
         Form<Void> form = new Form<>("form");
-        add(form);
 
         form.add(new WebMarkupContainer(CONTAINER_ALL_CONTENT));
 
@@ -125,7 +124,7 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
         form.add(buttonWeb);
         form.add(buttonIndexForms);
         form.add(makeLogButton());
-
+        queue(form);
     }
 
     @NotNull
