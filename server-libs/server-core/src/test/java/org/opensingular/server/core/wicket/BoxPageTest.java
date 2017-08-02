@@ -4,6 +4,7 @@ import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.TextField;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
@@ -37,7 +38,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     private ServerApplicationMock singularApplication;
 
     @WithUserDetails("vinicius.nunes")
-    @Test
+    @Test(expected = RestartResponseException.class)
     public void renderTestPageWithMenu() {
         tester = new SingularWicketTester(singularApplication);
         BoxPage boxPage = new BoxPage(null);
@@ -47,7 +48,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     }
 
     @WithUserDetails("vinicius.nunes")
-    @Test
+    @Test(expected = RestartResponseException.class)
     public void deleteItem() {
         tester = new SingularWicketTester(singularApplication);
         BoxPage boxPage = new BoxPage(null);
@@ -74,7 +75,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     }
 
     @WithUserDetails("vinicius.nunes")
-    @Test
+    @Test(expected = RestartResponseException.class)
     public void cancelDeleteItem() {
         tester = new SingularWicketTester(singularApplication);
         BoxPage boxPage = new BoxPage(null);
@@ -99,7 +100,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     }
 
     @WithUserDetails("vinicius.nunes")
-    @Test
+    @Test(expected = RestartResponseException.class)
     public void relocateItem() {
         tester = new SingularWicketTester(singularApplication);
         BoxPage boxPage = new BoxPage(null);
@@ -130,7 +131,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     }
 
     @WithUserDetails("vinicius.nunes")
-    @Test
+    @Test(expected = RestartResponseException.class)
     public void historyForm() {
         tester = new SingularWicketTester(singularApplication);
         sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);

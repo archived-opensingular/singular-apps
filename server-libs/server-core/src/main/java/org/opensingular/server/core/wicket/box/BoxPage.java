@@ -50,11 +50,10 @@ public class BoxPage extends ServerBoxTemplate {
 
     public BoxPage(PageParameters parameters) {
         super(parameters);
-        queue(buldBox());
+        addBox();
     }
 
-    public Component buldBox() {
-
+    public void addBox() {
         String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
         String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
@@ -63,7 +62,6 @@ public class BoxPage extends ServerBoxTemplate {
                 && menu == null
                 && item == null
                 && menuService != null) {
-
             for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : menuService.getMap().entrySet()) {
                 if (!entry.getValue().isEmpty()) {
                     moduleCod = entry.getKey().getCod();
@@ -75,24 +73,21 @@ public class BoxPage extends ServerBoxTemplate {
 
                     pageParameters.add(MODULE_PARAM_NAME, moduleCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
-                    throw new RestartResponseException(getPage().getClass(), pageParameters);
+                    throw new RestartResponseException(getPageClass(), pageParameters);
                 }
             }
-
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
         if (menuService != null) {
             boxConfigurationMetadata = menuService.getMenuByLabel(menu);
         }
-
         if (boxConfigurationMetadata != null) {
             boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
-            /**
-             * itemBoxDTO pode ser nulo quando nenhum item está selecionado.
-             */
+            //itemBoxDTO pode ser nulo quando nenhum item está selecionado.
             if (boxDefinitionData != null) {
-                return newBoxContent("box", moduleCod, boxConfigurationMetadata, boxDefinitionData);
+                add(newBoxContent("box", moduleCod, boxConfigurationMetadata, boxDefinitionData));
+                return;
             }
         }
 
