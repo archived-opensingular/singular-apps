@@ -52,7 +52,7 @@ import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 import org.opensingular.server.commons.wicket.view.form.ReadOnlyFormPage;
-import org.opensingular.server.commons.wicket.view.template.Template;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
@@ -110,7 +110,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
+        response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "singular.js")));
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
@@ -279,7 +279,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         destination.add(new Behavior() {
             @Override
             public void renderHead(Component component, IHeaderResponse response) {
-                response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(Template.class, "singular.js")));
+                response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "singular.js")));
             }
         });
         destination.add($b.onReadyScript(() -> " Singular.atualizarContentWorklist(); "));

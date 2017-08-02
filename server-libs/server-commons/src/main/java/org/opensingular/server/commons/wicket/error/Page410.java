@@ -16,40 +16,32 @@
 
 package org.opensingular.server.commons.wicket.error;
 
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.server.commons.wicket.view.template.Template;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath("public/error/410")
-public class Page410 extends Template {
+public class Page410 extends ServerTemplate {
 
-    public Page410() {
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
+        pageHeader.setVisible(false);
     }
 
     @Override
-    protected Content getContent(String id) {
-        return new Page410Content(id);
+    protected IModel<String> getContentTitle() {
+        return new Model<>();
     }
 
     @Override
-    protected WebMarkupContainer configureHeader(String id) {
-        return (WebMarkupContainer) new WebMarkupContainer(id).setVisible(false);
+    protected IModel<String> getContentSubtitle() {
+        return new Model<>();
     }
 
     @Override
-    protected boolean withMenu() {
+    protected boolean isWithMenu() {
         return false;
     }
-
-    @Override
-    protected boolean withTopAction() {
-        return false;
-    }
-
-    @Override
-    protected boolean withSideBar() {
-        return false;
-    }
-
 }

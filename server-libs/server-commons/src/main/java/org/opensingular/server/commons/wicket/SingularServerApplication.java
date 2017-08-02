@@ -16,10 +16,12 @@
 
 package org.opensingular.server.commons.wicket;
 
+import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
@@ -32,15 +34,22 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
+import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
+import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.listener.SingularServerContextListener;
+import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
+import org.opensingular.server.commons.wicket.view.template.Footer;
+import org.opensingular.server.commons.wicket.view.template.Header;
 import org.springframework.context.ApplicationContext;
 
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+
 public abstract class SingularServerApplication extends AuthenticatedWebApplication
-        implements SkinnableApplication {
+        implements SkinnableApplication, SingularAdminApp {
 
     public static SingularServerApplication get() {
         return (SingularServerApplication) WebApplication.get();
@@ -105,10 +114,28 @@ public abstract class SingularServerApplication extends AuthenticatedWebApplicat
         }
     }
 
-
     public ApplicationContext getApplicationContext() {
         return ApplicationContextProvider.get();
     }
 
 
+    @Override
+    public MarkupContainer buildPageBody(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
+        MarkupContainer pageBody = new WebMarkupContainer(id);
+        if (!withMenu) {
+            pageBody.add($b.classAppender("page-full-width"));
+        }
+        pageBody.add(new SingularJSBehavior());
+        return pageBody;
+    }
+
+    @Override
+    public MarkupContainer buildPageFooter(String id) {
+        return new Footer(id);
+    }
+
+    @Override
+    public MarkupContainer buildPageHeader(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
+        return new Header(id, withMenu, adminTemplate.skinOptions);
+    }
 }

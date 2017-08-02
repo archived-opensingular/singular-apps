@@ -40,7 +40,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test
     public void renderTestPageWithMenu() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage();
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
         tester.assertNoErrorMessage();
@@ -50,7 +50,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test
     public void deleteItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage();
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
         tester.assertNoErrorMessage();
@@ -77,7 +77,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test
     public void cancelDeleteItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage();
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
 
@@ -102,7 +102,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test
     public void relocateItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage();
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
 
@@ -135,7 +135,7 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester = new SingularWicketTester(singularApplication);
         sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
 
-        BoxPage boxPage = new BoxPage();
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         Component historyLink = tester.getAssertionsPage()
                 .getSubCompomentWithId("actions")

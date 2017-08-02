@@ -20,28 +20,26 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
+
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class Header extends Panel {
 
-    private boolean withTogglerButton;
-    private boolean withTopAction;
-    private boolean withSideBar;
-    private SkinOptions option;
+    protected boolean withTogglerButton;
+    protected SkinOptions option;
 
     public Header(String id) {
-        this(id, false, true, false, null);
+        this(id, false, null);
     }
 
-    public Header(String id, boolean withTogglerButton, boolean withTopAction, boolean withSideBar, SkinOptions option) {
+    public Header(String id, boolean withTogglerButton, SkinOptions option) {
         super(id);
         this.withTogglerButton = withTogglerButton;
-        this.withTopAction = withTopAction;
-        this.withSideBar = withSideBar;
         this.option = option;
     }
 
@@ -49,9 +47,9 @@ public class Header extends Panel {
     protected void onInitialize() {
         super.onInitialize();
         add(new WebMarkupContainer("togglerButton")
-                .add($b.attrAppender("class", "hide", " ", $m.ofValue(!withTogglerButton))));
+                .add($b.classAppender("hide", Model.of(!withTogglerButton))));
         add(new WebMarkupContainer("_TopAction")
-                .add($b.attrAppender("class", "hide", " ", $m.ofValue(!withTopAction))));
+                .add($b.classAppender("hide")));
         add(configureTopMenu("_TopMenu"));
         add(new Link<Void>("baseurlAnchor") {
             @Override
@@ -62,6 +60,6 @@ public class Header extends Panel {
     }
 
     protected TopMenu configureTopMenu(String id) {
-        return new TopMenu(id, withSideBar, option);
+        return new TopMenu(id, option);
     }
 }

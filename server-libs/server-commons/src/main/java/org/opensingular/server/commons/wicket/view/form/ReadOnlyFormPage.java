@@ -17,27 +17,49 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
-import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.server.commons.wicket.view.template.Template;
+import org.apache.wicket.model.Model;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.wicket.enums.AnnotationMode;
+import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 
-public class ReadOnlyFormPage extends Template {
+import javax.inject.Inject;
 
-    private final IModel<Long>    formVersionEntityPK;
-    private final IModel<Boolean> showAnnotations;
+public class ReadOnlyFormPage extends ServerTemplate {
+
+    @Inject
+    private FormPetitionService formPetitionService;
 
     public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
-        this.formVersionEntityPK = formVersionEntityPK;
-        this.showAnnotations = showAnnotations;
+        SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
+        singularFormPanel.setInstanceCreator(() -> {
+            FormVersionEntity formVersionEntity = formPetitionService.loadFormVersionEntity(formVersionEntityPK.getObject());
+            return formPetitionService.getSInstance(formVersionEntity);
+        });
+
+        singularFormPanel.setViewMode(ViewMode.READ_ONLY);
+        singularFormPanel.setAnnotationMode(
+                showAnnotations.getObject() ? AnnotationMode.READ_ONLY : AnnotationMode.NONE);
+
+        queue(new Form("form").add(singularFormPanel));
     }
 
     @Override
-    protected Content getContent(String id) {
-        return new ReadOnlyFormContent(id, formVersionEntityPK, showAnnotations);
+    protected IModel<String> getContentTitle() {
+        return new Model<>();
     }
 
     @Override
-    protected boolean withMenu() {
+    protected IModel<String> getContentSubtitle() {
+        return new Model<>();
+    }
+
+    @Override
+    protected boolean isWithMenu() {
         return false;
     }
 }
