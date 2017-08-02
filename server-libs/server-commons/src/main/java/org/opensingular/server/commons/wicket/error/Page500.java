@@ -54,9 +54,9 @@ public class Page500 extends ServerTemplate implements Loggable {
         if (exception != null) {
             getLogger().warn(errorCode, this.exception);
         }
-        queue(new Label("codigo-erro", Model.of(errorCode)));
+        add(new Label("codigo-erro", Model.of(errorCode)));
         pageHeader.setVisible(false);
-        queue(detail);
+        add(detail);
         detail.setVisible(false);
         detail.add(new WebMarkupContainer("message"));
         if (exception instanceof SingularServerIntegrationException) {

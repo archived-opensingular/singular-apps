@@ -264,7 +264,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         form.add(buildCloseButton());
         form.add(closeModal);
         form.add(buildExtraContent("extra-content"));
-        queue(form);
+        add(form);
     }
 
     private PI loadPetition() {

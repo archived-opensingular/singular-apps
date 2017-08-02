@@ -124,7 +124,7 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
         form.add(buttonWeb);
         form.add(buttonIndexForms);
         form.add(makeLogButton());
-        queue(form);
+        add(form);
     }
 
     @NotNull

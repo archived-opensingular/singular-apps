@@ -21,7 +21,7 @@ import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AbstractAuthenticatedWebSession;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebApplication;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.TransparentWebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
@@ -118,10 +118,9 @@ public abstract class SingularServerApplication extends AuthenticatedWebApplicat
         return ApplicationContextProvider.get();
     }
 
-
     @Override
-    public MarkupContainer buildPageBody(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
-        MarkupContainer pageBody = new WebMarkupContainer(id);
+    public TransparentWebMarkupContainer  buildPageBody(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
+        TransparentWebMarkupContainer  pageBody = new TransparentWebMarkupContainer(id);
         if (!withMenu) {
             pageBody.add($b.classAppender("page-full-width"));
         }

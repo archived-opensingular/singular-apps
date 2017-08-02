@@ -65,8 +65,8 @@ public class HistoryPage extends ServerTemplate {
         petitionPK = getPage().getPageParameters().get(PETITION_ID).toLong();
         modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
         menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
-        queue(setupDataTable(createDataProvider()));
-        queue(getBtnCancelar());
+        add(setupDataTable(createDataProvider()));
+        add(getBtnCancelar());
     }
 
     protected AjaxLink<?> getBtnCancelar() {

@@ -45,7 +45,7 @@ public class ReadOnlyFormPage extends ServerTemplate {
         singularFormPanel.setAnnotationMode(
                 showAnnotations.getObject() ? AnnotationMode.READ_ONLY : AnnotationMode.NONE);
 
-        queue(new Form("form").add(singularFormPanel));
+        add(new Form("form").add(singularFormPanel));
     }
 
     @Override

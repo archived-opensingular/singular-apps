@@ -116,9 +116,9 @@ public class DiffFormPage extends ServerTemplate {
 
             diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
 
-            queue(contentGrid);
+            add(contentGrid);
             adicionarDatas(originalDate, newerDate);
-            queue(new DiffVisualizer("diff", diff));
+            add(new DiffVisualizer("diff", diff));
 
         }
     }
