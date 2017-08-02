@@ -123,12 +123,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         this.inheritParentFormData = $m.ofValue();
         this.typeName = config.getFormName();
         this.singularFormPanel = new SingularFormPanel("singular-panel");
-        this.singularFormPanel.setViewMode(getViewMode(config));
-        this.singularFormPanel.setAnnotationMode(getAnnotationMode(config));
-
-        final RefType refType = formPetitionService.loadRefType(config.getFormName());
-        singularFormPanel.setInstanceCreator(() -> createInstance(refType));
-
         onBuildSingularFormPanel(singularFormPanel);
 
         context.getInheritParentFormData().ifPresent(inheritParentFormData::setObject);
@@ -137,6 +131,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
     }
+
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
         //É um método estático para garantir que nada inesperado vai ser serializado junto
@@ -248,8 +243,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void onInitialize() {
         super.onInitialize();
         final PI petition = loadPetition();
+
         currentModel = $m.loadable(() -> petition != null && petition.getCod() != null ? petitionService.getPetition(petition.getCod()) : petition);
         currentModel.setObject(petition);
+
+        singularFormPanel.setViewMode(getViewMode(config));
+        singularFormPanel.setAnnotationMode(getAnnotationMode(config));
+        singularFormPanel.setInstanceCreator(() -> createInstance(formPetitionService.loadRefType(config.getFormName())));
+
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
         form.add(singularFormPanel);
