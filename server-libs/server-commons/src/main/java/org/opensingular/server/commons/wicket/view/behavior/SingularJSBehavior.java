@@ -28,7 +28,7 @@ public class SingularJSBehavior extends AbstractDefaultAjaxBehavior {
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
         String js =
-                " Singular = Singular || {}; "
+                " window.Singular = window.Singular || {}; "
                         + " Singular.reloadContent = function () { "
                         + "     if (Singular && Singular.atualizarContadores) {"
                         + "           Singular.atualizarContadores(); "
