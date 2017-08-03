@@ -25,10 +25,14 @@ import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.dao.FormAnnotationDAO;
 import org.opensingular.form.persistence.dao.FormAnnotationVersionDAO;
 import org.opensingular.form.persistence.dao.FormAttachmentDAO;
+import org.opensingular.form.persistence.dao.FormCacheFieldDAO;
+import org.opensingular.form.persistence.dao.FormCacheValueDAO;
 import org.opensingular.form.persistence.dao.FormDAO;
 import org.opensingular.form.persistence.dao.FormTypeDAO;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
+import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.FormService;
+import org.opensingular.form.service.IFormFieldService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
@@ -174,6 +178,16 @@ public class SingularDefaultBeanFactory {
     @Bean
     public FormTypeService formTypeService() {
         return new FormTypeService();
+    }
+
+    @Bean
+    public FormCacheFieldDAO formCacheFieldDAO() {
+        return new FormCacheFieldDAO();
+    }
+
+    @Bean
+    public FormCacheValueDAO formCacheValueDAO() {
+        return new FormCacheValueDAO();
     }
 
     @Bean
