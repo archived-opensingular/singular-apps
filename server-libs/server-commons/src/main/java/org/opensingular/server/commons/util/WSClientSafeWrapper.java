@@ -87,4 +87,14 @@ public class WSClientSafeWrapper {
          */
         public T getReference();
     }
+
+
+
+    public static String getAdressWithoutWsdl(String adress){
+        int lastIndex = adress.lastIndexOf("?wsdl");
+        if (lastIndex > 0) {
+            return adress.substring(0, lastIndex);
+        }
+        return adress;
+    }
 }
