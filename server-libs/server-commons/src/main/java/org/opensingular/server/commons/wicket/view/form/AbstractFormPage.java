@@ -17,12 +17,19 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.list.ListItem;
+import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.jetbrains.annotations.NotNull;
@@ -44,6 +51,7 @@ import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
@@ -51,6 +59,7 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
 import org.opensingular.server.commons.flow.FlowResolver;
@@ -69,7 +78,10 @@ import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService
 import org.opensingular.server.commons.service.SingularRequirementService;
 import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.server.commons.wicket.builder.HTMLParameters;
 import org.opensingular.server.commons.wicket.builder.MarkupCreator;
+import org.opensingular.server.commons.wicket.view.panel.FeedbackAposEnvioPanel;
+import org.opensingular.server.commons.wicket.view.panel.NotificationPanel;
 import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.Template;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -78,15 +90,20 @@ import org.opensingular.server.commons.wicket.view.util.ModuleButtonFactory;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
+import static org.opensingular.server.commons.wicket.builder.MarkupCreator.button;
+import static org.opensingular.server.commons.wicket.builder.MarkupCreator.div;
+import static org.opensingular.server.commons.wicket.builder.MarkupCreator.span;
 
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends Template implements Loggable {
 
@@ -94,6 +111,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private final IModel<FormKey>          formKeyModel;
     private final IModel<FormKey>          parentPetitionformKeyModel;
     private final IModel<Boolean>          inheritParentFormData;
+    private final Map<String, TransitionController<?>>          transitionControllerMap   = new HashMap<>();
+    private Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
+    private BSModalBorder notificacoesModal;
+    private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
+
+    {
+        fillTransitionControllerMap(transitionControllerMap);
+    }
 
     @Inject
     private PetitionService<PE, PI> petitionService;
@@ -103,7 +128,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     @Inject
     private SingularServerMetadata singularServerMetadata;
-
 
     private           IModel<PI>             currentModel;
     private transient Optional<TaskInstance> currentTaskInstance;
@@ -130,6 +154,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
+    }
+
+    protected void fillTransitionControllerMap(Map<String, TransitionController<?>> transitionControllerMap) {
+
     }
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
@@ -245,6 +273,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Override
     protected boolean withMenu() {
         return false;
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+        configurarExibicaoNotificacoes();
     }
 
     @Override
@@ -391,6 +425,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void appendExtraContent(BSContainer extraContainer) {
+        extraContainer.newComponent(this::buildNotificacoesModal);
+        extraContainer.newComponent(this::buildFeedbackAposEnvioPanel);
+        getTransitionControllerMap().forEach((k, v) -> v.appendExtraContent(extraContainer));
+    }
+
+    protected Component buildFeedbackAposEnvioPanel(String id) {
+        return new WebMarkupContainer(id);
     }
 
     private void onBuildSingularFormPanel(SingularFormPanel singularFormPanel) {
@@ -420,6 +461,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         } else {
             configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, currentTaskInstanceOpt.get());
         }
+
+        appendViewNotificationsButton(buttonContainer);
     }
 
     private void configureDiffButton(Long petitionId, BSContainer<?> buttonContainer, IModel<? extends SInstance> currentInstance) {
@@ -589,6 +632,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void onSave(PI petition, String transitionName) {
+        transitionConfirmModalMap.forEach((k, v) -> {
+            if (v.isDirty()) {
+                getPetitionService().saveOrUpdate(petition, v.getInstanceModel().getObject(), false);
+                v.setDirty(false);
+            }
+        });
     }
 
     protected boolean onBeforeSend(IModel<? extends SInstance> currentInstance) {
@@ -648,11 +697,16 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 .orElseThrow(() -> new SingularServerException("Não foi possível determinar o fluxo a ser inicicado.")));
     }
 
-
     protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal, PetitionSendedFeedback sendedFeedback) {
-        atualizarContentWorklist(target);
-        addAfterSendSuccessMessage();
-        target.appendJavaScript("; window.close();");
+        if (feedbackAposEnvioPanel != null) {
+            enviarModal.hide(target);
+            atualizarContentWorklist(target);
+            feedbackAposEnvioPanel.show(target, sendedFeedback);
+        } else {
+            atualizarContentWorklist(target);
+            addAfterSendSuccessMessage();
+            target.appendJavaScript("; window.close();");
+        }
     }
 
     protected void addAfterSendSuccessMessage() {
@@ -669,7 +723,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                              String transitionName,
                                              IModel<? extends SInstance> currentInstance)
             throws SingularServerFormValidationError {
-        saveForm(currentInstance, transitionName);
+        final STypeBasedFlowConfirmModal<?, ?> builder = transitionConfirmModalMap.get(transitionName);
+        if (builder == null || WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget, builder.getInstanceModel(), true)) {
+            saveForm(currentInstance, transitionName);
+        } else {
+            throw new SingularServerFormValidationError();
+        }
     }
 
     /**
@@ -723,11 +782,23 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @return Mapa de parametros
      */
     protected Map<String, String> getFlowParameters(String transition) {
-        return new HashMap<>();
+        Map<String, String> params = new HashMap<>();
+        TransitionController<?>          controller       = getTransitionControllerMap().get(transition);
+        STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transition);
+        if (controller != null && flowConfirmModal != null) {
+            Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
+            if (moreParams != null) {
+                params.putAll(moreParams);
+            }
+        }
+        return params;
     }
 
     protected void onTransition(PetitionInstance pe, String transitionName) {
-
+        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
+        if (controller != null) {
+            controller.onTransition();
+        }
     }
 
     protected void onTransitionExecuted(AjaxRequestTarget ajaxRequestTarget, String transitionName) {
@@ -778,7 +849,13 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
-        modal.show(ajaxRequestTarget);
+        TransitionController<?>          controller       = getTransitionControllerMap().get(transitionName);
+        STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
+        boolean                          show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        if (show) {
+            modal.show(ajaxRequestTarget);
+        }
+
     }
 
     /**
@@ -796,11 +873,26 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     /**
-     * @param tn -> the transition name
+     * @param id - the modal id
+     * @param transitionName -> the transition name
      * @return the FlowConfirmPanel
      */
-    protected FlowConfirmPanel resolveFlowConfirmModal(String id, String tn) {
-        return new SimpleMessageFlowConfirmModal<>(id, tn, this);
+    protected FlowConfirmPanel resolveFlowConfirmModal(String id, String transitionName) {
+        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
+        if (controller == null || controller.getType() == null) {
+            return new SimpleMessageFlowConfirmModal<>(id, transitionName, this);
+        }
+        RefType refType = getFormPetitionService().loadRefType(controller.getType());
+        FormKey formKey = loadFormKeyFromTypeAndTask(controller.getType(), false).orElse(null);
+        STypeBasedFlowConfirmModal<?, ?> modal = new STypeBasedFlowConfirmModal<>(
+                id,
+                transitionName,
+                this,
+                refType,
+                formKey,
+                controller);
+        transitionConfirmModalMap.put(transitionName, modal);
+        return modal;
     }
 
     private boolean isMainForm() {
@@ -825,6 +917,74 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         return formPetitionService.findFormPetitionEntity(getPetition(), typeClass, mainForm)
                 .map(x -> x.getCurrentDraftEntity() == null ? x.getForm() : x.getCurrentDraftEntity().getForm())
                 .map(formEntity -> formPetitionService.formKeyFromFormEntity(formEntity));
+    }
+
+    protected Map<String, TransitionController<?>> getTransitionControllerMap() {
+        return transitionControllerMap;
+    }
+
+    protected void configurarExibicaoNotificacoes() {
+        notificacoesModal.setVisible(!getNotificacoes().getObject().isEmpty());
+    }
+
+    protected IModel<ArrayList<Pair<String, String>>> getNotificacoes() {
+        return new Model<>(new ArrayList<>());
+    }
+
+    private Component buildNotificacoesModal(String id) {
+
+        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
+
+        final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
+            @Override
+            protected void populateItem(ListItem<Pair<String, String>> item) {
+                item.add(new NotificationPanel("notificacao", item.getModel(), getPetitionModel()));
+            }
+        };
+
+        final AjaxButton closeButton = new AjaxButton("close-button") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                notificacoesModal.hide(target);
+            }
+        };
+
+        notificacoesModal = new BSModalBorder("modal-panel");
+        notificacoesModal.setTitleText(Model.of("Notificações"));
+        notificacoesModal.addButton(BSModalBorder.ButtonStyle.DEFAULT, Shortcuts.$m.ofValue("Fechar"), closeButton);
+        notificacoesModal.setSize(BSModalBorder.Size.NORMAL);
+
+        return modalPanel.add(notificacoesModal.add(listView));
+    }
+
+    private void appendViewNotificationsButton(final BSContainer<?> container) {
+        final String markup =
+                button("notificacoes", new HTMLParameters().add("type", "button").add("class", "btn"),
+                        span("notificacoesLabel"), span("notificacoesBadge", new HTMLParameters().add("class", "badge").add("style", "margin-left:5px;top:-2px;"))
+                );
+
+        final TemplatePanel buttonPanel = container.newTemplateTag(tt -> markup);
+        final AjaxButton viewButton = new AjaxButton("notificacoes") {
+            @Override
+            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                super.onSubmit(target, form);
+                notificacoesModal.show(target);
+            }
+        };
+        viewButton.add(new Label("notificacoesLabel", "Visualizar Notificações"));
+        viewButton.add($b.visibleIf(() -> !getNotificacoes().getObject().isEmpty()));
+        viewButton.add(new Label("notificacoesBadge", $m.get(() -> getNotificacoes().getObject().size())));
+        buttonPanel.add(viewButton);
+    }
+
+    protected String getUserDisplayName() {
+        Session session = Session.get();
+        if (session instanceof SingularSession) {
+            return SingularSession.get().getUserDetails().getDisplayName();
+        }
+        return "";
     }
 
 }
