@@ -1,15 +1,16 @@
 package org.opensingular.server.commons.util;
 
-import java.util.Map;
-import java.util.function.Supplier;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.server.commons.exception.SingularServerException;
 
 import javax.xml.ws.BindingProvider;
-
-import org.opensingular.lib.commons.base.SingularProperties;
+import java.util.Map;
+import java.util.function.Supplier;
 
 /**
  * Factory que constrói o cliente do WEB-SERVICE substituindo o endpoint pelo
  * endereço configurado nos arquivos de configuração do Singular.
+ *
  * @param <T>
  */
 public class WSClientDefaultFactory<T> implements WSClientSafeWrapper.WSClientFactory<T> {
@@ -32,6 +33,9 @@ public class WSClientDefaultFactory<T> implements WSClientSafeWrapper.WSClientFa
 
     private void changeTargetEndpointAddress(T servicePortType) {
         String propertyValue = SingularProperties.get().getProperty(property);
+        if (propertyValue == null) {
+            throw new SingularServerException(String.format("WebService endpoint property not found in SingularProperties. Missing property %s", property));
+        }
         if (propertyValue.endsWith("?wsdl")) {
             propertyValue = propertyValue.substring(0, propertyValue.length() - "?wsdl".length());
         }
