@@ -36,15 +36,15 @@
 
         Wicket.Event.subscribe('/ajax/call/beforeSend', function (evt, attrs, jqXHR, settings) {
 
-            var blockImmediately = $('#'+attrs.c).is('button,input[type=button],input[type=submit],a,i');
+            var $c = (typeof attrs.c === 'string') ? $('#'+attrs.c) : $(attrs.c);
+            var blockImmediately = $c.is('button,input[type=button],input[type=submit],a,i');
             var showLoading = enableAJAXPageBlock;
-
             if(attrs && attrs['ep']){
                 $.each(attrs['ep'], function(i,v){ //console.log("v",v);
-                    if(v["name"] == "forceDisableAJAXPageBlock"){
+                    if(v["name"] === "forceDisableAJAXPageBlock"){
                         showLoading = !v["value"]; //console.log('showLoading', showLoading);
                     }
-                    if(v["name"] == "forceImmediateAJAXPageBlock"){
+                    if(v["name"] === "forceImmediateAJAXPageBlock"){
                         blockImmediately = v["value"]; //console.log('showLoading', showLoading);
                     }
                 });
