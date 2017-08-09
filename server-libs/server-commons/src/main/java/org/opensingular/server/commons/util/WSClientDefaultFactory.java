@@ -24,10 +24,16 @@ public class WSClientDefaultFactory<T> implements WSClientSafeWrapper.WSClientFa
         this.supplier = portTypeSupplier;
     }
 
+    public WSClientDefaultFactory(Supplier<T> portTypeSupplier) {
+        this(null, portTypeSupplier);
+    }
+
     @Override
     public T getReference() {
         T servicePortType = supplier.get();
-        changeTargetEndpointAddress(servicePortType);
+        if (property != null) {
+            changeTargetEndpointAddress(servicePortType);
+        }
         return servicePortType;
     }
 
