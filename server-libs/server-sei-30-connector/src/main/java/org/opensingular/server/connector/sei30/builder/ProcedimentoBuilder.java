@@ -1,9 +1,9 @@
 package org.opensingular.server.connector.sei30.builder;
 
 import org.opensingular.server.connector.sei30.ConstantesSEI;
-import org.opensingular.server.connector.sei30.model.AssuntoEnum;
+import org.opensingular.server.connector.sei30.model.AssuntoSei;
 import org.opensingular.server.connector.sei30.model.NivelAcesso;
-import org.opensingular.server.connector.sei30.model.ProcedimentoEnum;
+import org.opensingular.server.connector.sei30.model.TipoProcedimento;
 import org.opensingular.server.connector.sei30.ws.Interessado;
 import org.opensingular.server.connector.sei30.ws.Procedimento;
 
@@ -34,7 +34,7 @@ public class ProcedimentoBuilder {
      *            o(a) value.
      * @return o valor de procedimento builder
      */
-    public ProcedimentoBuilder setTipoProcedimento(ProcedimentoEnum tipoProcedimento) {
+    public ProcedimentoBuilder setTipoProcedimento(TipoProcedimento tipoProcedimento) {
         procedimento.setIdTipoProcedimento(tipoProcedimento != null ? tipoProcedimento.getId() : null);
         return this;
     }
@@ -58,11 +58,11 @@ public class ProcedimentoBuilder {
      *            o(a) assuntos.
      * @return o valor de procedimento builder
      */
-    public ProcedimentoBuilder setAssuntos(AssuntoEnum... assuntos) {
+    public ProcedimentoBuilder setAssuntos(AssuntoSei... assuntos) {
         procedimento.getAssuntos().getItem().clear();
         if (assuntos != null) {
-            for (AssuntoEnum assuntoEnum : Arrays.asList(assuntos)) {
-                procedimento.getAssuntos().getItem().add(assuntoEnum.toAssunto());
+            for (AssuntoSei assuntoSei : Arrays.asList(assuntos)) {
+                procedimento.getAssuntos().getItem().add(assuntoSei.toAssunto());
             }
         }
         return this;
