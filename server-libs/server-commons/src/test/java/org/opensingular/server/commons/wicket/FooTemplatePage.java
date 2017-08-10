@@ -1,23 +1,22 @@
 package org.opensingular.server.commons.wicket;
 
 import org.apache.wicket.model.IModel;
-import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.server.commons.wicket.view.template.Template;
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import org.apache.wicket.model.Model;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 
-public class FooTemplatePage extends Template {
+public class FooTemplatePage extends ServerTemplate {
     @Override
-    protected Content getContent(String id) {
-        return new Content(id) {
-            @Override
-            protected IModel<?> getContentTitleModel() {
-                return $m.ofValue("Test page");
-            }
+    protected IModel<String> getContentTitle() {
+        return null;
+    }
 
-            @Override
-            protected IModel<?> getContentSubtitleModel() {
-                return $m.ofValue("Test page");
-            }
-        };
+    @Override
+    protected IModel<String> getContentSubtitle() {
+        return new Model<>();
+    }
+
+    @Override
+    protected boolean isWithMenu() {
+        return true;
     }
 }

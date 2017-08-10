@@ -10,7 +10,7 @@ import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.core.wicket.box.BoxPage;
 import org.opensingular.server.p.commons.admin.AdministrationApplication;
 import org.opensingular.server.p.commons.config.PServerContext;
@@ -36,7 +36,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
             }
 
             @Override
-            protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
+            protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext iServerContext) {
                 if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
                     return AnalysisApplication.class;
                 } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
@@ -108,7 +108,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
     }
 
 
-    public static class AnalysisApplication extends SingularApplication {
+    public static class AnalysisApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
@@ -123,7 +123,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
         }
     }
 
-    public static class PetitionApplication extends SingularApplication {
+    public static class PetitionApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {

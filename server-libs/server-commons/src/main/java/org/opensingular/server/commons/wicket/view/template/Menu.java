@@ -30,6 +30,7 @@ import javax.inject.Inject;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
+import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -74,7 +75,7 @@ public class Menu extends Panel implements Loggable {
     private MenuService menuService;
 
     private Class<? extends WebPage> boxPageClass;
-    private MetronicMenu             menu;
+    private MetronicMenu menu;
 
     public Menu(String id, Class<? extends WebPage> boxPageClass) {
         super(id);
@@ -91,23 +92,26 @@ public class Menu extends Panel implements Loggable {
 
     protected void buildMenuSelecao() {
         List<ModuleEntity> categories = new ArrayList<>(0);
-        if (menuService != null){
+        if (menuService != null) {
             categories.addAll(menuService.getCategories());
         }
         SelecaoMenuItem selecaoMenuItem = new SelecaoMenuItem(categories);
         menu.addItem(selecaoMenuItem);
-        if(categories.size() == 1){
-            selecaoMenuItem.add(Shortcuts.$b.onConfigure( m -> m.setVisible(false)));
+        if (categories.size() == 1) {
+            selecaoMenuItem.add(Shortcuts.$b.onConfigure(m -> m.setVisible(false)));
         }
     }
 
     protected List<ModuleEntity> getSelectedCategoryOrAll() {
-        final ModuleEntity categoriaSelecionada = SingularSession.get().getCategoriaSelecionada();
-        if (categoriaSelecionada == null && menuService != null) {
-            return menuService.getCategories();
-        } else {
-            return Collections.singletonList(categoriaSelecionada);
+        if (SingularSession.exists() && Session.get() instanceof SingularSession) {
+            final ModuleEntity categoriaSelecionada = SingularSession.get().getCategoriaSelecionada();
+            if (categoriaSelecionada == null && menuService != null) {
+                return menuService.getCategories();
+            } else {
+                return Collections.singletonList(categoriaSelecionada);
+            }
         }
+        return Collections.emptyList();
     }
 
 
@@ -273,11 +277,11 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected static class MenuItemConfig {
-        public IRequestablePage                  page;
-        public String                            name;
+        public IRequestablePage page;
+        public String name;
         public Class<? extends IRequestablePage> pageClass;
-        public Icon                              icon;
-        public ISupplier<String>                 counterSupplier;
+        public Icon icon;
+        public ISupplier<String> counterSupplier;
 
         public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, Icon icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();

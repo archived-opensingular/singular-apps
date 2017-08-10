@@ -10,7 +10,7 @@ import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.module.wicket.view.util.dispatcher.DispatcherPage;
 import org.opensingular.server.p.commons.admin.AdministrationApplication;
 import org.opensingular.server.p.commons.config.PServerContext;
@@ -37,7 +37,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
             }
 
             @Override
-            protected Class<? extends SingularApplication> getWicketApplicationClass(IServerContext iServerContext) {
+            protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext iServerContext) {
                 if (PServerContext.WORKLIST.isSameContext(iServerContext)
                         || PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
                     return WorklistApplication.class;
@@ -105,7 +105,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
 
     }
 
-    public static class WorklistApplication extends SingularApplication {
+    public static class WorklistApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {

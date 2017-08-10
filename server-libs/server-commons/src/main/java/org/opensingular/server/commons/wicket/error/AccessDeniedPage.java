@@ -16,21 +16,26 @@
 
 package org.opensingular.server.commons.wicket.error;
 
-import org.opensingular.server.commons.wicket.view.template.Content;
-import org.opensingular.server.commons.wicket.view.template.Template;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath("acesso/negado")
-public class AccessDeniedPage extends Template {
+public class AccessDeniedPage extends ServerTemplate {
 
     @Override
-    protected Content getContent(String id) {
-        return new AccessDeniedContent(id);
+    protected IModel<String> getContentTitle() {
+        return new Model<>();
     }
 
     @Override
-    protected boolean withMenu() {
+    protected IModel<String> getContentSubtitle() {
+        return null;
+    }
+
+    @Override
+    protected boolean isWithMenu() {
         return false;
     }
-
 }

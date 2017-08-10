@@ -38,12 +38,10 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class TopMenu extends Panel {
 
-    private   boolean     withSideBar;
     protected SkinOptions option;
 
-    public TopMenu(String id, boolean withSideBar, SkinOptions option) {
+    public TopMenu(String id, SkinOptions option) {
         super(id);
-        this.withSideBar = withSideBar;
         this.option = option;
     }
 
@@ -54,7 +52,6 @@ public class TopMenu extends Panel {
     }
 
     protected void buildContent() {
-        queue(new WebMarkupContainer("sideBarToggle").setVisible(withSideBar));
         queue(new Label("nome", $m.ofValue(SingularSession.get().getName())));
 
         WebMarkupContainer avatar    = new WebMarkupContainer("codrh");
