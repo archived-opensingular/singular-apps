@@ -4,6 +4,7 @@ import org.hibernate.transform.ResultTransformer;
 import org.opensingular.flow.persistence.entity.Actor;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.List;
 
 public class FindActorByUserCodResultTransformer implements ResultTransformer {
@@ -49,6 +50,9 @@ public class FindActorByUserCodResultTransformer implements ResultTransformer {
         Integer value = null;
         if (rawObject instanceof BigDecimal) {
             value = ((BigDecimal) rawObject).intValue();
+        }
+        if (rawObject instanceof BigInteger) {
+            value = ((BigInteger) rawObject).intValue();
         }
         if (rawObject instanceof Integer) {
             value = (Integer) rawObject;
