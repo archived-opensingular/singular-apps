@@ -84,8 +84,7 @@ public class Documento {
     @XmlElement(name = "IdHipoteseLegal")
     protected String idHipoteseLegal;
     @XmlElement(name = "Conteudo")
-    @XmlMimeType("application/octet-stream")
-    protected DataHandler conteudo;
+    protected String conteudo;
     @XmlElement(name = "ConteudoMTOM")
     @XmlMimeType("application/octet-stream")
     protected DataHandler conteudoMTOM;
@@ -464,7 +463,7 @@ public class Documento {
      *     {@link DataHandler }
      *     
      */
-    public DataHandler getConteudo() {
+    public String getConteudo() {
         return conteudo;
     }
 
@@ -476,7 +475,7 @@ public class Documento {
      *     {@link DataHandler }
      *     
      */
-    public void setConteudo(DataHandler value) {
+    public void setConteudo(String value) {
         this.conteudo = value;
     }
 

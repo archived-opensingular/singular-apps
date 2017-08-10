@@ -19,6 +19,7 @@ import org.opensingular.server.connector.sei30.ws.TipoProcedimento;
 import org.opensingular.server.connector.sei30.ws.Unidade;
 import org.opensingular.server.connector.sei30.ws.Usuario;
 
+import javax.activation.DataHandler;
 import java.util.List;
 
 /**
@@ -226,6 +227,8 @@ public interface SEIPortType {
      * @return o valor de retorno inclusao documento
      */
     RetornoInclusaoDocumento incluirDocumento(Documento documento);
+
+    String adicionarArquivo(String nome, String tamanho, String hash, String conteudo);
 
     /**
      * Gerar bloco.

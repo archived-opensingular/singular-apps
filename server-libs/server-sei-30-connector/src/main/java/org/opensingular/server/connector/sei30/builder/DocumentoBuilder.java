@@ -346,6 +346,11 @@ public class DocumentoBuilder implements Serializable {
         return this;
     }
 
+    public DocumentoBuilder setIdArquivo(String idArquivo) {
+        this.documento.setIdArquivo(idArquivo);
+        return this;
+    }
+
     /**
      * Cria o documento.
      * 
