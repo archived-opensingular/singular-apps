@@ -17,7 +17,7 @@ import javax.annotation.Nonnull;
  */
 public class FlowVariableRequirementSearchExtender implements RequirementSearchExtender {
     public static final String TO_CHAR_TEMPLATE = "to_char({0})";
-    public static final String TO_CHAR_DATE_TEMPLATE = "to_char({0}, 'dd/MM/yyyy')";
+    public static final String TO_CHAR_DATE_TEMPLATE = "to_date(to_char({0}), 'dd/MM/yyyy')";
 
     private final String variableName;
     private final String queryAlias;
@@ -67,7 +67,7 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
     }
 
     @Nonnull
-    private StringTemplate toChar(QVariableInstanceEntity var) {
+    protected StringTemplate toChar(QVariableInstanceEntity var) {
         return Expressions.stringTemplate(toCharTemplate, var.value);
     }
 }
