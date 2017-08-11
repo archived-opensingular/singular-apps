@@ -16,7 +16,10 @@
 
 package org.opensingular.server.core.wicket.box;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -25,46 +28,41 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
-import org.opensingular.server.commons.wicket.error.AccessDeniedContent;
-import org.opensingular.server.commons.wicket.view.template.Content;
+import org.opensingular.server.commons.wicket.error.Page500;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
-import org.opensingular.server.core.wicket.template.ServerTemplate;
+import org.opensingular.server.core.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
-public class BoxPage extends ServerTemplate {
+public class BoxPage extends ServerBoxTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
+
+    private BoxDefinitionData boxDefinitionData;
 
     @Inject
     @SpringBean(required = false)
     private MenuService menuService;
 
-    @Override
-    protected Content getContent(String id) {
+    public BoxPage(PageParameters parameters) {
+        super(parameters);
+        addBox();
+    }
 
+    public void addBox() {
         String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
-        String menu            = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
-        String item            = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
-
+        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
+        String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
         if (moduleCod == null
                 && menu == null
                 && item == null
                 && menuService != null) {
-
-            for (Iterator<Map.Entry<ModuleEntity, List<BoxConfigurationData>>> it = menuService.getMap().entrySet().iterator(); it.hasNext(); ) {
-                Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry = it.next();
+            for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : menuService.getMap().entrySet()) {
                 if (!entry.getValue().isEmpty()) {
                     moduleCod = entry.getKey().getCod();
                     BoxConfigurationData mg = entry.getValue().get(0);
@@ -75,36 +73,30 @@ public class BoxPage extends ServerTemplate {
 
                     pageParameters.add(MODULE_PARAM_NAME, moduleCod);
                     pageParameters.add(MENU_PARAM_NAME, menu);
-                    throw new RestartResponseException(getPage().getClass(), pageParameters);
+                    throw new RestartResponseException(getPageClass(), pageParameters);
                 }
             }
-
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
         if (menuService != null) {
             boxConfigurationMetadata = menuService.getMenuByLabel(menu);
         }
-
         if (boxConfigurationMetadata != null) {
-            final BoxDefinitionData boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
-            /**
-             * itemBoxDTO pode ser nulo quando nenhum item está selecionado.
-             */
+            boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
+            //itemBoxDTO pode ser nulo quando nenhum item está selecionado.
             if (boxDefinitionData != null) {
-                return newBoxContent(id, moduleCod, boxConfigurationMetadata, boxDefinitionData);
+                add(newBoxContent("box", moduleCod, boxConfigurationMetadata, boxDefinitionData));
+                return;
             }
         }
 
-        /**
-         * Fallback
-         */
         LOGGER.warn("Não existe correspondencia para o label {}", String.valueOf(item));
-        return new AccessDeniedContent(id);
+        throw new RestartResponseException(Page500.class);
     }
 
     private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
-        if (!mg.getBoxesDefinition().isEmpty()){
+        if (!mg.getBoxesDefinition().isEmpty()) {
             String item = mg.getItemBoxes().get(0).getName();
             pageParameters.add(ITEM_PARAM_NAME, item);
         }
@@ -128,6 +120,32 @@ public class BoxPage extends ServerTemplate {
         return Optional.ofNullable(userDetails)
                 .map(SingularUserDetails::getUsername)
                 .orElse(null);
+    }
+
+    @Override
+    protected IModel<String> getContentSubtitle() {
+        return new Model<String>() {
+            @Override
+            public String getObject() {
+                if (boxDefinitionData != null) {
+                    return boxDefinitionData.getItemBox().getDescription();
+                }
+                return null;
+            }
+        };
+    }
+
+    @Override
+    protected IModel<String> getContentTitle() {
+        return new Model<String>() {
+            @Override
+            public String getObject() {
+                if (boxDefinitionData != null) {
+                    return boxDefinitionData.getItemBox().getName();
+                }
+                return null;
+            }
+        };
     }
 
 }

@@ -34,7 +34,7 @@ import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
 import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
 import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.Page410;
 import org.opensingular.server.commons.wicket.error.Page500;
@@ -49,7 +49,7 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
-        SingularServerConfiguration singularServerConfiguration = SingularApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
+        SingularServerConfiguration singularServerConfiguration = SingularServerApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
             IServerContext context = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());

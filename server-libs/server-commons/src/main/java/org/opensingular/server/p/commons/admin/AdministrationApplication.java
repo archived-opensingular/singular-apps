@@ -1,11 +1,11 @@
 package org.opensingular.server.p.commons.admin;
 
 import org.apache.wicket.Page;
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage;
 
 
-public class AdministrationApplication extends SingularApplication {
+public class AdministrationApplication extends SingularServerApplication {
 
 
     @Override

@@ -18,6 +18,7 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -32,31 +33,30 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 @MountPath("/view")
 public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance> {
 
-
     public FormPage() {
         this(null);
     }
 
-    public FormPage(@Nullable ActionContext context) {
-        super(context);
-    }
-
     @Override
-    protected IModel<?> getContentTitleModel() {
-        return $m.get(() -> getSingularFormPanel().getRootTypeSubtitle());
-    }
-
-    @Override
-    protected IModel<?> getContentSubtitleModel() {
+    protected IModel<String> getContentSubtitle() {
         return $m.get(() -> {
             if (getIdentifier().isPresent()) {
-//                return currentModel.getObject().getDescription();
                 return "";
             }
             return new ResourceModel("label.form.content.title", "Nova Solicitação").getObject();
         });
     }
 
+    @Override
+    protected IModel<String> getContentTitle() {
+        return $m.get(() -> getSingularFormPanel().getRootTypeSubtitle());
+    }
+
+    public FormPage(@Nullable ActionContext context) {
+        super(context);
+    }
+
+    @NotNull
     @Override
     protected Optional<String> getIdentifier() {
         return getPetitionOptional()

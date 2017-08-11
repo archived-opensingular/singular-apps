@@ -16,18 +16,6 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import java.io.Serializable;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.inject.Inject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -38,11 +26,14 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
@@ -56,15 +47,20 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
-import org.opensingular.server.commons.wicket.view.template.Content;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
+
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.net.URL;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 /**
  * Classe base para construição de caixas do servidor de petições
  */
-public abstract class AbstractBoxContent<T extends Serializable> extends Content {
+public abstract class AbstractBoxContent<T extends Serializable> extends Panel implements Loggable {
 
     public static final int DEFAULT_ROWS_PER_PAGE = 15;
     private static final long serialVersionUID = -3611649597709058163L;
@@ -84,8 +80,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
      * Confirmation Form
      */
 
-    private String           moduleCod;
-    private String           menu;
+    private String moduleCod;
+    private String menu;
     private List<ProcessDTO> processes;
     private List<FormDTO> forms;
     /**
@@ -245,9 +241,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
         tabela = construirTabela(builder);
         tabela.add($b.classAppender("worklist"));
 
-        add(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
-        add(tabela);
-        add(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
+        queue(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
+        queue(tabela);
+        queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (menuService != null) {
                 BoxConfigurationData boxConfigurationMetadata = menuService.getMenuByLabel(getMenu());
@@ -354,5 +350,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Content
 
     public void setForms(List<FormDTO> forms) {
         this.forms = forms;
+    }
+
+    protected StringResourceModel getMessage(String prop) {
+        return new StringResourceModel(prop.trim(), this, null);
     }
 }

@@ -75,6 +75,6 @@ public class SingularDefaultUserService implements IUserService {
     @Override
     @Transactional
     public SUser findByCod(Integer cod) {
-        return actorDAO.get(cod).orElse(null);
+         return actorDAO.get(cod).orElse(null);
     }
 }

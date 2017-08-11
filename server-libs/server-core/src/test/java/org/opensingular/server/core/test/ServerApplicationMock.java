@@ -3,13 +3,13 @@ package org.opensingular.server.core.test;
 
 import org.apache.wicket.Page;
 import org.opensingular.server.commons.test.SingularTestRequestCycleListener;
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.core.wicket.box.BoxPage;
 
 import javax.inject.Named;
 
 @Named
-public class ServerApplicationMock extends SingularApplication {
+public class ServerApplicationMock extends SingularServerApplication {
 
     @Override
     public void init() {
