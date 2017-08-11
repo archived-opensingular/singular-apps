@@ -52,7 +52,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         Query query = getSession().createSQLQuery(
                 "select a.CO_ATOR as \"cod\", a.CO_USUARIO as \"codUsuario\", a.NO_ATOR as \"nome\", a.DS_EMAIL as \"email\" " +
                         " FROM " + Constants.SCHEMA + ".VW_ATOR a " +
-                        " WHERE UPPER(trim(a.CO_USUARIO)) = :codUsuario");
+                        " WHERE UPPER(rtrim(ltrim(a.CO_USUARIO))) = :codUsuario");
 
         query.setParameter("codUsuario", username.toUpperCase());
         query.setResultTransformer(new FindActorByUserCodResultTransformer());
