@@ -23,15 +23,14 @@ import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.STask;
@@ -54,7 +53,6 @@ import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
-import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
@@ -87,7 +85,6 @@ import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureExcep
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import java.util.ArrayList;
 import java.util.*;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -96,14 +93,6 @@ import static org.opensingular.server.commons.wicket.builder.MarkupCreator.*;
 
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends ServerTemplate implements Loggable {
 
-    private final FormPageExecutionContext config;
-    private final IModel<FormKey>          formKeyModel;
-    private final IModel<FormKey>          parentPetitionformKeyModel;
-    private final IModel<Boolean>          inheritParentFormData;
-    private final Map<String, TransitionController<?>>          transitionControllerMap   = new HashMap<>();
-    private Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
-    private BSModalBorder notificacoesModal;
-    private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
     protected final String typeName;
     protected final IModel<FormKey> formKeyModel;
     protected final FormPageExecutionContext config;
@@ -113,10 +102,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
     protected final BSModalBorder closeModal = construirCloseModal();
 
+    private final Map<String, TransitionController<?>> transitionControllerMap = new HashMap<>();
+    private Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
+    private BSModalBorder notificacoesModal;
+    private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
+
     {
         fillTransitionControllerMap(transitionControllerMap);
     }
-
 
     @Inject
     private PetitionService<PE, PI> petitionService;
@@ -733,7 +726,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      */
     protected Map<String, String> getFlowParameters(String transition) {
         Map<String, String> params = new HashMap<>();
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transition);
+        TransitionController<?> controller = getTransitionControllerMap().get(transition);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transition);
         if (controller != null && flowConfirmModal != null) {
             Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
@@ -795,9 +788,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transitionName);
+        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean                          show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        boolean show = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
         if (show) {
             modal.show(ajaxRequestTarget);
         }
@@ -819,7 +812,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     /**
-     * @param id - the modal id
+     * @param id             - the modal id
      * @param transitionName -> the transition name
      * @return the FlowConfirmPanel
      */
@@ -1012,6 +1005,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected IModel<String> getContentSubtitle() {
         return new Model<>();
     }
+
     protected Map<String, TransitionController<?>> getTransitionControllerMap() {
         return transitionControllerMap;
     }
@@ -1026,8 +1020,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private Component buildNotificacoesModal(String id) {
 
-        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
-        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
+        final String modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel = new TemplatePanel(id, modalPanelMarkup);
 
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
