@@ -16,77 +16,49 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.wicket.SingularSession;
-import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
-import org.apache.wicket.Component;
-import org.apache.wicket.MarkupContainer;
-import org.apache.wicket.behavior.AttributeAppender;
+import org.apache.wicket.markup.head.CssHeaderItem;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.RepeatingView;
-import org.apache.wicket.model.IModel;
+import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.PackageResourceReference;
+import org.jetbrains.annotations.NotNull;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+public abstract class ServerTemplate extends SingularAdminTemplate {
 
-public abstract class Content extends Panel implements Loggable {
-
-    private boolean withBreadcrumb;
-    private boolean withInfoLink;
-    private RepeatingView toolbar;
-
-    protected WebMarkupContainer pageHead   = new WebMarkupContainer("pageHead");
-    protected WebMarkupContainer breadcrumb = new WebMarkupContainer("breadcrumb");
-
-    public Content(String id) {
-        this(id, false, false);
+    public ServerTemplate() {
     }
 
-    public Content(String id, boolean withInfoLink, boolean withBreadcrumb) {
-        super(id);
-        this.withBreadcrumb = withBreadcrumb;
-        this.withInfoLink = withInfoLink;
-    }
 
-    public Content addSideBar() {
-        return this;
+    public ServerTemplate(PageParameters parameters) {
+        super(parameters);
     }
 
     @Override
-    protected void onInitialize() {
-        super.onInitialize();
-        add(pageHead);
+    protected @NotNull WebMarkupContainer buildPageMenu(String id) {
+        return new Menu(id, (Class<? extends WebPage>) this.getPageClass());
+    }
 
-        pageHead.add(new Label("contentTitle", getContentTitleModel()));
-        pageHead.add(new Label("contentSubtitle", getContentSubtitleModel()));
-        toolbar = new RepeatingView("toolbarItems");
-        pageHead.add(toolbar);
-
-        add(breadcrumb);
-
-        breadcrumb.add(new WebMarkupContainer("breadcrumbDashboard").add($b.attr("href", "null null")));
-        breadcrumb.add(getBreadcrumbLinks("_BreadcrumbLinks"));
-
-        if (!withBreadcrumb) {
-            breadcrumb.add(new AttributeAppender("class", "hide", " "));
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(CssHeaderItem.forUrl("/singular-static/resources/singular/fonts/google/open-sans.css"));
+        response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "singular.js")));
+        response.render(CssHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "ServerTemplate.css")));
+        if (SingularProperties.get().isTrue(SingularProperties.ANALYTICS_ENABLED)) {
+            response.render(JavaScriptHeaderItem.forUrl(skinnableResource("/layout4/scripts/analytics.js")));
         }
-
     }
 
     protected StringResourceModel getMessage(String prop) {
         return new StringResourceModel(prop.trim(), this, null);
-    }
-
-    public MarkupContainer addToolbarItem(IFunction<String, Component> toolbarItem) {
-        return toolbar.add(toolbarItem.apply(toolbar.newChildId()));
-    }
-
-    public SingularSession getPetSession() {
-        return SingularSession.get();
     }
 
     public void addToastrSuccessMessage(String messageKey, String... args) {
@@ -129,23 +101,4 @@ public abstract class Content extends Panel implements Loggable {
                 addToastrMessageWorklist(ToastrType.INFO, messageKey, args);
     }
 
-    protected WebMarkupContainer getBreadcrumbLinks(String id) {
-        return new WebMarkupContainer(id);
-    }
-
-    protected WebMarkupContainer getInfoLink(String id) {
-        return new WebMarkupContainer(id);
-    }
-
-    protected abstract IModel<?> getContentTitleModel();
-
-    protected abstract IModel<?> getContentSubtitleModel();
-
-    public boolean isWithBreadcrumb() {
-        return withBreadcrumb;
-    }
-
-    public boolean isWithInfoLink() {
-        return withInfoLink;
-    }
 }

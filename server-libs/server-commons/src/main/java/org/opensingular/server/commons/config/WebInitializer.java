@@ -32,7 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 
-import org.opensingular.server.commons.wicket.SingularApplication;
+import org.opensingular.server.commons.wicket.SingularServerApplication;
 
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
@@ -70,7 +70,7 @@ public abstract class WebInitializer {
 
     }
 
-    protected abstract Class<? extends SingularApplication> getWicketApplicationClass(IServerContext context);
+    protected abstract Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext context);
 
     private void addOpenSessionInView(ServletContext servletContext) {
         FilterRegistration.Dynamic opensessioninview = servletContext.addFilter("opensessioninview", OpenSessionInViewFilter.class);

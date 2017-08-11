@@ -58,8 +58,8 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
         modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
                 "label.button.confirm",
                 newFlowConfirmButton(getTransition(),
-                        getFormPage().getInstanceModel(),
-                        getFormPage().getConfig().getViewMode(),
+                        getFormPage().getFormInstance(),
+                        getFormPage().getViewMode(getFormPage().getConfig()),
                         modal));
     }
 

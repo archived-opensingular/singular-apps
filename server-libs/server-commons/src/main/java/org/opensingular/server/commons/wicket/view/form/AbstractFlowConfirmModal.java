@@ -61,7 +61,7 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
         modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
                 "label.button.confirm",
                 newFlowConfirmButton(getTransition(),
-                        formPage.getInstanceModel(),
+                        formPage.getFormInstance(),
                         getFormPage().getViewMode(getFormPage().getConfig()),
                         modal));
     }

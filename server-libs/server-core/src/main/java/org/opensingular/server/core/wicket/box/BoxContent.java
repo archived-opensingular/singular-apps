@@ -43,34 +43,19 @@ import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxDefinitionData;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
-import org.opensingular.server.commons.service.dto.DatatableField;
-import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ItemActionType;
-import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.service.dto.RequirementData;
+import org.opensingular.server.commons.service.dto.*;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 
 import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -226,7 +211,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             callModule(url, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
-            addToastrErrorMessage("Não foi possível executar esta ação.");
+            ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
         }
@@ -243,7 +228,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
-            addToastrErrorMessage("Não foi possível executar esta ação.");
+            ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
         }
@@ -268,9 +253,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private void callModule(String url, Object arg) {
         ActionResponse response = boxService.callModule(url, arg, ActionResponse.class);
         if (response.isSuccessful()) {
-            addToastrSuccessMessage(response.getResultMessage());
+            ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
-            addToastrErrorMessage(response.getResultMessage());
+            ((BoxPage) getPage()).addToastrErrorMessage(response.getResultMessage());
         }
     }
 
@@ -410,16 +395,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
         return boxService.countQuickSearch(getModule(), getItemBoxModelObject(), filter);
-    }
-
-    @Override
-    public IModel<?> getContentTitleModel() {
-        return $m.ofValue(getItemBoxModelObject().getName());
-    }
-
-    @Override
-    public IModel<?> getContentSubtitleModel() {
-        return $m.ofValue(getItemBoxModelObject().getDescription());
     }
 
     public boolean isShowQuickFilter() {

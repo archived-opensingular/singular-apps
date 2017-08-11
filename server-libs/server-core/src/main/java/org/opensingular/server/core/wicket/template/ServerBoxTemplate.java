@@ -16,14 +16,29 @@
 
 package org.opensingular.server.core.wicket.template;
 
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.server.commons.wicket.view.template.Menu;
-import org.opensingular.server.commons.wicket.view.template.Template;
+import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.core.wicket.box.BoxPage;
 
-public abstract class ServerTemplate extends Template {
+public abstract class ServerBoxTemplate extends ServerTemplate {
+
+    public ServerBoxTemplate() {
+    }
+
+    public ServerBoxTemplate(PageParameters parameters) {
+        super(parameters);
+    }
 
     @Override
-    protected Menu configureMenu(String id) {
+    protected @NotNull WebMarkupContainer buildPageMenu(String id) {
         return new Menu(id, BoxPage.class);
+    }
+
+    @Override
+    protected boolean isWithMenu() {
+        return true;
     }
 }
