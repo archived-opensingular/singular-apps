@@ -27,7 +27,6 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -97,13 +96,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.button;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.div;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.span;
+import static org.opensingular.server.commons.wicket.builder.MarkupCreator.*;
 
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends Template implements Loggable {
 
@@ -426,12 +422,21 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     protected void appendExtraContent(BSContainer extraContainer) {
         extraContainer.newComponent(this::buildNotificacoesModal);
-        extraContainer.newComponent(this::buildFeedbackAposEnvioPanel);
+        extraContainer.newComponent(this::createFeedbackAposEnvioPanel);
         getTransitionControllerMap().forEach((k, v) -> v.appendExtraContent(extraContainer));
     }
 
-    protected Component buildFeedbackAposEnvioPanel(String id) {
-        return new WebMarkupContainer(id);
+    private Component createFeedbackAposEnvioPanel(String id) {
+        this.feedbackAposEnvioPanel = buildFeedbackAposEnvioPanel(id);
+        if (feedbackAposEnvioPanel == null) {
+            return new WebMarkupContainer(id);
+        } else {
+            return this.feedbackAposEnvioPanel;
+        }
+    }
+
+    protected FeedbackAposEnvioPanel buildFeedbackAposEnvioPanel(String id) {
+        return null;
     }
 
     private void onBuildSingularFormPanel(SingularFormPanel singularFormPanel) {

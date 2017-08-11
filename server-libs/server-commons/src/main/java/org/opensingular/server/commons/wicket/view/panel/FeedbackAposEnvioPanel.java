@@ -12,6 +12,8 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 
+import java.util.Optional;
+
 public abstract class FeedbackAposEnvioPanel extends Panel {
 
     protected BSModalBorder modal = new BSModalBorder("modal-panel");
@@ -47,10 +49,14 @@ public abstract class FeedbackAposEnvioPanel extends Panel {
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                 super.onSubmit(target, form);
-                onClose.accept(target, modal);
+                getOnClose().ifPresent(f -> f.accept(target, modal));
                 target.appendJavaScript("; window.close();");
             }
         });
+    }
+
+    private Optional<IBiConsumer<AjaxRequestTarget, BSModalBorder>> getOnClose() {
+        return Optional.ofNullable(onClose);
     }
 
     private void addTitle() {
