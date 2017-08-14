@@ -174,7 +174,7 @@ public class PetitionInstance implements Serializable {
     }
 
     public String getPetitionerName(){
-        return getEntity().getPetitioner().getName();
+        return Optional.of(getEntity()).map(PetitionEntity::getPetitioner).map(PetitionerEntity::getName).orElse(null);
     }
 
 
