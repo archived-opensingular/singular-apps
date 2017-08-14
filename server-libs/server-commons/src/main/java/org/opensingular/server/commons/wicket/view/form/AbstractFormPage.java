@@ -160,11 +160,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
-
-        fillTransitionControllerMap(transitionControllerMap);
-        for (TransitionController<?> t : transitionControllerMap.values()) {
-            springServiceRegistry.lookupSingularInjector().inject(t);
-        }
     }
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
@@ -290,6 +285,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
         currentModel = $m.loadable(() -> petition != null && petition.getCod() != null ? petitionService.getPetition(petition.getCod()) : petition);
         currentModel.setObject(petition);
+
+        fillTransitionControllerMap(transitionControllerMap);
+        for (TransitionController<?> t : transitionControllerMap.values()) {
+            springServiceRegistry.lookupSingularInjector().inject(t);
+        }
 
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
