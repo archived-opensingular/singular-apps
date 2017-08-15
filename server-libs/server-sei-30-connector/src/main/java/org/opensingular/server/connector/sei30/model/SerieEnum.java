@@ -16,7 +16,9 @@ public enum SerieEnum {
 
     EXTRATO_DE_ATO("190", "Extrato de Ato"),
 
-    MINUTA("204", "Minuta");
+    MINUTA("204", "Minuta"),
+
+    ANEXO("455", "Anexo");
 
     private final String id;
     private final String nome;
