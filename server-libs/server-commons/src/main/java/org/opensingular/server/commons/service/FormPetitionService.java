@@ -486,9 +486,11 @@ public class FormPetitionService<P extends PetitionEntity> {
     }
 
     private static void copyValuesAndAnnotations(SDocument source, SDocument target) {
+        target.initRestoreMode();
         Value.copyValues(source, target);
         copyIdValues(source.getRoot(), target.getRoot());
         target.getDocumentAnnotations().copyAnnotationsFrom(source);
+        target.finishRestoreMode();
     }
 
     private static void copyIdValues(SInstance source, SInstance target) {
