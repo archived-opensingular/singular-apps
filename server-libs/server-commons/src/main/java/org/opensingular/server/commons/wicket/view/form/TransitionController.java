@@ -22,7 +22,7 @@ public interface TransitionController<T extends SType<?>> extends Serializable {
 
     default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {}
 
-    default void onTransition() {}
+    default void onTransition(SInstance transitionInstance) {}
 
     default boolean onShow(SIComposite pageInstance, SInstance transitionInstance, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
         return true;

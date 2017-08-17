@@ -758,7 +758,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void onTransition(PetitionInstance pe, String transitionName) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         if (controller != null) {
-            controller.onTransition();
+            controller.onTransition(getInstance());
         }
     }
 
