@@ -87,7 +87,7 @@ public class PermissionResolverService implements Loggable {
     private List<String> listAllTypeNames() {
         return singularServerConfiguration.getFormTypes()
                 .stream()
-                .map(clazz -> SFormUtil.getTypeSimpleName(clazz).toUpperCase())
+                .map(clazz -> SFormUtil.getTypeSimpleName(clazz).get().toUpperCase())
                 .collect(Collectors.toList());
     }
 
