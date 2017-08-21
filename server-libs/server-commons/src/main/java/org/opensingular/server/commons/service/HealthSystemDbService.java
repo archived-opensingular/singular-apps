@@ -59,7 +59,7 @@ public class HealthSystemDbService implements Loggable {
     private TableInfoDTO getTableInfo(AbstractEntityPersister persister) {
         TableInfoDTO tableInfoDTO = new TableInfoDTO();
 
-        String[] name = SqlUtil.replaceSchemaName(persister.getTableName()).split("\\.");
+        String[] name = SqlUtil.replaceSingularSchemaName(persister.getTableName()).split("\\.");
         tableInfoDTO.setSchema(name[0]);
         tableInfoDTO.setTableName(name[1]);
 
