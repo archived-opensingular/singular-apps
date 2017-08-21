@@ -20,8 +20,6 @@ import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.form.SFormUtil;
-import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
@@ -243,8 +241,7 @@ public class AuthorizationService implements Loggable {
         }
         return singularFormConfig
                 .flatMap(formConfig -> formConfig.getTypeLoader().loadType(formTypeName))
-                .map(typeClass -> (Class<? extends SType<?>>) typeClass.getClass())
-                .map(SFormUtil::getTypeSimpleName)
+                .map(type -> type.getNameSimple())
                 .map(String::toUpperCase)
                 .orElse(null);
     }

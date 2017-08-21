@@ -138,9 +138,8 @@ public class RestBackstageService implements Loggable {
             Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {
                 SType<?> sType = sTypeOptional.get();
-                Class<? extends SType<?>> sTypeClass = (Class<? extends SType<?>>) sType.getClass();
                 String label = sType.asAtr().getLabel();
-                boxConfigurationMetadata.getForms().add(new FormDTO(name, SFormUtil.getTypeSimpleName(sTypeClass), label, annotation.newable()));
+                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label, annotation.newable()));
             }
         }
     }
