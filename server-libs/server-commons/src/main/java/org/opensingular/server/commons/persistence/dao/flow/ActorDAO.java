@@ -89,14 +89,14 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         if (result == null && cod == null) {
             if ("sequence".equals(SingularProperties.get().getProperty(SingularProperties.HIBERNATE_GENERATOR))) {
                 getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (" + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
+                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (" + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
                     PreparedStatement ps  = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
                     ps.execute();
                 });
             } else {
                 getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
+                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
                     ps.execute();
