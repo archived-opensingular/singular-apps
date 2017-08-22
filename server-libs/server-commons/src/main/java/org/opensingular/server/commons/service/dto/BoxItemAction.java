@@ -19,7 +19,7 @@ package org.opensingular.server.commons.service.dto;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
 import org.opensingular.server.commons.form.FormAction;

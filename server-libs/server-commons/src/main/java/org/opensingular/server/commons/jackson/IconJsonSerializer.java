@@ -3,7 +3,7 @@ package org.opensingular.server.commons.jackson;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
-import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.lib.commons.ui.Icon;
 
 import java.io.IOException;
 

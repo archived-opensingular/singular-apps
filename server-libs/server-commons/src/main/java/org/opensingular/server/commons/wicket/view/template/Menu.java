@@ -49,7 +49,7 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.lib.wicket.util.resource.Icon;
+import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
