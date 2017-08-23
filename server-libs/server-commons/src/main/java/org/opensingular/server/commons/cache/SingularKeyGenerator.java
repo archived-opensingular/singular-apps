@@ -1,14 +1,13 @@
 package org.opensingular.server.commons.cache;
 
-import org.jetbrains.annotations.NotNull;
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
-
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 
 
 public class SingularKeyGenerator extends SimpleKeyGenerator {
@@ -18,10 +17,11 @@ public class SingularKeyGenerator extends SimpleKeyGenerator {
         String methodName = method.getName();
         String methodReturnType = method.getReturnType().getName();
         Parameter[] methodParameters = method.getParameters();
-        return generateKey(methodName, methodReturnType, Stream.of(methodParameters).map(Parameter::getName), params);
+        String[] parameters = Stream.of(methodParameters).map(Parameter::getName).collect(Collectors.toList()).toArray(new String[]{});
+        return internalGenerateKey(methodName, methodReturnType, parameters, params);
     }
 
-    public static String generateKey(String methodName, String methodReturnType, String[] parameters, Object[] params) {
+    public static String internalGenerateKey(String methodName, String methodReturnType, String[] parameters, Object[] params) {
         int paramsHashCode = 0;
         if (params != null) {
             paramsHashCode = Arrays.hashCode(params);
