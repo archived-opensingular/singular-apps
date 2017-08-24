@@ -31,7 +31,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.exception.SingularServerIntegrationException;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
 import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
@@ -75,7 +75,7 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     @Override
     public IRequestHandler onException(RequestCycle cycle, Exception ex) {
         SingularException singularException = getFirstSingularException(ex);
-        if (singularException instanceof SingularServerIntegrationException
+        if (singularException instanceof SingularServerException
                 && ((WebRequest) RequestCycle.get().getRequest()).isAjax()) {
             return new AjaxErrorRequestHandler(singularException);
         } else if (ex instanceof PageExpiredException) {
