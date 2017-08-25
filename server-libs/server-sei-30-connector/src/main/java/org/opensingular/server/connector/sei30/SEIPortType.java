@@ -324,7 +324,7 @@ public interface SEIPortType {
      */
     Boolean enviarProcesso(String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
                            SimNao sinManterAbertoUnidade, SimNao sinRemoverAnotacao, SimNao sinEnviarEmailNotificacao,
-                           String dataRetornoProgramado);
+                           String dataRetornoProgramado, String diasRetornoProgramado);
 
     /**
      * Retirar documento bloco.

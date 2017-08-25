@@ -1,6 +1,8 @@
 package org.opensingular.server.connector.sei30.model;
 
-public class TipoProcedimento {
+import java.io.Serializable;
+
+public class TipoProcedimento implements Serializable {
 
     private final String id;
     private final String nome;

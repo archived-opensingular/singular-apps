@@ -473,10 +473,10 @@ public class SEIWS implements SEIPortType {
     @Override
     public Boolean enviarProcesso(String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
                                   SimNao sinManterAbertoUnidade, SimNao sinRemoverAnotacao, SimNao sinEnviarEmailNotificacao,
-                                  String dataRetornoProgramado) {
+                                  String dataRetornoProgramado, String diasRetornoProgramado) {
         String retorno = seiPortType.enviarProcesso(siglaSistema, identificacaoServico, unidade.getId(), protocoloProcedimento,
                 unidadesDestino, sinManterAbertoUnidade.getCodigo(), sinRemoverAnotacao.getCodigo(),
-                sinEnviarEmailNotificacao.getCodigo(), dataRetornoProgramado, "0", SimNao.NAO.getCodigo(), SimNao.NAO.getCodigo());
+                sinEnviarEmailNotificacao.getCodigo(), dataRetornoProgramado, diasRetornoProgramado, SimNao.NAO.getCodigo(), SimNao.NAO.getCodigo());
         return converterRetornoBooleano(retorno);
     }
 
