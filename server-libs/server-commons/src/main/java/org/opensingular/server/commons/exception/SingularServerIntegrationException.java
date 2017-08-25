@@ -22,6 +22,10 @@ public class SingularServerIntegrationException extends SingularServerException 
         super(String.format("O %s não está funcionando corretamente. Não foi possível realizar a operação.", serviceName), e);
     }
 
+    protected SingularServerIntegrationException(String serviceName, String specificError, Throwable e) {
+        super(String.format("O %s não está funcionando corretamente. Não foi possível realizar a operação. %s", serviceName, specificError), e);
+    }
+
     public static SingularServerIntegrationException rethrow(Throwable e) {
         return rethrow(null, e);
     }
@@ -35,6 +39,14 @@ public class SingularServerIntegrationException extends SingularServerException 
             return (SingularServerIntegrationException) e;
         } else {
             return new SingularServerIntegrationException(message, e);
+        }
+    }
+
+    public static SingularServerIntegrationException rethrow(String message, String specificError, Throwable e) {
+        if (e instanceof SingularServerIntegrationException) {
+            return (SingularServerIntegrationException) e;
+        } else {
+            return new SingularServerIntegrationException(message, specificError, e);
         }
     }
 
