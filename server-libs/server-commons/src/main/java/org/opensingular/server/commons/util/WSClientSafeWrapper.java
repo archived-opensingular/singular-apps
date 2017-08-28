@@ -1,9 +1,11 @@
 package org.opensingular.server.commons.util;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.log4j.Logger;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
 
+import javax.xml.ws.soap.SOAPFaultException;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -65,10 +67,22 @@ public class WSClientSafeWrapper {
                 } catch (Exception e) {
                     ref = factory.getReference();
                     log.fatal(e.getMessage(), e);
-                    throw SingularServerIntegrationException.rethrow(humanName, e);
+                    throw SingularServerIntegrationException.rethrow(humanName, extrairSOAPFaultMessage(e), e);
                 } finally {
                     log.warn(String.format("RETORNO DE WEB-SERVICE: %s OPERACAO: %s ", wsIface.getName(), method.getName()));
                 }
+            }
+
+            private String extrairSOAPFaultMessage(Exception e) {
+                Throwable cause = e.getCause();
+                while (cause != null) {
+                    if (cause instanceof SOAPFaultException) {
+                        return cause.getMessage();
+                    }
+                    cause = cause.getCause();
+                }
+
+                return StringUtils.EMPTY;
             }
         });
     }
