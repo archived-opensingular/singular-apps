@@ -46,7 +46,6 @@ import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.form.spring.SpringServiceRegistry;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
@@ -54,6 +53,7 @@ import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
+import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
@@ -132,9 +132,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     @Inject
     private SingularServerMetadata singularServerMetadata;
-
-    @Inject
-    private SpringServiceRegistry springServiceRegistry;
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -287,9 +284,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         currentModel.setObject(petition);
 
         fillTransitionControllerMap(transitionControllerMap);
-        for (TransitionController<?> t : transitionControllerMap.values()) {
-            springServiceRegistry.lookupSingularInjector().inject(t);
-        }
+        SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
