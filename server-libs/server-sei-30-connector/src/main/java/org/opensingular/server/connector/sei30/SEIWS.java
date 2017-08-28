@@ -29,7 +29,6 @@ import org.opensingular.server.connector.sei30.ws.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.activation.DataHandler;
 import javax.xml.ws.BindingProvider;
 import java.util.Collections;
 import java.util.List;
@@ -49,7 +48,6 @@ public class SEIWS implements SEIPortType {
     private final SeiPortType seiPortType;
     private final String siglaSistema;
     private final String identificacaoServico;
-    private final UnidadeSei unidade;
     private static final Logger logger = LoggerFactory.getLogger(SEIWS.class);
 
     /**
@@ -59,16 +57,13 @@ public class SEIWS implements SEIPortType {
      *            o(a) sigla sistema.
      * @param identificacaoServico
      *            o(a) identificacao servico.
-     * @param unidade
-     *            o(a) unidade.
      * @param wsAddress
      *            o(a) ws address.
      */
-    public SEIWS(String siglaSistema, String identificacaoServico, UnidadeSei unidade, String wsAddress) {
+    public SEIWS(String siglaSistema, String identificacaoServico, String wsAddress) {
         this.seiPortType = getSeiService(wsAddress);
         this.siglaSistema = siglaSistema;
         this.identificacaoServico = identificacaoServico;
-        this.unidade = unidade;
     }
 
     private SeiPortType getSeiService(String wsAddress) {
@@ -90,8 +85,8 @@ public class SEIWS implements SEIPortType {
      * @return o retorno da geração do procedimento
      */
     @Override
-    public RetornoGeracaoProcedimento gerarProcedimento(Procedimento procedimento) {
-        return gerarProcedimento(procedimento, DOCUMENTOS_EMPTY, PROCEDIMENTO_RELACIONADOS_EMPTY, ID_UNIDADE_EMPTY, NAO, NAO, "", "", "");
+    public RetornoGeracaoProcedimento gerarProcedimento(UnidadeSei unidade, Procedimento procedimento) {
+        return gerarProcedimento(unidade, procedimento, DOCUMENTOS_EMPTY, PROCEDIMENTO_RELACIONADOS_EMPTY, ID_UNIDADE_EMPTY, NAO, NAO, "", "", "");
     }
 
     /**
@@ -118,7 +113,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de retorno geracao procedimento
      */
     @Override
-    public RetornoGeracaoProcedimento gerarProcedimento(Procedimento procedimento, ArrayOfDocumento documentos,
+    public RetornoGeracaoProcedimento gerarProcedimento(UnidadeSei unidade, Procedimento procedimento, ArrayOfDocumento documentos,
                                                         ArrayOfProcedimentoRelacionado procedimentosRelacionados,
                                                         ArrayOfIdUnidade unidadesEnvio, SimNao sinManterAbertoUnidade,
                                                         SimNao sinEnviarEmailNotificacao, String dataRetornoProgramado,
@@ -138,7 +133,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean reabrirProcesso(String protocoloProcedimento) {
+    public Boolean reabrirProcesso(UnidadeSei unidade, String protocoloProcedimento) {
         String retorno = seiPortType.reabrirProcesso(siglaSistema, identificacaoServico, unidade.getId(), protocoloProcedimento);
         return converterRetornoBooleano(retorno);
     }
@@ -151,7 +146,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of usuario
      */
     @Override
-    public List<Usuario> listarUsuarios(String idUsuario) {
+    public List<Usuario> listarUsuarios(UnidadeSei unidade, String idUsuario) {
         ArrayOfUsuario arrayOfUsuario = seiPortType.listarUsuarios(siglaSistema, identificacaoServico, unidade.getId(), idUsuario);
         if (arrayOfUsuario == null) {
             return Collections.emptyList();
@@ -162,15 +157,15 @@ public class SEIWS implements SEIPortType {
     /**
      * Faz a pesquisa de procedimento (processo) retornando apenas os dados
      * básicos. Para uma pesquisa mais abrangente utilizar
-     * {@link #consultarProcedimento(String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
+     * {@link #consultarProcedimento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
      *
      * @param protocoloProcedimento
      *            o(a) protocolo procedimento.
      * @return o valor de retorno consulta procedimento
      */
     @Override
-    public RetornoConsultaProcedimento consultarProcedimentoBasico(String protocoloProcedimento) {
-        return consultarProcedimento(protocoloProcedimento, NAO, NAO, NAO, NAO, NAO, NAO, NAO, NAO, NAO);
+    public RetornoConsultaProcedimento consultarProcedimentoBasico(UnidadeSei unidade, String protocoloProcedimento) {
+        return consultarProcedimento(unidade, protocoloProcedimento, NAO, NAO, NAO, NAO, NAO, NAO, NAO, NAO, NAO);
     }
 
     /**
@@ -199,7 +194,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de retorno consulta procedimento
      */
     @Override
-    public RetornoConsultaProcedimento consultarProcedimento(String protocoloProcedimento, SimNao sinRetornarAssuntos,
+    public RetornoConsultaProcedimento consultarProcedimento(UnidadeSei unidade, String protocoloProcedimento, SimNao sinRetornarAssuntos,
                                                              SimNao sinRetornarInteressados, SimNao sinRetornarObservacoes,
                                                              SimNao sinRetornarAndamentoGeracao, SimNao sinRetornarAndamentoConclusao,
                                                              SimNao sinRetornarUltimoAndamento, SimNao sinRetornarUnidadesProcedimentoAberto,
@@ -223,7 +218,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean atribuirProcesso(String protocoloProcedimento, String idUsuario, SimNao sinReabrir) {
+    public Boolean atribuirProcesso(UnidadeSei unidade, String protocoloProcedimento, String idUsuario, SimNao sinReabrir) {
         String retorno = seiPortType.atribuirProcesso(siglaSistema, identificacaoServico, unidade.getId(), protocoloProcedimento,
                 idUsuario, sinReabrir.getCodigo());
         return converterRetornoBooleano(retorno);
@@ -239,7 +234,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean incluirDocumentoBloco(String idBloco, String protocoloDocumento) {
+    public Boolean incluirDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento) {
         String retorno = seiPortType.incluirDocumentoBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco, protocoloDocumento, null);
         return converterRetornoBooleano(retorno);
     }
@@ -252,7 +247,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean concluirProcesso(String protocoloProcedimento) {
+    public Boolean concluirProcesso(UnidadeSei unidade, String protocoloProcedimento) {
         String retorno = seiPortType.concluirProcesso(siglaSistema, identificacaoServico, unidade.getId(), protocoloProcedimento);
         return converterRetornoBooleano(retorno);
     }
@@ -265,7 +260,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean cancelarDisponibilizacaoBloco(String idBloco) {
+    public Boolean cancelarDisponibilizacaoBloco(UnidadeSei unidade, String idBloco) {
         String retorno = seiPortType.cancelarDisponibilizacaoBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco);
         return converterRetornoBooleano(retorno);
     }
@@ -284,7 +279,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of unidade
      */
     @Override
-    public List<Unidade> listarUnidades(String siglaSistema1, String identificacaoServico1, String idTipoProcedimento, String idSerie) {
+    public List<Unidade> listarUnidades(UnidadeSei unidade, String siglaSistema1, String identificacaoServico1, String idTipoProcedimento, String idSerie) {
         return seiPortType.listarUnidades(siglaSistema1, identificacaoServico1, idTipoProcedimento, idSerie).getItem();
     }
 
@@ -296,7 +291,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of serie
      */
     @Override
-    public List<Serie> listarSeries(String idTipoProcedimento) {
+    public List<Serie> listarSeries(UnidadeSei unidade, String idTipoProcedimento) {
         ArrayOfSerie arrayOfSerie = seiPortType.listarSeries(siglaSistema, identificacaoServico, unidade.getId(), idTipoProcedimento);
         if (arrayOfSerie == null) {
             return Collections.emptyList();
@@ -312,7 +307,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean excluirBloco(String idBloco) {
+    public Boolean excluirBloco(UnidadeSei unidade, String idBloco) {
         String retorno = seiPortType.excluirBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco);
         return converterRetornoBooleano(retorno);
     }
@@ -325,7 +320,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean disponibilizarBloco(String idBloco) {
+    public Boolean disponibilizarBloco(UnidadeSei unidade, String idBloco) {
         String retorno = seiPortType.disponibilizarBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco);
         return converterRetornoBooleano(retorno);
     }
@@ -340,7 +335,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean incluirProcessoBloco(String idBloco, String protocoloProcedimento) {
+    public Boolean incluirProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento) {
         String retorno = seiPortType.incluirProcessoBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco, protocoloProcedimento, null);
         return converterRetornoBooleano(retorno);
     }
@@ -353,12 +348,12 @@ public class SEIWS implements SEIPortType {
      * @return o valor de retorno inclusao documento
      */
     @Override
-    public RetornoInclusaoDocumento incluirDocumento(Documento documento) {
+    public RetornoInclusaoDocumento incluirDocumento(UnidadeSei unidade, Documento documento) {
         return seiPortType.incluirDocumento(siglaSistema, identificacaoServico, unidade.getId(), documento);
     }
 
     @Override
-    public String adicionarArquivo(String nome, String tamanho, String hash, String conteudo) {
+    public String adicionarArquivo(UnidadeSei unidade, String nome, String tamanho, String hash, String conteudo) {
         return seiPortType.adicionarArquivo(siglaSistema, identificacaoServico, unidade.getId(), nome, tamanho, hash, conteudo);
     }
 
@@ -378,7 +373,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de string
      */
     @Override
-    public String gerarBloco(TipoBlocoEnum tipoBlocoEnum, String descricao, ArrayOfIdUnidade unidadesDisponibilizacao,
+    public String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao, ArrayOfIdUnidade unidadesDisponibilizacao,
                              ArrayOfDocumentoFormatado documentos, SimNao sinDisponibilizar) {
         return seiPortType.gerarBloco(siglaSistema, identificacaoServico, unidade.getId(), tipoBlocoEnum.getSigla(), descricao,
                 unidadesDisponibilizacao, documentos, sinDisponibilizar.getCodigo());
@@ -395,8 +390,8 @@ public class SEIWS implements SEIPortType {
      * @return o valor de string
      */
     @Override
-    public String gerarBloco(TipoBlocoEnum tipoBlocoEnum, String descricao) {
-        return gerarBloco(tipoBlocoEnum, descricao, ID_UNIDADE_EMPTY, ConstantesSEI.DOCUMENTOS_FORMATADOS_EMPTY, SimNao.NAO);
+    public String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao) {
+        return gerarBloco(unidade, tipoBlocoEnum, descricao, ID_UNIDADE_EMPTY, ConstantesSEI.DOCUMENTOS_FORMATADOS_EMPTY, SimNao.NAO);
     }
 
     /**
@@ -417,7 +412,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de retorno consulta documento
      */
     @Override
-    public RetornoConsultaDocumento consultarDocumento(String protocoloDocumento, SimNao sinRetornarAndamentoGeracao,
+    public RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento, SimNao sinRetornarAndamentoGeracao,
                                                        SimNao sinRetornarAssinaturas, SimNao sinRetornarPublicacao, SimNao sinRetornarCampos) {
         return seiPortType.consultarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento,
                 sinRetornarAndamentoGeracao.getCodigo(), sinRetornarAssinaturas.getCodigo(),
@@ -426,15 +421,15 @@ public class SEIWS implements SEIPortType {
 
     /**
      * Consultar documento da forma mais simples, caso seja necessária
-     * uma consulta mais completa utilizar {@link #consultarDocumento(String, SimNao, SimNao, SimNao, SimNao)} .
+     * uma consulta mais completa utilizar {@link #consultarDocumento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao)} .
      *
      * @param protocoloDocumento
      *            o(a) protocolo documento.
      * @return o valor de retorno consulta documento
      */
     @Override
-    public RetornoConsultaDocumento consultarDocumento(String protocoloDocumento) {
-        return consultarDocumento(protocoloDocumento, SimNao.NAO, SimNao.NAO, SimNao.NAO, SimNao.NAO);
+    public RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento) {
+        return consultarDocumento(unidade, protocoloDocumento, SimNao.NAO, SimNao.NAO, SimNao.NAO, SimNao.NAO);
     }
 
     /**
@@ -444,13 +439,13 @@ public class SEIWS implements SEIPortType {
      * @return o(a) retorno consulta documento
      */
     @Override
-    public RetornoConsultaDocumento consultarDocumentoPublicacao(String protocoloDocumento) {
-        return consultarDocumento(protocoloDocumento, SimNao.NAO, SimNao.NAO, SimNao.SIM, SimNao.NAO);
+    public RetornoConsultaDocumento consultarDocumentoPublicacao(UnidadeSei unidade, String protocoloDocumento) {
+        return consultarDocumento(unidade, protocoloDocumento, SimNao.NAO, SimNao.NAO, SimNao.SIM, SimNao.NAO);
     }
 
     @Override
-    public RetornoConsultaDocumento consultarDocumentoAssinatura(String protocoloDocumento) {
-        return consultarDocumento(protocoloDocumento, SimNao.NAO, SimNao.SIM, SimNao.NAO, SimNao.NAO);
+    public RetornoConsultaDocumento consultarDocumentoAssinatura(UnidadeSei unidade, String protocoloDocumento) {
+        return consultarDocumento(unidade, protocoloDocumento, SimNao.NAO, SimNao.SIM, SimNao.NAO, SimNao.NAO);
     }
 
     /**
@@ -471,7 +466,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean enviarProcesso(String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
+    public Boolean enviarProcesso(UnidadeSei unidade, String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
                                   SimNao sinManterAbertoUnidade, SimNao sinRemoverAnotacao, SimNao sinEnviarEmailNotificacao,
                                   String dataRetornoProgramado, String diasRetornoProgramado) {
         String retorno = seiPortType.enviarProcesso(siglaSistema, identificacaoServico, unidade.getId(), protocoloProcedimento,
@@ -490,7 +485,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean retirarDocumentoBloco(String idBloco, String protocoloDocumento) {
+    public Boolean retirarDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento) {
         String retorno = seiPortType.retirarDocumentoBloco(siglaSistema, identificacaoServico, unidade.getId(),
                 idBloco, protocoloDocumento);
         return converterRetornoBooleano(retorno);
@@ -506,7 +501,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de boolean
      */
     @Override
-    public Boolean retirarProcessoBloco(String idBloco, String protocoloProcedimento) {
+    public Boolean retirarProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento) {
         String retorno = seiPortType.retirarProcessoBloco(siglaSistema, identificacaoServico, unidade.getId(),
                 idBloco, protocoloProcedimento);
         return converterRetornoBooleano(retorno);
@@ -520,7 +515,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of arquivo extensao
      */
     @Override
-    public List<ArquivoExtensao> listarExtensoesPermitidas(String idArquivoExtensao) {
+    public List<ArquivoExtensao> listarExtensoesPermitidas(UnidadeSei unidade, String idArquivoExtensao) {
         ArrayOfArquivoExtensao arrayOfArquivoExtensao = seiPortType.listarExtensoesPermitidas(siglaSistema, identificacaoServico, unidade.getId(), idArquivoExtensao);
         if (arrayOfArquivoExtensao == null) {
             return Collections.emptyList();
@@ -536,7 +531,7 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of tipo procedimento
      */
     @Override
-    public List<TipoProcedimento> listarTiposProcedimento(String idSerie) {
+    public List<TipoProcedimento> listarTiposProcedimento(UnidadeSei unidade, String idSerie) {
         ArrayOfTipoProcedimento arrayOfTipoProcedimento = seiPortType.listarTiposProcedimento(siglaSistema, identificacaoServico, unidade.getId(), idSerie);
         if (arrayOfTipoProcedimento == null) {
             return Collections.emptyList();
@@ -561,12 +556,12 @@ public class SEIWS implements SEIPortType {
     }
 
     @Override
-	public RetornoConsultaBloco consultarBloco(String idBloco) {
+	public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco) {
         return seiPortType.consultarBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco, SimNao.SIM.getCodigo());
 	}
 
 	@Override
-	public String cancelarDocumento(String protocoloDocumento, String motivo) {
+	public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo) {
 		return seiPortType.cancelarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento, motivo);
 
 	}
