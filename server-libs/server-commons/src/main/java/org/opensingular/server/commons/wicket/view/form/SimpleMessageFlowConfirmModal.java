@@ -17,6 +17,8 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.model.IModel;
+import org.opensingular.form.SInstance;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -35,4 +37,9 @@ public class SimpleMessageFlowConfirmModal<PE extends PetitionEntity, PI extends
         modalBorder.add(new Label("flow-msg", String.format("Tem certeza que deseja %s ?", getTransition())));
     }
 
+    @Override
+    protected void onConfirm(String transitionName, IModel<? extends SInstance> instanceModel) {
+        super.onConfirm(transitionName, instanceModel);
+        getFormPage().onConfirmTransition(transitionName, instanceModel);
+    }
 }

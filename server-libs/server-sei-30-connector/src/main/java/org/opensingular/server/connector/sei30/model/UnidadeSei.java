@@ -1,6 +1,8 @@
 package org.opensingular.server.connector.sei30.model;
 
-public class UnidadeSei {
+import java.io.Serializable;
+
+public class UnidadeSei implements Serializable {
 
     private final String id;
     private final String nome;

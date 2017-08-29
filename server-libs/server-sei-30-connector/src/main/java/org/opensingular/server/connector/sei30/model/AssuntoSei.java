@@ -1,6 +1,8 @@
 package org.opensingular.server.connector.sei30.model;
 
-public class AssuntoSei {
+import java.io.Serializable;
+
+public class AssuntoSei implements Serializable {
 
     private String sigla;
     private String nome;

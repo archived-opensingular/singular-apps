@@ -2,6 +2,7 @@ package org.opensingular.server.connector.sei30;
 
 import org.opensingular.server.connector.sei30.model.SimNao;
 import org.opensingular.server.connector.sei30.model.TipoBlocoEnum;
+import org.opensingular.server.connector.sei30.model.UnidadeSei;
 import org.opensingular.server.connector.sei30.ws.ArquivoExtensao;
 import org.opensingular.server.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.server.connector.sei30.ws.ArrayOfDocumentoFormatado;
@@ -19,7 +20,6 @@ import org.opensingular.server.connector.sei30.ws.TipoProcedimento;
 import org.opensingular.server.connector.sei30.ws.Unidade;
 import org.opensingular.server.connector.sei30.ws.Usuario;
 
-import javax.activation.DataHandler;
 import java.util.List;
 
 /**
@@ -33,7 +33,7 @@ public interface SEIPortType {
      * @param procedimento procedimento a ser inserido
      * @return o retorno da geração do procedimento
      */
-    RetornoGeracaoProcedimento gerarProcedimento(Procedimento procedimento);
+    RetornoGeracaoProcedimento gerarProcedimento(UnidadeSei unidade, Procedimento procedimento);
 
     /**
      * Gerar procedimento.
@@ -58,7 +58,7 @@ public interface SEIPortType {
      *            o texto do marcador
      * @return o valor de retorno geracao procedimento
      */
-    RetornoGeracaoProcedimento gerarProcedimento(Procedimento procedimento, ArrayOfDocumento documentos,
+    RetornoGeracaoProcedimento gerarProcedimento(UnidadeSei unidade, Procedimento procedimento, ArrayOfDocumento documentos,
                                                  ArrayOfProcedimentoRelacionado procedimentosRelacionados,
                                                  ArrayOfIdUnidade unidadesEnvio, SimNao sinManterAbertoUnidade,
                                                  SimNao sinEnviarEmailNotificacao, String dataRetornoProgramado,
@@ -71,7 +71,7 @@ public interface SEIPortType {
      *            o(a) protocolo procedimento.
      * @return o valor de boolean
      */
-    Boolean reabrirProcesso(String protocoloProcedimento);
+    Boolean reabrirProcesso(UnidadeSei unidade, String protocoloProcedimento);
 
     /**
      * Listar usuarios.
@@ -80,18 +80,18 @@ public interface SEIPortType {
      *            o(a) id usuario.
      * @return o valor de array of usuario
      */
-    List<Usuario> listarUsuarios(String idUsuario);
+    List<Usuario> listarUsuarios(UnidadeSei unidade, String idUsuario);
 
     /**
      * Faz a pesquisa de procedimento (processo) retornando apenas os dados
      * básicos. Para uma pesquisa mais abrangente utilizar
-     * {@link #consultarProcedimento(String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
+     * {@link #consultarProcedimento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
      *
      * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     *            o(UnidadeSei unidade, a) protocolo procedimento.
      * @return o valor de retorno consulta procedimento
      */
-    RetornoConsultaProcedimento consultarProcedimentoBasico(String protocoloProcedimento);
+    RetornoConsultaProcedimento consultarProcedimentoBasico(UnidadeSei unidade, String protocoloProcedimento);
 
     /**
      * Consultar procedimento.
@@ -118,7 +118,7 @@ public interface SEIPortType {
      *            o(a) sin retornar procedimentos anexados.
      * @return o valor de retorno consulta procedimento
      */
-    RetornoConsultaProcedimento consultarProcedimento(String protocoloProcedimento, SimNao sinRetornarAssuntos,
+    RetornoConsultaProcedimento consultarProcedimento(UnidadeSei unidade, String protocoloProcedimento, SimNao sinRetornarAssuntos,
                                                       SimNao sinRetornarInteressados, SimNao sinRetornarObservacoes,
                                                       SimNao sinRetornarAndamentoGeracao, SimNao sinRetornarAndamentoConclusao,
                                                       SimNao sinRetornarUltimoAndamento, SimNao sinRetornarUnidadesProcedimentoAberto,
@@ -135,7 +135,7 @@ public interface SEIPortType {
      *            o(a) sin reabrir.
      * @return o valor de boolean
      */
-    Boolean atribuirProcesso(String protocoloProcedimento, String idUsuario, SimNao sinReabrir);
+    Boolean atribuirProcesso(UnidadeSei unidade, String protocoloProcedimento, String idUsuario, SimNao sinReabrir);
 
     /**
      * Incluir documento bloco.
@@ -146,7 +146,7 @@ public interface SEIPortType {
      *            o(a) protocolo documento.
      * @return o valor de boolean
      */
-    Boolean incluirDocumentoBloco(String idBloco, String protocoloDocumento);
+    Boolean incluirDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento);
 
     /**
      * Concluir processo.
@@ -155,7 +155,7 @@ public interface SEIPortType {
      *            o(a) protocolo procedimento.
      * @return o valor de boolean
      */
-    Boolean concluirProcesso(String protocoloProcedimento);
+    Boolean concluirProcesso(UnidadeSei unidade, String protocoloProcedimento);
 
     /**
      * Cancelar disponibilizacao bloco.
@@ -164,7 +164,7 @@ public interface SEIPortType {
      *            o(a) id bloco.
      * @return o valor de boolean
      */
-    Boolean cancelarDisponibilizacaoBloco(String idBloco);
+    Boolean cancelarDisponibilizacaoBloco(UnidadeSei unidade, String idBloco);
 
     /**
      * Listar unidades.
@@ -179,7 +179,7 @@ public interface SEIPortType {
      *            o(a) id serie.
      * @return o valor de array of unidade
      */
-    List<Unidade> listarUnidades(String siglaSistema, String identificacaoServico, String idTipoProcedimento, String idSerie);
+    List<Unidade> listarUnidades(UnidadeSei unidade, String siglaSistema, String identificacaoServico, String idTipoProcedimento, String idSerie);
 
     /**
      * Listar series.
@@ -188,7 +188,7 @@ public interface SEIPortType {
      *            o(a) id tipo procedimento.
      * @return o valor de array of serie
      */
-    List<Serie> listarSeries(String idTipoProcedimento);
+    List<Serie> listarSeries(UnidadeSei unidade, String idTipoProcedimento);
 
     /**
      * Excluir bloco.
@@ -197,7 +197,7 @@ public interface SEIPortType {
      *            o(a) id bloco.
      * @return o valor de boolean
      */
-    Boolean excluirBloco(String idBloco);
+    Boolean excluirBloco(UnidadeSei unidade, String idBloco);
 
     /**
      * Disponibilizar bloco.
@@ -206,7 +206,7 @@ public interface SEIPortType {
      *            o(a) id bloco.
      * @return o valor de boolean
      */
-    Boolean disponibilizarBloco(String idBloco);
+    Boolean disponibilizarBloco(UnidadeSei unidade, String idBloco);
 
     /**
      * Incluir processo bloco.
@@ -217,7 +217,7 @@ public interface SEIPortType {
      *            o(a) protocolo procedimento.
      * @return o valor de boolean
      */
-    Boolean incluirProcessoBloco(String idBloco, String protocoloProcedimento);
+    Boolean incluirProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento);
 
     /**
      * Incluir documento.
@@ -226,9 +226,9 @@ public interface SEIPortType {
      *            o(a) documento.
      * @return o valor de retorno inclusao documento
      */
-    RetornoInclusaoDocumento incluirDocumento(Documento documento);
+    RetornoInclusaoDocumento incluirDocumento(UnidadeSei unidade, Documento documento);
 
-    String adicionarArquivo(String nome, String tamanho, String hash, String conteudo);
+    String adicionarArquivo(UnidadeSei unidade, String nome, String tamanho, String hash, String conteudo);
 
     /**
      * Gerar bloco.
@@ -245,7 +245,7 @@ public interface SEIPortType {
      *            o(a) sin disponibilizar.
      * @return o valor de string
      */
-    String gerarBloco(TipoBlocoEnum tipoBlocoEnum, String descricao, ArrayOfIdUnidade unidadesDisponibilizacao,
+    String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao, ArrayOfIdUnidade unidadesDisponibilizacao,
                       ArrayOfDocumentoFormatado documentos, SimNao sinDisponibilizar);
 
     /**
@@ -258,7 +258,7 @@ public interface SEIPortType {
      *            o(a) descricao.
      * @return o valor de string
      */
-    String gerarBloco(TipoBlocoEnum tipoBlocoEnum, String descricao);
+    String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao);
 
     /**
      * Consultar documento, utilize os atributos adicionais
@@ -276,18 +276,18 @@ public interface SEIPortType {
      * @param sinRetornarCampos
      * @return o valor de retorno consulta documento
      */
-    RetornoConsultaDocumento consultarDocumento(String protocoloDocumento, SimNao sinRetornarAndamentoGeracao,
+    RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento, SimNao sinRetornarAndamentoGeracao,
                                                 SimNao sinRetornarAssinaturas, SimNao sinRetornarPublicacao, SimNao sinRetornarCampos);
 
     /**
      * Consultar documento da forma mais simples, caso seja necessária
-     * uma consulta mais completa utilizar {@link #consultarDocumento(String, SimNao, SimNao, SimNao, SimNao)} .
+     * uma consulta mais completa utilizar {@link #consultarDocumento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao)} .
      *
      * @param protocoloDocumento
      *            o(a) protocolo documento.
      * @return o valor de retorno consulta documento
      */
-    RetornoConsultaDocumento consultarDocumento(String protocoloDocumento);
+    RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento);
 
     /**
      * Consultar documento retornando dados de publicacao.
@@ -295,7 +295,7 @@ public interface SEIPortType {
      * @param protocoloDocumento o(a) protocolo documento
      * @return o(a) retorno consulta documento
      */
-    RetornoConsultaDocumento consultarDocumentoPublicacao(String protocoloDocumento);
+    RetornoConsultaDocumento consultarDocumentoPublicacao(UnidadeSei unidade, String protocoloDocumento);
 
     /**
      * Consultar documento retornando dados de assinatura.
@@ -303,7 +303,7 @@ public interface SEIPortType {
      * @param protocoloDocumento o(a) protocolo documento
      * @return o(a) retorno consulta documento
      */
-    RetornoConsultaDocumento consultarDocumentoAssinatura(String protocoloDocumento);
+    RetornoConsultaDocumento consultarDocumentoAssinatura(UnidadeSei unidade, String protocoloDocumento);
 
     /**
      * Enviar processo.
@@ -322,9 +322,9 @@ public interface SEIPortType {
      *            o(a) data retorno programado.
      * @return o valor de boolean
      */
-    Boolean enviarProcesso(String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
+    Boolean enviarProcesso(UnidadeSei unidade, String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
                            SimNao sinManterAbertoUnidade, SimNao sinRemoverAnotacao, SimNao sinEnviarEmailNotificacao,
-                           String dataRetornoProgramado);
+                           String dataRetornoProgramado, String diasRetornoProgramado);
 
     /**
      * Retirar documento bloco.
@@ -335,7 +335,7 @@ public interface SEIPortType {
      *            o(a) protocolo documento.
      * @return o valor de boolean
      */
-    Boolean retirarDocumentoBloco(String idBloco, String protocoloDocumento);
+    Boolean retirarDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento);
 
     /**
      * Retirar processo bloco.
@@ -346,7 +346,7 @@ public interface SEIPortType {
      *            o(a) protocolo procedimento.
      * @return o valor de boolean
      */
-    Boolean retirarProcessoBloco(String idBloco, String protocoloProcedimento);
+    Boolean retirarProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento);
 
     /**
      * Listar extensoes permitidas.
@@ -355,7 +355,7 @@ public interface SEIPortType {
      *            o(a) id arquivo extensao.
      * @return o valor de array of arquivo extensao
      */
-    List<ArquivoExtensao> listarExtensoesPermitidas(String idArquivoExtensao);
+    List<ArquivoExtensao> listarExtensoesPermitidas(UnidadeSei unidade, String idArquivoExtensao);
 
     /**
      * Listar tipos procedimento.
@@ -364,7 +364,7 @@ public interface SEIPortType {
      *            o(a) id serie.
      * @return o valor de array of tipo procedimento
      */
-    List<TipoProcedimento> listarTiposProcedimento(String idSerie);
+    List<TipoProcedimento> listarTiposProcedimento(UnidadeSei unidade, String idSerie);
 
 
 	/**
@@ -375,7 +375,7 @@ public interface SEIPortType {
 	 * @return o retorno da consulta de bloco
 	 * 
 	 */
-	public RetornoConsultaBloco consultarBloco(String idBloco);
+	public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco);
 
 	/**
 	 * Cancelamento de documentos
@@ -386,7 +386,7 @@ public interface SEIPortType {
 	 *            - o(a) protocolo do documento
 	 * @return - O retorno do cancelamento do documento
 	 */
-	public String cancelarDocumento(String protocoloDocumento, String motivo);
+	public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo);
 
 
 }

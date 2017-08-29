@@ -1091,4 +1091,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     public Map<String, STypeBasedFlowConfirmModal<?, ?>> getTransitionConfirmModalMap() {
         return transitionConfirmModalMap;
     }
+
+    public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
+
+    }
 }
