@@ -19,11 +19,10 @@ package org.opensingular.server.p.commons;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.cache.ClassTemplateLoader;
-import freemarker.ext.beans.BeansWrapper;
-import freemarker.ext.beans.BeansWrapperBuilder;
 import freemarker.template.Configuration;
 import freemarker.template.Version;
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.form.SInstance;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.internal.freemarker.FormObjectWrapper;
 import org.opensingular.lib.commons.context.SingularContext;
@@ -37,6 +36,8 @@ import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import static freemarker.template.Configuration.VERSION_2_3_22;
 
@@ -82,7 +83,20 @@ public class PServerFreeMarkerUtil implements Loggable {
         }
 
         final StringWriter sw = new StringWriter();
-        final Map map = new ObjectMapper().convertValue(model, Map.class);
+
+        Predicate<Map.Entry<String, Object>> isInstance = (entry) -> SInstance.class.isAssignableFrom(entry.getValue().getClass());
+
+        Map<String, Object> instances = model.entrySet()
+                .stream().filter(isInstance)
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        Map<String, Object> pojos = model.entrySet()
+                .stream().filter(isInstance.negate())
+                .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+
+        final Map map = new ObjectMapper().convertValue(pojos, Map.class);
+
+        map.putAll(instances);
 
         try {
             cfg.getTemplate(templateName).process(encode(map), sw, new FormObjectWrapper(false));
