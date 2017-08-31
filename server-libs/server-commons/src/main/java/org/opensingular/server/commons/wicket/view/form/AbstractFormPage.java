@@ -284,6 +284,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         currentModel.setObject(petition);
 
         fillTransitionControllerMap(transitionControllerMap);
+        SingularSpringInjector.get().injectAll(transitionControllerMap.values());
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
         singularFormPanel.setViewMode(getViewMode(config));
