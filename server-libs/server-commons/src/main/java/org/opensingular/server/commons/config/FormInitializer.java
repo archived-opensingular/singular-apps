@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,6 +57,7 @@ public class FormInitializer {
             SingularClassPathScanner.get()
                     .findSubclassesOf(SType.class)
                     .stream()
+                    .filter(f -> !Modifier.isAbstract(f.getModifiers()))
                     .forEach(f -> types.add((Class<? extends SType<?>>) f));
         }
         return types;
