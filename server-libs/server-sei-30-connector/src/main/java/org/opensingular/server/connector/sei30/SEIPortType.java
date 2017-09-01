@@ -169,17 +169,13 @@ public interface SEIPortType {
     /**
      * Listar unidades.
      *
-     * @param siglaSistema
-     *            o(a) sigla sistema.
-     * @param identificacaoServico
-     *            o(a) identificacao servico.
      * @param idTipoProcedimento
      *            o(a) id tipo procedimento.
      * @param idSerie
      *            o(a) id serie.
      * @return o valor de array of unidade
      */
-    List<Unidade> listarUnidades(UnidadeSei unidade, String siglaSistema, String identificacaoServico, String idTipoProcedimento, String idSerie);
+    List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie);
 
     /**
      * Listar series.

@@ -268,10 +268,6 @@ public class SEIWS implements SEIPortType {
     /**
      * Listar unidades.
      *
-     * @param siglaSistema1
-     *            o(a) sigla sistema.
-     * @param identificacaoServico1
-     *            o(a) identificacao servico.
      * @param idTipoProcedimento
      *            o(a) id tipo procedimento.
      * @param idSerie
@@ -279,8 +275,8 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of unidade
      */
     @Override
-    public List<Unidade> listarUnidades(UnidadeSei unidade, String siglaSistema1, String identificacaoServico1, String idTipoProcedimento, String idSerie) {
-        return seiPortType.listarUnidades(siglaSistema1, identificacaoServico1, idTipoProcedimento, idSerie).getItem();
+    public List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie) {
+        return seiPortType.listarUnidades(siglaSistema, identificacaoServico, idTipoProcedimento, idSerie).getItem();
     }
 
     /**
