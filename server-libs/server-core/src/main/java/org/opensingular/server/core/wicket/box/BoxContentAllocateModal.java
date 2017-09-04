@@ -30,8 +30,8 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.box.BoxItemDataMap;
+import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
-import org.opensingular.server.core.service.BoxService;
 
 import javax.inject.Inject;
 import java.util.List;
@@ -42,7 +42,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     private final IModel<ModuleEntity> moduleEntity;
 
     @Inject
-    private BoxService boxService;
+    private ModuleConnector moduleConnector;
 
     protected DropDownChoice<Actor> usersDropDownChoice;
 
@@ -69,8 +69,8 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     }
 
     private void addUsersDropDownChoice() {
-        IModel<List<Actor>> actorsModel = $m.get(() -> boxService.buscarUsuarios(moduleEntity.getObject(),
-                dataModel, itemAction.getConfirmation()));
+        IModel<List<Actor>> actorsModel = $m.get(() -> moduleConnector.buscarUsuarios(moduleEntity.getObject(),
+                dataModel.getObject(), itemAction.getConfirmation()));
         usersDropDownChoice = new DropDownChoice<>("usersDropDownChoice",
                 new Model<>(),
                 actorsModel,

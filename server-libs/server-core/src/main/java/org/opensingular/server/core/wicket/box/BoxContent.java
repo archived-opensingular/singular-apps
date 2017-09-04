@@ -42,11 +42,11 @@ import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
+import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.*;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
-import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 
 import javax.inject.Inject;
@@ -60,7 +60,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
     @Inject
-    private BoxService boxService;
+    private ModuleConnector moduleConnector;
 
     private Pair<String, SortOrder> sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
@@ -251,7 +251,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(String url, Object arg) {
-        ActionResponse response = boxService.callModule(url, arg, ActionResponse.class);
+        ActionResponse response = moduleConnector.callModule(url, arg, ActionResponse.class);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -378,7 +378,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return boxService.quickSearch(getModule(), getItemBoxModelObject(), filter);
+        return moduleConnector.quickSearch(getModule(), getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -394,7 +394,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return boxService.countQuickSearch(getModule(), getItemBoxModelObject(), filter);
+        return moduleConnector.countQuickSearch(getModule(), getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

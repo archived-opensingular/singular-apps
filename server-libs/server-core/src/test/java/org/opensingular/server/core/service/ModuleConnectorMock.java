@@ -1,31 +1,28 @@
 package org.opensingular.server.core.service;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.inject.Named;
-
-import org.apache.wicket.model.IModel;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionResponse;
+import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.springframework.context.annotation.Primary;
 
+import javax.inject.Named;
+import java.io.Serializable;
+import java.util.*;
+
 @Primary
 @Named
-public class BoxServiceMock extends BoxService {
+public class ModuleConnectorMock implements ModuleConnector {
 
     @Override
-    public List<Actor> buscarUsuarios(ModuleEntity module, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
+    public List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation) {
         Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
         return Collections.singletonList(actor);
     }
@@ -34,6 +31,16 @@ public class BoxServiceMock extends BoxService {
     public <T extends ActionResponse> T callModule(String url, Object arg, Class<T> clazz) {
         ActionResponse response = new ActionResponse("Sucesso", true);
         return clazz.cast(response);
+    }
+
+    @Override
+    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext) {
+        return null;
+    }
+
+    @Override
+    public String count(ItemBox itemBoxDTO, List<String> siglas, String idUsuarioLogado, ModuleEntity module) {
+        return null;
     }
 
     @Override
@@ -56,10 +63,11 @@ public class BoxServiceMock extends BoxService {
         return result;
     }
 
+
     private BoxItemDataMap createItem(String codPeticao, String description, String situation, String processName,
-                                    String creationDate, String type, String processType, String situationBeginDate,
-                                    String processBeginDate, String editionDate, String processInstanceId, String rootPetition,
-                                    String parentPetition) {
+                                      String creationDate, String type, String processType, String situationBeginDate,
+                                      String processBeginDate, String editionDate, String processInstanceId, String rootPetition,
+                                      String parentPetition) {
         Map<String, Serializable> item = new HashMap<>();
         item.put("codPeticao", codPeticao);
         item.put("description", description);
