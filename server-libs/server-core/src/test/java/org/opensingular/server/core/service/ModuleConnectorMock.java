@@ -10,6 +10,7 @@ import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.springframework.context.annotation.Primary;
@@ -29,10 +30,11 @@ public class ModuleConnectorMock implements ModuleConnector {
     }
 
     @Override
-    public ActionResponse callModule(String url, ActionRequest arg) {
+    public ActionResponse callModule(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
         ActionResponse response = new ActionResponse("Sucesso", true);
         return ActionResponse.class.cast(response);
     }
+
 
     @Override
     public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext) {

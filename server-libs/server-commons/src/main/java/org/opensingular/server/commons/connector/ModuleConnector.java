@@ -8,10 +8,12 @@ import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ModuleConnector {
 
@@ -25,6 +27,6 @@ public interface ModuleConnector {
 
     List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation);
 
-    ActionResponse callModule(String actionURI, ActionRequest actionRequest);
+    ActionResponse callModule(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest);
 
 }

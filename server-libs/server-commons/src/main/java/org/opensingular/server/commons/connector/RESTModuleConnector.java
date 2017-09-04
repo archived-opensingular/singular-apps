@@ -10,6 +10,7 @@ import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
@@ -20,6 +21,7 @@ import javax.inject.Named;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.RESTPaths.*;
@@ -106,8 +108,22 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public ActionResponse callModule(String url, ActionRequest arg) {
-        return new RestTemplate().postForObject(url, arg, ActionResponse.class);
+    public ActionResponse callModule(ModuleEntity moduleEntity, BoxItemAction itemAction,
+                                     Map<String, String> params, ActionRequest actionRequest) {
+        String url = moduleEntity.getConnectionURL()
+                + itemAction.getEndpoint()
+                + appendParameters(params);
+        return new RestTemplate().postForObject(url, actionRequest, ActionResponse.class);
+    }
+
+    private String appendParameters(Map<String, String> additionalParams) {
+        StringBuilder paramsValue = new StringBuilder();
+        if (!additionalParams.isEmpty()) {
+            for (Map.Entry<String, String> entry : additionalParams.entrySet()) {
+                paramsValue.append(String.format("&%s=%s", entry.getKey(), entry.getValue()));
+            }
+        }
+        return paramsValue.toString();
     }
 
 
