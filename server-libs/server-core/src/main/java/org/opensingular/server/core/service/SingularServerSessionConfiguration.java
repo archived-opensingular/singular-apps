@@ -9,7 +9,7 @@ import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.opensingular.server.core.connector.RESTModuleConnector;
+import org.opensingular.server.commons.RESTModuleConnector;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
