@@ -38,11 +38,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RetornoConsultaDocumento }
+     * 
+     */
+    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
+        return new RetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link Campo }
+     * 
+     */
+    public Campo createCampo() {
+        return new Campo();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfAssinante }
      * 
      */
     public ArrayOfAssinante createArrayOfAssinante() {
         return new ArrayOfAssinante();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfCampo }
+     * 
+     */
+    public ArrayOfCampo createArrayOfCampo() {
+        return new ArrayOfCampo();
     }
 
     /**
@@ -59,6 +83,22 @@ public class ObjectFactory {
      */
     public Assinante createAssinante() {
         return new Assinante();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfRetornoConsultaDocumento }
+     * 
+     */
+    public ArrayOfRetornoConsultaDocumento createArrayOfRetornoConsultaDocumento() {
+        return new ArrayOfRetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link Serie }
+     * 
+     */
+    public Serie createSerie() {
+        return new Serie();
     }
 
 }
