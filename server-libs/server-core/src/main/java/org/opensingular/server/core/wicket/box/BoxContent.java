@@ -234,7 +234,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    protected Object buildCallAtribuirObject(BoxItemAction boxAction, BoxItemDataMap boxItem, Actor actor) {
+    protected ActionRequest buildCallAtribuirObject(BoxItemAction boxAction, BoxItemDataMap boxItem, Actor actor) {
         ActionAtribuirRequest actionRequest = new ActionAtribuirRequest();
         actionRequest.setIdUsuario(getBoxPage().getIdUsuario());
         if (actor == null) {
@@ -250,8 +250,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return actionRequest;
     }
 
-    private void callModule(String url, Object arg) {
-        ActionResponse response = moduleConnector.callModule(url, arg, ActionResponse.class);
+    private void callModule(String url, ActionRequest arg) {
+        ActionResponse response = moduleConnector.callModule(url, arg);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -259,7 +259,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    private Object buildCallObject(BoxItemAction boxAction, BoxItemDataMap boxItem) {
+    private ActionRequest buildCallObject(BoxItemAction boxAction, BoxItemDataMap boxItem) {
         ActionRequest actionRequest = new ActionRequest();
         actionRequest.setIdUsuario(getBoxPage().getIdUsuario());
         if (boxAction.isUseExecute()) {

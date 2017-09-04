@@ -6,6 +6,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.BoxItemDataMap;
+import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -105,8 +106,8 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public <T extends ActionResponse> T callModule(String url, Object arg, Class<T> clazz) {
-        return new RestTemplate().postForObject(url, arg, clazz);
+    public ActionResponse callModule(String url, ActionRequest arg) {
+        return new RestTemplate().postForObject(url, arg, ActionResponse.class);
     }
 
 

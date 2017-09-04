@@ -4,6 +4,7 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataMap;
+import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -22,8 +23,8 @@ public interface ModuleConnector {
 
     List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter);
 
-    List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap  boxItemDataMap, ItemActionConfirmation confirmation);
+    List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation);
 
-    <T extends ActionResponse> T callModule(String url, Object arg, Class<T> clazz);
+    ActionResponse callModule(String actionURI, ActionRequest actionRequest);
 
 }

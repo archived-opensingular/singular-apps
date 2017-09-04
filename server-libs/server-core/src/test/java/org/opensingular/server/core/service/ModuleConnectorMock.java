@@ -5,6 +5,7 @@ import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
 import org.opensingular.server.commons.box.BoxItemDataMap;
+import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.connector.ModuleConnector;
@@ -28,9 +29,9 @@ public class ModuleConnectorMock implements ModuleConnector {
     }
 
     @Override
-    public <T extends ActionResponse> T callModule(String url, Object arg, Class<T> clazz) {
+    public ActionResponse callModule(String url, ActionRequest arg) {
         ActionResponse response = new ActionResponse("Sucesso", true);
-        return clazz.cast(response);
+        return ActionResponse.class.cast(response);
     }
 
     @Override
