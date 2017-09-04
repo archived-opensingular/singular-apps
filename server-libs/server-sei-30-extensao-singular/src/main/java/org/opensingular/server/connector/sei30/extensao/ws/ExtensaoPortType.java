@@ -36,14 +36,14 @@ public interface ExtensaoPortType {
     @WebMethod(action = "extensaons/assinarDocumento")
     @WebResult(name = "retorno", partName = "retorno")
     public String assinarDocumento(
-        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-        String siglaSistema,
-        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-        String identificacaoServico,
-        @WebParam(name = "IdUnidade", partName = "IdUnidade")
-        String idUnidade,
-        @WebParam(name = "DadosAssinatura", partName = "DadosAssinatura")
-        DadosAssinatura dadosAssinatura);
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico,
+            @WebParam(name = "IdUnidade", partName = "IdUnidade")
+                    String idUnidade,
+            @WebParam(name = "DadosAssinatura", partName = "DadosAssinatura")
+                    DadosAssinatura dadosAssinatura);
 
     /**
      * Listar assinantes por unidade
@@ -57,11 +57,33 @@ public interface ExtensaoPortType {
     @WebMethod(action = "extensaons/listarAssinantesPorUnidade")
     @WebResult(name = "retorno", partName = "retorno")
     public ArrayOfAssinante listarAssinantesPorUnidade(
-        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-        String siglaSistema,
-        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-        String identificacaoServico,
-        @WebParam(name = "IdUnidade", partName = "IdUnidade")
-        String idUnidade);
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico,
+            @WebParam(name = "IdUnidade", partName = "IdUnidade")
+                    String idUnidade);
+
+    /**
+     * Listar documentos por processo
+     * 
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param siglaSistema
+     * @param idProcedimento
+     * @return
+     *     returns org.opensingular.server.connector.sei30.extensao.ws.ArrayOfRetornoConsultaDocumento
+     */
+    @WebMethod(action = "extensaons/listarDocumentosPorProcedimento")
+    @WebResult(name = "retorno", partName = "retorno")
+    public ArrayOfRetornoConsultaDocumento listarDocumentosPorProcedimento(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico,
+            @WebParam(name = "IdUnidade", partName = "IdUnidade")
+                    String idUnidade,
+            @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
+                    String idProcedimento);
 
 }
