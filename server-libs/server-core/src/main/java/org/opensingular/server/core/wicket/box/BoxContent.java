@@ -38,6 +38,7 @@ import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
@@ -47,7 +48,6 @@ import org.opensingular.server.commons.service.dto.*;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
-import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 
 import javax.inject.Inject;
 import java.util.*;

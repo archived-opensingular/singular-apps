@@ -6,10 +6,10 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.opensingular.server.commons.RESTModuleConnector;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -19,11 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @Scope("session")
@@ -38,14 +34,14 @@ public class SingularServerSessionConfiguration implements Loggable {
     private SingularServerConfiguration singularServerConfiguration;
 
     @Inject
-    private RESTModuleConnector restModuleConnector;
+    private ModuleConnector rmoduleConnector;
 
     @PostConstruct
     public void init() {
         try {
             IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                configMaps.put(module, restModuleConnector.loadWorkspaceConfiguration(module, menuContext));
+                configMaps.put(module, rmoduleConnector.loadWorkspaceConfiguration(module, menuContext));
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);

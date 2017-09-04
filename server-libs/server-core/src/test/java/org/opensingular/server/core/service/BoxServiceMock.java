@@ -13,11 +13,11 @@ import org.apache.wicket.model.IModel;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.box.BoxItemDataImpl;
+import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 import org.springframework.context.annotation.Primary;
 
 @Primary
@@ -86,4 +86,6 @@ public class BoxServiceMock extends BoxService {
 
         return new BoxItemDataMap(i);
     }
+
+
 }

@@ -16,70 +16,41 @@
 
 package org.opensingular.server.core.service;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.inject.Named;
-
 import org.apache.wicket.model.IModel;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.box.BoxItemDataList;
+import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionResponse;
+import org.opensingular.server.commons.connector.ModuleConnector;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.core.wicket.model.BoxItemDataMap;
-import org.springframework.web.client.RestTemplate;
 
-import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 @Named
 public class BoxService implements Loggable {
 
+    @Inject
+    private ModuleConnector moduleConnector;
+
     @SuppressWarnings("unchecked")
     public List<Actor> buscarUsuarios(ModuleEntity module, IModel<BoxItemDataMap> currentModel, ItemActionConfirmation confirmation) {
-        final String connectionURL = module.getConnectionURL();
-        final String url           = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
-
-        try {
-            return Arrays.asList(new RestTemplate().postForObject(url, currentModel.getObject(), Actor[].class));
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
+        return moduleConnector.buscarUsuarios(module, currentModel.getObject(), confirmation);
     }
 
     public <T extends ActionResponse> T callModule(String url, Object arg, Class<T> clazz) {
-        return new RestTemplate().postForObject(url, arg, clazz);
+        return moduleConnector.callModule(url, arg, clazz);
     }
 
     public long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
-        final String connectionURL = module.getConnectionURL();
-        final String url           = connectionURL + itemBox.getCountEndpoint();
-        try {
-            return new RestTemplate().postForObject(url, filter, Long.class);
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return 0;
-        }
+        return moduleConnector.countQuickSearch(module, itemBox, filter);
     }
 
     public List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
-        final String connectionURL = module.getConnectionURL();
-        final String url           = connectionURL + itemBox.getSearchEndpoint();
-        try {
-            return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
-                    .getBoxItemDataList()
-                    .stream()
-                    .map(BoxItemDataMap::new)
-                    .collect(Collectors.toList());
-        } catch (Exception e) {
-            getLogger().error("Erro ao acessar serviço: " + url, e);
-            return Collections.emptyList();
-        }
+        return moduleConnector.quickSearch(module, itemBox, filter);
     }
 }

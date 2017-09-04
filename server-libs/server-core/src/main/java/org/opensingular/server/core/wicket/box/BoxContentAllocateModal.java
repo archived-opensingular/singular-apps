@@ -29,9 +29,9 @@ import org.apache.wicket.model.Model;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.core.service.BoxService;
-import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 
 import javax.inject.Inject;
 import java.util.List;

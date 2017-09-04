@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.core.wicket.model;
+package org.opensingular.server.commons.box;
 
-import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.BoxItemDataImpl;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
