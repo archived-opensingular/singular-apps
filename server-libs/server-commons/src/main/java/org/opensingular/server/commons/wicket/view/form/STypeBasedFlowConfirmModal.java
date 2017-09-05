@@ -77,7 +77,7 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         modal.hide(target);
                     }
-                }
+                }.setDefaultFormProcessing(false)
         );
     }
 

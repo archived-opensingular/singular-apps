@@ -8,12 +8,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DadosAssinatura complex type.
+ * <p>Java class for LoginInterno complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DadosAssinatura">
+ * &lt;complexType name="LoginInterno">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;all>
@@ -21,8 +21,6 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="IdContextoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/>
  *       &lt;/all>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,10 +30,10 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DadosAssinatura", propOrder = {
+@XmlType(name = "LoginInterno", propOrder = {
 
 })
-public class DadosAssinatura {
+public class LoginInterno {
 
     @XmlElement(name = "IdOrgaoUsuario")
     protected long idOrgaoUsuario;
@@ -45,10 +43,6 @@ public class DadosAssinatura {
     protected String siglaUsuario;
     @XmlElement(name = "SenhaUsuario", required = true)
     protected String senhaUsuario;
-    @XmlElement(name = "CargoFuncao", required = true)
-    protected String cargoFuncao;
-    @XmlElement(name = "IdsDocumento", required = true)
-    protected ArrayOfIdDocumento idsDocumento;
 
     /**
      * Gets the value of the idOrgaoUsuario property.
@@ -128,54 +122,6 @@ public class DadosAssinatura {
      */
     public void setSenhaUsuario(String value) {
         this.senhaUsuario = value;
-    }
-
-    /**
-     * Gets the value of the cargoFuncao property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCargoFuncao() {
-        return cargoFuncao;
-    }
-
-    /**
-     * Sets the value of the cargoFuncao property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCargoFuncao(String value) {
-        this.cargoFuncao = value;
-    }
-
-    /**
-     * Gets the value of the idsDocumento property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ArrayOfIdDocumento }
-     *     
-     */
-    public ArrayOfIdDocumento getIdsDocumento() {
-        return idsDocumento;
-    }
-
-    /**
-     * Sets the value of the idsDocumento property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ArrayOfIdDocumento }
-     *     
-     */
-    public void setIdsDocumento(ArrayOfIdDocumento value) {
-        this.idsDocumento = value;
     }
 
 }

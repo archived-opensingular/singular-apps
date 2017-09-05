@@ -31,7 +31,7 @@ public class FindActorByUserCodResultTransformer implements ResultTransformer {
                     actor.setCod(castToInteger(rawObject));
                     break;
                 case COD_USUARIO:
-                    actor.setCodUsuario((String) rawObject);
+                    actor.setCodUsuario(String.valueOf(rawObject));
                     break;
                 case NOME:
                     actor.setNome((String) rawObject);
