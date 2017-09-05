@@ -30,11 +30,15 @@ public class ModuleConnectorMock implements ModuleConnector {
     }
 
     @Override
-    public ActionResponse callModule(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
+    public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
         ActionResponse response = new ActionResponse("Sucesso", true);
         return ActionResponse.class.cast(response);
     }
 
+    @Override
+    public String mountStaticEndpoint(String baseURI, BoxItemAction itemAction, Map<String, String> params, BoxItemDataMap boxItemDataMap) {
+        return null;
+    }
 
     @Override
     public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext) {

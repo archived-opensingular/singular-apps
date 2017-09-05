@@ -108,8 +108,8 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public ActionResponse callModule(ModuleEntity moduleEntity, BoxItemAction itemAction,
-                                     Map<String, String> params, ActionRequest actionRequest) {
+    public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction,
+                                        Map<String, String> params, ActionRequest actionRequest) {
         String url = moduleEntity.getConnectionURL()
                 + itemAction.getEndpoint()
                 + appendParameters(params);
@@ -126,5 +126,16 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
         return paramsValue.toString();
     }
 
-
+    @Override
+    public String mountStaticEndpoint(String baseURI, BoxItemAction itemAction, Map<String, String> params, BoxItemDataMap boxItemDataMap) {
+        final BoxItemAction action = boxItemDataMap.getActionByName(itemAction.getName());
+        final String endpoint = action.getEndpoint();
+        if (endpoint.startsWith("http")) {
+            return endpoint;
+        } else {
+            return baseURI
+                    + endpoint
+                    + appendParameters(params);
+        }
+    }
 }

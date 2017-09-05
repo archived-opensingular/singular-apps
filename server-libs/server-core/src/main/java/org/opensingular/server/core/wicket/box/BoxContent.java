@@ -30,7 +30,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.commons.util.Loggable;
@@ -119,14 +118,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                         appendStaticAction(
                                 $m.ofValue(itemAction.getLabel()),
                                 itemAction.getIcon(),
-                                linkFunction(itemAction, getBaseUrl(), getLinkParams()),
+                                linkFunction(itemAction, getLinkParams()),
                                 visibleFunction(itemAction),
                                 c -> c.styleClasses($m.ofValue("worklist-action-btn")));
                     } else if (itemAction.getType() == ItemActionType.EXECUTE) {
                         appendAction(
                                 $m.ofValue(itemAction.getLabel()),
                                 itemAction.getIcon(),
-                                dynamicLinkFunction(itemAction, getModule(), getLinkParams()),
+                                dynamicLinkFunction(itemAction, getLinkParams()),
                                 visibleFunction(itemAction),
                                 c -> c.styleClasses($m.ofValue("worklist-action-btn")));
                     }
@@ -147,7 +146,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
-        BoxItemDataMap boxItem = boxItemModelObject(boxItemModel);
+        BoxItemDataMap boxItem = boxItemModel.getObject();
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
             pageParameters.add(PETITION_ID, boxItem.getCod());
@@ -164,49 +163,33 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return HistoryPage.class;
     }
 
-    public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams) {
+    public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String url = mountStaticUrl(itemAction, baseUrl, additionalParams, boxItemModel);
+            String url = moduleConnector.mountStaticEndpoint(getBaseUrl(), itemAction, additionalParams, boxItemModel.getObject());
             WebMarkupContainer link = new WebMarkupContainer(id);
-            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModelObject(boxItemModel).getCod())));
+            link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
             return link;
         };
     }
 
-    private BoxItemDataMap boxItemModelObject(IModel<BoxItemDataMap> boxItemModel) {
-        return boxItemModel.getObject();
-    }
-
-    private String mountStaticUrl(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, IModel<BoxItemDataMap> boxItemModel) {
-        final BoxItemAction action = boxItemModelObject(boxItemModel).getActionByName(itemAction.getName());
-        if (action.getEndpoint().startsWith("http")) {
-            return action.getEndpoint();
-        } else {
-            return baseUrl
-                    + action.getEndpoint()
-                    + appendParameters(additionalParams);
-        }
-    }
-
-    private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, ModuleEntity moduleEntity, Map<String, String> additionalParams) {
+    private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
                 getDataModel().setObject(model.getObject());
-                showConfirm(target, construirModalConfirmationBorder(itemAction, moduleEntity, additionalParams));
+                showConfirm(target, construirModalConfirmationBorder(itemAction, additionalParams));
             };
         } else {
-            return (target, model) -> executeDynamicAction(itemAction, moduleEntity, additionalParams, boxItemModelObject(model), target);
+            return (target, model) -> executeDynamicAction(itemAction, additionalParams, model.getObject(), target);
         }
     }
 
     protected void executeDynamicAction(BoxItemAction itemAction,
-                                        ModuleEntity moduleEntity,
                                         Map<String, String> additionalParams,
                                         BoxItemDataMap boxItem, AjaxRequestTarget target) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
         try {
-            callModule(moduleEntity, boxAction, additionalParams, buildCallObject(boxAction, boxItem));
+            callModule(boxAction, additionalParams, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
@@ -214,12 +197,12 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         }
     }
 
-    protected void relocate(BoxItemAction itemAction, ModuleEntity moduleEntity,
+    protected void relocate(BoxItemAction itemAction,
                             Map<String, String> additionalParams, BoxItemDataMap boxItem,
                             AjaxRequestTarget target, Actor actor) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
         try {
-            callModule(moduleEntity, itemAction, additionalParams, buildCallAtribuirObject(boxAction, boxItem, actor));
+            callModule(itemAction, additionalParams, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
@@ -243,8 +226,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return actionRequest;
     }
 
-    private void callModule(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = moduleConnector.callModule(moduleEntity, itemAction, params, actionRequest);
+    private void callModule(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
+        ActionResponse response = moduleConnector.executeAction(getModule(), itemAction, params, actionRequest);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -264,20 +247,19 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction,
-                                                                                      ModuleEntity moduleEntity,
                                                                                       Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
             return new BoxContentAllocateModal(itemAction, getDataModel(), $m.ofValue(getModule())) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
-                    relocate(itemAction, moduleEntity, additionalParams, getDataModel().getObject(), target, null);
+                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
                     target.add(tabela);
                     atualizarContadores(target);
                 }
 
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    relocate(itemAction, moduleEntity, additionalParams, boxItemModelObject(getDataModel()), target, usersDropDownChoice.getModelObject());
+                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, usersDropDownChoice.getModelObject());
                     target.add(tabela);
                     atualizarContadores(target);
                 }
@@ -286,7 +268,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             return new BoxContentConfirmModal<BoxItemDataMap>(itemAction, getDataModel()) {
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    executeDynamicAction(itemAction, moduleEntity, additionalParams, boxItemModelObject(getDataModel()), target);
+                    executeDynamicAction(itemAction, additionalParams, getDataModel().getObject(), target);
                     target.add(tabela);
                     atualizarContadores(target);
                 }
@@ -301,7 +283,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
-            BoxItemDataMap boxItemDataMap = boxItemModelObject(model);
+            BoxItemDataMap boxItemDataMap = model.getObject();
             boolean visible = boxItemDataMap.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemDataMap.getCod());
@@ -406,15 +388,4 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private ItemBox getItemBoxModelObject() {
         return definitionModel.getObject().getItemBox();
     }
-
-    private String appendParameters(Map<String, String> additionalParams) {
-        StringBuilder paramsValue = new StringBuilder();
-        if (!additionalParams.isEmpty()) {
-            for (Map.Entry<String, String> entry : additionalParams.entrySet()) {
-                paramsValue.append(String.format("&%s=%s", entry.getKey(), entry.getValue()));
-            }
-        }
-        return paramsValue.toString();
-    }
-
 }
