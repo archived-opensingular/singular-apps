@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Assinante complex type.
+ * <p>Java class for Assinante complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Assinante">
@@ -39,7 +39,7 @@ public class Assinante {
     protected String cargoFuncao;
 
     /**
-     * Obtém o valor da propriedade idAssinante.
+     * Gets the value of the idAssinante property.
      * 
      * @return
      *     possible object is
@@ -51,7 +51,7 @@ public class Assinante {
     }
 
     /**
-     * Define o valor da propriedade idAssinante.
+     * Sets the value of the idAssinante property.
      * 
      * @param value
      *     allowed object is
@@ -63,7 +63,7 @@ public class Assinante {
     }
 
     /**
-     * Obtém o valor da propriedade cargoFuncao.
+     * Gets the value of the cargoFuncao property.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class Assinante {
     }
 
     /**
-     * Define o valor da propriedade cargoFuncao.
+     * Sets the value of the cargoFuncao property.
      * 
      * @param value
      *     allowed object is

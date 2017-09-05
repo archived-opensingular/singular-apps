@@ -46,6 +46,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link LoginInterno }
+     * 
+     */
+    public LoginInterno createLoginInterno() {
+        return new LoginInterno();
+    }
+
+    /**
      * Create an instance of {@link Campo }
      * 
      */

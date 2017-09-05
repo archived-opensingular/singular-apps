@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Serie complex type.
+ * <p>Java class for Serie complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Serie">
@@ -42,7 +42,7 @@ public class Serie {
     protected String aplicabilidade;
 
     /**
-     * Obtém o valor da propriedade idSerie.
+     * Gets the value of the idSerie property.
      * 
      * @return
      *     possible object is
@@ -54,7 +54,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade idSerie.
+     * Sets the value of the idSerie property.
      * 
      * @param value
      *     allowed object is
@@ -66,7 +66,7 @@ public class Serie {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Gets the value of the nome property.
      * 
      * @return
      *     possible object is
@@ -78,7 +78,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade nome.
+     * Sets the value of the nome property.
      * 
      * @param value
      *     allowed object is
@@ -90,7 +90,7 @@ public class Serie {
     }
 
     /**
-     * Obtém o valor da propriedade aplicabilidade.
+     * Gets the value of the aplicabilidade property.
      * 
      * @return
      *     possible object is
@@ -102,7 +102,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade aplicabilidade.
+     * Sets the value of the aplicabilidade property.
      * 
      * @param value
      *     allowed object is

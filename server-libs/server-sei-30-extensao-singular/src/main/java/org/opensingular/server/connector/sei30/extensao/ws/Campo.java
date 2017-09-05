@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Campo complex type.
+ * <p>Java class for Campo complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="Campo">
@@ -39,7 +39,7 @@ public class Campo {
     protected String valor;
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Gets the value of the nome property.
      * 
      * @return
      *     possible object is
@@ -51,7 +51,7 @@ public class Campo {
     }
 
     /**
-     * Define o valor da propriedade nome.
+     * Sets the value of the nome property.
      * 
      * @param value
      *     allowed object is
@@ -63,7 +63,7 @@ public class Campo {
     }
 
     /**
-     * Obtém o valor da propriedade valor.
+     * Gets the value of the valor property.
      * 
      * @return
      *     possible object is
@@ -75,7 +75,7 @@ public class Campo {
     }
 
     /**
-     * Define o valor da propriedade valor.
+     * Sets the value of the valor property.
      * 
      * @param value
      *     allowed object is
