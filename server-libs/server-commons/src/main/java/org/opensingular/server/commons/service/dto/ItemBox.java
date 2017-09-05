@@ -21,7 +21,6 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.server.commons.jackson.IconJsonDeserializer;
 import org.opensingular.server.commons.jackson.IconJsonSerializer;
-import org.opensingular.server.commons.persistence.entity.form.BoxEntity;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,6 +29,7 @@ public class ItemBox implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+    private String id;
     private String name;
     private String description;
     private boolean quickFilter   = true;
@@ -37,7 +37,6 @@ public class ItemBox implements Serializable {
     private Boolean              endedTasks;
     private Icon                 icon;
     private List<DatatableField> fieldsDatatable;
-    private BoxEntity boxEntity;
 
     public ItemBox() {
     }
@@ -102,22 +101,18 @@ public class ItemBox implements Serializable {
     }
 
     public String getId() {
-        return boxEntity.getCod().toString();
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getSearchEndpoint() {
-        return "/search/" + getId();
+        return "/search/" + id;
     }
 
     public String getCountEndpoint() {
-        return "/count/" + getId();
-    }
-
-    public BoxEntity getBoxEntity() {
-        return boxEntity;
-    }
-
-    public void setBoxEntity(BoxEntity boxEntity) {
-        this.boxEntity = boxEntity;
+        return "/count/" + id;
     }
 }

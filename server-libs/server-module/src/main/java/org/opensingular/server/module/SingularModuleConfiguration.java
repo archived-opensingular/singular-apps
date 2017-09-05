@@ -76,15 +76,24 @@ public class SingularModuleConfiguration {
      * @return
      */
     public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
+        return getBoxControllerByContext(context)
+                .stream()
+                .map(boxController -> buildBoxDefinitionData(boxController, context))
+                .collect(Collectors.toList());
+    }
+
+    public BoxDefinitionData buildBoxDefinitionData(BoxController boxController, IServerContext context) {
+        BoxDefinition factory = boxController.getBoxDefinition();
+        ItemBox itemBox = factory.build(context);
+        itemBox.setFieldsDatatable(factory.getDatatableFields());
+        itemBox.setId(boxController.getBoxId());
+        return new BoxDefinitionData(itemBox, boxController.getRequirementsData());
+    }
+
+    public List<BoxController> getBoxControllerByContext(IServerContext context) {
         return itemBoxes
                 .stream()
                 .filter(boxCofiguration -> boxCofiguration.getBoxDefinition().appliesTo(context))
-                .map(stringItemBoxFactoryEntry -> {
-                    BoxDefinition factory = stringItemBoxFactoryEntry.getBoxDefinition();
-                    ItemBox itemBox = factory.build(context);
-                    itemBox.setFieldsDatatable(factory.getDatatableFields());
-                    return new BoxDefinitionData(itemBox, stringItemBoxFactoryEntry.getRequirementsData());
-                })
                 .collect(Collectors.toList());
     }
 

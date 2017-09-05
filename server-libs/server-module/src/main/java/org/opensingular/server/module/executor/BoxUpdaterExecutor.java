@@ -25,7 +25,9 @@ import javax.inject.Named;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.persistence.entity.form.BoxEntity;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
+import org.opensingular.server.module.BoxController;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.service.BoxService;
 import org.opensingular.server.module.service.ModuleService;
@@ -62,11 +64,13 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (PServerContext context : PServerContext.values()) {
-            List<BoxDefinitionData> boxDefinitionData = singularModuleConfiguration.buildItemBoxes(context);
+            List<BoxController> boxControllers = singularModuleConfiguration.getBoxControllerByContext(context);
 
-            for (BoxDefinitionData boxData : boxDefinitionData) {
+            for (BoxController boxController : boxControllers) {
+                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxController, context);
                 try {
-                    boxService.saveBoxDefinition(module, boxData);
+                    BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
+                    boxController.setId(boxEntity.getCod().toString());
                 } catch (Exception e) {
                     throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getItemBox().getName()), e);
                 }
