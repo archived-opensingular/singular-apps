@@ -16,7 +16,6 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -34,9 +33,14 @@ import org.opensingular.server.core.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public class BoxPage extends ServerBoxTemplate {
 
@@ -55,8 +59,8 @@ public class BoxPage extends ServerBoxTemplate {
 
     public void addBox() {
         String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
-        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
-        String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
+        String menu      = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
+        String item      = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
         if (moduleCod == null
                 && menu == null
@@ -91,7 +95,10 @@ public class BoxPage extends ServerBoxTemplate {
             }
         }
 
-        LOGGER.warn("Não existe correspondencia para o label {}", String.valueOf(item));
+        if (boxConfigurationMetadata == null) {
+            LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
+        }
+        LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
         throw new RestartResponseException(Page500.class);
     }
 
