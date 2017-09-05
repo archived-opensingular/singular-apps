@@ -47,6 +47,7 @@ public class BoxService {
         boxEntity.setModule(module);
         boxEntity.setName(itemBox.getName());
         boxDAO.saveOrUpdate(boxEntity);
+        itemBox.setBoxEntity(boxEntity);
     }
 
     public BoxEntity findByModuleAndName(ModuleEntity moduleEntity, String name) {

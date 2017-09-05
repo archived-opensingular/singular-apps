@@ -58,7 +58,7 @@ public class WorkspaceMetadataMockBean {
         teste.setDescription("Petições de rascunho");
         teste.setIcone(DefaultIcons.DOCS);
         teste.setShowDraft(true);
-        teste.setId("1");
+        teste.getBoxEntity().setCod(1L);
 //        teste.addAction(DefaultActions.EDIT)
 //                .addAction(DefaultActions.VIEW)
 //                .addAction(DefaultActions.DELETE);

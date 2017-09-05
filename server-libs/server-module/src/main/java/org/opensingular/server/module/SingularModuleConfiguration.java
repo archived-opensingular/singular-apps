@@ -82,7 +82,6 @@ public class SingularModuleConfiguration {
                 .map(stringItemBoxFactoryEntry -> {
                     BoxDefinition factory = stringItemBoxFactoryEntry.getBoxDefinition();
                     ItemBox itemBox = factory.build(context);
-                    itemBox.setId(stringItemBoxFactoryEntry.getBoxId());
                     itemBox.setFieldsDatatable(factory.getDatatableFields());
                     return new BoxDefinitionData(itemBox, stringItemBoxFactoryEntry.getRequirementsData());
                 })

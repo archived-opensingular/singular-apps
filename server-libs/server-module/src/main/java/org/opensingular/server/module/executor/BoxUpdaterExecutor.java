@@ -47,10 +47,13 @@ public class BoxUpdaterExecutor {
     @Inject
     private ModuleService moduleService;
 
-//    @PostConstruct
-//    public void init() {
-//        serverStartExecutorBean.register(this::saveAllBoxDefinitions);
-//    }
+    @Inject
+    private ServerStartExecutorBean serverStartExecutorBean;
+
+    @PostConstruct
+    public void init() {
+        serverStartExecutorBean.register(this::saveAllBoxDefinitions);
+    }
 
     /**
      * Percorre todos requerimentos contidos na configuração do módulo
