@@ -191,6 +191,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         try {
             callModule(boxAction, additionalParams, buildCallObject(boxAction, boxItem));
         } catch (Exception e) {
+            getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);
@@ -204,6 +205,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         try {
             callModule(itemAction, additionalParams, buildCallAtribuirObject(boxAction, boxItem, actor));
         } catch (Exception e) {
+            getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
             target.add(tabela);

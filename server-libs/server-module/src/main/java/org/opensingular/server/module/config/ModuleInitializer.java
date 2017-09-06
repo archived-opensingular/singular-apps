@@ -23,7 +23,6 @@ import javax.servlet.ServletException;
 
 public abstract class ModuleInitializer implements PSingularInitializer {
 
-
     private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override

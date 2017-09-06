@@ -340,4 +340,5 @@ public class SingularDefaultBeanFactory {
     public ModuleDriver moduleDriver(){
         return new RESTModuleDriver();
     }
+
 }
