@@ -30,9 +30,7 @@ import org.opensingular.form.persistence.dao.FormCacheValueDAO;
 import org.opensingular.form.persistence.dao.FormDAO;
 import org.opensingular.form.persistence.dao.FormTypeDAO;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
-import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.FormService;
-import org.opensingular.form.service.IFormFieldService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
@@ -41,6 +39,8 @@ import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
+import org.opensingular.server.commons.connector.ModuleDriver;
+import org.opensingular.server.commons.connector.RESTModuleDriver;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
@@ -334,5 +334,10 @@ public class SingularDefaultBeanFactory {
     @Bean
     public ServerStartExecutorBean lifecycle() {
         return new ServerStartExecutorBean();
+    }
+
+    @Bean
+    public ModuleDriver moduleDriver(){
+        return new RESTModuleDriver();
     }
 }

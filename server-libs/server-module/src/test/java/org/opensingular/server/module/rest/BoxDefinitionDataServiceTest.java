@@ -38,7 +38,7 @@ public class BoxDefinitionDataServiceTest {
     @Mock
     private SingularModuleConfiguration singularModuleConfiguration;
     @InjectMocks
-    private RestBackstageService        restBackstageService;
+    private ModuleBackstageService moduleBackstageService;
 
     private QuickFilter quickFilter;
 
@@ -81,12 +81,12 @@ public class BoxDefinitionDataServiceTest {
 
     @Test
     public void testCount() throws Exception {
-        assertThat(restBackstageService.count(boxId, quickFilter), Matchers.is(countSize));
+        assertThat(moduleBackstageService.count(boxId, quickFilter), Matchers.is(countSize));
     }
 
     @Test
     public void testSearch() throws Exception {
-        assertThat(restBackstageService.search(boxId, quickFilter).getBoxItemDataList().size(), Matchers.is(countSize.intValue()));
+        assertThat(moduleBackstageService.search(boxId, quickFilter).getBoxItemDataList().size(), Matchers.is(countSize.intValue()));
     }
 
 }

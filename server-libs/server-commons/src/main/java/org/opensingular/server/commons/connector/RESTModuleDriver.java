@@ -17,7 +17,6 @@ import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Named;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +25,6 @@ import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.RESTPaths.*;
 
-@Named
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     private <T extends SingularUserDetails> T getUserDetails() {
