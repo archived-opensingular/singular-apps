@@ -1,7 +1,7 @@
 package org.opensingular.server.module.rest;
 
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.server.commons.ModuleService;
+import org.opensingular.server.commons.ModuleConnector;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.action.ActionRequest;
@@ -28,7 +28,7 @@ import static org.opensingular.server.commons.RESTPaths.WORKSPACE_CONFIGURATION;
 
 @RestController
 @RequestMapping("/rest/flow")
-public class RESTModuleService implements ModuleService {
+public class RESTModuleConnector implements ModuleConnector {
 
     @Inject
     private RestBackstageService restBackstageService;

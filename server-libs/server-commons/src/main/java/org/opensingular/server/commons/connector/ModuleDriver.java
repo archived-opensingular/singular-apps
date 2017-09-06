@@ -15,7 +15,7 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import java.util.List;
 import java.util.Map;
 
-public interface ModuleConnector {
+public interface ModuleDriver {
 
     /**
      * Retrieve the module workspace

@@ -39,7 +39,7 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
-import org.opensingular.server.commons.connector.ModuleConnector;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.ProcessDTO;
@@ -65,7 +65,7 @@ public class Menu extends Panel implements Loggable {
     private MenuService menuService;
 
     @Inject
-    private ModuleConnector moduleConnector;
+    private ModuleDriver moduleDriver;
 
     private Class<? extends WebPage> boxPageClass;
     private MetronicMenu menu;
@@ -177,7 +177,7 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
-        return () -> moduleConnector.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
+        return () -> moduleDriver.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
     }
 
     protected String getIdUsuarioLogado() {

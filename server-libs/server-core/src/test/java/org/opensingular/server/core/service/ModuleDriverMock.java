@@ -8,7 +8,7 @@ import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.connector.ModuleConnector;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
@@ -21,7 +21,7 @@ import java.util.*;
 
 @Primary
 @Named
-public class ModuleConnectorMock implements ModuleConnector {
+public class ModuleDriverMock implements ModuleDriver {
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {

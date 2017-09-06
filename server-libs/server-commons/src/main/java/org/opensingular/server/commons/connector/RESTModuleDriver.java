@@ -27,7 +27,7 @@ import java.util.stream.Collectors;
 import static org.opensingular.server.commons.RESTPaths.*;
 
 @Named
-public class RESTModuleConnector implements ModuleConnector, Loggable {
+public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     private <T extends SingularUserDetails> T getUserDetails() {
         if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {

@@ -42,7 +42,7 @@ import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
-import org.opensingular.server.commons.connector.ModuleConnector;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.*;
@@ -60,7 +60,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
     @Inject
-    private ModuleConnector moduleConnector;
+    private ModuleDriver moduleDriver;
 
     private Pair<String, SortOrder> sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
@@ -165,7 +165,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String url = moduleConnector.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, getBaseUrl());
+            String url = moduleDriver.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -227,7 +227,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = moduleConnector.executeAction(getModule(), itemAction, params, actionRequest);
+        ActionResponse response = moduleDriver.executeAction(getModule(), itemAction, params, actionRequest);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -346,7 +346,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return moduleConnector.searchFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleDriver.searchFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -362,7 +362,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleConnector.countFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleDriver.countFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

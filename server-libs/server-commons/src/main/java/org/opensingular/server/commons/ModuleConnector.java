@@ -13,7 +13,7 @@ import java.util.Map;
 /**
  * Module connector interface for server communication
  */
-public interface ModuleService {
+public interface ModuleConnector {
 
     /**
      * Invoke count method for the box with the corresponding {@param boxId}

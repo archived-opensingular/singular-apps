@@ -6,7 +6,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.connector.ModuleConnector;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
@@ -34,14 +34,14 @@ public class SingularServerSessionConfiguration implements Loggable {
     private SingularServerConfiguration singularServerConfiguration;
 
     @Inject
-    private ModuleConnector rmoduleConnector;
+    private ModuleDriver rmoduleDriver;
 
     @PostConstruct
     public void init() {
         try {
             IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                configMaps.put(module, rmoduleConnector.retrieveModuleWorkspace(module, menuContext));
+                configMaps.put(module, rmoduleDriver.retrieveModuleWorkspace(module, menuContext));
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
