@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.config;
 
 import org.opensingular.lib.commons.context.SingularContextSetup;
+import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
@@ -26,40 +27,50 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.Optional;
 
-public interface SingularInitializer extends WebApplicationInitializer {
+public class SingularInitializer implements WebApplicationInitializer {
 
-    public static final Logger logger                                             = LoggerFactory.getLogger(SingularInitializer.class);
-    static final        String SINGULAR                                           = "[SINGULAR] {}";
-    static final        String SERVLET_ATTRIBUTE_WEB_CONFIGURATION                = "Singular-webInitializer";
-    static final        String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION   = "Singular-springHibernateInitializer";
-    static final        String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
-    static final        String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
+    static Logger logger = LoggerFactory.getLogger(SingularInitializer.class);
+    static String SINGULAR = "[SINGULAR] {}";
+    static String SERVLET_ATTRIBUTE_WEB_CONFIGURATION = "Singular-webInitializer";
+    static String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION = "Singular-springHibernateInitializer";
+    static String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
+    static String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
 
+
+    private PSingularInitializer singularInitializer;
+
+    public SingularInitializer() {
+        this(SingularServerInitializerProvider.get().retrieve());
+    }
+
+    public SingularInitializer(PSingularInitializer singularInitializer) {
+        this.singularInitializer = singularInitializer;
+    }
 
     @Override
-    default void onStartup(ServletContext ctx) throws ServletException {
+    public void onStartup(ServletContext ctx) throws ServletException {
         SingularContextSetup.reset();
         logger.info(SINGULAR, " Initializing Singular.... ");
         logger.info(SINGULAR, " Initializing WebConfiguration ");
-        WebInitializer webInitializer = webConfiguration();
+        WebInitializer webInitializer = singularInitializer.webConfiguration();
         if (webInitializer != null) {
-            webConfiguration().init(ctx);
+            webInitializer.init(ctx);
         } else {
             logger.info(SINGULAR, " Null webInitializer, skipping web configuration");
         }
 
         logger.info(SINGULAR, " Initializing SpringHibernateConfiguration ");
-        SpringHibernateInitializer            springHibernateInitializer = springHibernateConfiguration();
-        AnnotationConfigWebApplicationContext applicationContext         = null;
+        SpringHibernateInitializer springHibernateInitializer = singularInitializer.springHibernateConfiguration();
+        AnnotationConfigWebApplicationContext applicationContext = null;
         if (springHibernateInitializer != null) {
             applicationContext = springHibernateInitializer.init(ctx);
         } else {
             logger.info(SINGULAR, " Null springHibernateInitializer, skipping Spring configuration");
         }
         logger.info(SINGULAR, " Initializing SpringSecurity ");
-        SpringSecurityInitializer springSecurityInitializer = springSecurityConfiguration();
+        SpringSecurityInitializer springSecurityInitializer = singularInitializer.springSecurityConfiguration();
         if (springSecurityInitializer != null) {
-            springSecurityConfiguration().init(ctx, applicationContext,
+            springSecurityInitializer.init(ctx, applicationContext,
                     Optional
                             .ofNullable(springHibernateInitializer)
                             .map(SpringHibernateInitializer::springMVCServletMapping)
@@ -73,7 +84,7 @@ public interface SingularInitializer extends WebApplicationInitializer {
         }
 
         logger.info(SINGULAR, " Initializing FormConfiguration ");
-        FormInitializer formInitializer = formConfiguration();
+        FormInitializer formInitializer = singularInitializer.formConfiguration();
         if (formInitializer != null) {
             formInitializer.init(ctx, applicationContext);
         } else {
@@ -81,7 +92,7 @@ public interface SingularInitializer extends WebApplicationInitializer {
         }
 
         logger.info(SINGULAR, " Initializing FlowConfiguration ");
-        FlowInitializer flowInitializer = flowConfiguration();
+        FlowInitializer flowInitializer = singularInitializer.flowConfiguration();
         if (flowInitializer != null) {
             flowInitializer.init(ctx, applicationContext);
         } else {
@@ -89,7 +100,7 @@ public interface SingularInitializer extends WebApplicationInitializer {
         }
 
         logger.info(SINGULAR, " Initializing SchedulerConfiguration ");
-        SchedulerInitializer schedulerInitializer = schedulerConfiguration();
+        SchedulerInitializer schedulerInitializer = singularInitializer.schedulerConfiguration();
         if (schedulerInitializer != null) {
             schedulerInitializer.init(ctx, applicationContext);
         } else {
@@ -104,20 +115,4 @@ public interface SingularInitializer extends WebApplicationInitializer {
             ctx.setAttribute(SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION, formInitializer);
         }
     }
-
-
-    public WebInitializer webConfiguration();
-
-    public SpringHibernateInitializer springHibernateConfiguration();
-
-    default public FormInitializer formConfiguration() {
-        return new FormInitializer();
-    }
-
-    public FlowInitializer flowConfiguration();
-
-    public SchedulerInitializer schedulerConfiguration();
-
-    public SpringSecurityInitializer springSecurityConfiguration();
-
 }

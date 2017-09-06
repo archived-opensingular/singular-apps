@@ -21,17 +21,17 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-public interface ServerInitializer extends PSingularInitializer {
+public abstract class ServerInitializer implements PSingularInitializer {
 
-    String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
+    private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override
-    default PWebInitializer webConfiguration() {
+    public PWebInitializer webConfiguration() {
         return new PWebInitializer() {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) ServerInitializer.this::initSkins);
+                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>)ServerInitializer.this::initSkins);
                 super.onStartup(servletContext);
             }
 
@@ -50,7 +50,7 @@ public interface ServerInitializer extends PSingularInitializer {
     }
 
     @Override
-    default SpringHibernateInitializer springHibernateConfiguration() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
         return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
@@ -71,25 +71,25 @@ public interface ServerInitializer extends PSingularInitializer {
         };
     }
 
-    default Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
+    protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
         return SingularDefaultPersistenceConfiguration.class;
     }
 
 
-    default Class<? extends SingularDefaultBeanFactory> beanFactory() {
+    protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
         return SingularDefaultBeanFactory.class;
     }
 
 
-    String[] springPackagesToScan();
+    protected abstract String[] springPackagesToScan();
 
     @Override
-    default FlowInitializer flowConfiguration() {
+    public FlowInitializer flowConfiguration() {
         return null;
     }
 
     @Override
-    default SchedulerInitializer schedulerConfiguration() {
+    public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
@@ -103,12 +103,12 @@ public interface ServerInitializer extends PSingularInitializer {
         };
     }
 
-    default void initSkins(SkinOptions skinOptions) {
+    public void initSkins(SkinOptions skinOptions) {
 
     }
 
 
-    class AnalysisApplication extends SingularServerApplication {
+    public static class AnalysisApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
@@ -123,7 +123,7 @@ public interface ServerInitializer extends PSingularInitializer {
         }
     }
 
-    class PetitionApplication extends SingularServerApplication {
+    public static class PetitionApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
