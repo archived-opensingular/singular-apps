@@ -41,7 +41,7 @@ public class SingularServerSessionConfiguration implements Loggable {
         try {
             IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                configMaps.put(module, rmoduleConnector.loadWorkspaceConfiguration(module, menuContext));
+                configMaps.put(module, rmoduleConnector.retrieveModuleWorkspace(module, menuContext));
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);

@@ -17,18 +17,39 @@ import java.util.Map;
 
 public interface ModuleConnector {
 
-    WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext);
+    /**
+     * Retrieve the module workspace
+     */
+    WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext);
 
-    String count(ItemBox itemBoxDTO, List<String> siglas, String idUsuarioLogado, ModuleEntity module);
+    /**
+     * Count all elements inside a box
+     */
+    String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser);
 
-    long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter);
+    /**
+     * Count elements inside a box, applying the filter
+     */
+    long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter);
 
-    List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter);
+    /**
+     * Searchelements inside a box, applying the filter
+     */
+    List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter);
 
-    List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation);
+    /**
+     * Find users that can execute the confirmAction
+     */
+    List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction);
 
-    ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest);
+    /**
+     * Execute a action
+     */
+    ActionResponse executeAction(ModuleEntity module, BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest);
 
-    String mountStaticEndpoint(String baseURI, BoxItemAction itemAction, Map<String, String> params, BoxItemDataMap boxItemDataMap);
+    /**
+     * Build a static endpoint
+     */
+    String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI);
 
 }

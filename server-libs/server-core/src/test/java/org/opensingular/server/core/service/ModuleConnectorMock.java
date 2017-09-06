@@ -24,39 +24,22 @@ import java.util.*;
 public class ModuleConnectorMock implements ModuleConnector {
 
     @Override
-    public List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation) {
-        Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
-        return Collections.singletonList(actor);
-    }
-
-    @Override
-    public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = new ActionResponse("Sucesso", true);
-        return ActionResponse.class.cast(response);
-    }
-
-    @Override
-    public String mountStaticEndpoint(String baseURI, BoxItemAction itemAction, Map<String, String> params, BoxItemDataMap boxItemDataMap) {
+    public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
         return null;
     }
 
     @Override
-    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext) {
+    public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
         return null;
     }
 
     @Override
-    public String count(ItemBox itemBoxDTO, List<String> siglas, String idUsuarioLogado, ModuleEntity module) {
-        return null;
-    }
-
-    @Override
-    public long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+    public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         return 2L;
     }
 
     @Override
-    public List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+    public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         List<BoxItemDataMap> result = new ArrayList<>();
         result.add(createItem("1", "Descrição", "Situação", "Processo",
                 "25/04/2017 08:49", "Form tipo", "Chave processo",
@@ -70,6 +53,23 @@ public class ModuleConnectorMock implements ModuleConnector {
         return result;
     }
 
+    @Override
+    public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
+        Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
+        return Collections.singletonList(actor);
+    }
+
+    @Override
+    public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
+        return null;
+    }
+
+
+    @Override
+    public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
+        ActionResponse response = new ActionResponse("Sucesso", true);
+        return ActionResponse.class.cast(response);
+    }
 
     private BoxItemDataMap createItem(String codPeticao, String description, String situation, String processName,
                                       String creationDate, String type, String processType, String situationBeginDate,

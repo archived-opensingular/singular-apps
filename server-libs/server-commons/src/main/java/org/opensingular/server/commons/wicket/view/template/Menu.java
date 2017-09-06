@@ -177,7 +177,7 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
-        return () -> moduleConnector.count(itemBoxDTO, siglas, getIdUsuarioLogado(), module);
+        return () -> moduleConnector.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
     }
 
     protected String getIdUsuarioLogado() {

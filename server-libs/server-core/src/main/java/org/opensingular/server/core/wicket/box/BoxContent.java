@@ -165,7 +165,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String url = moduleConnector.mountStaticEndpoint(getBaseUrl(), itemAction, additionalParams, boxItemModel.getObject());
+            String url = moduleConnector.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -346,7 +346,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
-        return moduleConnector.quickSearch(getModule(), getItemBoxModelObject(), filter);
+        return moduleConnector.searchFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -362,7 +362,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleConnector.countQuickSearch(getModule(), getItemBoxModelObject(), filter);
+        return moduleConnector.countFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

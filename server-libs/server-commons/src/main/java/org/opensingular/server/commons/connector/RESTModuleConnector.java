@@ -37,7 +37,7 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(ModuleEntity module, IServerContext serverContext) {
+    public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
         RestTemplate restTemplate = new RestTemplate();
         String url = module.getConnectionURL() + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
         SingularUserDetails userDetails = getUserDetails();
@@ -48,16 +48,16 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public String count(ItemBox itemBoxDTO, List<String> siglas, String idUsuarioLogado, ModuleEntity module) {
+    public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + itemBoxDTO.getCountEndpoint();
+        final String url = connectionURL + box.getCountEndpoint();
         long qtd;
         try {
             QuickFilter filter = new QuickFilter()
-                    .withProcessesAbbreviation(siglas)
-                    .withRascunho(itemBoxDTO.isShowDraft())
-                    .withEndedTasks(itemBoxDTO.getEndedTasks())
-                    .withIdUsuarioLogado(idUsuarioLogado);
+                    .withProcessesAbbreviation(flowNames)
+                    .withRascunho(box.isShowDraft())
+                    .withEndedTasks(box.getEndedTasks())
+                    .withIdUsuarioLogado(loggedUser);
             qtd = new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
@@ -67,9 +67,9 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public long countQuickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+    public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + itemBox.getCountEndpoint();
+        final String url = connectionURL + box.getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
@@ -79,9 +79,9 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public List<BoxItemDataMap> quickSearch(ModuleEntity module, ItemBox itemBox, QuickFilter filter) {
+    public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + itemBox.getSearchEndpoint();
+        final String url = connectionURL + box.getSearchEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
                     .getBoxItemDataList()
@@ -95,12 +95,12 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
     }
 
     @Override
-    public List<Actor> buscarUsuarios(ModuleEntity module, BoxItemDataMap boxItemDataMap, ItemActionConfirmation confirmation) {
+    public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + PATH_BOX_SEARCH + confirmation.getSelectEndpoint();
+        final String url = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
 
         try {
-            return Arrays.asList(new RestTemplate().postForObject(url, boxItemDataMap, Actor[].class));
+            return Arrays.asList(new RestTemplate().postForObject(url, rowItemData, Actor[].class));
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
@@ -116,6 +116,19 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
         return new RestTemplate().postForObject(url, actionRequest, ActionResponse.class);
     }
 
+    @Override
+    public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
+        final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
+        final String endpoint = action.getEndpoint();
+        if (endpoint.startsWith("http")) {
+            return endpoint;
+        } else {
+            return baseURI
+                    + endpoint
+                    + appendParameters(params);
+        }
+    }
+
     private String appendParameters(Map<String, String> additionalParams) {
         StringBuilder paramsValue = new StringBuilder();
         if (!additionalParams.isEmpty()) {
@@ -126,16 +139,4 @@ public class RESTModuleConnector implements ModuleConnector, Loggable {
         return paramsValue.toString();
     }
 
-    @Override
-    public String mountStaticEndpoint(String baseURI, BoxItemAction itemAction, Map<String, String> params, BoxItemDataMap boxItemDataMap) {
-        final BoxItemAction action = boxItemDataMap.getActionByName(itemAction.getName());
-        final String endpoint = action.getEndpoint();
-        if (endpoint.startsWith("http")) {
-            return endpoint;
-        } else {
-            return baseURI
-                    + endpoint
-                    + appendParameters(params);
-        }
-    }
 }

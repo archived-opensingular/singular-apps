@@ -69,7 +69,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     }
 
     private void addUsersDropDownChoice() {
-        IModel<List<Actor>> actorsModel = $m.get(() -> moduleConnector.buscarUsuarios(moduleEntity.getObject(),
+        IModel<List<Actor>> actorsModel = $m.get(() -> moduleConnector.findEligibleUsers(moduleEntity.getObject(),
                 dataModel.getObject(), itemAction.getConfirmation()));
         usersDropDownChoice = new DropDownChoice<>("usersDropDownChoice",
                 new Model<>(),
