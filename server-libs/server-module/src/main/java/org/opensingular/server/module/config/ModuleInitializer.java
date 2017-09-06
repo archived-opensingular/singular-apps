@@ -21,13 +21,13 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-public abstract class ModuleInitializer implements PSingularInitializer {
+public interface ModuleInitializer extends PSingularInitializer {
 
 
-    private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
+    String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override
-    public PWebInitializer webConfiguration() {
+    default PWebInitializer webConfiguration() {
         return new PWebInitializer() {
 
             @Override
@@ -50,7 +50,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     }
 
     @Override
-    public SpringHibernateInitializer springHibernateConfiguration() {
+    default SpringHibernateInitializer springHibernateConfiguration() {
         return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
@@ -72,7 +72,7 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     }
 
     @Override
-    public FlowInitializer flowConfiguration() {
+    default FlowInitializer flowConfiguration() {
         return new FlowInitializer() {
             @Override
             public String moduleCod() {
@@ -82,30 +82,30 @@ public abstract class ModuleInitializer implements PSingularInitializer {
     }
 
     @Override
-    public SchedulerInitializer schedulerConfiguration() {
+    default SchedulerInitializer schedulerConfiguration() {
         return null;
     }
 
-    protected abstract String moduleCod();
+    String moduleCod();
 
 
-    protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
+    default Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
         return SingularDefaultPersistenceConfiguration.class;
     }
 
 
-    protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
+    default Class<? extends SingularDefaultBeanFactory> beanFactory() {
         return SingularDefaultBeanFactory.class;
     }
 
 
-    protected abstract String[] springPackagesToScan();
+    String[] springPackagesToScan();
 
-    public void initSkins(SkinOptions skinOptions) {
+    default void initSkins(SkinOptions skinOptions) {
 
     }
 
-    public static class WorklistApplication extends SingularServerApplication {
+    class WorklistApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {
