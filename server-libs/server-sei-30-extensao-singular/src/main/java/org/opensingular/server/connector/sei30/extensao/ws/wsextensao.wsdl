@@ -24,6 +24,14 @@
                     </xsd:all>
                </xsd:complexType>
 
+               <xsd:complexType name="DadosUsuarioExterno">
+                    <xsd:all>
+                         <xsd:element name="NumIdUsuario" type="xsd:long" />
+                         <xsd:element name="Nome" type="xsd:string" />
+                         <xsd:element name="StrSigla" type="xsd:string" />
+                    </xsd:all>
+               </xsd:complexType>
+
                <xsd:complexType name="Assinante">
                     <xsd:all>
                          <xsd:element name="IdAssinante" type="xsd:string"/>
@@ -146,6 +154,17 @@
           <wsdl:part name="Autenticado" type="xsd:boolean"/>
      </wsdl:message>
 
+     <wsdl:message name="buscarDadosUsuarioExternoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="Login" type="xsd:string"/>
+     </wsdl:message>
+
+     <wsdl:message name="buscarDadosUsuarioExternoResponse">
+          <wsdl:part name="dadosUsuarioExterno" type="tns:DadosUsuarioExterno"/>
+     </wsdl:message>
+
      <wsdl:portType name="extensaoPortType">
 
           <wsdl:operation name="assinarDocumento">
@@ -176,6 +195,12 @@
                <wsdl:documentation>Autentica um usuario interno. true: autenticado, false: nao autenticado</wsdl:documentation>
                <wsdl:input message="tns:autenticarUsuarioInternoRequest"/>
                <wsdl:output message="tns:autenticarUsuarioInternoResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="buscarDadosUsuarioExterno">
+               <wsdl:documentation>Busca informações do usuário externo.</wsdl:documentation>
+               <wsdl:input message="tns:buscarDadosUsuarioExternoRequest"/>
+               <wsdl:output message="tns:buscarDadosUsuarioExternoResponse"/>
           </wsdl:operation>
 
      </wsdl:portType>
@@ -225,6 +250,16 @@
 
           <wsdl:operation name="autenticarUsuarioInterno">
                <soap:operation soapAction="extensaons/autenticarUsuarioInterno"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="buscarDadosUsuarioExterno">
+               <soap:operation soapAction="extensaons/buscarDadosUsuarioExterno"/>
                <wsdl:input>
                     <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
                </wsdl:input>
