@@ -30,8 +30,8 @@ public class ExtensaoService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("http://treinamentosei3singular.antaq.gov.br/sei/controlador_ws.php?servico=wsextensao");
-        } catch (MalformedURLException ex) {
+            url = Thread.currentThread().getContextClassLoader().getResource("wsextensao.wsdl");
+        } catch (Exception ex) {
             e = new WebServiceException(ex);
         }
         EXTENSAOSERVICE_WSDL_LOCATION = url;
