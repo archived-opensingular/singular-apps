@@ -313,6 +313,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (petitionId.isPresent()) {
             petition = petitionService.getPetition(petitionId.get());
             FormEntity formEntityDraftOrPetition = getDraftOrFormEntity(petition);
+            petition.getMainForm();
             if (formEntityDraftOrPetition != null) {
                 formKeyModel.setObject(formPetitionService.formKeyFromFormEntity(formEntityDraftOrPetition));
             }
