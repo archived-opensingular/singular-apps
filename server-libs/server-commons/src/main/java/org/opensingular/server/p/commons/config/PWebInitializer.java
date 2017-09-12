@@ -36,7 +36,6 @@ import java.util.EnumSet;
  */
 public abstract class PWebInitializer extends WebInitializer {
 
-
     @Override
     protected IServerContext[] serverContexts() {
         return PServerContext.values();

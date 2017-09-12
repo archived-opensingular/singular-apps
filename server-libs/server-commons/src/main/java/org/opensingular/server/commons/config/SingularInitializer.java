@@ -109,6 +109,7 @@ public class SingularInitializer implements WebApplicationInitializer {
 
         if (applicationContext != null) {
             applicationContext.register(SingularServerConfiguration.class);
+            applicationContext.register(singularInitializer.getSingularSpringWebMVCConfig());
             ctx.setAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION, webInitializer);
             ctx.setAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION, springHibernateInitializer);
             ctx.setAttribute(SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION, flowInitializer);

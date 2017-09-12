@@ -28,7 +28,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 
-@Configuration
 @EnableWebMvc
 public class SingularSpringWebMVCConfig extends WebMvcConfigurerAdapter {
 

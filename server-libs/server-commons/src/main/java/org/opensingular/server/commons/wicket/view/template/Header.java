@@ -16,17 +16,18 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
+import org.apache.commons.lang3.StringUtils;
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.flow.RedirectToUrlException;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class Header extends Panel {
 
@@ -51,13 +52,26 @@ public class Header extends Panel {
         add(new WebMarkupContainer("_TopAction")
                 .add($b.classAppender("hide")));
         add(configureTopMenu("_TopMenu"));
-        add(new Link<Void>("baseurlAnchor") {
+        addBaseurlAnchor();
+    }
+
+
+    private void addBaseurlAnchor() {
+        WebMarkupContainer anchor = new WebMarkupContainer("baseurlAnchor");
+        anchor.add(new Behavior() {
             @Override
-            public void onClick() {
-                throw new RedirectToUrlException(RequestCycle.get().getRequest().getFilterPath());
+            public void onComponentTag(Component component, ComponentTag tag) {
+                super.onComponentTag(component, tag);
+                String path = WebApplication.get().getServletContext().getContextPath();
+                if (StringUtils.isBlank(path)) {
+                    path = "/";
+                }
+                tag.put("href", path);
             }
         });
+        add(anchor);
     }
+
 
     protected TopMenu configureTopMenu(String id) {
         return new TopMenu(id, option);

@@ -16,10 +16,7 @@
 
 package org.opensingular.server.p.commons.config;
 
-import org.opensingular.server.commons.config.FlowInitializer;
-import org.opensingular.server.commons.config.FormInitializer;
-import org.opensingular.server.commons.config.SchedulerInitializer;
-import org.opensingular.server.commons.config.SpringHibernateInitializer;
+import org.opensingular.server.commons.config.*;
 
 public interface PSingularInitializer {
 
@@ -31,6 +28,9 @@ public interface PSingularInitializer {
 
     SpringHibernateInitializer springHibernateConfiguration();
 
+    default Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig(){
+        return SingularSpringWebMVCConfig.class;
+    }
 
     default FormInitializer formConfiguration() {
         return new FormInitializer();
