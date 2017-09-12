@@ -201,6 +201,27 @@ public class DocumentoBuilder implements Serializable {
     }
 
     /**
+     * Adiciona o destinatario.
+     *
+     * @param sigla
+     *            o(a) sigla.
+     * @param nome
+     *            o(a) nome.
+     * @return o valor de documento builder
+     */
+    public DocumentoBuilder addDestinatario(String sigla, String nome) {
+        if (this.documento.getDestinatarios() == null) {
+            this.documento.setDestinatarios(new ArrayOfDestinatario());
+        }
+
+        Destinatario destinatario = new Destinatario();
+        destinatario.setNome(nome);
+        destinatario.setSigla(sigla);
+        documento.getDestinatarios().getItem().add(destinatario);
+        return this;
+    }
+
+    /**
      * Atualiza o novo valor de observacao.
      * 
      * @param value
