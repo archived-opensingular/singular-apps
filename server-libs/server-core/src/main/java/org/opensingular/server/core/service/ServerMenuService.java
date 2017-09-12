@@ -2,19 +2,16 @@ package org.opensingular.server.core.service;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
+import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 
-import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Named
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
@@ -23,18 +20,10 @@ public class ServerMenuService implements MenuService, Loggable {
     @Inject
     private SingularServerSessionConfiguration singularServerSessionConfiguration;
 
-    private Map<ModuleEntity, List<BoxConfigurationData>> map;
-    private Map<String, BoxConfigurationData>             mapMenu;
+    private Map<IServerContext, Map<ModuleEntity, List<BoxConfigurationData>>> contextMap = new HashMap<>();
+    private Map<IServerContext, Map<String, BoxConfigurationData>> mapMenu = new HashMap<>();
 
-    @PostConstruct
-    public void initialize() {
-        reset();
-    }
-
-    @Override
-    public void reset() {
-        map = new HashMap<>();
-        mapMenu = null;
+    private void loadEntries() {
         singularServerSessionConfiguration.reload();
         for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : singularServerSessionConfiguration.getModuleBoxConfigurationMap().entrySet()) {
             addMenu(entry.getKey(), entry.getValue());
@@ -52,7 +41,7 @@ public class ServerMenuService implements MenuService, Loggable {
 
     @Override
     public List<BoxConfigurationData> getMenusByCategory(ModuleEntity categoria) {
-        return map.get(categoria);
+        return getMap().get(categoria);
     }
 
     @Override
@@ -62,29 +51,50 @@ public class ServerMenuService implements MenuService, Loggable {
 
     @Override
     public List<ModuleEntity> getCategories() {
-        return new ArrayList<>(map.keySet());
+        return new ArrayList<>(getModifiableMap().keySet());
+    }
+
+    @Override
+    public void reset() {
+
     }
 
     private Map<String, BoxConfigurationData> getMapMenu() {
-        if (mapMenu == null) {
-            mapMenu = new HashMap<>();
-        }
-
-        for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> moduleEntityListEntry : map.entrySet()) {
+        Map<String, BoxConfigurationData> modifiableMapMenu = getModifiableMapMenu();
+        for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> moduleEntityListEntry : getModifiableMap().entrySet()) {
             for (BoxConfigurationData boxConfigurationMetadataDTO : moduleEntityListEntry.getValue()) {
-                mapMenu.put(boxConfigurationMetadataDTO.getLabel(), boxConfigurationMetadataDTO);
+                modifiableMapMenu.put(boxConfigurationMetadataDTO.getLabel(), boxConfigurationMetadataDTO);
             }
         }
-
-        return mapMenu;
+        return modifiableMapMenu;
     }
 
     private void addMenu(ModuleEntity categoria, List<BoxConfigurationData> menusGroupDTO) {
-        mapMenu = null;
-        map.put(categoria, menusGroupDTO);
+        getModifiableMap().put(categoria, menusGroupDTO);
     }
 
     public Map<ModuleEntity, List<BoxConfigurationData>> getMap() {
-        return Collections.unmodifiableMap(map);
+        return Collections.unmodifiableMap(getModifiableMap());
+    }
+
+    private Map<ModuleEntity, List<BoxConfigurationData>> getModifiableMap() {
+        IServerContext ctx = getCurrentContext();
+        if (!contextMap.containsKey(ctx)) {
+            contextMap.put(ctx, new HashMap<>());
+            loadEntries();
+        }
+        return contextMap.get(ctx);
+    }
+
+    private Map<String, BoxConfigurationData> getModifiableMapMenu() {
+        IServerContext ctx = getCurrentContext();
+        if (!mapMenu.containsKey(ctx)) {
+            mapMenu.put(ctx, new HashMap<>());
+        }
+        return mapMenu.get(ctx);
+    }
+
+    public IServerContext getCurrentContext() {
+        return SingularSession.get().getServerContext();
     }
 }

@@ -16,14 +16,10 @@
 
 package org.opensingular.server.module.executor;
 
-import java.util.List;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
+import org.opensingular.server.commons.config.SingularServerInitializerProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.entity.form.BoxEntity;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
@@ -31,7 +27,12 @@ import org.opensingular.server.module.BoxController;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.service.BoxService;
 import org.opensingular.server.module.service.ModuleService;
-import org.opensingular.server.p.commons.config.PServerContext;
+import org.opensingular.server.p.commons.config.PSingularInitializer;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
 
 /**
  * Classe para abrigar a lógica de carga inicial
@@ -62,10 +63,10 @@ public class BoxUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllBoxDefinitions() {
+        PSingularInitializer initializer = SingularServerInitializerProvider.get().retrieve();
         ModuleEntity module = moduleService.getModule();
-        for (PServerContext context : PServerContext.values()) {
+        for (IServerContext context : initializer.webConfiguration().serverContexts()) {
             List<BoxController> boxControllers = singularModuleConfiguration.getBoxControllerByContext(context);
-
             for (BoxController boxController : boxControllers) {
                 BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxController, context);
                 try {

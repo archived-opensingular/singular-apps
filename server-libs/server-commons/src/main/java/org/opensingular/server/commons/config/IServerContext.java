@@ -28,11 +28,11 @@ import java.io.Serializable;
  */
 public interface IServerContext extends Serializable {
 
-    public static IServerContext getContextFromRequest(Request request, IServerContext[] contexts) {
+    static IServerContext getContextFromRequest(Request request, IServerContext[] contexts) {
         return getContextFromRequest((HttpServletRequest) request.getContainerRequest(), contexts);
     }
 
-    public static IServerContext getContextFromName(String name, IServerContext[] contexts) {
+    static IServerContext getContextFromName(String name, IServerContext[] contexts) {
         for (IServerContext ctx : contexts) {
             if (name.equals(ctx.getName())) {
                 return ctx;
@@ -41,7 +41,7 @@ public interface IServerContext extends Serializable {
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
-    public static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
+    static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
         String contextPath = request.getContextPath();
         String context     = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
@@ -61,14 +61,14 @@ public interface IServerContext extends Serializable {
      *
      * @return
      */
-    public String getContextPath();
+    String getContextPath();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
      *
      * @return
      */
-    public String getPathRegex();
+    String getPathRegex();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
@@ -76,14 +76,14 @@ public interface IServerContext extends Serializable {
      *
      * @return
      */
-    public String getUrlPath();
+    String getUrlPath();
 
     @Deprecated
-    public String getPropertiesBaseKey();
+    String getPropertiesBaseKey();
 
-    public String getName();
+    String getName();
 
-    public default boolean isSameContext(IServerContext context) {
+    default boolean isSameContext(IServerContext context) {
         return context != null && this.getName().equals(context.getName());
     }
 

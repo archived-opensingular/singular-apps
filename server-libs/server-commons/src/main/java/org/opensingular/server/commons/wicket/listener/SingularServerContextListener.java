@@ -34,6 +34,7 @@ import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
 import org.opensingular.server.commons.spring.security.SecurityAuthPathsFactory;
+import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.error.Page410;
@@ -51,18 +52,22 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
         SingularServerConfiguration singularServerConfiguration = SingularServerApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
-            HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
-            IServerContext context = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
-            if (!SingularSession.get().getServerContext().equals(context)) {
-                resetLogin(cycle);
+            SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+            if (!userDetails.keepLoginThroughContexts()) {
+                HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
+                IServerContext newContext = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
+                IServerContext currentContext = SingularSession.get().getServerContext();
+                if (!currentContext.equals(newContext)) {
+                    resetLogin(cycle);
+                }
             }
         }
     }
 
     private void resetLogin(RequestCycle cycle) {
         SecurityAuthPathsFactory securityAuthPathsFactory = new SecurityAuthPathsFactory();
-        SecurityAuthPaths        securityAuthPaths        = securityAuthPathsFactory.get();
-        String                   redirectURL              = securityAuthPaths.getLogoutPath(cycle);
+        SecurityAuthPaths securityAuthPaths = securityAuthPathsFactory.get();
+        String redirectURL = securityAuthPaths.getLogoutPath(cycle);
         getLogger().info("Redirecting to {}", redirectURL);
         throw new RedirectToUrlException(redirectURL);
     }

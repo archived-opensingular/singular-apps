@@ -23,18 +23,20 @@ import org.opensingular.server.commons.config.IServerContext;
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public enum PServerContext implements IServerContext {
+public class PServerContext implements IServerContext {
 
-    REQUIREMENT("/requirement/*", "singular.requirement"),
-    WORKLIST("/worklist/*", "singular.worklist"),
-    ADMINISTRATION("/administration/*", "singular.administration");
+    public static PServerContext REQUIREMENT = new PServerContext("REQUIREMENT", "/requirement/*", "singular.requirement");
+    public static PServerContext WORKLIST = new PServerContext("WORKLIST", "/worklist/*", "singular.worklist");
+    public static PServerContext ADMINISTRATION = new PServerContext("ADMINISTRATION", "/administration/*", "singular.administration");
 
     private final String contextPath;
     private final String propertiesBaseKey;
+    private final String name;
 
-    PServerContext(String defaultPath, String propertiesBaseKey) {
+    public PServerContext(String name, String defaultPath, String propertiesBaseKey) {
+        this.name = name;
         this.propertiesBaseKey = propertiesBaseKey;
-        String key  = propertiesBaseKey + ".context";
+        String key = propertiesBaseKey + ".context";
         String path = SingularProperties.get().getProperty(key);
         if (path == null || path.length() <= 0) {
             path = defaultPath;
@@ -59,7 +61,7 @@ public enum PServerContext implements IServerContext {
 
     @Override
     public String getName() {
-        return this.name();
+        return this.name;
     }
 
     /**
@@ -67,6 +69,7 @@ public enum PServerContext implements IServerContext {
      *
      * @return
      */
+
     @Override
     public String getContextPath() {
         return contextPath;

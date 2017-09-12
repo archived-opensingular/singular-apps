@@ -85,4 +85,9 @@ public interface SingularUserDetails extends UserDetails {
     default boolean isEnabled() {
         return true;
     }
+
+    default boolean keepLoginThroughContexts() {
+        return false;
+    }
+
 }

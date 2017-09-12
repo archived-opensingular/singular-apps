@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.wicket.view.util;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.slf4j.Logger;
