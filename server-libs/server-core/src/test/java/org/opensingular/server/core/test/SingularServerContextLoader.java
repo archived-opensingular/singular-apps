@@ -15,7 +15,7 @@ public class SingularServerContextLoader extends AbstractSingularContextLoader {
     @Override
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new SingularInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
+            new SingularInitializer(new ServerInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }
