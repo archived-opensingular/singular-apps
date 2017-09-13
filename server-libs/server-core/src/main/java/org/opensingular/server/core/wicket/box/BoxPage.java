@@ -31,6 +31,7 @@ import org.opensingular.server.commons.wicket.error.Page500;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.opensingular.server.core.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
+import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.util.HashMap;
@@ -42,6 +43,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITE
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
+@MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
