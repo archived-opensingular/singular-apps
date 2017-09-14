@@ -2,11 +2,15 @@ package org.opensingular.server.connector.sei30.builder;
 
 import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.connector.sei30.ConstantesSEI;
 import org.opensingular.server.connector.sei30.model.NivelAcesso;
 import org.opensingular.server.connector.sei30.model.SerieEnum;
 import org.opensingular.server.connector.sei30.model.TipoDocumento;
-import org.opensingular.server.connector.sei30.ws.*;
+import org.opensingular.server.connector.sei30.ws.ArrayOfDestinatario;
+import org.opensingular.server.connector.sei30.ws.ArrayOfInteressado;
+import org.opensingular.server.connector.sei30.ws.Destinatario;
+import org.opensingular.server.connector.sei30.ws.Documento;
+import org.opensingular.server.connector.sei30.ws.Interessado;
+import org.opensingular.server.connector.sei30.ws.Remetente;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -387,11 +391,11 @@ public class DocumentoBuilder implements Serializable {
      */
     private void definirValoresDefault() {
         if (this.documento.getDestinatarios() == null) {
-            this.documento.setDestinatarios(ConstantesSEI.DESTINATARIOS_EMPTY);
+            this.documento.setDestinatarios(new ArrayOfDestinatario());
         }
 
         if (this.documento.getInteressados() == null) {
-            this.documento.setInteressados(ConstantesSEI.INTERESSADOS_EMPTY);
+            this.documento.setInteressados(new ArrayOfInteressado());
         }
 
         if (this.documento.getNivelAcesso() == null) {
