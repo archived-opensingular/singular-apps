@@ -27,7 +27,7 @@ public class DefaultPetitionSender implements PetitionSender {
         final FlowDefinition<?> flowDefinition = PetitionUtil.getProcessDefinition(petition.getEntity());
 
         petitionService.onBeforeStartProcess(petition, instance, codResponsavel);
-        FlowInstance flowInstance = petitionService.startNewProcess(petition, flowDefinition);
+        FlowInstance flowInstance = petitionService.startNewProcess(petition, flowDefinition, codResponsavel);
         petitionService.onAfterStartProcess(petition, instance, codResponsavel, flowInstance);
 
         petitionService.savePetitionHistory(petition, consolidatedDrafts);

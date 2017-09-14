@@ -141,7 +141,7 @@ public class PetitionInstance implements Serializable {
     }
 
     public FlowInstance startNewProcess(FlowDefinition flowDefinition) {
-        flowInstance = getPetitionService().startNewProcess(this, flowDefinition);
+        flowInstance = getPetitionService().startNewProcess(this, flowDefinition, null);
         return flowInstance;
     }
 

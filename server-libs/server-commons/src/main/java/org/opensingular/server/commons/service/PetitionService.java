@@ -544,11 +544,18 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 version -> (SIComposite) getFormPetitionService().getSInstance(version.getFormVersion()));
     }
 
-    public FlowInstance startNewProcess(PetitionInstance petition, FlowDefinition flowDefinition) {
+    public FlowInstance startNewProcess(PetitionInstance petition, FlowDefinition flowDefinition, String codResponsavel) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(petition.getDescription());
 
         ProcessInstanceEntity processEntity = newFlowInstance.saveEntity();
+
+        if(codResponsavel != null) {
+            PetitionUtil.findUser(codResponsavel).filter(u -> u instanceof Actor).ifPresent(user -> {
+                processEntity.setUserCreator((Actor) user);
+            });
+        }
+
         PE petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
