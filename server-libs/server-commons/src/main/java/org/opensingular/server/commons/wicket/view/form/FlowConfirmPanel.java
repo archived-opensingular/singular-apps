@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
@@ -24,12 +25,14 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public abstract class FlowConfirmPanel extends Panel {
 
     private BSModalBorder modalBorder;
+    protected BSContainer externalContainer;
     private String        transition;
 
     public FlowConfirmPanel(String id, String transition) {
         super(id);
         this.transition = transition;
         this.modalBorder = makeBorder();
+        this.externalContainer = new BSContainer<>("externalContainer");
         addComponentsToPanel();
     }
 
@@ -41,6 +44,7 @@ public abstract class FlowConfirmPanel extends Panel {
 
     private void addComponentsToPanel() {
         add(modalBorder);
+        add(externalContainer);
     }
 
     private BSModalBorder makeBorder() {
