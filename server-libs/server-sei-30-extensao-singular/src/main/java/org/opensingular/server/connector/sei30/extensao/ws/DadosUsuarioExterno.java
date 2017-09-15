@@ -20,6 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="NumIdUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
  *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="StrSigla" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/all>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,6 +41,8 @@ public class DadosUsuarioExterno {
     protected String nome;
     @XmlElement(name = "StrSigla", required = true)
     protected String strSigla;
+    @XmlElement(name = "Cpf", required = true)
+    protected String cpf;
 
     /**
      * Gets the value of the numIdUsuario property.
@@ -103,6 +106,30 @@ public class DadosUsuarioExterno {
      */
     public void setStrSigla(String value) {
         this.strSigla = value;
+    }
+
+    /**
+     * Gets the value of the cpf property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getCpf() {
+        return cpf;
+    }
+
+    /**
+     * Sets the value of the cpf property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setCpf(String value) {
+        this.cpf = value;
     }
 
 }
