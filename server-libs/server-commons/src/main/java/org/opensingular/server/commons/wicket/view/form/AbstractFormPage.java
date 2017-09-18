@@ -298,7 +298,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
         form.add(buildSaveButton());
-        form.add(buildSaveAnnotationButton());
         form.add(buildFlowButtons());
         form.add(buildValidateButton());
         form.add(buildCloseButton());
@@ -911,34 +910,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
         };
         return button.add(visibleOnlyInEditionBehaviour());
-    }
-
-
-    private Component buildSaveAnnotationButton() {
-        final Component button = new SingularValidationButton("save-annotation-btn", singularFormPanel.getInstanceModel()) {
-
-            protected void save(AjaxRequestTarget target, IModel<? extends SInstance> instanceModel) {
-                saveForm(instanceModel);
-                atualizarContentWorklist(target);
-            }
-
-            @Override
-            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                try {
-                    save(target, instanceModel);
-                    addToastrSuccessMessage("message.success");
-                } catch (HibernateOptimisticLockingFailureException e) {
-                    getLogger().debug(e.getMessage(), e);
-                    addToastrErrorMessage("message.save.concurrent_error");
-                }
-            }
-
-            @Override
-            protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                save(target, instanceModel);
-            }
-        };
-        return button.add(visibleOnlyInAnnotationBehaviour());
     }
 
     @SuppressWarnings("rawtypes")
