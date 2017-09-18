@@ -969,15 +969,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Behavior visibleOnlyInEditionBehaviour() {
-        return $b.visibleIf(() -> getViewMode(config).isEdition());
+        return $b.visibleIf(() -> getViewMode(config).isEdition() || getAnnotationMode(config).editable());
     }
 
     protected Behavior visibleOnlyIfDraftInEditionBehaviour() {
         return $b.visibleIf(() -> !hasProcess() && getViewMode(config).isEdition());
-    }
-
-    protected Behavior visibleOnlyInAnnotationBehaviour() {
-        return $b.visibleIf(() -> getAnnotationMode(config).editable());
     }
 
     protected IModel<? extends SInstance> getFormInstance() {
