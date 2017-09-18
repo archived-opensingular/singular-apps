@@ -85,4 +85,8 @@ public interface SingularUserDetails extends UserDetails {
     default boolean isEnabled() {
         return true;
     }
+
+    default String getUserId() {
+        return null;
+    }
 }
