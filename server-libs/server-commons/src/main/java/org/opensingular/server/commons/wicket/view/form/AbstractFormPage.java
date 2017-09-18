@@ -405,7 +405,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void onNewPetitionCreation(PI petition) {
     }
 
-    protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, Boolean transitionButtonsVisibility, IModel<? extends SInstance> currentInstance) {
+    protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
             configureDiffButton(petitionId.get(), buttonContainer, currentInstance);
@@ -415,7 +415,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (!currentTaskInstanceOpt.isPresent()) {
             buttonContainer.setVisible(false).setEnabled(false);
         } else {
-            configureTransitionButtons(buttonContainer, modalContainer, transitionButtonsVisibility, currentInstance, currentTaskInstanceOpt.get());
+            configureTransitionButtons(buttonContainer, modalContainer, transitionButtonsVisible, currentInstance, currentTaskInstanceOpt.get());
         }
 
         appendViewNotificationsButton(buttonContainer);
