@@ -36,6 +36,7 @@ import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.opensingular.server.commons.wicket.view.util.ModuleButtonFactory;
@@ -57,13 +58,13 @@ public class DiffFormPage extends ServerTemplate {
     protected IFormService formService;
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    protected SingularDiffService singularDiffService;
+
 
     private ActionContext config;
     protected BSDataTable<DocumentDiff, String> tabela;
-    protected DocumentDiff                      diff;
+    protected SingularDiffService.DiffSummary diffSummary;
     protected BSGrid contentGrid = new BSGrid("content");
-    private FormVersionEntity originalFormVersion;
 
     public DiffFormPage(ActionContext config) {
         this.config = config;
@@ -75,50 +76,10 @@ public class DiffFormPage extends ServerTemplate {
         Optional<Long> petitionId = config.getPetitionId();
 
         if (petitionId.isPresent()) {
-
-            PetitionInstance petition = petitionService.getPetition(petitionId.get());
-            String typeName = PetitionUtil.getTypeName(petition);
-            Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
-
-            SInstance original = null;
-            SInstance newer;
-
-            Date originalDate = null;
-            Date newerDate;
-
-            if (draftEntity.isPresent()) {
-                Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition,
-                        typeName);
-                if (lastForm.isPresent()) {
-                    FormEntity originalForm = lastForm.get().getForm();
-                    original = formPetitionService.getSInstance(originalForm);
-                    originalFormVersion = originalForm.getCurrentFormVersionEntity();
-                    originalDate = originalFormVersion.getInclusionDate();
-                }
-
-                FormVersionEntity newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
-                FormEntity newerForm = newerFormVersion.getFormEntity();
-                newer = formPetitionService.getSInstance(newerForm);
-                newerDate = draftEntity.get().getEditionDate();
-
-            } else {
-                List<FormVersionEntity> formPetitionEntities = petitionService
-                        .buscarDuasUltimasVersoesForm(petitionId.get());
-
-                originalFormVersion = formPetitionEntities.get(1);
-                original = formPetitionService.getSInstance(originalFormVersion);
-                originalDate = originalFormVersion.getInclusionDate();
-
-                FormVersionEntity newerFormVersion = formPetitionEntities.get(0);
-                newer = formPetitionService.getSInstance(newerFormVersion);
-                newerDate = newerFormVersion.getInclusionDate();
-            }
-
-            diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
-
+            diffSummary = singularDiffService.diffFromPrevious(petitionId.get());
             add(contentGrid);
-            adicionarDatas(originalDate, newerDate);
-            add(new DiffVisualizer("diff", diff));
+            adicionarDatas(diffSummary.getPreviousFormVersionDate(), diffSummary.getCurrentFormVersionDate());
+            add(new DiffVisualizer("diff", diffSummary.getDiff()));
 
         }
     }
@@ -132,7 +93,7 @@ public class DiffFormPage extends ServerTemplate {
         contentGrid.newRow().newCol(2)
                 .newFormGroup()
                 .appendLabel(new BSLabel("label", $m.ofValue("")))
-                .appendComponent(id -> new ModuleButtonFactory(config).getViewVersionButton(id, originalFormVersion.getCod()));
+                .appendComponent(id -> new ModuleButtonFactory(config).getViewVersionButton(id, diffSummary.getPreviousFormVersionId()));
     }
 
     private void appendDate(BSRow container, String labelCampo, Date data) {
