@@ -194,7 +194,8 @@ public class Menu extends Panel implements Loggable {
 //                        .withTypesNames(tipos.isEmpty() ? menuFormTypes.stream().map(FormDTO::getName).collect(Collectors.toList()) : tipos)
                         .withRascunho(itemBoxDTO.isShowDraft())
                         .withEndedTasks(itemBoxDTO.getEndedTasks())
-                        .withIdUsuarioLogado(getIdUsuarioLogado());
+                        .withIdUsuarioLogado(getIdUsuarioLogado())
+                        .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
                 qtd = new RestTemplate().postForObject(url, filter, Long.class);
             } catch (Exception e) {
                 LOGGER.error("Erro ao acessar serviço: " + url, e);
