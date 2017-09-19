@@ -31,22 +31,27 @@ public abstract class ServerInitializer implements PSingularInitializer {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>)ServerInitializer.this::initSkins);
+                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) ServerInitializer.this::initSkins);
                 super.onStartup(servletContext);
             }
 
             @Override
             protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return AnalysisApplication.class;
-                } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return PetitionApplication.class;
-                } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
+                return ServerInitializer.this.wicketApplicationClass(iServerContext);
             }
+
         };
+    }
+
+    protected Class<? extends SingularServerApplication> wicketApplicationClass(IServerContext iServerContext) {
+        if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
+            return AnalysisApplication.class;
+        } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
+            return RequirementApplication.class;
+        } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
+            return AdministrationApplication.class;
+        }
+        throw new SingularServerException("Contexto inválido");
     }
 
     @Override
@@ -123,7 +128,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
         }
     }
 
-    public static class PetitionApplication extends SingularServerApplication {
+    public static class RequirementApplication extends SingularServerApplication {
 
         @Override
         public Class<? extends Page> getHomePage() {

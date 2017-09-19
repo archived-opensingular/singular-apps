@@ -33,7 +33,7 @@ public class BoxService {
     @Inject
     private BoxDAO boxDAO;
 
-    public void saveBoxDefinition(ModuleEntity module, BoxDefinitionData boxData) {
+    public BoxEntity saveBoxDefinition(ModuleEntity module, BoxDefinitionData boxData) {
         ItemBox itemBox = boxData.getItemBox();
 
         BoxEntity boxEntity = findByModuleAndName(module, itemBox.getName());
@@ -47,6 +47,8 @@ public class BoxService {
         boxEntity.setModule(module);
         boxEntity.setName(itemBox.getName());
         boxDAO.saveOrUpdate(boxEntity);
+        boxDAO.flush();
+        return boxEntity;
     }
 
     public BoxEntity findByModuleAndName(ModuleEntity moduleEntity, String name) {

@@ -27,6 +27,7 @@ import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
@@ -77,13 +78,14 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
                     protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                         modal.hide(target);
                     }
-                }
+                }.setDefaultFormProcessing(false)
         );
     }
 
     private SingularFormPanel buildSingularFormPanel() {
         singularFormPanel = new SingularFormPanel("singular-form-panel", true);
         singularFormPanel.setInstanceCreator(this::createInstance);
+        singularFormPanel.setModalContainer(externalContainer);
         return singularFormPanel;
     }
 

@@ -219,7 +219,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     @Nonnull
     protected final IModel<PI> getPetitionModel() {
         if (currentModel == null) {
-            throw SingularServerException.rethrow("A página ainda não foi inicializada");
+            throw new SingularServerException("A página ainda não foi inicializada");
         }
         return currentModel;
     }
@@ -232,7 +232,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (currentModel != null && currentModel.getObject() != null) {
             return currentModel.getObject();
         }
-        throw SingularServerException.rethrow("A petição (" + PetitionInstance.class.getName() + ") ainda está null");
+        throw new SingularServerException("A petição (" + PetitionInstance.class.getName() + ") ainda está null");
     }
 
     /**
@@ -298,7 +298,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
         form.add(buildSaveButton());
-        form.add(buildSaveAnnotationButton());
         form.add(buildFlowButtons());
         form.add(buildValidateButton());
         form.add(buildCloseButton());
@@ -313,6 +312,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (petitionId.isPresent()) {
             petition = petitionService.getPetition(petitionId.get());
             FormEntity formEntityDraftOrPetition = getDraftOrFormEntity(petition);
+            petition.getMainForm();
             if (formEntityDraftOrPetition != null) {
                 formKeyModel.setObject(formPetitionService.formKeyFromFormEntity(formEntityDraftOrPetition));
             }
@@ -405,7 +405,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void onNewPetitionCreation(PI petition) {
     }
 
-    protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance) {
+    protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
             configureDiffButton(petitionId.get(), buttonContainer, currentInstance);
@@ -415,7 +415,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         if (!currentTaskInstanceOpt.isPresent()) {
             buttonContainer.setVisible(false).setEnabled(false);
         } else {
-            configureTransitionButtons(buttonContainer, modalContainer, viewMode, annotationMode, currentInstance, currentTaskInstanceOpt.get());
+            configureTransitionButtons(buttonContainer, modalContainer, transitionButtonsVisible, currentInstance, currentTaskInstanceOpt.get());
         }
 
         appendViewNotificationsButton(buttonContainer);
@@ -427,10 +427,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, ViewMode viewMode, AnnotationMode annotationMode, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
+    private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisibility, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
 
         List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
-        if (CollectionUtils.isNotEmpty(transitions) && (ViewMode.EDIT == viewMode || AnnotationMode.EDIT == annotationMode)) {
+        if (CollectionUtils.isNotEmpty(transitions) && (transitionButtonsVisibility)) {
             int index = 0;
             for (STransition t : transitions) {
                 TransitionAccess transitionAccess = getButtonAccess(t, taskInstance);
@@ -442,7 +442,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                             modalContainer,
                             t.getName(),
                             currentInstance,
-                            viewMode,
                             transitionAccess);
                 }
 
@@ -532,8 +531,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         }
     }
 
-    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, ViewMode viewMode, TransitionAccess transitionButtonEnabled) {
-        final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel, viewMode);
+    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
+        final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
         buildFlowButton(buttonId, buttonContainer, transitionName, modal, transitionButtonEnabled);
     }
 
@@ -817,10 +816,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @param container -> modal container
      * @param tn        -> transition name
      * @param im        -> instance model
-     * @param vm        -> view mode
+
      * @return
      */
-    private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> container, String tn, IModel<? extends SInstance> im, ViewMode vm) {
+    private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> container, String tn, IModel<? extends SInstance> im) {
         final FlowConfirmPanel flowConfirmPanel = resolveFlowConfirmModal("confirmPanel" + idSuffix, tn);
         container.appendTag("div", flowConfirmPanel);
         return flowConfirmPanel.getModalBorder();
@@ -881,7 +880,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         BSContainer<?> buttonContainer = new BSContainer<>("custom-buttons");
         buttonContainer.setVisible(true);
 
-        configureCustomButtons(buttonContainer, modalContainer, getViewMode(config), getAnnotationMode(config), getFormInstance());
+        configureCustomButtons(buttonContainer, modalContainer, (ViewMode.EDIT == getViewMode(config) || AnnotationMode.EDIT == getAnnotationMode(config)), getFormInstance());
 
         return buttonContainer;
     }
@@ -910,34 +909,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             }
         };
         return button.add(visibleOnlyInEditionBehaviour());
-    }
-
-
-    private Component buildSaveAnnotationButton() {
-        final Component button = new SingularValidationButton("save-annotation-btn", singularFormPanel.getInstanceModel()) {
-
-            protected void save(AjaxRequestTarget target, IModel<? extends SInstance> instanceModel) {
-                saveForm(instanceModel);
-                atualizarContentWorklist(target);
-            }
-
-            @Override
-            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                try {
-                    save(target, instanceModel);
-                    addToastrSuccessMessage("message.success");
-                } catch (HibernateOptimisticLockingFailureException e) {
-                    getLogger().debug(e.getMessage(), e);
-                    addToastrErrorMessage("message.save.concurrent_error");
-                }
-            }
-
-            @Override
-            protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                save(target, instanceModel);
-            }
-        };
-        return button.add(visibleOnlyInAnnotationBehaviour());
     }
 
     @SuppressWarnings("rawtypes")
@@ -997,15 +968,11 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected Behavior visibleOnlyInEditionBehaviour() {
-        return $b.visibleIf(() -> getViewMode(config).isEdition());
+        return $b.visibleIf(() -> getViewMode(config).isEdition() || getAnnotationMode(config).editable());
     }
 
     protected Behavior visibleOnlyIfDraftInEditionBehaviour() {
         return $b.visibleIf(() -> !hasProcess() && getViewMode(config).isEdition());
-    }
-
-    protected Behavior visibleOnlyInAnnotationBehaviour() {
-        return $b.visibleIf(() -> getAnnotationMode(config).editable());
     }
 
     protected IModel<? extends SInstance> getFormInstance() {

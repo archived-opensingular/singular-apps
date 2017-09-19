@@ -4,109 +4,276 @@
         name="ExtensaoWS"
         targetNamespace="extensaons" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="extensaons" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/">
 
-    <wsdl:types>
-        <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="extensaons">
+     <wsdl:types>
+          <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="extensaons">
 
-            <xsd:complexType name="ArrayOfIdDocumento">
-                <xsd:sequence>
-                    <xsd:element name="IdDocumento" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
-                </xsd:sequence>
-            </xsd:complexType>
+               <xsd:complexType name="ArrayOfIdDocumento">
+                    <xsd:sequence>
+                         <xsd:element name="IdDocumento" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
+               </xsd:complexType>
 
-            <xsd:complexType name="DadosAssinatura">
-                <xsd:all>
-                    <xsd:element name="IdOrgaoUsuario" type="xsd:long" />
-                    <xsd:element name="IdContextoUsuario" type="xsd:long" />
-                    <xsd:element name="SiglaUsuario" type="xsd:string" />
-                    <xsd:element name="SenhaUsuario" type="xsd:string" />
-                    <xsd:element name="CargoFuncao" type="xsd:string" />
-                    <xsd:element name="IdsDocumento" type="tns:ArrayOfIdDocumento" />
-                </xsd:all>
-            </xsd:complexType>
+               <xsd:complexType name="DadosAssinatura">
+                    <xsd:all>
+                         <xsd:element name="IdOrgaoUsuario" type="xsd:long" />
+                         <xsd:element name="IdContextoUsuario" type="xsd:long" />
+                         <xsd:element name="SiglaUsuario" type="xsd:string" />
+                         <xsd:element name="SenhaUsuario" type="xsd:string" />
+                         <xsd:element name="CargoFuncao" type="xsd:string" />
+                         <xsd:element name="IdsDocumento" type="tns:ArrayOfIdDocumento" />
+                    </xsd:all>
+               </xsd:complexType>
 
-            <xsd:complexType name="Assinante">
-                <xsd:all>
-                    <xsd:element name="IdAssinante" type="xsd:string"/>
-                    <xsd:element name="CargoFuncao" type="xsd:string"/>
-                </xsd:all>
-            </xsd:complexType>
+               <xsd:complexType name="DadosUsuarioExterno">
+                    <xsd:all>
+                         <xsd:element name="NumIdUsuario" type="xsd:long" />
+                         <xsd:element name="Nome" type="xsd:string" />
+                         <xsd:element name="StrSigla" type="xsd:string" />
+                    </xsd:all>
+               </xsd:complexType>
 
-            <xsd:complexType name="ArrayOfAssinante">
-                <xsd:sequence>
-                    <xsd:element name="Assinante" type="tns:Assinante" minOccurs="0" maxOccurs="unbounded" />
-                </xsd:sequence>
-            </xsd:complexType>
+               <xsd:complexType name="Assinante">
+                    <xsd:all>
+                         <xsd:element name="IdAssinante" type="xsd:string"/>
+                         <xsd:element name="CargoFuncao" type="xsd:string"/>
+                    </xsd:all>
+               </xsd:complexType>
 
+               <xsd:complexType name="ArrayOfAssinante">
+                    <xsd:sequence>
+                         <xsd:element name="Assinante" type="tns:Assinante" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
+               </xsd:complexType>
 
-        </xsd:schema>
-    </wsdl:types>
+               <xsd:complexType name="Campo">
+                    <xsd:all>
+                         <xsd:element name="Nome" type="xsd:string"/>
+                         <xsd:element name="Valor" type="xsd:string"/>
+                    </xsd:all>
+               </xsd:complexType>
 
-    <wsdl:message name="assinarDocumentoRequest">
-        <wsdl:part name="SiglaSistema" type="xsd:string"/>
-        <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
-        <wsdl:part name="IdUnidade" type="xsd:string"/>
-        <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura" />
-    </wsdl:message>
+               <xsd:complexType name="ArrayOfCampo">
+                    <xsd:sequence>
+                         <xsd:element name="Campo" type="tns:Campo" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
+               </xsd:complexType>
 
-    <wsdl:message name="assinarDocumentoResponse">
-        <wsdl:part name="retorno" type="xsd:string" />
-    </wsdl:message>
+               <xsd:complexType name="Serie">
+                    <xsd:all>
+                         <xsd:element name="IdSerie" type="xsd:string"/>
+                         <xsd:element name="Nome" type="xsd:string"/>
+                         <xsd:element name="Aplicabilidade" type="xsd:string" minOccurs="0"/>
+                    </xsd:all>
+               </xsd:complexType>
 
-    <wsdl:message name="listarAssinantesPorUnidadeRequest">
-        <wsdl:part name="SiglaSistema" type="xsd:string"/>
-        <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
-        <wsdl:part name="IdUnidade" type="xsd:string"/>
-    </wsdl:message>
+               <xsd:complexType name="RetornoConsultaDocumento">
+                    <xsd:all>
+                         <xsd:element name="IdProcedimento" type="xsd:string"/>
+                         <xsd:element name="ProcedimentoFormatado" type="xsd:string"/>
+                         <xsd:element name="IdDocumento" type="xsd:string"/>
+                         <xsd:element name="DocumentoFormatado" type="xsd:string"/>
+                         <xsd:element name="LinkAcesso" type="xsd:string"/>
+                         <xsd:element name="Serie" type="tns:Serie"/>
+                         <xsd:element name="Numero" type="xsd:string"/>
+                         <xsd:element name="Data" type="xsd:string"/>
+                         <xsd:element name="Campos" type="tns:ArrayOfCampo"/>
+                    </xsd:all>
+               </xsd:complexType>
 
-    <wsdl:message name="listarAssinantesPorUnidadeResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfAssinante" />
-    </wsdl:message>
+               <xsd:complexType name="ArrayOfRetornoConsultaDocumento">
+                    <xsd:sequence>
+                         <xsd:element name="RetornoConsultaDocumento" type="tns:RetornoConsultaDocumento" minOccurs="0" maxOccurs="unbounded" />
+                    </xsd:sequence>
+               </xsd:complexType>
 
-    <wsdl:portType name="extensaoPortType">
+               <xsd:complexType name="LoginInterno">
+                    <xsd:all>
+                         <xsd:element name="IdOrgaoUsuario" type="xsd:long" />
+                         <xsd:element name="IdContextoUsuario" type="xsd:long" />
+                         <xsd:element name="SiglaUsuario" type="xsd:string" />
+                         <xsd:element name="SenhaUsuario" type="xsd:string" />
+                    </xsd:all>
+               </xsd:complexType>
 
-        <wsdl:operation name="assinarDocumento">
-            <wsdl:documentation>Assinar documento</wsdl:documentation>
-            <wsdl:input message="tns:assinarDocumentoRequest"/>
-            <wsdl:output message="tns:assinarDocumentoResponse"/>
-        </wsdl:operation>
+          </xsd:schema>
+     </wsdl:types>
 
-        <wsdl:operation name="listarAssinantesPorUnidade">
-            <wsdl:documentation>Listar assinantes por unidade</wsdl:documentation>
-            <wsdl:input message="tns:listarAssinantesPorUnidadeRequest"/>
-            <wsdl:output message="tns:listarAssinantesPorUnidadeResponse"/>
-        </wsdl:operation>
+     <wsdl:message name="assinarDocumentoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura" />
+     </wsdl:message>
 
-    </wsdl:portType>
+     <wsdl:message name="assinarDocumentoResponse">
+          <wsdl:part name="retorno" type="xsd:string" />
+     </wsdl:message>
 
-    <wsdl:binding name="extensaoBinding" type="tns:extensaoPortType">
-        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+     <wsdl:message name="listarAssinantesPorUnidadeRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+     </wsdl:message>
 
-        <wsdl:operation name="assinarDocumento">
-            <soap:operation soapAction="extensaons/assinarDocumento"/>
-            <wsdl:input>
-                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </wsdl:output>
-        </wsdl:operation>
+     <wsdl:message name="listarAssinantesPorUnidadeResponse">
+          <wsdl:part name="retorno" type="tns:ArrayOfAssinante" />
+     </wsdl:message>
 
-        <wsdl:operation name="listarAssinantesPorUnidade">
-            <soap:operation soapAction="extensaons/listarAssinantesPorUnidade"/>
-            <wsdl:input>
-                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </wsdl:input>
-            <wsdl:output>
-                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
-            </wsdl:output>
-        </wsdl:operation>
+     <wsdl:message name="listarDocumentosPorProcedimentoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="IdProcedimento" type="xsd:string"/>
+     </wsdl:message>
 
-    </wsdl:binding>
+     <wsdl:message name="listarDocumentosPorProcedimentoResponse">
+          <wsdl:part name="retorno" type="tns:ArrayOfRetornoConsultaDocumento" />
+     </wsdl:message>
 
-    <wsdl:service name="extensaoService">
-        <wsdl:port name="extensaoPortService" binding="tns:extensaoBinding">
-            <soap:address location="http://treinamentosei3singular.antaq.gov.br/sei/modulos/singular/mod-extensao-ws/ws/ExtensaoWS.php"/>
-        </wsdl:port>
-    </wsdl:service>
+     <wsdl:message name="autenticarUsuarioExternoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="Login" type="xsd:string"/>
+          <wsdl:part name="Senha" type="xsd:string"/>
+          <wsdl:part name="PermitePendente" type="xsd:boolean"/>
+     </wsdl:message>
+
+     <wsdl:message name="autenticarUsuarioExternoResponse">
+          <wsdl:part name="autenticado" type="xsd:boolean"/>
+     </wsdl:message>
+
+     <wsdl:message name="autenticarUsuarioInternoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="LoginInterno" type="tns:LoginInterno"/>
+     </wsdl:message>
+
+     <wsdl:message name="autenticarUsuarioInternoResponse">
+          <wsdl:part name="Autenticado" type="xsd:boolean"/>
+     </wsdl:message>
+
+     <wsdl:message name="buscarDadosUsuarioExternoRequest">
+          <wsdl:part name="SiglaSistema" type="xsd:string"/>
+          <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+          <wsdl:part name="IdUnidade" type="xsd:string"/>
+          <wsdl:part name="Login" type="xsd:string"/>
+     </wsdl:message>
+
+     <wsdl:message name="buscarDadosUsuarioExternoResponse">
+          <wsdl:part name="dadosUsuarioExterno" type="tns:DadosUsuarioExterno"/>
+     </wsdl:message>
+
+     <wsdl:portType name="extensaoPortType">
+
+          <wsdl:operation name="assinarDocumento">
+               <wsdl:documentation>Assinar documento</wsdl:documentation>
+               <wsdl:input message="tns:assinarDocumentoRequest"/>
+               <wsdl:output message="tns:assinarDocumentoResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="listarAssinantesPorUnidade">
+               <wsdl:documentation>Listar assinantes por unidade</wsdl:documentation>
+               <wsdl:input message="tns:listarAssinantesPorUnidadeRequest"/>
+               <wsdl:output message="tns:listarAssinantesPorUnidadeResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="listarDocumentosPorProcedimento">
+               <wsdl:documentation>Listar documentos por processo</wsdl:documentation>
+               <wsdl:input message="tns:listarDocumentosPorProcedimentoRequest"/>
+               <wsdl:output message="tns:listarDocumentosPorProcedimentoResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="autenticarUsuarioExterno">
+               <wsdl:documentation>Autentica um usuario externo. true: autenticado, false: nao autenticado</wsdl:documentation>
+               <wsdl:input message="tns:autenticarUsuarioExternoRequest"/>
+               <wsdl:output message="tns:autenticarUsuarioExternoResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="autenticarUsuarioInterno">
+               <wsdl:documentation>Autentica um usuario interno. true: autenticado, false: nao autenticado</wsdl:documentation>
+               <wsdl:input message="tns:autenticarUsuarioInternoRequest"/>
+               <wsdl:output message="tns:autenticarUsuarioInternoResponse"/>
+          </wsdl:operation>
+
+          <wsdl:operation name="buscarDadosUsuarioExterno">
+               <wsdl:documentation>Busca informações do usuário externo.</wsdl:documentation>
+               <wsdl:input message="tns:buscarDadosUsuarioExternoRequest"/>
+               <wsdl:output message="tns:buscarDadosUsuarioExternoResponse"/>
+          </wsdl:operation>
+
+     </wsdl:portType>
+
+     <wsdl:binding name="extensaoBinding" type="tns:extensaoPortType">
+          <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+
+          <wsdl:operation name="assinarDocumento">
+               <soap:operation soapAction="extensaons/assinarDocumento"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="listarAssinantesPorUnidade">
+               <soap:operation soapAction="extensaons/listarAssinantesPorUnidade"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="listarDocumentosPorProcedimento">
+               <soap:operation soapAction="extensaons/listarDocumentosPorProcedimento"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="autenticarUsuarioExterno">
+               <soap:operation soapAction="extensaons/autenticarUsuarioExterno"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="autenticarUsuarioInterno">
+               <soap:operation soapAction="extensaons/autenticarUsuarioInterno"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+          <wsdl:operation name="buscarDadosUsuarioExterno">
+               <soap:operation soapAction="extensaons/buscarDadosUsuarioExterno"/>
+               <wsdl:input>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:input>
+               <wsdl:output>
+                    <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+               </wsdl:output>
+          </wsdl:operation>
+
+     </wsdl:binding>
+
+     <wsdl:service name="extensaoService">
+          <wsdl:port name="extensaoPortService" binding="tns:extensaoBinding">
+               <soap:address location="http://treinamentosei3singular.antaq.gov.br/sei/modulos/singular/mod-extensao-ws/ws/ExtensaoWS.php"/>
+          </wsdl:port>
+     </wsdl:service>
 
 </wsdl:definitions>

@@ -64,4 +64,98 @@ public interface ExtensaoPortType {
         @WebParam(name = "IdUnidade", partName = "IdUnidade")
         String idUnidade);
 
+    /**
+     * Listar documentos por processo
+     * 
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param siglaSistema
+     * @param idProcedimento
+     * @return
+     *     returns org.opensingular.server.connector.sei30.extensao.ws.ArrayOfRetornoConsultaDocumento
+     */
+    @WebMethod(action = "extensaons/listarDocumentosPorProcedimento")
+    @WebResult(name = "retorno", partName = "retorno")
+    public ArrayOfRetornoConsultaDocumento listarDocumentosPorProcedimento(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
+        String idProcedimento);
+
+    /**
+     * Autentica um usuario externo. true: autenticado, false: nao autenticado
+     * 
+     * @param senha
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param permitePendente
+     * @param siglaSistema
+     * @param login
+     * @return
+     *     returns boolean
+     */
+    @WebMethod(action = "extensaons/autenticarUsuarioExterno")
+    @WebResult(name = "autenticado", partName = "autenticado")
+    public boolean autenticarUsuarioExterno(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "Login", partName = "Login")
+        String login,
+        @WebParam(name = "Senha", partName = "Senha")
+        String senha,
+        @WebParam(name = "PermitePendente", partName = "PermitePendente")
+        boolean permitePendente);
+
+    /**
+     * Autentica um usuario interno. true: autenticado, false: nao autenticado
+     * 
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param siglaSistema
+     * @param loginInterno
+     * @return
+     *     returns boolean
+     */
+    @WebMethod(action = "extensaons/autenticarUsuarioInterno")
+    @WebResult(name = "Autenticado", partName = "Autenticado")
+    public boolean autenticarUsuarioInterno(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "LoginInterno", partName = "LoginInterno")
+        LoginInterno loginInterno);
+
+    /**
+     * Busca informações do usuário externo.
+     * 
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param siglaSistema
+     * @param login
+     * @return
+     *     returns org.opensingular.server.connector.sei30.extensao.ws.DadosUsuarioExterno
+     */
+    @WebMethod(action = "extensaons/buscarDadosUsuarioExterno")
+    @WebResult(name = "dadosUsuarioExterno", partName = "dadosUsuarioExterno")
+    public DadosUsuarioExterno buscarDadosUsuarioExterno(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "Login", partName = "Login")
+        String login);
+
 }

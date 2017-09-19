@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArrayOfIdDocumento complex type.
+ * <p>Java class for ArrayOfRetornoConsultaDocumento complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfIdDocumento">
+ * &lt;complexType name="ArrayOfRetornoConsultaDocumento">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="RetornoConsultaDocumento" type="{extensaons}RetornoConsultaDocumento" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +29,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfIdDocumento", propOrder = {
-    "idDocumento"
+@XmlType(name = "ArrayOfRetornoConsultaDocumento", propOrder = {
+    "retornoConsultaDocumento"
 })
-public class ArrayOfIdDocumento {
+public class ArrayOfRetornoConsultaDocumento {
 
-    @XmlElement(name = "IdDocumento")
-    protected List<String> idDocumento;
+    @XmlElement(name = "RetornoConsultaDocumento")
+    protected List<RetornoConsultaDocumento> retornoConsultaDocumento;
 
     /**
-     * Gets the value of the idDocumento property.
+     * Gets the value of the retornoConsultaDocumento property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the idDocumento property.
+     * This is why there is not a <CODE>set</CODE> method for the retornoConsultaDocumento property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getIdDocumento().add(newItem);
+     *    getRetornoConsultaDocumento().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link RetornoConsultaDocumento }
      * 
      * 
      */
-    public List<String> getIdDocumento() {
-        if (idDocumento == null) {
-            idDocumento = new ArrayList<String>();
+    public List<RetornoConsultaDocumento> getRetornoConsultaDocumento() {
+        if (retornoConsultaDocumento == null) {
+            retornoConsultaDocumento = new ArrayList<RetornoConsultaDocumento>();
         }
-        return this.idDocumento;
+        return this.retornoConsultaDocumento;
     }
 
 }

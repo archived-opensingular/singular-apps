@@ -8,17 +8,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Assinante complex type.
+ * <p>Java class for Campo complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Assinante">
+ * &lt;complexType name="Campo">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;all>
- *         &lt;element name="IdAssinante" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Valor" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *       &lt;/all>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,62 +28,62 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Assinante", propOrder = {
+@XmlType(name = "Campo", propOrder = {
 
 })
-public class Assinante {
+public class Campo {
 
-    @XmlElement(name = "IdAssinante", required = true)
-    protected String idAssinante;
-    @XmlElement(name = "CargoFuncao", required = true)
-    protected String cargoFuncao;
+    @XmlElement(name = "Nome", required = true)
+    protected String nome;
+    @XmlElement(name = "Valor", required = true)
+    protected String valor;
 
     /**
-     * Gets the value of the idAssinante property.
+     * Gets the value of the nome property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getIdAssinante() {
-        return idAssinante;
+    public String getNome() {
+        return nome;
     }
 
     /**
-     * Sets the value of the idAssinante property.
+     * Sets the value of the nome property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setIdAssinante(String value) {
-        this.idAssinante = value;
+    public void setNome(String value) {
+        this.nome = value;
     }
 
     /**
-     * Gets the value of the cargoFuncao property.
+     * Gets the value of the valor property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getCargoFuncao() {
-        return cargoFuncao;
+    public String getValor() {
+        return valor;
     }
 
     /**
-     * Sets the value of the cargoFuncao property.
+     * Sets the value of the valor property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setCargoFuncao(String value) {
-        this.cargoFuncao = value;
+    public void setValor(String value) {
+        this.valor = value;
     }
 
 }

@@ -10,16 +10,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArrayOfIdDocumento complex type.
+ * <p>Java class for ArrayOfCampo complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfIdDocumento">
+ * &lt;complexType name="ArrayOfCampo">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Campo" type="{extensaons}Campo" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,41 +29,41 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ArrayOfIdDocumento", propOrder = {
-    "idDocumento"
+@XmlType(name = "ArrayOfCampo", propOrder = {
+    "campo"
 })
-public class ArrayOfIdDocumento {
+public class ArrayOfCampo {
 
-    @XmlElement(name = "IdDocumento")
-    protected List<String> idDocumento;
+    @XmlElement(name = "Campo")
+    protected List<Campo> campo;
 
     /**
-     * Gets the value of the idDocumento property.
+     * Gets the value of the campo property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the idDocumento property.
+     * This is why there is not a <CODE>set</CODE> method for the campo property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getIdDocumento().add(newItem);
+     *    getCampo().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link Campo }
      * 
      * 
      */
-    public List<String> getIdDocumento() {
-        if (idDocumento == null) {
-            idDocumento = new ArrayList<String>();
+    public List<Campo> getCampo() {
+        if (campo == null) {
+            campo = new ArrayList<Campo>();
         }
-        return this.idDocumento;
+        return this.campo;
     }
 
 }
