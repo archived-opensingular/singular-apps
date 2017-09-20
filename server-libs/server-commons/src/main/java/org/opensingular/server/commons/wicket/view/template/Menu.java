@@ -216,8 +216,13 @@ public class Menu extends Panel implements Loggable {
                 .orElse(null);
     }
 
+    //TODO buggy, should be refactored
     public Class<? extends Page> getBoxPageClass() {
-        return WebApplication.get().getHomePage();
+        Class<? extends Page> homePage = WebApplication.get().getHomePage();
+        if (homePage != null) {
+            return homePage;
+        }
+        return boxPageClass;
     }
 
     protected static class AddContadoresBehaviour extends AbstractDefaultAjaxBehavior {
