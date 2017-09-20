@@ -30,9 +30,7 @@ import org.opensingular.form.persistence.dao.FormCacheValueDAO;
 import org.opensingular.form.persistence.dao.FormDAO;
 import org.opensingular.form.persistence.dao.FormTypeDAO;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
-import org.opensingular.form.service.FormFieldService;
 import org.opensingular.form.service.FormService;
-import org.opensingular.form.service.IFormFieldService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringServiceRegistry;
@@ -61,6 +59,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultPetitionSender;
 import org.opensingular.server.commons.service.DefaultPetitionService;
+import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
@@ -103,6 +102,11 @@ public class SingularDefaultBeanFactory {
     @Bean(name = "peticionamentoUserDetailService")
     public SingularUserDetailsService worklistUserDetailServiceFactory() {
         return new DefaultUserDetailService();
+    }
+
+    @Bean
+    public SingularDiffService singularDiffService(){
+        return new SingularDiffService();
     }
 
     @Bean
