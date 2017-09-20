@@ -136,4 +136,26 @@ public interface ExtensaoPortType {
         @WebParam(name = "LoginInterno", partName = "LoginInterno")
         LoginInterno loginInterno);
 
+    /**
+     * Busca informações do usuário externo.
+     * 
+     * @param identificacaoServico
+     * @param idUnidade
+     * @param siglaSistema
+     * @param login
+     * @return
+     *     returns org.opensingular.server.connector.sei30.extensao.ws.DadosUsuarioExterno
+     */
+    @WebMethod(action = "extensaons/buscarDadosUsuarioExterno")
+    @WebResult(name = "dadosUsuarioExterno", partName = "dadosUsuarioExterno")
+    public DadosUsuarioExterno buscarDadosUsuarioExterno(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "Login", partName = "Login")
+        String login);
+
 }

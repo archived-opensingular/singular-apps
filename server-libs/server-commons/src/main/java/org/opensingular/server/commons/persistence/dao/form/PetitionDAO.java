@@ -174,7 +174,7 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         query.append(" left join fpe.currentDraftEntity cde  ");
         query.append(" left join cde.form  f ");
         query.append(" left join f.formType ft ");
-        query.append(" where pe.cod = :petitionId and (ftm is null or fpe.mainForm = :sim ) AND (ct.endDate is null or t.type = :fim )");
+        query.append(" where pe.cod = :petitionId and fpe.mainForm = :sim AND (ct.endDate is null or t.type = :fim )");
         query.append(" order by ct.cod DESC ");
         return (PetitionAuthMetadataDTO) Optional.ofNullable(getSession().createQuery(query.toString())
                 .setParameter("sim", SimNao.SIM)

@@ -1,9 +1,10 @@
 package org.opensingular.server.connector.sei30.builder;
 
-import org.opensingular.server.connector.sei30.ConstantesSEI;
 import org.opensingular.server.connector.sei30.model.AssuntoSei;
 import org.opensingular.server.connector.sei30.model.NivelAcesso;
 import org.opensingular.server.connector.sei30.model.TipoProcedimento;
+import org.opensingular.server.connector.sei30.ws.ArrayOfAssunto;
+import org.opensingular.server.connector.sei30.ws.ArrayOfInteressado;
 import org.opensingular.server.connector.sei30.ws.Interessado;
 import org.opensingular.server.connector.sei30.ws.Procedimento;
 
@@ -21,8 +22,8 @@ public class ProcedimentoBuilder {
      */
     public ProcedimentoBuilder() {
         this.procedimento = new Procedimento();
-        this.procedimento.setAssuntos(ConstantesSEI.ASSUNTOS_EMPTY);
-        this.procedimento.setInteressados(ConstantesSEI.INTERESSADOS_EMPTY);
+        this.procedimento.setAssuntos(new ArrayOfAssunto());
+        this.procedimento.setInteressados(new ArrayOfInteressado());
         this.procedimento.setNivelAcesso(NivelAcesso.PUBLICO.getCodigo());
 
     }

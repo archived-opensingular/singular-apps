@@ -34,4 +34,12 @@ public class PetitionerDAO<T extends PetitionerEntity> extends BaseDAO<T, Long> 
                 .uniqueResult();
     }
 
+    public PetitionerEntity findPetitionerByCpfCnpj(String cpfCnpj) {
+        return (PetitionerEntity) getSession()
+                .createCriteria(PetitionerEntity.class)
+                .add(Restrictions.eq("cpfCNPJ", cpfCnpj))
+                .setMaxResults(1)
+                .uniqueResult();
+    }
+
 }

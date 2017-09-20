@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.cache;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 
 import javax.servlet.annotation.WebListener;
@@ -7,7 +8,7 @@ import javax.servlet.http.HttpSessionEvent;
 import java.util.Optional;
 
 @WebListener
-public class WicketSessionCacheHttpSessionListener implements javax.servlet.http.HttpSessionListener {
+public class WicketSessionCacheHttpSessionListener implements javax.servlet.http.HttpSessionListener, Loggable {
 
     @Override
     public void sessionCreated(HttpSessionEvent se) {
@@ -16,6 +17,12 @@ public class WicketSessionCacheHttpSessionListener implements javax.servlet.http
 
     @Override
     public void sessionDestroyed(HttpSessionEvent se) {
-        Optional.ofNullable(ApplicationContextProvider.get()).map(ac -> ac.getBean(WicketSessionCacheManager.class)).ifPresent(wscm -> wscm.clearCache());
+        if (ApplicationContextProvider.isConfigured()){
+            try {
+                ApplicationContextProvider.get().getBean(WicketSessionCacheManager.class).clearCache();
+            } catch (org.springframework.beans.factory.NoSuchBeanDefinitionException e) {
+                getLogger().warn(e.getMessage(), e);
+            }
+        }
     }
 }

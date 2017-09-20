@@ -16,7 +16,7 @@ public class PetitionAuthMetadataDTO implements Serializable {
     private Integer taskInstanceCod;
 
     public PetitionAuthMetadataDTO(String formTypeAbbreviationDraft, String formTypeAbbreviationProcess, String currentTaskAbbreviation, String definitionKey, Integer taskInstanceCod) {
-        this.formTypeAbbreviation = formTypeAbbreviationProcess == null ? formTypeAbbreviationDraft :  formTypeAbbreviationProcess;
+        this.formTypeAbbreviation = formTypeAbbreviationDraft == null ? formTypeAbbreviationProcess :  formTypeAbbreviationDraft;
         this.currentTaskAbbreviation = currentTaskAbbreviation;
         this.definitionKey = definitionKey;
         this.taskInstanceCod  = taskInstanceCod;

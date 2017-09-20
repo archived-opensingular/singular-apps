@@ -62,6 +62,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link DadosUsuarioExterno }
+     * 
+     */
+    public DadosUsuarioExterno createDadosUsuarioExterno() {
+        return new DadosUsuarioExterno();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfAssinante }
      * 
      */

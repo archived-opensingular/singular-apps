@@ -36,6 +36,7 @@ import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
@@ -75,6 +76,8 @@ import java.util.Optional;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+
+import static org.opensingular.flow.core.TaskInstance.LEITURA_DA_TAREFA;
 
 @Transactional
 public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
@@ -541,11 +544,18 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
                 version -> (SIComposite) getFormPetitionService().getSInstance(version.getFormVersion()));
     }
 
-    public FlowInstance startNewProcess(PetitionInstance petition, FlowDefinition flowDefinition) {
+    public FlowInstance startNewProcess(PetitionInstance petition, FlowDefinition flowDefinition, String codResponsavel) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(petition.getDescription());
 
         ProcessInstanceEntity processEntity = newFlowInstance.saveEntity();
+
+        if(codResponsavel != null) {
+            PetitionUtil.findUser(codResponsavel).filter(u -> u instanceof Actor).ifPresent(user -> {
+                processEntity.setUserCreator((Actor) user);
+            });
+        }
+
         PE petitionEntity = (PE) petition.getEntity();
         petitionEntity.setProcessInstanceEntity(processEntity);
         petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
@@ -575,6 +585,11 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public RequirementDefinitionEntity findRequirementDefinition(Long requirementId) {
         return requirementDefinitionDAO.findOrException(requirementId);
+    }
+
+    public void logTaskVisualization(PI petitionInstance) {
+        TaskInstance taskInstance = petitionInstance.getFlowInstance().getCurrentTaskOrException();
+        taskInstance.log(LEITURA_DA_TAREFA, FormatUtil.dateToDefaultTimestampString(new Date()));
     }
 
 }
