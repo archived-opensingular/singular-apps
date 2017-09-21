@@ -86,6 +86,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RetornoConsultarConteudoDocumento }
+     * 
+     */
+    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
+        return new RetornoConsultarConteudoDocumento();
+    }
+
+    /**
      * Create an instance of {@link DadosAssinatura }
      * 
      */
