@@ -11,8 +11,10 @@ import java.util.function.Supplier;
  * Factory que constrói o cliente do WEB-SERVICE substituindo o endpoint pelo
  * endereço configurado nos arquivos de configuração do Singular.
  *
+ * Deprecated, use org.opensingular.lib.commons.util.WSClientDefaultFactory instead
  * @param <T>
  */
+@Deprecated
 public class WSClientDefaultFactory<T> implements WSClientSafeWrapper.WSClientFactory<T> {
 
     private String property;

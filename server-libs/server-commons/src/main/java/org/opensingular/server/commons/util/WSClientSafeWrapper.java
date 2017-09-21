@@ -20,7 +20,10 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * * Classe WSClientSafeWrapper.
+ *
+ * Deprecated, use org.opensingular.lib.commons.util.WSClientSafeWrapper instead
  */
+@Deprecated
 public class WSClientSafeWrapper {
 
     /**
