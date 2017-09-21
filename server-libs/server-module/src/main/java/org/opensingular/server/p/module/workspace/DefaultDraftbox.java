@@ -24,7 +24,7 @@ public class DefaultDraftbox implements BoxDefinition {
     public ItemBox build(IServerContext context) {
         final ItemBox rascunho = new ItemBox();
         rascunho.setName("Rascunho");
-        rascunho.setDescription("Petições de rascunho");
+        rascunho.setDescription("Requerimentos de rascunho");
         rascunho.setIcone(DefaultIcons.DOCS);
         rascunho.setShowDraft(true);
         return rascunho;

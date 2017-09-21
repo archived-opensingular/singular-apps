@@ -22,8 +22,8 @@ public class DefaultDonebox implements BoxDefinition {
     @Override
     public ItemBox build(IServerContext context) {
         final ItemBox concluidas = new ItemBox();
-        concluidas.setName("Concluídas");
-        concluidas.setDescription("Petições concluídas");
+        concluidas.setName("Concluídos");
+        concluidas.setDescription("Requerimentos concluídos");
         concluidas.setIcone(DefaultIcons.DOCS);
         concluidas.setEndedTasks(Boolean.TRUE);
         return concluidas;
