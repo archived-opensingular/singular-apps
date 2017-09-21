@@ -18,6 +18,7 @@ package org.opensingular.server.commons.wicket.view.template;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
+import org.apache.wicket.Page;
 import org.apache.wicket.Session;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -25,6 +26,7 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
@@ -50,7 +52,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -176,8 +183,31 @@ public class Menu extends Panel implements Loggable {
         return configs;
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
-        return () -> moduleDriver.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
+    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module, List<String> tipos, List<FormDTO> menuFormTypes) {
+        return () -> {
+            final String connectionURL = module.getConnectionURL();
+            final String url = connectionURL + itemBoxDTO.getCountEndpoint();
+            long qtd;
+            try {
+                QuickFilter filter = new QuickFilter()
+                        .withProcessesAbbreviation(siglas)
+//                        .withTypesNames(tipos.isEmpty() ? menuFormTypes.stream().map(FormDTO::getName).collect(Collectors.toList()) : tipos)
+                        .withRascunho(itemBoxDTO.isShowDraft())
+                        .withEndedTasks(itemBoxDTO.getEndedTasks())
+                        .withIdUsuarioLogado(getIdUsuarioLogado())
+                        .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
+                qtd = new RestTemplate().postForObject(url, filter, Long.class);
+            } catch (Exception e) {
+                LOGGER.error("Erro ao acessar serviço: " + url, e);
+                qtd = 0;
+            }
+
+            return String.valueOf(qtd);
+        };
+    }
+
+    protected String getIdPessoa() {
+        return getIdUsuarioLogado();
     }
 
     protected String getIdUsuarioLogado() {
@@ -187,7 +217,12 @@ public class Menu extends Panel implements Loggable {
                 .orElse(null);
     }
 
-    public Class<? extends WebPage> getBoxPageClass() {
+    //TODO buggy, should be refactored
+    public Class<? extends Page> getBoxPageClass() {
+        Class<? extends Page> homePage = WebApplication.get().getHomePage();
+        if (homePage != null) {
+            return homePage;
+        }
         return boxPageClass;
     }
 

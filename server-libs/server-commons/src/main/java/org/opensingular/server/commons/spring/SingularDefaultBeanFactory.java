@@ -61,6 +61,7 @@ import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultPetitionSender;
 import org.opensingular.server.commons.service.DefaultPetitionService;
+import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.FormPetitionService;
 import org.opensingular.server.commons.service.IEmailService;
@@ -103,6 +104,11 @@ public class SingularDefaultBeanFactory {
     @Bean(name = "peticionamentoUserDetailService")
     public SingularUserDetailsService worklistUserDetailServiceFactory() {
         return new DefaultUserDetailService();
+    }
+
+    @Bean
+    public SingularDiffService singularDiffService(){
+        return new SingularDiffService();
     }
 
     @Bean

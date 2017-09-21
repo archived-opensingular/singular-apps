@@ -121,13 +121,21 @@ public class BoxPage extends ServerBoxTemplate {
 
     protected QuickFilter createFilter() {
         return new QuickFilter()
-                .withIdUsuarioLogado(getIdUsuario());
+                .withIdUsuarioLogado(getIdUsuario())
+                .withIdPessoa(getIdPessoa());
     }
 
     protected String getIdUsuario() {
         SingularUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
                 .map(SingularUserDetails::getUsername)
+                .orElse(null);
+    }
+
+    protected String getIdPessoa() {
+        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        return Optional.ofNullable(userDetails)
+                .map(SingularUserDetails::getUserId)
                 .orElse(null);
     }
 
