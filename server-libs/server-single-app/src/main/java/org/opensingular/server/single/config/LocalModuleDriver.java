@@ -15,6 +15,7 @@ import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Inject;
@@ -45,7 +46,8 @@ public class LocalModuleDriver implements ModuleDriver {
                 .withProcessesAbbreviation(flowNames)
                 .withRascunho(box.isShowDraft())
                 .withEndedTasks(box.getEndedTasks())
-                .withIdUsuarioLogado(loggedUser);
+                .withIdUsuarioLogado(loggedUser)
+                .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
         return String.valueOf(moduleConnector.count(box.getId(), filter));
     }
 

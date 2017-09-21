@@ -14,6 +14,7 @@ import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
@@ -55,7 +56,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
                     .withProcessesAbbreviation(flowNames)
                     .withRascunho(box.isShowDraft())
                     .withEndedTasks(box.getEndedTasks())
-                    .withIdUsuarioLogado(loggedUser);
+                    .withIdUsuarioLogado(loggedUser)
+                    .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
             qtd = new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);

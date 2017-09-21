@@ -183,27 +183,8 @@ public class Menu extends Panel implements Loggable {
         return configs;
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module, List<String> tipos, List<FormDTO> menuFormTypes) {
-        return () -> {
-            final String connectionURL = module.getConnectionURL();
-            final String url = connectionURL + itemBoxDTO.getCountEndpoint();
-            long qtd;
-            try {
-                QuickFilter filter = new QuickFilter()
-                        .withProcessesAbbreviation(siglas)
-//                        .withTypesNames(tipos.isEmpty() ? menuFormTypes.stream().map(FormDTO::getName).collect(Collectors.toList()) : tipos)
-                        .withRascunho(itemBoxDTO.isShowDraft())
-                        .withEndedTasks(itemBoxDTO.getEndedTasks())
-                        .withIdUsuarioLogado(getIdUsuarioLogado())
-                        .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
-                qtd = new RestTemplate().postForObject(url, filter, Long.class);
-            } catch (Exception e) {
-                LOGGER.error("Erro ao acessar serviço: " + url, e);
-                qtd = 0;
-            }
-
-            return String.valueOf(qtd);
-        };
+    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
+        return () -> moduleDriver.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
     }
 
     protected String getIdPessoa() {
