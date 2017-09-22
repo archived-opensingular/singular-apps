@@ -1,4 +1,4 @@
-package org.opensingular.server.p.commons.admin;
+    package org.opensingular.server.p.commons.admin;
 
 import org.apache.wicket.Page;
 import org.opensingular.server.commons.wicket.SingularServerApplication;

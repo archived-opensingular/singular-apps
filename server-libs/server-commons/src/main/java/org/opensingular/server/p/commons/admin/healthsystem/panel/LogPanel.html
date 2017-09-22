@@ -16,15 +16,21 @@
 
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
-	<div class="portlet light">
-		<div class="portlet-title">
-			<div class="caption">
-				<span class="caption-subject bold uppercase"> Caches</span>
-			</div>
-		</div>
-		<div class="portlet-body">
-			<button type="submit" wicket:id="clearAllCaches" class="btn default-btn">Clear All Caches</button>
-		</div>
-	</div>
+    <div class="portlet light">
+        <div class="portlet-title">
+            <div class="caption">
+                <span class="caption-subject bold uppercase"> Logs</span>
+            </div>
+        </div>
+        <div class="portlet-body">
+            <ul>
+                <li class="blockgrid" wicket:id="logs">
+                    <a wicket:id="log">
+                        <span wicket:id="label"></span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
 </wicket:panel>
 </html>
