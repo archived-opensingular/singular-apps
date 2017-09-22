@@ -65,7 +65,7 @@ public abstract class FeedbackAposEnvioPanel extends Panel {
 
     @NotNull
     public String getTitle() {
-        return "Petição enviada com sucesso.";
+        return "Requerimento enviado com sucesso.";
     }
 
     private void configureModalSize() {
