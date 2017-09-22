@@ -20,7 +20,8 @@ import java.util.List;
 
 public class HealthSystemPage extends ServerTemplate implements Loggable {
 
-    public static final String HEALTH_SYSTEM_MOUNT_PATH = "/health/${entryKey}";
+    public static final String ENTRY_PATH_PARAM         = "entry";
+    public static final String HEALTH_SYSTEM_MOUNT_PATH = "/health/${" + ENTRY_PATH_PARAM + "}";
 
     private List<AdministrationEntryExtension> adminEntries;
     private Form<Void>                         form;
@@ -34,7 +35,7 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
         super(parameters);
         loadExtensions();
         addForm();
-        addContent(parameters.get("entryKey"));
+        addContent(parameters.get(ENTRY_PATH_PARAM));
     }
 
     private void loadExtensions() {
@@ -81,7 +82,7 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
         group.setOpen();
         metronicMenu.addItem(group);
         adminEntries.forEach(entry -> {
-            group.addItem(new MetronicMenuItem(null, entry.name(), HealthSystemPage.class, new PageParameters().add("entryKey", entry.getKey())));
+            group.addItem(new MetronicMenuItem(null, entry.name(), HealthSystemPage.class, new PageParameters().add(ENTRY_PATH_PARAM, entry.getKey())));
         });
         return metronicMenu;
     }
