@@ -17,10 +17,11 @@
 package org.opensingular.server.commons.flow.renderer.remote;
 
 import org.opensingular.flow.core.EventType;
-import org.opensingular.flow.core.ITaskPredicate;
 import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.ITaskPredicate;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
+import org.opensingular.flow.core.renderer.ExecutionHistoryForRendering;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.server.commons.flow.renderer.remote.dto.FlowDefinitionRenderData;
 import org.opensingular.server.commons.flow.renderer.remote.dto.Task;
@@ -28,6 +29,10 @@ import org.opensingular.server.commons.flow.renderer.remote.dto.Transition;
 import org.opensingular.server.commons.flow.renderer.remote.dto.TransitionTask;
 import org.springframework.web.client.RestTemplate;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 
 /**
@@ -44,17 +49,24 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
     }
 
     @Override
-    public byte[] generateImage(FlowDefinition<?> definicao) {
+    @Nonnull
+    public byte[] generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history) {
         FlowDefinitionRenderData pd = new FlowDefinitionRenderData();
         pd.setTasks(new ArrayList<>());
-        for (STask<?> task : definicao.getFlowMap().getAllTasks()) {
-            pd.getTasks().add(from(task, definicao.getFlowMap().getStart().getTask()));
+        for (STask<?> task : definition.getFlowMap().getAllTasks()) {
+            pd.getTasks().add(from(task, definition.getFlowMap().getStart().getTask()));
         }
         return new RestTemplate().postForObject(url, pd, byte[].class);
     }
 
+    @Override
+    public void generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history,
+            @Nonnull OutputStream out) throws IOException {
+        out.write(generatePng(definition, history));
+    }
+
     private Task from(STask<?> task, STask<?> startTask) {
-        Task t = new Task(task.isWait(), task.isJava(), task.isPeople(), task.isEnd(), task.getName(), task.getAbbreviation(), task.equals(startTask), new ArrayList<>(0), task.getMetaDataValue(IFlowRenderer.SEND_EMAIL, Boolean.FALSE));
+        Task t = new Task(task.isWait(), task.isJava(), task.isPeople(), task.isEnd(), task.getName(), task.getAbbreviation(), task.equals(startTask), new ArrayList<>(0));
         for (STransition mt : task.getTransitions()) {
             t.getTransitions().add(from(mt));
         }
@@ -68,7 +80,7 @@ public class YFilesFlowRemoteRenderer implements IFlowRenderer {
 
     private EventType from(ITaskPredicate predicate) {
         if (predicate != null) {
-            return predicate.getEventType();
+            return predicate.getDisplayEventType();
         }
         return null;
     }

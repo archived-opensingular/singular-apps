@@ -31,9 +31,8 @@ public class Task {
     private String abbreviation;
     private boolean start;
     private List<Transition> transitions;
-    private boolean sendEmail;
 
-    public Task(boolean wait, boolean java, boolean people, boolean end, String name, String abbreviation, boolean start, List<Transition> transitions, boolean sendEmail) {
+    public Task(boolean wait, boolean java, boolean people, boolean end, String name, String abbreviation, boolean start, List<Transition> transitions) {
         this.wait = wait;
         this.java = java;
         this.people = people;
@@ -42,7 +41,6 @@ public class Task {
         this.abbreviation = abbreviation;
         this.start = start;
         this.transitions = transitions;
-        this.sendEmail = sendEmail;
     }
 
     public boolean isWait() {
@@ -107,13 +105,5 @@ public class Task {
 
     public void setTransitions(List<Transition> transitions) {
         this.transitions = transitions;
-    }
-
-    public boolean isSendEmail() {
-        return sendEmail;
-    }
-
-    public void setSendEmail(boolean sendEmail) {
-        this.sendEmail = sendEmail;
     }
 }
