@@ -43,26 +43,42 @@ import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.*;
+import org.opensingular.server.commons.service.dto.BoxDefinitionData;
+import org.opensingular.server.commons.service.dto.BoxItemAction;
+import org.opensingular.server.commons.service.dto.DatatableField;
+import org.opensingular.server.commons.service.dto.FormDTO;
+import org.opensingular.server.commons.service.dto.ItemActionType;
+import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementData;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.core.service.BoxService;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.core.wicket.model.BoxItemDataMap;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
     @Inject
     private BoxService boxService;
 
-    private Pair<String, SortOrder> sortProperty;
+    private Pair<String, SortOrder>   sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
 
     public BoxContent(String id, String moduleCod, String menu, BoxDefinitionData itemBox) {
@@ -146,7 +162,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
-        BoxItemDataMap boxItem = boxItemModelObject(boxItemModel);
+        BoxItemDataMap boxItem        = boxItemModelObject(boxItemModel);
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getProcessInstanceId() != null) {
             pageParameters.add(PETITION_ID, boxItem.getCod());
@@ -183,9 +199,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         if (action.getEndpoint().startsWith("http")) {
             return action.getEndpoint();
         } else {
-            return baseUrl
-                    + action.getEndpoint()
-                    + appendParameters(additionalParams);
+            String urlSoFar = baseUrl + action.getEndpoint();
+            return urlSoFar + appendParameters(additionalParams, !urlSoFar.contains("?"));
         }
     }
 
@@ -202,10 +217,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     protected void executeDynamicAction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
-
-        String url = baseUrl
-                + boxAction.getEndpoint()
-                + appendParameters(additionalParams);
+        String              url       = baseUrl + boxAction.getEndpoint();
+        url = appendParameters(additionalParams, !url.contains("?"));
 
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
@@ -220,9 +233,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected void relocate(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target, Actor actor) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
-        String url = baseUrl
-                + boxAction.getEndpoint()
-                + appendParameters(additionalParams);
+        String url = baseUrl + boxAction.getEndpoint();
+        url = appendParameters(additionalParams, !url.contains("?"));
 
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
@@ -303,14 +315,18 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         target.appendJavaScript("(function(){window.Singular.atualizarContadores();}())");
     }
 
-    private String appendParameters(Map<String, String> additionalParams) {
+    private String appendParameters(Map<String, String> additionalParams, boolean firstParameter) {
         StringBuilder paramsValue = new StringBuilder();
         if (!additionalParams.isEmpty()) {
             for (Map.Entry<String, String> entry : additionalParams.entrySet()) {
                 paramsValue.append(String.format("&%s=%s", entry.getKey(), entry.getValue()));
             }
         }
-        return paramsValue.toString();
+        String value = paramsValue.toString();
+        if (firstParameter) {
+            value = value.replaceFirst(Pattern.quote("&"), "?");
+        }
+        return value;
     }
 
     private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
