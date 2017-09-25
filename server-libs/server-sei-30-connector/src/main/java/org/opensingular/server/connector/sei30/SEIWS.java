@@ -548,7 +548,7 @@ public class SEIWS implements SEIPortType {
         }
         // Retorna false para 0 e true para
         // qualquer coisa que não seja 0.
-        return !valor.trim().equalsIgnoreCase("0");
+        return !"0".equalsIgnoreCase(valor.trim());
     }
 
     @Override

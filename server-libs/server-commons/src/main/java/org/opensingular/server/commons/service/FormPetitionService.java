@@ -499,11 +499,8 @@ public class FormPetitionService<P extends PetitionEntity> {
         if (source instanceof SIComposite) {
             SIComposite sourceComposite = (SIComposite) source;
             SIComposite targetComposite = (SIComposite) target;
-
-            if (sourceComposite.getFields() != null) {
-                for (int i = 0; i < sourceComposite.getFields().size() ; i++) {
-                    copyIdValues(sourceComposite.getField(i), targetComposite.getField(i));
-                }
+            for (int i = 0; i < sourceComposite.getFields().size() ; i++) {
+                copyIdValues(sourceComposite.getField(i), targetComposite.getField(i));
             }
         } else if (source instanceof SIList) {
             SIList sourceList = (SIList) source;

@@ -1,6 +1,7 @@
 package org.opensingular.server.single.config;
 
 import org.apache.wicket.request.Url;
+import org.jetbrains.annotations.Nullable;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.ModuleConnector;
@@ -37,7 +38,13 @@ public class LocalModuleDriver implements ModuleDriver {
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        return moduleConnector.loadWorkspaceConfiguration(serverContext.getName(), getUserDetails().getUsername());
+        return moduleConnector.loadWorkspaceConfiguration(serverContext.getName(), getUserName());
+    }
+
+    @Nullable
+    private String getUserName() {
+        SingularUserDetails userDetails = getUserDetails();
+        return userDetails != null ? userDetails.getUsername(): null;
     }
 
     @Override

@@ -65,8 +65,6 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class Menu extends Panel implements Loggable {
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Menu.class);
-
     @Inject
     @SpringBean(required = false)
     private MenuService menuService;
@@ -165,11 +163,6 @@ public class Menu extends Panel implements Loggable {
 
         List<String> siglas = boxConfigurationMetadata.getProcesses().stream()
                 .map(ProcessDTO::getAbbreviation)
-                .collect(Collectors.toList());
-
-        List<String> tipos = boxConfigurationMetadata.getProcesses().stream()
-                .map(ProcessDTO::getFormName)
-                .filter(Objects::nonNull)
                 .collect(Collectors.toList());
 
         List<MenuItemConfig> configs = new ArrayList<>();
