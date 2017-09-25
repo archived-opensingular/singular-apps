@@ -542,9 +542,9 @@ public class SEIWS implements SEIPortType {
      * @param valor valor binário
      * @return false caso 0, true caso diferente de 0 ou null caso o parametro seja null.
      */
-    private Boolean converterRetornoBooleano(String valor) {
+    private Boolean converterRetornoBooleano(String valor) {//NOSONAR
         if (valor == null) {
-            return null;//nosonar
+            return null;//NOSONAR
         }
         // Retorna false para 0 e true para
         // qualquer coisa que não seja 0.
