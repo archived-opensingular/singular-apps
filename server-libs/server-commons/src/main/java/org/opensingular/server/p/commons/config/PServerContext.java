@@ -25,9 +25,9 @@ import org.opensingular.server.commons.config.IServerContext;
  */
 public class PServerContext implements IServerContext {
 
-    public static PServerContext REQUIREMENT = new PServerContext("REQUIREMENT", "/requirement/*", "singular.requirement");
-    public static PServerContext WORKLIST = new PServerContext("WORKLIST", "/worklist/*", "singular.worklist");
-    public static PServerContext ADMINISTRATION = new PServerContext("ADMINISTRATION", "/administration/*", "singular.administration");
+    public static final PServerContext REQUIREMENT = new PServerContext("REQUIREMENT", "/requirement/*", "singular.requirement");
+    public static final PServerContext WORKLIST = new PServerContext("WORKLIST", "/worklist/*", "singular.worklist");
+    public static final PServerContext ADMINISTRATION = new PServerContext("ADMINISTRATION", "/administration/*", "singular.administration");
 
     private final String contextPath;
     private final String propertiesBaseKey;

@@ -544,7 +544,7 @@ public class SEIWS implements SEIPortType {
      */
     private Boolean converterRetornoBooleano(String valor) {
         if (valor == null) {
-            return null;
+            return null;//nosonar
         }
         // Retorna false para 0 e true para
         // qualquer coisa que não seja 0.

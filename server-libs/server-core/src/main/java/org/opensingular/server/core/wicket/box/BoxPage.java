@@ -64,10 +64,7 @@ public class BoxPage extends ServerBoxTemplate {
         String menu      = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
         String item      = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (moduleCod == null
-                && menu == null
-                && item == null
-                && menuService != null) {
+        if (isAccessWithoutParams(moduleCod, menu, item)) {
             for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : menuService.getMap().entrySet()) {
                 if (!entry.getValue().isEmpty()) {
                     moduleCod = entry.getKey().getCod();
@@ -102,6 +99,13 @@ public class BoxPage extends ServerBoxTemplate {
         }
         LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
         throw new RestartResponseException(Page500.class);
+    }
+
+    private boolean isAccessWithoutParams(String moduleCod, String menu, String item) {
+        return moduleCod == null
+                && menu == null
+                && item == null
+                && menuService != null;
     }
 
     private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
