@@ -218,7 +218,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected void executeDynamicAction(BoxItemAction itemAction, String baseUrl, Map<String, String> additionalParams, BoxItemDataMap boxItem, AjaxRequestTarget target) {
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
         String              url       = baseUrl + boxAction.getEndpoint();
-        url = appendParameters(additionalParams, !url.contains("?"));
+        url += appendParameters(additionalParams, !url.contains("?"));
 
         try {
             callModule(url, buildCallObject(boxAction, boxItem));
@@ -234,7 +234,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         final BoxItemAction boxAction = boxItem.getActionByName(itemAction.getName());
 
         String url = baseUrl + boxAction.getEndpoint();
-        url = appendParameters(additionalParams, !url.contains("?"));
+        url += appendParameters(additionalParams, !url.contains("?"));
 
         try {
             callModule(url, buildCallAtribuirObject(boxAction, boxItem, actor));
