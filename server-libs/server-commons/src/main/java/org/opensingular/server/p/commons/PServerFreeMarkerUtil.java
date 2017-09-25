@@ -84,7 +84,9 @@ public class PServerFreeMarkerUtil implements Loggable {
 
         final StringWriter sw = new StringWriter();
 
-        Predicate<Map.Entry<String, Object>> isInstance = (entry) -> Optional.ofNullable(entry).map(Map.Entry::getValue).map(Object::getClass).map(SInstance.class::isAssignableFrom).orElse(false);
+        Predicate<Map.Entry<String, Object>> isInstance = (entry) -> Optional.ofNullable(entry)
+                .map(Map.Entry::getValue).map(Object::getClass).map(SInstance.class::isAssignableFrom)
+                .orElse(Boolean.FALSE);
 
         Map<String, Object> instances = model.entrySet()
                 .stream().filter(isInstance)

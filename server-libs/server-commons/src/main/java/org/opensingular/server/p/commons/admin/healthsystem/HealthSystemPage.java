@@ -25,7 +25,6 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
 
     private List<AdministrationEntryExtension> adminEntries;
     private Form<Void>                         form;
-    private WebMarkupContainer                 content;
 
     public HealthSystemPage() {
         this(new PageParameters());
@@ -50,14 +49,13 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
     private void addContent(StringValue entryKey) {
         String id = "content";
         if (entryKey == null || entryKey.isEmpty()) {
-            this.content = new WebMarkupContainer(id);
+            form.add(new WebMarkupContainer(id));
         }
         else {
             adminEntries.stream().filter(i -> entryKey.toString().equals(i.getKey())).findFirst().ifPresent(i -> {
-                this.content = i.makePanel(id);
+                form.add(i.makePanel(id));
             });
         }
-        form.add(this.content);
     }
 
     @Override

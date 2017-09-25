@@ -440,7 +440,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisibility, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
 
         List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
-        if (CollectionUtils.isNotEmpty(transitions) && (transitionButtonsVisibility)) {
+        if (transitionButtonsVisibility && CollectionUtils.isNotEmpty(transitions)) {
             int index = 0;
             for (STransition t : transitions) {
                 TransitionAccess transitionAccess = getButtonAccess(t, taskInstance);

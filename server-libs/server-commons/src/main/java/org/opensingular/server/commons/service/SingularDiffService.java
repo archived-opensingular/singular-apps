@@ -30,7 +30,7 @@ public class SingularDiffService {
 
     public DiffSummary diffFromPrevious(@NonNull Long petitionId) {
         FormVersionEntity originalFormVersion = null;
-        FormVersionEntity newerFormVersion = null;
+        FormVersionEntity newerFormVersion;
 
         PetitionInstance      petition    = petitionService.getPetition(petitionId);
         String                typeName    = PetitionUtil.getTypeName(petition);
@@ -57,7 +57,8 @@ public class SingularDiffService {
             newer = formPetitionService.getSInstance(newerForm);
             newerDate = draftEntity.get().getEditionDate();
 
-        } else {
+        }
+        else {
             List<FormVersionEntity> formPetitionEntities = petitionService
                     .buscarDuasUltimasVersoesForm(petitionId);
 
@@ -71,17 +72,17 @@ public class SingularDiffService {
         }
 
         DocumentDiff diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
-        return new DiffSummary(newerFormVersion.getCod(), originalFormVersion.getCod(), newerDate, originalDate, diff);
+        return new DiffSummary(newerFormVersion.getCod(), originalFormVersion != null ? originalFormVersion.getCod() : null, newerDate, originalDate, diff);
     }
 
     public static class DiffSummary implements Serializable {
-        private long         currentFormVersionId;
-        private long         previousFormVersionId;
+        private Long         currentFormVersionId;
+        private Long         previousFormVersionId;
         private Date         currentFormVersionDate;
         private Date         previousFormVersionDate;
         private DocumentDiff diff;
 
-        public DiffSummary(long currentFormVersionId, long previousFormVersionId, Date currentFormVersionDate, Date previousFormVersionDate, DocumentDiff diff) {
+        public DiffSummary(Long currentFormVersionId, Long previousFormVersionId, Date currentFormVersionDate, Date previousFormVersionDate, DocumentDiff diff) {
             this.currentFormVersionId = currentFormVersionId;
             this.previousFormVersionId = previousFormVersionId;
             this.currentFormVersionDate = currentFormVersionDate;
@@ -89,11 +90,11 @@ public class SingularDiffService {
             this.diff = diff;
         }
 
-        public long getCurrentFormVersionId() {
+        public Long getCurrentFormVersionId() {
             return currentFormVersionId;
         }
 
-        public long getPreviousFormVersionId() {
+        public Long getPreviousFormVersionId() {
             return previousFormVersionId;
         }
 
