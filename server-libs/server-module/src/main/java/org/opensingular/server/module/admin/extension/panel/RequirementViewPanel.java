@@ -4,6 +4,7 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.jetbrains.annotations.NotNull;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
@@ -33,18 +34,25 @@ public class RequirementViewPanel extends Panel {
         return singularModuleConfiguration.getRequirements();
     }
 
-    class RequirementTableBuilder extends
-            BSDataTableBuilder<SingularRequirementRef, String, IColumn<SingularRequirementRef, String>> {
+    private class RequirementTableBuilder extends BSDataTableBuilder<SingularRequirementRef, String, IColumn<SingularRequirementRef, String>> {
         RequirementTableBuilder() {
             super(new RequirementProvider());
-            appendPropertyColumn("Nome", r -> r.getRequirement().getName());
-            appendPropertyColumn("Form Principal", r -> SFormUtil
-                    .getTypeName((Class<? extends SType<?>>) r.getRequirement().getMainForm()));
+            appendPropertyColumn("Nome", this::getRequirementName);
+            appendPropertyColumn("Form Principal", this::getTypeName);
+        }
+
+        @NotNull
+        @SuppressWarnings("unchecked")
+        private String getTypeName(SingularRequirementRef r) {
+            return SFormUtil.getTypeName((Class<? extends SType<?>>) r.getRequirement().getMainForm());
+        }
+
+        private String getRequirementName(SingularRequirementRef r) {
+            return r.getRequirement().getName();
         }
     }
 
-    class RequirementProvider extends SortableDataProvider<SingularRequirementRef, String> {
-
+    private class RequirementProvider extends SortableDataProvider<SingularRequirementRef, String> {
         @Override
         public Iterator<? extends SingularRequirementRef> iterator(long first, long count) {
             return getRequirements().subList((int) first, (int) (first + count)).iterator();
