@@ -9,7 +9,10 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.resource.loader.ClassStringResourceLoader;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
+import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
+import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.studio.core.config.StudioConfig;
@@ -67,4 +70,12 @@ public class ServerStudioApplication extends SingularServerApplication {
         return new StudioFooter(id);
     }
 
+    @Override
+    public void initSkins(SkinOptions skinOptions) {
+        IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this
+                .getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
+        if (initSKin != null) {
+            initSKin.accept(skinOptions);
+        }
+    }
 }

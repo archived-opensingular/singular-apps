@@ -2,6 +2,7 @@ package org.opensingular.server.single.config;
 
 import org.apache.wicket.Page;
 import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
@@ -25,9 +26,6 @@ import javax.servlet.ServletException;
 
 
 public interface SingleAppInitializer extends PSingularInitializer {
-    String INITSKIN_CONSUMER_REQ_PARAM = "INITSKIN_CONSUMER_REQ_PARAM";
-    String INITSKIN_CONSUMER_ANL_PARAM = "INITSKIN_CONSUMER_ANL_PARAM";
-
     String moduleCod();
 
     String[] springPackagesToScan();
@@ -38,8 +36,8 @@ public interface SingleAppInitializer extends PSingularInitializer {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                servletContext.setAttribute(INITSKIN_CONSUMER_REQ_PARAM, (IConsumer<SkinOptions>) SingleAppInitializer.this::initRequirementSkin);
-                servletContext.setAttribute(INITSKIN_CONSUMER_ANL_PARAM, (IConsumer<SkinOptions>) SingleAppInitializer.this::initAnalysisSkin);
+                String contextPath = servletContext.getContextPath();
+                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
 
@@ -47,9 +45,11 @@ public interface SingleAppInitializer extends PSingularInitializer {
             protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext iServerContext) {
                 if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
                     return AnalysisApplication.class;
-                } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
+                }
+                else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
                     return PetitionApplication.class;
-                } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
+                }
+                else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;
                 }
                 throw new SingularServerException("Contexto inválido");
@@ -93,10 +93,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
         return SingleAppBeanFactory.class;
     }
 
-    default void initRequirementSkin(SkinOptions skinOptions) {
-    }
-
-    default void initAnalysisSkin(SkinOptions skinOptions) {
+    default void initSkins(String contextPath, SkinOptions skinOptions) {
     }
 
     default Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
@@ -127,7 +124,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
         @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_ANL_PARAM);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
             initSKin.accept(skinOptions);
         }
     }
@@ -141,7 +138,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
         @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_REQ_PARAM);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
             initSKin.accept(skinOptions);
         }
     }

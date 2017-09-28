@@ -1,6 +1,7 @@
 package org.opensingular.server.studio.init;
 
 import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularSpringWebMVCConfig;
@@ -45,10 +46,8 @@ public interface ServerStudioAppInitializer extends SingleAppInitializer {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                servletContext.setAttribute(SingleAppInitializer.INITSKIN_CONSUMER_REQ_PARAM,
-                        (IConsumer<SkinOptions>) ServerStudioAppInitializer.this::initRequirementSkin);
-                servletContext.setAttribute(SingleAppInitializer.INITSKIN_CONSUMER_ANL_PARAM,
-                        (IConsumer<SkinOptions>) ServerStudioAppInitializer.this::initAnalysisSkin);
+                String contextPath = servletContext.getContextPath();
+                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
 
