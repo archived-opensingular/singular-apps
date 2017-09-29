@@ -35,7 +35,10 @@ public class StudioSpringSecurityInitializer extends PSpringSecurityInitializer 
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http
+            http.requiresChannel()
+                    .anyRequest()
+                    .requiresSecure()
+                    .and()
                     .headers()
                     .frameOptions()
                     .sameOrigin()
