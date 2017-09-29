@@ -7,6 +7,7 @@ import org.opensingular.server.p.commons.config.PSpringSecurityInitializer;
 import org.opensingular.server.studio.user.SharedUserDetails;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -16,6 +17,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.util.Collections;
@@ -50,8 +52,10 @@ public class StudioSpringSecurityInitializer extends PSpringSecurityInitializer 
                     .and()
                     .formLogin().permitAll().loginPage("/login")
                     .and()
-                    .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                    .logout()
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*",  HttpMethod.GET.name()))
                     .logoutSuccessUrl("/");
+
 
         }
 
