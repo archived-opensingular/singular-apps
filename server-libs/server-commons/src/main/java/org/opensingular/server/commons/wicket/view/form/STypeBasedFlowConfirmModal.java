@@ -66,7 +66,13 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
 
     @Override
     protected FlowConfirmButton<PE, PI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m);
+        return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m){
+            @Override
+            protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
+                setDirty(true);
+                super.onValidationSuccess(ajaxRequestTarget, form, model);
+            }
+        };
     }
 
     private void addCloseButton(BSModalBorder modal) {
