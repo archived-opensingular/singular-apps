@@ -19,6 +19,7 @@ public class ServerStudioWebMVCConfig extends SingularSpringWebMVCConfig {
         resolver.setCache(true);
         resolver.setPrefix("");
         resolver.setSuffix(".ftl");
+        resolver.setContentType("text/html;charset=UTF-8");
         return resolver;
     }
 
@@ -26,6 +27,7 @@ public class ServerStudioWebMVCConfig extends SingularSpringWebMVCConfig {
     public FreeMarkerConfigurer freemarkerConfig() {
         FreeMarkerConfigurer freeMarkerConfigurer = new FreeMarkerConfigurer();
         freeMarkerConfigurer.setTemplateLoaderPath("/freemarker/view");
+        freeMarkerConfigurer.setDefaultEncoding("UTF-8");
         freeMarkerConfigurer.setPreferFileSystemAccess(false);
         return freeMarkerConfigurer;
     }
