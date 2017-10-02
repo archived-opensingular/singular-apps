@@ -65,15 +65,8 @@ public class RequirementViewPanel extends Panel {
 
         @Override
         public IModel<SingularRequirementRef> model(SingularRequirementRef object) {
-            Long requirementKey;
-            if (object != null) {
-                requirementKey = object.getId();
-            }
-            else {
-                requirementKey = null;
-            }
             return (IReadOnlyModel<SingularRequirementRef>) () -> getRequirements().stream()
-                    .filter(r -> r.getId().equals(requirementKey))
+                    .filter(r -> object != null && r.getId().equals(object.getId()))
                     .findFirst()
                     .orElse(null);
         }

@@ -36,7 +36,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                String contextPath = servletContext.getContextPath();
+                String contextPath = servletContext.getContextPath();//NOSONAR
                 servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
