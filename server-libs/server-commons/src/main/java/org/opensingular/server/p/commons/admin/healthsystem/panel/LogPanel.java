@@ -10,9 +10,9 @@ import org.apache.wicket.request.resource.ResourceStreamResource;
 import org.apache.wicket.util.file.File;
 import org.apache.wicket.util.resource.FileResourceStream;
 import org.apache.wicket.util.resource.IResourceStream;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.lib.commons.util.Loggable;
 
+import javax.annotation.Nonnull;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class LogPanel extends Panel implements Loggable {
         });
     }
 
-    @NotNull
+    @Nonnull
     private ResourceStreamResource makeZipLogStream(IModel<URI> logPath) {
         return new ResourceStreamResource() {
             @Override
@@ -60,7 +60,7 @@ public class LogPanel extends Panel implements Loggable {
         };
     }
 
-    @NotNull
+    @Nonnull
     private java.io.File makeZip(IModel<URI> logUriModel) throws IOException {
         byte[]       buffer  = new byte[1024];
         Path         logPath = Paths.get(logUriModel.getObject());
@@ -85,7 +85,7 @@ public class LogPanel extends Panel implements Loggable {
         }
     }
 
-    @NotNull
+    @Nonnull
     private ArrayList<URI> resolveLogsURIs() {
         final ArrayList<URI> uris = new ArrayList<>();
         try {

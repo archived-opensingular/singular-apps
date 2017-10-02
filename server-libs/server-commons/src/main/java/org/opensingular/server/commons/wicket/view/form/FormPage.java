@@ -18,12 +18,12 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
 import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Optional;
 
@@ -56,7 +56,7 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
         super(context);
     }
 
-    @NotNull
+    @Nonnull
     @Override
     protected Optional<String> getIdentifier() {
         return getPetitionOptional()

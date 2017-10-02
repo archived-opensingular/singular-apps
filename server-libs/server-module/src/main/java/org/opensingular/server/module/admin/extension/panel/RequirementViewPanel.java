@@ -4,7 +4,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
@@ -12,6 +11,7 @@ import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.List;
@@ -41,7 +41,7 @@ public class RequirementViewPanel extends Panel {
             appendPropertyColumn("Form Principal", this::getTypeName);
         }
 
-        @NotNull
+        @Nonnull
         @SuppressWarnings("unchecked")
         private String getTypeName(SingularRequirementRef r) {
             return SFormUtil.getTypeName((Class<? extends SType<?>>) r.getRequirement().getMainForm());

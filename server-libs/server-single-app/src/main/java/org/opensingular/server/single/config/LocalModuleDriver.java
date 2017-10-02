@@ -1,7 +1,6 @@
 package org.opensingular.server.single.config;
 
 import org.apache.wicket.request.Url;
-import org.jetbrains.annotations.Nullable;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.server.commons.ModuleConnector;
@@ -19,6 +18,7 @@ import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +41,7 @@ public class LocalModuleDriver implements ModuleDriver {
         return moduleConnector.loadWorkspaceConfiguration(serverContext.getName(), getUserName());
     }
 
-    @Nullable
+    @Nonnull
     private String getUserName() {
         SingularUserDetails userDetails = getUserDetails();
         return userDetails != null ? userDetails.getUsername(): null;

@@ -32,7 +32,6 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.flow.RedirectToUrlException;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
@@ -407,7 +406,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     protected void appendBeforeFormContent(BSContainer container) {
     }
 
-    @NotNull
     @Nonnull
     protected abstract Optional<String> getIdentifier();
 
@@ -521,7 +519,6 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
 
-    @NotNull
     @Nonnull
     protected SInstance createInstance(@Nonnull RefType refType) {
 

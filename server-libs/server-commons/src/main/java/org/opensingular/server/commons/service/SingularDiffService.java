@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.service;
 
 
-import checkers.nullness.quals.NonNull;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -11,6 +10,7 @@ import org.opensingular.form.util.diff.DocumentDiffUtil;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Date;
@@ -28,7 +28,7 @@ public class SingularDiffService {
     @Inject
     private PetitionService<?, ?> petitionService;
 
-    public DiffSummary diffFromPrevious(@NonNull Long petitionId) {
+    public DiffSummary diffFromPrevious(@Nonnull Long petitionId) {
         FormVersionEntity originalFormVersion = null;
         FormVersionEntity newerFormVersion;
 
@@ -44,7 +44,7 @@ public class SingularDiffService {
 
         if (draftEntity.isPresent()) {
             Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition,
-                    typeName);
+                                                                                                         typeName);
             if (lastForm.isPresent()) {
                 FormEntity originalForm = lastForm.get().getForm();
                 original = formPetitionService.getSInstance(originalForm);
