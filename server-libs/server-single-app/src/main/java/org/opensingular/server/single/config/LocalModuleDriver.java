@@ -18,7 +18,6 @@ import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.List;
 import java.util.Map;
@@ -41,7 +40,6 @@ public class LocalModuleDriver implements ModuleDriver {
         return moduleConnector.loadWorkspaceConfiguration(serverContext.getName(), getUserName());
     }
 
-    @Nonnull
     private String getUserName() {
         SingularUserDetails userDetails = getUserDetails();
         return userDetails != null ? userDetails.getUsername(): null;
