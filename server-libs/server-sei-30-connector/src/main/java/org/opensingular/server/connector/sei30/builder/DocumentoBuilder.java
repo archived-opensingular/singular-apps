@@ -373,6 +373,16 @@ public class DocumentoBuilder implements Serializable, Loggable {
         return this;
     }
 
+    public DocumentoBuilder setIdTipoConferencia(String idTipoConferencia) {
+        this.documento.setIdTipoConferencia(idTipoConferencia);
+        return this;
+    }
+
+    public DocumentoBuilder setSinBloqueado(String sinBloqueado) {
+        this.documento.setSinBloqueado(sinBloqueado);
+        return this;
+    }
+
     /**
      * Cria o documento.
      * 

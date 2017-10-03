@@ -34,7 +34,17 @@ public class ReadOnlyFormPage extends ServerTemplate {
     @Inject
     private FormPetitionService formPetitionService;
 
+    protected final IModel<Long> formVersionEntityPK;
+    protected final IModel<Boolean> showAnnotations;
+
     public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
+        this.formVersionEntityPK = formVersionEntityPK;
+        this.showAnnotations = showAnnotations;
+    }
+
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
         SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
         singularFormPanel.setInstanceCreator(() -> {
             FormVersionEntity formVersionEntity = formPetitionService.loadFormVersionEntity(formVersionEntityPK.getObject());
