@@ -19,7 +19,7 @@ import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.view.StudioFooter;
 import org.opensingular.studio.core.view.StudioHeader;
-import org.opensingular.studio.core.view.StudioPortalPage;
+import org.opensingular.studio.core.view.StudioPage;
 import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
@@ -35,7 +35,7 @@ public class ServerStudioApplication extends SingularServerApplication {
 
     @Override
     public Class<? extends Page> getHomePage() {
-        return StudioPortalPage.class;
+        return StudioPage.class;
     }
 
     @Override
