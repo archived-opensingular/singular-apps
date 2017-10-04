@@ -4,17 +4,16 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.opensingular.form.SFormUtil;
-import org.opensingular.form.SType;
+import org.apache.wicket.model.Model;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
-import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
+import org.opensingular.server.module.admin.extension.RequirementDTO;
 
-import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.Iterator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequirementViewPanel extends Panel {
 
@@ -34,28 +33,20 @@ public class RequirementViewPanel extends Panel {
         return singularModuleConfiguration.getRequirements();
     }
 
-    private class RequirementTableBuilder extends BSDataTableBuilder<SingularRequirementRef, String, IColumn<SingularRequirementRef, String>> {
+    private class RequirementTableBuilder extends BSDataTableBuilder<RequirementDTO, String, IColumn<RequirementDTO, String>> {
         RequirementTableBuilder() {
             super(new RequirementProvider());
-            appendPropertyColumn("Nome", this::getRequirementName);
-            appendPropertyColumn("Form Principal", this::getTypeName);
-        }
-
-        @Nonnull
-        @SuppressWarnings("unchecked")
-        private String getTypeName(SingularRequirementRef r) {
-            return SFormUtil.getTypeName((Class<? extends SType<?>>) r.getRequirement().getMainForm());
-        }
-
-        private String getRequirementName(SingularRequirementRef r) {
-            return r.getRequirement().getName();
+            appendPropertyColumn("Nome", RequirementDTO::getName);
+            appendPropertyColumn("Form Principal", RequirementDTO::getMainFormName);
         }
     }
 
-    private class RequirementProvider extends SortableDataProvider<SingularRequirementRef, String> {
+    private class RequirementProvider extends SortableDataProvider<RequirementDTO, String> {
         @Override
-        public Iterator<? extends SingularRequirementRef> iterator(long first, long count) {
-            return getRequirements().subList((int) first, (int) (first + count)).iterator();
+        public Iterator<RequirementDTO> iterator(long first, long count) {
+            return getRequirements().stream().map(RequirementDTO::new)
+                    .collect(Collectors.toList())
+                    .subList((int) first, (int) (first + count)).iterator();
         }
 
         @Override
@@ -64,12 +55,10 @@ public class RequirementViewPanel extends Panel {
         }
 
         @Override
-        public IModel<SingularRequirementRef> model(SingularRequirementRef object) {
-            return (IReadOnlyModel<SingularRequirementRef>) () -> getRequirements().stream()
-                    .filter(r -> object != null && r.getId().equals(object.getId()))
-                    .findFirst()
-                    .orElse(null);
+        public IModel<RequirementDTO> model(RequirementDTO requirementDTO) {
+            return Model.of(requirementDTO);
         }
     }
+
 
 }
