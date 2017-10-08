@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.flow.renderer.remote.dto;
 
+@Deprecated
 public class TransitionTask {
     private String abbreviation;
     private String name;

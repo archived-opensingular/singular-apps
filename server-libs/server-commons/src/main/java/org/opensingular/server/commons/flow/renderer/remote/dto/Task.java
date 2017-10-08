@@ -18,6 +18,7 @@ package org.opensingular.server.commons.flow.renderer.remote.dto;
 
 import java.util.List;
 
+@Deprecated
 public class Task {
 
     private boolean wait;

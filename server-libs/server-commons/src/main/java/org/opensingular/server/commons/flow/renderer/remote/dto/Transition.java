@@ -19,6 +19,7 @@ package org.opensingular.server.commons.flow.renderer.remote.dto;
 
 import org.opensingular.flow.core.EventType;
 
+@Deprecated
 public class Transition {
     private TransitionTask origin;
     private TransitionTask destination;

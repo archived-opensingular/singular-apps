@@ -38,6 +38,7 @@ import java.util.ArrayList;
 /**
  * https://www.yworks.com/en/products_yfiles_about.html
  */
+@Deprecated
 public class YFilesFlowRemoteRenderer implements IFlowRenderer {
 
     private String url = "http://singular02/yfiles/graph";
