@@ -28,7 +28,7 @@ import org.opensingular.server.p.commons.admin.healthsystem.validation.webchecke
 
 import java.util.Arrays;
 
-@SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = SWebHealth.TYPE_NAME)
+@SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = SWebHealth.TYPE_NAME, label = "Utilitário de rede")
 public class SWebHealth extends STypeComposite<SIComposite> {
 	public static final String TYPE_NAME = "webhealth";
 	public static final String TYPE_FULL_NAME = SSystemHealthPackage.PACKAGE_NAME+"."+TYPE_NAME;
