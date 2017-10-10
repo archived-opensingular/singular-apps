@@ -16,7 +16,6 @@
 
 package org.opensingular.server.core.wicket.box;
 
-import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -32,12 +31,19 @@ import org.opensingular.server.commons.wicket.error.Page500;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 import org.opensingular.server.core.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
+import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
+@MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
@@ -55,13 +61,10 @@ public class BoxPage extends ServerBoxTemplate {
 
     public void addBox() {
         String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
-        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
-        String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
+        String menu      = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
+        String item      = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (moduleCod == null
-                && menu == null
-                && item == null
-                && menuService != null) {
+        if (isAccessWithoutParams(moduleCod, menu, item)) {
             for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : menuService.getMap().entrySet()) {
                 if (!entry.getValue().isEmpty()) {
                     moduleCod = entry.getKey().getCod();
@@ -91,8 +94,18 @@ public class BoxPage extends ServerBoxTemplate {
             }
         }
 
-        LOGGER.warn("Não existe correspondencia para o label {}", String.valueOf(item));
+        if (boxConfigurationMetadata == null) {
+            LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
+        }
+        LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
         throw new RestartResponseException(Page500.class);
+    }
+
+    private boolean isAccessWithoutParams(String moduleCod, String menu, String item) {
+        return moduleCod == null
+                && menu == null
+                && item == null
+                && menuService != null;
     }
 
     private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
@@ -112,13 +125,21 @@ public class BoxPage extends ServerBoxTemplate {
 
     protected QuickFilter createFilter() {
         return new QuickFilter()
-                .withIdUsuarioLogado(getIdUsuario());
+                .withIdUsuarioLogado(getIdUsuario())
+                .withIdPessoa(getIdPessoa());
     }
 
     protected String getIdUsuario() {
         SingularUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
                 .map(SingularUserDetails::getUsername)
+                .orElse(null);
+    }
+
+    protected String getIdPessoa() {
+        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        return Optional.ofNullable(userDetails)
+                .map(SingularUserDetails::getUserId)
                 .orElse(null);
     }
 

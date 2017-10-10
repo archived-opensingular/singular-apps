@@ -17,6 +17,7 @@ package org.opensingular.server.commons.test;
 
 import javax.servlet.ServletException;
 
+import org.opensingular.server.commons.config.SingularInitializer;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -29,7 +30,7 @@ public class SingularCommonsContextLoader extends AbstractSingularContextLoader 
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new CommonsInitializerMock(context).onStartup(context.getServletContext());
+            new SingularInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

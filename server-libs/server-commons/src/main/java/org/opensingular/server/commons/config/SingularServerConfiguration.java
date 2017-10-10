@@ -23,12 +23,7 @@ import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
 import org.springframework.web.context.ServletContextAware;
 
 import javax.servlet.ServletContext;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -39,12 +34,12 @@ import java.util.stream.Stream;
 public class SingularServerConfiguration implements ServletContextAware {
 
     private IServerContext[] contexts;
-    private String           springMVCServletMapping;
+    private String springMVCServletMapping;
     private Map<String, Object> attrs = new HashMap<>();
     private List<Class<? extends SType<?>>> formTypes;
-    private String                          moduleCod;
-    private String[]                        definitionsPackages;
-    private String[]                        defaultPublicUrls;
+    private String moduleCod;
+    private String[] definitionsPackages;
+    private String[] defaultPublicUrls;
 
     public String[] getDefaultPublicUrls() {
         return defaultPublicUrls;
@@ -84,10 +79,10 @@ public class SingularServerConfiguration implements ServletContextAware {
 
     @Override
     public void setServletContext(ServletContext servletContext) {
-        WebInitializer             webInitializer             = (WebInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION);
+        WebInitializer webInitializer = (WebInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION);
         SpringHibernateInitializer springHibernateInitializer = (SpringHibernateInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION);
-        FormInitializer            formInitializer            = (FormInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION);
-        FlowInitializer            flowInitializer            = (FlowInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION);
+        FormInitializer formInitializer = (FormInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION);
+        FlowInitializer flowInitializer = (FlowInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION);
         this.contexts = webInitializer.serverContexts();
         this.defaultPublicUrls = webInitializer.getDefaultPublicUrls();
         this.springMVCServletMapping = springHibernateInitializer.springMVCServletMapping();

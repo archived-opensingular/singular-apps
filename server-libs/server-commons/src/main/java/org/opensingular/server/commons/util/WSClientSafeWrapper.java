@@ -10,6 +10,7 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
+import java.util.Arrays;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +20,10 @@ import java.util.concurrent.TimeoutException;
 
 /**
  * * Classe WSClientSafeWrapper.
+ *
+ * Deprecated, use org.opensingular.lib.commons.util.WSClientSafeWrapper instead
  */
+@Deprecated
 public class WSClientSafeWrapper {
 
     /**
@@ -44,7 +48,12 @@ public class WSClientSafeWrapper {
             @Override
             public Object invoke(Object proxy, Method method, Object[] args)
                     throws Throwable {
+                boolean isDefaultObjectMethod = false;
                 try {
+                    isDefaultObjectMethod = isDefaultObjectMethod(method);
+                    if (isDefaultObjectMethod){
+                        return method.invoke(ref, args);
+                    }
                     log.warn(String.format("CHAMADA A WEB-SERVICE: %s OPERACAO: %s ", wsIface.getName(), method.getName()));
                     ExecutorService executor = Executors.newCachedThreadPool();
                     Callable<Object> task = new Callable<Object>() {
@@ -69,7 +78,9 @@ public class WSClientSafeWrapper {
                     log.fatal(e.getMessage(), e);
                     throw SingularServerIntegrationException.rethrow(humanName, extrairSOAPFaultMessage(e), e);
                 } finally {
-                    log.warn(String.format("RETORNO DE WEB-SERVICE: %s OPERACAO: %s ", wsIface.getName(), method.getName()));
+                    if (!isDefaultObjectMethod) {
+                        log.warn(String.format("RETORNO DE WEB-SERVICE: %s OPERACAO: %s ", wsIface.getName(), method.getName()));
+                    }
                 }
             }
 
@@ -85,6 +96,10 @@ public class WSClientSafeWrapper {
                 return StringUtils.EMPTY;
             }
         });
+    }
+
+    private static boolean isDefaultObjectMethod(Method method) {
+        return Arrays.asList(Object.class.getMethods()).contains(method);
     }
 
     /**

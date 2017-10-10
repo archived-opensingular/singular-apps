@@ -8,9 +8,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de DadosAssinatura complex type.
+ * <p>Java class for DadosAssinatura complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DadosAssinatura">
@@ -51,7 +51,7 @@ public class DadosAssinatura {
     protected ArrayOfIdDocumento idsDocumento;
 
     /**
-     * Obtém o valor da propriedade idOrgaoUsuario.
+     * Gets the value of the idOrgaoUsuario property.
      * 
      */
     public long getIdOrgaoUsuario() {
@@ -59,7 +59,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idOrgaoUsuario.
+     * Sets the value of the idOrgaoUsuario property.
      * 
      */
     public void setIdOrgaoUsuario(long value) {
@@ -67,7 +67,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade idContextoUsuario.
+     * Gets the value of the idContextoUsuario property.
      * 
      */
     public long getIdContextoUsuario() {
@@ -75,7 +75,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idContextoUsuario.
+     * Sets the value of the idContextoUsuario property.
      * 
      */
     public void setIdContextoUsuario(long value) {
@@ -83,7 +83,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade siglaUsuario.
+     * Gets the value of the siglaUsuario property.
      * 
      * @return
      *     possible object is
@@ -95,7 +95,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade siglaUsuario.
+     * Sets the value of the siglaUsuario property.
      * 
      * @param value
      *     allowed object is
@@ -107,7 +107,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade senhaUsuario.
+     * Gets the value of the senhaUsuario property.
      * 
      * @return
      *     possible object is
@@ -119,7 +119,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade senhaUsuario.
+     * Sets the value of the senhaUsuario property.
      * 
      * @param value
      *     allowed object is
@@ -131,7 +131,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade cargoFuncao.
+     * Gets the value of the cargoFuncao property.
      * 
      * @return
      *     possible object is
@@ -143,7 +143,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade cargoFuncao.
+     * Sets the value of the cargoFuncao property.
      * 
      * @param value
      *     allowed object is
@@ -155,7 +155,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade idsDocumento.
+     * Gets the value of the idsDocumento property.
      * 
      * @return
      *     possible object is
@@ -167,7 +167,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idsDocumento.
+     * Sets the value of the idsDocumento property.
      * 
      * @param value
      *     allowed object is

@@ -1,12 +1,12 @@
 package org.opensingular.server.p.commons;
 
 import freemarker.cache.StringTemplateLoader;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.form.*;
 import org.opensingular.form.type.core.STypeString;
 
+import javax.annotation.Nonnull;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -50,14 +50,14 @@ public class PServerFreeMarkerUtilTest {
         assertEquals("POJO - INSTANCE", pServerFreeMarkerUtil.doMergeWithFreemarker("testWithInstanceAndPojo", model));
     }
 
-    @NotNull
+    @Nonnull
     private PServerFreeMarkerUtilTest.MyDTO createDTO(String myPropertyFieldValue) {
         MyDTO myDTO = new MyDTO();
         myDTO.myProperty = myPropertyFieldValue;
         return myDTO;
     }
 
-    @NotNull
+    @Nonnull
     private SIComposite createCompositeInstance(String propertyFieldValue) {
         STypeComposite<SIComposite> composite = createRoot();
         composite.addField("property", STypeString.class);

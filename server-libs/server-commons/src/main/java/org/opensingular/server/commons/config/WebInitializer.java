@@ -57,10 +57,9 @@ public abstract class WebInitializer {
         }
     }
 
-    protected IServerContext[] serverContexts() {
+    public IServerContext[] serverContexts() {
         return ServerContext.values();
     }
-
 
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);

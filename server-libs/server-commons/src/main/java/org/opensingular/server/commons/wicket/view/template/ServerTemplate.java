@@ -26,10 +26,11 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
+
+import javax.annotation.Nonnull;
 
 public abstract class ServerTemplate extends SingularAdminTemplate {
 
@@ -42,7 +43,8 @@ public abstract class ServerTemplate extends SingularAdminTemplate {
     }
 
     @Override
-    protected @NotNull WebMarkupContainer buildPageMenu(String id) {
+    protected @Nonnull
+    WebMarkupContainer buildPageMenu(String id) {
         return new Menu(id, (Class<? extends WebPage>) this.getPageClass());
     }
 

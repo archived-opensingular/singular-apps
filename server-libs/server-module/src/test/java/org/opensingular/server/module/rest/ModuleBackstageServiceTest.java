@@ -20,10 +20,10 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class RestBackstageServiceTest extends SingularCommonsBaseTest {
+public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     
     @Inject
-    private RestBackstageService restBackstageService;
+    private ModuleBackstageService moduleBackstageService;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -37,19 +37,19 @@ public class RestBackstageServiceTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
         doNothing().when(authorizationService).filterBoxWithPermissions(any(), any());
-        List<BoxConfigurationData> boxConfigurationData = restBackstageService.listMenu(PServerContext.REQUIREMENT.getName(), "vinicius.nunes");
+        List<BoxConfigurationData> boxConfigurationData = moduleBackstageService.listMenu(PServerContext.REQUIREMENT.getName(), "vinicius.nunes");
         assertFalse(boxConfigurationData.isEmpty());
     }
 
     @Test
     public void count() {
-        Long count = restBackstageService.count("", new QuickFilter());
+        Long count = moduleBackstageService.count("", new QuickFilter());
         assertEquals(Long.valueOf(0), count);
     }
 
     @Test
     public void search() {
-        BoxItemDataList search = restBackstageService.search("", new QuickFilter());
+        BoxItemDataList search = moduleBackstageService.search("", new QuickFilter());
         assertTrue(search.getBoxItemDataList().isEmpty());
     }
 

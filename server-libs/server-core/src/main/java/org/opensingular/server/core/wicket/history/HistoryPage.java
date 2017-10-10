@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
@@ -58,6 +59,13 @@ public class HistoryPage extends ServerTemplate {
     private long petitionPK;
     private String modulePK;
     private String menu;
+
+    public HistoryPage() {
+    }
+
+    public HistoryPage(PageParameters parameters) {
+        super(parameters);
+    }
 
     @Override
     protected void onInitialize() {
@@ -191,7 +199,11 @@ public class HistoryPage extends ServerTemplate {
         final String groupConnectionURL = petitionService.findByModuleCod(modulePK).getConnectionURL();
         try {
             final String path = new URL(groupConnectionURL).getPath();
-            return path.substring(0, path.indexOf('/', 1));
+            int indexOf = path.indexOf('/', 1);
+            if(indexOf > 0) {
+                return path.substring(0, indexOf);
+            }
+            return groupConnectionURL;
         } catch (Exception e) {
             throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
         }

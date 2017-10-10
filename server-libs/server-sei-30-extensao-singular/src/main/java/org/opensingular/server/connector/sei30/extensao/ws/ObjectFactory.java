@@ -38,11 +38,59 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link RetornoConsultaDocumento }
+     * 
+     */
+    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
+        return new RetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link LoginInterno }
+     * 
+     */
+    public LoginInterno createLoginInterno() {
+        return new LoginInterno();
+    }
+
+    /**
+     * Create an instance of {@link Campo }
+     * 
+     */
+    public Campo createCampo() {
+        return new Campo();
+    }
+
+    /**
+     * Create an instance of {@link DadosUsuarioExterno }
+     * 
+     */
+    public DadosUsuarioExterno createDadosUsuarioExterno() {
+        return new DadosUsuarioExterno();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfAssinante }
      * 
      */
     public ArrayOfAssinante createArrayOfAssinante() {
         return new ArrayOfAssinante();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfCampo }
+     * 
+     */
+    public ArrayOfCampo createArrayOfCampo() {
+        return new ArrayOfCampo();
+    }
+
+    /**
+     * Create an instance of {@link RetornoConsultarConteudoDocumento }
+     * 
+     */
+    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
+        return new RetornoConsultarConteudoDocumento();
     }
 
     /**
@@ -59,6 +107,22 @@ public class ObjectFactory {
      */
     public Assinante createAssinante() {
         return new Assinante();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfRetornoConsultaDocumento }
+     * 
+     */
+    public ArrayOfRetornoConsultaDocumento createArrayOfRetornoConsultaDocumento() {
+        return new ArrayOfRetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link Serie }
+     * 
+     */
+    public Serie createSerie() {
+        return new Serie();
     }
 
 }

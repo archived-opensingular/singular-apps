@@ -14,11 +14,8 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.core.wicket.model;
+package org.opensingular.server.commons.box;
 
-import org.opensingular.server.commons.box.BoxItemData;
-import org.opensingular.server.commons.box.BoxItemDataImpl;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
@@ -37,12 +34,20 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
     }
 
     public Long getCod() {
-        return Integer.valueOf((String) get("codPeticao")).longValue();
+        Object codPeticao = get("codPeticao");
+        if (codPeticao instanceof Number) {
+            return ((Number) codPeticao).longValue();
+        } else if (codPeticao instanceof String) {
+            return Integer.valueOf((String) codPeticao).longValue();
+        }
+        return null;
     }
 
     public Integer getVersionStamp() {
         Object versionStamp = get("versionStamp");
-        if (versionStamp != null) {
+        if(versionStamp instanceof Number){
+            return ((Number) versionStamp).intValue();
+        } else if (versionStamp instanceof String) {
             return Integer.valueOf((String) versionStamp);
         } else {
             return null;
@@ -51,7 +56,9 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
 
     public Long getProcessInstanceId() {
         Object processInstanceId = get("processInstanceId");
-        if (processInstanceId != null) {
+        if (processInstanceId instanceof Number) {
+            return ((Number) processInstanceId).longValue();
+        } else if (processInstanceId instanceof String) {
             return Integer.valueOf((String) processInstanceId).longValue();
         } else {
             return null;
@@ -59,7 +66,11 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
     }
 
     public String getProcessBeginDate() {
-        return (String) get("processBeginDate");
+        Object processBeginDate = get("processBeginDate");
+        if (processBeginDate != null) {
+            return String.valueOf(processBeginDate);
+        }
+        return null;
     }
 
     public Map<String, BoxItemAction> getActionsMap() {

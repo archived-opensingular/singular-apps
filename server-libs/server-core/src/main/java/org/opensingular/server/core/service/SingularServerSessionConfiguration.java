@@ -6,12 +6,12 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -19,15 +19,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
-import static org.opensingular.server.commons.RESTPaths.USER;
-import static org.opensingular.server.commons.RESTPaths.WORKSPACE_CONFIGURATION;
+import java.util.*;
 
 @Named
 @Scope("session")
@@ -41,28 +33,20 @@ public class SingularServerSessionConfiguration implements Loggable {
     @Inject
     private SingularServerConfiguration singularServerConfiguration;
 
+    @Inject
+    private ModuleDriver rmoduleDriver;
 
     @PostConstruct
     public void init() {
         try {
-            RestTemplate restTemplate = new RestTemplate();
+            IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                String url = module.getConnectionURL() + WORKSPACE_CONFIGURATION
-                        + "?" + MENU_CONTEXT + "=" + getMenuContext().getName();
-
-                SingularUserDetails userDetails = getUserDetails();
-                if (userDetails != null) {
-                    url += "&" + USER + "=" + userDetails.getUserPermissionKey();
-                }
-
-                configMaps.put(module, restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class));
-
+                configMaps.put(module, rmoduleDriver.retrieveModuleWorkspace(module, menuContext));
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
         }
     }
-
 
     public void reload() {
         configMaps.clear();
@@ -75,7 +59,7 @@ public class SingularServerSessionConfiguration implements Loggable {
 
     public IServerContext getMenuContext() {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest       req = sra.getRequest();
+        HttpServletRequest req = sra.getRequest();
         return IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
     }
 
@@ -88,8 +72,8 @@ public class SingularServerSessionConfiguration implements Loggable {
     }
 
     public LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> getModuleBoxConfigurationMap() {
-        LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
-        List<ModuleEntity>                                      categorias = buscarCategorias();
+        LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> map = new LinkedHashMap<>();
+        List<ModuleEntity> categorias = buscarCategorias();
         for (ModuleEntity categoria : categorias) {
             final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
             map.put(categoria, boxConfigurationMetadataDTOs);
@@ -107,6 +91,7 @@ public class SingularServerSessionConfiguration implements Loggable {
 
     /**
      * For testing purposes only. Must not be used in another scenario.
+     *
      * @param configMaps
      */
     @VisibleForTesting

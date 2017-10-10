@@ -39,7 +39,7 @@ public class FilterTokenFactory {
         Matcher matcher = Pattern.compile(QUOTATION_MARK_FIND_REGEX).matcher(rawFilter);
         while (matcher.find()) {
             String matched = rawFilter.substring(matcher.start(), matcher.end());
-            tokens.add(new FilterToken(matched.replace("\"", "")));
+            tokens.add(new FilterToken(matched.replace("\"", ""), true));
             dynamicFilter = dynamicFilter.replaceFirst(matched, "");
         }
     }

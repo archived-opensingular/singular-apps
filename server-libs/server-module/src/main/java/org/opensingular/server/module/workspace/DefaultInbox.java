@@ -23,7 +23,7 @@ public class DefaultInbox implements BoxDefinition {
     public ItemBox build(IServerContext context) {
         final ItemBox caixaEntrada = new ItemBox();
         caixaEntrada.setName("Caixa de Entrada");
-        caixaEntrada.setDescription("Petições aguardando ação do usuário");
+        caixaEntrada.setDescription("Requerimentos aguardando ação do usuário");
         caixaEntrada.setIcone(DefaultIcons.DOCS);
         caixaEntrada.setEndedTasks(Boolean.FALSE);
         return caixaEntrada;

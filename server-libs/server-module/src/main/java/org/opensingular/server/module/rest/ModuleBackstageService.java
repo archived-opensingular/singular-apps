@@ -42,7 +42,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class RestBackstageService implements Loggable {
+public class ModuleBackstageService implements Loggable {
 
     @Inject
     private PetitionService<PetitionEntity, PetitionInstance> petitionService;

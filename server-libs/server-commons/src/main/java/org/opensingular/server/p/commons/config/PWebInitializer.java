@@ -30,30 +30,38 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.EnumSet;
 
+import static org.opensingular.server.p.commons.config.PServerContext.ADMINISTRATION;
+import static org.opensingular.server.p.commons.config.PServerContext.REQUIREMENT;
+import static org.opensingular.server.p.commons.config.PServerContext.WORKLIST;
+
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
  * e as configurações básicas do spring e spring-security
  */
 public abstract class PWebInitializer extends WebInitializer {
 
-
     @Override
-    protected IServerContext[] serverContexts() {
-        return PServerContext.values();
+    public IServerContext[] serverContexts() {
+        return new IServerContext[]{REQUIREMENT, WORKLIST, ADMINISTRATION};
     }
 
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
         super.onStartup(servletContext);
+        configureCAS(servletContext);
+    }
+
+    protected void configureCAS(ServletContext servletContext){
         if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
-            addCASFilter(servletContext, PServerContext.WORKLIST);
-            addCASFilter(servletContext, PServerContext.REQUIREMENT);
+            addCASFilter(servletContext, WORKLIST);
+            addCASFilter(servletContext, REQUIREMENT);
             addSingleSignOutListener(servletContext);
         }
     }
 
+
     protected void addCASFilter(ServletContext servletContext, PServerContext context) {
-        configureSSO(servletContext, "SSOFilter" + context.name(), context);
+        configureSSO(servletContext, "SSOFilter" + context.getName(), context);
     }
 
     protected void addSingleSignOutListener(ServletContext servletContext) {
@@ -67,8 +75,6 @@ public abstract class PWebInitializer extends WebInitializer {
         ssoFilter.setInitParameter("logoutUrl", context.getUrlPath() + "/logout");
         ssoFilter.setInitParameter("urlExcludePattern", getExcludeUrlRegex());
         ssoFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getContextPath());
-
-
     }
 
     /**

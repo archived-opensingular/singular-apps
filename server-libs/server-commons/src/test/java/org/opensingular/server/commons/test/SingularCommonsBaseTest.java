@@ -1,11 +1,11 @@
 package org.opensingular.server.commons.test;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 
 import org.apache.wicket.Page;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -70,7 +70,7 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         });
     }
 
-    @NotNull
+    @Nonnull
     private FormTypeEntity createFormTypeIfNeeded() {
         FormTypeEntity formTypeEntity = (FormTypeEntity) session.createCriteria(FormTypeEntity.class).list().stream().findFirst().orElse(null);
         if (formTypeEntity == null) {

@@ -29,20 +29,23 @@ import java.util.EnumSet;
 
 public abstract class SpringSecurityInitializer {
 
-    static final        String SINGULAR_SECURITY = "[SINGULAR][SECURITY] {} {}";
-    public static final Logger logger            = LoggerFactory.getLogger(SpringSecurityInitializer.class);
+    static final String SINGULAR_SECURITY = "[SINGULAR][SECURITY] {} {}";
+    public static final Logger logger = LoggerFactory.getLogger(SpringSecurityInitializer.class);
 
     public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping, IServerContext[] serverContexts) {
         addRestSecurity(applicationContext);
         addSpringSecurityFilter(ctx, applicationContext, springMVCServletMapping);
         for (IServerContext context : serverContexts) {
             logger.info(SINGULAR_SECURITY, "Securing (Spring Security) context:", context.getContextPath());
-            applicationContext.register(getSpringSecurityConfigClass(context));
-            addLogoutFilter(ctx, applicationContext, springMVCServletMapping, context);
+            Class<WebSecurityConfigurerAdapter> config = getSpringSecurityConfigClass(context);
+            if (config != null) {
+                applicationContext.register(config);
+                addLogoutFilter(ctx, applicationContext, springMVCServletMapping, context);
+            }
         }
     }
 
-    protected void addRestSecurity(AnnotationConfigWebApplicationContext applicationContext){
+    protected void addRestSecurity(AnnotationConfigWebApplicationContext applicationContext) {
         applicationContext.register(DefaultRestSecurity.class);
     }
 

@@ -47,7 +47,8 @@ import java.util.stream.Collectors;
  */
 public class AuthorizationService implements Loggable {
 
-    private static final String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
+    public static final String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
+    public static final String SEPARATOR                    = "|$|";
 
     @Inject
     protected PermissionResolverService permissionResolverService;
@@ -150,7 +151,7 @@ public class AuthorizationService implements Loggable {
      * @return
      */
     private String buildPermissionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO, String formSimpleName, String action) {
-        String permission = Joiner.on("_")
+        String permission = Joiner.on(SEPARATOR)
                 .skipNulls()
                 .join(
                         upperCaseOrNull(action),
@@ -209,7 +210,7 @@ public class AuthorizationService implements Loggable {
     }
 
     private String removeTask(String permissionId) {
-        int idx = permissionId.lastIndexOf('_');
+        int idx = permissionId.lastIndexOf(SEPARATOR);
         if (idx > -1) {
             return permissionId.substring(0, idx);
         }

@@ -16,6 +16,41 @@
 
 package org.opensingular.server.commons.wicket.view.template;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
+import org.apache.wicket.Page;
+import org.apache.wicket.Session;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
+import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
+import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.protocol.http.WebApplication;
+import org.apache.wicket.request.component.IRequestablePage;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.handler.TextRequestHandler;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.lib.commons.lambda.ISupplier;
+import org.opensingular.lib.commons.ui.Icon;
+import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.wicket.util.menu.MetronicMenu;
+import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
+import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.lib.wicket.util.util.Shortcuts;
+import org.opensingular.server.commons.connector.ModuleDriver;
+import org.opensingular.server.commons.service.dto.BoxConfigurationData;
+import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.opensingular.server.commons.wicket.SingularSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,53 +61,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import javax.inject.Inject;
-
-import org.apache.commons.lang3.tuple.Pair;
-import org.apache.wicket.Component;
-import org.apache.wicket.Session;
-import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.component.IRequestablePage;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.handler.TextRequestHandler;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.lib.commons.lambda.ISupplier;
-import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.menu.MetronicMenu;
-import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
-import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.lib.wicket.util.util.Shortcuts;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
-import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.opensingular.server.commons.wicket.SingularSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.web.client.RestTemplate;
-
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class Menu extends Panel implements Loggable {
-
-    protected static final Logger LOGGER = LoggerFactory.getLogger(Menu.class);
 
     @Inject
     @SpringBean(required = false)
     private MenuService menuService;
+
+    @Inject
+    private ModuleDriver moduleDriver;
 
     private Class<? extends WebPage> boxPageClass;
     private MetronicMenu menu;
@@ -167,15 +165,10 @@ public class Menu extends Panel implements Loggable {
                 .map(ProcessDTO::getAbbreviation)
                 .collect(Collectors.toList());
 
-        List<String> tipos = boxConfigurationMetadata.getProcesses().stream()
-                .map(ProcessDTO::getFormName)
-                .filter(Objects::nonNull)
-                .collect(Collectors.toList());
-
         List<MenuItemConfig> configs = new ArrayList<>();
 
         for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
-            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, siglas, module, tipos, boxConfigurationMetadata.getForms());
+            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, siglas, module);
             configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getIcone(), countSupplier));
 
         }
@@ -183,26 +176,8 @@ public class Menu extends Panel implements Loggable {
         return configs;
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module, List<String> tipos, List<FormDTO> menuFormTypes) {
-        return () -> {
-            final String connectionURL = module.getConnectionURL();
-            final String url = connectionURL + itemBoxDTO.getCountEndpoint();
-            long qtd;
-            try {
-                QuickFilter filter = new QuickFilter()
-                        .withProcessesAbbreviation(siglas)
-//                        .withTypesNames(tipos.isEmpty() ? menuFormTypes.stream().map(FormDTO::getName).collect(Collectors.toList()) : tipos)
-                        .withRascunho(itemBoxDTO.isShowDraft())
-                        .withEndedTasks(itemBoxDTO.getEndedTasks())
-                        .withIdUsuarioLogado(getIdUsuarioLogado());
-                qtd = new RestTemplate().postForObject(url, filter, Long.class);
-            } catch (Exception e) {
-                LOGGER.error("Erro ao acessar serviço: " + url, e);
-                qtd = 0;
-            }
-
-            return String.valueOf(qtd);
-        };
+    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
+        return () -> moduleDriver.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
     }
 
     protected String getIdPessoa() {
@@ -216,7 +191,12 @@ public class Menu extends Panel implements Loggable {
                 .orElse(null);
     }
 
-    public Class<? extends WebPage> getBoxPageClass() {
+    //TODO buggy, should be refactored
+    public Class<? extends Page> getBoxPageClass() {
+        Class<? extends Page> homePage = WebApplication.get().getHomePage();
+        if (homePage != null) {
+            return homePage;
+        }
         return boxPageClass;
     }
 
