@@ -9,13 +9,14 @@ import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
 import org.opensingular.server.commons.persistence.filter.FilterToken;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+
+import javax.annotation.Nonnull;
 
 public class RequirementSearchQueryFactory {
 
@@ -108,7 +109,7 @@ public class RequirementSearchQueryFactory {
                 .leftJoin($.requirementDefinition.module, $.module);
     }
 
-    @NotNull
+    @Nonnull
     private void appendWhere() {
         appendFilterByPetitioner();
         appendFilterByProcessAbbreviation();
@@ -210,7 +211,7 @@ public class RequirementSearchQueryFactory {
                 .or(toCharDate($.processInstance.beginDate).like(filter));
     }
 
-    @NotNull
+    @Nonnull
     private StringTemplate toCharDate(Path<?> path) {
         return Expressions.stringTemplate(TO_CHAR_DATE, path);
     }

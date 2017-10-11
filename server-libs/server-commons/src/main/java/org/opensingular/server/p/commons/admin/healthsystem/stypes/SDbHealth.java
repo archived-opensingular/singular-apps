@@ -16,7 +16,6 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.stypes;
 
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
 import org.opensingular.form.SInfoType;
@@ -32,6 +31,7 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewListByTable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -50,7 +50,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
     public STypeList<STypeComposite<SIComposite>, SIComposite> columnsInfo;
 
     @Override
-    protected void onLoadType(@NotNull TypeBuilder tb) {
+    protected void onLoadType(@Nonnull TypeBuilder tb) {
 
         tablesList = this.addFieldListOfComposite("tablesList", "tabela");
         tablesList.setView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
@@ -174,7 +174,8 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 && databaseFieldInstance.isPresent()
                 && !databaseFieldInstance.get().getValue()) {
             validatable.error("Inconsistency between database and Hibernate!");
-        } else {
+        }
+        else {
             // Encontrado no banco e nao no hibernate
             Optional<SIBoolean>        nullableFieldInstance = validatable.getInstance().findNearest(nullable);
             Optional<SIList<SIString>> listObj               = validatable.getInstance().findNearest(userPrivs);
@@ -201,7 +202,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         List<String>               vals             = new ArrayList<>();
         listPrivs.forEach(obj -> vals.add((String) obj));
 
-        if(foundSchemaField.isPresent()) {
+        if (foundSchemaField.isPresent()) {
             SIString foundSchemaFieldInstance = foundSchemaField.get();
             if (SqlUtil.isSingularSchema(foundSchemaFieldInstance.getValue())
                     && SqlUtil.hasCompleteCrud(vals)) {

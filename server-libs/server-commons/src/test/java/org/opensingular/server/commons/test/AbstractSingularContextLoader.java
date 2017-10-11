@@ -18,6 +18,7 @@ package org.opensingular.server.commons.test;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensingular.lib.commons.context.SingularContextSetup;
+import org.opensingular.server.commons.config.SingularInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -261,7 +262,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new CommonsInitializerMock(context).onStartup(context.getServletContext());
+            new SingularInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

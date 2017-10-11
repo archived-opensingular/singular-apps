@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.wicket.view.util;
 
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.slf4j.Logger;
@@ -77,7 +78,7 @@ public class DispatcherPageUtil {
     }
 
     public DispatcherPageUrlBuilder formAction(Object formAction) {
-        return new DispatcherPageUrlBuilder(this.url + "?" + ActionContext.ACTION + "=" + encodeParameter(formAction));
+        return new DispatcherPageUrlBuilder(this.url + "?dispatch=true&" + ActionContext.ACTION + "=" + encodeParameter(formAction));
     }
 
     public static class DispatcherPageUrlBuilder {

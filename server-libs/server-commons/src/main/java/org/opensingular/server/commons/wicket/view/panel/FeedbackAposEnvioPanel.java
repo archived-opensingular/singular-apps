@@ -6,12 +6,12 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.lib.commons.lambda.IBiConsumer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 
+import javax.annotation.Nonnull;
 import java.util.Optional;
 
 public abstract class FeedbackAposEnvioPanel extends Panel {
@@ -63,9 +63,9 @@ public abstract class FeedbackAposEnvioPanel extends Panel {
         modal.setTitleText(Model.of(getTitle()));
     }
 
-    @NotNull
+    @Nonnull
     public String getTitle() {
-        return "Petição enviada com sucesso.";
+        return "Requerimento enviado com sucesso.";
     }
 
     private void configureModalSize() {

@@ -8,15 +8,15 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import javax.servlet.ServletContext;
 import java.io.Serializable;
 
-public class SecurityAuthPathsFactory implements Serializable{
+public class SecurityAuthPathsFactory implements Serializable {
 
     public SecurityAuthPaths get() {
 
-        SingularSession     singularSession     = SingularSession.get();
+        SingularSession singularSession = SingularSession.get();
         SingularServerApplication singularServerApplication = SingularServerApplication.get();
 
         SingularUserDetails userDetails = singularSession.getUserDetails();
-        IServerContext      serverContext = userDetails.getServerContext();
+        IServerContext serverContext = userDetails.getServerContext();
 
         ServletContext servletContext = singularServerApplication.getServletContext();
 

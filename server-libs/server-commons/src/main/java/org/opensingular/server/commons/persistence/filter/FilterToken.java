@@ -27,9 +27,17 @@ public class FilterToken {
         } else {
             List<String> matches = new ArrayList<>();
             matches.add(get());
-            matches.add(getOnlyNumersAndLetters());
+            matches.add(getOnlyNumbersAndLetters());
             return matches;
         }
+    }
+
+    /**
+     * Returns raw token value without like wildcards characters.
+     * @return
+     */
+    public String getRaw(){
+        return token;
     }
 
     private String anywhereOrExact(String str) {
@@ -40,7 +48,7 @@ public class FilterToken {
         return anywhereOrExact(token);
     }
 
-    public String getOnlyNumersAndLetters() {
+    public String getOnlyNumbersAndLetters() {
         return anywhereOrExact(token.replaceAll("[^\\da-zA-Z]", ""));
     }
 

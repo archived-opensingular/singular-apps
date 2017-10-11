@@ -16,26 +16,27 @@
 
 package org.opensingular.server.p.commons.config;
 
-import org.opensingular.server.commons.config.FormInitializer;
-import org.opensingular.server.commons.config.SingularInitializer;
-import org.opensingular.server.commons.config.SpringHibernateInitializer;
+import org.opensingular.server.commons.config.*;
 
-public interface PSingularInitializer extends SingularInitializer {
+public interface PSingularInitializer {
 
-    @Override
-    public PWebInitializer webConfiguration();
+    FlowInitializer flowConfiguration();
 
-    @Override
-    public SpringHibernateInitializer springHibernateConfiguration();
+    SchedulerInitializer schedulerConfiguration();
 
-    @Override
+    PWebInitializer webConfiguration();
+
+    SpringHibernateInitializer springHibernateConfiguration();
+
+    default Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig(){
+        return SingularSpringWebMVCConfig.class;
+    }
+
     default FormInitializer formConfiguration() {
         return new FormInitializer();
     }
 
-    @Override
     default PSpringSecurityInitializer springSecurityConfiguration() {
         return new PSpringSecurityInitializer();
     }
-
 }

@@ -31,6 +31,7 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.transformer.FindActorByUserCodResultTransformer;
 
 import javax.annotation.Nonnull;
+import javax.transaction.Transactional;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
@@ -92,7 +93,8 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                     String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (" + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
                     PreparedStatement ps  = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
-                    ps.execute();
+                    int returnVal = ps.executeUpdate();
+                    System.out.println(returnVal);
                 });
             } else {
                 getSession().doWork(connection -> {

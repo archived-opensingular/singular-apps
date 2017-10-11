@@ -268,10 +268,6 @@ public class SEIWS implements SEIPortType {
     /**
      * Listar unidades.
      *
-     * @param siglaSistema1
-     *            o(a) sigla sistema.
-     * @param identificacaoServico1
-     *            o(a) identificacao servico.
      * @param idTipoProcedimento
      *            o(a) id tipo procedimento.
      * @param idSerie
@@ -279,8 +275,8 @@ public class SEIWS implements SEIPortType {
      * @return o valor de array of unidade
      */
     @Override
-    public List<Unidade> listarUnidades(UnidadeSei unidade, String siglaSistema1, String identificacaoServico1, String idTipoProcedimento, String idSerie) {
-        return seiPortType.listarUnidades(siglaSistema1, identificacaoServico1, idTipoProcedimento, idSerie).getItem();
+    public List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie) {
+        return seiPortType.listarUnidades(siglaSistema, identificacaoServico, idTipoProcedimento, idSerie).getItem();
     }
 
     /**
@@ -546,13 +542,13 @@ public class SEIWS implements SEIPortType {
      * @param valor valor binário
      * @return false caso 0, true caso diferente de 0 ou null caso o parametro seja null.
      */
-    private Boolean converterRetornoBooleano(String valor) {
+    private Boolean converterRetornoBooleano(String valor) {//NOSONAR
         if (valor == null) {
-            return null;
+            return null;//NOSONAR
         }
         // Retorna false para 0 e true para
         // qualquer coisa que não seja 0.
-        return !valor.trim().equalsIgnoreCase("0");
+        return !"0".equalsIgnoreCase(valor.trim());
     }
 
     @Override

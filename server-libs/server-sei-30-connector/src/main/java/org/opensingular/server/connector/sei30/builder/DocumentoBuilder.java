@@ -1,14 +1,17 @@
 package org.opensingular.server.connector.sei30.builder;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.connector.sei30.ConstantesSEI;
 import org.opensingular.server.connector.sei30.model.NivelAcesso;
 import org.opensingular.server.connector.sei30.model.SerieEnum;
 import org.opensingular.server.connector.sei30.model.TipoDocumento;
-import org.opensingular.server.connector.sei30.ws.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.server.connector.sei30.ws.ArrayOfDestinatario;
+import org.opensingular.server.connector.sei30.ws.ArrayOfInteressado;
+import org.opensingular.server.connector.sei30.ws.Destinatario;
+import org.opensingular.server.connector.sei30.ws.Documento;
+import org.opensingular.server.connector.sei30.ws.Interessado;
+import org.opensingular.server.connector.sei30.ws.Remetente;
 
 import javax.activation.DataHandler;
 import java.io.File;
@@ -22,13 +25,11 @@ import java.util.List;
 /**
  * Classe DocumentoBuilder.
  */
-public class DocumentoBuilder implements Serializable {
+public class DocumentoBuilder implements Serializable, Loggable {
 
     private static final String ERRO_CARREGAR_ARQUIVO = "Erro ao carregar arquivo";
 
-    private Documento documento;
-
-    private Logger logger = LoggerFactory.getLogger(getClass());
+    private transient Documento documento;
 
     /**
      * Instancia um novo objeto documento builder.
@@ -201,6 +202,27 @@ public class DocumentoBuilder implements Serializable {
     }
 
     /**
+     * Adiciona o destinatario.
+     *
+     * @param sigla
+     *            o(a) sigla.
+     * @param nome
+     *            o(a) nome.
+     * @return o valor de documento builder
+     */
+    public DocumentoBuilder addDestinatario(String sigla, String nome) {
+        if (this.documento.getDestinatarios() == null) {
+            this.documento.setDestinatarios(new ArrayOfDestinatario());
+        }
+
+        Destinatario destinatario = new Destinatario();
+        destinatario.setNome(nome);
+        destinatario.setSigla(sigla);
+        documento.getDestinatarios().getItem().add(destinatario);
+        return this;
+    }
+
+    /**
      * Atualiza o novo valor de observacao.
      * 
      * @param value
@@ -237,7 +259,7 @@ public class DocumentoBuilder implements Serializable {
             // ser alterado para DataHandler
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.transferToTempFile(value).toURI().toURL()));
         } catch (Exception e) {
-            logger.error(ERRO_CARREGAR_ARQUIVO, e);
+            getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
             throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
@@ -255,7 +277,7 @@ public class DocumentoBuilder implements Serializable {
             // ser alterado para DataHandler
             this.documento.setConteudoMTOM(new DataHandler(arquivo.toURI().toURL()));
         } catch (Exception e) {
-            logger.error(ERRO_CARREGAR_ARQUIVO, e);
+            getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
             throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
@@ -274,7 +296,7 @@ public class DocumentoBuilder implements Serializable {
             // ser alterado para DataHandler
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.stream2file(arquivo).toURI().toURL()));
         } catch (Exception e) {
-            logger.error(ERRO_CARREGAR_ARQUIVO, e);
+            getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
             throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
@@ -294,7 +316,7 @@ public class DocumentoBuilder implements Serializable {
             // ser alterado para DataHandler
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.createTempFile(binaryData).toURI().toURL()));
         } catch (Exception e) {
-            logger.error(ERRO_CARREGAR_ARQUIVO, e);
+            getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
             throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
@@ -314,7 +336,7 @@ public class DocumentoBuilder implements Serializable {
             // ser alterado para DataHandler
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.decodeToTempFile(new String(binaryData, Charset.forName("UTF-8"))).toURI().toURL()));
         } catch (Exception e) {
-            logger.error(ERRO_CARREGAR_ARQUIVO, e);
+            getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
             throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
@@ -351,6 +373,16 @@ public class DocumentoBuilder implements Serializable {
         return this;
     }
 
+    public DocumentoBuilder setIdTipoConferencia(String idTipoConferencia) {
+        this.documento.setIdTipoConferencia(idTipoConferencia);
+        return this;
+    }
+
+    public DocumentoBuilder setSinBloqueado(String sinBloqueado) {
+        this.documento.setSinBloqueado(sinBloqueado);
+        return this;
+    }
+
     /**
      * Cria o documento.
      * 
@@ -366,11 +398,11 @@ public class DocumentoBuilder implements Serializable {
      */
     private void definirValoresDefault() {
         if (this.documento.getDestinatarios() == null) {
-            this.documento.setDestinatarios(ConstantesSEI.DESTINATARIOS_EMPTY);
+            this.documento.setDestinatarios(new ArrayOfDestinatario());
         }
 
         if (this.documento.getInteressados() == null) {
-            this.documento.setInteressados(ConstantesSEI.INTERESSADOS_EMPTY);
+            this.documento.setInteressados(new ArrayOfInteressado());
         }
 
         if (this.documento.getNivelAcesso() == null) {

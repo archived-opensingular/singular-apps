@@ -23,7 +23,6 @@ import javax.servlet.ServletException;
 
 public abstract class ModuleInitializer implements PSingularInitializer {
 
-
     private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override
@@ -38,15 +37,19 @@ public abstract class ModuleInitializer implements PSingularInitializer {
 
             @Override
             protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (PServerContext.WORKLIST.isSameContext(iServerContext)
-                        || PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return WorklistApplication.class;
-                } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
+                return ModuleInitializer.this.wicketApplicationClass(iServerContext);
             }
         };
+    }
+
+    protected Class<? extends SingularServerApplication> wicketApplicationClass(IServerContext iServerContext) {
+        if (PServerContext.WORKLIST.isSameContext(iServerContext)
+                || PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
+            return WorklistApplication.class;
+        } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
+            return AdministrationApplication.class;
+        }
+        throw new SingularServerException("Contexto inválido");
     }
 
     @Override

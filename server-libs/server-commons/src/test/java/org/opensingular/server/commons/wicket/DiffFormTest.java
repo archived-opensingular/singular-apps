@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.wicket;
 
 import org.apache.wicket.Page;
-import org.jetbrains.annotations.NotNull;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -23,9 +22,9 @@ import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.HashMap;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DiffFormTest extends SingularCommonsBaseTest {
@@ -47,7 +46,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     @WithUserDetails("vinicius.nunes")
-    public void renderDiffPage(){
+    public void renderDiffPage() {
         Long petitionCod = createMockPetitionAndReturnPetitionCod();
 
         tester = new SingularWicketTester(singularApplication);
@@ -71,14 +70,15 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     private SInstance createInstanceToPetition() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
         return instance;
     }
 
-    @NotNull
+    @Nonnull
     private PetitionInstance createNewPetitionInstance(SInstance instance) {
-        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
+        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {
+        }, requirementDefinitionEntity);
         petitionInitial.setProcessDefinition(FOOFlowWithTransition.class);
 
         petitionService.saveOrUpdate(petitionInitial, instance, true);

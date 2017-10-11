@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class BoxController implements BoxInfo {
 
-    private String                      id              = UUID.randomUUID().toString();
+    private String                      id;
     private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
     private BoxDefinition boxDefinition;
 
@@ -34,6 +34,10 @@ public class BoxController implements BoxInfo {
     @Override
     public String getBoxId() {
         return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 
     @Override

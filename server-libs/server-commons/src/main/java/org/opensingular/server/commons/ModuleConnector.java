@@ -15,13 +15,12 @@ import java.util.Map;
  */
 public interface ModuleConnector {
 
-
     /**
      * Invoke count method for the box with the corresponding {@param boxId}
      *
-     * @param boxId
-     * @param filter
-     * @return
+     * @param boxId the box id
+     * @param filter the filter
+     * @return the count
      */
     Long count(String boxId, QuickFilter filter);
 
@@ -30,22 +29,33 @@ public interface ModuleConnector {
      * Invoke search method for the box with the corresponding {@param boxId}
      * Return the results in the ItemBoxDataList format
      *
-     * @param boxId
-     * @param filter
-     * @return
+     * @param boxId the box id
+     * @param filter the filter
+     * @return the count
      */
     BoxItemDataList search(String boxId, QuickFilter filter);
 
     /**
      * Executes custom actions defined in the {@link BoxItemDataList}
      *
-     * @param id
-     * @param actionRequest
-     * @return
+     * @param id the id
+     * @param actionRequest the actionRequest
+     * @return the value
      */
     ActionResponse execute(Long id, ActionRequest actionRequest);
 
+    /**
+     *
+     * @param context
+     * @param user
+     * @return
+     */
     WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
 
+    /**
+     *
+     * @param selectedTask
+     * @return
+     */
     List<Actor> listUsers(Map<String, Object> selectedTask);
 }

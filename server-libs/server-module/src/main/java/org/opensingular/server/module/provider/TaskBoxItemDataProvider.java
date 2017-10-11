@@ -1,6 +1,5 @@
 package org.opensingular.server.module.provider;
 
-import org.jetbrains.annotations.NotNull;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
@@ -14,6 +13,7 @@ import org.opensingular.server.module.BoxInfo;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.DefaultActionProvider;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,7 +47,7 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
                 .getBean(PetitionService.class).listTasks(filter, searchPermissions(filter), getExtenders(filter));
     }
 
-    @NotNull
+    @Nonnull
     private SingularObjectMapper getSingularObjectMapper() {
         return new SingularObjectMapper();
     }

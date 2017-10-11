@@ -24,7 +24,6 @@ import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
-import org.opensingular.server.module.service.BoxService;
 import org.opensingular.server.module.service.ModuleService;
 
 /**
