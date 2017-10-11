@@ -17,15 +17,15 @@ import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
-import org.opensingular.lib.commons.util.Loggable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class FormDocumentationMetadata implements Serializable, Loggable {
+public class FormDocumentationMetadata implements DocumentationRow {
 
+    private String stypeName;
     private String nomeCampo;
     private String habilitado;
     private String tamanho;
@@ -38,12 +38,14 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
     private boolean hiddenCopositeField;
     private String mensagens;
     private String regras;
+    private Integer fieldNumber;
 
     public FormDocumentationMetadata() {
 
     }
 
     public FormDocumentationMetadata(SType<?> rootType, SType<?> type) {
+        this.stypeName = type.getName();
         this.selection = initSelection(type);
         this.simple = initSimpleType(type);
         this.upload = initUpload(type);
@@ -225,6 +227,11 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
         return !hiddenCopositeField && (selection || upload || simple);
     }
 
+
+    public String isRequired() {
+        return obrigatorio;
+    }
+
     public String getFieldName() {
         return nomeCampo;
     }
@@ -241,22 +248,6 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
         return siglaTipo;
     }
 
-    public String isRequired() {
-        return obrigatorio;
-    }
-
-    public boolean initSelection() {
-        return selection;
-    }
-
-    public boolean isSimple() {
-        return simple;
-    }
-
-    public boolean initUpload() {
-        return upload;
-    }
-
     public String getGeneralInformation() {
         return observacao;
     }
@@ -267,5 +258,14 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
 
     public String getMessages() {
         return mensagens;
+    }
+
+    @Override
+    public RowType getRowType() {
+        return RowType.DATA;
+    }
+
+    public String getStypeName() {
+        return stypeName;
     }
 }

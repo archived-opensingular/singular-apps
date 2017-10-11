@@ -1,18 +1,25 @@
 package org.opensingular.server.p.commons.admin.healthsystem.panel;
 
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.DataTable;
+import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.data.IDataProvider;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeComposite;
 import org.opensingular.form.STypes;
-import org.opensingular.lib.wicket.util.datatable.BSDataTable;
-import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
-import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.lib.wicket.util.datatable.column.BSPropertyColumn;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
@@ -33,42 +40,78 @@ public class TabelaPage extends WebPage {
         queue(setupDataTable());
     }
 
-    protected BSDataTable<FormDocumentationMetadata, String> setupDataTable() {
-        return new BSDataTableBuilder<>(createDataProvider())
-                .appendPropertyColumn($m.ofValue("Número"), c -> {
-                    Integer value = counterModel.getObject() + 1;
-                    counterModel.setObject(value);
-                    return value;
-                })
-                .appendPropertyColumn($m.ofValue("Nome do campo"), FormDocumentationMetadata::getFieldName)
-                .appendPropertyColumn($m.ofValue("Tipo"), FormDocumentationMetadata::getFieldTypeAbbreviation)
-                .appendPropertyColumn($m.ofValue("Obrigatório"), FormDocumentationMetadata::isRequired)
-                .appendPropertyColumn($m.ofValue("Habilitado"), FormDocumentationMetadata::isEnabled)
-                .appendPropertyColumn($m.ofValue("Tamanho"), FormDocumentationMetadata::getFieldSize)
-                .appendPropertyColumn($m.ofValue("Regras"), FormDocumentationMetadata::getBusinessRules)
-                .appendPropertyColumn($m.ofValue("Mensagens"), FormDocumentationMetadata::getMessages)
-                .appendPropertyColumn($m.ofValue("Domínio / Máscara / Hint / Demais observações"), FormDocumentationMetadata::getGeneralInformation)
-                .setRowsPerPage(Long.MAX_VALUE)
-                .setStripedRows(false)
-                .setBorderedTable(false)
-                .build("tabela");
+    protected DataTable<DocumentationRow, String> setupDataTable() {
+        return new DataTable<DocumentationRow, String>("tabela", appendColumn(), createDataProvider(), Integer.MAX_VALUE) {
+            @Override
+            protected Item<DocumentationRow> newRowItem(String id, int index, IModel<DocumentationRow> model) {
+                Item<DocumentationRow> item = super.newRowItem(id, index, model);
+                if (model.getObject().getRowType() == DocumentationRow.RowType.SEPARATOR) {
+                    item.add(new Behavior() {
+                        private static final long serialVersionUID = 1L;
+
+                        @Override
+                        public void onComponentTag(Component component, ComponentTag tag) {
+
+                            component
+                                    .getResponse()
+                                    .write(
+                                            "<tr><td colspan=\"" + getColumns().size() + 1 + "\">Separador Exemplo</td></tr>");
+
+                        }
+                    });
+                }
+                return item;
+            }
+        };
+    }
+
+    private List<IColumn<DocumentationRow, String>> appendColumn() {
+        List<IColumn<DocumentationRow, String>> list = new ArrayList<>();
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Número"), r -> {
+            Integer i = counterModel.getObject();
+            i = i + 1;
+            counterModel.setObject(i);
+            return i;
+        }));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Nome do campo"), r -> ((FormDocumentationMetadata) r).getFieldName()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tipo"), r -> ((FormDocumentationMetadata) r).getFieldTypeAbbreviation()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Obrigatório"), r -> ((FormDocumentationMetadata) r).isRequired()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Habilitado"), r -> ((FormDocumentationMetadata) r).isEnabled()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tamanho"), r -> ((FormDocumentationMetadata) r).getFieldSize()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Regras"), r -> ((FormDocumentationMetadata) r).getBusinessRules()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Mensagens"), r -> ((FormDocumentationMetadata) r).getMessages()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Domínio / Máscara / Hint / Demais observações"), r -> ((FormDocumentationMetadata) r).getGeneralInformation()));
+        return list;
     }
 
 
-    private BaseDataProvider<FormDocumentationMetadata, String> createDataProvider() {
-        return new BaseDataProvider<FormDocumentationMetadata, String>() {
-            @Override
-            public Iterator<? extends FormDocumentationMetadata> iterator(int first, int count, String sortProperty, boolean ascending) {
-                STypeComposite<?> type = (STypeComposite<?>) typeLoader.loadTypeOrException((Class<? extends SType>) getDefaultModelObject());
-                return STypes
-                        .streamDescendants(type, true)
-                        .map(stype -> new FormDocumentationMetadata(type, stype))
-                        .filter(FormDocumentationMetadata::isFormInputField).iterator();
-            }
+    private IDataProvider<DocumentationRow> createDataProvider() {
+        return new IDataProvider<DocumentationRow>() {
+
             @Override
             public long size() {
                 return Integer.MAX_VALUE;
             }
+
+            @Override
+            public Iterator<FormDocumentationMetadata> iterator(long first, long count) {
+                STypeComposite<?> rootType = (STypeComposite<?>) typeLoader.loadTypeOrException((Class<? extends SType>) getDefaultModelObject());
+                return STypes
+                        .streamDescendants(rootType, true)
+                        .map(type -> new FormDocumentationMetadata(rootType, type))
+                        .filter(FormDocumentationMetadata::isFormInputField).iterator();
+            }
+
+            @Override
+            public IModel<DocumentationRow> model(DocumentationRow object) {
+                return $m.ofValue(object);
+            }
+
+            @Override
+            public void detach() {
+
+            }
+
         };
     }
 
