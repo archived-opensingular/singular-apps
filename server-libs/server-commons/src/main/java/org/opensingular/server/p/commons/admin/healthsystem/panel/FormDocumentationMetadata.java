@@ -6,6 +6,8 @@ import org.opensingular.form.AtrRef;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
 import org.opensingular.form.STypeSimple;
+import org.opensingular.form.converter.EnumSInstanceConverter;
+import org.opensingular.form.provider.ProviderContext;
 import org.opensingular.form.type.basic.AtrBasic;
 import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.SPackageDocumentation;
@@ -14,11 +16,13 @@ import org.opensingular.form.type.core.STypeDateTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
+import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.stream.Collectors;
 
 public class FormDocumentationMetadata implements Serializable, Loggable {
 
@@ -74,6 +78,7 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
         return getAttribute(type, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(false);
     }
 
+    @SuppressWarnings("unchecked")
     private String initGeneralInformation(SType<?> type, SType<?> rootType) {
         List<String> observacoes = new ArrayList<>();
         getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION).ifPresent(v ->
@@ -83,7 +88,7 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
                 observacoes.add(" Subtítulo: " + v)
         );
         getAttribute(type, SPackageBasic.ATR_BASIC_MASK).ifPresent(v ->
-                observacoes.add(" Máscara: " + v)
+                observacoes.add(" Máscara: " + InputMaskBehavior.Masks.valueOf(v).getMask())
         );
         getAttribute(type, SPackageBasic.ATR_MINIMUM_SIZE).ifPresent(v ->
                 observacoes.add(" Mínimo: " + v)
@@ -91,6 +96,16 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
         getAttribute(type, SPackageBasic.ATR_MAXIMUM_SIZE).ifPresent(v ->
                 observacoes.add(" Máximo: " + v)
         );
+        if (selection && type.asAtrProvider().getConverter() instanceof EnumSInstanceConverter) {
+            List<String> dominio = (List<String>) type
+                    .asAtrProvider()
+                    .getProvider()
+                    .load(new ProviderContext())
+                    .stream()
+                    .map(e -> type.asAtrProvider().getDisplayFunction().apply((Serializable) e))
+                    .collect(Collectors.toList());
+            observacoes.add("Domínio: " + Joiner.on(", ").join(dominio));
+        }
         return Joiner.on("<br>").join(observacoes);
     }
 
@@ -146,11 +161,11 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
         } else if (s instanceof STypeAttachmentImage) {
             return "IM";
         } else if (s instanceof STypeAttachment) {
-            return "UP";
+            return "AN";
         } else if (s instanceof STypeAttachmentList) {
-            return "UPM";
+            return "ANM";
         } else {
-            return "TX";
+            return "CT";
         }
     }
 
@@ -172,7 +187,7 @@ public class FormDocumentationMetadata implements Serializable, Loggable {
     }
 
     private String initSize(SType<?> type) {
-        if (initSelection(type)) {
+        if (selection) {
             return "N/A";
         } else if (initUpload(type)) {
             SType<?> uploadType = type;
