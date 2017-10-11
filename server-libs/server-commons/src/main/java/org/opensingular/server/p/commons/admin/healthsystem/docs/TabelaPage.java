@@ -1,4 +1,4 @@
-package org.opensingular.server.p.commons.admin.healthsystem.panel;
+package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
@@ -73,14 +73,14 @@ public class TabelaPage extends WebPage {
             counterModel.setObject(i);
             return i;
         }));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Nome do campo"), r -> ((FormDocumentationMetadata) r).getFieldName()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tipo"), r -> ((FormDocumentationMetadata) r).getFieldTypeAbbreviation()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Obrigatório"), r -> ((FormDocumentationMetadata) r).isRequired()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Habilitado"), r -> ((FormDocumentationMetadata) r).isEnabled()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tamanho"), r -> ((FormDocumentationMetadata) r).getFieldSize()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Regras"), r -> ((FormDocumentationMetadata) r).getBusinessRules()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Mensagens"), r -> ((FormDocumentationMetadata) r).getMessages()));
-        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Domínio / Máscara / Hint / Demais observações"), r -> ((FormDocumentationMetadata) r).getGeneralInformation()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Nome do campo"), r -> ((DocFieldMetadata) r).getFieldName()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tipo"), r -> ((DocFieldMetadata) r).getFieldTypeAbbreviation()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Obrigatório"), r -> ((DocFieldMetadata) r).isRequired()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Habilitado"), r -> ((DocFieldMetadata) r).isEnabled()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Tamanho"), r -> ((DocFieldMetadata) r).getFieldSize()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Regras"), r -> ((DocFieldMetadata) r).getBusinessRules()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Mensagens"), r -> ((DocFieldMetadata) r).getMessages()));
+        list.add(new BSPropertyColumn<DocumentationRow, String>($m.ofValue("Domínio / Máscara / Hint / Demais observações"), r -> ((DocFieldMetadata) r).getGeneralInformation()));
         return list;
     }
 
@@ -94,12 +94,12 @@ public class TabelaPage extends WebPage {
             }
 
             @Override
-            public Iterator<FormDocumentationMetadata> iterator(long first, long count) {
+            public Iterator iterator(long first, long count) {
                 STypeComposite<?> rootType = (STypeComposite<?>) typeLoader.loadTypeOrException((Class<? extends SType>) getDefaultModelObject());
                 return STypes
                         .streamDescendants(rootType, true)
-                        .map(type -> new FormDocumentationMetadata(rootType, type))
-                        .filter(FormDocumentationMetadata::isFormInputField).iterator();
+                        .map(type -> new DocFieldMetadata(rootType, type))
+                        .filter(DocFieldMetadata::isFormInputField).iterator();
             }
 
             @Override

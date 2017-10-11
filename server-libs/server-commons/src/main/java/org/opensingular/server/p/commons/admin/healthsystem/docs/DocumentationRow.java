@@ -1,4 +1,4 @@
-package org.opensingular.server.p.commons.admin.healthsystem.panel;
+package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.opensingular.lib.commons.util.Loggable;
 

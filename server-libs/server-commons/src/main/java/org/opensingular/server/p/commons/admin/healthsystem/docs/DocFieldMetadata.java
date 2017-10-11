@@ -1,4 +1,4 @@
-package org.opensingular.server.p.commons.admin.healthsystem.panel;
+package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
@@ -17,13 +17,14 @@ import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
+import org.opensingular.lib.commons.util.Loggable;
 
 import java.io.Serializable;
 import java.util.*;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-public class FormDocumentationMetadata implements DocumentationRow {
+public class DocFieldMetadata implements Serializable, Loggable {
 
     private String stypeName;
     private String nomeCampo;
@@ -40,11 +41,11 @@ public class FormDocumentationMetadata implements DocumentationRow {
     private String regras;
     private Integer fieldNumber;
 
-    public FormDocumentationMetadata() {
+    public DocFieldMetadata() {
 
     }
 
-    public FormDocumentationMetadata(SType<?> rootType, SType<?> type) {
+    public DocFieldMetadata(SType<?> rootType, SType<?> type) {
         this.stypeName = type.getName();
         this.selection = initSelection(type);
         this.simple = initSimpleType(type);
@@ -258,11 +259,6 @@ public class FormDocumentationMetadata implements DocumentationRow {
 
     public String getMessages() {
         return mensagens;
-    }
-
-    @Override
-    public RowType getRowType() {
-        return RowType.DATA;
     }
 
     public String getStypeName() {

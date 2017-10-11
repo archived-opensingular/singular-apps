@@ -17,6 +17,7 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.TabelaPage;
 
 import javax.inject.Inject;
 import java.util.Iterator;
