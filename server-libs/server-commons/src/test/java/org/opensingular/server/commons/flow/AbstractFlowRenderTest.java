@@ -16,28 +16,15 @@
 
 package org.opensingular.server.commons.flow;
 
-import net.vidageek.mirror.dsl.Mirror;
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.junit.Rule;
-import org.junit.rules.MethodRule;
-import org.junit.runners.model.FrameworkMethod;
-import org.junit.runners.model.Statement;
-import org.mockito.Mockito;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.variable.VarService;
-import org.opensingular.form.context.ServiceRegistryLocator;
-import org.opensingular.form.spring.SpringServiceRegistry;
-import org.opensingular.internal.lib.commons.injection.SingularInjector;
-import org.opensingular.lib.commons.context.SingularContext;
-import org.opensingular.lib.commons.context.SingularContextSetup;
-import org.opensingular.lib.commons.context.SingularSingletonStrategy;
-import org.opensingular.lib.commons.test.AbstractTestTempFileSupport;
+import org.opensingular.lib.commons.junit.AbstractTestTempFileSupport;
+import org.opensingular.lib.commons.junit.MockInjectorRule;
 import org.opensingular.lib.commons.util.Loggable;
-import org.springframework.context.ApplicationContext;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 /**
  * Support the implementation of tests that renders a image with a graph of the process represented by a flow
@@ -49,7 +36,7 @@ import javax.inject.Inject;
 public abstract class AbstractFlowRenderTest extends AbstractTestTempFileSupport implements Loggable {
 
     @Rule
-    public MockFormInjectRule mockFormInjectRule = new MockFormInjectRule();
+    public MockInjectorRule mockFormInjectRule = new MockInjectorRule();
 
     /**
      * Renders the image with a graph of the process. It may show on the developer console the result if {@link
@@ -67,29 +54,4 @@ public abstract class AbstractFlowRenderTest extends AbstractTestTempFileSupport
         }
     }
 
-    public class MockFormInjectRule implements MethodRule, Loggable {
-        @Override
-        public Statement apply(Statement base, FrameworkMethod method, Object target) {
-            return new Statement() {
-                @Override
-                public void evaluate() throws Throwable {
-                    SingularContextSetup.reset();
-                    ApplicationContextMock applicationContextMock = new ApplicationContextMock();
-                    ServiceRegistryLocator.setup(new SpringServiceRegistry());
-                    applicationContextMock.putBean((SingularInjector) object -> new Mirror().on(object.getClass())
-                            .reflectAll().fields().matching(f -> f.isAnnotationPresent(Inject.class)).forEach(f -> {
-                                f.setAccessible(true);
-                                try {
-                                    f.set(object, Mockito.mock(f.getType()));
-                                } catch (Exception e) {
-                                    getLogger().error(e.getMessage(), e);
-                                }
-                            }));
-                    ((SingularSingletonStrategy) SingularContext.get()).singletonize(ApplicationContext.class,
-                            () -> applicationContextMock);
-                    base.evaluate();
-                }
-            };
-        }
-    }
 }

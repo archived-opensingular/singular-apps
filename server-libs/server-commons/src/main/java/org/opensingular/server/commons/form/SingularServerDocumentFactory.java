@@ -16,15 +16,14 @@
 
 package org.opensingular.server.commons.form;
 
-import org.opensingular.form.RefService;
-import org.opensingular.form.context.ServiceRegistry;
-import org.opensingular.form.context.ServiceRegistryLocator;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
+import org.opensingular.lib.commons.context.RefService;
+import org.opensingular.lib.commons.context.ServiceRegistryLocator;
 
 
-public class SingularServerDocumentFactory extends SpringSDocumentFactory  {
+public class SingularServerDocumentFactory extends SpringSDocumentFactory {
 
     @Override
     @SuppressWarnings("unchecked")

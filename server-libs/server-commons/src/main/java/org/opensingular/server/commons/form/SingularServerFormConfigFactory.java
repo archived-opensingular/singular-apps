@@ -16,11 +16,11 @@
 
 package org.opensingular.server.commons.form;
 
-import javax.inject.Inject;
-
+import org.opensingular.form.spring.SpringFormConfig;
 import org.springframework.context.annotation.Bean;
 
-import org.opensingular.form.spring.SpringFormConfig;
+import javax.inject.Inject;
+
 
 public class SingularServerFormConfigFactory {
 

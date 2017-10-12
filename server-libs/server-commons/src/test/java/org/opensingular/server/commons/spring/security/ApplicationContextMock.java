@@ -1,6 +1,6 @@
 package org.opensingular.server.commons.spring.security;
 
-import org.opensingular.form.spring.SpringServiceRegistry;
+import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.BeanNotOfRequiredTypeException;
