@@ -23,4 +23,7 @@ public class DocTable {
         return tableRoot;
     }
 
+    public LinkedHashSet<DocBlock> getBlockList() {
+        return docBlocks;
+    }
 }

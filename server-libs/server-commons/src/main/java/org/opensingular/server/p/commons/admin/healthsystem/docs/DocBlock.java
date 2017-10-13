@@ -16,7 +16,7 @@ public class DocBlock implements Serializable {
 
     private List<SType<?>> blockTypes;
 
-    public DocBlock(String blockName, SType<?> sType, List<SType<?>> blockTypes) {
+    public DocBlock(String blockName, SType<?> blockRootType, List<SType<?>> blockTypes) {
         this.blockRootType = blockRootType;
         this.blockTypes = blockTypes;
         this.blockName = blockName;
@@ -24,5 +24,21 @@ public class DocBlock implements Serializable {
 
     public void addAllFieldsMetadata(LinkedHashSet<DocFieldMetadata> docFieldMetadata) {
         metadataList.addAll(docFieldMetadata);
+    }
+
+    public String getBlockName() {
+        return blockName;
+    }
+
+    public SType<?> getBlockRootType() {
+        return blockRootType;
+    }
+
+    public LinkedHashSet<DocFieldMetadata> getMetadataList() {
+        return metadataList;
+    }
+
+    public List<SType<?>> getBlockTypes() {
+        return blockTypes;
     }
 }

@@ -96,10 +96,7 @@ public class TabelaPage extends WebPage {
             @Override
             public Iterator iterator(long first, long count) {
                 STypeComposite<?> rootType = (STypeComposite<?>) typeLoader.loadTypeOrException((Class<? extends SType>) getDefaultModelObject());
-                return STypes
-                        .streamDescendants(rootType, true)
-                        .map(type -> new DocFieldMetadata(rootType, type))
-                        .filter(DocFieldMetadata::isFormInputField).iterator();
+                return null;
             }
 
             @Override

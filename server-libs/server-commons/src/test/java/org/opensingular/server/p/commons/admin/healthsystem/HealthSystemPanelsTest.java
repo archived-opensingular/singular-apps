@@ -1,4 +1,4 @@
-package org.opensingular.server.commons.admin.healthsystem;
+package org.opensingular.server.p.commons.admin.healthsystem;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;

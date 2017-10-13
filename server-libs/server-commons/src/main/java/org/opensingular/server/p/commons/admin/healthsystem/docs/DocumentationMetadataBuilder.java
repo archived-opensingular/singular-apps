@@ -10,11 +10,13 @@ import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class DocumentationMetadataBuilder {
 
-    private Map<String, SType> typeByNameCache = new HashMap<>();
+    private Map<String, SType<?>> typeByNameCache = new HashMap<>();
     private LinkedHashSet<DocTable> tableRoots;
     private LinkedHashSet<SType<?>> tableRootsSTypes;
 
@@ -32,28 +34,59 @@ public class DocumentationMetadataBuilder {
             LinkedHashSet<DocBlock> docBlocks = identifyBlocks(docTable.getRootSType(), tableRootsSTypes);
             docTable.addAllDocBlocks(docBlocks);
             for (DocBlock docBlock : docBlocks) {
-                LinkedHashSet<DocFieldMetadata> docFieldMetadata = identifyFields(docBlock);
+                LinkedHashSet<DocFieldMetadata> docFieldMetadata = identifyFields(rootStype, docBlock);
                 docBlock.addAllFieldsMetadata(docFieldMetadata);
             }
         }
     }
 
-    private LinkedHashSet<DocFieldMetadata> identifyFields(DocBlock docBlock) {
-        return null;
+    private LinkedHashSet<DocFieldMetadata> identifyFields(SType<?> rootStype, DocBlock docBlock) {
+        LinkedHashSet<DocFieldMetadata> fields = new LinkedHashSet<>();
+        for (SType<?> sType : docBlock.getBlockTypes()) {
+            DocumentationFieldMetadataBuilder docFieldMetadataBuilder = new DocumentationFieldMetadataBuilder(rootStype, sType);
+            if (docFieldMetadataBuilder.isFormInputField()) {
+                fields.add(docFieldMetadataBuilder.getDocFieldMetadata());
+            }
+        }
+        return fields;
     }
 
     private LinkedHashSet<DocBlock> identifyBlocks(SType<?> rootType, LinkedHashSet<SType<?>> tableRootsSTypes) {
-        return STypes
+        LinkedHashSet<DocBlock> blocks = STypes
                 .streamDescendants(rootType, true)
-                .filter(s -> !tableRootsSTypes.contains(s))
+                .filter(s -> s == rootType || !tableRootsSTypes.contains(s))
                 .filter(s -> s.getView() instanceof SViewByBlock)
-                .map(this::toStypeToBlockStream)
+                .flatMap(this::toStypeToBlockStream)
                 .collect(LinkedHashSet::new, LinkedHashSet::add, LinkedHashSet::addAll);
+        identifyOrphanTypesBlock(rootType, tableRootsSTypes, expandTypesAssociatedToBlocks(blocks)).ifPresent(blocks::add);
+
+        return blocks;
     }
 
+    private LinkedHashSet<SType<?>> expandTypesAssociatedToBlocks(LinkedHashSet<DocBlock> blocks) {
+        return blocks.stream().flatMap(s -> s.getBlockTypes().stream()).flatMap(s -> STypes.streamDescendants(s, true)).collect(LinkedHashSet::new, LinkedHashSet::add, LinkedHashSet::addAll);
+    }
+
+    private Optional<DocBlock> identifyOrphanTypesBlock(SType<?> rootType, LinkedHashSet<SType<?>> tableRootsSTypes, LinkedHashSet<SType<?>> typesAssociatedToBlocks) {
+        List<SType<?>> types = STypes
+                .streamDescendants(rootType, true)
+                .filter(s -> !tableRootsSTypes.contains(s) && !typesAssociatedToBlocks.contains(s))
+                .collect(Collectors.toList());
+        if (types.isEmpty()) {
+            return Optional.empty();
+        } else {
+            return Optional.of(new DocBlock(null, rootType, types));
+        }
+    }
+
+    @SuppressWarnings("unchecked")
     private Stream<DocBlock> toStypeToBlockStream(SType<?> sType) {
         SViewByBlock byBlock = (SViewByBlock) sType.getView();
-        return byBlock.getBlocks().stream().map(b -> new DocBlock(byBlock.getName(), sType, null));
+        return byBlock.getBlocks().stream().map(b -> new DocBlock(b.getName(), sType, retrieveSTypeListFromRelativeTypeName(sType, b.getTypes())));
+    }
+
+    private List<SType<?>> retrieveSTypeListFromRelativeTypeName(SType<?> sType, List<String> types) {
+        return types.stream().map(s -> typeByNameCache.get(sType.getName() + "." + s)).collect(Collectors.toList());
     }
 
 
