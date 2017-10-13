@@ -25,18 +25,6 @@
 
     <dependencies>
 
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-form-wicket</artifactId>
-            <version>${singular.version}</version>
-        </dependency>
-
-        <dependency>
-            <groupId>org.wicketstuff</groupId>
-            <artifactId>wicketstuff-restannotations</artifactId>
-            <version>7.2.0</version>
-        </dependency>
-
 
         <!-- Tests -->
         <dependency>

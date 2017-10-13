@@ -200,6 +200,12 @@
   </scm>
 
     <dependencies>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
         <!-- FOR JAVADOC GENERATION -->
         <dependency>
             <groupId>javax.interceptor</groupId>
@@ -212,12 +218,6 @@
             <artifactId>javax.servlet-api</artifactId>
             <version>3.1.0</version>
             <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.12</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
@@ -419,7 +419,8 @@
         <skipTests>false</skipTests>
         <wicket.version>7.3.0</wicket.version>
         <singular.version>1.6.9-SNAPSHOT</singular.version>
-        <spring.security.version>4.0.3.RELEASE</spring.security.version>
+        <spring.security.version>4.0.4.RELEASE</spring.security.version>
+        <slf4j.version>1.7.12</slf4j.version>
         <cas.version>4.0.4</cas.version>
         <cas.client.version>3.4.1</cas.client.version>
     </properties>
