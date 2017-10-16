@@ -19,7 +19,6 @@ package org.opensingular.server.commons.flow.builder;
 import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.STask;
-import org.opensingular.flow.core.entity.TransitionType;
 
 /**
  * Representa uma {@link FlowMap} especilizada em requerimentos. Apresenta comportamentos e configurações
@@ -34,8 +33,8 @@ public class FlowMapPetition extends FlowMap {
     }
 
     @Override
-    protected STransitionPetition newTransition(STask<?> origin, String name, STask<?> destination, TransitionType type) {
-        return new STransitionPetition(origin, name, destination, type);
+    protected STransitionPetition newTransition(STask<?> origin, String name, STask<?> destination) {
+        return new STransitionPetition(origin, name, destination);
     }
 
     @Override

@@ -1,94 +1,66 @@
 package org.opensingular.server.commons.flow;
 
-import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.lib.commons.context.SingularContextSetup;
+import org.opensingular.flow.core.FlowMap;
+import org.opensingular.flow.core.ITaskDefinition;
+import org.opensingular.flow.core.SFlowUtil;
+import org.opensingular.flow.core.builder.FlowBuilder;
+import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.springframework.beans.BeansException;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import javax.swing.*;
-import java.awt.*;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
+public class FlowRenderTest extends AbstractFlowRenderTest implements Loggable {
 
-public abstract class FlowRenderTest implements Loggable {
-
-    private static final Object lock = new Object();
-
-    @Before
-    public void setUp(){
-        SingularContextSetup.reset();
-        AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext(){
-            @Override
-            public <T> T getBean(String name, Class<T> requiredType) throws BeansException {
-                return Mockito.mock(requiredType);
-            }
-
-            @Override
-            public  <T> T getBean(Class<T> requiredType) throws BeansException {
-                return Mockito.mock(requiredType);
-            }
-        };
-        context.refresh();
-        new ApplicationContextProvider().setApplicationContext(context);
+    public FlowRenderTest() {
+        setOpenGeneratedFiles(false);
     }
 
 
-    /**
-     * Método para ser sobrescrito para a geração do gráfico para
-     * o desenvolvedor
-     * Deve ser ignorado pois impede a execução dos testes em ferramentas de
-     * build
-     */
-    public void render() {
-        openJFrame(renderImage(getFlowDefinition()));
+    @Test
+    public void renderBasic() {
+        renderImage(new BaseFlowTestDefinition() {
+            @Override
+            protected FlowMap createFlowMap() {
+                ITaskDefinition first = () -> "First";
+                ITaskDefinition second = () -> "Second";
+                ITaskDefinition third = () -> "Third";
+                ITaskDefinition end = () -> "End";
+
+                FlowBuilderImpl f = new FlowBuilderImpl(this);
+
+                f.addHumanTask(first, SFlowUtil.dummyTaskAccessStrategy());
+                f.addWaitTask(second);
+                f.addJavaTask(third).call(SFlowUtil.dummyTaskJavaCall());
+                f.addEndTask(end);
+
+                f.setStartTask(first);
+                f.from(first).go(second).setAsDefaultTransition();
+                f.from(first).go("transition1", third);
+                f.from(first).go("transition2", third);
+                f.from(second).go(third).thenGo(end);
+
+
+                return f.build();
+            }
+        });
     }
 
     @Test
-    public void testRendering() {
-        Assert.assertNotNull(renderImage(getFlowDefinition()));
-    }
-
-    protected abstract FlowDefinition<?> getFlowDefinition();
-
-    protected byte[] renderImage(FlowDefinition<?> instanceToRender) {
-        return JGraphFlowRenderer.INSTANCE.generateImage(instanceToRender);
-    }
-
-
-    protected void openJFrame(byte[] image) {
-        final JFrame frame     = new JFrame();
-        JPanel       mainPanel = new JPanel(new BorderLayout(5,5));
-        JLabel       lblimage  = new JLabel(new ImageIcon(image));
-        mainPanel.add(lblimage);
-        frame.add(mainPanel);
-        frame.setVisible(true);
-        frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
-        frame.pack();
-        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
-        frame.setLocation(dim.width / 2 - frame.getSize().width / 2, dim.height / 2 - frame.getSize().height / 2);
-        frame.addWindowListener(new WindowAdapter() {
+    public void renderBasic2() {
+        renderImage(new BaseFlowTestDefinition() {
             @Override
-            public void windowClosing(WindowEvent arg0) {
-                synchronized (lock) {
-                    frame.setVisible(false);
-                    lock.notify();
-                }
-            }
+            protected FlowMap createFlowMap() {
+                FlowBuilder flow = new FlowBuilderImpl(this);
 
+                ITaskDefinition dobarDef  = () -> "The Great Gig";
+                ITaskDefinition endbarDef = () -> "The Sky";
+
+                flow.addEndTask(endbarDef);
+                flow.addJavaTask(dobarDef).call(SFlowUtil.dummyTaskJavaCall()).go(endbarDef);
+
+                flow.setStartTask(dobarDef);
+
+                return flow.build();
+            }
         });
-        synchronized (lock) {
-            while (frame.isVisible())
-                try {
-                    lock.wait();
-                } catch (InterruptedException e) {
-                    getLogger().error(e.getMessage(), e);
-                }
-        }
     }
 }

@@ -26,19 +26,23 @@ import com.mxgraph.util.mxCellRenderer;
 import com.mxgraph.util.mxConstants;
 import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
-import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STransition;
+import org.opensingular.flow.core.renderer.ExecutionHistoryForRendering;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.RenderedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,19 +50,22 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
 
     INSTANCE;
 
-    private static byte[] renderGraphImpl(FlowDefinition<?> definicao) {
-        final mxGraph       graph = renderGraph(definicao);
-        final RenderedImage img   = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
-
-        final ByteArrayOutputStream out = new ByteArrayOutputStream();
-
-        try {
-            ImageIO.write(img, "png", out);
-        } catch (final IOException e) {
+    @Nonnull
+    public byte[] generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history) {
+        try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
+            generatePng(definition, history, outputStream);
+            return outputStream.toByteArray();
+        } catch (IOException e) {
             throw Throwables.propagate(e);
         }
+    }
 
-        return out.toByteArray();
+    @Override
+    public void generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history,
+            @Nonnull OutputStream out) throws IOException {
+        mxGraph graph = renderGraph(definition);
+        RenderedImage img = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
+        ImageIO.write(img, "png", out);
     }
 
     private static void style(mxGraph graph) {
@@ -191,8 +198,4 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         return nome.replace(' ', '\n');
     }
 
-    @Override
-    public byte[] generateImage(FlowDefinition<?> definicao) {
-        return renderGraphImpl(definicao);
-    }
 }

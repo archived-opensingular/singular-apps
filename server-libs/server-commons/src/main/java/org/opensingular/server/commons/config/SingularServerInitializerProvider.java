@@ -17,7 +17,7 @@ public class SingularServerInitializerProvider {
     private SingularServerInitializerProvider() {
     }
 
-    public static SingularServerInitializerProvider get() {
+    static SingularServerInitializerProvider get() {
         return ((SingularSingletonStrategy) SingularContext.get()).singletonize(SingularServerInitializerProvider.class, SingularServerInitializerProvider::new);
     }
 

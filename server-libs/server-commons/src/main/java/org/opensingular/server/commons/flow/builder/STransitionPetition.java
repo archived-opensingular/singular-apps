@@ -18,7 +18,6 @@ package org.opensingular.server.commons.flow.builder;
 
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
-import org.opensingular.flow.core.entity.TransitionType;
 
 /**
  * Representa uma {@link STransition} especilizada em requerimentos. Apresenta comportamentos adicionais específicos de
@@ -28,8 +27,8 @@ import org.opensingular.flow.core.entity.TransitionType;
  */
 public class STransitionPetition extends STransition {
 
-    STransitionPetition(STask<?> origin, String name, STask<?> destination, TransitionType type) {
-        super(origin, name, destination, type);
+    STransitionPetition(STask<?> origin, String name, STask<?> destination) {
+        super(origin, name, destination);
     }
 
     //    public STransitionPetition setFormularioTransicao(Class<? extends IFormularioTransicao<?>>

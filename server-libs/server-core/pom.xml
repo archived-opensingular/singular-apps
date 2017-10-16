@@ -36,14 +36,14 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-server-commons</artifactId>
-            <version>1.6.9-SNAPSHOT</version>
+            <version>${singular.version}</version>
             <type>test-jar</type>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-server-commons</artifactId>
-            <version>1.6.9-SNAPSHOT</version>
+            <version>${singular.version}</version>
         </dependency>
 
         <dependency>
