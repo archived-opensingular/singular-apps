@@ -120,7 +120,12 @@ public class DocumentationMetadataBuilder {
         LinkedHashSet<SType<?>> excludedTypes = new LinkedHashSet<>();
         excludedTypes.addAll(tableRootsSTypes);
         excludedTypes.addAll(typesAssociatedToBlocks);
+        excludedTypes.removeAll(rootTypes);
         for (SType<?> type : rootTypes) {
+            if (excludedTypes.contains(type)) {
+                continue;
+            }
+            orphans.add(type);
             orphans.addAll(recursiveIteration(type, excludedTypes, (s, e) -> e.contains(s) ? Stream.empty() : Stream.of(s)));
         }
         if (orphans.isEmpty()) {

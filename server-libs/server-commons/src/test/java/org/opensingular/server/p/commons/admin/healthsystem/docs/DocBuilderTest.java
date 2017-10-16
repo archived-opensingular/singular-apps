@@ -33,8 +33,8 @@ public class DocBuilderTest {
         }
 
 
-        Assert.assertEquals(2, saida.size());
-        Assert.assertEquals(3, saida.stream().flatMap(s -> s.getBlockList().stream()).count());
+        Assert.assertEquals(4, saida.size());
+        Assert.assertEquals(4, saida.stream().flatMap(s -> s.getBlockList().stream()).count());
         Assert.assertEquals(STypeDocTest.ANEXINHOS, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
         Assert.assertEquals(STypeDocTest.ANEXINHO, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
         Assert.assertEquals(STypeDocTest.IDADE, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[1].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
@@ -47,9 +47,8 @@ public class DocBuilderTest {
         Assert.assertEquals("Cidade", saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[5].getFieldName());
         Assert.assertEquals("Estado", saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[6].getFieldName());
         Assert.assertEquals("País", saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[7].getFieldName());
-
-
     }
+
 
     @Test
     public void streamLinedTest() throws Exception {
