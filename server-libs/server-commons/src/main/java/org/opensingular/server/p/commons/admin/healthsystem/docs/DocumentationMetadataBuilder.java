@@ -227,7 +227,7 @@ public class DocumentationMetadataBuilder {
             boolean first = true;
             for (DocBlock docBlock : table.getBlockList()) {
                 if (!docBlock.getMetadataList().isEmpty()) {
-                    if (!docBlock.isOrphanBlock() && !first && table.getBlockList().size() == 1) {
+                    if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
                         documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
                     }
                     for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
