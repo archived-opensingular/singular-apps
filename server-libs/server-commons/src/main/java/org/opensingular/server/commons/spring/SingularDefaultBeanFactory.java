@@ -91,6 +91,7 @@ import org.springframework.core.io.ClassPathResource;
 
 
 @SuppressWarnings("rawtypes")
+@Lazy(false)
 public class SingularDefaultBeanFactory {
 
     @Order(1)

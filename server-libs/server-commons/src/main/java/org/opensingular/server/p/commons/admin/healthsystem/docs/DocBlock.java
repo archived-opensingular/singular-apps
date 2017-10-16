@@ -1,7 +1,6 @@
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.opensingular.form.SType;
-import org.opensingular.form.view.Block;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
@@ -10,16 +9,16 @@ import java.util.List;
 public class DocBlock implements Serializable {
 
     private final String blockName;
-    private SType<?> blockRootType;
 
     private LinkedHashSet<DocFieldMetadata> metadataList = new LinkedHashSet<>();
 
     private List<SType<?>> blockTypes;
+    private boolean orphanBlock;
 
-    public DocBlock(String blockName, SType<?> blockRootType, List<SType<?>> blockTypes) {
-        this.blockRootType = blockRootType;
+    public DocBlock(String blockName, List<SType<?>> blockTypes, boolean orphanBlock) {
         this.blockTypes = blockTypes;
         this.blockName = blockName;
+        this.orphanBlock = orphanBlock;
     }
 
     public void addAllFieldsMetadata(LinkedHashSet<DocFieldMetadata> docFieldMetadata) {
@@ -30,15 +29,15 @@ public class DocBlock implements Serializable {
         return blockName;
     }
 
-    public SType<?> getBlockRootType() {
-        return blockRootType;
-    }
-
     public LinkedHashSet<DocFieldMetadata> getMetadataList() {
         return metadataList;
     }
 
     public List<SType<?>> getBlockTypes() {
         return blockTypes;
+    }
+
+    public boolean isOrphanBlock() {
+        return orphanBlock;
     }
 }

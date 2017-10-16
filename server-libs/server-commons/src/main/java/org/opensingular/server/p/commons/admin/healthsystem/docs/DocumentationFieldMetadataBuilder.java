@@ -48,7 +48,8 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
         this.hiddenCopositeField = initHiddenForDocumentation(type);
         if (isFormInputField()) {
             docFieldMetadata = new DocFieldMetadata(
-                    type.getName(),
+                    rootType,
+                    type,
                     initFieldName(type),
                     initEnabled(type),
                     initSize(type),

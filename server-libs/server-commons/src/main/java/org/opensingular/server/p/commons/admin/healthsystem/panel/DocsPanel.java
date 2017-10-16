@@ -17,7 +17,7 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.TabelaPage;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentatioTablePage;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -62,7 +62,7 @@ public class DocsPanel extends Panel implements Loggable {
     }
 
     private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model) {
-        setResponsePage(new TabelaPage(model));
+        setResponsePage(new DocumentatioTablePage(model.getObject()));
     }
 
 

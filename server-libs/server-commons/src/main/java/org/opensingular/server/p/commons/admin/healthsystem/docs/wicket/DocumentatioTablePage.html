@@ -16,27 +16,43 @@
 
 <html xmlns:wicket="http://wicket.apache.org">
 <head>
-<title>
-    Table para analista
-</title>
+    <title>
+        Table para analista
+    </title>
     <style>
         td {
             border: 1px solid black;
         }
+
         tr {
             border: 1px solid black;;
         }
+
         th {
             border: 1px solid black;;
         }
+
         table {
+            width: 95%;
             border: 1px solid black;;
             border-spacing: 0px;
             border-collapse: collapse;
         }
+        hr {
+            color: #000;
+            width: 100%;
+        }
+
+        .separator {
+            margin-bottom: 30px;
+        }
     </style>
 </head>
 <body>
-    <table wicket:id="tabela"></table>
+<div wicket:id="tables" class="separator">
+    <label wicket:id="title"></label>
+    <table wicket:id="table"></table>
+    <hr>
+</div>
 </body>
 </html>
