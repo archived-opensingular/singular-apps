@@ -19,14 +19,16 @@ import javax.annotation.Nonnull;
 @SInfoType(name = "STypeDocRootCompositeTabTest", spackage = SPackageDocTest.class, label = "Super SType STypeDocRootCompositeTabTest")
 public class STypeDocRootCompositeTabTest extends STypeComposite<SIComposite> {
 
+    public static final String NOME = "nome";
+    public static final String ANEXOS = "anexos";
     private STypeAttachment anexos;
     private STypeString nome;
     private STypeDocTest docTest;
 
     @Override
     protected void onLoadType(@Nonnull TypeBuilder tb) {
-        nome = this.addFieldString("nome");
-        anexos = this.addFieldAttachment("anexos");
+        nome = this.addFieldString(NOME);
+        anexos = this.addFieldAttachment(ANEXOS);
         docTest = this.addField("docTest", STypeDocTest.class);
 
 
