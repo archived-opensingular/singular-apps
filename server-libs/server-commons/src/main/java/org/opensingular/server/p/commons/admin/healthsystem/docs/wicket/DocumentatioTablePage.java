@@ -74,7 +74,7 @@ public class DocumentatioTablePage extends WebPage {
 
 
     private Object format(Object o){
-        if (o == null || StringUtils.isBlank(String.valueOf(0))){
+        if (o == null || StringUtils.isEmpty(String.valueOf(o))){
             return "-";
         }
         return o;
