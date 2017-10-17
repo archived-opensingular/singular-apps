@@ -4,6 +4,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypes;
+import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.view.Block;
 import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewByBlock;
@@ -113,13 +114,15 @@ public class DocumentationMetadataBuilder {
 
     private <X> LinkedHashSet<X> recursiveIteration(SType<?> toIterate, LinkedHashSet<SType<?>> excludedTypes, IBiFunction<SType<?>, LinkedHashSet<SType<?>>, Stream<X>> function) {
         LinkedHashSet<X> blocks = new LinkedHashSet<>();
-        function.apply(toIterate, excludedTypes).forEach(blocks::add);
-        for (SType<?> contained : STypes.containedTypes(toIterate)) {
-            if (excludedTypes.contains(contained)) {
-                continue;
+        if (isExists(toIterate)) {
+            function.apply(toIterate, excludedTypes).forEach(blocks::add);
+            for (SType<?> contained : STypes.containedTypes(toIterate)) {
+                if (excludedTypes.contains(contained)) {
+                    continue;
+                }
+                function.apply(contained, excludedTypes).forEach(blocks::add);
+                blocks.addAll(recursiveIteration(contained, excludedTypes, function));
             }
-            function.apply(contained, excludedTypes).forEach(blocks::add);
-            blocks.addAll(recursiveIteration(contained, excludedTypes, function));
         }
         return blocks;
     }
@@ -131,11 +134,13 @@ public class DocumentationMetadataBuilder {
         excludedTypes.addAll(typesAssociatedToBlocks);
         excludedTypes.removeAll(rootTypes);
         for (SType<?> type : rootTypes) {
-            if (excludedTypes.contains(type)) {
-                continue;
+            if (isExists(type)) {
+                if (excludedTypes.contains(type)) {
+                    continue;
+                }
+                orphans.add(type);
+                orphans.addAll(recursiveIteration(type, excludedTypes, (s, e) -> e.contains(s) ? Stream.empty() : Stream.of(s)));
             }
-            orphans.add(type);
-            orphans.addAll(recursiveIteration(type, excludedTypes, (s, e) -> e.contains(s) ? Stream.empty() : Stream.of(s)));
         }
         if (orphans.isEmpty()) {
             return Optional.empty();
@@ -168,9 +173,6 @@ public class DocumentationMetadataBuilder {
     private LinkedHashSet<DocTable> identifyTablesRoots(SType<?> rootType) {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<>();
         roots.addAll(collectTableRoots(rootType));
-        if (!roots.contains(rootType)) {
-            roots.add(new DocTable(getLabelForType(null, rootType), rootType));
-        }
         roots.addAll(identifyTablesRecursion(rootType));
         return roots;
     }
@@ -187,16 +189,25 @@ public class DocumentationMetadataBuilder {
 
     private LinkedHashSet<DocTable> collectTableRoots(SType<?> sType) {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<DocTable>();
-        SView view = getViewFor(sType);
-        if (view instanceof SViewTab) {
-            SViewTab viewTab = (SViewTab) view;
-            for (SViewTab.STab t : viewTab.getTabs()) {
-                roots.add(new DocTable(getLabelForType(t.getTitle(), sType), retrieveSTypeListFromRelativeTypeName(sType, t.getTypesNames()).toArray(new SType[0])));
+        if (isExists(sType)) {
+            SView view = getViewFor(sType);
+            if (view instanceof SViewTab) {
+                SViewTab viewTab = (SViewTab) view;
+                for (SViewTab.STab t : viewTab.getTabs()) {
+                    roots.add(new DocTable(getLabelForType(t.getTitle(), sType), retrieveSTypeListFromRelativeTypeName(sType, t.getTypesNames()).toArray(new SType[0])));
+                }
+            } else if (view instanceof SViewListByMasterDetail) {
+                roots.add(new DocTable(getLabelForType(null, sType), sType));
             }
-        } else if (view instanceof SViewListByMasterDetail) {
-            roots.add(new DocTable(getLabelForType(null, sType), sType));
         }
         return roots;
+    }
+
+    private boolean isExists(SType<?> sType){
+        if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_EXISTS)) {
+            return Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(true);
+        }
+        return true;
     }
 
     private String getLabelForType(String defaultString, SType<?> type) {
