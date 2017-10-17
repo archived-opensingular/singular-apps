@@ -16,6 +16,10 @@ public class DocumentationRowFieldMetadata implements DocumentationRow {
     public DocumentationRowFieldMetadata() {
     }
 
+    public DocumentationRowFieldMetadata(String fieldName) {
+        this.fieldName = fieldName;
+    }
+
     public DocumentationRowFieldMetadata(DocFieldMetadata docFieldMetadata) {
         this.fieldName = docFieldMetadata.getFieldName();
         this.enabled = docFieldMetadata.isEnabled();

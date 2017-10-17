@@ -258,7 +258,7 @@ public class DocumentationMetadataBuilder {
         List<TabulatedMetadata> list = new ArrayList<>();
         for (DocTable table : tableRoots) {
             List<DocumentationRow> documentationRows = new ArrayList<>();
-            boolean first = true;
+            documentationRows.add(new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
             for (DocBlock docBlock : table.getBlockList()) {
                 if (!docBlock.getMetadataList().isEmpty()) {
                     if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
@@ -267,7 +267,6 @@ public class DocumentationMetadataBuilder {
                     for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
                         documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
                     }
-                    first = false;
                 }
             }
             TabulatedMetadata tabulatedMetadata = new TabulatedMetadata(table.getName(), documentationRows);
