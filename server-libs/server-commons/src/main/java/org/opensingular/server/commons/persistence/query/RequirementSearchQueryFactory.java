@@ -200,6 +200,7 @@ public class RequirementSearchQueryFactory {
 
     private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
         return new BooleanBuilder()
+                .or($.allocatedUser.nome.likeIgnoreCase(filter))
                 .or($.petition.description.likeIgnoreCase(filter))
                 .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))

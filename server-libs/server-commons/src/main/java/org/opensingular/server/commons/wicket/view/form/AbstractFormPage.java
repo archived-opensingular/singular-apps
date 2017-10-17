@@ -107,20 +107,20 @@ import static org.opensingular.server.commons.wicket.builder.MarkupCreator.span;
 
 public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends PetitionInstance> extends ServerTemplate implements Loggable {
 
-    protected final String                   typeName;
-    protected final IModel<FormKey>          formKeyModel;
+    protected final String typeName;
+    protected final IModel<FormKey> formKeyModel;
     protected final FormPageExecutionContext config;
-    protected final SingularFormPanel        singularFormPanel;
-    protected final IModel<Boolean>          inheritParentFormData;
-    protected final IModel<FormKey>          parentPetitionformKeyModel;
+    protected final SingularFormPanel singularFormPanel;
+    protected final IModel<Boolean> inheritParentFormData;
+    protected final IModel<FormKey> parentPetitionformKeyModel;
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
-    protected final BSModalBorder  closeModal     = construirCloseModal();
+    protected final BSModalBorder closeModal = construirCloseModal();
 
-    private final Map<String, TransitionController<?>>          transitionControllerMap   = new HashMap<>();
-    private       Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
+    private final Map<String, TransitionController<?>> transitionControllerMap = new HashMap<>();
+    private Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
-    private           IModel<PI>             currentModel;
+    private IModel<PI> currentModel;
     private transient Optional<TaskInstance> currentTaskInstance;
 
     @Inject
@@ -312,7 +312,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private PI loadPetition() {
-        PI             petition;
+        PI petition;
         Optional<Long> petitionId = config.getPetitionId();
         if (petitionId.isPresent()) {
             petition = petitionService.getPetition(petitionId.get());
@@ -321,9 +321,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             if (formEntityDraftOrPetition != null) {
                 formKeyModel.setObject(formPetitionService.formKeyFromFormEntity(formEntityDraftOrPetition));
             }
-        }
-        else {
-            PI             parentPetition   = null;
+        } else {
+            PI parentPetition = null;
             Optional<Long> parentPetitionId = config.getParentPetitionId();
             if (parentPetitionId.isPresent()) {
                 parentPetition = petitionService.getPetition(parentPetitionId.get());
@@ -350,8 +349,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private Optional<FormPetitionEntity> getFormPetitionEntity(PI petition) {
         if (isMainForm()) {
             return formPetitionService.findFormPetitionEntityByType(petition, getFormType());
-        }
-        else {
+        } else {
             return formPetitionService.findFormPetitionEntityByTypeAndTask(petition, getFormType(),
                     petition.getCurrentTaskOrException());
         }
@@ -362,8 +360,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private Component buildExtraContent(String id) {
-        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer   extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendExtraContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -371,8 +369,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     private Component buildPreFormPanelContent(String id) {
-        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer   extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendBeforeFormContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -389,8 +387,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         this.feedbackAposEnvioPanel = buildFeedbackAposEnvioPanel(id);
         if (feedbackAposEnvioPanel == null) {
             return new WebMarkupContainer(id);
-        }
-        else {
+        } else {
             return this.feedbackAposEnvioPanel;
         }
     }
@@ -421,8 +418,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         Optional<TaskInstance> currentTaskInstanceOpt = getCurrentTaskInstance();
         if (!currentTaskInstanceOpt.isPresent()) {
             buttonContainer.setVisible(false).setEnabled(false);
-        }
-        else {
+        } else {
             configureTransitionButtons(buttonContainer, modalContainer, transitionButtonsVisible, currentInstance, currentTaskInstanceOpt.get());
         }
 
@@ -471,7 +467,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
             // Verifica se existe rascunho
             PetitionInstance petition = petitionService.getPetition(petitionId);
-            String           typeName = PetitionUtil.getTypeName(petition);
+            String typeName = PetitionUtil.getTypeName(petition);
             if (petition.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -530,12 +526,10 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                     && inheritParentFormData.getObject() != null
                     && inheritParentFormData.getObject()) {
                 return formPetitionService.newTransientSInstance(parentPetitionformKeyModel.getObject(), refType, false, extraSetup);
-            }
-            else {
+            } else {
                 return formPetitionService.createInstance(refType, extraSetup);
             }
-        }
-        else {
+        } else {
             return formPetitionService.getSInstance(formKeyModel.getObject(), refType, extraSetup);
         }
     }
@@ -638,13 +632,12 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             try {
                 //executa o envio, iniciando o fluxo informado
                 Class<? extends PetitionSender> senderClass = config.getPetitionSender();
-                PetitionSender                  sender      = ApplicationContextProvider.get().getBean(senderClass);
+                PetitionSender sender = ApplicationContextProvider.get().getBean(senderClass);
                 if (sender != null) {
                     PetitionSendedFeedback sendedFeedback = sender.send(petition, instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
                     onAfterSend(ajxrt, sm, sendedFeedback);
-                }
-                else {
+                } else {
                     throw new SingularServerException("O PetitionSender não foi configurado corretamente");
                 }
             } catch (Exception ex) {
@@ -667,8 +660,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
             enviarModal.hide(target);
             atualizarContentWorklist(target);
             feedbackAposEnvioPanel.show(target, sendedFeedback);
-        }
-        else {
+        } else {
             atualizarContentWorklist(target);
             addAfterSendSuccessMessage();
             target.appendJavaScript("; window.close();");
@@ -679,8 +671,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
         Optional<String> identifier = getIdentifier();
         if (identifier.isPresent()) {
             addToastrSuccessMessageWorklist("message.send.success.identifier", identifier.get());
-        }
-        else {
+        } else {
             addToastrSuccessMessageWorklist("message.send.success");
         }
     }
@@ -690,12 +681,17 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                                              String transitionName,
                                              IModel<? extends SInstance> currentInstance)
             throws SingularServerFormValidationError {
-        final STypeBasedFlowConfirmModal<?, ?> builder = transitionConfirmModalMap.get(transitionName);
-        if (builder == null || WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget, builder.getInstanceModel(), true)) {
+        final STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
+        if (flowConfirmModal == null) {
             saveForm(currentInstance, transitionName);
-        }
-        else {
-            throw new SingularServerFormValidationError();
+        } else {
+            boolean isFormOnModalValid = WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget,
+                    flowConfirmModal.getInstanceModel(), true, true);
+            if (isFormOnModalValid) {
+                saveForm(currentInstance, transitionName);
+            } else {
+                throw new SingularServerFormValidationError();
+            }
         }
     }
 
@@ -751,8 +747,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
      * @return Mapa de parametros
      */
     protected Map<String, String> getFlowParameters(String transition) {
-        Map<String, String>              params           = new HashMap<>();
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transition);
+        Map<String, String> params = new HashMap<>();
+        TransitionController<?> controller = getTransitionControllerMap().get(transition);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transition);
         if (controller != null && flowConfirmModal != null) {
             Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
@@ -815,9 +811,9 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transitionName);
+        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean                          show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        boolean show = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
         if (show) {
             modal.show(ajaxRequestTarget);
         }
@@ -931,8 +927,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
                 if (isReadOnly()) {
                     atualizarContentWorklist(target);
                     target.appendJavaScript("window.close()");
-                }
-                else {
+                } else {
                     closeModal.show(target);
                 }
             }
@@ -1015,8 +1010,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private Component buildNotificacoesModal(String id) {
 
-        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
-        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
+        final String modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel = new TemplatePanel(id, modalPanelMarkup);
 
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
