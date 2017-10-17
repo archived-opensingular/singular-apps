@@ -1,5 +1,6 @@
 package org.opensingular.server.p.commons.admin.healthsystem.docs.wicket;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.ISortState;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.ISortableDataProvider;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -57,18 +58,26 @@ public class DocumentatioTablePage extends WebPage {
                     counterModel.setObject(i);
                     return i;
                 })
-                .appendPropertyColumn($m.ofValue("Nome do campo"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getFieldName())
-                .appendPropertyColumn($m.ofValue("Tipo"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getDocTypeAbbreviation())
-                .appendPropertyColumn($m.ofValue("Obrigatório"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getRequired())
-                .appendPropertyColumn($m.ofValue("Habilitado"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getEnabled())
-                .appendPropertyColumn($m.ofValue("Tamanho"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getFieldSize())
-                .appendPropertyColumn($m.ofValue("Regras"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getBusinessRules())
-                .appendPropertyColumn($m.ofValue("Mensagens"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getValidationMessages())
-                .appendPropertyColumn($m.ofValue("Domínio / Máscara / Hint / Demais observações"), r -> isBlock(r) ? "-" : ((DocumentationRowFieldMetadata) r).getGeneralInformation())
+                .appendPropertyColumn($m.ofValue("Nome do campo"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getFieldName()))
+                .appendPropertyColumn($m.ofValue("Tipo"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getDocTypeAbbreviation()))
+                .appendPropertyColumn($m.ofValue("Obrigatório"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getRequired()))
+                .appendPropertyColumn($m.ofValue("Habilitado"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getEnabled()))
+                .appendPropertyColumn($m.ofValue("Tamanho"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getFieldSize()))
+                .appendPropertyColumn($m.ofValue("Regras"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getBusinessRules()))
+                .appendPropertyColumn($m.ofValue("Mensagens"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getValidationMessages()))
+                .appendPropertyColumn($m.ofValue("Domínio / Máscara / Hint / Demais observações"), r -> format(isBlock(r) ? null : ((DocumentationRowFieldMetadata) r).getGeneralInformation()))
                 .setRowsPerPage(Long.MAX_VALUE)
                 .setStripedRows(false)
                 .setBorderedTable(false)
                 .build("table");
+    }
+
+
+    private Object format(Object o){
+        if (o == null || StringUtils.isBlank(String.valueOf(0))){
+            return "-";
+        }
+        return o;
     }
 
     private boolean isBlock(DocumentationRow r) {
