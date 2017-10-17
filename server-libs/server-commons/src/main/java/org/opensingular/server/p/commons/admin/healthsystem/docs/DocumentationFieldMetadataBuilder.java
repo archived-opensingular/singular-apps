@@ -174,7 +174,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
                     try {
                         func.resolve(rootType, type).stream().map(this::initFieldName).collect(() -> values, Set::add, Set::addAll);
                     } catch (Exception e) {
-                        getLogger().error("Could not resolve dependent types for type: " + type.getName());
+                        getLogger().error("Could not resolve dependent types for type: {}", type.getName());
                     }
                 }
             }
