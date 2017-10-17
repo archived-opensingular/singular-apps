@@ -58,14 +58,14 @@ public class DocsPanel extends Panel implements Loggable {
     }
 
     private void buildColumn(BSActionColumn<Class<? extends STypeComposite>, String> actionColumn) {
-        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, this::gerarTabela);
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SN)"), DefaultIcons.TRASH, this::gerarTabela);
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO)"), DefaultIcons.EXCLAMATION_TRIANGLE, this::gerarTabela);
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO&SN)"), DefaultIcons.ROCKET, this::gerarTabela);
+        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> gerarTabela(a, s, true, true));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SN)"), DefaultIcons.TRASH, (a,s) -> gerarTabela(a, s, false, true));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO)"), DefaultIcons.EXCLAMATION_TRIANGLE, (a,s) -> gerarTabela(a, s, true, false));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO&SN)"), DefaultIcons.ROCKET, (a,s) -> gerarTabela(a, s, false, false));
     }
 
-    private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model) {
-        setResponsePage(new DocumentatioTablePage(model.getObject(), true, true));
+    private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean showNumbers, boolean showObservacoes) {
+        setResponsePage(new DocumentatioTablePage(model.getObject(), showNumbers, showObservacoes));
     }
 
 
