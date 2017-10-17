@@ -59,10 +59,13 @@ public class DocsPanel extends Panel implements Loggable {
 
     private void buildColumn(BSActionColumn<Class<? extends STypeComposite>, String> actionColumn) {
         actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, this::gerarTabela);
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SN)"), DefaultIcons.TRASH, this::gerarTabela);
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO)"), DefaultIcons.EXCLAMATION_TRIANGLE, this::gerarTabela);
+        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO&SN)"), DefaultIcons.ROCKET, this::gerarTabela);
     }
 
     private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model) {
-        setResponsePage(new DocumentatioTablePage(model.getObject()));
+        setResponsePage(new DocumentatioTablePage(model.getObject(), true, true));
     }
 
 

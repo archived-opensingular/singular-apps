@@ -33,8 +33,8 @@ public class DocBuilderTest {
         }
 
 
-        Assert.assertEquals(3, saida.size());
-        Assert.assertEquals(5, saida.stream().flatMap(s -> s.getBlockList().stream()).count());
+        Assert.assertEquals(4, saida.size());
+        Assert.assertEquals(6, saida.stream().flatMap(s -> s.getBlockList().stream()).count());
         Assert.assertEquals(STypeDocRootCompositeTabTest.NOME, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
         Assert.assertEquals(STypeDocRootCompositeTabTest.ANEXOS, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
         Assert.assertEquals(STypeDocTest.ANEXINHOS, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
