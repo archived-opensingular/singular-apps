@@ -5,7 +5,7 @@ import org.opensingular.lib.commons.util.Loggable;
 
 import java.io.Serializable;
 
-public class DocFieldMetadata implements Serializable, Loggable {
+public class DocFieldMetadata implements Loggable {
 
     private SType<?> rootType;
     private SType<?> type;
