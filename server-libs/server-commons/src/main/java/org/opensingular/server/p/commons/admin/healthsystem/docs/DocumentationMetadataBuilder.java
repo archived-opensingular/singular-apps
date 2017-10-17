@@ -205,7 +205,7 @@ public class DocumentationMetadataBuilder {
 
     private boolean isExists(SType<?> sType){
         if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_EXISTS)) {
-            return Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(true);
+            return Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(Boolean.TRUE);
         }
         return true;
     }
