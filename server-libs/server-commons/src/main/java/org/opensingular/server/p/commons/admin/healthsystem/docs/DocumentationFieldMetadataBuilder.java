@@ -76,7 +76,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
     }
 
     private boolean initExists(SType<?> type) {
-        return getAttribute(type, SPackageBasic.ATR_EXISTS).orElse(true);
+        return getAttribute(type, SPackageBasic.ATR_EXISTS).orElse(Boolean.TRUE);
     }
 
     /**
@@ -131,7 +131,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
     }
 
     private boolean initHiddenForDocumentation(SType<?> type) {
-        return getAttribute(type, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(false);
+        return getAttribute(type, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(Boolean.FALSE);
     }
 
     @SuppressWarnings("unchecked")
