@@ -49,7 +49,8 @@ public class DocumentatioTablePage extends WebPage {
     }
 
     @Override
-    protected void onConfigure() {
+    protected void onInitialize() {
+        super.onInitialize();
         RepeatingView repeatingView = new RepeatingView("tables", tablesModel);
         for (TabulatedMetadata metas : tablesModel.getObject()) {
             IModel<Integer> counterModel = new Model<>(0);
