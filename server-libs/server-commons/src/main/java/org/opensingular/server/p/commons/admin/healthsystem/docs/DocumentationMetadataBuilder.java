@@ -174,6 +174,10 @@ public class DocumentationMetadataBuilder {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<>();
         roots.addAll(collectTableRoots(rootType));
         roots.addAll(identifyTablesRecursion(rootType));
+        if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)){
+            roots.add(new DocTable(getLabelForType(null, rootType),rootType));
+
+        }
         return roots;
     }
 

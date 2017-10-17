@@ -37,7 +37,7 @@ import java.util.stream.Collectors;
  * The information is gathered only form form input fields as defined by {{@link #isFormInputField()}}
  *
  */
-public class DocumentationFieldMetadataBuilder implements Serializable, Loggable {
+public class DocumentationFieldMetadataBuilder implements Loggable {
 
     private static final String EMPTY_VALUE = "-";
     public static final String SEPARATOR = "<br>";
