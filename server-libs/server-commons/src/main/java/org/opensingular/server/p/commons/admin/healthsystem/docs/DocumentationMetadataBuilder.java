@@ -15,7 +15,6 @@ import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.Document
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowBlockSeparator;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowFieldMetadata;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -26,6 +25,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+/**
+ * Responsible for collect metadata for SType documentation
+ * Reads information from attributes, validators, and views.
+ *
+ * The documentation metadata is represented by three classes:
+ * - {@link DocTable}: Form documentation is separated in tables: 1 table for each tab ({@link SViewTab}), 1 table for each master detail (#{@link SViewListByMasterDetail}) and 1 table for the root type if it is not already included by the previous rules
+ * - {@link DocBlock}: Each table is further subdivided in blocks: 1 block for each block from view by block ({@link SViewByBlock}), 1 "anonymous" block gathering all types not related to any block in a table.
+ * - {@link DocFieldMetadata}: Each block is inspected for STypes that directly represents fields in a HTML according to the method {@link DocumentationFieldMetadataBuilder#isFormInputField()}
+ *
+ */
 public class DocumentationMetadataBuilder {
 
     private Map<SType<?>, SView> viewsMap = new HashMap<>();
@@ -221,12 +230,21 @@ public class DocumentationMetadataBuilder {
     };
 
 
+    /**
+     * Return all metadata information organized in the way it is described in this class javadoc {@link DocumentationMetadataBuilder}
+     * @return
+     */
     public LinkedHashSet<DocTable> getMetadata() {
         return tableRoots;
     }
 
-    public List<StreamLinedMetadata> getStreamLinedMetadata() {
-        List<StreamLinedMetadata> list = new ArrayList<>();
+    /**
+     * Tabulates metadata from blocks/fields into tables and rows information including block separator for non
+     * orphan blocks
+     * @return
+     */
+    public List<TabulatedMetadata> getTabulatedFormat() {
+        List<TabulatedMetadata> list = new ArrayList<>();
         for (DocTable table : tableRoots) {
             List<DocumentationRow> documentationRows = new ArrayList<>();
             boolean first = true;
@@ -241,34 +259,13 @@ public class DocumentationMetadataBuilder {
                     first = false;
                 }
             }
-            StreamLinedMetadata streamLinedMetadata = new StreamLinedMetadata(table.getName(), documentationRows);
-            if (!streamLinedMetadata.isEmptyOfRows()) {
-                list.add(streamLinedMetadata);
+            TabulatedMetadata tabulatedMetadata = new TabulatedMetadata(table.getName(), documentationRows);
+            if (!tabulatedMetadata.isEmptyOfRows()) {
+                list.add(tabulatedMetadata);
             }
         }
         return list;
     }
 
-    public static class StreamLinedMetadata implements Serializable {
 
-        private String tableName;
-        private List<DocumentationRow> documentationRows;
-
-        public StreamLinedMetadata(String tableName, List<DocumentationRow> documentationRows) {
-            this.tableName = tableName;
-            this.documentationRows = documentationRows;
-        }
-
-        public List<DocumentationRow> getDocumentationRows() {
-            return documentationRows;
-        }
-
-        public String getTableName() {
-            return tableName;
-        }
-
-        public boolean isEmptyOfRows() {
-            return CollectionUtils.isEmpty(documentationRows);
-        }
-    }
 }

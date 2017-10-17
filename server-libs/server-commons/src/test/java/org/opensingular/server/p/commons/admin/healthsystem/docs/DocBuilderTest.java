@@ -53,9 +53,9 @@ public class DocBuilderTest {
 
     @Test
     public void streamLinedTest() throws Exception {
-        List<DocumentationMetadataBuilder.StreamLinedMetadata> meta = builderFor(STypeDocRootCompositeTabTest.class).getStreamLinedMetadata();
+        List<TabulatedMetadata> meta = builderFor(STypeDocRootCompositeTabTest.class).getTabulatedFormat();
 
-        for (DocumentationMetadataBuilder.StreamLinedMetadata lines : meta) {
+        for (TabulatedMetadata lines : meta) {
             System.out.println("------------" + lines.getTableName());
             for (DocumentationRow documentationRow : lines.getDocumentationRows()) {
                 if (documentationRow instanceof DocumentationRowBlockSeparator) {

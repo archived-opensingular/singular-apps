@@ -1,6 +1,7 @@
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.AtrRef;
 import org.opensingular.form.SType;
@@ -17,6 +18,7 @@ import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
 import org.opensingular.form.view.SViewListByMasterDetail;
+import org.opensingular.form.view.ViewResolver;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
 
@@ -30,10 +32,19 @@ import java.util.TreeSet;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+/**
+ * Translates some metadatas from {@link SType} to human-readable documentation info.
+ * The information is gathered only form form input fields as defined by {{@link #isFormInputField()}}
+ *
+ */
 public class DocumentationFieldMetadataBuilder implements Serializable, Loggable {
+
+    private static final String EMPTY_VALUE = "-";
+    public static final String SEPARATOR = "<br>";
 
     private final DocFieldMetadata docFieldMetadata;
 
+    private boolean exists;
     private boolean modal;
     private boolean selection;
     private boolean simple;
@@ -41,6 +52,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
     private boolean hiddenCopositeField;
 
     public DocumentationFieldMetadataBuilder(SType<?> rootType, SType<?> type) {
+        this.exists = initExists(type);
         this.modal = initModal(type);
         this.selection = initSelection(type);
         this.simple = initSimpleType(type);
@@ -63,30 +75,59 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
         }
     }
 
-    public boolean isFormInputField() {
-        return !hiddenCopositeField && (selection || upload || simple || modal);
+    private boolean initExists(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_EXISTS).orElse(true);
     }
 
+    /**
+     * Check if the current {@link SType} represents an input field on the html form.
+     * If the Stype is permanently disabled or do not exists ({@link SPackageBasic#ATR_EXISTS})
+     * it is not considered a Form Input Field. Note that not only {@link STypeSimple} can be form inputs,
+     * some composite are considered atomic form fields, ex: {@link STypeAttachment}, {@link org.opensingular.form.STypeComposite} with {@link org.opensingular.form.view.SViewSelectionBySelect} views etc.
+     * @return
+     * true if {@link SType}  is considered a form input field, false otherwise
+     */
+    public boolean isFormInputField() {
+        return !hiddenCopositeField && exists && (selection || upload || simple || modal);
+    }
+
+    /**
+     *
+     * @return
+     *  Object contained all metadatas collected during this builder construction.
+     */
     public DocFieldMetadata getDocFieldMetadata() {
         return docFieldMetadata;
     }
 
     private boolean initModal(SType<?> type) {
-        return type.getView() instanceof SViewListByMasterDetail;
+        return ViewResolver.resolveView(type) instanceof SViewListByMasterDetail;
     }
 
     private String initMessages(SType<?> type) {
+        StringBuilder sb = new StringBuilder();
         if (!type.getValidators().isEmpty()) {
-            return "Ver regra de validação.";
+            sb.append("Ver regra de validação.").append(SEPARATOR);
         }
-        return null;
+        if (getAttribute(type, SPackageBasic.ATR_REQUIRED_FUNCTION).isPresent()){
+            sb.append("Ver regra de obrigatoriedade").append(SEPARATOR);
+        }
+        if (getAttribute(type, SPackageBasic.ATR_VISIBLE_FUNCTION).isPresent()){
+            sb.append("Ver regra de visibilidade").append(SEPARATOR);
+        }
+        String result = sb.toString();
+        if (StringUtils.isEmpty(result)){
+            return EMPTY_VALUE;
+        } else {
+            return result;
+        }
     }
 
     private String initBusinessRules(SType<?> type) {
         if (getAttribute(type, SPackageBasic.ATR_UPDATE_LISTENER).isPresent()) {
             return "Ver regra de negócio";
         }
-        return null;
+        return EMPTY_VALUE;
     }
 
     private boolean initHiddenForDocumentation(SType<?> type) {
@@ -121,7 +162,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
                     .collect(Collectors.toList());
             observacoes.add("Domínio: " + Joiner.on(", ").join(dominio));
         }
-        return Joiner.on("<br>").join(observacoes);
+        return Joiner.on(SEPARATOR).join(observacoes);
     }
 
     private Set<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
@@ -151,7 +192,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
 
     private String initRequired(SType<?> s) {
         if (s.asAtr().getAttributeValue(SPackageBasic.ATR_REQUIRED_FUNCTION) != null) {
-            return "Condicional";
+            return "Sim";
         } else {
             return s.asAtr().isRequired() ? "Sim" : "Não";
         }
@@ -161,7 +202,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
     private String initTypeAbbreviation(SType<?> s) {
         if (selection) {
             if (s.isList()) {
-                if (s.getView() instanceof SMultiSelectionByCheckboxView) {
+                if (ViewResolver.resolveView(s) instanceof SMultiSelectionByCheckboxView) {
                     return "CKB";
                 } else {
                     return "CBM";
@@ -202,9 +243,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
     }
 
     private String initSize(SType<?> type) {
-        if (selection) {
-            return "N/A";
-        } else if (initUpload(type)) {
+        if (!selection && initUpload(type)) {
             SType<?> uploadType = type;
             if (type instanceof STypeAttachmentList) {
                 uploadType = ((STypeAttachmentList) type).getElementsType();
@@ -219,7 +258,7 @@ public class DocumentationFieldMetadataBuilder implements Serializable, Loggable
                 return String.valueOf(maxlength.get());
             }
         }
-        return "";
+        return EMPTY_VALUE;
     }
 
 

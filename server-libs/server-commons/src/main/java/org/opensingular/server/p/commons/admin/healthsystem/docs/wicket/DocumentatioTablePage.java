@@ -14,6 +14,7 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.DocumentationMetadataBuilder;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.TabulatedMetadata;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -23,19 +24,19 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
 public class DocumentatioTablePage extends WebPage {
 
-    private final IModel<List<DocumentationMetadataBuilder.StreamLinedMetadata>> tablesModel;
+    private final IModel<List<TabulatedMetadata>> tablesModel;
 
     @Inject
     private SingularServerSpringTypeLoader typeLoader;
 
     public DocumentatioTablePage(Class<? extends STypeComposite> stype) {
-        tablesModel = new ListModel<>(new DocumentationMetadataBuilder(typeLoader.loadTypeOrException(stype)).getStreamLinedMetadata());
+        tablesModel = new ListModel<>(new DocumentationMetadataBuilder(typeLoader.loadTypeOrException(stype)).getTabulatedFormat());
     }
 
     @Override
     protected void onConfigure() {
         RepeatingView repeatingView = new RepeatingView("tables", tablesModel);
-        for (DocumentationMetadataBuilder.StreamLinedMetadata metas : tablesModel.getObject()) {
+        for (TabulatedMetadata metas : tablesModel.getObject()) {
             IModel<Integer> counterModel = new Model<>(0);
             WebMarkupContainer components = new WebMarkupContainer(repeatingView.newChildId());
             components.add(new Label("title", $m.ofValue(metas.getTableName())));
@@ -45,7 +46,7 @@ public class DocumentatioTablePage extends WebPage {
         queue(repeatingView);
     }
 
-    protected BSDataTable<DocumentationRow, String> setupDataTable(String table, DocumentationMetadataBuilder.StreamLinedMetadata metas, IModel<Integer> counterModel) {
+    protected BSDataTable<DocumentationRow, String> setupDataTable(String table, TabulatedMetadata metas, IModel<Integer> counterModel) {
         return new BSDataTableBuilder<>(createDataProvider(metas))
                 .appendPropertyColumn($m.ofValue("Número"), r -> {
                     if (r instanceof DocumentationRowBlockSeparator) {
@@ -75,7 +76,7 @@ public class DocumentatioTablePage extends WebPage {
     }
 
 
-    private ISortableDataProvider<DocumentationRow, String> createDataProvider(DocumentationMetadataBuilder.StreamLinedMetadata metas) {
+    private ISortableDataProvider<DocumentationRow, String> createDataProvider(TabulatedMetadata metas) {
         return new ISortableDataProvider<DocumentationRow, String>() {
 
             @Override
