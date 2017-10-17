@@ -12,11 +12,11 @@ public class DocBlock implements Serializable {
 
     private LinkedHashSet<DocFieldMetadata> metadataList = new LinkedHashSet<>();
 
-    private List<SType<?>> blockTypes;
+    private LinkedHashSet<SType<?>> blockTypes = new LinkedHashSet<>();
     private boolean orphanBlock;
 
     public DocBlock(String blockName, List<SType<?>> blockTypes, boolean orphanBlock) {
-        this.blockTypes = blockTypes;
+        this.blockTypes.addAll(blockTypes);
         this.blockName = blockName;
         this.orphanBlock = orphanBlock;
     }
@@ -33,7 +33,7 @@ public class DocBlock implements Serializable {
         return metadataList;
     }
 
-    public List<SType<?>> getBlockTypes() {
+    public LinkedHashSet<SType<?>> getBlockTypes() {
         return blockTypes;
     }
 

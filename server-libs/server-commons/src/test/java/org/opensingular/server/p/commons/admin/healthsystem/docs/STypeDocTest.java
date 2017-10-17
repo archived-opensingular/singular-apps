@@ -17,16 +17,16 @@ import javax.annotation.Nonnull;
 @SInfoType(name = "STypeDocTest", spackage = SPackageDocTest.class, label = "Super SType Test")
 public class STypeDocTest extends STypeComposite<SIComposite> {
 
-    public static final String ANEXINHO = "anexinho";
     public static final String ANEXINHOS = "anexinhos";
+    public static final String ANEXINHO = "anexinho";
     public static final String IDADE = "idade";
     public static final String ENDERECOS = "enderecos";
     public static final String ANEXOS = "Anexos";
     public static final String OUTROS_DADOS = "Outros Dados";
     private STypeAttachment anexinho;
+    private STypeAttachmentList anexinhos;
     private STypeInteger idade;
     private STypeList<STypeAddress, SIComposite> enderecos;
-    private STypeAttachmentList anexinhos;
 
     @Override
     protected void onLoadType(@Nonnull TypeBuilder tb) {
