@@ -19,7 +19,6 @@
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import com.google.common.base.Joiner;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.AtrRef;
 import org.opensingular.form.SType;
@@ -29,7 +28,6 @@ import org.opensingular.form.converter.EnumSInstanceConverter;
 import org.opensingular.form.provider.ProviderContext;
 import org.opensingular.form.type.basic.AtrBasic;
 import org.opensingular.form.type.basic.SPackageBasic;
-import org.opensingular.form.type.core.SPackageDocumentation;
 import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
@@ -63,20 +61,18 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
 
     private final DocFieldMetadata docFieldMetadata;
 
-    private boolean exists;
     private boolean modal;
     private boolean selection;
     private boolean simple;
     private boolean upload;
-    private boolean hiddenCopositeField;
+    private boolean hiddenForDocumentation;
 
     public DocumentationFieldMetadataBuilder(SType<?> rootType, SType<?> type) {
-        this.exists = initExists(type);
         this.modal = initModal(type);
         this.selection = initSelection(type);
         this.simple = initSimpleType(type);
         this.upload = initUpload(type);
-        this.hiddenCopositeField = initHiddenForDocumentation(type);
+        this.hiddenForDocumentation = initHiddenForDocumentation(type);
         if (isFormInputField()) {
             docFieldMetadata = new DocFieldMetadata(
                     rootType,
@@ -94,10 +90,6 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         }
     }
 
-    private boolean initExists(SType<?> type) {
-        return getAttribute(type, SPackageBasic.ATR_EXISTS).orElse(Boolean.TRUE);
-    }
-
     /**
      * Check if the current {@link SType} represents an input field on the html form.
      * If the Stype is permanently disabled or do not exists ({@link SPackageBasic#ATR_EXISTS})
@@ -107,7 +99,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
      * true if {@link SType}  is considered a form input field, false otherwise
      */
     public boolean isFormInputField() {
-        return !hiddenCopositeField && exists && (selection || upload || simple || modal);
+        boolean isHtmlFormComponent = selection || upload || simple || modal;
+        return !hiddenForDocumentation && isHtmlFormComponent;
     }
 
     /**
