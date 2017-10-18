@@ -48,12 +48,11 @@ import static org.opensingular.server.p.commons.admin.healthsystem.Documentation
 /**
  * Responsible for collect metadata for SType documentation
  * Reads information from attributes, validators, and views.
- *
+ * <p>
  * The documentation metadata is represented by three classes:
  * - {@link DocTable}: Form documentation is separated in tables: 1 table for each tab ({@link SViewTab}), 1 table for each master detail (#{@link SViewListByMasterDetail}) and 1 table for the root type if it is not already included by the previous rules
  * - {@link DocBlock}: Each table is further subdivided in blocks: 1 block for each block from view by block ({@link SViewByBlock}), 1 "anonymous" block gathering all types not related to any block in a table.
  * - {@link DocFieldMetadata}: Each block is inspected for STypes that directly represents fields in a HTML according to the method {@link DocumentationFieldMetadataBuilder#isFormInputField()}
- *
  */
 public class DocumentationMetadataBuilder {
 
@@ -193,8 +192,8 @@ public class DocumentationMetadataBuilder {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<>();
         roots.addAll(collectTableRoots(rootType));
         roots.addAll(identifyTablesRecursion(rootType));
-        if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)){
-            roots.add(new DocTable(getLabelForType(rootType),rootType));
+        if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)) {
+            roots.add(new DocTable(getLabelForType(rootType), rootType));
 
         }
         return roots;
@@ -226,7 +225,7 @@ public class DocumentationMetadataBuilder {
         return roots;
     }
 
-    private boolean isDocumentationRelated(SType<?> sType){
+    private boolean isDocumentationRelated(SType<?> sType) {
         return !DocumentationMetadataUtil.isHiddenForDocumentation(sType);
     }
 
@@ -249,6 +248,7 @@ public class DocumentationMetadataBuilder {
 
     /**
      * Return all metadata information organized in the way it is described in this class javadoc {@link DocumentationMetadataBuilder}
+     *
      * @return
      */
     public LinkedHashSet<DocTable> getMetadata() {
@@ -258,29 +258,41 @@ public class DocumentationMetadataBuilder {
     /**
      * Tabulates metadata from blocks/fields into tables and rows information including block separator for non
      * orphan blocks
+     *
      * @return
      */
     public List<TabulatedMetadata> getTabulatedFormat() {
         List<TabulatedMetadata> list = new ArrayList<>();
         for (DocTable table : tableRoots) {
             List<DocumentationRow> documentationRows = new ArrayList<>();
-            documentationRows.add(new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
             for (DocBlock docBlock : table.getBlockList()) {
                 if (!docBlock.getMetadataList().isEmpty()) {
-                    if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
-                        documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
-                    }
-                    for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
-                        documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
-                    }
+                    documentationRows.addAll(getTableBlockSeparators(docBlock, table));
+                    documentationRows.addAll(getTableBlockLines(docBlock));
                 }
             }
-            TabulatedMetadata tabulatedMetadata = new TabulatedMetadata(table.getName(), documentationRows);
-            if (!tabulatedMetadata.isEmptyOfRows()) {
-                list.add(tabulatedMetadata);
+            if (!documentationRows.isEmpty()) {
+                documentationRows.add(0, new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
+                list.add(new TabulatedMetadata(table.getName(), documentationRows));
             }
         }
         return list;
+    }
+
+    private Collection<? extends DocumentationRow> getTableBlockSeparators(DocBlock docBlock, DocTable table) {
+        List<DocumentationRow> documentationRows = new ArrayList<>();
+        if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
+            documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
+        }
+        return documentationRows;
+    }
+
+    private Collection<? extends DocumentationRow> getTableBlockLines(DocBlock docBlock) {
+        List<DocumentationRow> documentationRows = new ArrayList<>();
+        for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
+            documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
+        }
+        return documentationRows;
     }
 
 
