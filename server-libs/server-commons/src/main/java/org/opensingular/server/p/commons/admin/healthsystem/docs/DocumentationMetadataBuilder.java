@@ -12,6 +12,7 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewTab;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.lib.commons.lambda.IBiFunction;
+import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRow;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowBlockSeparator;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowFieldMetadata;
@@ -114,7 +115,7 @@ public class DocumentationMetadataBuilder {
 
     private <X> LinkedHashSet<X> recursiveIteration(SType<?> toIterate, LinkedHashSet<SType<?>> excludedTypes, IBiFunction<SType<?>, LinkedHashSet<SType<?>>, Stream<X>> function) {
         LinkedHashSet<X> blocks = new LinkedHashSet<>();
-        if (isExists(toIterate)) {
+        if (isDocumentationRelated(toIterate)) {
             function.apply(toIterate, excludedTypes).forEach(blocks::add);
             for (SType<?> contained : STypes.containedTypes(toIterate)) {
                 if (excludedTypes.contains(contained)) {
@@ -134,7 +135,7 @@ public class DocumentationMetadataBuilder {
         excludedTypes.addAll(typesAssociatedToBlocks);
         excludedTypes.removeAll(rootTypes);
         for (SType<?> type : rootTypes) {
-            if (isExists(type)) {
+            if (isDocumentationRelated(type)) {
                 if (excludedTypes.contains(type)) {
                     continue;
                 }
@@ -193,7 +194,7 @@ public class DocumentationMetadataBuilder {
 
     private LinkedHashSet<DocTable> collectTableRoots(SType<?> sType) {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<DocTable>();
-        if (isExists(sType)) {
+        if (isDocumentationRelated(sType)) {
             SView view = getViewFor(sType);
             if (view instanceof SViewTab) {
                 SViewTab viewTab = (SViewTab) view;
@@ -207,11 +208,8 @@ public class DocumentationMetadataBuilder {
         return roots;
     }
 
-    private boolean isExists(SType<?> sType){
-        if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_EXISTS)) {
-            return Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(Boolean.TRUE);
-        }
-        return true;
+    private boolean isDocumentationRelated(SType<?> sType){
+        return !DocumentationMetadataUtil.isHiddenForDocumentation(sType);
     }
 
     private String getLabelForType(String defaultString, SType<?> type) {

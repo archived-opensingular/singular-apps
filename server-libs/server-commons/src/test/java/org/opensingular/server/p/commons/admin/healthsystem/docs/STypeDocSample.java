@@ -14,8 +14,8 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 
 import javax.annotation.Nonnull;
 
-@SInfoType(name = "STypeDocTest", spackage = SPackageDocTest.class, label = "Super SType Test")
-public class STypeDocTest extends STypeComposite<SIComposite> {
+@SInfoType(name = "STypeDocSample", spackage = SPackageDocSample.class, label = "Super SType Test")
+public class STypeDocSample extends STypeComposite<SIComposite> {
 
     public static final String ANEXINHOS = "anexinhos";
     public static final String ANEXINHO = "anexinho";

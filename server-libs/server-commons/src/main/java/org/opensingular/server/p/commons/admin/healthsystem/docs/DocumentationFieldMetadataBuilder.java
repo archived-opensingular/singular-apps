@@ -21,6 +21,7 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -131,7 +132,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
     private boolean initHiddenForDocumentation(SType<?> type) {
-        return getAttribute(type, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(Boolean.FALSE);
+        return DocumentationMetadataUtil.isHiddenForDocumentation(type);
     }
 
     @SuppressWarnings("unchecked")
