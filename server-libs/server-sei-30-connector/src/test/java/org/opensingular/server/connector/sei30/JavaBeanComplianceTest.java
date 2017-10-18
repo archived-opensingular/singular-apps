@@ -19,14 +19,17 @@
 package org.opensingular.server.connector.sei30;
 
 import org.junit.Test;
+import org.opensingular.server.connector.sei30.model.SerieEnum;
+import org.opensingular.server.connector.sei30.ws.ObjectFactory;
 
 public class JavaBeanComplianceTest {
 
-
     @Test
-    public void testJavabeancompliancetest() {
-        org.opensingular.server.connector.sei30.JavaBeanComplianceTest javabeancompliancetest = new org.opensingular.server.connector.sei30.JavaBeanComplianceTest();
+    public void enumTest() throws Exception {
+        SerieEnum.DESPACHO.getNome();
+
     }
+
 
     @Test
     public void testDocumentobuilder() {
@@ -41,7 +44,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testAndamento() {
-        org.opensingular.server.connector.sei30.ws.Andamento andamento = new org.opensingular.server.connector.sei30.ws.Andamento();
+        org.opensingular.server.connector.sei30.ws.Andamento andamento = new ObjectFactory().createAndamento();
         andamento.setIdAndamento(andamento.getIdAndamento());
         andamento.setIdTarefa(andamento.getIdTarefa());
         andamento.setIdTarefaModulo(andamento.getIdTarefaModulo());
@@ -54,7 +57,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testAndamentomarcador() {
-        org.opensingular.server.connector.sei30.ws.AndamentoMarcador andamentomarcador = new org.opensingular.server.connector.sei30.ws.AndamentoMarcador();
+        org.opensingular.server.connector.sei30.ws.AndamentoMarcador andamentomarcador = new ObjectFactory().createAndamentoMarcador();
         andamentomarcador.setDataHora(andamentomarcador.getDataHora());
         andamentomarcador.setIdAndamentoMarcador(andamentomarcador.getIdAndamentoMarcador());
         andamentomarcador.setTexto(andamentomarcador.getTexto());
@@ -64,7 +67,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testArquivoextensao() {
-        org.opensingular.server.connector.sei30.ws.ArquivoExtensao arquivoextensao = new org.opensingular.server.connector.sei30.ws.ArquivoExtensao();
+        org.opensingular.server.connector.sei30.ws.ArquivoExtensao arquivoextensao = new ObjectFactory().createArquivoExtensao();
         arquivoextensao.setIdArquivoExtensao(arquivoextensao.getIdArquivoExtensao());
         arquivoextensao.setExtensao(arquivoextensao.getExtensao());
         arquivoextensao.setDescricao(arquivoextensao.getDescricao());
@@ -72,167 +75,167 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testArrayofandamento() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfAndamento arrayofandamento = new org.opensingular.server.connector.sei30.ws.ArrayOfAndamento();
+        org.opensingular.server.connector.sei30.ws.ArrayOfAndamento arrayofandamento = new ObjectFactory().createArrayOfAndamento();
     }
 
     @Test
     public void testArrayofandamentomarcador() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfAndamentoMarcador arrayofandamentomarcador = new org.opensingular.server.connector.sei30.ws.ArrayOfAndamentoMarcador();
+        org.opensingular.server.connector.sei30.ws.ArrayOfAndamentoMarcador arrayofandamentomarcador = new ObjectFactory().createArrayOfAndamentoMarcador();
     }
 
     @Test
     public void testArrayofarquivoextensao() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfArquivoExtensao arrayofarquivoextensao = new org.opensingular.server.connector.sei30.ws.ArrayOfArquivoExtensao();
+        org.opensingular.server.connector.sei30.ws.ArrayOfArquivoExtensao arrayofarquivoextensao = new ObjectFactory().createArrayOfArquivoExtensao();
     }
 
     @Test
     public void testArrayofassinatura() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfAssinatura arrayofassinatura = new org.opensingular.server.connector.sei30.ws.ArrayOfAssinatura();
+        org.opensingular.server.connector.sei30.ws.ArrayOfAssinatura arrayofassinatura = new ObjectFactory().createArrayOfAssinatura();
     }
 
     @Test
     public void testArrayofassunto() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfAssunto arrayofassunto = new org.opensingular.server.connector.sei30.ws.ArrayOfAssunto();
+        org.opensingular.server.connector.sei30.ws.ArrayOfAssunto arrayofassunto = new ObjectFactory().createArrayOfAssunto();
     }
 
     @Test
     public void testArrayofatributoandamento() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfAtributoAndamento arrayofatributoandamento = new org.opensingular.server.connector.sei30.ws.ArrayOfAtributoAndamento();
+        org.opensingular.server.connector.sei30.ws.ArrayOfAtributoAndamento arrayofatributoandamento = new ObjectFactory().createArrayOfAtributoAndamento();
     }
 
     @Test
     public void testArrayofcampo() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfCampo arrayofcampo = new org.opensingular.server.connector.sei30.ws.ArrayOfCampo();
+        org.opensingular.server.connector.sei30.ws.ArrayOfCampo arrayofcampo = new ObjectFactory().createArrayOfCampo();
     }
 
     @Test
     public void testArrayofcargo() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfCargo arrayofcargo = new org.opensingular.server.connector.sei30.ws.ArrayOfCargo();
+        org.opensingular.server.connector.sei30.ws.ArrayOfCargo arrayofcargo = new ObjectFactory().createArrayOfCargo();
     }
 
     @Test
     public void testArrayofcidade() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfCidade arrayofcidade = new org.opensingular.server.connector.sei30.ws.ArrayOfCidade();
+        org.opensingular.server.connector.sei30.ws.ArrayOfCidade arrayofcidade = new ObjectFactory().createArrayOfCidade();
     }
 
     @Test
     public void testArrayofcontato() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfContato arrayofcontato = new org.opensingular.server.connector.sei30.ws.ArrayOfContato();
+        org.opensingular.server.connector.sei30.ws.ArrayOfContato arrayofcontato = new ObjectFactory().createArrayOfContato();
     }
 
     @Test
     public void testArrayofdefinicaomarcador() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfDefinicaoMarcador arrayofdefinicaomarcador = new org.opensingular.server.connector.sei30.ws.ArrayOfDefinicaoMarcador();
+        org.opensingular.server.connector.sei30.ws.ArrayOfDefinicaoMarcador arrayofdefinicaomarcador = new ObjectFactory().createArrayOfDefinicaoMarcador();
     }
 
     @Test
     public void testArrayofdestinatario() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfDestinatario arrayofdestinatario = new org.opensingular.server.connector.sei30.ws.ArrayOfDestinatario();
+        org.opensingular.server.connector.sei30.ws.ArrayOfDestinatario arrayofdestinatario = new ObjectFactory().createArrayOfDestinatario();
     }
 
     @Test
     public void testArrayofdocumento() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfDocumento arrayofdocumento = new org.opensingular.server.connector.sei30.ws.ArrayOfDocumento();
+        org.opensingular.server.connector.sei30.ws.ArrayOfDocumento arrayofdocumento = new ObjectFactory().createArrayOfDocumento();
     }
 
     @Test
     public void testArrayofdocumentoformatado() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfDocumentoFormatado arrayofdocumentoformatado = new org.opensingular.server.connector.sei30.ws.ArrayOfDocumentoFormatado();
+        org.opensingular.server.connector.sei30.ws.ArrayOfDocumentoFormatado arrayofdocumentoformatado = new ObjectFactory().createArrayOfDocumentoFormatado();
     }
 
     @Test
     public void testArrayofestado() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfEstado arrayofestado = new org.opensingular.server.connector.sei30.ws.ArrayOfEstado();
+        org.opensingular.server.connector.sei30.ws.ArrayOfEstado arrayofestado = new ObjectFactory().createArrayOfEstado();
     }
 
     @Test
     public void testArrayofhipoteselegal() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfHipoteseLegal arrayofhipoteselegal = new org.opensingular.server.connector.sei30.ws.ArrayOfHipoteseLegal();
+        org.opensingular.server.connector.sei30.ws.ArrayOfHipoteseLegal arrayofhipoteselegal = new ObjectFactory().createArrayOfHipoteseLegal();
     }
 
     @Test
     public void testArrayofidunidade() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfIdUnidade arrayofidunidade = new org.opensingular.server.connector.sei30.ws.ArrayOfIdUnidade();
+        org.opensingular.server.connector.sei30.ws.ArrayOfIdUnidade arrayofidunidade = new ObjectFactory().createArrayOfIdUnidade();
     }
 
     @Test
     public void testArrayofinteressado() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfInteressado arrayofinteressado = new org.opensingular.server.connector.sei30.ws.ArrayOfInteressado();
+        org.opensingular.server.connector.sei30.ws.ArrayOfInteressado arrayofinteressado = new ObjectFactory().createArrayOfInteressado();
     }
 
     @Test
     public void testArrayofmarcador() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfMarcador arrayofmarcador = new org.opensingular.server.connector.sei30.ws.ArrayOfMarcador();
+        org.opensingular.server.connector.sei30.ws.ArrayOfMarcador arrayofmarcador = new ObjectFactory().createArrayOfMarcador();
     }
 
     @Test
     public void testArrayofobservacao() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfObservacao arrayofobservacao = new org.opensingular.server.connector.sei30.ws.ArrayOfObservacao();
+        org.opensingular.server.connector.sei30.ws.ArrayOfObservacao arrayofobservacao = new ObjectFactory().createArrayOfObservacao();
     }
 
     @Test
     public void testArrayofpais() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfPais arrayofpais = new org.opensingular.server.connector.sei30.ws.ArrayOfPais();
+        org.opensingular.server.connector.sei30.ws.ArrayOfPais arrayofpais = new ObjectFactory().createArrayOfPais();
     }
 
     @Test
     public void testArrayofprocedimentorelacionado() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoRelacionado arrayofprocedimentorelacionado = new org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoRelacionado();
+        org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoRelacionado arrayofprocedimentorelacionado = new ObjectFactory().createArrayOfProcedimentoRelacionado();
     }
 
     @Test
     public void testArrayofprocedimentoresumido() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoResumido arrayofprocedimentoresumido = new org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoResumido();
+        org.opensingular.server.connector.sei30.ws.ArrayOfProcedimentoResumido arrayofprocedimentoresumido = new ObjectFactory().createArrayOfProcedimentoResumido();
     }
 
     @Test
     public void testArrayofprotocolobloco() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfProtocoloBloco arrayofprotocolobloco = new org.opensingular.server.connector.sei30.ws.ArrayOfProtocoloBloco();
+        org.opensingular.server.connector.sei30.ws.ArrayOfProtocoloBloco arrayofprotocolobloco = new ObjectFactory().createArrayOfProtocoloBloco();
     }
 
     @Test
     public void testArrayofretornoinclusaodocumento() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfRetornoInclusaoDocumento arrayofretornoinclusaodocumento = new org.opensingular.server.connector.sei30.ws.ArrayOfRetornoInclusaoDocumento();
+        org.opensingular.server.connector.sei30.ws.ArrayOfRetornoInclusaoDocumento arrayofretornoinclusaodocumento = new ObjectFactory().createArrayOfRetornoInclusaoDocumento();
     }
 
     @Test
     public void testArrayofserie() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfSerie arrayofserie = new org.opensingular.server.connector.sei30.ws.ArrayOfSerie();
+        org.opensingular.server.connector.sei30.ws.ArrayOfSerie arrayofserie = new ObjectFactory().createArrayOfSerie();
     }
 
     @Test
     public void testArrayofstring() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfString arrayofstring = new org.opensingular.server.connector.sei30.ws.ArrayOfString();
+        org.opensingular.server.connector.sei30.ws.ArrayOfString arrayofstring = new ObjectFactory().createArrayOfString();
     }
 
     @Test
     public void testArrayoftipoconferencia() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfTipoConferencia arrayoftipoconferencia = new org.opensingular.server.connector.sei30.ws.ArrayOfTipoConferencia();
+        org.opensingular.server.connector.sei30.ws.ArrayOfTipoConferencia arrayoftipoconferencia = new ObjectFactory().createArrayOfTipoConferencia();
     }
 
     @Test
     public void testArrayoftipoprocedimento() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfTipoProcedimento arrayoftipoprocedimento = new org.opensingular.server.connector.sei30.ws.ArrayOfTipoProcedimento();
+        org.opensingular.server.connector.sei30.ws.ArrayOfTipoProcedimento arrayoftipoprocedimento = new ObjectFactory().createArrayOfTipoProcedimento();
     }
 
     @Test
     public void testArrayofunidade() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfUnidade arrayofunidade = new org.opensingular.server.connector.sei30.ws.ArrayOfUnidade();
+        org.opensingular.server.connector.sei30.ws.ArrayOfUnidade arrayofunidade = new ObjectFactory().createArrayOfUnidade();
     }
 
     @Test
     public void testArrayofunidadeprocedimentoaberto() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfUnidadeProcedimentoAberto arrayofunidadeprocedimentoaberto = new org.opensingular.server.connector.sei30.ws.ArrayOfUnidadeProcedimentoAberto();
+        org.opensingular.server.connector.sei30.ws.ArrayOfUnidadeProcedimentoAberto arrayofunidadeprocedimentoaberto = new ObjectFactory().createArrayOfUnidadeProcedimentoAberto();
     }
 
     @Test
     public void testArrayofusuario() {
-        org.opensingular.server.connector.sei30.ws.ArrayOfUsuario arrayofusuario = new org.opensingular.server.connector.sei30.ws.ArrayOfUsuario();
+        org.opensingular.server.connector.sei30.ws.ArrayOfUsuario arrayofusuario = new ObjectFactory().createArrayOfUsuario();
     }
 
     @Test
     public void testAssinatura() {
-        org.opensingular.server.connector.sei30.ws.Assinatura assinatura = new org.opensingular.server.connector.sei30.ws.Assinatura();
+        org.opensingular.server.connector.sei30.ws.Assinatura assinatura = new ObjectFactory().createAssinatura();
         assinatura.setNome(assinatura.getNome());
         assinatura.setDataHora(assinatura.getDataHora());
         assinatura.setCargoFuncao(assinatura.getCargoFuncao());
@@ -240,14 +243,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testAssunto() {
-        org.opensingular.server.connector.sei30.ws.Assunto assunto = new org.opensingular.server.connector.sei30.ws.Assunto();
+        org.opensingular.server.connector.sei30.ws.Assunto assunto = new ObjectFactory().createAssunto();
         assunto.setDescricao(assunto.getDescricao());
         assunto.setCodigoEstruturado(assunto.getCodigoEstruturado());
     }
 
     @Test
     public void testAtributoandamento() {
-        org.opensingular.server.connector.sei30.ws.AtributoAndamento atributoandamento = new org.opensingular.server.connector.sei30.ws.AtributoAndamento();
+        org.opensingular.server.connector.sei30.ws.AtributoAndamento atributoandamento = new ObjectFactory().createAtributoAndamento();
         atributoandamento.setNome(atributoandamento.getNome());
         atributoandamento.setValor(atributoandamento.getValor());
         atributoandamento.setIdOrigem(atributoandamento.getIdOrigem());
@@ -255,14 +258,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testCampo() {
-        org.opensingular.server.connector.sei30.ws.Campo campo = new org.opensingular.server.connector.sei30.ws.Campo();
+        org.opensingular.server.connector.sei30.ws.Campo campo = new ObjectFactory().createCampo();
         campo.setNome(campo.getNome());
         campo.setValor(campo.getValor());
     }
 
     @Test
     public void testCargo() {
-        org.opensingular.server.connector.sei30.ws.Cargo cargo = new org.opensingular.server.connector.sei30.ws.Cargo();
+        org.opensingular.server.connector.sei30.ws.Cargo cargo = new ObjectFactory().createCargo();
         cargo.setIdCargo(cargo.getIdCargo());
         cargo.setExpressaoCargo(cargo.getExpressaoCargo());
         cargo.setExpressaoTratamento(cargo.getExpressaoTratamento());
@@ -271,7 +274,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testCidade() {
-        org.opensingular.server.connector.sei30.ws.Cidade cidade = new org.opensingular.server.connector.sei30.ws.Cidade();
+        org.opensingular.server.connector.sei30.ws.Cidade cidade = new ObjectFactory().createCidade();
         cidade.setNome(cidade.getNome());
         cidade.setIdCidade(cidade.getIdCidade());
         cidade.setIdEstado(cidade.getIdEstado());
@@ -284,7 +287,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testContato() {
-        org.opensingular.server.connector.sei30.ws.Contato contato = new org.opensingular.server.connector.sei30.ws.Contato();
+        org.opensingular.server.connector.sei30.ws.Contato contato = new ObjectFactory().createContato();
         contato.setNome(contato.getNome());
         contato.setSigla(contato.getSigla());
         contato.setSinAtivo(contato.getSinAtivo());
@@ -337,7 +340,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testDefinicaomarcador() {
-        org.opensingular.server.connector.sei30.ws.DefinicaoMarcador definicaomarcador = new org.opensingular.server.connector.sei30.ws.DefinicaoMarcador();
+        org.opensingular.server.connector.sei30.ws.DefinicaoMarcador definicaomarcador = new ObjectFactory().createDefinicaoMarcador();
         definicaomarcador.setIdMarcador(definicaomarcador.getIdMarcador());
         definicaomarcador.setTexto(definicaomarcador.getTexto());
         definicaomarcador.setProtocoloProcedimento(definicaomarcador.getProtocoloProcedimento());
@@ -345,14 +348,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testDestinatario() {
-        org.opensingular.server.connector.sei30.ws.Destinatario destinatario = new org.opensingular.server.connector.sei30.ws.Destinatario();
+        org.opensingular.server.connector.sei30.ws.Destinatario destinatario = new ObjectFactory().createDestinatario();
         destinatario.setNome(destinatario.getNome());
         destinatario.setSigla(destinatario.getSigla());
     }
 
     @Test
     public void testDocumento() {
-        org.opensingular.server.connector.sei30.ws.Documento documento = new org.opensingular.server.connector.sei30.ws.Documento();
+        org.opensingular.server.connector.sei30.ws.Documento documento = new ObjectFactory().createDocumento();
         documento.setInteressados(documento.getInteressados());
         documento.setObservacao(documento.getObservacao());
         documento.setNivelAcesso(documento.getNivelAcesso());
@@ -377,7 +380,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testEstado() {
-        org.opensingular.server.connector.sei30.ws.Estado estado = new org.opensingular.server.connector.sei30.ws.Estado();
+        org.opensingular.server.connector.sei30.ws.Estado estado = new ObjectFactory().createEstado();
         estado.setNome(estado.getNome());
         estado.setSigla(estado.getSigla());
         estado.setIdEstado(estado.getIdEstado());
@@ -387,7 +390,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testHipoteselegal() {
-        org.opensingular.server.connector.sei30.ws.HipoteseLegal hipoteselegal = new org.opensingular.server.connector.sei30.ws.HipoteseLegal();
+        org.opensingular.server.connector.sei30.ws.HipoteseLegal hipoteselegal = new ObjectFactory().createHipoteseLegal();
         hipoteselegal.setNome(hipoteselegal.getNome());
         hipoteselegal.setNivelAcesso(hipoteselegal.getNivelAcesso());
         hipoteselegal.setIdHipoteseLegal(hipoteselegal.getIdHipoteseLegal());
@@ -396,14 +399,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testInteressado() {
-        org.opensingular.server.connector.sei30.ws.Interessado interessado = new org.opensingular.server.connector.sei30.ws.Interessado();
+        org.opensingular.server.connector.sei30.ws.Interessado interessado = new ObjectFactory().createInteressado();
         interessado.setNome(interessado.getNome());
         interessado.setSigla(interessado.getSigla());
     }
 
     @Test
     public void testMarcador() {
-        org.opensingular.server.connector.sei30.ws.Marcador marcador = new org.opensingular.server.connector.sei30.ws.Marcador();
+        org.opensingular.server.connector.sei30.ws.Marcador marcador = new ObjectFactory().createMarcador();
         marcador.setNome(marcador.getNome());
         marcador.setIdMarcador(marcador.getIdMarcador());
         marcador.setIcone(marcador.getIcone());
@@ -411,27 +414,22 @@ public class JavaBeanComplianceTest {
     }
 
     @Test
-    public void testObjectfactory() {
-        org.opensingular.server.connector.sei30.ws.ObjectFactory objectfactory = new org.opensingular.server.connector.sei30.ws.ObjectFactory();
-    }
-
-    @Test
     public void testObservacao() {
-        org.opensingular.server.connector.sei30.ws.Observacao observacao = new org.opensingular.server.connector.sei30.ws.Observacao();
+        org.opensingular.server.connector.sei30.ws.Observacao observacao = new ObjectFactory().createObservacao();
         observacao.setUnidade(observacao.getUnidade());
         observacao.setDescricao(observacao.getDescricao());
     }
 
     @Test
     public void testPais() {
-        org.opensingular.server.connector.sei30.ws.Pais pais = new org.opensingular.server.connector.sei30.ws.Pais();
+        org.opensingular.server.connector.sei30.ws.Pais pais = new ObjectFactory().createPais();
         pais.setNome(pais.getNome());
         pais.setIdPais(pais.getIdPais());
     }
 
     @Test
     public void testProcedimento() {
-        org.opensingular.server.connector.sei30.ws.Procedimento procedimento = new org.opensingular.server.connector.sei30.ws.Procedimento();
+        org.opensingular.server.connector.sei30.ws.Procedimento procedimento = new ObjectFactory().createProcedimento();
         procedimento.setIdTipoProcedimento(procedimento.getIdTipoProcedimento());
         procedimento.setNumeroProtocolo(procedimento.getNumeroProtocolo());
         procedimento.setDataAutuacao(procedimento.getDataAutuacao());
@@ -445,7 +443,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testProcedimentoresumido() {
-        org.opensingular.server.connector.sei30.ws.ProcedimentoResumido procedimentoresumido = new org.opensingular.server.connector.sei30.ws.ProcedimentoResumido();
+        org.opensingular.server.connector.sei30.ws.ProcedimentoResumido procedimentoresumido = new ObjectFactory().createProcedimentoResumido();
         procedimentoresumido.setIdProcedimento(procedimentoresumido.getIdProcedimento());
         procedimentoresumido.setProcedimentoFormatado(procedimentoresumido.getProcedimentoFormatado());
         procedimentoresumido.setTipoProcedimento(procedimentoresumido.getTipoProcedimento());
@@ -453,7 +451,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testProtocolobloco() {
-        org.opensingular.server.connector.sei30.ws.ProtocoloBloco protocolobloco = new org.opensingular.server.connector.sei30.ws.ProtocoloBloco();
+        org.opensingular.server.connector.sei30.ws.ProtocoloBloco protocolobloco = new ObjectFactory().createProtocoloBloco();
         protocolobloco.setAssinaturas(protocolobloco.getAssinaturas());
         protocolobloco.setProtocoloFormatado(protocolobloco.getProtocoloFormatado());
         protocolobloco.setIdentificacao(protocolobloco.getIdentificacao());
@@ -461,7 +459,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testPublicacao() {
-        org.opensingular.server.connector.sei30.ws.Publicacao publicacao = new org.opensingular.server.connector.sei30.ws.Publicacao();
+        org.opensingular.server.connector.sei30.ws.Publicacao publicacao = new ObjectFactory().createPublicacao();
         publicacao.setEstado(publicacao.getEstado());
         publicacao.setNumero(publicacao.getNumero());
         publicacao.setNomeVeiculo(publicacao.getNomeVeiculo());
@@ -472,7 +470,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testPublicacaoimprensanacional() {
-        org.opensingular.server.connector.sei30.ws.PublicacaoImprensaNacional publicacaoimprensanacional = new org.opensingular.server.connector.sei30.ws.PublicacaoImprensaNacional();
+        org.opensingular.server.connector.sei30.ws.PublicacaoImprensaNacional publicacaoimprensanacional = new ObjectFactory().createPublicacaoImprensaNacional();
         publicacaoimprensanacional.setSecao(publicacaoimprensanacional.getSecao());
         publicacaoimprensanacional.setSiglaVeiculo(publicacaoimprensanacional.getSiglaVeiculo());
         publicacaoimprensanacional.setDescricaoVeiculo(publicacaoimprensanacional.getDescricaoVeiculo());
@@ -482,14 +480,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testRemetente() {
-        org.opensingular.server.connector.sei30.ws.Remetente remetente = new org.opensingular.server.connector.sei30.ws.Remetente();
+        org.opensingular.server.connector.sei30.ws.Remetente remetente = new ObjectFactory().createRemetente();
         remetente.setNome(remetente.getNome());
         remetente.setSigla(remetente.getSigla());
     }
 
     @Test
     public void testRetornoconsultabloco() {
-        org.opensingular.server.connector.sei30.ws.RetornoConsultaBloco retornoconsultabloco = new org.opensingular.server.connector.sei30.ws.RetornoConsultaBloco();
+        org.opensingular.server.connector.sei30.ws.RetornoConsultaBloco retornoconsultabloco = new ObjectFactory().createRetornoConsultaBloco();
         retornoconsultabloco.setUsuario(retornoconsultabloco.getUsuario());
         retornoconsultabloco.setEstado(retornoconsultabloco.getEstado());
         retornoconsultabloco.setUnidadesDisponibilizacao(retornoconsultabloco.getUnidadesDisponibilizacao());
@@ -502,7 +500,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testRetornoconsultadocumento() {
-        org.opensingular.server.connector.sei30.ws.RetornoConsultaDocumento retornoconsultadocumento = new org.opensingular.server.connector.sei30.ws.RetornoConsultaDocumento();
+        org.opensingular.server.connector.sei30.ws.RetornoConsultaDocumento retornoconsultadocumento = new ObjectFactory().createRetornoConsultaDocumento();
         retornoconsultadocumento.setSerie(retornoconsultadocumento.getSerie());
         retornoconsultadocumento.setUnidadeElaboradora(retornoconsultadocumento.getUnidadeElaboradora());
         retornoconsultadocumento.setAssinaturas(retornoconsultadocumento.getAssinaturas());
@@ -520,7 +518,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testRetornoconsultaprocedimento() {
-        org.opensingular.server.connector.sei30.ws.RetornoConsultaProcedimento retornoconsultaprocedimento = new org.opensingular.server.connector.sei30.ws.RetornoConsultaProcedimento();
+        org.opensingular.server.connector.sei30.ws.RetornoConsultaProcedimento retornoconsultaprocedimento = new ObjectFactory().createRetornoConsultaProcedimento();
         retornoconsultaprocedimento.setDataAutuacao(retornoconsultaprocedimento.getDataAutuacao());
         retornoconsultaprocedimento.setEspecificacao(retornoconsultaprocedimento.getEspecificacao());
         retornoconsultaprocedimento.setAssuntos(retornoconsultaprocedimento.getAssuntos());
@@ -540,7 +538,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testRetornogeracaoprocedimento() {
-        org.opensingular.server.connector.sei30.ws.RetornoGeracaoProcedimento retornogeracaoprocedimento = new org.opensingular.server.connector.sei30.ws.RetornoGeracaoProcedimento();
+        org.opensingular.server.connector.sei30.ws.RetornoGeracaoProcedimento retornogeracaoprocedimento = new ObjectFactory().createRetornoGeracaoProcedimento();
         retornogeracaoprocedimento.setIdProcedimento(retornogeracaoprocedimento.getIdProcedimento());
         retornogeracaoprocedimento.setProcedimentoFormatado(retornogeracaoprocedimento.getProcedimentoFormatado());
         retornogeracaoprocedimento.setLinkAcesso(retornogeracaoprocedimento.getLinkAcesso());
@@ -549,7 +547,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testRetornoinclusaodocumento() {
-        org.opensingular.server.connector.sei30.ws.RetornoInclusaoDocumento retornoinclusaodocumento = new org.opensingular.server.connector.sei30.ws.RetornoInclusaoDocumento();
+        org.opensingular.server.connector.sei30.ws.RetornoInclusaoDocumento retornoinclusaodocumento = new ObjectFactory().createRetornoInclusaoDocumento();
         retornoinclusaodocumento.setLinkAcesso(retornoinclusaodocumento.getLinkAcesso());
         retornoinclusaodocumento.setIdDocumento(retornoinclusaodocumento.getIdDocumento());
         retornoinclusaodocumento.setDocumentoFormatado(retornoinclusaodocumento.getDocumentoFormatado());
@@ -558,7 +556,7 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testSerie() {
-        org.opensingular.server.connector.sei30.ws.Serie serie = new org.opensingular.server.connector.sei30.ws.Serie();
+        org.opensingular.server.connector.sei30.ws.Serie serie = new ObjectFactory().createSerie();
         serie.setNome(serie.getNome());
         serie.setIdSerie(serie.getIdSerie());
         serie.setAplicabilidade(serie.getAplicabilidade());
@@ -566,14 +564,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testTipoconferencia() {
-        org.opensingular.server.connector.sei30.ws.TipoConferencia tipoconferencia = new org.opensingular.server.connector.sei30.ws.TipoConferencia();
+        org.opensingular.server.connector.sei30.ws.TipoConferencia tipoconferencia = new ObjectFactory().createTipoConferencia();
         tipoconferencia.setDescricao(tipoconferencia.getDescricao());
         tipoconferencia.setIdTipoConferencia(tipoconferencia.getIdTipoConferencia());
     }
 
     @Test
     public void testUnidade() {
-        org.opensingular.server.connector.sei30.ws.Unidade unidade = new org.opensingular.server.connector.sei30.ws.Unidade();
+        org.opensingular.server.connector.sei30.ws.Unidade unidade = new ObjectFactory().createUnidade();
         unidade.setSigla(unidade.getSigla());
         unidade.setIdUnidade(unidade.getIdUnidade());
         unidade.setDescricao(unidade.getDescricao());
@@ -581,14 +579,14 @@ public class JavaBeanComplianceTest {
 
     @Test
     public void testUnidadeprocedimentoaberto() {
-        org.opensingular.server.connector.sei30.ws.UnidadeProcedimentoAberto unidadeprocedimentoaberto = new org.opensingular.server.connector.sei30.ws.UnidadeProcedimentoAberto();
+        org.opensingular.server.connector.sei30.ws.UnidadeProcedimentoAberto unidadeprocedimentoaberto = new ObjectFactory().createUnidadeProcedimentoAberto();
         unidadeprocedimentoaberto.setUnidade(unidadeprocedimentoaberto.getUnidade());
         unidadeprocedimentoaberto.setUsuarioAtribuicao(unidadeprocedimentoaberto.getUsuarioAtribuicao());
     }
 
     @Test
     public void testUsuario() {
-        org.opensingular.server.connector.sei30.ws.Usuario usuario = new org.opensingular.server.connector.sei30.ws.Usuario();
+        org.opensingular.server.connector.sei30.ws.Usuario usuario = new ObjectFactory().createUsuario();
         usuario.setNome(usuario.getNome());
         usuario.setSigla(usuario.getSigla());
         usuario.setIdUsuario(usuario.getIdUsuario());
