@@ -20,13 +20,11 @@ package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
-import org.opensingular.form.AtrRef;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
 import org.opensingular.form.STypeSimple;
 import org.opensingular.form.converter.EnumSInstanceConverter;
 import org.opensingular.form.provider.ProviderContext;
-import org.opensingular.form.type.basic.AtrBasic;
 import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
@@ -41,13 +39,11 @@ import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadat
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
 
 /**
  * Translates some metadatas from {@link SType} to human-readable documentation info.
@@ -88,6 +84,10 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         } else {
             docFieldMetadata = null;
         }
+    }
+
+    private String initFieldName(SType<?> type) {
+        return getLabelForType(type);
     }
 
     /**
@@ -177,32 +177,6 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         return Joiner.on(SEPARATOR).join(observacoes);
     }
 
-    private Set<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
-        Set<String> values = new TreeSet<>();
-        Optional<Supplier<Collection<AtrBasic.DelayedDependsOnResolver>>> dependOn = getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION);
-        if (dependOn.isPresent()) {
-            for (AtrBasic.DelayedDependsOnResolver func : dependOn.get().get()) {
-                if (func != null) {
-                    try {
-                        func.resolve(rootType, type).stream().map(this::initFieldName).collect(() -> values, Set::add, Set::addAll);
-                    } catch (Exception e) {
-                        getLogger().error(e.getMessage(), e);
-                        getLogger().error("Could not resolve dependent types for type: {}", type.getName());
-                    }
-                }
-            }
-        }
-        return values;
-    }
-
-    private <V> Optional<V> getAttribute(SType<?> type, AtrRef<?, ?, V> ref) {
-        if (type.hasAttributeDefinedInHierarchy(ref)) {
-            return Optional.ofNullable(type.getAttributeValue(ref));
-        }
-        return Optional.empty();
-    }
-
-
     private String initRequired(SType<?> s) {
         if (s.asAtr().getAttributeValue(SPackageBasic.ATR_REQUIRED_FUNCTION) != null) {
             return "Sim";
@@ -236,15 +210,6 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         } else {
             return "CT";
         }
-    }
-
-
-    private String initFieldName(SType<?> s) {
-        String label = s.asAtr().getLabel();
-        if (StringUtils.isBlank(label)) {
-            label = s.getNameSimple();
-        }
-        return label;
     }
 
     private String initEnabled(SType<?> s) {

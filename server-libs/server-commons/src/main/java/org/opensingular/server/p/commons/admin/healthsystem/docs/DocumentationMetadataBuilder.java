@@ -19,10 +19,8 @@
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypes;
-import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.view.Block;
 import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewByBlock;
@@ -44,6 +42,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
 
 /**
  * Responsible for collect metadata for SType documentation
@@ -194,7 +194,7 @@ public class DocumentationMetadataBuilder {
         roots.addAll(collectTableRoots(rootType));
         roots.addAll(identifyTablesRecursion(rootType));
         if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)){
-            roots.add(new DocTable(getLabelForType(null, rootType),rootType));
+            roots.add(new DocTable(getLabelForType(rootType),rootType));
 
         }
         return roots;
@@ -220,7 +220,7 @@ public class DocumentationMetadataBuilder {
                     roots.add(new DocTable(getLabelForType(t.getTitle(), sType), retrieveSTypeListFromRelativeTypeName(sType, t.getTypesNames()).toArray(new SType[0])));
                 }
             } else if (view instanceof SViewListByMasterDetail) {
-                roots.add(new DocTable(getLabelForType(null, sType), sType));
+                roots.add(new DocTable(getLabelForType(sType), sType));
             }
         }
         return roots;
@@ -228,20 +228,6 @@ public class DocumentationMetadataBuilder {
 
     private boolean isDocumentationRelated(SType<?> sType){
         return !DocumentationMetadataUtil.isHiddenForDocumentation(sType);
-    }
-
-    private String getLabelForType(String defaultString, SType<?> type) {
-        String label = defaultString;
-        if (label == null) {
-            label = type.asAtr().getLabel();
-            if (label == null) {
-                label = SFormUtil.getTypeLabel(type.getClass()).orElse(null);
-                if (label == null) {
-                    label = type.getNameSimple();
-                }
-            }
-        }
-        return label;
     }
 
     private SView getViewFor(SType<?> s) {

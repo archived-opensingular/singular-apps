@@ -18,13 +18,26 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem;
 
+import org.opensingular.form.AtrRef;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
+import org.opensingular.form.type.basic.AtrBasic;
 import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.SPackageDocumentation;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
 
 public class DocumentationMetadataUtil {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(DocumentationMetadataUtil.class.getName());
+
     /**
      * Fields that are hard-coded invisible, or do not exists or explicit marked as hidden for documentation should not appear in the documentation as it is not related to anything functional
      * for users.
@@ -33,16 +46,51 @@ public class DocumentationMetadataUtil {
      * @return
      */
     public static boolean isHiddenForDocumentation(SType<?> sType) {
-        boolean visible = true;
-        if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_EXISTS)) {
-            visible &= Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(Boolean.TRUE);
-        }
-        if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_VISIBLE)) {
-            visible &= Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_VISIBLE)).orElse(Boolean.TRUE);
-        }
-        if (sType.hasAttributeDefinedInHierarchy(SPackageDocumentation.ATR_DOC_HIDDEN)) {
-            visible &= !Optional.ofNullable(sType.getAttributeValue(SPackageDocumentation.ATR_DOC_HIDDEN)).orElse(Boolean.FALSE);
-        }
+        boolean visible = getAttribute(sType, SPackageBasic.ATR_EXISTS).orElse(Boolean.TRUE);
+        visible &= getAttribute(sType, SPackageBasic.ATR_VISIBLE).orElse(Boolean.TRUE);
+        visible &= !getAttribute(sType, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(Boolean.FALSE);
         return !visible;
+    }
+
+    public static <V> Optional<V> getAttribute(SType<?> type, AtrRef<?, ?, V> ref) {
+        if (type.hasAttributeDefinedInHierarchy(ref)) {
+            return Optional.ofNullable(type.getAttributeValue(ref));
+        }
+        return Optional.empty();
+    }
+
+
+    public static Set<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
+        Set<String> values = new TreeSet<>();
+        Collection<AtrBasic.DelayedDependsOnResolver> dependOnResolverList = getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION).map(Supplier::get).orElse(Collections.emptyList());
+        for (AtrBasic.DelayedDependsOnResolver func : dependOnResolverList) {
+            if (func != null) {
+                try {
+                    func.resolve(rootType, type).stream().map(DocumentationMetadataUtil::getLabelForType).collect(() -> values, Set::add, Set::addAll);
+                } catch (Exception e) {
+                    LOGGER.error(e.getMessage(), e);
+                    LOGGER.error("Could not resolve dependent types for type: {}", type.getName());
+                }
+            }
+        }
+        return values;
+    }
+
+    public static String getLabelForType(SType<?> type) {
+        return getLabelForType(null, type);
+    }
+
+    public static String getLabelForType(String defaultString, SType<?> type) {
+        if (defaultString == null) {
+            String label = type.asAtr().getLabel();
+            if (label == null) {
+                label = SFormUtil.getTypeLabel(type.getClass()).orElse(null);
+                if (label == null) {
+                    label = type.getNameSimple();
+                }
+            }
+            return label;
+        }
+        return defaultString;
     }
 }
