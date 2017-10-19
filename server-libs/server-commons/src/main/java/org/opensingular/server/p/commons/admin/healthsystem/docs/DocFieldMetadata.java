@@ -29,12 +29,14 @@ public class DocFieldMetadata implements Loggable {
     private SType<?> rootType;
     private SType<?> type;
     private String fieldName;
+    private String subtitle;
     private boolean required;
     private boolean enabled;
     private boolean hasEnablingRule;
     private boolean hasValidationRule;
     private boolean hasRequiredRule;
     private boolean hasVisibilityRule;
+    private boolean hasUpdateListener;
     private TreeSet<String> dependentFieldsDescription;
     private String mask;
     private Integer maxSize;
@@ -48,20 +50,22 @@ public class DocFieldMetadata implements Loggable {
 
     }
 
-    public DocFieldMetadata(SType<?> rootType, SType<?> type, String fieldName, boolean required, boolean enabled,
+    public DocFieldMetadata(SType<?> rootType, SType<?> type, String fieldName, String subtitle, boolean required, boolean enabled,
                             boolean hasEnablingRule, boolean hasValidationRule, boolean hasRequiredRule,
-                            boolean hasVisibilityRule, TreeSet<String> dependentFieldsDescription, String mask,
+                            boolean hasVisibilityRule, boolean hasUpdateListener, TreeSet<String> dependentFieldsDescription, String mask,
                             Integer maxSize, Integer minSize, List<String> enumSelectOptions,
                             HTMLComponentType componentType, Integer fieldLength, Long maxUploadSizeInBytes) {
         this.rootType = rootType;
         this.type = type;
         this.fieldName = fieldName;
+        this.subtitle = subtitle;
         this.required = required;
         this.enabled = enabled;
         this.hasEnablingRule = hasEnablingRule;
         this.hasValidationRule = hasValidationRule;
         this.hasRequiredRule = hasRequiredRule;
         this.hasVisibilityRule = hasVisibilityRule;
+        this.hasUpdateListener = hasUpdateListener;
         this.dependentFieldsDescription = dependentFieldsDescription;
         this.mask = mask;
         this.maxSize = maxSize;
@@ -113,6 +117,9 @@ public class DocFieldMetadata implements Loggable {
         return hasVisibilityRule;
     }
 
+    public String getSubtitle() {
+        return subtitle;
+    }
 
     public String getMask() {
         return mask;
@@ -141,4 +148,9 @@ public class DocFieldMetadata implements Loggable {
     public Long getMaxUploadSizeInBytes() {
         return maxUploadSizeInBytes;
     }
+
+    public boolean isHasUpdateListener() {
+        return hasUpdateListener;
+    }
+
 }

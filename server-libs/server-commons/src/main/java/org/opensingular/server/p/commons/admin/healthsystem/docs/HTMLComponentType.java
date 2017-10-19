@@ -28,5 +28,5 @@ public enum HTMLComponentType {
     DATE,
     DATETIME,
     IMAGE_UPLOAD,
-    PICK_LIST;
+    PICK_LIST, TIME;
 }

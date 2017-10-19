@@ -18,7 +18,6 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
-import com.google.common.base.Joiner;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
 import org.opensingular.form.STypeSimple;
@@ -27,18 +26,20 @@ import org.opensingular.form.provider.ProviderContext;
 import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
+import org.opensingular.form.type.core.STypeTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
+import org.opensingular.form.view.SMultiSelectionByPicklistView;
+import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
@@ -69,22 +70,93 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
                     rootType,
                     type,
                     initFieldName(type),
+                    initFieldSubtitle(type),
                     initRequired(type),
                     initEnabled(type),
                     initEnablingRule(type),
                     initValidationRule(type),
                     initRequiredRule(type),
+                    initBusinessRules(type),
                     initVisibilityRule(type),
                     resolveDependsOn(rootType, type),
                     initMask(type),
                     initMaxSize(type),
                     initMinSize(type),
-                    null, null, null, null
-
-                    );
+                    initEnumSelectDomain(type),
+                    initHtmlComponentType(type),
+                    initFieldLength(type),
+                    initMaxUploadInBytes(type));
         } else {
             docFieldMetadata = null;
         }
+    }
+
+    private boolean initBusinessRules(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_UPDATE_LISTENER).isPresent();
+    }
+
+    private String initFieldSubtitle(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_SUBTITLE).orElse(null);
+    }
+
+    private Long initMaxUploadInBytes(SType<?> type) {
+        if (upload) {
+            SType<?> uploadType = type;
+            if (type instanceof STypeAttachmentList) {
+                uploadType = ((STypeAttachmentList) type).getElementsType();
+            }
+            getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE).orElse(null);
+        }
+        return null;
+    }
+
+    private Integer initFieldLength(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_MAX_LENGTH).orElse(null);
+    }
+
+    private HTMLComponentType initHtmlComponentType(SType<?> s) {
+        if (selection) {
+            if (s.isList()) {
+                SView view = ViewResolver.resolveView(s);
+                if (view instanceof SMultiSelectionByCheckboxView) {
+                    return HTMLComponentType.CHECKBOX;
+                } else if (view instanceof SMultiSelectionByPicklistView) {
+                    return HTMLComponentType.PICK_LIST;
+                } else {
+                    return HTMLComponentType.MULTI_SELECT;
+                }
+            } else {
+                return HTMLComponentType.SELECT;
+            }
+        } else if (s instanceof STypeDate) {
+            return HTMLComponentType.DATE;
+        } else if (s instanceof STypeDateTime) {
+            return HTMLComponentType.DATETIME;
+        } else if (s instanceof STypeTime) {
+            return HTMLComponentType.TIME;
+        } else if (s instanceof STypeAttachmentImage) {
+            return HTMLComponentType.IMAGE_UPLOAD;
+        } else if (s instanceof STypeAttachment) {
+            return HTMLComponentType.UPLOAD;
+        } else if (s instanceof STypeAttachmentList) {
+            return HTMLComponentType.MULTI_UPLOAD;
+        } else {
+            return HTMLComponentType.INPUT_FIELD;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> initEnumSelectDomain(SType<?> type) {
+        if (selection && type.asAtrProvider().getConverter() instanceof EnumSInstanceConverter) {
+            return (List<String>) type
+                    .asAtrProvider()
+                    .getProvider()
+                    .load(new ProviderContext())
+                    .stream()
+                    .map(e -> type.asAtrProvider().getDisplayFunction().apply((Serializable) e))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
     }
 
     private Integer initMinSize(SType<?> type) {
@@ -143,39 +215,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         return ViewResolver.resolveView(type) instanceof SViewListByMasterDetail;
     }
 
-//
-//    private String initBusinessRules(SType<?> type) {
-//        if (getAttribute(type, SPackageBasic.ATR_UPDATE_LISTENER).isPresent()) {
-//            return "Ver regra de negócio";
-//        }
-//        return EMPTY_VALUE;
-//    }
-
     private boolean initHiddenForDocumentation(SType<?> type) {
         return DocumentationMetadataUtil.isHiddenForDocumentation(type);
-    }
-
-    @SuppressWarnings("unchecked")
-    private String initGeneralInformation(SType<?> type, SType<?> rootType) {
-        List<String> observacoes = new ArrayList<>();
-        getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION).ifPresent(v ->
-                observacoes.add(" Depende de: " + Joiner.on(", ").join(resolveDependsOn(rootType, type)))
-        );
-        getAttribute(type, SPackageBasic.ATR_SUBTITLE).ifPresent(v ->
-                observacoes.add(" Subtítulo: " + v)
-        );
-
-        if (selection && type.asAtrProvider().getConverter() instanceof EnumSInstanceConverter) {
-            List<String> dominio = (List<String>) type
-                    .asAtrProvider()
-                    .getProvider()
-                    .load(new ProviderContext())
-                    .stream()
-                    .map(e -> type.asAtrProvider().getDisplayFunction().apply((Serializable) e))
-                    .collect(Collectors.toList());
-            observacoes.add("Domínio: " + Joiner.on(", ").join(dominio));
-        }
-        return Joiner.on(",").join(observacoes);
     }
 
     private Boolean initRequired(SType<?> s) {
@@ -183,53 +224,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
 
-    private String initTypeAbbreviation(SType<?> s) {
-        if (selection) {
-            if (s.isList()) {
-                if (ViewResolver.resolveView(s) instanceof SMultiSelectionByCheckboxView) {
-                    return "CKB";
-                } else {
-                    return "CBM";
-                }
-            } else {
-                return "CB";
-            }
-        } else if (s instanceof STypeDate) {
-            return "DT";
-        } else if (s instanceof STypeDateTime) {
-            return "DH";
-        } else if (s instanceof STypeAttachmentImage) {
-            return "IM";
-        } else if (s instanceof STypeAttachment) {
-            return "AN";
-        } else if (s instanceof STypeAttachmentList) {
-            return "ANM";
-        } else {
-            return "CT";
-        }
-    }
-
     private Boolean initEnabled(SType<?> s) {
         return getAttribute(s, SPackageBasic.ATR_ENABLED).orElse(Boolean.TRUE);
-    }
-
-    private String initSize(SType<?> type) {
-        if (!selection && initUpload(type)) {
-            SType<?> uploadType = type;
-            if (type instanceof STypeAttachmentList) {
-                uploadType = ((STypeAttachmentList) type).getElementsType();
-            }
-            Optional<Long> value = getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE);
-            if (value.isPresent()) {
-                return value.get() / (1024 * 1024) + " MB";
-            }
-        } else {
-            Optional<Integer> maxlength = getAttribute(type, SPackageBasic.ATR_MAX_LENGTH);
-            if (maxlength.isPresent()) {
-                return String.valueOf(maxlength.get());
-            }
-        }
-        return null;
     }
 
 
