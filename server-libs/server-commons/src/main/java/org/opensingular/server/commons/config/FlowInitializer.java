@@ -16,7 +16,7 @@
 
 package org.opensingular.server.commons.config;
 
-import org.opensingular.flow.core.ProcessDefinitionCache;
+import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.server.commons.flow.SingularServerFlowConfigurationBean;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -31,7 +31,7 @@ public abstract class FlowInitializer {
     }
 
     public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
-        ProcessDefinitionCache.invalidateAll();
+        FlowDefinitionCache.invalidateAll();
         applicationContext.register(singularFlowConfiguration());
     }
 

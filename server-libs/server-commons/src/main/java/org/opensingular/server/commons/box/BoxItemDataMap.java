@@ -54,12 +54,12 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
         }
     }
 
-    public Long getProcessInstanceId() {
-        Object processInstanceId = get("processInstanceId");
-        if (processInstanceId instanceof Number) {
-            return ((Number) processInstanceId).longValue();
-        } else if (processInstanceId instanceof String) {
-            return Integer.valueOf((String) processInstanceId).longValue();
+    public Long getFlowInstanceId() {
+        Object flowInstanceId = get("flowInstanceId");
+        if (flowInstanceId instanceof Number) {
+            return ((Number) flowInstanceId).longValue();
+        } else if (flowInstanceId instanceof String) {
+            return Integer.valueOf((String) flowInstanceId).longValue();
         } else {
             return null;
         }

@@ -18,12 +18,6 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.server.commons.admin.healthsystem.validation.database.IValidatorDatabase;
@@ -32,6 +26,11 @@ import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;
@@ -64,8 +63,8 @@ public class ValidatorTest extends SingularCommonsBaseTest {
         tableInfoDTO.setTableName("TB_REQUISICAO");
 
         ColumnInfoDTO cod = new ColumnInfoDTO("CO_REQUISICAO", false);
-        ColumnInfoDTO instancia = new ColumnInfoDTO("CO_INSTANCIA_PROCESSO", false);
-        tableInfoDTO.setColumnsInfo(Arrays.asList(cod, instancia));
+        ColumnInfoDTO instance = new ColumnInfoDTO("CO_INSTANCIA_PROCESSO", false);
+        tableInfoDTO.setColumnsInfo(Arrays.asList(cod, instance));
 
         validatorDatabase.checkColumnPermissions(tableInfoDTO);
     }

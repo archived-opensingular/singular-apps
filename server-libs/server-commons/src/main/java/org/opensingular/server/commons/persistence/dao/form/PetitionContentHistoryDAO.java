@@ -16,11 +16,10 @@
 
 package org.opensingular.server.commons.persistence.dao.form;
 
-import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
+import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
@@ -54,7 +53,7 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
 
         tasks = getSession()
                 .createQuery("select task from PetitionEntity p " +
-                        " inner join p.processInstanceEntity.tasks as task where p.cod = :petitionCod")
+                        " inner join p.flowInstanceEntity.tasks as task where p.cod = :petitionCod")
                 .setParameter("petitionCod", petitionEntity.getCod()).list();
 
         histories = getSession()
@@ -95,8 +94,8 @@ public class PetitionContentHistoryDAO extends BaseDAO<PetitionContentHistoryEnt
             return true;
         }
 
-        ProcessDefinitionEntity processDefinition     = petitionHistoryDTO.getTask().getProcessInstance().getProcessVersion().getProcessDefinition();
-        ProcessDTO              processByAbbreviation = boxConfigurationMetadata.getProcessByAbbreviation(processDefinition.getKey());
+        FlowDefinitionEntity flowDefinition     = petitionHistoryDTO.getTask().getFlowInstance().getFlowVersion().getFlowDefinition();
+        ProcessDTO              processByAbbreviation = boxConfigurationMetadata.getProcessByAbbreviation(flowDefinition.getKey());
         return processByAbbreviation != null
                 && processByAbbreviation.getAllowedHistoryTasks().contains(petitionHistoryDTO.getTask().getTaskVersion().getAbbreviation());
     }

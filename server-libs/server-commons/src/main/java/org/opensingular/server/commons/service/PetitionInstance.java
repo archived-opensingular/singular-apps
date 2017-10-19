@@ -20,8 +20,8 @@ import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
+import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -53,8 +53,8 @@ public class PetitionInstance implements Serializable {
     }
 
     public FlowInstance getFlowInstance() {
-        if (flowInstance == null && petitionEntity.getProcessInstanceEntity() != null) {
-            flowInstance = PetitionUtil.getProcessInstance(petitionEntity);
+        if (flowInstance == null && petitionEntity.getFlowInstanceEntity() != null) {
+            flowInstance = PetitionUtil.getFlowInstance(petitionEntity);
         }
         return flowInstance;
     }
@@ -63,8 +63,8 @@ public class PetitionInstance implements Serializable {
         this.flowInstance = flowInstance;
     }
 
-    public boolean hasProcessInstance() {
-        return petitionEntity.getProcessInstanceEntity() != null;
+    public boolean hasFlowInstance() {
+        return petitionEntity.getFlowInstanceEntity() != null;
     }
 
     @Nonnull
@@ -95,17 +95,17 @@ public class PetitionInstance implements Serializable {
         return ApplicationContextProvider.get().getBean(PetitionService.class);
     }
 
-    public FlowDefinition<?> getProcessDefinition() {
-        return PetitionUtil.getProcessDefinition(petitionEntity);
+    public FlowDefinition<?> getFlowDefinition() {
+        return PetitionUtil.getFlowDefinition(petitionEntity);
     }
 
-    public void setProcessDefinition(Class<? extends FlowDefinition> clazz) {
-        FlowDefinition<?> flowDefinition = Flow.getProcessDefinition(clazz);
-        petitionEntity.setProcessDefinitionEntity((ProcessDefinitionEntity) flowDefinition.getEntityProcessDefinition());
+    public void setFlowDefinition(Class<? extends FlowDefinition> clazz) {
+        FlowDefinition<?> flowDefinition = Flow.getFlowDefinition(clazz);
+        petitionEntity.setFlowDefinitionEntity((FlowDefinitionEntity) flowDefinition.getEntityFlowDefinition());
     }
 
-    public Optional<FlowDefinition<?>> getProcessDefinitionOpt() {
-        return PetitionUtil.getProcessDefinitionOpt(petitionEntity);
+    public Optional<FlowDefinition<?>> getFlowDefinitionOpt() {
+        return PetitionUtil.getFlowDefinitionOpt(petitionEntity);
     }
 
     public Long getCod() {
@@ -133,10 +133,10 @@ public class PetitionInstance implements Serializable {
         petitionEntity.setDescription(description);
     }
 
-    public void setNewProcess(FlowInstance newPrcesssInstance) {
-        ProcessInstanceEntity processEntity = newPrcesssInstance.saveEntity();
-        petitionEntity.setProcessInstanceEntity(processEntity);
-        petitionEntity.setProcessDefinitionEntity(processEntity.getProcessVersion().getProcessDefinition());
+    public void setNewProcess(FlowInstance newFlowInstance) {
+        FlowInstanceEntity flowEntity = newFlowInstance.saveEntity();
+        petitionEntity.setFlowInstanceEntity(flowEntity);
+        petitionEntity.setFlowDefinitionEntity(flowEntity.getFlowVersion().getFlowDefinition());
 
     }
 

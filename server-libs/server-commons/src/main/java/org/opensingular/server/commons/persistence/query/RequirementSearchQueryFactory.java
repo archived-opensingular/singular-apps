@@ -78,7 +78,7 @@ public class RequirementSearchQueryFactory {
                     .add($.taskVersion.name.as("situation"))
                     .add($.taskVersion.name.as("taskName"))
                     .add($.taskVersion.type.as("taskType"))
-                    .add($.processDefinitionEntity.name.as("processName"))
+                    .add($.flowDefinitionEntity.name.as("processName"))
                     .addCase($case -> $case
                             .when($.currentFormDraftVersionEntity.isNull())
                             .then($.currentFormVersion.inclusionDate)
@@ -89,12 +89,12 @@ public class RequirementSearchQueryFactory {
                             .then($.formDraftType.abbreviation)
                             .otherwise($.formType.abbreviation)
                             .as("type"))
-                    .add($.processDefinitionEntity.key.as("processType"))
+                    .add($.flowDefinitionEntity.key.as("processType"))
                     .add($.task.beginDate.as("situationBeginDate"))
                     .add($.task.cod.as("taskInstanceId"))
-                    .add($.processInstance.beginDate.as("processBeginDate"))
+                    .add($.flowInstance.beginDate.as("processBeginDate"))
                     .add($.currentDraftEntity.editionDate.as("editionDate"))
-                    .add($.processInstance.cod.as("processInstanceId"))
+                    .add($.flowInstance.cod.as("flowInstanceId"))
                     .add($.petition.rootPetition.cod.as("rootPetition"))
                     .add($.petition.parentPetition.cod.as("parentPetition"))
                     .add($.taskDefinition.cod.as("taskId"))
@@ -109,17 +109,17 @@ public class RequirementSearchQueryFactory {
         query
                 .from($.petition)
                 .leftJoin($.petition.petitioner, $.petitionerEntity)
-                .leftJoin($.petition.processInstanceEntity, $.processInstance)
+                .leftJoin($.petition.flowInstanceEntity, $.flowInstance)
                 .leftJoin($.petition.formPetitionEntities, $.formPetitionEntity).on($.formPetitionEntity.mainForm.eq(SimNao.SIM))
                 .leftJoin($.formPetitionEntity.form, $.formEntity)
                 .leftJoin($.formPetitionEntity.currentDraftEntity, $.currentDraftEntity)
                 .leftJoin($.currentDraftEntity.form, $.formDraftEntity)
                 .leftJoin($.formDraftEntity.currentFormVersionEntity, $.currentFormDraftVersionEntity)
                 .leftJoin($.formEntity.currentFormVersionEntity, $.currentFormVersion)
-                .leftJoin($.petition.processDefinitionEntity, $.processDefinitionEntity)
+                .leftJoin($.petition.flowDefinitionEntity, $.flowDefinitionEntity)
                 .leftJoin($.formEntity.formType, $.formType)
                 .leftJoin($.formDraftEntity.formType, $.formDraftType)
-                .leftJoin($.processInstance.tasks, $.task)
+                .leftJoin($.flowInstance.tasks, $.task)
                 .leftJoin($.task.task, $.taskVersion)
                 .leftJoin($.taskVersion.taskDefinition, $.taskDefinition)
                 .leftJoin($.task.allocatedUser, $.allocatedUser)
@@ -134,9 +134,9 @@ public class RequirementSearchQueryFactory {
         appendFilterByQuickFilter();
         appendFilterByTasks();
         if (quickFilter.isRascunho()) {
-            appendFilterByRequirementsWithoutProcessInstance();
+            appendFilterByRequirementsWithoutFlowInstance();
         } else {
-            appendFilterByRequirementsWithProcessInstance();
+            appendFilterByRequirementsWithFlowInstance();
             appendFilterByCurrentTask();
         }
     }
@@ -151,12 +151,12 @@ public class RequirementSearchQueryFactory {
         }
     }
 
-    private void appendFilterByRequirementsWithProcessInstance() {
-        whereClause.and($.petition.processInstanceEntity.isNotNull());
+    private void appendFilterByRequirementsWithFlowInstance() {
+        whereClause.and($.petition.flowInstanceEntity.isNotNull());
     }
 
-    private void appendFilterByRequirementsWithoutProcessInstance() {
-        whereClause.and($.petition.processInstanceEntity.isNull());
+    private void appendFilterByRequirementsWithoutFlowInstance() {
+        whereClause.and($.petition.flowInstanceEntity.isNull());
     }
 
     private void appendFilterByTasks() {
@@ -189,7 +189,7 @@ public class RequirementSearchQueryFactory {
         if (!quickFilter.isRascunho()
                 && quickFilter.getProcessesAbbreviation() != null
                 && !quickFilter.getProcessesAbbreviation().isEmpty()) {
-            BooleanExpression expr = $.processDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
+            BooleanExpression expr = $.flowDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
                 expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
@@ -220,14 +220,14 @@ public class RequirementSearchQueryFactory {
         return new BooleanBuilder()
                 .or($.allocatedUser.nome.likeIgnoreCase(filter))
                 .or($.petition.description.likeIgnoreCase(filter))
-                .or($.processDefinitionEntity.name.likeIgnoreCase(filter))
+                .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))
                 .or($.petition.cod.like(filter))
                 .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
                 .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
                 .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
                 .or(toCharDate($.task.beginDate).like(filter))
-                .or(toCharDate($.processInstance.beginDate).like(filter));
+                .or(toCharDate($.flowInstance.beginDate).like(filter));
     }
 
     @Nonnull

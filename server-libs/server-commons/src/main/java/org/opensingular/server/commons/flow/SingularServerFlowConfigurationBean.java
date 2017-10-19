@@ -16,12 +16,12 @@
 
 package org.opensingular.server.commons.flow;
 
-import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
-import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.persistence.util.HibernateSingularFlowConfigurationBean;
+import org.opensingular.flow.schedule.IScheduleService;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
@@ -69,7 +69,7 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
                 getDefinitions().forEach(d -> {
                     try {
                         getLogger().info("INITIALIZING {}....",  d.getName());
-                        d.getEntityProcessVersion();
+                        d.getEntityFlowVersion();
                     } catch (Exception e) {
                         getLogger().error(e.getMessage(), e);
                     }

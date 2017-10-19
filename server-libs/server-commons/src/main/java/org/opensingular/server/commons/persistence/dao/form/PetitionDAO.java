@@ -59,13 +59,13 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         super((Class<T>) PetitionEntity.class);
     }
 
-    public PetitionDAO(Class<T> tipo) {
-        super(tipo);
+    public PetitionDAO(Class<T> entityClass) {
+        super(entityClass);
     }
 
     @SuppressWarnings("unchecked")
     public List<T> list(String type) {
-        Criteria crit = getSession().createCriteria(tipo);
+        Criteria crit = getSession().createCriteria(this.entityClass);
         crit.add(Restrictions.eq("type", type));
         return crit.list();
     }
@@ -123,19 +123,19 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
 
     public T findByProcessCodOrException(Integer cod) {
         return findByProcessCod(cod).orElseThrow(
-                () -> new SingularServerException("Não foi encontrado a petição com processInstanceEntity.cod=" + cod));
+                () -> new SingularServerException("Não foi encontrado a petição com flowInstanceEntity.cod=" + cod));
     }
 
     public Optional<T> findByProcessCod(Integer cod) {
         Objects.requireNonNull(cod);
-        return findUniqueResult(tipo, getSession()
-                .createCriteria(tipo)
-                .add(Restrictions.eq("processInstanceEntity.cod", cod)));
+        return findUniqueResult(entityClass, getSession()
+                .createCriteria(entityClass)
+                .add(Restrictions.eq("flowInstanceEntity.cod", cod)));
     }
 
     public T findByFormEntity(FormEntity formEntity) {
         return (T) getSession()
-                .createQuery(" select p from " + tipo.getName() + " p inner join p.formPetitionEntities fpe where fpe.form = :form ")
+                .createQuery(" select p from " + entityClass.getName() + " p inner join p.formPetitionEntities fpe where fpe.form = :form ")
                 .setParameter("form", formEntity)
                 .setMaxResults(1)
                 .uniqueResult();
@@ -163,8 +163,8 @@ public class PetitionDAO<T extends PetitionEntity> extends BaseDAO<T, Long> {
         StringBuilder query = new StringBuilder();
         query.append(" select distinct new ").append(PetitionAuthMetadataDTO.class.getName()).append("(ft.abbreviation, ftm.abbreviation, td.abbreviation, pd.key, ct.cod) from ");
         query.append(' ').append(PetitionEntity.class.getName()).append(" pe ");
-        query.append(" left join pe.processDefinitionEntity pd  ");
-        query.append(" left join pe.processInstanceEntity pi  ");
+        query.append(" left join pe.flowDefinitionEntity pd  ");
+        query.append(" left join pe.flowInstanceEntity pi  ");
         query.append(" left join pi.tasks ct  ");
         query.append(" left join ct.task t  ");
         query.append(" left join t.taskDefinition td  ");

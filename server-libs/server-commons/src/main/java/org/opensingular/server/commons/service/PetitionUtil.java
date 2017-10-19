@@ -21,7 +21,7 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
@@ -51,18 +51,18 @@ public final class PetitionUtil {
 
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
-    public static FlowDefinition<?> getProcessDefinition(@Nonnull PetitionEntity petition) {
-        return getProcessDefinitionOpt(petition).orElseThrow(() -> new PetitionWithoutDefinitionException());
+    public static FlowDefinition<?> getFlowDefinition(@Nonnull PetitionEntity petition) {
+        return getFlowDefinitionOpt(petition).orElseThrow(() -> new PetitionWithoutDefinitionException());
     }
 
     /** Recupera a definição de processo associado a petição. */
     @Nonnull
-    final static Optional<FlowDefinition<?>> getProcessDefinitionOpt(@Nonnull PetitionEntity petition) {
+    final static Optional<FlowDefinition<?>> getFlowDefinitionOpt(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
-        if (petition.getProcessDefinitionEntity() == null) {
+        if (petition.getFlowDefinitionEntity() == null) {
             return Optional.empty();
         }
-        return Optional.of(Flow.getProcessDefinition(petition.getProcessDefinitionEntity().getKey()));
+        return Optional.of(Flow.getFlowDefinition(petition.getFlowDefinitionEntity().getKey()));
     }
 
     /** Retorna a tarefa atual associada a petição ou dispara exception senão houver nenhuma. */
@@ -75,9 +75,9 @@ public final class PetitionUtil {
     /** Retorna a tarefa atual associada a petição se existir. */
     @Nonnull
     public static Optional<TaskDefinitionEntity> getCurrentTaskDefinitionOpt(@Nonnull PetitionEntity petition) {
-        final ProcessInstanceEntity processInstanceEntity = petition.getProcessInstanceEntity();
-        if (processInstanceEntity != null) {
-            return Optional.of(processInstanceEntity.getCurrentTask().getTaskVersion().getTaskDefinition());
+        final FlowInstanceEntity flowInstanceEntity = petition.getFlowInstanceEntity();
+        if (flowInstanceEntity != null) {
+            return Optional.of(flowInstanceEntity.getCurrentTask().getTaskVersion().getTaskDefinition());
         }
         return Optional.empty();
     }
@@ -90,15 +90,15 @@ public final class PetitionUtil {
      */
     @Nonnull
     public static Optional<TaskInstance> getCurrentTaskEntity(@Nonnull SInstance instance) {
-        return Optional.of(instance.getDocument().lookupLocalServiceOrException(ServerSIntanceProcessAwareService.class))
-                .map(ServerSIntanceProcessAwareService::getProcessInstance).flatMap(FlowInstance::getCurrentTask);
+        return Optional.of(instance.getDocument().lookupLocalServiceOrException(ServerSInstanceFlowAwareService.class))
+                .map(ServerSInstanceFlowAwareService::getFlowInstance).flatMap(FlowInstance::getCurrentTask);
     }
 
     /** Recupera a instância de processo associada à petição informada. */
     @Nonnull
-    public static FlowInstance getProcessInstance(@Nonnull PetitionEntity petition) {
+    public static FlowInstance getFlowInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
-        return Flow.getProcessInstance(petition.getProcessInstanceEntity());
+        return Flow.getFlowInstance(petition.getFlowInstanceEntity());
     }
 
     /** Resolve o id de usuário. */

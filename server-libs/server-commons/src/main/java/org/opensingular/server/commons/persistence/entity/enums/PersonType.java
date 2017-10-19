@@ -33,9 +33,9 @@ public enum PersonType {
     }
 
     public static PersonType valueOfEnum(String cod) {
-        for (PersonType tipo : PersonType.values()) {
-            if (cod.equals(tipo.getCod())) {
-                return tipo;
+        for (PersonType type : PersonType.values()) {
+            if (cod.equals(type.getCod())) {
+                return type;
             }
         }
         return null;

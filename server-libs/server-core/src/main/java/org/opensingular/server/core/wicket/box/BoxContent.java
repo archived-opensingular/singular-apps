@@ -63,7 +63,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -164,9 +163,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
         BoxItemDataMap boxItem        = boxItemModel.getObject();
         PageParameters pageParameters = new PageParameters();
-        if (boxItem.getProcessInstanceId() != null) {
+        if (boxItem.getFlowInstanceId() != null) {
             pageParameters.add(PETITION_ID, boxItem.getCod());
-            pageParameters.add(INSTANCE_ID, boxItem.getProcessInstanceId());
+            pageParameters.add(INSTANCE_ID, boxItem.getFlowInstanceId());
             pageParameters.add(MODULE_PARAM_NAME, getModule().getCod());
             pageParameters.add(MENU_PARAM_NAME, getMenu());
         }
@@ -326,7 +325,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected QuickFilter montarFiltroBasico() {
+    protected QuickFilter newFilterBasic() {
         BoxPage boxPage = getBoxPage();
         return boxPage.createFilter()
                 .withFilter(getFiltroRapidoModelObject())
@@ -363,7 +362,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> siglasProcesso, List<String> formNames) {
+    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> processAbbreviation, List<String> formNames) {
         return moduleDriver.searchFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 

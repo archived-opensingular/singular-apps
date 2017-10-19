@@ -15,10 +15,10 @@
  */
 package org.opensingular.server.commons.persistence.dao;
 
-import javax.transaction.Transactional;
-
-import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
+
+import javax.transaction.Transactional;
 
 @SuppressWarnings("unchecked")
 @Transactional(Transactional.TxType.MANDATORY)
@@ -28,8 +28,8 @@ public class EmailDao<T extends EmailEntity> extends BaseDAO<T, Long>{
         super((Class<T>) EmailEntity.class);
     }
 
-    public EmailDao(Class<T> tipo) {
-        super(tipo);
+    public EmailDao(Class<T> entityClass) {
+        super(entityClass);
     }
 
 }

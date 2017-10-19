@@ -62,7 +62,7 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
         createSelect(variableEntity, context);
 
-        query.leftJoin($.processInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
+        query.leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
 
         QuickFilter quickFilter = context.getQuickFilter();
         if (context.getQuickFilter().hasFilter()) {

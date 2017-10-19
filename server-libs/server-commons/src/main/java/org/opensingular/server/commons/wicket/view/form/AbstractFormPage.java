@@ -75,7 +75,7 @@ import org.opensingular.server.commons.service.PetitionInstance;
 import org.opensingular.server.commons.service.PetitionSender;
 import org.opensingular.server.commons.service.PetitionService;
 import org.opensingular.server.commons.service.PetitionUtil;
-import org.opensingular.server.commons.service.ServerSIntanceProcessAwareService;
+import org.opensingular.server.commons.service.ServerSInstanceFlowAwareService;
 import org.opensingular.server.commons.service.SingularRequirementService;
 import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
 import org.opensingular.server.commons.wicket.SingularSession;
@@ -160,8 +160,8 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends PetitionInstance> petitionModel) {
         //É um método estático para garantir que nada inesperado vai ser serializado junto
-        return document -> document.bindLocalService("processService", ServerSIntanceProcessAwareService.class,
-                RefService.of((ServerSIntanceProcessAwareService) () -> petitionModel.getObject().getFlowInstance()));
+        return document -> document.bindLocalService("processService", ServerSInstanceFlowAwareService.class,
+                RefService.of((ServerSInstanceFlowAwareService) () -> petitionModel.getObject().getFlowInstance()));
     }
 
     protected void fillTransitionControllerMap(Map<String, TransitionController<?>> transitionControllerMap) {
@@ -650,7 +650,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected void resolveFlow(IModel<? extends SInstance> mi) {
-        getPetition().setProcessDefinition(config.getFlowResolver()
+        getPetition().setFlowDefinition(config.getFlowResolver()
                 .resolve(config, (SIComposite) mi.getObject())
                 .orElseThrow(() -> new SingularServerException("Não foi possível determinar o fluxo a ser inicicado.")));
     }
@@ -778,7 +778,7 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     }
 
     protected final boolean hasProcess() {
-        return getPetition().hasProcessInstance();
+        return getPetition().hasFlowInstance();
     }
 
     private void buildFlowButton(String buttonId,
