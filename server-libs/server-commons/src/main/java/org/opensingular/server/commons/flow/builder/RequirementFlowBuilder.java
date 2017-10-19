@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.flow.builder;
 
 import org.apache.wicket.markup.html.WebPage;
+import org.opensingular.flow.core.BusinessRoleStrategy;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.SBusinessRole;
@@ -27,7 +28,6 @@ import org.opensingular.flow.core.STaskHuman;
 import org.opensingular.flow.core.STaskJava;
 import org.opensingular.flow.core.STaskWait;
 import org.opensingular.flow.core.STransition;
-import org.opensingular.flow.core.BusinessRoleStrategy;
 import org.opensingular.flow.core.builder.BuilderBusinessRole;
 import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
@@ -55,15 +55,15 @@ public class RequirementFlowBuilder extends
                 RequirementFlowBuilder.BuilderStartPetition, RequirementFlowBuilder.BuilderTransitionPetition,
                 RequirementFlowBuilder.BuilderRolePetition, ITaskDefinition> {
 
-    private RequirementFlowBuilder(RequirementFlowDefinition<?> processDefinition) {
-        super(processDefinition);
+    private RequirementFlowBuilder(RequirementFlowDefinition<?> flowDefinition) {
+        super(flowDefinition);
     }
 
     /**
      * Cria um novo FlowBuilderPetition para a definição de processo em questão.
      */
-    public static RequirementFlowBuilder of(RequirementFlowDefinition<?> processDefinition) {
-        return new RequirementFlowBuilder(processDefinition);
+    public static RequirementFlowBuilder of(RequirementFlowDefinition<?> flowDefinition) {
+        return new RequirementFlowBuilder(flowDefinition);
     }
 
     @Override
@@ -107,8 +107,8 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
-    protected FlowMapPetition newFlowMap(RequirementFlowDefinition<?> definicaoProcesso) {
-        return new FlowMapPetition(definicaoProcesso);
+    protected FlowMapPetition newFlowMap(RequirementFlowDefinition<?> flowDefinition) {
+        return new FlowMapPetition(flowDefinition);
     }
 
 

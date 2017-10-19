@@ -110,12 +110,12 @@ public class ActionContext implements Serializable, Loggable {
         return this;
     }
 
-    public Optional<Integer> getProcessInstanceId() {
+    public Optional<Integer> getFlowInstanceId() {
         return Optional.ofNullable(this.params.get(INSTANCE_ID)).flatMap(s -> Optional.of(Integer.valueOf(s)));
     }
 
-    public ActionContext setProcessInstanceId(Integer processInstanceId) {
-        this.params.put(INSTANCE_ID, String.valueOf(processInstanceId));
+    public ActionContext setFlowInstanceId(Integer flowInstanceId) {
+        this.params.put(INSTANCE_ID, String.valueOf(flowInstanceId));
         return this;
     }
 

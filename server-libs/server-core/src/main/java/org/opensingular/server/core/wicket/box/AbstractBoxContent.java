@@ -52,7 +52,12 @@ import org.opensingular.server.commons.wicket.view.template.MenuService;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.net.URL;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -263,13 +268,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 if (getProcessesNames().isEmpty()) {
                     return 0;
                 }
-                return countQuickSearch(novoFiltro(), getProcessesNames(), getFormNames());
+                return countQuickSearch(newFilter(), getProcessesNames(), getFormNames());
             }
 
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                                                   boolean ascending) {
-                QuickFilter filtroRapido = novoFiltro()
+                QuickFilter filtroRapido = newFilter()
                         .withFirst(first)
                         .withCount(count)
                         .withSortProperty(sortProperty)
@@ -322,13 +327,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         }
     }
 
-    protected QuickFilter novoFiltro() {
-        return montarFiltroBasico();
+    protected QuickFilter newFilter() {
+        return newFilterBasic();
     }
 
-    protected abstract QuickFilter montarFiltroBasico();
+    protected abstract QuickFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(QuickFilter filtro, List<String> siglasProcesso, List<String> formNames);
+    protected abstract List<T> quickSearch(QuickFilter filter, List<String> processAbbreviation, List<String> formNames);
 
     protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
 

@@ -15,18 +15,16 @@
  */
 package org.opensingular.server.commons.persistence.dao;
 
-import java.util.List;
-import java.util.Optional;
-
-import javax.transaction.Transactional;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-
-import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
+
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 @Transactional(Transactional.TxType.MANDATORY)
@@ -36,19 +34,19 @@ public class EmailAddresseeDao<T extends EmailAddresseeEntity> extends BaseDAO<T
         super((Class<T>) EmailAddresseeEntity.class);
     }
 
-    public EmailAddresseeDao(Class<T> tipo) {
-        super(tipo);
+    public EmailAddresseeDao(Class<T> entityClass) {
+        super(entityClass);
     }
 
     public int countPending() {
-        Criteria c = getSession().createCriteria(tipo);
+        Criteria c = getSession().createCriteria(entityClass);
         c.add(Restrictions.isNull("sentDate"));
         c.setProjection(Projections.rowCount());
         return Optional.ofNullable((Number)c.uniqueResult()).map(Number::intValue).orElse(0);
     }
     
     public List<T> listPending(int firstResult, int maxResults){
-        Criteria c = getSession().createCriteria(tipo);
+        Criteria c = getSession().createCriteria(entityClass);
         c.add(Restrictions.isNull("sentDate"));
         c.addOrder(Order.asc("cod"));
         c.setFirstResult(firstResult);

@@ -79,7 +79,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     private PetitionInstance createNewPetitionInstance(SInstance instance) {
         PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {
         }, requirementDefinitionEntity);
-        petitionInitial.setProcessDefinition(FOOFlowWithTransition.class);
+        petitionInitial.setFlowDefinition(FOOFlowWithTransition.class);
 
         petitionService.saveOrUpdate(petitionInitial, instance, true);
 

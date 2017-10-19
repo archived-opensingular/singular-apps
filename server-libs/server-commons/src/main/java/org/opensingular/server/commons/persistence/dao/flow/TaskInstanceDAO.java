@@ -37,7 +37,7 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     @SuppressWarnings("unchecked")
     public List<TaskInstanceEntity> findCurrentTasksByPetitionId(Long petitionId) {
         String sb = " select ti " + " from " + getPetitionEntityClass().getName() + " pet " +
-                " inner join pet.processInstanceEntity pi " +
+                " inner join pet.flowInstanceEntity pi " +
                 " inner join pi.tasks ti " +
                 " inner join ti.task task " +
                 " where pet.cod = :petitionId  " +

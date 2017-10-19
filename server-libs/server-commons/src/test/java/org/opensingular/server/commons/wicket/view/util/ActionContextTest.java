@@ -18,7 +18,7 @@ public class ActionContextTest {
         actionContext.setParentPetitionId(2l);
         actionContext.setPetitionId(3l);
         actionContext.setModuleName("Tox");
-        actionContext.setProcessInstanceId(4);
+        actionContext.setFlowInstanceId(4);
         actionContext.setSelectedMenuItem("menuzeira");
         return actionContext;
     }
@@ -36,7 +36,7 @@ public class ActionContextTest {
         Assert.assertEquals((long) actionContext.getParentPetitionId().get(), 2l);
         Assert.assertEquals((long) actionContext.getPetitionId().get(), 3l);
         Assert.assertEquals(actionContext.getModuleName().get(), "Tox");
-        Assert.assertEquals((int) actionContext.getProcessInstanceId().get(), 4);
+        Assert.assertEquals((int) actionContext.getFlowInstanceId().get(), 4);
         Assert.assertEquals(actionContext.getSelectedMenuItem().get(), "menuzeira");
     }
 

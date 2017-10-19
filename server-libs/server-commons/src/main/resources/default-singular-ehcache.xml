@@ -63,7 +63,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="retrieveProcessDefinitionByKey" eternal="false"
+    <cache name="retrieveFlowDefinitionByKey" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -72,7 +72,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="listProcessDefinitionKeysWithAccess" eternal="false"
+    <cache name="listFlowDefinitionKeysWithAccess" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -81,7 +81,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="listProcessDefinitionsWithAccess" eternal="false"
+    <cache name="listFlowDefinitionsWithAccess" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -108,7 +108,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="hasAccessToProcessDefinition" eternal="false"
+    <cache name="hasAccessToFlowDefinition" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -225,7 +225,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="retrieveProcessDefinitionName" eternal="false"
+    <cache name="retrieveFlowDefinitionName" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -234,7 +234,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="retrieveProcessDefinitionId" eternal="false"
+    <cache name="retrieveFlowDefinitionId" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"

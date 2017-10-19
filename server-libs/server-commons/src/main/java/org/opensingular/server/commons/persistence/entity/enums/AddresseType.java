@@ -36,9 +36,9 @@ public enum AddresseType {
     }
 
     public static AddresseType valueOfEnum(String cod) {
-        for (AddresseType tipo : AddresseType.values()) {
-            if (cod.trim().equals(tipo.getCod())) {
-                return tipo;
+        for (AddresseType type : AddresseType.values()) {
+            if (cod.trim().equals(type.getCod())) {
+                return type;
             }
         }
         return null;

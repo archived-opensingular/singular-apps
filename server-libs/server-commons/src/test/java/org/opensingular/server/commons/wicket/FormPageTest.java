@@ -1,7 +1,6 @@
 package org.opensingular.server.commons.wicket;
 
-import javax.inject.Inject;
-
+import net.vidageek.mirror.dsl.Mirror;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.TextField;
@@ -30,7 +29,7 @@ import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import net.vidageek.mirror.dsl.Mirror;
+import javax.inject.Inject;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -76,7 +75,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         SInstance fooInstance = tester.getAssertionsInstance().getTarget();
         FormKey   formKey     = FormKey.from(fooInstance);
 
-        assertNotNull(petitionService.getFormProcessInstanceEntity(fooInstance));
+        assertNotNull(petitionService.getFormFlowInstanceEntity(fooInstance));
         assertNotNull(formService.loadFormEntity(formKey));
 
         SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);

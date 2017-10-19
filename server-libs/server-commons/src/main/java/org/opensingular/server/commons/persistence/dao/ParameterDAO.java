@@ -16,15 +16,14 @@
 
 package org.opensingular.server.commons.persistence.dao;
 
-import javax.transaction.Transactional;
-
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Restrictions;
-
 import org.opensingular.flow.core.entity.IEntityModule;
-import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
+
+import javax.transaction.Transactional;
 
 @Transactional(Transactional.TxType.MANDATORY)
 public class ParameterDAO extends BaseDAO<ParameterEntity, Long> {
@@ -39,7 +38,7 @@ public class ParameterDAO extends BaseDAO<ParameterEntity, Long> {
     }
 
     public ParameterEntity findByNameAndModule(String name, String codModule) {
-        Criteria c = getSession().createCriteria(tipo);
+        Criteria c = getSession().createCriteria(entityClass);
         c.add(Restrictions.eq("name", name));
         c.add(Restrictions.eq("codModule", codModule));
         c.addOrder(Order.asc("cod"));

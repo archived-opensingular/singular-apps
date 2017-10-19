@@ -101,7 +101,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         PetitionEntity      petitionEntity     = petitionService.newPetitionEntityFor(requirementDefinitionEntity);
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
-        petitionInstance.setProcessDefinition(FOOFlow.class);
+        petitionInstance.setFlowDefinition(FOOFlow.class);
 
         petitionSender.send(petitionInstance, instance, "vinicius.nunes");
         petitionService.executeTransition("No more bar", petitionInstance, null, null, null);
@@ -185,7 +185,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         List<PetitionEntity> petitionEntities = petitionDAO.listAll();
 
         for (PetitionEntity petitionEntity : petitionEntities) {
-            if (petitionEntity.getProcessInstanceEntity() == null) {
+            if (petitionEntity.getFlowInstanceEntity() == null) {
                 qtdRascunho++;
             } else {
                 qtdEnviada++;
@@ -244,7 +244,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionInstance.setDescription(description);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
-        petitionInstance.setProcessDefinition(FOOFlow.class);
+        petitionInstance.setFlowDefinition(FOOFlow.class);
         petitionSender.send(petitionInstance, instance, "vinicius.nunes");
 
         return petitionInstance;
