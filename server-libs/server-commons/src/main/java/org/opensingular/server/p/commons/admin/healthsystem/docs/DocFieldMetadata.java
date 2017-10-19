@@ -21,69 +21,60 @@ package org.opensingular.server.p.commons.admin.healthsystem.docs;
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.util.Loggable;
 
-import java.io.Serializable;
+import java.util.List;
+import java.util.TreeSet;
 
 public class DocFieldMetadata implements Loggable {
 
     private SType<?> rootType;
     private SType<?> type;
     private String fieldName;
-    private String enabled;
-    private String fieldSize;
-    private String docTypeAbbreviation;
-    private String required;
-    private String generalInformation;
-    private String validationMessages;
-    private String businessRules;
+    private boolean required;
+    private boolean enabled;
+    private boolean hasEnablingRule;
+    private boolean hasValidationRule;
+    private boolean hasRequiredRule;
+    private boolean hasVisibilityRule;
+    private TreeSet<String> dependentFieldsDescription;
+    private String mask;
+    private Integer maxSize;
+    private Integer minSize;
+    private List<String> enumSelectOptions;
+    private HTMLComponentType componentType;
+    private Integer fieldLength;
+    private Long maxUploadSizeInBytes;
 
     public DocFieldMetadata() {
 
     }
 
-    public DocFieldMetadata(SType<?> rootType, SType<?> type, String fieldName, String enabled, String fieldSize, String docTypeAbbreviation, String required, String generalInformation, String validationMessages, String businessRules) {
+    public DocFieldMetadata(SType<?> rootType, SType<?> type, String fieldName, boolean required, boolean enabled,
+                            boolean hasEnablingRule, boolean hasValidationRule, boolean hasRequiredRule,
+                            boolean hasVisibilityRule, TreeSet<String> dependentFieldsDescription, String mask,
+                            Integer maxSize, Integer minSize, List<String> enumSelectOptions,
+                            HTMLComponentType componentType, Integer fieldLength, Long maxUploadSizeInBytes) {
         this.rootType = rootType;
         this.type = type;
         this.fieldName = fieldName;
-        this.enabled = enabled;
-        this.fieldSize = fieldSize;
-        this.docTypeAbbreviation = docTypeAbbreviation;
         this.required = required;
-        this.generalInformation = generalInformation;
-        this.validationMessages = validationMessages;
-        this.businessRules = businessRules;
+        this.enabled = enabled;
+        this.hasEnablingRule = hasEnablingRule;
+        this.hasValidationRule = hasValidationRule;
+        this.hasRequiredRule = hasRequiredRule;
+        this.hasVisibilityRule = hasVisibilityRule;
+        this.dependentFieldsDescription = dependentFieldsDescription;
+        this.mask = mask;
+        this.maxSize = maxSize;
+        this.minSize = minSize;
+        this.enumSelectOptions = enumSelectOptions;
+        this.componentType = componentType;
+        this.fieldLength = fieldLength;
+        this.maxUploadSizeInBytes = maxUploadSizeInBytes;
     }
 
 
-    public String isRequired() {
-        return required;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public String isEnabled() {
-        return enabled;
-    }
-
-    public String getFieldSize() {
-        return fieldSize;
-    }
-
-    public String getFieldTypeAbbreviation() {
-        return docTypeAbbreviation;
-    }
-
-    public String getGeneralInformation() {
-        return generalInformation;
-    }
-
-    public String getBusinessRules() {
-        return businessRules;
-    }
-
-    public String getMessages() {
-        return validationMessages;
+    public TreeSet<String> getDependentFieldsDescription() {
+        return dependentFieldsDescription;
     }
 
     public SType<?> getRootType() {
@@ -92,5 +83,62 @@ public class DocFieldMetadata implements Loggable {
 
     public SType<?> getType() {
         return type;
+    }
+
+    public String getFieldName() {
+        return fieldName;
+    }
+
+    public boolean isRequired() {
+        return required;
+    }
+
+    public boolean isEnabled() {
+        return enabled;
+    }
+
+    public boolean isHasEnablingRule() {
+        return hasEnablingRule;
+    }
+
+    public boolean isHasValidationRule() {
+        return hasValidationRule;
+    }
+
+    public boolean isHasRequiredRule() {
+        return hasRequiredRule;
+    }
+
+    public boolean isHasVisibilityRule() {
+        return hasVisibilityRule;
+    }
+
+
+    public String getMask() {
+        return mask;
+    }
+
+    public Integer getMaxSize() {
+        return maxSize;
+    }
+
+    public Integer getMinSize() {
+        return minSize;
+    }
+
+    public List<String> getEnumSelectOptions() {
+        return enumSelectOptions;
+    }
+
+    public HTMLComponentType getComponentType() {
+        return componentType;
+    }
+
+    public Integer getFieldLength() {
+        return fieldLength;
+    }
+
+    public Long getMaxUploadSizeInBytes() {
+        return maxUploadSizeInBytes;
     }
 }
