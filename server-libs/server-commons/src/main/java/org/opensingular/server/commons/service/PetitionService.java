@@ -77,7 +77,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.flow.core.TaskInstance.LEITURA_DA_TAREFA;
+import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
 public abstract class PetitionService<PE extends PetitionEntity, PI extends PetitionInstance> implements Loggable {
@@ -589,7 +589,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
 
     public void logTaskVisualization(PI petitionInstance) {
         TaskInstance taskInstance = petitionInstance.getFlowInstance().getCurrentTaskOrException();
-        taskInstance.log(LEITURA_DA_TAREFA, FormatUtil.dateToDefaultTimestampString(new Date()));
+        taskInstance.log(TASK_VISUALIZATION, FormatUtil.dateToDefaultTimestampString(new Date()));
     }
 
 }

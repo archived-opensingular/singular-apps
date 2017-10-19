@@ -42,7 +42,7 @@ public class SingularDefaultUserService implements IUserService {
         }
 
         if (username != null) {
-            return actorDAO.buscarPorCodUsuario(username);
+            return actorDAO.retrieveByUserCod(username);
         } else {
             return null;
         }
@@ -56,7 +56,7 @@ public class SingularDefaultUserService implements IUserService {
 
     @Override
     public SUser findUserByCod(String username) {
-        return actorDAO.buscarPorCodUsuario(username);
+        return actorDAO.retrieveByUserCod(username);
     }
 
     @Override

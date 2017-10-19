@@ -158,43 +158,43 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     }
 
     protected void appendEditAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), DefaultIcons.PENCIL_SQUARE, this::criarLinkEdicao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), DefaultIcons.PENCIL_SQUARE, this::createEditionLink);
     }
 
     protected void appendViewAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.view"), DefaultIcons.EYE, this::criarLinkVisualizacao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.view"), DefaultIcons.EYE, this::createVisualizationLink);
     }
 
     protected void appendDeleteAction(BSActionColumn<T, String> actionColumn) {
         actionColumn.appendAction(getMessage("label.table.column.delete"), DefaultIcons.MINUS, this::deleteSelected);
     }
 
-    protected BSDataTable<T, String> construirTabela(BSDataTableBuilder<T, String, IColumn<T, String>> builder) {
+    protected BSDataTable<T, String> createTable(BSDataTableBuilder<T, String, IColumn<T, String>> builder) {
         appendPropertyColumns(builder);
         appendActionColumns(builder);
         builder.setRowsPerPage(getRowsPerPage());
         return builder.setRowsPerPage(getRowsPerPage()).build("tabela");
     }
 
-    protected WebMarkupContainer criarLinkEdicao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_FILL);
+    protected WebMarkupContainer createEditionLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_FILL);
     }
 
-    protected WebMarkupContainer criarLinkExigencia(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_FILL);
+    protected WebMarkupContainer createExigencyLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_FILL);
     }
 
-    protected WebMarkupContainer criarLinkVisualizacao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_VIEW);
+    protected WebMarkupContainer createVisualizationLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_VIEW);
     }
 
-    protected abstract WebMarkupContainer criarLink(String id, IModel<T> peticao, FormAction formAction);
+    protected abstract WebMarkupContainer createLink(String id, IModel<T> requirementModel, FormAction formAction);
 
-    protected Map<String, String> getCriarLinkParameters(T peticao) {
+    protected Map<String, String> getCreateLinkParameters(T requirement) {
         return Collections.emptyMap();
     }
 
-    protected BoxContentConfirmModal<T> construirModalDeleteBorder(IConsumer<T> action) {
+    protected BoxContentConfirmModal<T> createModalDeleteBorder(IConsumer<T> action) {
         return new BoxContentDeleteConfirmModal<T>(dataModel) {
             @Override
             protected void onConfirm(AjaxRequestTarget target) {
@@ -207,7 +207,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private void deleteSelected(AjaxRequestTarget target, IModel<T> model) {
         dataModel = model;
-        showConfirm(target, construirModalDeleteBorder(this::onDelete));
+        showConfirm(target, createModalDeleteBorder(this::onDelete));
     }
 
     protected void showConfirm(AjaxRequestTarget target, BoxContentConfirmModal<T> boxContentConfirmModal) {
@@ -241,9 +241,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         super.onInitialize();
         module = petitionService.findByModuleCod(getModuleCod());
 
-        BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(criarDataProvider());
+        BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
-        tabela = construirTabela(builder);
+        tabela = createTable(builder);
         tabela.add($b.classAppender("worklist"));
 
         queue(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
@@ -261,7 +261,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         }
     }
 
-    protected BaseDataProvider<T, String> criarDataProvider() {
+    protected BaseDataProvider<T, String> createDataProvider() {
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
             @Override
             public long size() {
@@ -274,13 +274,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                                                   boolean ascending) {
-                QuickFilter filtroRapido = newFilter()
+                QuickFilter quickFilter = newFilter()
                         .withFirst(first)
                         .withCount(count)
                         .withSortProperty(sortProperty)
                         .withAscending(ascending);
 
-                return quickSearch(filtroRapido, getProcessesNames(), getFormNames()).iterator();
+                return quickSearch(quickFilter, getProcessesNames(), getFormNames()).iterator();
             }
 
             private List<String> getProcessesNames() {

@@ -98,9 +98,9 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         columnsInfo.setView(() -> new SViewListByTable().disableNew().disableDelete());
         columnsInfo.asAtr().label("Colunas");
 
-        STypeComposite<SIComposite> coluna = columnsInfo.getElementsType();
+        STypeComposite<SIComposite> column = columnsInfo.getElementsType();
 
-        coluna.addFieldString("columnName")
+        column.addFieldString("columnName")
                 .asAtr()
                 .label("Nome")
                 .maxLength(50)
@@ -108,7 +108,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        STypeString dataType = coluna.addFieldString("dataType");
+        STypeString dataType = column.addFieldString("dataType");
         dataType
                 .selectionOf("CHAR", "CLOB", "DATE", "DATETIME", "NUMBER", "VARCHAR", "VARCHAR2")
                 .asAtr()
@@ -118,34 +118,34 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        coluna.addFieldInteger("dataLength")
+        column.addFieldInteger("dataLength")
                 .asAtr()
                 .label("Tamanho(Bytes)")
                 .enabled(true)
                 .asAtrBootstrap()
                 .colPreference(1);
 
-        coluna.addFieldInteger("charLength")
+        column.addFieldInteger("charLength")
                 .asAtr()
                 .label("Tamanho(Caracteres)")
                 .enabled(true)
                 .asAtrBootstrap()
                 .colPreference(1);
 
-        coluna.addFieldInteger("dataPrecision")
+        column.addFieldInteger("dataPrecision")
                 .asAtr()
                 .label("Precisao(valores numericos)")
                 .asAtrBootstrap()
                 .colPreference(1);
 
-        nullable = coluna.addFieldBoolean("nullable");
+        nullable = column.addFieldBoolean("nullable");
         nullable
                 .asAtr()
                 .label("Aceita null")
                 .asAtrBootstrap()
                 .colPreference(1);
 
-        foundHibernate = coluna.addFieldBoolean("foundHibernate");
+        foundHibernate = column.addFieldBoolean("foundHibernate");
         foundHibernate
                 .asAtr()
                 .label("Encontrado no Hibernate")
@@ -153,7 +153,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        foundDataBase = coluna.addFieldBoolean("foundDataBase");
+        foundDataBase = column.addFieldBoolean("foundDataBase");
         foundDataBase
                 .asAtr()
                 .label("Encontrado no Banco")
@@ -161,7 +161,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        coluna.addInstanceValidator(this::columnValidation);
+        column.addInstanceValidator(this::columnValidation);
     }
 
     private void columnValidation(InstanceValidatable<SIComposite> validatable) {

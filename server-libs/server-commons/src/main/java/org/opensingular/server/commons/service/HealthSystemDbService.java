@@ -63,22 +63,22 @@ public class HealthSystemDbService implements Loggable {
         tableInfoDTO.setSchema(name[0]);
         tableInfoDTO.setTableName(name[1]);
 
-        List<String> colunas = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
 
         String[] propertyNames = persister.getPropertyNames();
 
         Arrays.asList(propertyNames).forEach(propertyName ->
-                colunas.add(persister.getPropertyColumnNames(propertyName)[0]));
+                columns.add(persister.getPropertyColumnNames(propertyName)[0]));
 
         Arrays.asList(persister.getIdentifierColumnNames()).forEach(chave -> {
-            if (!colunas.contains(chave)) {
-                colunas.add(chave);
+            if (!columns.contains(chave)) {
+                columns.add(chave);
             }
         });
 
-        List<ColumnInfoDTO> colunasTypes = new ArrayList<>();
-        colunas.forEach(col -> colunasTypes.add(new ColumnInfoDTO(col, true)));
-        tableInfoDTO.setColumnsInfo(colunasTypes);
+        List<ColumnInfoDTO> columnsType = new ArrayList<>();
+        columns.forEach(col -> columnsType.add(new ColumnInfoDTO(col, true)));
+        tableInfoDTO.setColumnsInfo(columnsType);
 
         return tableInfoDTO;
     }

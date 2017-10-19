@@ -31,7 +31,6 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.transformer.FindActorByUserCodResultTransformer;
 
 import javax.annotation.Nonnull;
-import javax.transaction.Transactional;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
@@ -44,9 +43,9 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         super(Actor.class);
     }
 
-    public Actor buscarPorCodUsuario(String username) {
+    public Actor retrieveByUserCod(String userName) {
 
-        if (username == null) {
+        if (userName == null) {
             return null;
         }
 
@@ -55,7 +54,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                         " FROM " + Constants.SCHEMA + ".VW_ATOR a " +
                         " WHERE UPPER(rtrim(ltrim(a.CO_USUARIO))) = :codUsuario");
 
-        query.setParameter("codUsuario", username.toUpperCase());
+        query.setParameter("codUsuario", userName.toUpperCase());
         query.setResultTransformer(new FindActorByUserCodResultTransformer());
 
         return (Actor) query.uniqueResult();

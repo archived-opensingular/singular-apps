@@ -16,16 +16,15 @@
 
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.inject.Named;
-import javax.transaction.Transactional;
-
 import org.opensingular.lib.support.persistence.SimpleDAO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
+
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 
 @Named
 public abstract class AbstractValidator extends SimpleDAO implements IValidatorDatabase {
@@ -34,14 +33,14 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 	@Transactional
 	@Override
 	public List<TableInfoDTO> getAllInfoTable(List<String> tabelas) {
-		List<TableInfoDTO> privilegios = new ArrayList<>();
+		List<TableInfoDTO> privileges = new ArrayList<>();
 
 		tabelas.forEach(tableName-> {
 			TableInfoDTO tabelaInfo = new TableInfoDTO();
 			tabelaInfo.setTableName(tableName);
 
 			tabelaInfo.setUserPrivs(getPermissionEspecificTable(tableName));
-			privilegios.add(tabelaInfo);
+			privileges.add(tabelaInfo);
 
 			if(!tabelaInfo.getUserPrivs().isEmpty()){
 				tabelaInfo.setColumnsInfo(getColumnsInfoFromTable(tableName));
@@ -50,51 +49,51 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 			}
 		});
 
-		return privilegios;
+		return privileges;
 	}
 
 	@Transactional
 	@Override
 	public void checkColumnPermissions(TableInfoDTO tableInfoDTO) {
 
-		List<ColumnInfoDTO> colunas = getColumnsInfoFromTable(tableInfoDTO.getTableName());
+		List<ColumnInfoDTO> columns = getColumnsInfoFromTable(tableInfoDTO.getTableName());
 
 		// Verifica se as columnsInfo encontradas no banco foi encontrada no hibernate
 		// caso nao tenha sido, indica isso
-		colunas.forEach(coluna->{
-			boolean colunaDoBancoEncontradaNoHibernate = false;
+		columns.forEach(column -> {
+			boolean databaseColumnFoundInHibernate = false;
 			for (ColumnInfoDTO col: tableInfoDTO.getColumnsInfo()) {
-				if(col.getColumnName().equals(coluna.getColumnName())) {
-					colunaDoBancoEncontradaNoHibernate = true;
-					coluna.setFoundHibernate(true);
+				if (col.getColumnName().equals(column.getColumnName())) {
+					databaseColumnFoundInHibernate = true;
+					column.setFoundHibernate(true);
 					break;
 				}
 			}
 
-			if(!colunaDoBancoEncontradaNoHibernate){
-				coluna.setFoundHibernate(false); // garantir que o valor é de que não foi encontrado
+			if(!databaseColumnFoundInHibernate){
+				column.setFoundHibernate(false); // garantir que o valor é de que não foi encontrado
 			}
 		});
 
 		// Verifica se as columnsInfo encontradas no hibernate foram encontradas no banco
 		// caso nao tenha sido, indica isso
 		tableInfoDTO.getColumnsInfo().forEach(tableCol->{
-			boolean colunaDoHibernateEncontradaNoBanco = false;
-			for (ColumnInfoDTO col: colunas) {
+			boolean hibernateColumnFoundInDatabase = false;
+			for (ColumnInfoDTO col : columns) {
 				if(col.getColumnName().equals(tableCol.getColumnName())) {
-					colunaDoHibernateEncontradaNoBanco = true;
+					hibernateColumnFoundInDatabase = true;
 					break;
 				}
 			}
 
-			if(!colunaDoHibernateEncontradaNoBanco){
+			if(!hibernateColumnFoundInDatabase){
 				tableCol.setFoundHibernate(true);
 				tableCol.setFoundDataBase(false);
-				colunas.add(tableCol);
+				columns.add(tableCol);
 			}
 		});
 
-		tableInfoDTO.setColumnsInfo(colunas);
+		tableInfoDTO.setColumnsInfo(columns);
 	}
 
 	/**

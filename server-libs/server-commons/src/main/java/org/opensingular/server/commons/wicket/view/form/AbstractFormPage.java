@@ -784,14 +784,14 @@ public abstract class AbstractFormPage<PE extends PetitionEntity, PI extends Pet
     private void buildFlowButton(String buttonId,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
-                                 BSModalBorder confirmarAcaoFlowModal, TransitionAccess access) {
+                                 BSModalBorder confirmActionFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                 "<button  type='submit' class='btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
             protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                showConfirmModal(transitionName, confirmarAcaoFlowModal, ajaxRequestTarget);
+                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget);
             }
 
             @Override

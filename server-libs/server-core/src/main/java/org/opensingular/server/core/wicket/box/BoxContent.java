@@ -149,7 +149,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 appendStaticAction(
                         getMessage("label.table.column.history"),
                         DefaultIcons.HISTORY,
-                        BoxContent.this::criarLinkHistorico,
+                        BoxContent.this::createHistoryLink,
                         (x) -> Boolean.TRUE,
                         c -> c.styleClasses($m.ofValue("worklist-action-btn")));
 
@@ -160,7 +160,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         builder.appendColumn(actionColumn);
     }
 
-    private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
+    private MarkupContainer createHistoryLink(String id, IModel<BoxItemDataMap> boxItemModel) {
         BoxItemDataMap boxItem        = boxItemModel.getObject();
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getFlowInstanceId() != null) {
@@ -367,7 +367,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<BoxItemDataMap> itemModel, FormAction formAction) {
+    protected WebMarkupContainer createLink(String id, IModel<BoxItemDataMap> requirementModel, FormAction formAction) {
         // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
         throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
     }

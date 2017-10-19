@@ -82,7 +82,7 @@ public class RequirementSearchQueryFactory {
                     .add($.taskDefinition.cod.as("taskId"))
                     .add($.task.versionStamp.as("versionStamp"))
                     .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
-                    .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
+                    .add($.allocatedUser.name.as("nomeUsuarioAlocado"))
                     .add($.module.cod.as("moduleCod"))
                     .add($.module.connectionURL.as("moduleContext"))
                     .add($.requirementDefinition.cod.as("requirementDefinitionId"));
@@ -200,7 +200,7 @@ public class RequirementSearchQueryFactory {
 
     private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
         return new BooleanBuilder()
-                .or($.allocatedUser.nome.likeIgnoreCase(filter))
+                .or($.allocatedUser.name.likeIgnoreCase(filter))
                 .or($.petition.description.likeIgnoreCase(filter))
                 .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))

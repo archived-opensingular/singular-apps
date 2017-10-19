@@ -41,13 +41,13 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<T> peticaoModel, FormAction formAction) {
-        T peticao = peticaoModel.getObject();
+    protected WebMarkupContainer createLink(String id, IModel<T> requirementModel, FormAction formAction) {
+        T peticao = requirementModel.getObject();
         String href = DispatcherPageUtil
                 .baseURL(getBaseUrl())
                 .formAction(formAction.getId())
                 .petitionId(peticao.getCodPeticao())
-                .params(getCriarLinkParameters(peticao))
+                .params(getCreateLinkParameters(peticao))
                 .build();
 
         WebMarkupContainer link = new WebMarkupContainer(id);
@@ -57,9 +57,9 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
     }
 
     @Override
-    protected Map<String, String> getCriarLinkParameters(T peticao){
+    protected Map<String, String> getCreateLinkParameters(T requirement){
         Map<String, String> params = new HashMap<>();
-        params.put(FORM_NAME, peticao.getType());
+        params.put(FORM_NAME, requirement.getType());
         return params;
     }
 

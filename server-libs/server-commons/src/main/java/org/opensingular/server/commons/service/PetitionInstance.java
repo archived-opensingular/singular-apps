@@ -99,7 +99,7 @@ public class PetitionInstance implements Serializable {
         return PetitionUtil.getFlowDefinition(petitionEntity);
     }
 
-    public void setFlowDefinition(Class<? extends FlowDefinition> clazz) {
+    public void setFlowDefinition(@Nonnull Class<? extends FlowDefinition> clazz) {
         FlowDefinition<?> flowDefinition = Flow.getFlowDefinition(clazz);
         petitionEntity.setFlowDefinitionEntity((FlowDefinitionEntity) flowDefinition.getEntityFlowDefinition());
     }

@@ -20,7 +20,7 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     public void buscaPorCodUsuarioWithNullValueTest(){
-        Assert.assertNull(actorDAO.buscarPorCodUsuario(null));
+        Assert.assertNull(actorDAO.retrieveByUserCod(null));
     }
 
     @Test
