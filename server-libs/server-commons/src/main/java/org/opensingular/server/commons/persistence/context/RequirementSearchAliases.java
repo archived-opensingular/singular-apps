@@ -19,9 +19,9 @@
 package org.opensingular.server.commons.persistence.context;
 
 import org.opensingular.flow.persistence.entity.QActor;
-import org.opensingular.flow.persistence.entity.QProcessDefinitionEntity;
+import org.opensingular.flow.persistence.entity.QFlowDefinitionEntity;
+import org.opensingular.flow.persistence.entity.QFlowInstanceEntity;
 import org.opensingular.flow.persistence.entity.QModuleEntity;
-import org.opensingular.flow.persistence.entity.QProcessInstanceEntity;
 import org.opensingular.flow.persistence.entity.QTaskDefinitionEntity;
 import org.opensingular.flow.persistence.entity.QTaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.QTaskVersionEntity;
@@ -38,14 +38,14 @@ public class RequirementSearchAliases {
 
     public QPetitionEntity              petition                      = new QPetitionEntity("petition");
     public QPetitionerEntity            petitionerEntity              = new QPetitionerEntity("petitionerEntity");
-    public QProcessInstanceEntity       processInstance               = new QProcessInstanceEntity("processInstance");
+    public QFlowInstanceEntity flowInstance = new QFlowInstanceEntity("flowInstance");
     public QFormPetitionEntity          formPetitionEntity            = new QFormPetitionEntity("formPetitionEntity");
     public QFormEntity                  formEntity                    = new QFormEntity("formEntity");
     public QDraftEntity                 currentDraftEntity            = new QDraftEntity("currentDraftEntity");
     public QFormEntity                  formDraftEntity               = new QFormEntity("formDraftEntity");
     public QFormVersionEntity           currentFormDraftVersionEntity = new QFormVersionEntity("currentFormDraftVersionEntity");
     public QFormVersionEntity           currentFormVersion            = new QFormVersionEntity("currentFormVersion");
-    public QProcessDefinitionEntity     processDefinitionEntity       = new QProcessDefinitionEntity("processDefinitionEntity");
+    public QFlowDefinitionEntity flowDefinitionEntity = new QFlowDefinitionEntity("flowDefinitionEntity");
     public QModuleEntity                module                        = new QModuleEntity("module");
     public QFormTypeEntity              formType                      = new QFormTypeEntity("formType");
     public QFormTypeEntity              formDraftType                 = new QFormTypeEntity("formDraftType");

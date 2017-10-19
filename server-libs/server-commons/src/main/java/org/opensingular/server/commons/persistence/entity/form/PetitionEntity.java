@@ -17,8 +17,8 @@
 package org.opensingular.server.commons.persistence.entity.form;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.flow.persistence.entity.ProcessDefinitionEntity;
-import org.opensingular.flow.persistence.entity.ProcessInstanceEntity;
+import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
+import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
@@ -60,11 +60,11 @@ public class PetitionEntity extends BaseEntity<Long> {
 
     @ManyToOne
     @JoinColumn(name = "CO_INSTANCIA_PROCESSO")
-    private ProcessInstanceEntity processInstanceEntity;
+    private FlowInstanceEntity flowInstanceEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CO_DEFINICAO_PROCESSO")
-    private ProcessDefinitionEntity processDefinitionEntity;
+    private FlowDefinitionEntity flowDefinitionEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "CO_REQUISITANTE")
@@ -98,20 +98,20 @@ public class PetitionEntity extends BaseEntity<Long> {
         this.cod = cod;
     }
 
-    public ProcessInstanceEntity getProcessInstanceEntity() {
-        return processInstanceEntity;
+    public FlowInstanceEntity getFlowInstanceEntity() {
+        return flowInstanceEntity;
     }
 
-    public void setProcessInstanceEntity(ProcessInstanceEntity processInstanceEntity) {
-        this.processInstanceEntity = processInstanceEntity;
+    public void setFlowInstanceEntity(FlowInstanceEntity flowInstanceEntity) {
+        this.flowInstanceEntity = flowInstanceEntity;
     }
 
-    public ProcessDefinitionEntity getProcessDefinitionEntity() {
-        return processDefinitionEntity;
+    public FlowDefinitionEntity getFlowDefinitionEntity() {
+        return flowDefinitionEntity;
     }
 
-    public void setProcessDefinitionEntity(ProcessDefinitionEntity processDefinitionEntity) {
-        this.processDefinitionEntity = processDefinitionEntity;
+    public void setFlowDefinitionEntity(FlowDefinitionEntity flowDefinitionEntity) {
+        this.flowDefinitionEntity = flowDefinitionEntity;
     }
 
     public PetitionerEntity getPetitioner() {

@@ -108,7 +108,7 @@ public class SingularWebRef implements WebRef {
 
 
     @Override
-    public WebRef addParam(String nome, Object valor) {
+    public WebRef addParam(String name, Object value) {
         throw notImplementedException();
     }
 

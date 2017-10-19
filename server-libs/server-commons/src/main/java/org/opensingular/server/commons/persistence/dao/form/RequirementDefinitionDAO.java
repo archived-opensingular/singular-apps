@@ -27,8 +27,8 @@ public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> ext
         super((Class<T>) RequirementDefinitionEntity.class);
     }
 
-    public RequirementDefinitionDAO(Class<T> tipo) {
-        super(tipo);
+    public RequirementDefinitionDAO(Class<T> entityClass) {
+        super(entityClass);
     }
 
     public RequirementDefinitionEntity findByModuleAndName(ModuleEntity moduleEntity, FormTypeEntity formType) {

@@ -35,7 +35,11 @@ import org.springframework.context.annotation.Primary;
 
 import javax.inject.Named;
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Primary
 @Named
@@ -91,7 +95,7 @@ public class ModuleDriverMock implements ModuleDriver {
 
     private BoxItemDataMap createItem(String codPeticao, String description, String situation, String processName,
                                       String creationDate, String type, String processType, String situationBeginDate,
-                                      String processBeginDate, String editionDate, String processInstanceId, String rootPetition,
+                                      String processBeginDate, String editionDate, String flowInstanceId, String rootPetition,
                                       String parentPetition) {
         Map<String, Serializable> item = new HashMap<>();
         item.put("codPeticao", codPeticao);
@@ -104,7 +108,7 @@ public class ModuleDriverMock implements ModuleDriver {
         item.put("situationBeginDate", situationBeginDate);
         item.put("processBeginDate", processBeginDate);
         item.put("editionDate", editionDate);
-        item.put("processInstanceId", processInstanceId);
+        item.put("flowInstanceId", flowInstanceId);
         item.put("rootPetition", rootPetition);
         item.put("parentPetition", parentPetition);
 

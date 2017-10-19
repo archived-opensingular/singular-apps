@@ -61,8 +61,8 @@ public class ModuleService implements Loggable {
      */
     public void save(SingularRequirementRef ref) {
         Class<? extends SType> mainForm = ref.getRequirement().getMainForm();
-        SType<?>               tipo     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity         formType = formTypeService.findFormTypeEntity(tipo);
+        SType<?>               type     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
+        FormTypeEntity         formType = formTypeService.findFormTypeEntity(type);
 
         RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(ref.getRequirement(), formType);
         requirementDefinitionDAO.save(requirementDefinitionEntity);

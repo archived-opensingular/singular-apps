@@ -18,6 +18,7 @@
 
 package org.opensingular.server.commons.connector;
 
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
@@ -137,7 +138,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
         final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
-        final String endpoint = action.getEndpoint();
+        final String endpoint = StringUtils.trimToEmpty(action.getEndpoint());
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {

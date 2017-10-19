@@ -45,7 +45,7 @@ public class PetitionInstanceTest extends SingularCommonsBaseTest {
         ((SIComposite) instance).getField(0).setValue("value");
 
         PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
-        petitionInitial.setProcessDefinition(FOOFlowWithTransition.class);
+        petitionInitial.setFlowDefinition(FOOFlowWithTransition.class);
 
         petitionService.saveOrUpdate(petitionInitial, instance, true);
 
@@ -55,9 +55,9 @@ public class PetitionInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(petitionInitial.getMainFormAndCast(SIComposite.class));
 
-        Assert.assertNotNull(petitionInitial.getProcessDefinition());
+        Assert.assertNotNull(petitionInitial.getFlowDefinition());
 
-        Assert.assertTrue(petitionInitial.getProcessDefinitionOpt().isPresent());
+        Assert.assertTrue(petitionInitial.getFlowDefinitionOpt().isPresent());
 
         Assert.assertFalse(petitionInitial.getParentPetition().isPresent());
 

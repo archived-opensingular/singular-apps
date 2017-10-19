@@ -28,8 +28,8 @@ import org.opensingular.flow.core.STask;
  */
 public class FlowMapPetition extends FlowMap {
 
-    public FlowMapPetition(RequirementFlowDefinition<?> processDefinition) {
-        super(processDefinition);
+    public FlowMapPetition(RequirementFlowDefinition<?> flowDefinition) {
+        super(flowDefinition);
     }
 
     @Override

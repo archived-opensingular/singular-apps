@@ -24,6 +24,6 @@ import java.io.Serializable;
  * @author Daniel C. Bordin on 26/02/2017.
  */
 @FunctionalInterface
-public interface ServerSIntanceProcessAwareService extends Serializable {
-    FlowInstance getProcessInstance();
+public interface ServerSInstanceFlowAwareService extends Serializable {
+    FlowInstance getFlowInstance();
 }
