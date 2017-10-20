@@ -1,17 +1,31 @@
+/*
+ *
+ *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import com.google.common.base.Joiner;
-import org.apache.commons.lang3.BooleanUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.opensingular.form.AtrRef;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
 import org.opensingular.form.STypeSimple;
 import org.opensingular.form.converter.EnumSInstanceConverter;
 import org.opensingular.form.provider.ProviderContext;
-import org.opensingular.form.type.basic.AtrBasic;
 import org.opensingular.form.type.basic.SPackageBasic;
-import org.opensingular.form.type.core.SPackageDocumentation;
 import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
@@ -21,16 +35,15 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Supplier;
 import java.util.stream.Collectors;
+
+import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
 
 /**
  * Translates some metadatas from {@link SType} to human-readable documentation info.
@@ -44,20 +57,18 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
 
     private final DocFieldMetadata docFieldMetadata;
 
-    private boolean exists;
     private boolean modal;
     private boolean selection;
     private boolean simple;
     private boolean upload;
-    private boolean hiddenCopositeField;
+    private boolean hiddenForDocumentation;
 
     public DocumentationFieldMetadataBuilder(SType<?> rootType, SType<?> type) {
-        this.exists = initExists(type);
         this.modal = initModal(type);
         this.selection = initSelection(type);
         this.simple = initSimpleType(type);
         this.upload = initUpload(type);
-        this.hiddenCopositeField = initHiddenForDocumentation(type);
+        this.hiddenForDocumentation = initHiddenForDocumentation(type);
         if (isFormInputField()) {
             docFieldMetadata = new DocFieldMetadata(
                     rootType,
@@ -75,8 +86,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         }
     }
 
-    private boolean initExists(SType<?> type) {
-        return getAttribute(type, SPackageBasic.ATR_EXISTS).orElse(Boolean.TRUE);
+    private String initFieldName(SType<?> type) {
+        return getLabelForType(type);
     }
 
     /**
@@ -88,7 +99,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
      * true if {@link SType}  is considered a form input field, false otherwise
      */
     public boolean isFormInputField() {
-        return !hiddenCopositeField && exists && (selection || upload || simple || modal);
+        boolean isHtmlFormComponent = selection || upload || simple || modal;
+        return !hiddenForDocumentation && isHtmlFormComponent;
     }
 
     /**
@@ -131,7 +143,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
     private boolean initHiddenForDocumentation(SType<?> type) {
-        return getAttribute(type, SPackageDocumentation.ATR_DOC_HIDDEN).orElse(Boolean.FALSE);
+        return DocumentationMetadataUtil.isHiddenForDocumentation(type);
     }
 
     @SuppressWarnings("unchecked")
@@ -164,32 +176,6 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         }
         return Joiner.on(SEPARATOR).join(observacoes);
     }
-
-    private Set<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
-        Set<String> values = new TreeSet<>();
-        Optional<Supplier<Collection<AtrBasic.DelayedDependsOnResolver>>> dependOn = getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION);
-        if (dependOn.isPresent()) {
-            for (AtrBasic.DelayedDependsOnResolver func : dependOn.get().get()) {
-                if (func != null) {
-                    try {
-                        func.resolve(rootType, type).stream().map(this::initFieldName).collect(() -> values, Set::add, Set::addAll);
-                    } catch (Exception e) {
-                        getLogger().error(e.getMessage(), e);
-                        getLogger().error("Could not resolve dependent types for type: {}", type.getName());
-                    }
-                }
-            }
-        }
-        return values;
-    }
-
-    private <V> Optional<V> getAttribute(SType<?> type, AtrRef<?, ?, V> ref) {
-        if (type.hasAttributeDefinedInHierarchy(ref)) {
-            return Optional.ofNullable(type.getAttributeValue(ref));
-        }
-        return Optional.empty();
-    }
-
 
     private String initRequired(SType<?> s) {
         if (s.asAtr().getAttributeValue(SPackageBasic.ATR_REQUIRED_FUNCTION) != null) {
@@ -224,15 +210,6 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         } else {
             return "CT";
         }
-    }
-
-
-    private String initFieldName(SType<?> s) {
-        String label = s.asAtr().getLabel();
-        if (StringUtils.isBlank(label)) {
-            label = s.getNameSimple();
-        }
-        return label;
     }
 
     private String initEnabled(SType<?> s) {

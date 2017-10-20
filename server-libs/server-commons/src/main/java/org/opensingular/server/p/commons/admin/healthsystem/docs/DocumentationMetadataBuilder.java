@@ -1,10 +1,26 @@
+/*
+ *
+ *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.apache.commons.collections4.CollectionUtils;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypes;
-import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.view.Block;
 import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewByBlock;
@@ -12,6 +28,7 @@ import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewTab;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.lib.commons.lambda.IBiFunction;
+import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRow;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowBlockSeparator;
 import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowFieldMetadata;
@@ -26,15 +43,16 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
+
 /**
  * Responsible for collect metadata for SType documentation
  * Reads information from attributes, validators, and views.
- *
+ * <p>
  * The documentation metadata is represented by three classes:
  * - {@link DocTable}: Form documentation is separated in tables: 1 table for each tab ({@link SViewTab}), 1 table for each master detail (#{@link SViewListByMasterDetail}) and 1 table for the root type if it is not already included by the previous rules
  * - {@link DocBlock}: Each table is further subdivided in blocks: 1 block for each block from view by block ({@link SViewByBlock}), 1 "anonymous" block gathering all types not related to any block in a table.
  * - {@link DocFieldMetadata}: Each block is inspected for STypes that directly represents fields in a HTML according to the method {@link DocumentationFieldMetadataBuilder#isFormInputField()}
- *
  */
 public class DocumentationMetadataBuilder {
 
@@ -114,7 +132,7 @@ public class DocumentationMetadataBuilder {
 
     private <X> LinkedHashSet<X> recursiveIteration(SType<?> toIterate, LinkedHashSet<SType<?>> excludedTypes, IBiFunction<SType<?>, LinkedHashSet<SType<?>>, Stream<X>> function) {
         LinkedHashSet<X> blocks = new LinkedHashSet<>();
-        if (isExists(toIterate)) {
+        if (isDocumentationRelated(toIterate)) {
             function.apply(toIterate, excludedTypes).forEach(blocks::add);
             for (SType<?> contained : STypes.containedTypes(toIterate)) {
                 if (excludedTypes.contains(contained)) {
@@ -134,7 +152,7 @@ public class DocumentationMetadataBuilder {
         excludedTypes.addAll(typesAssociatedToBlocks);
         excludedTypes.removeAll(rootTypes);
         for (SType<?> type : rootTypes) {
-            if (isExists(type)) {
+            if (isDocumentationRelated(type)) {
                 if (excludedTypes.contains(type)) {
                     continue;
                 }
@@ -174,8 +192,8 @@ public class DocumentationMetadataBuilder {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<>();
         roots.addAll(collectTableRoots(rootType));
         roots.addAll(identifyTablesRecursion(rootType));
-        if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)){
-            roots.add(new DocTable(getLabelForType(null, rootType),rootType));
+        if (roots.stream().map(DocTable::getRootSTypes).flatMap(List::stream).noneMatch(rootType::equals)) {
+            roots.add(new DocTable(getLabelForType(rootType), rootType));
 
         }
         return roots;
@@ -193,7 +211,7 @@ public class DocumentationMetadataBuilder {
 
     private LinkedHashSet<DocTable> collectTableRoots(SType<?> sType) {
         LinkedHashSet<DocTable> roots = new LinkedHashSet<DocTable>();
-        if (isExists(sType)) {
+        if (isDocumentationRelated(sType)) {
             SView view = getViewFor(sType);
             if (view instanceof SViewTab) {
                 SViewTab viewTab = (SViewTab) view;
@@ -201,31 +219,14 @@ public class DocumentationMetadataBuilder {
                     roots.add(new DocTable(getLabelForType(t.getTitle(), sType), retrieveSTypeListFromRelativeTypeName(sType, t.getTypesNames()).toArray(new SType[0])));
                 }
             } else if (view instanceof SViewListByMasterDetail) {
-                roots.add(new DocTable(getLabelForType(null, sType), sType));
+                roots.add(new DocTable(getLabelForType(sType), sType));
             }
         }
         return roots;
     }
 
-    private boolean isExists(SType<?> sType){
-        if (sType.hasAttributeDefinedInHierarchy(SPackageBasic.ATR_EXISTS)) {
-            return Optional.ofNullable(sType.getAttributeValue(SPackageBasic.ATR_EXISTS)).orElse(Boolean.TRUE);
-        }
-        return true;
-    }
-
-    private String getLabelForType(String defaultString, SType<?> type) {
-        String label = defaultString;
-        if (label == null) {
-            label = type.asAtr().getLabel();
-            if (label == null) {
-                label = SFormUtil.getTypeLabel(type.getClass()).orElse(null);
-                if (label == null) {
-                    label = type.getNameSimple();
-                }
-            }
-        }
-        return label;
+    private boolean isDocumentationRelated(SType<?> sType) {
+        return !DocumentationMetadataUtil.isHiddenForDocumentation(sType);
     }
 
     private SView getViewFor(SType<?> s) {
@@ -247,6 +248,7 @@ public class DocumentationMetadataBuilder {
 
     /**
      * Return all metadata information organized in the way it is described in this class javadoc {@link DocumentationMetadataBuilder}
+     *
      * @return
      */
     public LinkedHashSet<DocTable> getMetadata() {
@@ -256,29 +258,41 @@ public class DocumentationMetadataBuilder {
     /**
      * Tabulates metadata from blocks/fields into tables and rows information including block separator for non
      * orphan blocks
+     *
      * @return
      */
     public List<TabulatedMetadata> getTabulatedFormat() {
         List<TabulatedMetadata> list = new ArrayList<>();
         for (DocTable table : tableRoots) {
             List<DocumentationRow> documentationRows = new ArrayList<>();
-            documentationRows.add(new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
             for (DocBlock docBlock : table.getBlockList()) {
                 if (!docBlock.getMetadataList().isEmpty()) {
-                    if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
-                        documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
-                    }
-                    for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
-                        documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
-                    }
+                    documentationRows.addAll(getTableBlockSeparators(docBlock, table));
+                    documentationRows.addAll(getTableBlockLines(docBlock));
                 }
             }
-            TabulatedMetadata tabulatedMetadata = new TabulatedMetadata(table.getName(), documentationRows);
-            if (!tabulatedMetadata.isEmptyOfRows()) {
-                list.add(tabulatedMetadata);
+            if (!documentationRows.isEmpty()) {
+                documentationRows.add(0, new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
+                list.add(new TabulatedMetadata(table.getName(), documentationRows));
             }
         }
         return list;
+    }
+
+    private Collection<? extends DocumentationRow> getTableBlockSeparators(DocBlock docBlock, DocTable table) {
+        List<DocumentationRow> documentationRows = new ArrayList<>();
+        if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
+            documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
+        }
+        return documentationRows;
+    }
+
+    private Collection<? extends DocumentationRow> getTableBlockLines(DocBlock docBlock) {
+        List<DocumentationRow> documentationRows = new ArrayList<>();
+        for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
+            documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
+        }
+        return documentationRows;
     }
 
 

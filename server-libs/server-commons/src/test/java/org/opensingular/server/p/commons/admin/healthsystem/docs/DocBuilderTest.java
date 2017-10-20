@@ -1,3 +1,21 @@
+/*
+ *
+ *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
+ *
+ */
+
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
 import org.junit.Assert;
@@ -21,7 +39,7 @@ public class DocBuilderTest {
 
     @Test
     public void buildTest() throws Exception {
-        LinkedHashSet<DocTable> saida = builderFor(STypeDocRootCompositeTabTest.class).getMetadata();
+        LinkedHashSet<DocTable> saida = builderFor(STypeDocRootCompositeTabSample.class).getMetadata();
         for (DocTable docTable : saida) {
             System.out.println("----" + docTable.getName() + "----");
             for (DocBlock docBlock : docTable.getBlockList()) {
@@ -35,11 +53,11 @@ public class DocBuilderTest {
 
         Assert.assertEquals(4, saida.size());
         Assert.assertEquals(6, saida.stream().flatMap(s -> s.getBlockList().stream()).count());
-        Assert.assertEquals(STypeDocRootCompositeTabTest.NOME, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
-        Assert.assertEquals(STypeDocRootCompositeTabTest.ANEXOS, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
-        Assert.assertEquals(STypeDocTest.ANEXINHOS, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
-        Assert.assertEquals(STypeDocTest.ANEXINHO, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
-        Assert.assertEquals(STypeDocTest.IDADE, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[1].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
+        Assert.assertEquals(STypeDocRootCompositeTabSample.NOME, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
+        Assert.assertEquals(STypeDocRootCompositeTabSample.ANEXOS, saida.toArray(new DocTable[0])[0].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
+        Assert.assertEquals(STypeDocSample.ANEXINHOS, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
+        Assert.assertEquals(STypeDocSample.ANEXINHO, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
+        Assert.assertEquals(STypeDocSample.IDADE, saida.toArray(new DocTable[0])[1].getBlockList().toArray(new DocBlock[0])[1].getMetadataList().toArray(new DocFieldMetadata[0])[0].getFieldName());
         Assert.assertEquals("CEP", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[1].getFieldName());
         Assert.assertEquals("Logradouro", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[2].getFieldName());
         Assert.assertEquals("Número", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[3].getFieldName());
@@ -53,7 +71,7 @@ public class DocBuilderTest {
 
     @Test
     public void streamLinedTest() throws Exception {
-        List<TabulatedMetadata> meta = builderFor(STypeDocRootCompositeTabTest.class).getTabulatedFormat();
+        List<TabulatedMetadata> meta = builderFor(STypeDocRootCompositeTabSample.class).getTabulatedFormat();
 
         for (TabulatedMetadata lines : meta) {
             System.out.println("------------" + lines.getTableName());
