@@ -55,9 +55,9 @@ public class SDbHealth extends STypeComposite<SIComposite> {
         tablesList = this.addFieldListOfComposite("tablesList", "tabela");
         tablesList.setView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
 
-        STypeComposite<SIComposite> tabela = tablesList.getElementsType();
+        STypeComposite<SIComposite> table = tablesList.getElementsType();
 
-        schema = tabela.addFieldString("schema");
+        schema = table.addFieldString("schema");
         schema
                 .asAtr()
                 .label("Schema")
@@ -66,7 +66,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        tabela.addFieldString("tableName")
+        table.addFieldString("tableName")
                 .asAtr()
                 .label("Nome")
                 .maxLength(50)
@@ -74,7 +74,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        found = tabela.addFieldBoolean("found");
+        found = table.addFieldBoolean("found");
         found
                 .asAtr()
                 .label("Encontrado no Banco")
@@ -82,7 +82,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .asAtrBootstrap()
                 .colPreference(2);
 
-        userPrivs = tabela.addFieldListOf("userPrivs", STypeString.class);
+        userPrivs = table.addFieldListOf("userPrivs", STypeString.class);
         userPrivs
                 .asAtr()
                 .label("Permissões")
@@ -91,9 +91,9 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .colPreference(2);
         userPrivs.setView(() -> new SViewListByTable().disableNew().disableDelete());
 
-        tabela.addInstanceValidator(this::tableValidation);
+        table.addInstanceValidator(this::tableValidation);
 
-        columnsInfo = tabela.addFieldListOfComposite("columnsInfo", "column");
+        columnsInfo = table.addFieldListOfComposite("columnsInfo", "column");
 
         columnsInfo.setView(() -> new SViewListByTable().disableNew().disableDelete());
         columnsInfo.asAtr().label("Colunas");

@@ -45,9 +45,9 @@ public class SWebHealth extends STypeComposite<SIComposite> {
                         Arrays.asList(ProtocolCheckerFactory.values()).toString().replace("[", "").replace("]", "")
                         + ")");
 
-        STypeComposite<SIComposite> tabela = urlsList.getElementsType();
+        STypeComposite<SIComposite> table = urlsList.getElementsType();
 
-        STypeString urlField = tabela.addFieldString("url");
+        STypeString urlField = table.addFieldString("url");
 		urlField
 	        .asAtr()
 	        	.maxLength(100)

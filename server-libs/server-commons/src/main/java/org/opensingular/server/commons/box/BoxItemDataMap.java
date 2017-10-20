@@ -34,11 +34,11 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
     }
 
     public Long getCod() {
-        Object codPeticao = get("codPeticao");
-        if (codPeticao instanceof Number) {
-            return ((Number) codPeticao).longValue();
-        } else if (codPeticao instanceof String) {
-            return Integer.valueOf((String) codPeticao).longValue();
+        Object codRequirement = get("codPeticao");
+        if (codRequirement instanceof Number) {
+            return ((Number) codRequirement).longValue();
+        } else if (codRequirement instanceof String) {
+            return Integer.valueOf((String) codRequirement).longValue();
         }
         return null;
     }

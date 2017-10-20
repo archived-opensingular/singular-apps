@@ -80,7 +80,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     /**
      * Tabela de registros
      */
-    protected BSDataTable<T, String> tabela;
+    protected BSDataTable<T, String> table;
     /**
      * Confirmation Form
      */
@@ -173,7 +173,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         appendPropertyColumns(builder);
         appendActionColumns(builder);
         builder.setRowsPerPage(getRowsPerPage());
-        return builder.setRowsPerPage(getRowsPerPage()).build("tabela");
+        return builder.setRowsPerPage(getRowsPerPage()).build("table");
     }
 
     protected WebMarkupContainer createEditionLink(String id, IModel<T> requirementModel) {
@@ -200,7 +200,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             protected void onConfirm(AjaxRequestTarget target) {
                 action.accept(dataModel.getObject());
                 dataModel.setObject(null);
-                target.add(tabela);
+                target.add(table);
             }
         };
     }
@@ -229,7 +229,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     }
 
     protected void onFiltroRapido(IModel<String> model, AjaxRequestTarget target) {
-        target.add(tabela);
+        target.add(table);
     }
 
     protected Integer getRowsPerPage() {
@@ -243,11 +243,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
-        tabela = createTable(builder);
-        tabela.add($b.classAppender("worklist"));
+        table = createTable(builder);
+        table.add($b.classAppender("worklist"));
 
         queue(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
-        queue(tabela);
+        queue(table);
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (menuService != null) {

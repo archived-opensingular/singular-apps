@@ -138,7 +138,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         PetitionInstance    petitionInstance   = petitionService.newPetitionInstance(petitionEntity);
         petitionService.saveOrUpdate(petitionInstance, instance, true);
 
-        petitionService.deletePetition(petitionInstance.getCod());
+        petitionService.deleteRequirement(petitionInstance.getCod());
         Assert.assertFalse(petitionService.findPetition(petitionInstance.getCod()).isPresent());
     }
 
@@ -153,7 +153,7 @@ public class PetitionServiceTest extends SingularCommonsBaseTest {
         PetitionDTO dto = new PetitionDTO();
         dto.setCodPeticao(petitionInstance.getCod());
 
-        petitionService.deletePetition(dto);
+        petitionService.deleteRequirement(dto);
         Assert.assertFalse(petitionService.findPetition(petitionInstance.getCod()).isPresent());
     }
 

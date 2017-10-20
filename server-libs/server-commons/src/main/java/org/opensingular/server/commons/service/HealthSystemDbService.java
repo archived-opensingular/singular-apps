@@ -40,20 +40,20 @@ public class HealthSystemDbService implements Loggable {
     private HealthSystemDAO saudeDao;
 
     public HealthInfoDTO getAllDbMetaData() {
-        List<TableInfoDTO> tabelas = new ArrayList<>();
+        List<TableInfoDTO> tables = new ArrayList<>();
         try {
             Map<String, ClassMetadata> map = saudeDao.getAllDbMetaData();
-            map.forEach((k, v) -> tabelas.add(getTableInfo((AbstractEntityPersister) v)));
+            map.forEach((k, v) -> tables.add(getTableInfo((AbstractEntityPersister) v)));
 
             Optional<IValidatorDatabase> validator = verificaDialetoUtilizado();
             if (validator.isPresent()) {
-                validator.get().checkAllInfoTable(tabelas);
+                validator.get().checkAllInfoTable(tables);
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
-            tabelas.clear();
+            tables.clear();
         }
-        return new HealthInfoDTO(tabelas);
+        return new HealthInfoDTO(tables);
     }
 
     private TableInfoDTO getTableInfo(AbstractEntityPersister persister) {

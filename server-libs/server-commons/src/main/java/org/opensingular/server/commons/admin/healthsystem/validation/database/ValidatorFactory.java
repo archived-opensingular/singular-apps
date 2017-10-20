@@ -31,15 +31,15 @@ public enum ValidatorFactory {
 
     public abstract IValidatorDatabase getValidator();
 
-    private String descricao;
+    private String description;
 
-    ValidatorFactory(String descricao){
-        this.descricao = descricao;
+    ValidatorFactory(String description){
+        this.description = description;
     }
 
     public static IValidatorDatabase getValidator(String driverDialect) {
         for (ValidatorFactory value: ValidatorFactory.values()) {
-            if(driverDialect.contains(value.descricao)){
+            if(driverDialect.contains(value.description)){
                 return value.getValidator();
             }
         }

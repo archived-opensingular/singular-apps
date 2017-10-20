@@ -74,7 +74,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     private Resource sqlCreateSequencesServer;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
-    private Resource insertDadosSingular;
+    private Resource insertSingularData;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -87,7 +87,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         populator.addScript(sqlCreateSequencesForm);
         populator.addScript(sqlCreateConstraints);
         populator.addScript(sqlCreateConstraintsForm);
-        populator.addScript(insertDadosSingular);
+        populator.addScript(insertSingularData);
         return populator;
     }
 

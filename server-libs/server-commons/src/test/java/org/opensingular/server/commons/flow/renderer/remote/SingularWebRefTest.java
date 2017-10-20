@@ -81,7 +81,7 @@ public class SingularWebRefTest {
     }
 
     @Test(expected = NotImplementedException.class)
-    public void gerarHtmlTest(){
+    public void generateHtmlTest(){
         ref.generateHtml("html to generate");
     }
 }

@@ -25,7 +25,7 @@ public class DefaultDeleteController extends IController implements Loggable {
     @Override
     public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest action) {
         try {
-            petitionService.deletePetition(petition.getCod());
+            petitionService.deleteRequirement(petition.getCod());
             return new ActionResponse("Registro excluído com sucesso", true);
         } catch (Exception e) {
             final String msg = "Erro ao excluir o item.";

@@ -34,7 +34,7 @@ import javax.inject.Inject;
 public class DbPanel extends Panel {
 
 	@Inject
-    private HealthSystemDbService painelService;
+    private HealthSystemDbService servicePanel;
 
 	public DbPanel(String id) {
 		super(id);
@@ -46,7 +46,7 @@ public class DbPanel extends Panel {
 		
 		SingularFormPanel panelBD = new SingularFormPanel("panelDB", SDbHealth.class);
 		panelBD.setInstanceInitializer(instance -> {
-			HealthInfoDTO infoHealthTest = painelService.getAllDbMetaData();
+			HealthInfoDTO infoHealthTest = servicePanel.getAllDbMetaData();
 			TransformPojoUtil.pojoToSInstance(infoHealthTest, instance, false);
 		});
 

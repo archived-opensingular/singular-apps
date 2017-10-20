@@ -19,23 +19,14 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.opensingular.form.SInstance;
-import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.diff.DocumentDiff;
-import org.opensingular.form.util.diff.DocumentDiffUtil;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSGrid;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
-import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
 import org.opensingular.server.commons.service.FormPetitionService;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
-import org.opensingular.server.commons.service.PetitionUtil;
 import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -44,7 +35,6 @@ import org.opensingular.server.commons.wicket.view.util.ModuleButtonFactory;
 import javax.inject.Inject;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
@@ -62,7 +52,7 @@ public class DiffFormPage extends ServerTemplate {
 
 
     private ActionContext config;
-    protected BSDataTable<DocumentDiff, String> tabela;
+    protected BSDataTable<DocumentDiff, String> table;
     protected SingularDiffService.DiffSummary diffSummary;
     protected BSGrid contentGrid = new BSGrid("content");
 
@@ -96,10 +86,10 @@ public class DiffFormPage extends ServerTemplate {
                 .appendComponent(id -> new ModuleButtonFactory(config).getViewVersionButton(id, diffSummary.getPreviousFormVersionId()));
     }
 
-    private void appendDate(BSRow container, String labelCampo, Date data) {
+    private void appendDate(BSRow container, String fieldLabel, Date data) {
         container.newCol(2)
                 .newFormGroup()
-                .appendLabel(new BSLabel("label", labelCampo))
+                .appendLabel(new BSLabel("label", fieldLabel))
                 .appendTag("div", new BOutputPanel("data", $m.ofValue(new SimpleDateFormat("dd/MM/yyyy HH:mm").format(data))));
     }
 

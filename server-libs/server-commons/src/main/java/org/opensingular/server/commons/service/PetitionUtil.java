@@ -49,13 +49,13 @@ public final class PetitionUtil {
 
     private PetitionUtil() {}
 
-    /** Recupera a definição de processo associado a petição. */
+    /** Recupera a definição de fluxo associado a petição. */
     @Nonnull
     public static FlowDefinition<?> getFlowDefinition(@Nonnull PetitionEntity petition) {
         return getFlowDefinitionOpt(petition).orElseThrow(() -> new PetitionWithoutDefinitionException());
     }
 
-    /** Recupera a definição de processo associado a petição. */
+    /** Recupera a definição de fluxo associado a petição. */
     @Nonnull
     final static Optional<FlowDefinition<?>> getFlowDefinitionOpt(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);
@@ -94,7 +94,7 @@ public final class PetitionUtil {
                 .map(ServerSInstanceFlowAwareService::getFlowInstance).flatMap(FlowInstance::getCurrentTask);
     }
 
-    /** Recupera a instância de processo associada à petição informada. */
+    /** Recupera a instância de fluxo associada à petição informada. */
     @Nonnull
     public static FlowInstance getFlowInstance(@Nonnull PetitionEntity petition) {
         Objects.requireNonNull(petition);

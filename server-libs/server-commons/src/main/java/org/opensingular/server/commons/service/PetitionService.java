@@ -226,12 +226,12 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
         return getPetition(taskInstance.getFlowInstance());
     }
 
-    public void deletePetition(PetitionDTO peticao) {
-        deletePetition(peticao.getCodPeticao());
+    public void deleteRequirement(PetitionDTO requirement) {
+        deleteRequirement(requirement.getCodPeticao());
     }
 
-    public void deletePetition(@Nonnull Long idPeticao) {
-        petitionDAO.find(idPeticao).ifPresent(pe -> petitionDAO.delete(pe));
+    public void deleteRequirement(@Nonnull Long idRequirement) {
+        petitionDAO.find(idRequirement).ifPresent(pe -> petitionDAO.delete(pe));
     }
 
     public Long countQuickSearch(QuickFilter filter) {
@@ -267,7 +267,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     public void onAfterStartProcess(PI petition, SInstance instance, String codResponsavel, FlowInstance flowInstance) {
     }
 
-    public void onBeforeStartProcess(PI peticao, SInstance instance, String codResponsavel) {
+    public void onBeforeStartProcess(PI requirement, SInstance instance, String codResponsavel) {
     }
 
     public void savePetitionHistory(PetitionInstance petition, List<FormEntity> newEntities) {
@@ -458,7 +458,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     /**
-     * Procura a instância de processo (fluxo) associado ao formulário se o mesmo existir.
+     * Procura a instância de fluxo associado ao formulário se o mesmo existir.
      */
     public Optional<FlowInstanceEntity> getFormFlowInstanceEntity(@Nonnull SInstance instance) {
         return getFormPetitionService().findFormEntity(instance)
@@ -467,7 +467,7 @@ public abstract class PetitionService<PE extends PetitionEntity, PI extends Peti
     }
 
     /**
-     * Verifica se o formulário já foi persistido e possui um processo (fluxo) instanciado e associado.
+     * Verifica se o formulário já foi persistido e possui um fluxo instanciado e associado.
      */
     public boolean formHasFlowInstance(SInstance instance) {
         return getFormFlowInstanceEntity(instance).isPresent();

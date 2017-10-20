@@ -60,7 +60,7 @@ public class RequirementFlowBuilder extends
     }
 
     /**
-     * Cria um novo FlowBuilderPetition para a definição de processo em questão.
+     * Cria um novo FlowBuilderPetition para a definição de fluxo em questão.
      */
     public static RequirementFlowBuilder of(RequirementFlowDefinition<?> flowDefinition) {
         return new RequirementFlowBuilder(flowDefinition);
@@ -97,13 +97,13 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
-    protected BuilderTransitionPetition newTransition(STransition transicao) {
-        return new BuilderTransitionPetition(this, transicao);
+    protected BuilderTransitionPetition newTransition(STransition transition) {
+        return new BuilderTransitionPetition(this, transition);
     }
 
     @Override
-    protected BuilderRolePetition newProcessRole(SBusinessRole papel) {
-        return new BuilderRolePetition(papel);
+    protected BuilderRolePetition newProcessRole(SBusinessRole businessRole) {
+        return new BuilderRolePetition(businessRole);
     }
 
     @Override
@@ -256,8 +256,8 @@ public class RequirementFlowBuilder extends
             extends FlowBuilderImpl.ImplBuilderTransition<BuilderTransitionPetition> {
 
         @SuppressWarnings("rawtypes")
-        BuilderTransitionPetition(FlowBuilder fluxoBuilder, STransition transicao) {
-            super(fluxoBuilder, transicao);
+        BuilderTransitionPetition(FlowBuilder fluxoBuilder, STransition transition) {
+            super(fluxoBuilder, transition);
         }
 
         @Override
@@ -274,8 +274,8 @@ public class RequirementFlowBuilder extends
     public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderBusinessRole<BuilderRolePetition>
             implements BuilderBusinessRole<BuilderRolePetition> {
 
-        BuilderRolePetition(SBusinessRole papel) {
-            super(papel);
+        BuilderRolePetition(SBusinessRole role) {
+            super(role);
         }
     }
 

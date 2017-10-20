@@ -127,8 +127,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
 
         for (final STask<?> task : fluxo.getTasks()) {
-            for (final STransition transicao : task.getTransitions()) {
-                createTransition(graph, transicao, mapaVertice);
+            for (final STransition transition : task.getTransitions()) {
+                createTransition(graph, transition, mapaVertice);
             }
         }
 

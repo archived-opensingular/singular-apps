@@ -209,7 +209,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
-            target.add(tabela);
+            target.add(table);
         }
     }
 
@@ -223,7 +223,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
-            target.add(tabela);
+            target.add(table);
         }
     }
 
@@ -270,14 +270,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
 
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, usersDropDownChoice.getModelObject());
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
             };
@@ -286,7 +286,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
                     executeDynamicAction(itemAction, additionalParams, getDataModel().getObject(), target);
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
             };

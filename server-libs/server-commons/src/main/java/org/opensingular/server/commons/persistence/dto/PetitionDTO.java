@@ -38,11 +38,11 @@ public class PetitionDTO implements Serializable {
     public PetitionDTO() {
     }
 
-    public PetitionDTO(Long codPeticao, String description, String situation,
+    public PetitionDTO(Long codRequeriment, String description, String situation,
                        String processName, Date creationDate, String type, String processType,
                        Date situationBeginDate, Date processBeginDate,
                        Date editionDate) {
-        this.codPeticao = codPeticao;
+        this.codPeticao = codRequeriment;
         this.description = description;
         this.situation = situation;
         this.processName = processName;

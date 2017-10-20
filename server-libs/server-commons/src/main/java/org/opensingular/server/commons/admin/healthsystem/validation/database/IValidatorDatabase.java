@@ -15,10 +15,10 @@
  */
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.util.List;
-
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
+
+import java.util.List;
 
 public interface IValidatorDatabase {
 	/**
@@ -56,7 +56,6 @@ public interface IValidatorDatabase {
 	/**
 	 * Pega todas as informações que conseguir sobre as tablesList
 	 * 
-	 * @param tabelas
 	 * @return List de TableInfoDTO com todas as informações obtidas.
 	 */
 	public List<TableInfoDTO> getAllInfoTable(List<String> tables);

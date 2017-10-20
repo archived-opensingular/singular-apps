@@ -1,14 +1,13 @@
 package org.opensingular.server.commons.admin.healthsystem.validation.database;
 
-import java.math.BigDecimal;
-import java.util.List;
-
-import javax.inject.Named;
-
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
+
+import javax.inject.Named;
+import java.math.BigDecimal;
+import java.util.List;
 
 @Named
 public class ValidatorOracle extends AbstractValidator {
@@ -57,17 +56,17 @@ public class ValidatorOracle extends AbstractValidator {
 	 * 		Object grants for which the current user is the grantee
 	 * 		Object grants for which an enabled role or PUBLIC is the grantee
 	 *
-	 * @param tabela
+	 * @param table
 	 * @return lista de String com o nome dos privilegios obtidos.
 	 */
 	@Override
-	protected List<String> getPermissionEspecificTable(String tabela) {
+	protected List<String> getPermissionSpecificTable(String table) {
 		String query = " SELECT PRIVILEGE"
 				+ " FROM SYS.ALL_TAB_PRIVS_RECD"
 				+ " WHERE TABLE_NAME = :nome_tabela";
 
 		SQLQuery querySQL = getSession().createSQLQuery(query);
-		querySQL.setParameter("nome_tabela", tabela);
+		querySQL.setParameter("nome_tabela", table);
 
 		return querySQL.list();
 	}

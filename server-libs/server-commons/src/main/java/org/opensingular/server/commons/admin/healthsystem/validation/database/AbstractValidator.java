@@ -32,20 +32,20 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 
 	@Transactional
 	@Override
-	public List<TableInfoDTO> getAllInfoTable(List<String> tabelas) {
+	public List<TableInfoDTO> getAllInfoTable(List<String> table) {
 		List<TableInfoDTO> privileges = new ArrayList<>();
 
-		tabelas.forEach(tableName-> {
-			TableInfoDTO tabelaInfo = new TableInfoDTO();
-			tabelaInfo.setTableName(tableName);
+		table.forEach(tableName -> {
+			TableInfoDTO tableInfo = new TableInfoDTO();
+			tableInfo.setTableName(tableName);
 
-			tabelaInfo.setUserPrivs(getPermissionEspecificTable(tableName));
-			privileges.add(tabelaInfo);
+			tableInfo.setUserPrivs(getPermissionSpecificTable(tableName));
+			privileges.add(tableInfo);
 
-			if(!tabelaInfo.getUserPrivs().isEmpty()){
-				tabelaInfo.setColumnsInfo(getColumnsInfoFromTable(tableName));
-				if(tabelaInfo.getColumnsInfo() != null && !tabelaInfo.getColumnsInfo().isEmpty())
-					tabelaInfo.setSchema(tabelaInfo.getColumnsInfo().get(0).getSchema());
+			if (!tableInfo.getUserPrivs().isEmpty()) {
+				tableInfo.setColumnsInfo(getColumnsInfoFromTable(tableName));
+				if (tableInfo.getColumnsInfo() != null && !tableInfo.getColumnsInfo().isEmpty()) tableInfo.setSchema(
+						tableInfo.getColumnsInfo().get(0).getSchema());
 			}
 		});
 
@@ -106,20 +106,20 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 	/**
 	 * Recupera a lista de permissões que o usuário atual
 	 * tem na tabela passada como parâmetro
-	 * @param tabela
+	 * @param table
 	 * @return
 	 */
-	protected abstract List<String> getPermissionEspecificTable(String tabela);
+	protected abstract List<String> getPermissionSpecificTable(String table);
 
 	@Override
 	@Transactional
-	public List<TableInfoDTO> getTablesPermission(List<TableInfoDTO> tabelas) {
-		tabelas.forEach(table-> setFoundAndUserPrivsFromTable(table));
-		return tabelas;
+	public List<TableInfoDTO> getTablesPermission(List<TableInfoDTO> tables) {
+		tables.forEach(table -> setFoundAndUserPermissionFromTable(table));
+		return tables;
 	}
 
-	private void setFoundAndUserPrivsFromTable(TableInfoDTO table) {
-		List<String> permissions = getPermissionEspecificTable(table.getTableName());
+	private void setFoundAndUserPermissionFromTable(TableInfoDTO table) {
+		List<String> permissions = getPermissionSpecificTable(table.getTableName());
 		table.setUserPrivs(permissions);
 		if(permissions != null && !permissions.isEmpty()){
 			table.setFound(true);
@@ -158,7 +158,7 @@ public abstract class AbstractValidator extends SimpleDAO implements IValidatorD
 	public void checkAllInfoTable(List<TableInfoDTO> tables) {
 
 		tables.forEach(table->{
-			setFoundAndUserPrivsFromTable(table);
+			setFoundAndUserPermissionFromTable(table);
 			checkColumnPermissions(table);
 
 			if(table.getSchema() == null
