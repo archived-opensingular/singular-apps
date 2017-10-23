@@ -18,8 +18,6 @@
 
 package org.opensingular.server.core.wicket;
 
-import javax.inject.Inject;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
@@ -38,6 +36,8 @@ import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.opensingular.server.p.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -152,7 +152,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test(expected = RestartResponseException.class)
     public void historyForm() {
         tester = new SingularWicketTester(singularApplication);
-        sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
+        sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
 
         BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);

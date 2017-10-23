@@ -19,8 +19,7 @@
 package org.opensingular.server.module.requirement;
 
 import org.opensingular.form.SType;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.RequirementSender;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 
 /**
@@ -31,17 +30,17 @@ public class DynamicFormFlowSingularRequirement extends SingularRequirementAdapt
 
     private Class<? extends SType<?>> form;
     private Class<? extends AbstractFormPage<?, ?>> initPage;
-    private Class<? extends PetitionSender> petitionSenderBeanClass;
+    private Class<? extends RequirementSender> requirementSenderBeanClass;
 
     public DynamicFormFlowSingularRequirement(String name,
                                               Class<? extends SType<?>> form,
                                               BoundedFlowResolver flowResolver,
                                               Class<? extends AbstractFormPage<?, ?>> initPage,
-                                              Class<? extends PetitionSender> petitionSenderBeanClass) {
+                                              Class<? extends RequirementSender> requirementSenderBeanClass) {
         super(name, flowResolver);
         this.form = form;
         this.initPage = initPage;
-        this.petitionSenderBeanClass = petitionSenderBeanClass;
+        this.requirementSenderBeanClass = requirementSenderBeanClass;
     }
 
     @Override
@@ -58,12 +57,11 @@ public class DynamicFormFlowSingularRequirement extends SingularRequirementAdapt
         }
     }
 
-    @Override
-    public Class<? extends PetitionSender> getPetitionSenderBeanClass() {
-        if(petitionSenderBeanClass != null) {
-            return petitionSenderBeanClass;
+    public Class<? extends RequirementSender> getRequirementSenderBeanClass() {
+        if(requirementSenderBeanClass != null) {
+            return requirementSenderBeanClass;
         } else {
-            return super.getPetitionSenderBeanClass();
+            return super.getRequirementSenderBeanClass();
         }
     }
 

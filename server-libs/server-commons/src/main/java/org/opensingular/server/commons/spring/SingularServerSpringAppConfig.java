@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.spring;
 
 import org.hibernate.SessionFactory;
-import org.opensingular.flow.persistence.service.ProcessRetrieveService;
+import org.opensingular.flow.persistence.service.FlowRetrieveService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.context.singleton.SpringBoundedSingletonStrategy;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
@@ -67,10 +67,10 @@ public class SingularServerSpringAppConfig implements Loggable {
     }
 
     @Bean
-    public ProcessRetrieveService getProcessRetrieveService(SessionFactory sessionFactory) {
-        ProcessRetrieveService processRetrieveService = new ProcessRetrieveService();
-        processRetrieveService.setSessionLocator(sessionFactory::getCurrentSession);
-        return processRetrieveService;
+    public FlowRetrieveService getProcessRetrieveService(SessionFactory sessionFactory) {
+        FlowRetrieveService flowRetrieveService = new FlowRetrieveService();
+        flowRetrieveService.setSessionLocator(sessionFactory::getCurrentSession);
+        return flowRetrieveService;
     }
 
 }

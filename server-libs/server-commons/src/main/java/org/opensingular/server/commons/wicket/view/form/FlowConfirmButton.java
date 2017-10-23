@@ -23,15 +23,15 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.server.commons.exception.PetitionConcurrentModificationException;
+import org.opensingular.server.commons.exception.RequirementConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
-public class FlowConfirmButton<PE extends PetitionEntity, PI extends PetitionInstance> extends SingularSaveButton implements Loggable {
+public class FlowConfirmButton<RE extends RequirementEntity, RI extends RequirementInstance> extends SingularSaveButton implements Loggable {
 
-    private final AbstractFormPage<PE, PI> formPage;
+    private final AbstractFormPage<RE, RI> formPage;
     private final String              transitionName;
     private final BSModalBorder       modal;
 
@@ -39,7 +39,7 @@ public class FlowConfirmButton<PE extends PetitionEntity, PI extends PetitionIns
                              final String id,
                              final IModel<? extends SInstance> model,
                              final boolean validate,
-                             final AbstractFormPage<PE, PI> formPage,
+                             final AbstractFormPage<RE, RI> formPage,
                              final BSModalBorder modal) {
         super(id, model, validate);
         this.formPage = formPage;
@@ -51,7 +51,7 @@ public class FlowConfirmButton<PE extends PetitionEntity, PI extends PetitionIns
     protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
         try {
             formPage.executeTransition(ajaxRequestTarget, form, transitionName, model);
-        } catch (HibernateOptimisticLockingFailureException | PetitionConcurrentModificationException e) {
+        } catch (HibernateOptimisticLockingFailureException | RequirementConcurrentModificationException e) {
             getLogger().debug(e.getMessage(), e);
             configureBackDropAndShowError(ajaxRequestTarget, "message.save.concurrent_error");
         } catch (SingularServerFormValidationError ex){

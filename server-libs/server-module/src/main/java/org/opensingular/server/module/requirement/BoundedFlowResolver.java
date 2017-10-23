@@ -77,6 +77,6 @@ public class BoundedFlowResolver implements FlowResolver {
                 return flowClass.get();
             }
         }
-        throw SingularServerException.rethrow("A definição de processo resolvida não está declarada na definição do requerimento.");
+        throw SingularServerException.rethrow("A definição de fluxo resolvida não está declarada na definição do requerimento.");
     }
 }

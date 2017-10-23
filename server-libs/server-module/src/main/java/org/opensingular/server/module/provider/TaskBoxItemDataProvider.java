@@ -23,7 +23,7 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.jackson.SingularObjectMapper;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.ActionProvider;
@@ -62,7 +62,7 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
     public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
         filter.forTasks(tasksFilter.stream().map(ITaskDefinition::getName).collect(Collectors.toList()).toArray(new String[0]));
         return ApplicationContextProvider.get()
-                .getBean(PetitionService.class).listTasks(filter, searchPermissions(filter), getExtenders(filter));
+                .getBean(RequirementService.class).listTasks(filter, searchPermissions(filter), getExtenders(filter));
     }
 
     @Nonnull
@@ -74,7 +74,7 @@ public class TaskBoxItemDataProvider implements BoxItemDataProvider {
     public Long count(QuickFilter filter, BoxInfo boxInfo) {
         filter.forTasks(tasksFilter.stream().map(ITaskDefinition::getName).collect(Collectors.toList()).toArray(new String[0]));
         return ApplicationContextProvider.get()
-                .getBean(PetitionService.class).countTasks(filter, searchPermissions(filter), getExtenders(filter));
+                .getBean(RequirementService.class).countTasks(filter, searchPermissions(filter), getExtenders(filter));
     }
 
     @Override

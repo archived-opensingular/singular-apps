@@ -36,14 +36,14 @@ import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.controllers.IController;
-import org.opensingular.server.commons.flow.metadata.PetitionHistoryTaskMetaDataValue;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.flow.metadata.RequirementHistoryTaskMetaDataValue;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementInstance;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.module.BoxController;
@@ -63,7 +63,7 @@ import java.util.stream.Collectors;
 public class ModuleBackstageService implements Loggable {
 
     @Inject
-    private PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    private RequirementService<RequirementEntity, RequirementInstance> requirementService;
 
     @Inject
     private SingularServerConfiguration singularServerConfiguration;
@@ -90,7 +90,7 @@ public class ModuleBackstageService implements Loggable {
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
             IController controller = getActionController(actionRequest);
-            return controller.run(petitionService.getPetition(id), actionRequest);
+            return controller.run(requirementService.getRequirement(id), actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR
@@ -124,11 +124,11 @@ public class ModuleBackstageService implements Loggable {
             boxConfigurationMetadata.setLabel(category);
             boxConfigurationMetadata.setProcesses(new ArrayList<>());
             definitions.forEach(d -> {
-                        List<STask<?>> tasks = d.getFlowMap().getTasksWithMetadata(PetitionHistoryTaskMetaDataValue.KEY);
+                        List<STask<?>> tasks = d.getFlowMap().getTasksWithMetadata(RequirementHistoryTaskMetaDataValue.KEY);
                         List<String> allowedHistoryTasks = tasks.stream().map(STask::getAbbreviation).collect(Collectors.toList());
                         boxConfigurationMetadata
                                 .getProcesses()
-                                .add(new ProcessDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
+                                .add(new RequirementDefinitionDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
                     }
             );
             addForms(boxConfigurationMetadata);
@@ -189,6 +189,6 @@ public class ModuleBackstageService implements Loggable {
     }
 
     public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
-        return petitionService.listAllocableUsers(selectedTask);
+        return requirementService.listAllocableUsers(selectedTask);
     }
 }

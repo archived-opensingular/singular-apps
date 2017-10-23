@@ -153,8 +153,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         final Object v = graph.insertVertex(graph.getDefaultParent(), null, null, 20, 20, 20, 20);
 
         setStyle(v, "START");
-        final Object destino = mapaVertice.get(taskInicial.getAbbreviation());
-        graph.insertEdge(graph.getDefaultParent(), null, null, v, destino);
+        final Object destiny = mapaVertice.get(taskInicial.getAbbreviation());
+        graph.insertEdge(graph.getDefaultParent(), null, null, v, destiny);
     }
 
     private static void createTransition(mxGraph graph, STransition transition, Map<String, Object> mapNodes) {

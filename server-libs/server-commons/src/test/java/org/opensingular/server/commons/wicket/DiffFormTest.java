@@ -27,10 +27,10 @@ import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.STypeFOO;
-import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
-import org.opensingular.server.commons.service.DefaultPetitionSender;
-import org.opensingular.server.commons.service.DefaultPetitionService;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
+import org.opensingular.server.commons.service.DefaultRequirementSender;
+import org.opensingular.server.commons.service.DefaultRequirementService;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.FOOFlowWithTransition;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
@@ -51,13 +51,13 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     private CommonsApplicationMock singularApplication;
 
     @Inject
-    private PetitionerDAO petitionerDAO;
+    private ApplicantDAO applicantDAO;
 
     @Inject
-    private DefaultPetitionService petitionService;
+    private DefaultRequirementService requirementService;
 
     @Inject
-    private DefaultPetitionSender sender;
+    private DefaultRequirementSender sender;
 
     private SingularWicketTester tester;
 
@@ -65,28 +65,28 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     @Transactional
     @WithUserDetails("vinicius.nunes")
     public void renderDiffPage() {
-        Long petitionCod = createMockPetitionAndReturnPetitionCod();
+        Long codRequirement = createMockRequirementAndReturnCodRequirement();
 
         tester = new SingularWicketTester(singularApplication);
         ActionContext actionContext = new ActionContext();
-        actionContext.setPetitionId(petitionCod);
+        actionContext.setRequirementId(codRequirement);
 
         Page p = new DiffFormPage(actionContext);
         tester.startPage(p);
         tester.assertRenderedPage(DiffFormPage.class);
     }
 
-    private Long createMockPetitionAndReturnPetitionCod() {
-        SInstance instance = createInstanceToPetition();
+    private Long createMockRequirementAndReturnCodRequirement() {
+        SInstance instance = createInstanceToRequirement();
 
-        PetitionInstance petitionInitial = createNewPetitionInstance(instance);
+        RequirementInstance requirement = createNewRequirementInstance(instance);
 
-        executeTransition(petitionInitial);
+        executeTransition(requirement);
 
-        return petitionInitial.getCod();
+        return requirement.getCod();
     }
 
-    private SInstance createInstanceToPetition() {
+    private SInstance createInstanceToRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
@@ -94,26 +94,26 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     }
 
     @Nonnull
-    private PetitionInstance createNewPetitionInstance(SInstance instance) {
-        PetitionInstance petitionInitial = petitionService.createNewPetitionWithoutSave(null, null, p -> {
+    private RequirementInstance createNewRequirementInstance(SInstance instance) {
+        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {
         }, requirementDefinitionEntity);
-        petitionInitial.setFlowDefinition(FOOFlowWithTransition.class);
+        requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
-        petitionService.saveOrUpdate(petitionInitial, instance, true);
+        requirementService.saveOrUpdate(requirement, instance, true);
 
-        sender.send(petitionInitial, instance, "vinicius.nunes");
-        petitionService.executeTransition("Transition bar", petitionInitial, this::onTransition, null, null);
-        return petitionInitial;
+        sender.send(requirement, instance, "vinicius.nunes");
+        requirementService.executeTransition("Transition bar", requirement, this::onTransition, null, null);
+        return requirement;
     }
 
-    private void executeTransition(PetitionInstance petitionInitial) {
-        SIComposite mainFormAsInstance = petitionService.getMainFormAsInstance(petitionInitial.getEntity());
+    private void executeTransition(RequirementInstance requirement) {
+        SIComposite mainFormAsInstance = requirementService.getMainFormAsInstance(requirement.getEntity());
         mainFormAsInstance.getField(0).setValue("new value");
-        petitionService.saveOrUpdate(petitionInitial, mainFormAsInstance, true);
+        requirementService.saveOrUpdate(requirement, mainFormAsInstance, true);
 
-        petitionService.executeTransition("End bar", petitionInitial, this::onTransition, null, null);
+        requirementService.executeTransition("End bar", requirement, this::onTransition, null, null);
     }
 
-    private void onTransition(PetitionInstance petitionInstance, String s) {
+    private void onTransition(RequirementInstance requirementInstance, String s) {
     }
 }

@@ -25,9 +25,9 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.action.BoxItemActionList;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.FormDTO;
@@ -54,7 +54,7 @@ public class AuthorizationService implements Loggable {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
@@ -79,25 +79,26 @@ public class AuthorizationService implements Loggable {
         }
     }
 
-    public void filterActions(String formType, Long petitionId, BoxItemActionList actions, String idUsuario) {
+    public void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
-        filterActions(formType, petitionId, actions, idUsuario, permissions);
+        filterActions(formType, requirementId, actions, idUsuario, permissions);
     }
 
     @SuppressWarnings("unchecked")
-    private void filterActions(String formType, Long petitionId, BoxItemActionList actions, String idUsuario, List<SingularPermission> permissions) {
-        PetitionAuthMetadataDTO petitionAuthMetadataDTO = null;
-        if (petitionId != null) {
-            petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
+    private void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario, List<SingularPermission> permissions) {
+        RequirementAuthMetadataDTO requirementAuthMetadataDTO = null;
+        if (requirementId != null) {
+            requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         }
         for (Iterator<BoxItemAction> it = actions.iterator(); it.hasNext(); ) {
             BoxItemAction action = it.next();
             String permissionsNeeded;
             String typeAbbreviation = getFormSimpleName(formType);
             if (action.getFormAction() != null) {
-                permissionsNeeded = buildPermissionKey(petitionAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
+                permissionsNeeded = buildPermissionKey(
+                        requirementAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
             } else {
-                permissionsNeeded = buildPermissionKey(petitionAuthMetadataDTO, typeAbbreviation, action.getName());
+                permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getName());
             }
             if (!hasPermission(idUsuario, permissionsNeeded, permissions)) {
                 it.remove();
@@ -106,10 +107,10 @@ public class AuthorizationService implements Loggable {
 
     }
 
-    public void filterActors(List<Actor> actors, Long petitionId, String actionName) {
-        PetitionAuthMetadataDTO petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
+    public void filterActors(List<Actor> actors, Long requirementId, String actionName) {
+        RequirementAuthMetadataDTO requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         if (actors != null && !actors.isEmpty()) {
-            actors.removeIf(a -> !hasPermission(petitionAuthMetadataDTO, null, a.getCodUsuario(), actionName));
+            actors.removeIf(a -> !hasPermission(requirementAuthMetadataDTO, null, a.getCodUsuario(), actionName));
         }
     }
 
@@ -145,19 +146,19 @@ public class AuthorizationService implements Loggable {
     /**
      * Monta a chave de permissão do singular, não deve ser utilizado diretamente.
      *
-     * @param petitionAuthMetadataDTO
+     * @param requirementAuthMetadataDTO
      * @param formSimpleName
      * @param action
      * @return
      */
-    private String buildPermissionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO, String formSimpleName, String action) {
+    private String buildPermissionKey(RequirementAuthMetadataDTO requirementAuthMetadataDTO, String formSimpleName, String action) {
         String permission = Joiner.on(SEPARATOR)
                 .skipNulls()
                 .join(
                         upperCaseOrNull(action),
                         upperCaseOrNull(formSimpleName),
-                        getDefinitionKey(petitionAuthMetadataDTO),
-                        getCurrentTaskAbbreviation(petitionAuthMetadataDTO)
+                        getDefinitionKey(requirementAuthMetadataDTO),
+                        getCurrentTaskAbbreviation(requirementAuthMetadataDTO)
                 )
                 .toUpperCase();
         if (getLogger().isTraceEnabled()) {
@@ -166,16 +167,16 @@ public class AuthorizationService implements Loggable {
         return permission;
     }
 
-    private String getDefinitionKey(PetitionAuthMetadataDTO petitionAuthMetadataDTO) {
-        if (petitionAuthMetadataDTO != null) {
-            return petitionAuthMetadataDTO.getDefinitionKey();
+    private String getDefinitionKey(RequirementAuthMetadataDTO requirementAuthMetadataDTO) {
+        if (requirementAuthMetadataDTO != null) {
+            return requirementAuthMetadataDTO.getDefinitionKey();
         }
         return null;
     }
 
-    private String getCurrentTaskAbbreviation(PetitionAuthMetadataDTO petitionAuthMetadataDTO) {
-        if (petitionAuthMetadataDTO != null) {
-            return petitionAuthMetadataDTO.getCurrentTaskAbbreviation();
+    private String getCurrentTaskAbbreviation(RequirementAuthMetadataDTO requirementAuthMetadataDTO) {
+        if (requirementAuthMetadataDTO != null) {
+            return requirementAuthMetadataDTO.getCurrentTaskAbbreviation();
         }
         return null;
     }
@@ -188,20 +189,20 @@ public class AuthorizationService implements Loggable {
     }
 
 
-    public boolean hasPermission(Long petitionId, String formType, String idUsuario, String action) {
-        PetitionAuthMetadataDTO petitionAuthMetadataDTO = null;
-        if (petitionId != null) {
-            petitionAuthMetadataDTO = petitionService.findPetitionAuthMetadata(petitionId);
+    public boolean hasPermission(Long requirementId, String formType, String idUsuario, String action) {
+        RequirementAuthMetadataDTO requirementAuthMetadataDTO = null;
+        if (requirementId != null) {
+            requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         }
-        return hasPermission(petitionAuthMetadataDTO, formType, idUsuario, action);
+        return hasPermission(requirementAuthMetadataDTO, formType, idUsuario, action);
     }
 
-    private boolean hasPermission(PetitionAuthMetadataDTO petitionAuthMetadataDTO, String formType, String idUsuario, String action) {
+    private boolean hasPermission(RequirementAuthMetadataDTO requirementAuthMetadataDTO, String formType, String idUsuario, String action) {
         String formSimpleName = getFormSimpleName(formType);
-        if (petitionAuthMetadataDTO != null) {
-            formSimpleName = getFormSimpleName(petitionAuthMetadataDTO.getFormTypeAbbreviation());
+        if (requirementAuthMetadataDTO != null) {
+            formSimpleName = getFormSimpleName(requirementAuthMetadataDTO.getFormTypeAbbreviation());
         }
-        return hasPermission(idUsuario, buildPermissionKey(petitionAuthMetadataDTO, formSimpleName, action));
+        return hasPermission(idUsuario, buildPermissionKey(requirementAuthMetadataDTO, formSimpleName, action));
     }
 
     private boolean hasPermission(String idUsuario, String permissionNeeded) {

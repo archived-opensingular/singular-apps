@@ -42,10 +42,10 @@ import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 
@@ -71,7 +71,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     private static final long serialVersionUID = -3611649597709058163L;
 
     @Inject
-    protected PetitionService<?, ?> petitionService;
+    protected RequirementService<?, ?> requirementService;
 
     @Inject
     @SpringBean(required = false)
@@ -87,7 +87,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private String moduleCod;
     private String menu;
-    private List<ProcessDTO> processes;
+    private List<RequirementDefinitionDTO> processes;
     private List<FormDTO> forms;
     /**
      * Form padrão
@@ -136,7 +136,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return module;
     }
 
-    protected Component buildNewPetitionButton(String id) {
+    protected Component buildNewRequirementButton(String id) {
         return new WebMarkupContainer(id);
     }
 
@@ -239,14 +239,14 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        module = petitionService.findByModuleCod(getModuleCod());
+        module = requirementService.findByModuleCod(getModuleCod());
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
         table = createTable(builder);
         table.add($b.classAppender("worklist"));
 
-        queue(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
+        queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
         queue(table);
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
@@ -289,7 +289,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 } else {
                     return getProcesses()
                             .stream()
-                            .map(ProcessDTO::getAbbreviation)
+                            .map(RequirementDefinitionDTO::getAbbreviation)
                             .collect(Collectors.toList());
                 }
             }
@@ -300,7 +300,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 } else {
                     return getProcesses()
                             .stream()
-                            .map(ProcessDTO::getFormName)
+                            .map(RequirementDefinitionDTO::getFormName)
                             .collect(Collectors.toList());
                 }
             }
@@ -337,11 +337,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
 
-    public List<ProcessDTO> getProcesses() {
+    public List<RequirementDefinitionDTO> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(List<ProcessDTO> processes) {
+    public void setProcesses(List<RequirementDefinitionDTO> processes) {
         this.processes = processes;
     }
 

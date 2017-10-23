@@ -20,8 +20,6 @@ import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.protocol.http.WebApplication;
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.server.commons.form.FormAction;
@@ -34,7 +32,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 public class NewRequirementLink extends Panel {
 
@@ -104,7 +102,7 @@ public class NewRequirementLink extends Panel {
         String result = DispatcherPageUtil
                 .baseURL(url)
                 .formAction(FormAction.FORM_FILL.getId())
-                .petitionId(null)
+                .requirementId(null)
                 .param(REQUIREMENT_DEFINITION_ID, requirement.getId())
                 .params(params)
                 .build();

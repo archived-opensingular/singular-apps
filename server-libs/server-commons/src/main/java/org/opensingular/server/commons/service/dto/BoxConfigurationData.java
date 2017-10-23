@@ -18,7 +18,6 @@ package org.opensingular.server.commons.service.dto;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,7 +26,7 @@ public class BoxConfigurationData implements Serializable {
     private String                id;
     private String                label;
     private List<BoxDefinitionData> itemBoxesMetadata;
-    private List<ProcessDTO>        processes;
+    private List<RequirementDefinitionDTO>        processes;
 
     public BoxConfigurationData() {
     }
@@ -48,11 +47,11 @@ public class BoxConfigurationData implements Serializable {
         this.label = label;
     }
 
-    public List<ProcessDTO> getProcesses() {
+    public List<RequirementDefinitionDTO> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(List<ProcessDTO> processes) {
+    public void setProcesses(List<RequirementDefinitionDTO> processes) {
         this.processes = processes;
     }
 
@@ -72,7 +71,7 @@ public class BoxConfigurationData implements Serializable {
         return null;
     }
 
-    public ProcessDTO getProcessByAbbreviation(String processAbbreviation) {
+    public RequirementDefinitionDTO getProcessByAbbreviation(String processAbbreviation) {
         return getProcesses()
                 .stream()
                 .filter(p -> p.getAbbreviation().equalsIgnoreCase(processAbbreviation))

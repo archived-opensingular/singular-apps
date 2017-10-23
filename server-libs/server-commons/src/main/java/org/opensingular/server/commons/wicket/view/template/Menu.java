@@ -44,7 +44,7 @@ import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
 
@@ -161,7 +161,7 @@ public class Menu extends Panel implements Loggable {
     private List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ModuleEntity module) {
 
         List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
-                .map(ProcessDTO::getAbbreviation)
+                .map(RequirementDefinitionDTO::getAbbreviation)
                 .collect(Collectors.toList());
 
         List<MenuItemConfig> configs = new ArrayList<>();

@@ -63,8 +63,8 @@ public class BoxItemDataImpl implements BoxItemData {
     }
 
     @Override
-    public Serializable getPetitionId() {
-        return rawMap.get("codPeticao");
+    public Serializable getRequirementId() {
+        return rawMap.get("codRequirement");
     }
 
     @Override
@@ -88,13 +88,13 @@ public class BoxItemDataImpl implements BoxItemData {
     }
 
     @Override
-    public Serializable getParentPetition() {
-        return rawMap.get("parentPetition");
+    public Serializable getParentRequirement() {
+        return rawMap.get("parentRequirement");
     }
 
     @Override
-    public Serializable getRootPetition() {
-        return rawMap.get("rootPetition");
+    public Serializable getRootRequirement() {
+        return rawMap.get("rootRequirement");
     }
 
     @Override

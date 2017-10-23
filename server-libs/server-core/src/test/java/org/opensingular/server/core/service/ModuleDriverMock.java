@@ -93,12 +93,12 @@ public class ModuleDriverMock implements ModuleDriver {
         return ActionResponse.class.cast(response);
     }
 
-    private BoxItemDataMap createItem(String codPeticao, String description, String situation, String processName,
+    private BoxItemDataMap createItem(String codRequirement, String description, String situation, String processName,
                                       String creationDate, String type, String processType, String situationBeginDate,
-                                      String processBeginDate, String editionDate, String flowInstanceId, String rootPetition,
-                                      String parentPetition) {
+                                      String processBeginDate, String editionDate, String flowInstanceId, String rootRequirement,
+                                      String parentRequirement) {
         Map<String, Serializable> item = new HashMap<>();
-        item.put("codPeticao", codPeticao);
+        item.put("codRequirement", codRequirement);
         item.put("description", description);
         item.put("situation", situation);
         item.put("processName", processName);
@@ -109,8 +109,8 @@ public class ModuleDriverMock implements ModuleDriver {
         item.put("processBeginDate", processBeginDate);
         item.put("editionDate", editionDate);
         item.put("flowInstanceId", flowInstanceId);
-        item.put("rootPetition", rootPetition);
-        item.put("parentPetition", parentPetition);
+        item.put("rootRequirement", rootRequirement);
+        item.put("parentRequirement", parentRequirement);
 
         BoxItemDataImpl i = new BoxItemDataImpl();
         i.setRawMap(item);

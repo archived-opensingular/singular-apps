@@ -20,13 +20,13 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
 
 
-public class SimpleMessageFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends AbstractFlowConfirmModal<PE, PI> {
+public class SimpleMessageFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
 
-    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<PE, PI> formPage) {
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
         super(id, transitionName, formPage);
     }
 

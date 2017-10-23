@@ -26,9 +26,9 @@ import org.opensingular.server.commons.cache.SingularCacheForever;
 import org.opensingular.server.commons.cache.SingularSessionCache;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
+import org.opensingular.server.commons.service.RequirementService;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -44,7 +44,7 @@ import java.util.stream.Collectors;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected PetitionService<PetitionEntity, PetitionInstance> petitionService;
+    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

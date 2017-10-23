@@ -40,7 +40,7 @@ public abstract class AbstractExecuteItemAction extends BoxItemAction {
     }
 
     protected static String getEndpointExecute(BoxItemData line) {
-        return PATH_BOX_ACTION + EXECUTE + "?id=" + line.getPetitionId();
+        return PATH_BOX_ACTION + EXECUTE + "?id=" + line.getRequirementId();
 
     }
 

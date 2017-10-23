@@ -18,8 +18,8 @@ package org.opensingular.server.commons.wicket.view.form;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -31,7 +31,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 @SuppressWarnings("serial")
 @MountPath("/view")
-public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance> {
+public class FormPage extends AbstractFormPage<RequirementEntity, RequirementInstance> {
 
     public FormPage() {
         this(null);
@@ -59,8 +59,8 @@ public class FormPage extends AbstractFormPage<PetitionEntity, PetitionInstance>
     @Nonnull
     @Override
     protected Optional<String> getIdentifier() {
-        return getPetitionOptional()
-                .map(PetitionInstance::getCod)
+        return getRequirementOptional()
+                .map(RequirementInstance::getCod)
                 .map(Object::toString);
     }
 }

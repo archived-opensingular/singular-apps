@@ -49,7 +49,7 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
         return DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
-                .petitionId(line.getPetitionId())
+                .requirementId(line.getRequirementId())
                 .param(FORM_NAME, line.getType())
                 .param(REQUIREMENT_DEFINITION_ID, line.getRequirementDefinitionId())
                 .build();

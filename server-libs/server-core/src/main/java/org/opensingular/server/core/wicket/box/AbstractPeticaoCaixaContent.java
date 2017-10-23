@@ -20,7 +20,7 @@ package org.opensingular.server.core.wicket.box;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.dto.PetitionDTO;
+import org.opensingular.server.commons.persistence.dto.RequirementDTO;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.FOR
 /**
  * Classe base para construição de caixas do servidor de petições
  */
-public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends AbstractBoxContent<T> {
+public abstract class AbstractPeticaoCaixaContent<T extends RequirementDTO> extends AbstractBoxContent<T> {
 
     private static final long serialVersionUID = -3611649597709058163L;
 
@@ -46,12 +46,12 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
         String href = DispatcherPageUtil
                 .baseURL(getBaseUrl())
                 .formAction(formAction.getId())
-                .petitionId(peticao.getCodPeticao())
+                .requirementId(peticao.getCodRequirement())
                 .params(getCreateLinkParameters(peticao))
                 .build();
 
         WebMarkupContainer link = new WebMarkupContainer(id);
-        link.add($b.attr("target", String.format("_%s", peticao.getCodPeticao())));
+        link.add($b.attr("target", String.format("_%s", peticao.getCodRequirement())));
         link.add($b.attr("href", href));
         return link;
     }
@@ -64,7 +64,7 @@ public abstract class AbstractPeticaoCaixaContent<T extends PetitionDTO> extends
     }
 
     @Override
-    protected void onDelete(PetitionDTO peticao) {
-        petitionService.deleteRequirement(peticao);
+    protected void onDelete(RequirementDTO peticao) {
+        requirementService.deleteRequirement(peticao);
     }
 }

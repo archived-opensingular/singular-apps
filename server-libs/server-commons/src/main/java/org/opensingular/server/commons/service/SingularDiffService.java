@@ -26,7 +26,7 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.diff.DocumentDiff;
 import org.opensingular.form.util.diff.DocumentDiffUtil;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
-import org.opensingular.server.commons.persistence.entity.form.FormPetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
@@ -38,21 +38,21 @@ import java.util.Optional;
 public class SingularDiffService {
 
     @Inject
-    protected FormPetitionService<?> formPetitionService;
+    protected FormRequirementService<?> formRequirementService;
 
     @Inject
     protected IFormService formService;
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private RequirementService<?, ?> requirementService;
 
-    public DiffSummary diffFromPrevious(@Nonnull Long petitionId) {
+    public DiffSummary diffFromPrevious(@Nonnull Long requirementId) {
         FormVersionEntity originalFormVersion = null;
         FormVersionEntity newerFormVersion;
 
-        PetitionInstance      petition    = petitionService.getPetition(petitionId);
-        String                typeName    = PetitionUtil.getTypeName(petition);
-        Optional<DraftEntity> draftEntity = petition.getEntity().currentEntityDraftByType(typeName);
+        RequirementInstance requirement    = requirementService.getRequirement(requirementId);
+        String                typeName    = RequirementUtil.getTypeName(requirement);
+        Optional<DraftEntity> draftEntity = requirement.getEntity().currentEntityDraftByType(typeName);
 
         SInstance original = null;
         SInstance newer;
@@ -61,31 +61,31 @@ public class SingularDiffService {
         Date newerDate;
 
         if (draftEntity.isPresent()) {
-            Optional<FormPetitionEntity> lastForm = formPetitionService.findLastFormPetitionEntityByType(petition,
+            Optional<FormRequirementEntity> lastForm = formRequirementService.findLastFormRequirementEntityByType(requirement,
                                                                                                          typeName);
             if (lastForm.isPresent()) {
                 FormEntity originalForm = lastForm.get().getForm();
-                original = formPetitionService.getSInstance(originalForm);
+                original = formRequirementService.getSInstance(originalForm);
                 originalFormVersion = originalForm.getCurrentFormVersionEntity();
                 originalDate = originalFormVersion.getInclusionDate();
             }
 
             newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
             FormEntity newerForm = newerFormVersion.getFormEntity();
-            newer = formPetitionService.getSInstance(newerForm);
+            newer = formRequirementService.getSInstance(newerForm);
             newerDate = draftEntity.get().getEditionDate();
 
         }
         else {
-            List<FormVersionEntity> formPetitionEntities = petitionService
-                    .buscarDuasUltimasVersoesForm(petitionId);
+            List<FormVersionEntity> formRequirementEntities = requirementService
+                    .buscarDuasUltimasVersoesForm(requirementId);
 
-            originalFormVersion = formPetitionEntities.get(1);
-            original = formPetitionService.getSInstance(originalFormVersion);
+            originalFormVersion = formRequirementEntities.get(1);
+            original = formRequirementService.getSInstance(originalFormVersion);
             originalDate = originalFormVersion.getInclusionDate();
 
-            newerFormVersion = formPetitionEntities.get(0);
-            newer = formPetitionService.getSInstance(newerFormVersion);
+            newerFormVersion = formRequirementEntities.get(0);
+            newer = formRequirementService.getSInstance(newerFormVersion);
             newerDate = newerFormVersion.getInclusionDate();
         }
 

@@ -20,7 +20,7 @@ package org.opensingular.server.module.requirement;
 
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.RequirementSender;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 
 import java.util.Optional;
@@ -41,8 +41,8 @@ public class FormFlowSingularRequirement extends DynamicFormFlowSingularRequirem
 
     public FormFlowSingularRequirement(String name, Class<? extends SType<?>> form, Class<? extends FlowDefinition> flow,
                                               Class<? extends AbstractFormPage<?, ?>> initPage,
-                                       Class<? extends PetitionSender> petitionSenderBeanClass) {
-        super(name, form, new BoundedFlowResolver((c, i) -> Optional.of(flow), flow), initPage, petitionSenderBeanClass);
+                                       Class<? extends RequirementSender> requirementSenderBeanClass) {
+        super(name, form, new BoundedFlowResolver((c, i) -> Optional.of(flow), flow), initPage, requirementSenderBeanClass);
     }
 
 }

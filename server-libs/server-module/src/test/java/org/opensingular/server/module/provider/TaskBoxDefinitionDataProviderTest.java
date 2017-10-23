@@ -28,7 +28,7 @@ import org.mockito.Mockito;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.module.BoxInfo;
 import org.springframework.context.ApplicationContext;
@@ -51,7 +51,7 @@ import static org.mockito.Mockito.when;
 public class TaskBoxDefinitionDataProviderTest {
 
     @Mock
-    private PetitionService petitionService;
+    private RequirementService requirementService;
 
     @Mock
     private PermissionResolverService permissionResolverService;
@@ -65,7 +65,7 @@ public class TaskBoxDefinitionDataProviderTest {
     public void setUp() {
         filter = new QuickFilter();
         ApplicationContext mock = Mockito.mock(ApplicationContext.class);
-        Mockito.when(mock.getBean(PetitionService.class)).thenReturn(petitionService);
+        Mockito.when(mock.getBean(RequirementService.class)).thenReturn(requirementService);
         Mockito.when(mock.getBean(PermissionResolverService.class)).thenReturn(permissionResolverService);
         SingularContextSetup.reset();
         new ApplicationContextProvider().setApplicationContext(mock);
@@ -76,7 +76,7 @@ public class TaskBoxDefinitionDataProviderTest {
         Integer                         taskId           = 10;
         List<Map<String, Serializable>> taskInstanceDTOS = listOfTaskInstanceDTOForIDsAndTodayDate(taskId);
 
-        when(petitionService.listTasks(eq(filter), anyList(), anyList())).thenReturn(taskInstanceDTOS);
+        when(requirementService.listTasks(eq(filter), anyList(), anyList())).thenReturn(taskInstanceDTOS);
 
         List<Map<String, Serializable>> itemBoxes       = taskItemBoxDataProvider.search(filter, Mockito.mock(BoxInfo.class));
         Map<String, Serializable>       taskInstanceMap = itemBoxes.get(0);
@@ -88,7 +88,7 @@ public class TaskBoxDefinitionDataProviderTest {
     @Test
     public void testCount() throws Exception {
         Long taskCount = 10L;
-        when(petitionService.countTasks(eq(filter), anyList(), anyList())).thenReturn(taskCount);
+        when(requirementService.countTasks(eq(filter), anyList(), anyList())).thenReturn(taskCount);
         assertThat(taskItemBoxDataProvider.count(filter, Mockito.mock(BoxInfo.class)), Matchers.equalTo(taskCount));
     }
 

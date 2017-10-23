@@ -37,9 +37,9 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String ACTION = "a";
 
-    public static final String PETITION_ID = "k";
+    public static final String REQUIREMENT_ID = "k";
 
-    public static final String PARENT_PETITION_ID = "p";
+    public static final String PARENT_REQUIREMENT_ID = "p";
 
     public static final String FORM_NAME = "f";
 
@@ -79,12 +79,12 @@ public class ActionContext implements Serializable, Loggable {
         return config.copyOfInnerActionContext();
     }
 
-    public Optional<Long> getPetitionId() {
-        return Optional.ofNullable(this.params.get(PETITION_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
+    public Optional<Long> getRequirementId() {
+        return Optional.ofNullable(this.params.get(REQUIREMENT_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
     }
 
-    public ActionContext setPetitionId(Long petitionId) {
-        this.params.put(PETITION_ID, String.valueOf(petitionId));
+    public ActionContext setRequirementId(Long requirementId) {
+        this.params.put(REQUIREMENT_ID, String.valueOf(requirementId));
         return this;
     }
 
@@ -97,24 +97,24 @@ public class ActionContext implements Serializable, Loggable {
         return this;
     }
 
-    public Optional<Long> getParentPetitionId() {
-        return Optional.ofNullable(this.params.get(PARENT_PETITION_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
+    public Optional<Long> getParentRequirementId() {
+        return Optional.ofNullable(this.params.get(PARENT_REQUIREMENT_ID)).flatMap(s -> Optional.of(Long.valueOf(s)));
     }
 
     public Optional<Boolean> getInheritParentFormData() {
         return Optional.ofNullable(this.params.get(INHERIT_PARENT_FORM_DATA)).map(Boolean::valueOf);
     }
 
-    public ActionContext setParentPetitionId(Long parentPetitionId) {
-        this.params.put(PARENT_PETITION_ID, String.valueOf(parentPetitionId));
+    public ActionContext setParentRequirementId(Long parentRequirementId) {
+        this.params.put(PARENT_REQUIREMENT_ID, String.valueOf(parentRequirementId));
         return this;
     }
 
-    public Optional<Long> getRequirementId() {
+    public Optional<Long> getRequirementDefinitionId() {
         return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID)).map(Long::valueOf);
     }
 
-    public void setRequirementId(Long requirementId) {
+    public void setRequirementDefinitionId(Long requirementId) {
         this.params.put(REQUIREMENT_DEFINITION_ID, String.valueOf(requirementId));
     }
 

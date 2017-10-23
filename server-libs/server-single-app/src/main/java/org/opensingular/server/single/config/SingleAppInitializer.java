@@ -65,7 +65,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
                     return AnalysisApplication.class;
                 }
                 else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return PetitionApplication.class;
+                    return RequirementApplication.class;
                 }
                 else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
                     return AdministrationApplication.class;
@@ -147,7 +147,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
         }
     }
 
-    class PetitionApplication extends SingularServerApplication {
+    class RequirementApplication extends SingularServerApplication {
         @Override
         public Class<? extends Page> getHomePage() {
             return SingleAppPage.class;

@@ -36,8 +36,8 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementInstance;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
@@ -64,7 +64,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     FormService formService;
 
     @Inject
-    PetitionService<?, ?> petitionService;
+    RequirementService<?, ?> requirementService;
 
     @Inject
     SpringSDocumentFactory documentFactory;
@@ -93,7 +93,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         SInstance fooInstance = tester.getAssertionsInstance().getTarget();
         FormKey   formKey     = FormKey.from(fooInstance);
 
-        assertNotNull(petitionService.getFormFlowInstanceEntity(fooInstance));
+        assertNotNull(requirementService.getFormFlowInstanceEntity(fooInstance));
         assertNotNull(formService.loadFormEntity(formKey));
 
         SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
@@ -104,7 +104,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementId(requirementDefinitionEntity.getCod());
+        context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -120,10 +120,10 @@ public class FormPageTest extends SingularCommonsBaseTest {
     @Test
     public void testSendForm() {
         tester = new SingularWicketTester(singularApplication);
-        FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
+        FormPage p = sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
 
-        PetitionInstance petition = getPetitionFrom(p);
-        assertNotNull(petition.getFlowInstance());
+        RequirementInstance requirement = getRequirementFrom(p);
+        assertNotNull(requirement.getFlowInstance());
     }
 
     private void fillForm(Page page) {
@@ -138,12 +138,12 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         FormPage p = saveDraft();
 
-        PetitionInstance petition = getPetitionFrom(p);
+        RequirementInstance requirement = getRequirementFrom(p);
 
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setPetitionId(petition.getCod());
+        context.setRequirementId(requirement.getCod());
 
         FormPage p2 = new FormPage(context);
         tester.startPage(p2);
@@ -153,8 +153,8 @@ public class FormPageTest extends SingularCommonsBaseTest {
         assertEquals(SUPER_TESTE_STRING, t2.getDefaultModelObject());
     }
 
-    public PetitionInstance getPetitionFrom(FormPage p) {
-        return (PetitionInstance) new Mirror().on(p).invoke().method("getPetition").withoutArgs();
+    public RequirementInstance getRequirementFrom(FormPage p) {
+        return (RequirementInstance) new Mirror().on(p).invoke().method("getRequirement").withoutArgs();
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -162,14 +162,14 @@ public class FormPageTest extends SingularCommonsBaseTest {
     public void testExecuteTransition() {
         tester = new SingularWicketTester(singularApplication);
 
-        FormPage p = sendPetition(tester, STypeFOO.FULL_NAME, this::fillForm);
+        FormPage p = sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
 
-        PetitionInstance petition = getPetitionFrom(p);
+        RequirementInstance requirement = getRequirementFrom(p);
 
         ActionContext context = new ActionContext();
         context.setFormName(STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_ANALYSIS);
-        context.setPetitionId(petition.getCod());
+        context.setRequirementId(requirement.getCod());
 
         FormPage p2 = new FormPage(context);
         tester.startPage(p2);
@@ -191,8 +191,8 @@ public class FormPageTest extends SingularCommonsBaseTest {
                 .getTarget();
         tester.executeAjaxEvent(confirmationButton, "click");
 
-        PetitionInstance petitionFrom = getPetitionFrom(p2);
-        TaskInstance     currentTask = petitionFrom.getCurrentTaskOrException();
+        RequirementInstance requirementFrom = getRequirementFrom(p2);
+        TaskInstance     currentTask = requirementFrom.getCurrentTaskOrException();
         assertEquals("No more bar", currentTask.getName());
     }
 

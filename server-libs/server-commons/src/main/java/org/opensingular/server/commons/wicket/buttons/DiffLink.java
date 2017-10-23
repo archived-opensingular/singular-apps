@@ -24,9 +24,9 @@ import org.apache.wicket.model.IModel;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-
 import java.util.Optional;
+
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public class DiffLink extends Panel {
 
@@ -36,9 +36,9 @@ public class DiffLink extends Panel {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                Optional<Long> petitionId = context.getPetitionId();
-                if(petitionId.isPresent()){
-                    this.add($b.attr("target", String.format("diff%s", petitionId.get())));
+                Optional<Long> requirementId = context.getRequirementId();
+                if(requirementId.isPresent()){
+                    this.add($b.attr("target", String.format("diff%s", requirementId.get())));
                     this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
                     this.setBody(labelModel);
                 }

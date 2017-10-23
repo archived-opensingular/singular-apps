@@ -26,8 +26,8 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.service.dto.RequirementData;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
@@ -67,7 +67,7 @@ public class WorkspaceMetadataMockBean {
         box.setId("id-teste-SingularServerSessionConfigurationMock");
         box.setLabel("super caixa");
         box.setProcesses(new ArrayList<>());
-        ProcessDTO p = new ProcessDTO("ajaaja", "ajaaja", null, Collections.emptyList());
+        RequirementDefinitionDTO p = new RequirementDefinitionDTO("ajaaja", "ajaaja", null, Collections.emptyList());
         box.getProcesses().add(p);
         box.setBoxesDefinition(new ArrayList<>());
         BoxDefinitionData boxDefinitionData = new BoxDefinitionData();

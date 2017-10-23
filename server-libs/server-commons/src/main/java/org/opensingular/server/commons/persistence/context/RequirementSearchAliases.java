@@ -28,18 +28,18 @@ import org.opensingular.flow.persistence.entity.QTaskVersionEntity;
 import org.opensingular.form.persistence.entity.QFormEntity;
 import org.opensingular.form.persistence.entity.QFormTypeEntity;
 import org.opensingular.form.persistence.entity.QFormVersionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QApplicantEntity;
 import org.opensingular.server.commons.persistence.entity.form.QDraftEntity;
-import org.opensingular.server.commons.persistence.entity.form.QFormPetitionEntity;
-import org.opensingular.server.commons.persistence.entity.form.QPetitionEntity;
-import org.opensingular.server.commons.persistence.entity.form.QPetitionerEntity;
+import org.opensingular.server.commons.persistence.entity.form.QFormRequirementEntity;
 import org.opensingular.server.commons.persistence.entity.form.QRequirementDefinitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.QRequirementEntity;
 
 public class RequirementSearchAliases {
 
-    public QPetitionEntity              petition                      = new QPetitionEntity("petition");
-    public QPetitionerEntity            petitionerEntity              = new QPetitionerEntity("petitionerEntity");
+    public QRequirementEntity requirement = new QRequirementEntity("requirement");
+    public QApplicantEntity applicantEntity = new QApplicantEntity("applicantEntity");
     public QFlowInstanceEntity flowInstance = new QFlowInstanceEntity("flowInstance");
-    public QFormPetitionEntity          formPetitionEntity            = new QFormPetitionEntity("formPetitionEntity");
+    public QFormRequirementEntity formRequirementEntity = new QFormRequirementEntity("formRequirementEntity");
     public QFormEntity                  formEntity                    = new QFormEntity("formEntity");
     public QDraftEntity                 currentDraftEntity            = new QDraftEntity("currentDraftEntity");
     public QFormEntity                  formDraftEntity               = new QFormEntity("formDraftEntity");

@@ -23,9 +23,9 @@ import org.junit.Test;
 
 public class SingularServerExceptionTest {
 
-    @Test(expected = PetitionWithoutDefinitionException.class)
-    public void petitionWithoutDefinitionExceptionTest(){
-        throw new PetitionWithoutDefinitionException();
+    @Test(expected = RequirementWithoutDefinitionException.class)
+    public void requirementWithoutDefinitionExceptionTest(){
+        throw new RequirementWithoutDefinitionException();
     }
 
     @Test(expected = SingularServerException.class)

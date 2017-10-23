@@ -26,7 +26,7 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.output.BOutputPanel;
-import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.service.FormRequirementService;
 import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
@@ -42,7 +42,7 @@ import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 public class DiffFormPage extends ServerTemplate {
 
     @Inject
-    protected FormPetitionService<?> formPetitionService;
+    protected FormRequirementService<?> formRequirementService;
 
     @Inject
     protected IFormService formService;
@@ -63,10 +63,10 @@ public class DiffFormPage extends ServerTemplate {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        Optional<Long> petitionId = config.getPetitionId();
+        Optional<Long> requirementId = config.getRequirementId();
 
-        if (petitionId.isPresent()) {
-            diffSummary = singularDiffService.diffFromPrevious(petitionId.get());
+        if (requirementId.isPresent()) {
+            diffSummary = singularDiffService.diffFromPrevious(requirementId.get());
             add(contentGrid);
             adicionarDatas(diffSummary.getPreviousFormVersionDate(), diffSummary.getCurrentFormVersionDate());
             add(new DiffVisualizer("diff", diffSummary.getDiff()));

@@ -34,7 +34,7 @@ public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Ser
     }
 
     public Long getCod() {
-        Object codRequirement = get("codPeticao");
+        Object codRequirement = get("codRequirement");
         if (codRequirement instanceof Number) {
             return ((Number) codRequirement).longValue();
         } else if (codRequirement instanceof String) {
