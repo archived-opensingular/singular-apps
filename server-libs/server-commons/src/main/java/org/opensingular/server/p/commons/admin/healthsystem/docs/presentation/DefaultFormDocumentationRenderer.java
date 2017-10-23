@@ -84,7 +84,7 @@ public class DefaultFormDocumentationRenderer implements FormDocumentationRender
 
     protected TableOutput getTableOutputHtml(Writer writer) {
         try {
-            return new TableOutputHtml(new ViewOutputHtmlWriterWrap(writer, true));
+            return new TableOutputHtml(new ViewOutputHtmlWriterWrap(writer, true), false);
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
         }
