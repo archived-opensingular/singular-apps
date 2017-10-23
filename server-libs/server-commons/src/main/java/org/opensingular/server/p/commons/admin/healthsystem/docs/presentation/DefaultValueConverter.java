@@ -37,11 +37,12 @@ public class DefaultValueConverter implements FormFieldValueConverter, Loggable 
 
     }
 
+    @SuppressWarnings("unchecked")
     protected String defaultToString(Object value) {
         if (value == null || (value instanceof Collection && ((Collection) value).isEmpty())) {
             return null;
         } else if (value instanceof Collection) {
-            return Joiner.on(", ").join(((Collection<Object>) value).stream().map(this::defaultToString).filter(s -> StringUtils.isNotBlank(s.toString())).collect(Collectors.toList()));
+            return Joiner.on(", ").join(((Collection<Object>) value).stream().map(this::defaultToString).filter(StringUtils::isNotBlank).collect(Collectors.toList()));
         } else {
             return String.valueOf(value);
         }
