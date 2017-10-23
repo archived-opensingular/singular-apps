@@ -72,7 +72,7 @@ public class DefaultFormDocumentationRenderer implements FormDocumentationRender
     private TableTool newTableTool(DocTable table, List<FormDocumentationColumnRenderer> columns) {
         TableTool tableTool = new TableTool();
         for (FormDocumentationColumnRenderer renderer : columns) {
-            tableTool.addColumn(ColumnType.STRING, renderer.getColumnName());
+            tableTool.addColumn(ColumnType.RAW_STRING, renderer.getColumnName());
         }
         tableTool.addSuperTitle(0, columns.size() - 1, table.getName());
         return tableTool;
@@ -84,7 +84,7 @@ public class DefaultFormDocumentationRenderer implements FormDocumentationRender
 
     protected TableOutput getTableOutputHtml(Writer writer) {
         try {
-            return new TableOutputHtml(new ViewOutputHtmlWriterWrap(writer, true), false);
+            return new TableOutputHtml(new ViewOutputHtmlWriterWrap(writer, true));
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
         }
