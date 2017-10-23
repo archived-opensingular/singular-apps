@@ -18,6 +18,7 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
 import org.opensingular.form.STypeSimple;
@@ -34,6 +35,7 @@ import org.opensingular.form.view.SMultiSelectionByPicklistView;
 import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
+import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 
@@ -48,7 +50,7 @@ import static org.opensingular.server.p.commons.admin.healthsystem.Documentation
  * Translates some metadatas from {@link SType} to human-readable documentation info.
  * The information is gathered only form form input fields as defined by {{@link #isFormInputField()}}
  */
-public class DocumentationFieldMetadataBuilder implements Loggable {
+class DocumentationFieldMetadataBuilder implements Loggable {
 
     private DocFieldMetadata docFieldMetadata;
 
@@ -96,7 +98,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
     private String initFieldSubtitle(SType<?> type) {
-        return getAttribute(type, SPackageBasic.ATR_SUBTITLE).orElse(null);
+        return StringUtils.defaultString(getAttribute(type, SPackageBasic.ATR_SUBTITLE).orElse(null), null);
     }
 
     private Long initMaxUploadInBytes(SType<?> type) {
@@ -105,7 +107,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
             if (type instanceof STypeAttachmentList) {
                 uploadType = ((STypeAttachmentList) type).getElementsType();
             }
-            getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE).orElse(null);
+            return getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE).orElse(null);
         }
         return null;
     }
@@ -168,7 +170,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
     private String initMask(SType<?> type) {
-        return getAttribute(type, SPackageBasic.ATR_BASIC_MASK).orElse(null);
+        return StringUtils.defaultString(getAttribute(type, SPackageBasic.ATR_BASIC_MASK).map(InputMaskBehavior.Masks::valueOf).map(InputMaskBehavior.Masks::getMask).orElse(null), null);
     }
 
     private Boolean initVisibilityRule(SType<?> type) {

@@ -35,7 +35,7 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentatioTablePage;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocumentationTablePage;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -76,14 +76,12 @@ public class DocsPanel extends Panel implements Loggable {
     }
 
     private void buildColumn(BSActionColumn<Class<? extends STypeComposite>, String> actionColumn) {
-        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> gerarTabela(a, s, true, true));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SN)"), DefaultIcons.TRASH, (a,s) -> gerarTabela(a, s, false, true));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO)"), DefaultIcons.EXCLAMATION_TRIANGLE, (a,s) -> gerarTabela(a, s, true, false));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO&SN)"), DefaultIcons.ROCKET, (a,s) -> gerarTabela(a, s, false, false));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> gerarTabela(a, s, false));
+        actionColumn.appendAction($m.ofValue("Gerar Excel"), DefaultIcons.ROCKET, (a,s) -> gerarTabela(a, s, true));
     }
 
-    private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean showNumbers, boolean showObservacoes) {
-        setResponsePage(new DocumentatioTablePage(model.getObject(), showNumbers, showObservacoes));
+    private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean excel) {
+            setResponsePage(new DocumentationTablePage(model.getObject(), excel));
     }
 
 

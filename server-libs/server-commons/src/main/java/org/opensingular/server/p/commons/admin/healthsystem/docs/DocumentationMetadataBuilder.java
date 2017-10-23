@@ -29,9 +29,6 @@ import org.opensingular.form.view.SViewTab;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRow;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowBlockSeparator;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentationRowFieldMetadata;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -255,45 +252,7 @@ public class DocumentationMetadataBuilder {
         return tableRoots;
     }
 
-    /**
-     * Tabulates metadata from blocks/fields into tables and rows information including block separator for non
-     * orphan blocks
-     *
-     * @return
-     */
-    public List<TabulatedMetadata> getTabulatedFormat() {
-        List<TabulatedMetadata> list = new ArrayList<>();
-        for (DocTable table : tableRoots) {
-            List<DocumentationRow> documentationRows = new ArrayList<>();
-            for (DocBlock docBlock : table.getBlockList()) {
-                if (!docBlock.getMetadataList().isEmpty()) {
-                    documentationRows.addAll(getTableBlockSeparators(docBlock, table));
-                    documentationRows.addAll(getTableBlockLines(docBlock));
-                }
-            }
-            if (!documentationRows.isEmpty()) {
-                documentationRows.add(0, new DocumentationRowFieldMetadata("&lt;&lt;Apresentação da tela&gt;&gt;"));
-                list.add(new TabulatedMetadata(table.getName(), documentationRows));
-            }
-        }
-        return list;
-    }
 
-    private Collection<? extends DocumentationRow> getTableBlockSeparators(DocBlock docBlock, DocTable table) {
-        List<DocumentationRow> documentationRows = new ArrayList<>();
-        if (!docBlock.isOrphanBlock() && table.getBlockList().size() > 1) {
-            documentationRows.add(new DocumentationRowBlockSeparator(docBlock.getBlockName()));
-        }
-        return documentationRows;
-    }
-
-    private Collection<? extends DocumentationRow> getTableBlockLines(DocBlock docBlock) {
-        List<DocumentationRow> documentationRows = new ArrayList<>();
-        for (DocFieldMetadata docFieldMetadata : docBlock.getMetadataList()) {
-            documentationRows.add(new DocumentationRowFieldMetadata(docFieldMetadata));
-        }
-        return documentationRows;
-    }
 
 
 }

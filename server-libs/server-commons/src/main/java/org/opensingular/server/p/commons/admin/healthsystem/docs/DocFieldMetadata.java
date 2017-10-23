@@ -21,30 +21,75 @@ package org.opensingular.server.p.commons.admin.healthsystem.docs;
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.util.Loggable;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TreeSet;
 
 public class DocFieldMetadata implements Loggable {
 
-    private SType<?> rootType;
-    private SType<?> type;
-    private String fieldName;
-    private String subtitle;
-    private boolean required;
-    private boolean enabled;
-    private boolean hasEnablingRule;
-    private boolean hasValidationRule;
-    private boolean hasRequiredRule;
-    private boolean hasVisibilityRule;
-    private boolean hasUpdateListener;
-    private TreeSet<String> dependentFieldsDescription;
-    private String mask;
-    private Integer maxSize;
-    private Integer minSize;
-    private List<String> enumSelectOptions;
-    private HTMLComponentType componentType;
-    private Integer fieldLength;
-    private Long maxUploadSizeInBytes;
+    public static class DocFieldValue<T> {
+
+        public static DocFieldValue<SType> ROOT_STYPE = new DocFieldValue<>(SType.class, "ROOT_STYPE");
+
+        public static DocFieldValue<SType> STYPE = new DocFieldValue<>(SType.class, "STYPE");
+
+        public static DocFieldValue<String> FIELD_NAME = new DocFieldValue<>(String.class, "FIELD_NAME");
+
+        public static DocFieldValue<String> FIELD_SUBTITLE = new DocFieldValue<>(String.class, "FIELD_SUBTITLE");
+
+        public static DocFieldValue<Boolean> REQUIRED = new DocFieldValue<>(Boolean.class, "REQUIRED");
+
+        public static DocFieldValue<Boolean> ENABLED = new DocFieldValue<>(Boolean.class, "ENABLED");
+
+        public static DocFieldValue<Boolean> HAS_ENABLING_RULE = new DocFieldValue<>(Boolean.class, "HAS_ENABLING_RULE");
+
+        public static DocFieldValue<Boolean> HAS_VALIDATION_RULE = new DocFieldValue<>(Boolean.class, "HAS_VALIDATION_RULE");
+
+        public static DocFieldValue<Boolean> HAS_VISIBILITY_RULE = new DocFieldValue<>(Boolean.class, "HAS_VISIBILITY_RULE");
+
+        public static DocFieldValue<Boolean> HAS_REQUIRED_RULE = new DocFieldValue<>(Boolean.class, "HAS_REQUIRED_RULE");
+
+        public static DocFieldValue<Boolean> HAS_UPDATE_LISTENER = new DocFieldValue<>(Boolean.class, "HAS_UPDATE_LISTENER");
+
+        public static DocFieldValue<TreeSet> DEPENDENT_STYPES_FIELDS_NAME = new DocFieldValue<>(TreeSet.class, "DEPENDENT_STYPES_FIELDS_NAME");
+
+        public static DocFieldValue<String> MASK = new DocFieldValue<>(String.class, "MASK");
+
+        public static DocFieldValue<Integer> MAX_SIZE = new DocFieldValue<>(Integer.class, "MAX_SIZE");
+
+        public static DocFieldValue<Integer> MIN_SIZE = new DocFieldValue<>(Integer.class, "MIN_SIZE");
+
+        public static DocFieldValue<List> ENUM_SELECTION_OPTIONS = new DocFieldValue<>(List.class, "ENUM_SELECTION_OPTIONS");
+
+        public static DocFieldValue<HTMLComponentType> HTML_COMPONENT_TYPE = new DocFieldValue<>(HTMLComponentType.class, "HTML_COMPONENT_TYPE");
+
+        public static DocFieldValue<Integer> FIELD_LENGTH = new DocFieldValue<>(Integer.class, "FIELD_LENGTH");
+
+        public static DocFieldValue<Long> MAX_UPLOAD_SIZE_IN_BYTES = new DocFieldValue<>(Long.class, "MAX_UPLOAD_SIZE_IN_BYTES");
+
+
+        private Class<T> valueType;
+        private String key;
+
+        private DocFieldValue(Class<T> valueType, String key) {
+            this.valueType = valueType;
+            this.key = key;
+
+        }
+
+        public Class<T> getColumnType() {
+            return valueType;
+        }
+
+        public String getKey() {
+            return key;
+        }
+    }
+
+
+    private Map<DocFieldValue, Object> values = new HashMap<>();
+
 
     public DocFieldMetadata() {
 
@@ -55,102 +100,29 @@ public class DocFieldMetadata implements Loggable {
                             boolean hasVisibilityRule, boolean hasUpdateListener, TreeSet<String> dependentFieldsDescription, String mask,
                             Integer maxSize, Integer minSize, List<String> enumSelectOptions,
                             HTMLComponentType componentType, Integer fieldLength, Long maxUploadSizeInBytes) {
-        this.rootType = rootType;
-        this.type = type;
-        this.fieldName = fieldName;
-        this.subtitle = subtitle;
-        this.required = required;
-        this.enabled = enabled;
-        this.hasEnablingRule = hasEnablingRule;
-        this.hasValidationRule = hasValidationRule;
-        this.hasRequiredRule = hasRequiredRule;
-        this.hasVisibilityRule = hasVisibilityRule;
-        this.hasUpdateListener = hasUpdateListener;
-        this.dependentFieldsDescription = dependentFieldsDescription;
-        this.mask = mask;
-        this.maxSize = maxSize;
-        this.minSize = minSize;
-        this.enumSelectOptions = enumSelectOptions;
-        this.componentType = componentType;
-        this.fieldLength = fieldLength;
-        this.maxUploadSizeInBytes = maxUploadSizeInBytes;
+        this.values.put(DocFieldValue.ROOT_STYPE, rootType);
+        this.values.put(DocFieldValue.STYPE, type);
+        this.values.put(DocFieldValue.FIELD_NAME, fieldName);
+        this.values.put(DocFieldValue.FIELD_SUBTITLE, subtitle);
+        this.values.put(DocFieldValue.REQUIRED, required);
+        this.values.put(DocFieldValue.ENABLED, enabled);
+        this.values.put(DocFieldValue.HAS_ENABLING_RULE, hasEnablingRule);
+        this.values.put(DocFieldValue.HAS_VALIDATION_RULE, hasValidationRule);
+        this.values.put(DocFieldValue.HAS_REQUIRED_RULE, hasRequiredRule);
+        this.values.put(DocFieldValue.HAS_VISIBILITY_RULE, hasVisibilityRule);
+        this.values.put(DocFieldValue.HAS_UPDATE_LISTENER, hasUpdateListener);
+        this.values.put(DocFieldValue.DEPENDENT_STYPES_FIELDS_NAME, dependentFieldsDescription);
+        this.values.put(DocFieldValue.MASK, mask);
+        this.values.put(DocFieldValue.MAX_SIZE, maxSize);
+        this.values.put(DocFieldValue.MIN_SIZE, minSize);
+        this.values.put(DocFieldValue.ENUM_SELECTION_OPTIONS, enumSelectOptions);
+        this.values.put(DocFieldValue.HTML_COMPONENT_TYPE, componentType);
+        this.values.put(DocFieldValue.FIELD_LENGTH, fieldLength);
+        this.values.put(DocFieldValue.MAX_UPLOAD_SIZE_IN_BYTES, maxUploadSizeInBytes);
     }
 
-
-    public TreeSet<String> getDependentFieldsDescription() {
-        return dependentFieldsDescription;
-    }
-
-    public SType<?> getRootType() {
-        return rootType;
-    }
-
-    public SType<?> getType() {
-        return type;
-    }
-
-    public String getFieldName() {
-        return fieldName;
-    }
-
-    public boolean isRequired() {
-        return required;
-    }
-
-    public boolean isEnabled() {
-        return enabled;
-    }
-
-    public boolean isHasEnablingRule() {
-        return hasEnablingRule;
-    }
-
-    public boolean isHasValidationRule() {
-        return hasValidationRule;
-    }
-
-    public boolean isHasRequiredRule() {
-        return hasRequiredRule;
-    }
-
-    public boolean isHasVisibilityRule() {
-        return hasVisibilityRule;
-    }
-
-    public String getSubtitle() {
-        return subtitle;
-    }
-
-    public String getMask() {
-        return mask;
-    }
-
-    public Integer getMaxSize() {
-        return maxSize;
-    }
-
-    public Integer getMinSize() {
-        return minSize;
-    }
-
-    public List<String> getEnumSelectOptions() {
-        return enumSelectOptions;
-    }
-
-    public HTMLComponentType getComponentType() {
-        return componentType;
-    }
-
-    public Integer getFieldLength() {
-        return fieldLength;
-    }
-
-    public Long getMaxUploadSizeInBytes() {
-        return maxUploadSizeInBytes;
-    }
-
-    public boolean isHasUpdateListener() {
-        return hasUpdateListener;
+    public <T> Object getValue(DocFieldValue<T> field) {
+        return values.get(field);
     }
 
 }

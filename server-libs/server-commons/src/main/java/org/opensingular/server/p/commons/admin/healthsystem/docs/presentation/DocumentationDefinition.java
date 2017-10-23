@@ -16,18 +16,16 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.p.commons.admin.healthsystem.docs.presentation;
 
-public enum HTMLComponentType {
-    INPUT_FIELD,
-    SELECT,
-    MULTI_SELECT,
-    CHECKBOX,
-    UPLOAD,
-    MULTI_UPLOAD,
-    DATE,
-    DATETIME,
-    IMAGE_UPLOAD,
-    PICK_LIST,
-    TIME;
+import java.util.List;
+
+/**
+ * Specifies the configuration form Form Documentation Tables.
+ */
+public interface DocumentationDefinition {
+
+    List<FormDocumentationColumnRenderer> getColumns();
+
+    FormDocumentationRenderer getRenderer();
 }

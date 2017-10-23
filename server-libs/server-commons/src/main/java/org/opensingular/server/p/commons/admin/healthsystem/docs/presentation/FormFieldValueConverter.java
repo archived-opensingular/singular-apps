@@ -16,18 +16,11 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.p.commons.admin.healthsystem.docs.presentation;
 
-public enum HTMLComponentType {
-    INPUT_FIELD,
-    SELECT,
-    MULTI_SELECT,
-    CHECKBOX,
-    UPLOAD,
-    MULTI_UPLOAD,
-    DATE,
-    DATETIME,
-    IMAGE_UPLOAD,
-    PICK_LIST,
-    TIME;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocFieldMetadata;
+
+public interface FormFieldValueConverter {
+
+    String format(DocFieldMetadata.DocFieldValue<?> fieldValue, Object o);
 }
