@@ -72,7 +72,7 @@ public class DefaultFormDocumentationRenderer implements FormDocumentationRender
     private TableTool newTableTool(DocTable table, List<FormDocumentationColumnRenderer> columns) {
         TableTool tableTool = new TableTool();
         for (FormDocumentationColumnRenderer renderer : columns) {
-            tableTool.addColumn(ColumnType.RAW_STRING, renderer.getColumnName());
+            tableTool.addColumn(ColumnType.HTML, renderer.getColumnName());
         }
         tableTool.addSuperTitle(0, columns.size() - 1, table.getName());
         return tableTool;
