@@ -114,7 +114,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Actor> listAllocableUsers(Integer taskInstanceId) {
+    public List<Actor> listAllowedUsers(Integer taskInstanceId) {
         StringBuilder sql = new StringBuilder();
         sql.append(" SELECT DISTINCT a.CO_ATOR AS \"cod\",");
         sql.append("   a.CO_USUARIO            AS \"codUsuario\",");

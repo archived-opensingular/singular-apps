@@ -47,7 +47,6 @@ import org.opensingular.server.commons.persistence.dao.form.RequirementContentHi
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
-import org.opensingular.server.commons.persistence.dto.RequirementDTO;
 import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.ApplicantEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;
@@ -226,10 +225,6 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return getRequirement(taskInstance.getFlowInstance());
     }
 
-    public void deleteRequirement(RequirementDTO requirement) {
-        deleteRequirement(requirement.getCodRequirement());
-    }
-
     public void deleteRequirement(@Nonnull Long idRequirement) {
         requirementDAO.find(idRequirement).ifPresent(re -> requirementDAO.delete(re));
     }
@@ -264,10 +259,10 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return formRequirementService.saveFormRequirement(requirement, instance, mainForm);
     }
 
-    public void onAfterStartFlow(RI requirement, SInstance instance, String codResponsavel, FlowInstance flowInstance) {
+    public void onAfterStartFlow(RI requirement, SInstance instance, String codSubmitterActor, FlowInstance flowInstance) {
     }
 
-    public void onBeforeStartFlow(RI requirement, SInstance instance, String codResponsavel) {
+    public void onBeforeStartFlow(RI requirement, SInstance instance, String codSubmitterActor) {
     }
 
     public void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
@@ -423,9 +418,9 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(requirement, menu, filter);
     }
 
-    public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
+    public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
         Integer taskInstanceId = Integer.valueOf(String.valueOf(selectedTask.get("taskInstanceId")));
-        return actorDAO.listAllocableUsers(taskInstanceId);
+        return actorDAO.listAllowedUsers(taskInstanceId);
     }
 
     public ApplicantEntity findApplicantByExternalId(String externalId) {
@@ -540,14 +535,15 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
                 version -> (SIComposite) getFormRequirementService().getSInstance(version.getFormVersion()));
     }
 
-    public FlowInstance startNewFlow(RequirementInstance requirement, FlowDefinition flowDefinition, String codResponsavel) {
+    @Nonnull
+    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(requirement.getDescription());
 
         FlowInstanceEntity flowEntity = newFlowInstance.saveEntity();
 
-        if(codResponsavel != null) {
-            RequirementUtil.findUser(codResponsavel).filter(u -> u instanceof Actor).ifPresent(user -> {
+        if(codSubmitterActor != null) {
+            RequirementUtil.findUser(codSubmitterActor).filter(u -> u instanceof Actor).ifPresent(user -> {
                 flowEntity.setUserCreator((Actor) user);
             });
         }

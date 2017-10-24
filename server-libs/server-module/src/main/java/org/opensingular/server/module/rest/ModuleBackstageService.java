@@ -188,7 +188,7 @@ public class ModuleBackstageService implements Loggable {
         return new BoxItemDataList();
     }
 
-    public List<Actor> listAllocableUsers(Map<String, Object> selectedTask) {
-        return requirementService.listAllocableUsers(selectedTask);
+    public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
+        return requirementService.listAllowedUsers(selectedTask);
     }
 }

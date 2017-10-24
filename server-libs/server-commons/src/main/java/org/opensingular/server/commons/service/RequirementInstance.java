@@ -149,7 +149,7 @@ public class RequirementInstance implements Serializable {
 
     }
 
-    public FlowInstance startNewFlow(FlowDefinition flowDefinition) {
+    public FlowInstance startNewFlow(@Nonnull FlowDefinition flowDefinition) {
         flowInstance = getRequirementService().startNewFlow(this, flowDefinition, null);
         return flowInstance;
     }

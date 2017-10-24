@@ -21,8 +21,18 @@ package org.opensingular.server.commons.service;
 import org.opensingular.form.SInstance;
 import org.opensingular.server.commons.service.dto.RequirementSenderFeedback;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
+/**
+ * Implements the logic responsible to transform a draft requirement into a effective requirement that will follow the
+ * defined flow of the requirement. So this is the actual method that start de requirement.
+ *
+ * @see DefaultRequirementSender
+ */
 public interface RequirementSender {
 
-    RequirementSenderFeedback send(RequirementInstance requirement, SInstance instance, String codResponsavel);
+    @Nonnull
+    RequirementSenderFeedback send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor);
 
 }

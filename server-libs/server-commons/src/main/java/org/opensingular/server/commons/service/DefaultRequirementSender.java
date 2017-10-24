@@ -25,6 +25,8 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.service.dto.RequirementSenderFeedback;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.util.List;
@@ -39,13 +41,13 @@ public class DefaultRequirementSender implements RequirementSender {
     private FormRequirementService<RequirementEntity> formRequirementService;
 
     @Override
-    public RequirementSenderFeedback send(RequirementInstance requirement, SInstance instance, String codResponsavel) {
+    public RequirementSenderFeedback send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor) {
         final List<FormEntity> consolidatedDrafts = formRequirementService.consolidateDrafts(requirement);
         final FlowDefinition<?> flowDefinition = RequirementUtil.getFlowDefinition(requirement.getEntity());
 
-        requirementService.onBeforeStartFlow(requirement, instance, codResponsavel);
-        FlowInstance flowInstance = requirementService.startNewFlow(requirement, flowDefinition, codResponsavel);
-        requirementService.onAfterStartFlow(requirement, instance, codResponsavel, flowInstance);
+        requirementService.onBeforeStartFlow(requirement, instance, codSubmitterActor);
+        FlowInstance flowInstance = requirementService.startNewFlow(requirement, flowDefinition, codSubmitterActor);
+        requirementService.onAfterStartFlow(requirement, instance, codSubmitterActor, flowInstance);
 
         requirementService.saveRequirementHistory(requirement, consolidatedDrafts);
 

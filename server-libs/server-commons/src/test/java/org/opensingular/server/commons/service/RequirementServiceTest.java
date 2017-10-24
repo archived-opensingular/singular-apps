@@ -35,7 +35,6 @@ import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
-import org.opensingular.server.commons.persistence.dto.RequirementDTO;
 import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
@@ -168,10 +167,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
 
-        RequirementDTO dto = new RequirementDTO();
-        dto.setCodRequirement(requirementInstance.getCod());
-
-        requirementService.deleteRequirement(dto);
+        requirementService.deleteRequirement(requirementInstance.getCod());
         Assert.assertFalse(requirementService.findRequirement(requirementInstance.getCod()).isPresent());
     }
 
