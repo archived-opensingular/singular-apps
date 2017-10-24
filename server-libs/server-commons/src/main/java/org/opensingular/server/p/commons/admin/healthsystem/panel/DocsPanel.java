@@ -76,8 +76,8 @@ public class DocsPanel extends Panel implements Loggable {
     }
 
     private void buildColumn(BSActionColumn<Class<? extends STypeComposite>, String> actionColumn) {
-        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> gerarTabela(a, s, false));
-        actionColumn.appendAction($m.ofValue("Gerar Excel"), DefaultIcons.ROCKET, (a,s) -> gerarTabela(a, s, true));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> createTable(a, s, false));
+        actionColumn.appendAction($m.ofValue("Gerar Excel"), DefaultIcons.ROCKET, (a,s) -> createTable(a, s, true));
     }
 
     private void createTable(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean excel) {
