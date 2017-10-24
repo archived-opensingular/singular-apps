@@ -60,8 +60,8 @@ public class DocumentationMetadataUtil {
     }
 
 
-    public static Set<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
-        Set<String> values = new TreeSet<>();
+    public static TreeSet<String> resolveDependsOn(SType<?> rootType, SType<?> type) {
+        TreeSet<String> values = new TreeSet<>();
         Collection<AtrBasic.DelayedDependsOnResolver> dependOnResolverList = getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION).map(Supplier::get).orElse(Collections.emptyList());
         for (AtrBasic.DelayedDependsOnResolver func : dependOnResolverList) {
             if (func != null) {

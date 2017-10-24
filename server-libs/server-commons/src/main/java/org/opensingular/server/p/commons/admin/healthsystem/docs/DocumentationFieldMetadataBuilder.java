@@ -18,7 +18,6 @@
 
 package org.opensingular.server.p.commons.admin.healthsystem.docs;
 
-import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
@@ -28,9 +27,12 @@ import org.opensingular.form.provider.ProviderContext;
 import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
+import org.opensingular.form.type.core.STypeTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
+import org.opensingular.form.view.SMultiSelectionByPicklistView;
+import org.opensingular.form.view.SView;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
@@ -38,9 +40,8 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
 
 import java.io.Serializable;
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil.*;
@@ -48,20 +49,17 @@ import static org.opensingular.server.p.commons.admin.healthsystem.Documentation
 /**
  * Translates some metadatas from {@link SType} to human-readable documentation info.
  * The information is gathered only form form input fields as defined by {{@link #isFormInputField()}}
- *
  */
-public class DocumentationFieldMetadataBuilder implements Loggable {
+class DocumentationFieldMetadataBuilder implements Loggable {
 
-    private static final String EMPTY_VALUE = "-";
-    public static final String SEPARATOR = "<br>";
-
-    private final DocFieldMetadata docFieldMetadata;
+    private DocFieldMetadata docFieldMetadata;
 
     private boolean modal;
     private boolean selection;
     private boolean simple;
     private boolean upload;
     private boolean hiddenForDocumentation;
+
 
     public DocumentationFieldMetadataBuilder(SType<?> rootType, SType<?> type) {
         this.modal = initModal(type);
@@ -74,16 +72,125 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
                     rootType,
                     type,
                     initFieldName(type),
-                    initEnabled(type),
-                    initSize(type),
-                    initTypeAbbreviation(type),
+                    initFieldSubtitle(type),
                     initRequired(type),
-                    initGeneralInformation(type, rootType),
-                    initMessages(type),
-                    initBusinessRules(type));
+                    initEnabled(type),
+                    initEnablingRule(type),
+                    initValidationRule(type),
+                    initRequiredRule(type),
+                    initBusinessRules(type),
+                    initVisibilityRule(type),
+                    resolveDependsOn(rootType, type),
+                    initMask(type),
+                    initMaxSize(type),
+                    initMinSize(type),
+                    initEnumSelectDomain(type),
+                    initHtmlComponentType(type),
+                    initFieldLength(type),
+                    initMaxUploadInBytes(type));
         } else {
             docFieldMetadata = null;
         }
+    }
+
+    private boolean initBusinessRules(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_UPDATE_LISTENER).isPresent();
+    }
+
+    private String initFieldSubtitle(SType<?> type) {
+        return StringUtils.defaultString(getAttribute(type, SPackageBasic.ATR_SUBTITLE).orElse(null), null);
+    }
+
+    private Long initMaxUploadInBytes(SType<?> type) {
+        if (upload) {
+            SType<?> uploadType = type;
+            if (type instanceof STypeAttachmentList) {
+                uploadType = ((STypeAttachmentList) type).getElementsType();
+            }
+            return getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE).orElse(null);
+        }
+        return null;
+    }
+
+    private Integer initFieldLength(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_MAX_LENGTH).orElse(null);
+    }
+
+    private HTMLComponentType initHtmlComponentType(SType<?> s) {
+        if (selection) {
+            return resolveSelectionType(s);
+        } else if (s instanceof STypeDate) {
+            return HTMLComponentType.DATE;
+        } else if (s instanceof STypeDateTime) {
+            return HTMLComponentType.DATETIME;
+        } else if (s instanceof STypeTime) {
+            return HTMLComponentType.TIME;
+        } else if (s instanceof STypeAttachmentImage) {
+            return HTMLComponentType.IMAGE_UPLOAD;
+        } else if (s instanceof STypeAttachment) {
+            return HTMLComponentType.UPLOAD;
+        } else if (s instanceof STypeAttachmentList) {
+            return HTMLComponentType.MULTI_UPLOAD;
+        } else {
+            return HTMLComponentType.INPUT_FIELD;
+        }
+    }
+
+    private HTMLComponentType resolveSelectionType(SType<?> s) {
+        if (s.isList()) {
+            SView view = ViewResolver.resolveView(s);
+            if (view instanceof SMultiSelectionByCheckboxView) {
+                return HTMLComponentType.CHECKBOX;
+            } else if (view instanceof SMultiSelectionByPicklistView) {
+                return HTMLComponentType.PICK_LIST;
+            } else {
+                return HTMLComponentType.MULTI_SELECT;
+            }
+        } else {
+            return HTMLComponentType.SELECT;
+        }
+    }
+
+    @SuppressWarnings("unchecked")
+    private List<String> initEnumSelectDomain(SType<?> type) {
+        if (selection && type.asAtrProvider().getConverter() instanceof EnumSInstanceConverter) {
+            return (List<String>) type
+                    .asAtrProvider()
+                    .getProvider()
+                    .load(new ProviderContext())
+                    .stream()
+                    .map(e -> type.asAtrProvider().getDisplayFunction().apply((Serializable) e))
+                    .collect(Collectors.toList());
+        }
+        return Collections.emptyList();
+    }
+
+    private Integer initMinSize(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_MINIMUM_SIZE).orElse(null);
+    }
+
+    private Integer initMaxSize(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_MAXIMUM_SIZE).orElse(null);
+    }
+
+    private String initMask(SType<?> type) {
+        return StringUtils.defaultString(getAttribute(type, SPackageBasic.ATR_BASIC_MASK).map(InputMaskBehavior.Masks::valueOf).map(InputMaskBehavior.Masks::getMask).orElse(null), null);
+    }
+
+    private Boolean initVisibilityRule(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_VISIBLE_FUNCTION).isPresent();
+    }
+
+    private Boolean initRequiredRule(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_REQUIRED_FUNCTION).isPresent();
+    }
+
+    private Boolean initValidationRule(SType<?> type) {
+        return !type.getValidators().isEmpty();
+    }
+
+    private Boolean initEnablingRule(SType<?> type) {
+        return getAttribute(type, SPackageBasic.ATR_ENABLED_FUNCTION).isPresent();
     }
 
     private String initFieldName(SType<?> type) {
@@ -95,8 +202,8 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
      * If the Stype is permanently disabled or do not exists ({@link SPackageBasic#ATR_EXISTS})
      * it is not considered a Form Input Field. Note that not only {@link STypeSimple} can be form inputs,
      * some composite are considered atomic form fields, ex: {@link STypeAttachment}, {@link org.opensingular.form.STypeComposite} with {@link org.opensingular.form.view.SViewSelectionBySelect} views etc.
-     * @return
-     * true if {@link SType}  is considered a form input field, false otherwise
+     *
+     * @return true if {@link SType}  is considered a form input field, false otherwise
      */
     public boolean isFormInputField() {
         boolean isHtmlFormComponent = selection || upload || simple || modal;
@@ -104,9 +211,7 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
     }
 
     /**
-     *
-     * @return
-     *  Object contained all metadatas collected during this builder construction.
+     * @return Object contained all metadatas collected during this builder construction.
      */
     public DocFieldMetadata getDocFieldMetadata() {
         return docFieldMetadata;
@@ -116,127 +221,17 @@ public class DocumentationFieldMetadataBuilder implements Loggable {
         return ViewResolver.resolveView(type) instanceof SViewListByMasterDetail;
     }
 
-    private String initMessages(SType<?> type) {
-        StringBuilder sb = new StringBuilder();
-        if (!type.getValidators().isEmpty()) {
-            sb.append("Ver regra de validação.").append(SEPARATOR);
-        }
-        if (getAttribute(type, SPackageBasic.ATR_REQUIRED_FUNCTION).isPresent()){
-            sb.append("Ver regra de obrigatoriedade").append(SEPARATOR);
-        }
-        if (getAttribute(type, SPackageBasic.ATR_VISIBLE_FUNCTION).isPresent()){
-            sb.append("Ver regra de visibilidade").append(SEPARATOR);
-        }
-        String result = sb.toString();
-        if (StringUtils.isEmpty(result)){
-            return EMPTY_VALUE;
-        } else {
-            return result;
-        }
-    }
-
-    private String initBusinessRules(SType<?> type) {
-        if (getAttribute(type, SPackageBasic.ATR_UPDATE_LISTENER).isPresent()) {
-            return "Ver regra de negócio";
-        }
-        return EMPTY_VALUE;
-    }
-
     private boolean initHiddenForDocumentation(SType<?> type) {
         return DocumentationMetadataUtil.isHiddenForDocumentation(type);
     }
 
-    @SuppressWarnings("unchecked")
-    private String initGeneralInformation(SType<?> type, SType<?> rootType) {
-        List<String> observacoes = new ArrayList<>();
-        getAttribute(type, SPackageBasic.ATR_DEPENDS_ON_FUNCTION).ifPresent(v ->
-                observacoes.add(" Depende de: " + Joiner.on(", ").join(resolveDependsOn(rootType, type)))
-        );
-        getAttribute(type, SPackageBasic.ATR_SUBTITLE).ifPresent(v ->
-                observacoes.add(" Subtítulo: " + v)
-        );
-        getAttribute(type, SPackageBasic.ATR_BASIC_MASK).ifPresent(v ->
-                observacoes.add(" Máscara: " + InputMaskBehavior.Masks.valueOf(v).getMask())
-        );
-        getAttribute(type, SPackageBasic.ATR_MINIMUM_SIZE).ifPresent(v ->
-                observacoes.add(" Mínimo: " + v)
-        );
-        getAttribute(type, SPackageBasic.ATR_MAXIMUM_SIZE).ifPresent(v ->
-                observacoes.add(" Máximo: " + v)
-        );
-        if (selection && type.asAtrProvider().getConverter() instanceof EnumSInstanceConverter) {
-            List<String> dominio = (List<String>) type
-                    .asAtrProvider()
-                    .getProvider()
-                    .load(new ProviderContext())
-                    .stream()
-                    .map(e -> type.asAtrProvider().getDisplayFunction().apply((Serializable) e))
-                    .collect(Collectors.toList());
-            observacoes.add("Domínio: " + Joiner.on(", ").join(dominio));
-        }
-        return Joiner.on(SEPARATOR).join(observacoes);
-    }
-
-    private String initRequired(SType<?> s) {
-        if (s.asAtr().getAttributeValue(SPackageBasic.ATR_REQUIRED_FUNCTION) != null) {
-            return "Sim";
-        } else {
-            return s.asAtr().isRequired() ? "Sim" : "Não";
-        }
+    private Boolean initRequired(SType<?> s) {
+        return getAttribute(s, SPackageBasic.ATR_REQUIRED).orElse(Boolean.FALSE);
     }
 
 
-    private String initTypeAbbreviation(SType<?> s) {
-        if (selection) {
-            if (s.isList()) {
-                if (ViewResolver.resolveView(s) instanceof SMultiSelectionByCheckboxView) {
-                    return "CKB";
-                } else {
-                    return "CBM";
-                }
-            } else {
-                return "CB";
-            }
-        } else if (s instanceof STypeDate) {
-            return "DT";
-        } else if (s instanceof STypeDateTime) {
-            return "DH";
-        } else if (s instanceof STypeAttachmentImage) {
-            return "IM";
-        } else if (s instanceof STypeAttachment) {
-            return "AN";
-        } else if (s instanceof STypeAttachmentList) {
-            return "ANM";
-        } else {
-            return "CT";
-        }
-    }
-
-    private String initEnabled(SType<?> s) {
-        if (s.asAtr().getAttributeValue(SPackageBasic.ATR_ENABLED_FUNCTION) != null) {
-            return "Condicional";
-        } else {
-            return s.asAtr().isEnabled() ? "Sim" : "Não";
-        }
-    }
-
-    private String initSize(SType<?> type) {
-        if (!selection && initUpload(type)) {
-            SType<?> uploadType = type;
-            if (type instanceof STypeAttachmentList) {
-                uploadType = ((STypeAttachmentList) type).getElementsType();
-            }
-            Optional<Long> value = getAttribute(uploadType, SPackageBasic.ATR_MAX_FILE_SIZE);
-            if (value.isPresent()) {
-                return value.get() / (1024 * 1024) + " MB";
-            }
-        } else {
-            Optional<Integer> maxlength = getAttribute(type, SPackageBasic.ATR_MAX_LENGTH);
-            if (maxlength.isPresent()) {
-                return String.valueOf(maxlength.get());
-            }
-        }
-        return EMPTY_VALUE;
+    private Boolean initEnabled(SType<?> s) {
+        return getAttribute(s, SPackageBasic.ATR_ENABLED).orElse(Boolean.TRUE);
     }
 
 
