@@ -118,18 +118,7 @@ class DocumentationFieldMetadataBuilder implements Loggable {
 
     private HTMLComponentType initHtmlComponentType(SType<?> s) {
         if (selection) {
-            if (s.isList()) {
-                SView view = ViewResolver.resolveView(s);
-                if (view instanceof SMultiSelectionByCheckboxView) {
-                    return HTMLComponentType.CHECKBOX;
-                } else if (view instanceof SMultiSelectionByPicklistView) {
-                    return HTMLComponentType.PICK_LIST;
-                } else {
-                    return HTMLComponentType.MULTI_SELECT;
-                }
-            } else {
-                return HTMLComponentType.SELECT;
-            }
+            return resolveSelectionType(s);
         } else if (s instanceof STypeDate) {
             return HTMLComponentType.DATE;
         } else if (s instanceof STypeDateTime) {
@@ -144,6 +133,21 @@ class DocumentationFieldMetadataBuilder implements Loggable {
             return HTMLComponentType.MULTI_UPLOAD;
         } else {
             return HTMLComponentType.INPUT_FIELD;
+        }
+    }
+
+    private HTMLComponentType resolveSelectionType(SType<?> s) {
+        if (s.isList()) {
+            SView view = ViewResolver.resolveView(s);
+            if (view instanceof SMultiSelectionByCheckboxView) {
+                return HTMLComponentType.CHECKBOX;
+            } else if (view instanceof SMultiSelectionByPicklistView) {
+                return HTMLComponentType.PICK_LIST;
+            } else {
+                return HTMLComponentType.MULTI_SELECT;
+            }
+        } else {
+            return HTMLComponentType.SELECT;
         }
     }
 
