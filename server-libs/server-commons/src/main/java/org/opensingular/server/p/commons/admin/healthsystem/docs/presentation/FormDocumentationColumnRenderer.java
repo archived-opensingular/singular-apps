@@ -16,21 +16,26 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs.wicket;
+package org.opensingular.server.p.commons.admin.healthsystem.docs.presentation;
 
-public class DocumentationRowBlockSeparator implements DocumentationRow {
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocBlock;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocFieldMetadata;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocTable;
 
-    private String blockName;
+import javax.annotation.Nullable;
 
-    public DocumentationRowBlockSeparator() {
-    }
+public interface FormDocumentationColumnRenderer {
 
-    public DocumentationRowBlockSeparator(String blockName) {
-        this.blockName = blockName;
+    String getColumnName();
 
-    }
+    /**
+     * Render documentation column
+     *
+     * @param fieldMetadata
+     *
+     *
+     * @return
+     */
+    String renderColumn(DocTable table, DocBlock block, @Nullable  DocFieldMetadata fieldMetadata);
 
-    public String getBlockName() {
-        return blockName;
-    }
 }

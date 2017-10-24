@@ -16,13 +16,15 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs.wicket;
+package org.opensingular.server.p.commons.admin.healthsystem.docs.presentation;
 
-import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.form.SType;
 
-import java.io.Serializable;
+import java.io.OutputStream;
+import java.io.Writer;
+import java.util.List;
 
-public interface DocumentationRow extends Serializable, Loggable {
+public interface FormDocumentationRenderer {
 
-
+    void renderTables(SType<?> rootStype, List<FormDocumentationColumnRenderer> columns, Writer writer);
 }
