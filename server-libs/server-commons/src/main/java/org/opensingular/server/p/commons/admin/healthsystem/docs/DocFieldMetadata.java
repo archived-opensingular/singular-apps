@@ -30,43 +30,43 @@ public class DocFieldMetadata implements Loggable {
 
     public static class DocFieldValue<T> {
 
-        public static DocFieldValue<SType> ROOT_STYPE = new DocFieldValue<>(SType.class, "ROOT_STYPE");
+        public static final DocFieldValue<SType> ROOT_STYPE = new DocFieldValue<>(SType.class, "ROOT_STYPE");
 
-        public static DocFieldValue<SType> STYPE = new DocFieldValue<>(SType.class, "STYPE");
+        public static final DocFieldValue<SType> STYPE = new DocFieldValue<>(SType.class, "STYPE");
 
-        public static DocFieldValue<String> FIELD_NAME = new DocFieldValue<>(String.class, "FIELD_NAME");
+        public static final DocFieldValue<String> FIELD_NAME = new DocFieldValue<>(String.class, "FIELD_NAME");
 
-        public static DocFieldValue<String> FIELD_SUBTITLE = new DocFieldValue<>(String.class, "FIELD_SUBTITLE");
+        public static final DocFieldValue<String> FIELD_SUBTITLE = new DocFieldValue<>(String.class, "FIELD_SUBTITLE");
 
-        public static DocFieldValue<Boolean> REQUIRED = new DocFieldValue<>(Boolean.class, "REQUIRED");
+        public static final DocFieldValue<Boolean> REQUIRED = new DocFieldValue<>(Boolean.class, "REQUIRED");
 
-        public static DocFieldValue<Boolean> ENABLED = new DocFieldValue<>(Boolean.class, "ENABLED");
+        public static final DocFieldValue<Boolean> ENABLED = new DocFieldValue<>(Boolean.class, "ENABLED");
 
-        public static DocFieldValue<Boolean> HAS_ENABLING_RULE = new DocFieldValue<>(Boolean.class, "HAS_ENABLING_RULE");
+        public static final DocFieldValue<Boolean> HAS_ENABLING_RULE = new DocFieldValue<>(Boolean.class, "HAS_ENABLING_RULE");
 
-        public static DocFieldValue<Boolean> HAS_VALIDATION_RULE = new DocFieldValue<>(Boolean.class, "HAS_VALIDATION_RULE");
+        public static final DocFieldValue<Boolean> HAS_VALIDATION_RULE = new DocFieldValue<>(Boolean.class, "HAS_VALIDATION_RULE");
 
-        public static DocFieldValue<Boolean> HAS_VISIBILITY_RULE = new DocFieldValue<>(Boolean.class, "HAS_VISIBILITY_RULE");
+        public static final DocFieldValue<Boolean> HAS_VISIBILITY_RULE = new DocFieldValue<>(Boolean.class, "HAS_VISIBILITY_RULE");
 
-        public static DocFieldValue<Boolean> HAS_REQUIRED_RULE = new DocFieldValue<>(Boolean.class, "HAS_REQUIRED_RULE");
+        public static final DocFieldValue<Boolean> HAS_REQUIRED_RULE = new DocFieldValue<>(Boolean.class, "HAS_REQUIRED_RULE");
 
-        public static DocFieldValue<Boolean> HAS_UPDATE_LISTENER = new DocFieldValue<>(Boolean.class, "HAS_UPDATE_LISTENER");
+        public static final DocFieldValue<Boolean> HAS_UPDATE_LISTENER = new DocFieldValue<>(Boolean.class, "HAS_UPDATE_LISTENER");
 
-        public static DocFieldValue<TreeSet> DEPENDENT_STYPES_FIELDS_NAME = new DocFieldValue<>(TreeSet.class, "DEPENDENT_STYPES_FIELDS_NAME");
+        public static final DocFieldValue<TreeSet> DEPENDENT_STYPES_FIELDS_NAME = new DocFieldValue<>(TreeSet.class, "DEPENDENT_STYPES_FIELDS_NAME");
 
-        public static DocFieldValue<String> MASK = new DocFieldValue<>(String.class, "MASK");
+        public static final DocFieldValue<String> MASK = new DocFieldValue<>(String.class, "MASK");
 
-        public static DocFieldValue<Integer> MAX_SIZE = new DocFieldValue<>(Integer.class, "MAX_SIZE");
+        public static final DocFieldValue<Integer> MAX_SIZE = new DocFieldValue<>(Integer.class, "MAX_SIZE");
 
-        public static DocFieldValue<Integer> MIN_SIZE = new DocFieldValue<>(Integer.class, "MIN_SIZE");
+        public static final DocFieldValue<Integer> MIN_SIZE = new DocFieldValue<>(Integer.class, "MIN_SIZE");
 
-        public static DocFieldValue<List> ENUM_SELECTION_OPTIONS = new DocFieldValue<>(List.class, "ENUM_SELECTION_OPTIONS");
+        public static final DocFieldValue<List> ENUM_SELECTION_OPTIONS = new DocFieldValue<>(List.class, "ENUM_SELECTION_OPTIONS");
 
-        public static DocFieldValue<HTMLComponentType> HTML_COMPONENT_TYPE = new DocFieldValue<>(HTMLComponentType.class, "HTML_COMPONENT_TYPE");
+        public static final DocFieldValue<HTMLComponentType> HTML_COMPONENT_TYPE = new DocFieldValue<>(HTMLComponentType.class, "HTML_COMPONENT_TYPE");
 
-        public static DocFieldValue<Integer> FIELD_LENGTH = new DocFieldValue<>(Integer.class, "FIELD_LENGTH");
+        public static final DocFieldValue<Integer> FIELD_LENGTH = new DocFieldValue<>(Integer.class, "FIELD_LENGTH");
 
-        public static DocFieldValue<Long> MAX_UPLOAD_SIZE_IN_BYTES = new DocFieldValue<>(Long.class, "MAX_UPLOAD_SIZE_IN_BYTES");
+        public static final DocFieldValue<Long> MAX_UPLOAD_SIZE_IN_BYTES = new DocFieldValue<>(Long.class, "MAX_UPLOAD_SIZE_IN_BYTES");
 
 
         private Class<T> valueType;
