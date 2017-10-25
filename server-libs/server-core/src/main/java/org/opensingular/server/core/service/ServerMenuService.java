@@ -74,7 +74,12 @@ public class ServerMenuService implements MenuService, Loggable {
 
     @Override
     public void reset() {
-
+        contextMap = new HashMap<>();
+        mapMenu = null;
+        singularServerSessionConfiguration.reload();
+        for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : singularServerSessionConfiguration.getModuleBoxConfigurationMap().entrySet()) {
+            addMenu(entry.getKey(), entry.getValue());
+        }
     }
 
     private Map<String, BoxConfigurationData> getMapMenu() {
