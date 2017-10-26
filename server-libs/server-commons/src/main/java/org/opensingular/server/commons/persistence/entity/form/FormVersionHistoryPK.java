@@ -23,23 +23,23 @@ import java.io.Serializable;
 
 public class FormVersionHistoryPK implements Serializable {
 
-    private Long codPetitionContentHistory;
+    private Long codRequirementContentHistory;
     private Long codFormVersion;
 
     public FormVersionHistoryPK() {
     }
 
-    public FormVersionHistoryPK(Long codPetitionContentHistory, Long codFormVersion) {
-        this.codPetitionContentHistory = codPetitionContentHistory;
+    public FormVersionHistoryPK(Long codRequirementContentHistory, Long codFormVersion) {
+        this.codRequirementContentHistory = codRequirementContentHistory;
         this.codFormVersion = codFormVersion;
     }
 
-    public Long getCodPetitionContentHistory() {
-        return codPetitionContentHistory;
+    public Long getCodRequirementContentHistory() {
+        return codRequirementContentHistory;
     }
 
-    public void setCodPetitionContentHistory(Long codPetitionContentHistory) {
-        this.codPetitionContentHistory = codPetitionContentHistory;
+    public void setCodRequirementContentHistory(Long codRequirementContentHistory) {
+        this.codRequirementContentHistory = codRequirementContentHistory;
     }
 
     public Long getCodFormVersion() {
@@ -63,7 +63,7 @@ public class FormVersionHistoryPK implements Serializable {
         FormVersionHistoryPK that = (FormVersionHistoryPK) o;
 
         return new EqualsBuilder()
-                .append(codPetitionContentHistory, that.codPetitionContentHistory)
+                .append(codRequirementContentHistory, that.codRequirementContentHistory)
                 .append(codFormVersion, that.codFormVersion)
                 .isEquals();
     }
@@ -71,7 +71,7 @@ public class FormVersionHistoryPK implements Serializable {
     @Override
     public int hashCode() {
         return new HashCodeBuilder(17, 37)
-                .append(codPetitionContentHistory)
+                .append(codRequirementContentHistory)
                 .append(codFormVersion)
                 .toHashCode();
     }

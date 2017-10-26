@@ -19,7 +19,7 @@
 package org.opensingular.server.module.requirement.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.RequirementSender;
 
 public class SingularRequirementDefinitionForms {
 
@@ -33,8 +33,8 @@ public class SingularRequirementDefinitionForms {
         return new SingularRequirementDefinitionFlows(builderContext.addFlowClass(flowClass));
     }
 
-    public SingularRequirementDefinitionForms petitionSenderBeanClass(Class<? extends PetitionSender> petitionSender) {
-        builderContext.setPetitionSenderBeanClass(petitionSender);
+    public SingularRequirementDefinitionForms requirementSenderBeanClass(Class<? extends RequirementSender> requirementSender) {
+        builderContext.setRequirementSenderBeanClass(requirementSender);
         return this;
     }
 }

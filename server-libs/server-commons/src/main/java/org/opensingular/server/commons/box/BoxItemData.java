@@ -39,7 +39,7 @@ public interface BoxItemData extends Serializable {
 
     Serializable getAllocatedSUserId();
 
-    Serializable getPetitionId();
+    Serializable getRequirementId();
 
     Serializable getType();
 
@@ -49,9 +49,9 @@ public interface BoxItemData extends Serializable {
 
     Serializable getSituation();
 
-    Serializable getParentPetition();
+    Serializable getParentRequirement();
 
-    Serializable getRootPetition();
+    Serializable getRootRequirement();
 
     Serializable getRequirementDefinitionId();
 }

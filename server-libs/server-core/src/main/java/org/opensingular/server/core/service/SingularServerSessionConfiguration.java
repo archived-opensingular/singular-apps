@@ -25,7 +25,7 @@ import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.connector.ModuleDriver;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.context.annotation.Scope;
@@ -37,7 +37,11 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Named
 @Scope("session")
@@ -46,7 +50,7 @@ public class SingularServerSessionConfiguration implements Loggable {
     private Map<ModuleEntity, WorkspaceConfigurationMetadata> configMaps = new HashMap<>();
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private RequirementService<?, ?> requirementService;
 
     @Inject
     private SingularServerConfiguration singularServerConfiguration;
@@ -72,7 +76,7 @@ public class SingularServerSessionConfiguration implements Loggable {
     }
 
     public List<ModuleEntity> buscarCategorias() {
-        return petitionService.listAllModules();
+        return requirementService.listAllModules();
     }
 
     public IServerContext getMenuContext() {

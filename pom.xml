@@ -365,7 +365,7 @@
         <!-- Falso positivo: concatenacao de parametros  -->
         <sonar.issue.ignore.multicriteria.s1.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE
         </sonar.issue.ignore.multicriteria.s1.ruleKey>
-        <sonar.issue.ignore.multicriteria.s1.resourceKey>**/PetitionDAO.java
+        <sonar.issue.ignore.multicriteria.s1.resourceKey>**/RequirementDAO.java
         </sonar.issue.ignore.multicriteria.s1.resourceKey>
         <!-- Falso positivo: concatenacao de parametros  -->
         <sonar.issue.ignore.multicriteria.s2.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE

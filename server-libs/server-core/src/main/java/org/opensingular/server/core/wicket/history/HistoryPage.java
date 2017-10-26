@@ -32,10 +32,10 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.dto.PetitionHistoryDTO;
+import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
-import org.opensingular.server.commons.persistence.entity.form.PetitionContentHistoryEntity;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
@@ -43,9 +43,17 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.net.URL;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 
 @MountPath("history")
@@ -54,9 +62,9 @@ public class HistoryPage extends ServerTemplate {
     private static final long serialVersionUID = -3344810189307767761L;
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private RequirementService<?, ?> requirementService;
 
-    private long petitionPK;
+    private long requirementPK;
     private String modulePK;
     private String menu;
 
@@ -70,7 +78,7 @@ public class HistoryPage extends ServerTemplate {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        petitionPK = getPage().getPageParameters().get(PETITION_ID).toLong();
+        requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toLong();
         modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
         menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         add(setupDataTable(createDataProvider()));
@@ -90,7 +98,7 @@ public class HistoryPage extends ServerTemplate {
         t.appendJavaScript("window.history.go(-1);");
     }
 
-    protected BSDataTable<PetitionHistoryDTO, String> setupDataTable(BaseDataProvider<PetitionHistoryDTO, String> dataProvider) {
+    protected BSDataTable<RequirementHistoryDTO, String> setupDataTable(BaseDataProvider<RequirementHistoryDTO, String> dataProvider) {
         return new BSDataTableBuilder<>(dataProvider)
                 .appendPropertyColumn(
                         getMessage("label.table.column.task.name"),
@@ -120,8 +128,8 @@ public class HistoryPage extends ServerTemplate {
                                     .setPullRight(Boolean.TRUE);
 
                             Optional.of(model.getObject())
-                                    .map(PetitionHistoryDTO::getPetitionContentHistory)
-                                    .map(PetitionContentHistoryEntity::getFormVersionHistoryEntities)
+                                    .map(RequirementHistoryDTO::getRequirementContentHistory)
+                                    .map(RequirementContentHistoryEntity::getFormVersionHistoryEntities)
                                     .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
                                             .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
 
@@ -135,7 +143,7 @@ public class HistoryPage extends ServerTemplate {
         final String url = DispatcherPageUtil
                 .baseURL(getBaseUrl())
                 .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
-                .petitionId(null)
+                .requirementId(null)
                 .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
                 .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
                 .build();
@@ -147,12 +155,12 @@ public class HistoryPage extends ServerTemplate {
         };
     }
 
-    protected Map<String, String> buildViewFormParameters(IModel<PetitionHistoryDTO> model) {
+    protected Map<String, String> buildViewFormParameters(IModel<RequirementHistoryDTO> model) {
         final Map<String, String> params = new HashMap<>();
-        if (model.getObject().getPetitionContentHistory() != null) {
+        if (model.getObject().getRequirementContentHistory() != null) {
             params.put(FORM_VERSION_KEY, model
                     .getObject()
-                    .getPetitionContentHistory()
+                    .getRequirementContentHistory()
                     .getFormVersionHistoryEntities()
                     .stream()
                     .filter(f -> SimNao.SIM == f.getMainForm())
@@ -164,23 +172,24 @@ public class HistoryPage extends ServerTemplate {
         return params;
     }
 
-    protected BaseDataProvider<PetitionHistoryDTO, String> createDataProvider() {
-        return new BaseDataProvider<PetitionHistoryDTO, String>() {
+    protected BaseDataProvider<RequirementHistoryDTO, String> createDataProvider() {
+        return new BaseDataProvider<RequirementHistoryDTO, String>() {
 
-            transient List<PetitionHistoryDTO> cache = petitionService.listPetitionContentHistoryByPetitionCod(petitionPK, menu, isFilterAllowedHistoryTasks());
+            transient List<RequirementHistoryDTO> cache = requirementService.listRequirementContentHistoryByCodRequirement(
+                    requirementPK, menu, isFilterAllowedHistoryTasks());
 
             @Override
             public long size() {
                 if (cache == null) {
-                    cache = petitionService.listPetitionContentHistoryByPetitionCod(petitionPK, menu, isFilterAllowedHistoryTasks());
+                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
                 }
                 return cache.size();
             }
 
             @Override
-            public Iterator<PetitionHistoryDTO> iterator(int first, int count, String sortProperty, boolean ascending) {
+            public Iterator<RequirementHistoryDTO> iterator(int first, int count, String sortProperty, boolean ascending) {
                 if (cache == null) {
-                    cache = petitionService.listPetitionContentHistoryByPetitionCod(petitionPK, menu, isFilterAllowedHistoryTasks());
+                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
                 }
                 return cache.subList(first, first + count).iterator();
             }
@@ -196,7 +205,7 @@ public class HistoryPage extends ServerTemplate {
     }
 
     public String getModuleContext() {
-        final String groupConnectionURL = petitionService.findByModuleCod(modulePK).getConnectionURL();
+        final String groupConnectionURL = requirementService.findByModuleCod(modulePK).getConnectionURL();
         try {
             final String path = new URL(groupConnectionURL).getPath();
             int indexOf = path.indexOf('/', 1);

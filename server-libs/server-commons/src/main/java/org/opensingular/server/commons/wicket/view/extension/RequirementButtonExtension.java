@@ -23,7 +23,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.commons.extension.SingularExtension;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.RequirementInstance;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -102,7 +102,7 @@ public interface RequirementButtonExtension extends SingularExtension, Serializa
     class ActionContext {
         private final AjaxRequestTarget ajaxRequestTarget;
         private final Form<?>           formComponent;
-        private final PetitionInstance  petInstance;
+        private final RequirementInstance petInstance;
         private final SInstance         formInstance;
 
         /**
@@ -112,7 +112,7 @@ public interface RequirementButtonExtension extends SingularExtension, Serializa
          * @param formInstance      a instancia do formulario que está sendo editado/visualizado na AbstractFormPage, não sendo necessariamente
          */
         public ActionContext(AjaxRequestTarget ajaxRequestTarget, Form<?> formComponent,
-                             PetitionInstance petInstance, SInstance formInstance) {
+                             RequirementInstance petInstance, SInstance formInstance) {
             this.ajaxRequestTarget = ajaxRequestTarget;
             this.formComponent = formComponent;
             this.petInstance = petInstance;
@@ -127,7 +127,7 @@ public interface RequirementButtonExtension extends SingularExtension, Serializa
             return formComponent;
         }
 
-        public PetitionInstance getPetInstance() {
+        public RequirementInstance getPetInstance() {
             return petInstance;
         }
 

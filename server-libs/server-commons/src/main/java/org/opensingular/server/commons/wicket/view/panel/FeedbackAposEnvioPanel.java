@@ -27,7 +27,7 @@ import org.apache.wicket.model.Model;
 import org.opensingular.lib.commons.lambda.IBiConsumer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
-import org.opensingular.server.commons.service.dto.PetitionSendedFeedback;
+import org.opensingular.server.commons.service.dto.RequirementSenderFeedback;
 
 import javax.annotation.Nonnull;
 import java.util.Optional;
@@ -53,11 +53,11 @@ public abstract class FeedbackAposEnvioPanel extends Panel {
         addCloseButton();
     }
 
-    public void show(AjaxRequestTarget target, PetitionSendedFeedback sendedFeedback) {
+    public void show(AjaxRequestTarget target, RequirementSenderFeedback sendedFeedback) {
         show(target, sendedFeedback, null);
     }
 
-    public void show(AjaxRequestTarget target, PetitionSendedFeedback sendedFeedback, IBiConsumer<AjaxRequestTarget, BSModalBorder> onClose) {
+    public void show(AjaxRequestTarget target, RequirementSenderFeedback sendedFeedback, IBiConsumer<AjaxRequestTarget, BSModalBorder> onClose) {
         this.onClose = onClose;
         modal.show(target);
     }

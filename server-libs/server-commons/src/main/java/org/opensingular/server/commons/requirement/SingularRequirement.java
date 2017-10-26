@@ -19,11 +19,9 @@
 package org.opensingular.server.commons.requirement;
 
 import org.opensingular.form.SType;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.service.DefaultPetitionSender;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.DefaultRequirementSender;
+import org.opensingular.server.commons.service.RequirementSender;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 import org.opensingular.server.commons.wicket.view.form.FormPage;
 
@@ -69,8 +67,8 @@ public interface SingularRequirement {
     }
 
 
-    default Class<? extends PetitionSender> getPetitionSenderBeanClass(){
-        return DefaultPetitionSender.class;
+    default Class<? extends RequirementSender> getRequirementSenderBeanClass(){
+        return DefaultRequirementSender.class;
     }
 
 }

@@ -24,14 +24,14 @@ import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
 
-public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends FlowConfirmPanel {
+public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends FlowConfirmPanel {
 
-    private final AbstractFormPage<PE, PI> formPage;
+    private final AbstractFormPage<RE, RI> formPage;
 
-    public AbstractFlowConfirmModal(String id, String transition, AbstractFormPage<PE, PI> formPage) {
+    public AbstractFlowConfirmModal(String id, String transition, AbstractFormPage<RE, RI> formPage) {
         super(id, transition);
         this.formPage = formPage;
     }
@@ -43,8 +43,8 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
      * @param m  -> modal
      * @return the new AjaxButton
      */
-    protected FlowConfirmButton<PE, PI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m) {
+    protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
+        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form form, IModel model) {
                 onConfirm(tn, im);
@@ -79,7 +79,7 @@ public abstract class AbstractFlowConfirmModal<PE extends PetitionEntity, PI ext
         );
     }
 
-    protected final AbstractFormPage<PE, PI> getFormPage() {
+    protected final AbstractFormPage<RE, RI> getFormPage() {
         return formPage;
     }
 }

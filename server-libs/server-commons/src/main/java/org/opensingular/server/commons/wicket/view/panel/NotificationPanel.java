@@ -27,7 +27,7 @@ import org.opensingular.form.wicket.link.FileDownloadLink;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,26 +35,26 @@ import javax.inject.Inject;
 import java.io.File;
 
 
-public class NotificationPanel<PI extends PetitionInstance> extends Panel {
+public class NotificationPanel<RI extends RequirementInstance> extends Panel {
 
     @Inject
     private HtmlToPdfConverter htmlToPdfConverter;
 
     protected static final Logger LOGGER = LoggerFactory.getLogger(NotificationPanel.class);
 
-    public NotificationPanel(String id, IModel<Pair<String, String>> model, IModel<PI> modelOfpetition) {
+    public NotificationPanel(String id, IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
 
         super(id);
         add(new Label("title", model.getObject().getKey()));
         add(new FileDownloadLink("export-to-pdf",
-                getPdfModel(model, modelOfpetition),
+                getPdfModel(model, requirementModel),
                 ContentDisposition.INLINE,
                 model.getObject().getValue() + ".pdf")
         );
         add(new Label("content", model.getObject().getValue()).setEscapeModelStrings(false));
     }
 
-    protected IModel<File> getPdfModel(IModel<Pair<String, String>> model, IModel<PI> modelOfpetition) {
+    protected IModel<File> getPdfModel(IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
         return new IReadOnlyModel<File>() {
             @Override
             public File getObject() {

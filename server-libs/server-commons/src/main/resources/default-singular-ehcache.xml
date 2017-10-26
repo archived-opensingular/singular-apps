@@ -54,7 +54,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="retrieveGroupByProcess" eternal="false"
+    <cache name="retrieveGroupByFlowDefinition" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"
@@ -135,7 +135,7 @@
         <persistence strategy="none" synchronousWrites="false"/>
     </cache>
 
-    <cache name="retrieveMeanTimeByProcess" eternal="false"
+    <cache name="retrieveMeanTimeByFlowDefinition" eternal="false"
            maxEntriesLocalHeap="10000"
            timeToIdleSeconds="300"
            timeToLiveSeconds="600"

@@ -17,14 +17,24 @@
 package org.opensingular.server.commons.exception;
 
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.server.commons.service.RequirementInstance;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 /**
  * Exceções do Singular server e seus módulos
  */
 public class SingularServerException extends SingularException {
 
-    public SingularServerException(String msg) {
+    public SingularServerException(@Nonnull String msg) {
         super(msg);
+    }
+
+    /** Creates a exception with information about de requirement involved in the exception. */
+    public SingularServerException(@Nonnull String msg, @Nullable RequirementInstance requirement) {
+        super(msg);
+        add(requirement);
     }
 
     protected SingularServerException(Throwable cause) {
@@ -58,4 +68,14 @@ public class SingularServerException extends SingularException {
         return new SingularServerException(message, e);
     }
 
+    /** Adds information about de requirement involved in the exception. */
+    @Nonnull
+    public SingularServerException add(@Nullable RequirementInstance requirement) {
+        if (requirement != null) {
+            add("codRequirement", () -> requirement.getCod());
+            add("requirementFlow", () -> requirement.getFlowDefinitionOpt().map(d -> d.getName()).orElse(null));
+            add("requirementDescription", () -> requirement.getDescription());
+        }
+        return this;
+    }
 }

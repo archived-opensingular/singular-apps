@@ -51,8 +51,8 @@ import org.opensingular.server.commons.service.dto.DatatableField;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.ItemActionType;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
 import org.opensingular.server.commons.service.dto.RequirementData;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
 import org.opensingular.server.core.wicket.history.HistoryPage;
 
@@ -70,7 +70,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.PETITION_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -97,12 +97,12 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    public Component buildNewPetitionButton(String id) {
+    public Component buildNewRequirementButton(String id) {
         IModel<List<RequirementData>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
         if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
             return new NewRequirementLink(id, getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
-            return super.buildNewPetitionButton(id);
+            return super.buildNewRequirementButton(id);
         }
     }
 
@@ -149,7 +149,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 appendStaticAction(
                         getMessage("label.table.column.history"),
                         DefaultIcons.HISTORY,
-                        BoxContent.this::criarLinkHistorico,
+                        BoxContent.this::createHistoryLink,
                         (x) -> Boolean.TRUE,
                         c -> c.styleClasses($m.ofValue("worklist-action-btn")));
 
@@ -160,11 +160,11 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         builder.appendColumn(actionColumn);
     }
 
-    private MarkupContainer criarLinkHistorico(String id, IModel<BoxItemDataMap> boxItemModel) {
+    private MarkupContainer createHistoryLink(String id, IModel<BoxItemDataMap> boxItemModel) {
         BoxItemDataMap boxItem        = boxItemModel.getObject();
         PageParameters pageParameters = new PageParameters();
         if (boxItem.getFlowInstanceId() != null) {
-            pageParameters.add(PETITION_ID, boxItem.getCod());
+            pageParameters.add(REQUIREMENT_ID, boxItem.getCod());
             pageParameters.add(INSTANCE_ID, boxItem.getFlowInstanceId());
             pageParameters.add(MODULE_PARAM_NAME, getModule().getCod());
             pageParameters.add(MENU_PARAM_NAME, getMenu());
@@ -209,7 +209,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
-            target.add(tabela);
+            target.add(table);
         }
     }
 
@@ -223,7 +223,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
             getLogger().error(e.getMessage(), e);
             ((BoxPage) getPage()).addToastrErrorMessage("Não foi possível executar esta ação.");
         } finally {
-            target.add(tabela);
+            target.add(table);
         }
     }
 
@@ -270,14 +270,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
 
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, usersDropDownChoice.getModelObject());
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
             };
@@ -286,7 +286,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
                     executeDynamicAction(itemAction, additionalParams, getDataModel().getObject(), target);
-                    target.add(tabela);
+                    target.add(table);
                     atualizarContadores(target);
                 }
             };
@@ -345,7 +345,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         } else {
             return getProcesses()
                     .stream()
-                    .map(ProcessDTO::getAbbreviation)
+                    .map(RequirementDefinitionDTO::getAbbreviation)
                     .collect(Collectors.toList());
         }
     }
@@ -367,7 +367,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected WebMarkupContainer criarLink(String id, IModel<BoxItemDataMap> itemModel, FormAction formAction) {
+    protected WebMarkupContainer createLink(String id, IModel<BoxItemDataMap> requirementModel, FormAction formAction) {
         // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
         throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
     }

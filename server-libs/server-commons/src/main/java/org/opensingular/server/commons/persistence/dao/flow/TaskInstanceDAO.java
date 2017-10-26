@@ -20,7 +20,7 @@ import org.hibernate.Query;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 
 import java.util.List;
 
@@ -30,21 +30,21 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
         super(TaskInstanceEntity.class);
     }
 
-    protected Class<? extends PetitionEntity> getPetitionEntityClass() {
-        return PetitionEntity.class;
+    protected Class<? extends RequirementEntity> getRequirementEntityClass() {
+        return RequirementEntity.class;
     }
 
     @SuppressWarnings("unchecked")
-    public List<TaskInstanceEntity> findCurrentTasksByPetitionId(Long petitionId) {
-        String sb = " select ti " + " from " + getPetitionEntityClass().getName() + " pet " +
+    public List<TaskInstanceEntity> findCurrentTasksByRequirementId(Long requirementId) {
+        String sb = " select ti " + " from " + getRequirementEntityClass().getName() + " pet " +
                 " inner join pet.flowInstanceEntity pi " +
                 " inner join pi.tasks ti " +
                 " inner join ti.task task " +
-                " where pet.cod = :petitionId  " +
+                " where pet.cod = :requirementId  " +
                 "   and (ti.endDate is null OR task.type = :tipoEnd)  ";
 
         final Query query = getSession().createQuery(sb);
-        query.setParameter("petitionId", petitionId);
+        query.setParameter("requirementId", requirementId);
         query.setParameter("tipoEnd", TaskType.END);
         return query.list();
     }

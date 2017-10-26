@@ -49,74 +49,70 @@ import javax.annotation.Nonnull;
  * @see FlowBuilder
  */
 public class RequirementFlowBuilder extends
-        FlowBuilder<RequirementFlowDefinition<?>, FlowMapPetition, RequirementFlowBuilder.BuilderTaskPetition,
-                RequirementFlowBuilder.BuilderJavaTaskPetition, RequirementFlowBuilder.BuilderHumanTaskPetition,
-                RequirementFlowBuilder.BuilderWaitTaskPetition, RequirementFlowBuilder.BuilderEndTaskPetition,
-                RequirementFlowBuilder.BuilderStartPetition, RequirementFlowBuilder.BuilderTransitionPetition,
-                RequirementFlowBuilder.BuilderRolePetition, ITaskDefinition> {
+        FlowBuilder<RequirementFlowDefinition<?>, FlowMapRequirement, RequirementFlowBuilder.BuilderTaskRequirement, RequirementFlowBuilder.BuilderJavaTaskRequirement, RequirementFlowBuilder.BuilderHumanTaskRequirement, RequirementFlowBuilder.BuilderWaitTaskRequirement, RequirementFlowBuilder.BuilderEndTaskRequirement, RequirementFlowBuilder.BuilderStartRequirement, RequirementFlowBuilder.BuilderTransitionRequirement, RequirementFlowBuilder.BuilderRoleRequirement, ITaskDefinition> {
 
     private RequirementFlowBuilder(RequirementFlowDefinition<?> flowDefinition) {
         super(flowDefinition);
     }
 
     /**
-     * Cria um novo FlowBuilderPetition para a definição de processo em questão.
+     * Cria um novo {@link RequirementFlowBuilder} para a definição de fluxo em questão.
      */
     public static RequirementFlowBuilder of(RequirementFlowDefinition<?> flowDefinition) {
         return new RequirementFlowBuilder(flowDefinition);
     }
 
     @Override
-    protected BuilderTaskPetition newTask(STask<?> task) {
-        return new BuilderTaskPetition(this, task);
+    protected BuilderTaskRequirement newTask(STask<?> task) {
+        return new BuilderTaskRequirement(this, task);
     }
 
     @Override
-    protected BuilderJavaTaskPetition newJavaTask(STaskJava taskJava) {
-        return new BuilderJavaTaskPetition(this, taskJava);
+    protected BuilderJavaTaskRequirement newJavaTask(STaskJava taskJava) {
+        return new BuilderJavaTaskRequirement(this, taskJava);
     }
 
     @Override
-    protected BuilderHumanTaskPetition newHumanTask(STaskHuman taskHuman) {
-        return new BuilderHumanTaskPetition(this, (STaskHumanPetition) taskHuman);
+    protected BuilderHumanTaskRequirement newHumanTask(STaskHuman taskHuman) {
+        return new BuilderHumanTaskRequirement(this, (STaskHumanRequirement) taskHuman);
     }
 
     @Override
-    protected BuilderWaitTaskPetition newWaitTask(STaskWait taskWait) {
-        return new BuilderWaitTaskPetition(this, taskWait);
+    protected BuilderWaitTaskRequirement newWaitTask(STaskWait taskWait) {
+        return new BuilderWaitTaskRequirement(this, taskWait);
     }
 
     @Override
-    protected BuilderEndTaskPetition newEndTask(STaskEnd taskFim) {
-        return new BuilderEndTaskPetition(this, taskFim);
+    protected BuilderEndTaskRequirement newEndTask(STaskEnd taskFim) {
+        return new BuilderEndTaskRequirement(this, taskFim);
     }
 
     @Override
-    protected BuilderStartPetition newStartTask(SStart start) {
-        return new BuilderStartPetition(start);
+    protected BuilderStartRequirement newStartTask(SStart start) {
+        return new BuilderStartRequirement(start);
     }
 
     @Override
-    protected BuilderTransitionPetition newTransition(STransition transicao) {
-        return new BuilderTransitionPetition(this, transicao);
+    protected BuilderTransitionRequirement newTransition(STransition transition) {
+        return new BuilderTransitionRequirement(this, transition);
     }
 
     @Override
-    protected BuilderRolePetition newProcessRole(SBusinessRole papel) {
-        return new BuilderRolePetition(papel);
+    protected BuilderRoleRequirement newBusinessRole(SBusinessRole businessRole) {
+        return new BuilderRoleRequirement(businessRole);
     }
 
     @Override
-    protected FlowMapPetition newFlowMap(RequirementFlowDefinition<?> flowDefinition) {
-        return new FlowMapPetition(flowDefinition);
+    protected FlowMapRequirement newFlowMap(RequirementFlowDefinition<?> flowDefinition) {
+        return new FlowMapRequirement(flowDefinition);
     }
 
 
     @Override
-    public BuilderRolePetition addRoleDefinition(String description,
+    public BuilderRoleRequirement addBusinessRole(String description,
                                                  BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
                                                  boolean automaticUserAllocation) {
-        return addRoleDefinition(description, SingularUtil.convertToJavaIdentity(description, true, false),
+        return addBusinessRole(description, SingularUtil.convertToJavaIdentity(description, true, false),
                 businessRoleStrategy, automaticUserAllocation);
     }
 
@@ -124,11 +120,11 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link STask} especializado em requerimentos. Apresenta comportamentos
      * adicionais específicos de requerimentos.
      */
-    public abstract static class ImplBuilderTaskPetition<SELF extends ImplBuilderTaskPetition<SELF, TASK>, TASK
+    public abstract static class ImplBuilderTaskRequirement<SELF extends ImplBuilderTaskRequirement<SELF, TASK>, TASK
             extends STask<?>>
             extends FlowBuilderImpl.ImplBuilderTask<SELF, TASK> implements BuilderTask {
 
-        ImplBuilderTaskPetition(RequirementFlowBuilder fluxoBuilder, TASK task) {
+        ImplBuilderTaskRequirement(RequirementFlowBuilder fluxoBuilder, TASK task) {
             super(fluxoBuilder, task);
         }
 
@@ -142,16 +138,16 @@ public class RequirementFlowBuilder extends
          * com o nome informado.
          */
         @Override
-        public BuilderTransitionPetition go(String actionName, ITaskDefinition taskRefDestiny) {
-            return (BuilderTransitionPetition) super.go(actionName, taskRefDestiny);
+        public BuilderTransitionRequirement go(String actionName, ITaskDefinition taskRefDestiny) {
+            return (BuilderTransitionRequirement) super.go(actionName, taskRefDestiny);
         }
 
         /**
          * Cria uma nova transição da task atual para a task destino informada
          */
         @Override
-        public BuilderTransitionPetition go(ITaskDefinition taskRefDestiny) {
-            return (BuilderTransitionPetition) super.go(taskRefDestiny);
+        public BuilderTransitionRequirement go(ITaskDefinition taskRefDestiny) {
+            return (BuilderTransitionRequirement) super.go(taskRefDestiny);
         }
 
     }
@@ -160,9 +156,9 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link STask} especializado em requerimentos. Apresenta comportamentos
      * adicionais específicos de requerimentos.
      */
-    public static class BuilderTaskPetition extends ImplBuilderTaskPetition<BuilderTaskPetition, STask<?>> {
+    public static class BuilderTaskRequirement extends ImplBuilderTaskRequirement<BuilderTaskRequirement, STask<?>> {
 
-        BuilderTaskPetition(RequirementFlowBuilder flowBuilder, STask<?> task) {
+        BuilderTaskRequirement(RequirementFlowBuilder flowBuilder, STask<?> task) {
             super(flowBuilder, task);
         }
     }
@@ -171,10 +167,10 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link STaskJava} especializado em requerimentos. Apresenta comportamentos
      * adicionais específicos de requerimentos.
      */
-    public static class BuilderJavaTaskPetition extends ImplBuilderTaskPetition<BuilderJavaTaskPetition, STaskJava>
-            implements BuilderJava<BuilderJavaTaskPetition> {
+    public static class BuilderJavaTaskRequirement extends ImplBuilderTaskRequirement<BuilderJavaTaskRequirement, STaskJava>
+            implements BuilderJava<BuilderJavaTaskRequirement> {
 
-        BuilderJavaTaskPetition(RequirementFlowBuilder flowBuilder, STaskJava task) {
+        BuilderJavaTaskRequirement(RequirementFlowBuilder flowBuilder, STaskJava task) {
             super(flowBuilder, task);
         }
 
@@ -183,25 +179,25 @@ public class RequirementFlowBuilder extends
     /**
      * Builder (configurador) de {@link STaskHuman} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
-     * <p>Trabalha com {@link STaskHumanPetition}.</p>
+     * <p>Trabalha com {@link STaskHumanRequirement}.</p>
      */
-    public static class BuilderHumanTaskPetition
-            extends ImplBuilderTaskPetition<BuilderHumanTaskPetition, STaskHuman>
-            implements BuilderHuman<BuilderHumanTaskPetition> {
+    public static class BuilderHumanTaskRequirement
+            extends ImplBuilderTaskRequirement<BuilderHumanTaskRequirement, STaskHuman>
+            implements BuilderHuman<BuilderHumanTaskRequirement> {
 
-        BuilderHumanTaskPetition(RequirementFlowBuilder flowBuilder, STaskHumanPetition task) {
+        BuilderHumanTaskRequirement(RequirementFlowBuilder flowBuilder, STaskHumanRequirement task) {
             super(flowBuilder, task);
         }
 
         @Nonnull
-        public BuilderHumanTaskPetition withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
+        public BuilderHumanTaskRequirement withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
             getTask().setExecutionPage(SingularRequirementTaskPageStrategy.of(pageClass));
             return self();
         }
 
         @Override
-        public STaskHumanPetition getTask() {
-            return (STaskHumanPetition) super.getTask();
+        public STaskHumanRequirement getTask() {
+            return (STaskHumanRequirement) super.getTask();
         }
     }
 
@@ -209,15 +205,15 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link STaskWait} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderWaitTaskPetition extends ImplBuilderTaskPetition<BuilderWaitTaskPetition, STaskWait>
-            implements BuilderWait<BuilderWaitTaskPetition> {
+    public static class BuilderWaitTaskRequirement extends ImplBuilderTaskRequirement<BuilderWaitTaskRequirement, STaskWait>
+            implements BuilderWait<BuilderWaitTaskRequirement> {
 
-        BuilderWaitTaskPetition(RequirementFlowBuilder flowBuilder, STaskWait task) {
+        BuilderWaitTaskRequirement(RequirementFlowBuilder flowBuilder, STaskWait task) {
             super(flowBuilder, task);
         }
 
         @Nonnull
-        public BuilderWaitTaskPetition withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
+        public BuilderWaitTaskRequirement withExecutionPage(@Nonnull Class<? extends WebPage> pageClass) {
             getTask().setExecutionPage(SingularRequirementTaskPageStrategy.of(pageClass));
             return self();
         }
@@ -228,10 +224,10 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link STaskEnd} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderEndTaskPetition extends ImplBuilderTaskPetition<BuilderEndTaskPetition, STaskEnd>
-            implements BuilderEnd<BuilderEndTaskPetition> {
+    public static class BuilderEndTaskRequirement extends ImplBuilderTaskRequirement<BuilderEndTaskRequirement, STaskEnd>
+            implements BuilderEnd<BuilderEndTaskRequirement> {
 
-        BuilderEndTaskPetition(RequirementFlowBuilder fluxoBuilder, STaskEnd task) {
+        BuilderEndTaskRequirement(RequirementFlowBuilder fluxoBuilder, STaskEnd task) {
             super(fluxoBuilder, task);
         }
     }
@@ -240,9 +236,9 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link SStart} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderStartPetition extends FlowBuilderImpl.ImplBuilderStart<BuilderStartPetition> {
+    public static class BuilderStartRequirement extends FlowBuilderImpl.ImplBuilderStart<BuilderStartRequirement> {
 
-        BuilderStartPetition(SStart start) {
+        BuilderStartRequirement(SStart start) {
             super(start);
         }
     }
@@ -250,19 +246,19 @@ public class RequirementFlowBuilder extends
     /**
      * Builder (configurador) de {@link STransition} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
-     * <p>Trabalha com {@link STransitionPetition}.</p>
+     * <p>Trabalha com {@link STransitionRequirement}.</p>
      */
-    public static class BuilderTransitionPetition
-            extends FlowBuilderImpl.ImplBuilderTransition<BuilderTransitionPetition> {
+    public static class BuilderTransitionRequirement
+            extends FlowBuilderImpl.ImplBuilderTransition<BuilderTransitionRequirement> {
 
         @SuppressWarnings("rawtypes")
-        BuilderTransitionPetition(FlowBuilder fluxoBuilder, STransition transicao) {
-            super(fluxoBuilder, transicao);
+        BuilderTransitionRequirement(FlowBuilder fluxoBuilder, STransition transition) {
+            super(fluxoBuilder, transition);
         }
 
         @Override
-        public STransitionPetition getTransition() {
-            return (STransitionPetition) super.getTransition();
+        public STransitionRequirement getTransition() {
+            return (STransitionRequirement) super.getTransition();
         }
 
     }
@@ -271,11 +267,11 @@ public class RequirementFlowBuilder extends
      * Builder (configurador) de {@link SBusinessRole} especializado em requerimentos.
      * Apresenta comportamentos adicionais específicos de requerimentos.
      */
-    public static class BuilderRolePetition extends FlowBuilderImpl.ImplBuilderBusinessRole<BuilderRolePetition>
-            implements BuilderBusinessRole<BuilderRolePetition> {
+    public static class BuilderRoleRequirement extends FlowBuilderImpl.ImplBuilderBusinessRole<BuilderRoleRequirement>
+            implements BuilderBusinessRole<BuilderRoleRequirement> {
 
-        BuilderRolePetition(SBusinessRole papel) {
-            super(papel);
+        BuilderRoleRequirement(SBusinessRole role) {
+            super(role);
         }
     }
 

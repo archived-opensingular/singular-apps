@@ -32,7 +32,7 @@ import org.opensingular.server.commons.box.action.defaults.EditAction;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
@@ -74,13 +74,13 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
         BoxConfigurationData b = new BoxConfigurationData();
         b.setId("BOX1");
         b.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b.setProcesses(new ArrayList<ProcessDTO>());
+        b.setProcesses(new ArrayList<RequirementDefinitionDTO>());
         groupDTOs.add(b);
 
         BoxConfigurationData b2 = new BoxConfigurationData();
         b2.setId("BOX2");
         b2.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b2.setProcesses(new ArrayList<ProcessDTO>());
+        b2.setProcesses(new ArrayList<RequirementDefinitionDTO>());
         groupDTOs.add(b2);
 
         String idUsuario = "toim";
@@ -97,13 +97,13 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
         BoxConfigurationData b = new BoxConfigurationData();
         b.setId("box1");
         b.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b.setProcesses(new ArrayList<ProcessDTO>());
+        b.setProcesses(new ArrayList<RequirementDefinitionDTO>());
         groupDTOs.add(b);
 
         BoxConfigurationData b2 = new BoxConfigurationData();
         b2.setId("box2");
         b2.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b2.setProcesses(new ArrayList<ProcessDTO>());
+        b2.setProcesses(new ArrayList<RequirementDefinitionDTO>());
         groupDTOs.add(b2);
 
         String idUsuario = "joao";
@@ -116,10 +116,10 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
     @WithUserDetails("joao")
     public void hasPermissionTest() {
         String idUsuario  = "joao";
-        Long   petitionId = 1L;
+        Long   requirementId = 1L;
         String action     = new AssignAction(new BoxItemDataImpl()).getName();
 
-        boolean hasPermission = authorizationService.hasPermission(petitionId, null, idUsuario,
+        boolean hasPermission = authorizationService.hasPermission(requirementId, null, idUsuario,
                 action);
         Assert.assertFalse(hasPermission);
 
@@ -132,10 +132,10 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
         List<Actor> actors = new ArrayList<Actor>();
         actors.add(new Actor(1, "01", "torquato neto", "tn@gmail.com"));
         actors.add(new Actor(2, "02", "maria", "maria@gmail.com"));
-        Long   petitionId = 1L;
+        Long   requirementId = 1L;
         String actionName = new EditAction(new BoxItemDataImpl()).getName();
 
-        authorizationService.filterActors(actors, petitionId, actionName);
+        authorizationService.filterActors(actors, requirementId, actionName);
         Assert.assertEquals(0, actors.size());
     }
 
@@ -145,12 +145,12 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
     public void filterActionsTest() {
         String              idUsuario  = "joao";
         String              formType   = null;
-        Long                petitionId = null;
+        Long                requirementId = null;
         BoxItemActionList actions = new BoxItemActionList();
         actions.add(new BoxItemAction());
         actions.add(new BoxItemAction());
 
-        authorizationService.filterActions(formType, petitionId, actions, idUsuario);
+        authorizationService.filterActions(formType, requirementId, actions, idUsuario);
         Assert.assertEquals(0, actions.size());
     }
 }

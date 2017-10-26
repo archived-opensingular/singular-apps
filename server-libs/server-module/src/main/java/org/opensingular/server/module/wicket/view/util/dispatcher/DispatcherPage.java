@@ -38,9 +38,9 @@ import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.server.commons.flow.SingularWebRef;
 import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.SingularRequirementService;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
@@ -68,7 +68,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private PetitionService<?, ?> petitionService;
+    private RequirementService<?, ?> requirementService;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -114,7 +114,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti = actionContext.getPetitionId().flatMap(this::findCurrentTaskByPetitionId);
+        Optional<TaskInstance> ti = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
         Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
 
@@ -174,12 +174,12 @@ public class DispatcherPage extends WebPage implements Loggable {
         showAnnotations = isAnnotationModeReadOnly(context);
 
         Optional<Long> formVersionId = context.getFormVersionId();
-        Optional<Long> petitionId = context.getPetitionId();
+        Optional<Long> requirementId = context.getRequirementId();
         
         if (formVersionId.isPresent()) {
             formVersionPK = formVersionId.get();
-        } else if (petitionId.isPresent()) {
-            PetitionEntity p = petitionService.getPetitionByCod(petitionId.get());
+        } else if (requirementId.isPresent()) {
+            RequirementEntity p = requirementService.getRequirementByCod(requirementId.get());
             formVersionPK = p.getMainForm().getCurrentFormVersionEntity().getCod();
         } else {
             formVersionPK = null;
@@ -227,7 +227,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         SingularUserDetails userDetails = SingularSession.get().getUserDetails();
 
         boolean hasPermission = authorizationService.hasPermission(
-                context.getPetitionId().orElse(null),
+                context.getRequirementId().orElse(null),
                 context.getFormName().orElse(null),
                 String.valueOf(userDetails.getUserPermissionKey()),
                 context.getFormAction().map(FormAction::name).orElse(null)
@@ -249,9 +249,9 @@ public class DispatcherPage extends WebPage implements Loggable {
  
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
         String username = SingularSession.get().getUsername();
-        Optional<Long> petitionIdOpt =  config.getPetitionId();
-        if (petitionIdOpt.isPresent()) {
-            return petitionService.findCurrentTaskEntityByPetitionId(petitionIdOpt.get())
+        Optional<Long> requirementIdOpt =  config.getRequirementId();
+        if (requirementIdOpt.isPresent()) {
+            return requirementService.findCurrentTaskEntityByRequirementId(requirementIdOpt.get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
@@ -298,9 +298,9 @@ public class DispatcherPage extends WebPage implements Loggable {
     protected void onDispatch(WebPage destination, ActionContext context) {
     }
 
-    protected Optional<TaskInstance> findCurrentTaskByPetitionId(Long petitionId) {
-        if (petitionId != null) {
-            return petitionService.findCurrentTaskEntityByPetitionId(petitionId).map(Flow::getTaskInstance);
+    protected Optional<TaskInstance> findCurrentTaskByRequirementId(Long requirementId) {
+        if (requirementId != null) {
+            return requirementService.findCurrentTaskEntityByRequirementId(requirementId).map(Flow::getTaskInstance);
         } else {
             return Optional.empty();
         }

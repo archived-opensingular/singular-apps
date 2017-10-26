@@ -22,7 +22,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
-import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.RequirementUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.PostConstruct;
@@ -49,7 +49,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     }
 
     private void add(Class<? extends SType<?>> type) {
-        String typeName   = PetitionUtil.getTypeName(type);
+        String typeName   = RequirementUtil.getTypeName(type);
         add(typeName, () -> {
             SDictionary d = SDictionary.create();
             d.loadPackage(SFormUtil.getTypePackage(type));

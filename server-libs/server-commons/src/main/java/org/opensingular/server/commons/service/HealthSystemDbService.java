@@ -40,20 +40,20 @@ public class HealthSystemDbService implements Loggable {
     private HealthSystemDAO saudeDao;
 
     public HealthInfoDTO getAllDbMetaData() {
-        List<TableInfoDTO> tabelas = new ArrayList<>();
+        List<TableInfoDTO> tables = new ArrayList<>();
         try {
             Map<String, ClassMetadata> map = saudeDao.getAllDbMetaData();
-            map.forEach((k, v) -> tabelas.add(getTableInfo((AbstractEntityPersister) v)));
+            map.forEach((k, v) -> tables.add(getTableInfo((AbstractEntityPersister) v)));
 
             Optional<IValidatorDatabase> validator = verificaDialetoUtilizado();
             if (validator.isPresent()) {
-                validator.get().checkAllInfoTable(tabelas);
+                validator.get().checkAllInfoTable(tables);
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
-            tabelas.clear();
+            tables.clear();
         }
-        return new HealthInfoDTO(tabelas);
+        return new HealthInfoDTO(tables);
     }
 
     private TableInfoDTO getTableInfo(AbstractEntityPersister persister) {
@@ -63,22 +63,22 @@ public class HealthSystemDbService implements Loggable {
         tableInfoDTO.setSchema(name[0]);
         tableInfoDTO.setTableName(name[1]);
 
-        List<String> colunas = new ArrayList<>();
+        List<String> columns = new ArrayList<>();
 
         String[] propertyNames = persister.getPropertyNames();
 
         Arrays.asList(propertyNames).forEach(propertyName ->
-                colunas.add(persister.getPropertyColumnNames(propertyName)[0]));
+                columns.add(persister.getPropertyColumnNames(propertyName)[0]));
 
         Arrays.asList(persister.getIdentifierColumnNames()).forEach(chave -> {
-            if (!colunas.contains(chave)) {
-                colunas.add(chave);
+            if (!columns.contains(chave)) {
+                columns.add(chave);
             }
         });
 
-        List<ColumnInfoDTO> colunasTypes = new ArrayList<>();
-        colunas.forEach(col -> colunasTypes.add(new ColumnInfoDTO(col, true)));
-        tableInfoDTO.setColumnsInfo(colunasTypes);
+        List<ColumnInfoDTO> columnsType = new ArrayList<>();
+        columns.forEach(col -> columnsType.add(new ColumnInfoDTO(col, true)));
+        tableInfoDTO.setColumnsInfo(columnsType);
 
         return tableInfoDTO;
     }

@@ -24,7 +24,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
-import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.service.FormRequirementService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 
 import javax.inject.Inject;
@@ -32,7 +32,7 @@ import javax.inject.Inject;
 public class ReadOnlyFormPage extends ServerTemplate {
 
     @Inject
-    private FormPetitionService formPetitionService;
+    private FormRequirementService formRequirementService;
 
     protected final IModel<Long> formVersionEntityPK;
     protected final IModel<Boolean> showAnnotations;
@@ -47,8 +47,8 @@ public class ReadOnlyFormPage extends ServerTemplate {
         super.onInitialize();
         SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
         singularFormPanel.setInstanceCreator(() -> {
-            FormVersionEntity formVersionEntity = formPetitionService.loadFormVersionEntity(formVersionEntityPK.getObject());
-            return formPetitionService.getSInstance(formVersionEntity);
+            FormVersionEntity formVersionEntity = formRequirementService.loadFormVersionEntity(formVersionEntityPK.getObject());
+            return formRequirementService.getSInstance(formVersionEntity);
         });
 
         singularFormPanel.setViewMode(ViewMode.READ_ONLY);

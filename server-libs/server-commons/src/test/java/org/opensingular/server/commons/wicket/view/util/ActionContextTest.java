@@ -33,8 +33,8 @@ public class ActionContextTest {
         actionContext.setFormVersionId(1l);
         actionContext.setMenuLabel("menuzinho");
         actionContext.setParam("nada", "outro");
-        actionContext.setParentPetitionId(2l);
-        actionContext.setPetitionId(3l);
+        actionContext.setParentRequirementId(2l);
+        actionContext.setRequirementId(3l);
         actionContext.setModuleName("Tox");
         actionContext.setFlowInstanceId(4);
         actionContext.setSelectedMenuItem("menuzeira");
@@ -51,8 +51,8 @@ public class ActionContextTest {
         Assert.assertEquals((long) actionContext.getFormVersionId().get(), 1l);
         Assert.assertEquals(actionContext.getMenuLabel().get(), "menuzinho");
         Assert.assertEquals(actionContext.getParam("nada").get(), "outro");
-        Assert.assertEquals((long) actionContext.getParentPetitionId().get(), 2l);
-        Assert.assertEquals((long) actionContext.getPetitionId().get(), 3l);
+        Assert.assertEquals((long) actionContext.getParentRequirementId().get(), 2l);
+        Assert.assertEquals((long) actionContext.getRequirementId().get(), 3l);
         Assert.assertEquals(actionContext.getModuleName().get(), "Tox");
         Assert.assertEquals((int) actionContext.getFlowInstanceId().get(), 4);
         Assert.assertEquals(actionContext.getSelectedMenuItem().get(), "menuzeira");

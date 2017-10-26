@@ -16,16 +16,16 @@
 
 package org.opensingular.server.commons.flow.builder;
 
-import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.SingularFlowException;
 import org.opensingular.flow.core.variable.VarDefinitionMap;
 
 import javax.annotation.Nonnull;
 
 /**
- * Representa uma definição de processo especializada em requerimentos. Apresenta comportamentos e configurações
+ * Representa uma definição de fluxo especializada em requerimentos. Apresenta comportamentos e configurações
  * adicionais específicos de requerimentos.
  *
  * @author Daniel C. Bordin on 22/03/2017.
@@ -38,7 +38,7 @@ public abstract class RequirementFlowDefinition<I extends FlowInstance> extends 
     }
 
     /**
-     * Delega a criação do fluxo do processo para {@link #buildFlow(RequirementFlowBuilder)}.
+     * Delega a criação dos passos do fluxo para {@link #buildFlow(RequirementFlowBuilder)}.
      * @see FlowDefinition#createFlowMap()
      */
     @Override
@@ -69,7 +69,7 @@ public abstract class RequirementFlowDefinition<I extends FlowInstance> extends 
     }
 
     /**
-     * Método a ser implementado com a criação do fluxo de processo.
+     * Método a ser implementado com a criação do passos e transições de uma definição de fluxo.
      */
     protected abstract void buildFlow(@Nonnull RequirementFlowBuilder flow);
 

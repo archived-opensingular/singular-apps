@@ -18,7 +18,7 @@ package org.opensingular.server.commons.flow.controllers;
 
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 
 import javax.annotation.Nonnull;
@@ -32,19 +32,19 @@ public abstract class IController {
     @Inject
     private AuthorizationService authorizationService;
 
-    public ActionResponse run(PetitionInstance petition, ActionRequest actionRequest) {
-        if (hasPermission(petition, actionRequest)) {
-            return execute(petition, actionRequest);
+    public ActionResponse run(RequirementInstance requirement, ActionRequest actionRequest) {
+        if (hasPermission(requirement, actionRequest)) {
+            return execute(requirement, actionRequest);
         } else {
             return new ActionResponse("Você não tem permissão para executar esta ação.", false);
         }
     }
 
-    private boolean hasPermission(PetitionInstance petition, ActionRequest actionRequest) {
-        return authorizationService.hasPermission(petition.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
+    private boolean hasPermission(RequirementInstance requirement, ActionRequest actionRequest) {
+        return authorizationService.hasPermission(requirement.getCod(), null, actionRequest.getIdUsuario(), actionRequest.getAction().getName());
     }
 
-    protected abstract ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest actionRequest);
+    protected abstract ActionResponse execute(@Nonnull RequirementInstance requirement, ActionRequest actionRequest);
 
     protected Type getType() {
         return Type.PROCESS;

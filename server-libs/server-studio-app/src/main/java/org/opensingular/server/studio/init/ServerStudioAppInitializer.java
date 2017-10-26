@@ -76,7 +76,7 @@ public interface ServerStudioAppInitializer extends SingleAppInitializer {
                     return AnalysisApplication.class;
                 }
                 if (sameContextCheck.test(PServerContext.REQUIREMENT)) {
-                    return PetitionApplication.class;
+                    return RequirementApplication.class;
                 }
                 if (sameContextCheck.test(PServerContext.ADMINISTRATION)) {
                     return AdministrationApplication.class;

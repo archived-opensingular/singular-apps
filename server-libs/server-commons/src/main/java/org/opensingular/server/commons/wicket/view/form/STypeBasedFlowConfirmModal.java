@@ -27,12 +27,11 @@ import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
-import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.server.commons.service.RequirementInstance;
 
-public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends PetitionInstance> extends AbstractFlowConfirmModal<PE, PI> {
+public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
 
     private final RefType                 refType;
     private final FormKey                 formKey;
@@ -42,7 +41,7 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
 
     public STypeBasedFlowConfirmModal(String id,
                                       String transitionName,
-                                      AbstractFormPage<PE, PI> formPage,
+                                      AbstractFormPage<RE, RI> formPage,
                                       RefType refType,
                                       FormKey formKey,
                                       TransitionController<?> transitionController) {
@@ -65,8 +64,8 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
     }
 
     @Override
-    protected FlowConfirmButton<PE, PI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<PE, PI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m){
+    protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
+        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m){
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
                 setDirty(true);
@@ -98,9 +97,9 @@ public class STypeBasedFlowConfirmModal<PE extends PetitionEntity, PI extends Pe
     private SInstance createInstance() {
         SInstance instance;
         if (formKey != null) {
-            instance = getFormPage().getFormPetitionService().getSInstance(formKey, refType);
+            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType);
         } else {
-            instance = getFormPage().getFormPetitionService().createInstance(refType);
+            instance = getFormPage().getFormRequirementService().createInstance(refType);
         }
         if (transitionController != null) {
             transitionController.onCreateInstance(getFormPage().getInstance(), instance);

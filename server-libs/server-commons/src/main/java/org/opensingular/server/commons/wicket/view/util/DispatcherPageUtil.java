@@ -16,7 +16,6 @@
 
 package org.opensingular.server.commons.wicket.view.util;
 
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.slf4j.Logger;
@@ -89,9 +88,9 @@ public class DispatcherPageUtil {
             this.url = url;
         }
 
-        public DispatcherPageUrlAdditionalParamsBuilder petitionId(Object formId) {
+        public DispatcherPageUrlAdditionalParamsBuilder requirementId(Object formId) {
             if (!StringUtils.isEmpty(formId)) {
-                return new DispatcherPageUrlAdditionalParamsBuilder(this.url + "&" + ActionContext.PETITION_ID + "=" + encodeParameter(formId));
+                return new DispatcherPageUrlAdditionalParamsBuilder(this.url + "&" + ActionContext.REQUIREMENT_ID + "=" + encodeParameter(formId));
             }
             return new DispatcherPageUrlAdditionalParamsBuilder(this.url);
         }

@@ -20,7 +20,7 @@ package org.opensingular.server.module.requirement.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.RequirementSender;
 import org.opensingular.server.commons.wicket.view.form.AbstractFormPage;
 
 import java.util.LinkedHashSet;
@@ -32,7 +32,7 @@ public class SingularRequirementBuilderContext {
     private Class<? extends SType<?>> mainForm;
     private Set<Class<? extends FlowDefinition>> flowClasses = new LinkedHashSet<>();
     private Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage;
-    private Class<? extends PetitionSender>         petitionSenderBeanClass;
+    private Class<? extends RequirementSender> requirementSenderBeanClass;
 
     public String getName() {
         return name;
@@ -70,12 +70,12 @@ public class SingularRequirementBuilderContext {
         return this;
     }
 
-    public Class<? extends PetitionSender> getPetitionSenderBeanClass() {
-        return petitionSenderBeanClass;
+    public Class<? extends RequirementSender> getRequirementSenderBeanClass() {
+        return requirementSenderBeanClass;
     }
 
-    public SingularRequirementBuilderContext setPetitionSenderBeanClass(Class<? extends PetitionSender> petitionSender) {
-        this.petitionSenderBeanClass = petitionSender;
+    public SingularRequirementBuilderContext setRequirementSenderBeanClass(Class<? extends RequirementSender> requirementSender) {
+        this.requirementSenderBeanClass = requirementSender;
         return this;
     }
 }

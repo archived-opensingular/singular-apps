@@ -22,6 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.internal.lib.commons.util.RandomUtil;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
@@ -38,7 +39,7 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     public void buscaPorCodUsuarioWithNullValueTest(){
-        Assert.assertNull(actorDAO.buscarPorCodUsuario(null));
+        Assert.assertNull(actorDAO.retrieveByUserCod(null));
     }
 
     @Test
@@ -54,14 +55,14 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
 
     @Test
     @Transactional
-    public void listAllocableUsersTest(){
-        List<Actor> actors = actorDAO.listAllocableUsers(0);
-        Assert.assertEquals(0, actors.size());
+    public void listAllowedUsersTest(){
+        List<Actor> actors = actorDAO.listAllowedUsers(0);
+        int initialSize = actors.size();
 
-        actorDAO.saveUserIfNeeded("codUsuario");
-        actorDAO.saveUserIfNeeded("codUsuario2");
+        actorDAO.saveUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
+        actorDAO.saveUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
 
-        actors = actorDAO.listAllocableUsers(0);
-        Assert.assertEquals(2, actors.size());
+        actors = actorDAO.listAllowedUsers(0);
+        Assert.assertEquals(initialSize + 2, actors.size());
     }
 }

@@ -29,7 +29,7 @@ import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
-import org.opensingular.server.commons.service.PetitionInstance;
+import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.wicket.view.extension.RequirementButtonExtension;
 
 import java.util.List;
@@ -37,12 +37,12 @@ import java.util.List;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 
-public class ExtensionButtonsPanel<PI extends PetitionInstance> extends Panel {
-    private IModel<PI>                       petInstanceModel;
+public class ExtensionButtonsPanel<RI extends RequirementInstance> extends Panel {
+    private IModel<RI>                       petInstanceModel;
     private IModel<? extends SInstance>      formModel;
     private List<RequirementButtonExtension> extensions;
 
-    public ExtensionButtonsPanel(String id, IModel<PI> petInstanceModel, IModel<? extends SInstance> formModel) {
+    public ExtensionButtonsPanel(String id, IModel<RI> petInstanceModel, IModel<? extends SInstance> formModel) {
         super(id);
         this.petInstanceModel = petInstanceModel;
         this.formModel = formModel;

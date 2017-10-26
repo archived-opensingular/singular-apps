@@ -19,13 +19,13 @@ package org.opensingular.server.commons.form;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SInstance;
-import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.RequirementUtil;
 
 import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
- * Used to match Current Task, retrieved from ServerSIntanceProcessAwareService, and those
+ * Used to match Current Task, retrieved from ServerSInstanceProcessAwareService, and those
  * informed.
  * Helper methods in and notIn are here to help.
  */
@@ -81,7 +81,7 @@ public class CurrentTaskPredicate implements Predicate<SInstance>{
     }
 
     protected void updateCurrentTask(SInstance instance) {
-        currentTask = PetitionUtil.getCurrentTaskEntity(instance).orElse(null);
+        currentTask = RequirementUtil.getCurrentTaskEntity(instance).orElse(null);
     }
 }
 

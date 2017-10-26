@@ -40,6 +40,6 @@ public class AuthorizationAwareActionProviderDecorator implements ActionProvider
     }
 
     private void filterAllowedActions(BoxItemActionList actions, BoxItemData line, QuickFilter filter) {
-        ApplicationContextProvider.get().getBean(AuthorizationService.class).filterActions((String) line.getType(), (Long) line.getPetitionId(), actions, filter.getIdUsuarioLogado());
+        ApplicationContextProvider.get().getBean(AuthorizationService.class).filterActions((String) line.getType(), (Long) line.getRequirementId(), actions, filter.getIdUsuarioLogado());
     }
 }

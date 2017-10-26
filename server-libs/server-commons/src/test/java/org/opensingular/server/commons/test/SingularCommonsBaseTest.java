@@ -18,9 +18,6 @@
 
 package org.opensingular.server.commons.test;
 
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-
 import org.apache.wicket.Page;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -45,6 +42,9 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
+
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -105,11 +105,11 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         return (ModuleEntity) session.get(ModuleEntity.class, "GRUPO_TESTE");
     }
 
-    public FormPage sendPetition(SingularWicketTester tester, String formName, IConsumer<Page> formFiller) {
+    public FormPage sendRequirement(SingularWicketTester tester, String formName, IConsumer<Page> formFiller) {
         ActionContext context = new ActionContext();
         context.setFormName(formName);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementId(requirementDefinitionEntity.getCod());
+        context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

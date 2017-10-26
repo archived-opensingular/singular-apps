@@ -49,23 +49,23 @@ import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
+import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
 import org.opensingular.server.commons.persistence.dao.form.DraftDAO;
-import org.opensingular.server.commons.persistence.dao.form.FormPetitionDAO;
-import org.opensingular.server.commons.persistence.dao.form.PetitionContentHistoryDAO;
-import org.opensingular.server.commons.persistence.dao.form.PetitionDAO;
-import org.opensingular.server.commons.persistence.dao.form.PetitionerDAO;
+import org.opensingular.server.commons.persistence.dao.form.FormRequirementDAO;
+import org.opensingular.server.commons.persistence.dao.form.RequirementContentHistoryDAO;
+import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
 import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
-import org.opensingular.server.commons.persistence.entity.form.PetitionEntity;
+import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
-import org.opensingular.server.commons.service.DefaultPetitionSender;
-import org.opensingular.server.commons.service.DefaultPetitionService;
+import org.opensingular.server.commons.service.DefaultRequirementSender;
+import org.opensingular.server.commons.service.DefaultRequirementService;
 import org.opensingular.server.commons.service.EmailPersistenceService;
-import org.opensingular.server.commons.service.FormPetitionService;
+import org.opensingular.server.commons.service.FormRequirementService;
 import org.opensingular.server.commons.service.IEmailService;
 import org.opensingular.server.commons.service.ParameterService;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.SingularDiffService;
 import org.opensingular.server.commons.service.attachment.FormAttachmentService;
 import org.opensingular.server.commons.service.attachment.IFormAttachmentService;
@@ -103,7 +103,7 @@ public class SingularDefaultBeanFactory {
 
     @Primary
     @Bean(name = "peticionamentoUserDetailService")
-    public SingularUserDetailsService worklistUserDetailServiceFactory() {
+    public SingularUserDetailsService workListUserDetailServiceFactory() {
         return new DefaultUserDetailService();
     }
 
@@ -113,18 +113,18 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends PetitionEntity> PetitionDAO<T> peticaoDAO() {
-        return new PetitionDAO<>();
+    public <T extends RequirementEntity> RequirementDAO<T> peticaoDAO() {
+        return new RequirementDAO<>();
     }
 
     @Bean
-    public PetitionContentHistoryDAO petitionContentHistoryDAO() {
-        return new PetitionContentHistoryDAO();
+    public RequirementContentHistoryDAO requirementContentHistoryDAO() {
+        return new RequirementContentHistoryDAO();
     }
 
     @Bean
-    public FormPetitionDAO formPetitionDAO() {
-        return new FormPetitionDAO();
+    public FormRequirementDAO formRequirementDAO() {
+        return new FormRequirementDAO();
     }
 
     @Bean
@@ -133,8 +133,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public PetitionService<?, ?> worklistPetitionServiceFactory() {
-        return new DefaultPetitionService();
+    public RequirementService<?, ?> workListRequirementServiceFactory() {
+        return new DefaultRequirementService();
     }
 
     @Bean
@@ -198,8 +198,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public PetitionerDAO petitionerDAO() {
-        return new PetitionerDAO();
+    public ApplicantDAO applicantDAO() {
+        return new ApplicantDAO();
     }
 
     @Bean
@@ -284,8 +284,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends PetitionEntity> FormPetitionService<T> formPetitionService() {
-        return new FormPetitionService<>();
+    public <T extends RequirementEntity> FormRequirementService<T> formRequirementService() {
+        return new FormRequirementService<>();
     }
 
     @Bean
@@ -334,8 +334,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public DefaultPetitionSender defaultPetitionSender() {
-        return new DefaultPetitionSender();
+    public DefaultRequirementSender defaultRequirementSender() {
+        return new DefaultRequirementSender();
     }
 
     @Bean

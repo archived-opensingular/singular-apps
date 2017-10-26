@@ -22,7 +22,7 @@ import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.module.ActionProvider;
@@ -57,9 +57,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         addEnabledTasksToFilter(filter);
         List<Map<String, Serializable>> requirements;
         if (Boolean.TRUE.equals(evalPermissions)) {
-            requirements = lookupPetitionService().listTasks(filter, searchPermissions(filter), extenders);
+            requirements = lookupRequirementService().listTasks(filter, searchPermissions(filter), extenders);
         } else {
-            requirements = lookupPetitionService().quickSearchMap(filter, extenders);
+            requirements = lookupRequirementService().quickSearchMap(filter, extenders);
         }
         if (filters != null) {
             filters.forEach(x -> x.accept(requirements));
@@ -71,9 +71,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     public Long count(QuickFilter filter, BoxInfo boxInfo) {
         addEnabledTasksToFilter(filter);
         if (Boolean.TRUE.equals(evalPermissions)) {
-            return lookupPetitionService().countTasks(filter, searchPermissions(filter), extenders);
+            return lookupRequirementService().countTasks(filter, searchPermissions(filter), extenders);
         } else {
-            return lookupPetitionService().countQuickSearch(filter, extenders);
+            return lookupRequirementService().countQuickSearch(filter, extenders);
         }
     }
 
@@ -83,8 +83,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return actionProvider;
     }
 
-    protected PetitionService<?, ?> lookupPetitionService() {
-        return ApplicationContextProvider.get().getBean(PetitionService.class);
+    @Nonnull
+    protected RequirementService<?, ?> lookupRequirementService() {
+        return ApplicationContextProvider.get().getBean(RequirementService.class);
     }
 
     protected void addEnabledTasksToFilter(QuickFilter filter) {

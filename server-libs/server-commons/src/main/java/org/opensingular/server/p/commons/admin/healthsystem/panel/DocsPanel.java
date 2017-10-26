@@ -35,7 +35,7 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.wicket.DocumentatioTablePage;
+import org.opensingular.server.p.commons.admin.healthsystem.docs.DocumentationTablePage;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -67,7 +67,7 @@ public class DocsPanel extends Panel implements Loggable {
 
     protected BSDataTable<Class<? extends STypeComposite>, String> setupDataTable() {
         return new BSDataTableBuilder<>(createDataProvider())
-                .appendPropertyColumn($m.ofValue("Formulários Encontrados"), this::formatarLabel)
+                .appendPropertyColumn($m.ofValue("Formulários Encontrados"), this::formatLabel)
                 .appendActionColumn("Docs Table", this::buildColumn)
                 .setRowsPerPage(Long.MAX_VALUE)
                 .setStripedRows(false)
@@ -76,18 +76,16 @@ public class DocsPanel extends Panel implements Loggable {
     }
 
     private void buildColumn(BSActionColumn<Class<? extends STypeComposite>, String> actionColumn) {
-        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> gerarTabela(a, s, true, true));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SN)"), DefaultIcons.TRASH, (a,s) -> gerarTabela(a, s, false, true));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO)"), DefaultIcons.EXCLAMATION_TRIANGLE, (a,s) -> gerarTabela(a, s, true, false));
-        actionColumn.appendAction($m.ofValue("Gerar Tabela (SO&SN)"), DefaultIcons.ROCKET, (a,s) -> gerarTabela(a, s, false, false));
+        actionColumn.appendAction($m.ofValue("Gerar Tabela"), DefaultIcons.MAGIC, (a,s) -> createTable(a, s, false));
+        actionColumn.appendAction($m.ofValue("Gerar Excel"), DefaultIcons.ROCKET, (a,s) -> createTable(a, s, true));
     }
 
-    private void gerarTabela(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean showNumbers, boolean showObservacoes) {
-        setResponsePage(new DocumentatioTablePage(model.getObject(), showNumbers, showObservacoes));
+    private void createTable(AjaxRequestTarget ajaxRequestTarget, IModel<Class<? extends STypeComposite>> model, boolean excel) {
+            setResponsePage(new DocumentationTablePage(model.getObject(), excel));
     }
 
 
-    private String formatarLabel(Class<? extends STypeComposite> c) {
+    private String formatLabel(Class<? extends STypeComposite> c) {
         String typeName = SFormUtil.getTypeName((Class<? extends SType<?>>) c);
         return SFormUtil.getTypeLabel(c).map(l -> l + " (" + typeName + ")").orElse(typeName);
     }
@@ -115,7 +113,7 @@ public class DocsPanel extends Panel implements Loggable {
                 .stream()
                 .filter(c -> !(c.getPackage().getName().startsWith("org.opensingular") || c.getPackage().getName().startsWith("com.opensingular")))
                 .filter(c -> c.isAnnotationPresent(SInfoType.class))
-                .sorted((c1, c2) -> new CompareToBuilder().append(formatarLabel(c1), formatarLabel(c2)).build())
+                .sorted((c1, c2) -> new CompareToBuilder().append(formatLabel(c1), formatLabel(c2)).build())
                 .collect(Collectors.toList());
     }
 

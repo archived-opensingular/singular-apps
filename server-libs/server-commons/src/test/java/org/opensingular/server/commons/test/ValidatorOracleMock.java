@@ -18,21 +18,12 @@
 
 package org.opensingular.server.commons.test;
 
-import org.hibernate.SQLQuery;
-import org.hibernate.transform.ResultTransformer;
 import org.opensingular.server.commons.admin.healthsystem.validation.database.ValidatorOracle;
 import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
-import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
-import org.springframework.context.annotation.Primary;
 
-import javax.inject.Named;
-import javax.transaction.Transactional;
-
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 
 public class ValidatorOracleMock extends ValidatorOracle {
@@ -57,7 +48,7 @@ public class ValidatorOracleMock extends ValidatorOracle {
     }
 
     @Override
-    protected List<String> getPermissionEspecificTable(String tabela) {
+    protected List<String> getPermissionSpecificTable(String table) {
         if(mockEncontradoBanco){
             mockEncontradoBanco = !mockEncontradoBanco;
             return Arrays.asList("SELECT", "UPDATE", "INSERT", "DELETE");

@@ -10,8 +10,8 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
-import org.opensingular.server.commons.service.PetitionInstance;
-import org.opensingular.server.commons.service.PetitionUtil;
+import org.opensingular.server.commons.service.RequirementInstance;
+import org.opensingular.server.commons.service.RequirementUtil;
 import org.springframework.stereotype.Controller;
 
 import javax.annotation.Nonnull;
@@ -22,18 +22,18 @@ import java.util.Optional;
 public class DefaultAssignController extends IController implements Loggable {
 
     @Override
-    public ActionResponse execute(@Nonnull PetitionInstance petition, ActionRequest action) {
+    public ActionResponse execute(@Nonnull RequirementInstance requirement, ActionRequest action) {
         try {
-            SUser user = PetitionUtil.findUserOrException(action.getIdUsuario());
+            SUser user = RequirementUtil.findUserOrException(action.getIdUsuario());
             if (action instanceof ActionAtribuirRequest) {
-                Optional<String> idDestino = Optional.ofNullable(((ActionAtribuirRequest) action).getIdUsuarioDestino());
-                if (idDestino.isPresent()) {
-                    return relocate(petition, action, user, PetitionUtil.findUserOrException(idDestino.get()));
+                Optional<String> idDestiny = Optional.ofNullable(((ActionAtribuirRequest) action).getIdUsuarioDestino());
+                if (idDestiny.isPresent()) {
+                    return relocate(requirement, action, user, RequirementUtil.findUserOrException(idDestiny.get()));
                 } else {
-                    return unassign(petition, action, user);
+                    return unassign(requirement, action, user);
                 }
             }
-            return assign(petition, action, user);
+            return assign(requirement, action, user);
         } catch (Exception e) {
             String resultMessage = "Erro ao atribuir tarefa.";
             getLogger().error(resultMessage, e);
@@ -42,18 +42,18 @@ public class DefaultAssignController extends IController implements Loggable {
     }
 
 
-    private ActionResponse relocate(PetitionInstance petition, ActionRequest action, SUser author, SUser target) {
-        petition.getCurrentTaskOrException().relocateTask(author, target, false, "", action.getLastVersion());
+    private ActionResponse relocate(RequirementInstance requirement, ActionRequest action, SUser author, SUser target) {
+        requirement.getCurrentTaskOrException().relocateTask(author, target, false, "", action.getLastVersion());
         return new ActionResponse("Tarefa atribuída com sucesso.", true);
     }
 
-    private ActionResponse assign(PetitionInstance petition, ActionRequest action, SUser author) {
-        petition.getCurrentTaskOrException().relocateTask(author, author, false, "", action.getLastVersion());
+    private ActionResponse assign(RequirementInstance requirement, ActionRequest action, SUser author) {
+        requirement.getCurrentTaskOrException().relocateTask(author, author, false, "", action.getLastVersion());
         return new ActionResponse("Tarefa atribuída com sucesso.", true);
     }
 
-    private ActionResponse unassign(PetitionInstance petition, ActionRequest action, SUser author) {
-        petition.getCurrentTaskOrException().relocateTask(author, null, false, "", action.getLastVersion());
+    private ActionResponse unassign(RequirementInstance requirement, ActionRequest action, SUser author) {
+        requirement.getCurrentTaskOrException().relocateTask(author, null, false, "", action.getLastVersion());
         return new ActionResponse("Tarefa desalocada com sucesso.", true);
     }
 

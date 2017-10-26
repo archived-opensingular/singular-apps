@@ -16,14 +16,20 @@
 
 package org.opensingular.server.commons.persistence.entity.form;
 
+import org.hibernate.annotations.Type;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-import org.hibernate.annotations.Type;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 @Entity
 @IdClass(FormVersionHistoryPK.class)
@@ -32,7 +38,7 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
 
     @Id
     @Column(name = "CO_HISTORICO")
-    private Long codPetitionContentHistory;
+    private Long codRequirementContentHistory;
 
     @Id
     @Column(name = "CO_VERSAO_FORMULARIO")
@@ -47,7 +53,7 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
 
     @ManyToOne
     @JoinColumn(name = "CO_HISTORICO", insertable = false, updatable = false)
-    private PetitionContentHistoryEntity petitionContentHistory;
+    private RequirementContentHistoryEntity requirementContentHistory;
 
     @ManyToOne
     @JoinColumn(name = "CO_VERSAO_FORMULARIO", insertable = false, updatable = false)
@@ -55,15 +61,15 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
 
     @Override
     public FormVersionHistoryPK getCod() {
-        return new FormVersionHistoryPK(codPetitionContentHistory, codFormVersion);
+        return new FormVersionHistoryPK(codRequirementContentHistory, codFormVersion);
     }
 
-    public PetitionContentHistoryEntity getPetitionContentHistory() {
-        return petitionContentHistory;
+    public RequirementContentHistoryEntity getRequirementContentHistory() {
+        return requirementContentHistory;
     }
 
-    public void setPetitionContentHistory(PetitionContentHistoryEntity petitionContentHistory) {
-        this.petitionContentHistory = petitionContentHistory;
+    public void setRequirementContentHistory(RequirementContentHistoryEntity requirementContentHistory) {
+        this.requirementContentHistory = requirementContentHistory;
     }
 
     public FormVersionEntity getFormVersion() {
@@ -74,12 +80,12 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
         this.formVersion = formVersion;
     }
 
-    public Long getCodPetitionContentHistory() {
-        return codPetitionContentHistory;
+    public Long getCodRequirementContentHistory() {
+        return codRequirementContentHistory;
     }
 
-    public void setCodPetitionContentHistory(Long codPetitionContentHistory) {
-        this.codPetitionContentHistory = codPetitionContentHistory;
+    public void setCodRequirementContentHistory(Long codRequirementContentHistory) {
+        this.codRequirementContentHistory = codRequirementContentHistory;
     }
 
     public Long getCodFormVersion() {

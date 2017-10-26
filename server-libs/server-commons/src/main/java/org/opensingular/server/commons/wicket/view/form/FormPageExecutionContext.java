@@ -20,8 +20,7 @@ import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.service.PetitionSender;
+import org.opensingular.server.commons.service.RequirementSender;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 import java.io.Serializable;
@@ -33,16 +32,16 @@ public class FormPageExecutionContext implements Serializable {
     private String formType;
     private FlowResolver resolver;
     private boolean mainForm = true;
-    private Class<? extends PetitionSender> petitionSender;
+    private Class<? extends RequirementSender> requirementSender;
 
-    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver, Class<? extends PetitionSender> petitionSender) {
+    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver, Class<? extends RequirementSender> requirementSender) {
         this(context);
         this.resolver = resolver;
         if (formName != null) {
             this.mainForm = false;
             this.formType = formName;
         }
-        this.petitionSender = petitionSender;
+        this.requirementSender = requirementSender;
     }
 
     public FormPageExecutionContext(ActionContext context) {
@@ -60,8 +59,8 @@ public class FormPageExecutionContext implements Serializable {
         return actionContext.getFormAction().orElseThrow(()-> new SingularServerException("FormAction não encontrado !")).getAnnotationMode();
     }
 
-    public Optional<Long> getPetitionId() {
-        return actionContext.getPetitionId();
+    public Optional<Long> getRequirementId() {
+        return actionContext.getRequirementId();
     }
 
 
@@ -69,8 +68,8 @@ public class FormPageExecutionContext implements Serializable {
         return formType;
     }
 
-    public Optional<Long> getParentPetitionId() {
-        return actionContext.getParentPetitionId();
+    public Optional<Long> getParentRequirementId() {
+        return actionContext.getParentRequirementId();
     }
 
 
@@ -86,11 +85,11 @@ public class FormPageExecutionContext implements Serializable {
         return new ActionContext(actionContext);
     }
 
-    public Class<? extends PetitionSender> getPetitionSender() {
-        return petitionSender;
+    public Class<? extends RequirementSender> getRequirementSender() {
+        return requirementSender;
     }
 
-    public Optional<Long> getRequirementId() {
-        return actionContext.getRequirementId();
+    public Optional<Long> getRequirementDefinitionId() {
+        return actionContext.getRequirementDefinitionId();
     }
 }

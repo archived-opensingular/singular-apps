@@ -58,7 +58,7 @@ public class LocalModuleConnector implements ModuleConnector {
 
     @Override
     public List<Actor> listUsers(Map<String, Object> selectedTask) {
-        return moduleBackstageService.listAllocableUsers(selectedTask);
+        return moduleBackstageService.listAllowedUsers(selectedTask);
     }
 
 }

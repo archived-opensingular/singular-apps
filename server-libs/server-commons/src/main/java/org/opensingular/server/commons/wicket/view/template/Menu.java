@@ -44,11 +44,9 @@ import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.ItemBox;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -56,12 +54,13 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
 
@@ -161,14 +160,14 @@ public class Menu extends Panel implements Loggable {
 
     private List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ModuleEntity module) {
 
-        List<String> siglas = boxConfigurationMetadata.getProcesses().stream()
-                .map(ProcessDTO::getAbbreviation)
+        List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
+                .map(RequirementDefinitionDTO::getAbbreviation)
                 .collect(Collectors.toList());
 
         List<MenuItemConfig> configs = new ArrayList<>();
 
         for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
-            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, siglas, module);
+            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, abbreviations, module);
             configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getIcone(), countSupplier));
 
         }
@@ -176,15 +175,15 @@ public class Menu extends Panel implements Loggable {
         return configs;
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> siglas, ModuleEntity module) {
-        return () -> moduleDriver.countAll(module, itemBoxDTO, siglas, getIdUsuarioLogado());
+    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> abbreviations, ModuleEntity module) {
+        return () -> moduleDriver.countAll(module, itemBoxDTO, abbreviations, getIdCurrentUser());
     }
 
     protected String getIdPessoa() {
-        return getIdUsuarioLogado();
+        return getIdCurrentUser();
     }
 
-    protected String getIdUsuarioLogado() {
+    protected String getIdCurrentUser() {
         SingularUserDetails singularUserDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(singularUserDetails)
                 .map(SingularUserDetails::getUsername)

@@ -42,10 +42,10 @@ import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.PetitionService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
-import org.opensingular.server.commons.service.dto.ProcessDTO;
+import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 
@@ -71,7 +71,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     private static final long serialVersionUID = -3611649597709058163L;
 
     @Inject
-    protected PetitionService<?, ?> petitionService;
+    protected RequirementService<?, ?> requirementService;
 
     @Inject
     @SpringBean(required = false)
@@ -80,14 +80,14 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     /**
      * Tabela de registros
      */
-    protected BSDataTable<T, String> tabela;
+    protected BSDataTable<T, String> table;
     /**
      * Confirmation Form
      */
 
     private String moduleCod;
     private String menu;
-    private List<ProcessDTO> processes;
+    private List<RequirementDefinitionDTO> processes;
     private List<FormDTO> forms;
     /**
      * Form padrão
@@ -136,7 +136,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return module;
     }
 
-    protected Component buildNewPetitionButton(String id) {
+    protected Component buildNewRequirementButton(String id) {
         return new WebMarkupContainer(id);
     }
 
@@ -158,56 +158,56 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     }
 
     protected void appendEditAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), DefaultIcons.PENCIL_SQUARE, this::criarLinkEdicao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.edit"), DefaultIcons.PENCIL_SQUARE, this::createEditionLink);
     }
 
     protected void appendViewAction(BSActionColumn<T, String> actionColumn) {
-        actionColumn.appendStaticAction(getMessage("label.table.column.view"), DefaultIcons.EYE, this::criarLinkVisualizacao);
+        actionColumn.appendStaticAction(getMessage("label.table.column.view"), DefaultIcons.EYE, this::createVisualizationLink);
     }
 
     protected void appendDeleteAction(BSActionColumn<T, String> actionColumn) {
         actionColumn.appendAction(getMessage("label.table.column.delete"), DefaultIcons.MINUS, this::deleteSelected);
     }
 
-    protected BSDataTable<T, String> construirTabela(BSDataTableBuilder<T, String, IColumn<T, String>> builder) {
+    protected BSDataTable<T, String> createTable(BSDataTableBuilder<T, String, IColumn<T, String>> builder) {
         appendPropertyColumns(builder);
         appendActionColumns(builder);
         builder.setRowsPerPage(getRowsPerPage());
-        return builder.setRowsPerPage(getRowsPerPage()).build("tabela");
+        return builder.setRowsPerPage(getRowsPerPage()).build("table");
     }
 
-    protected WebMarkupContainer criarLinkEdicao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_FILL);
+    protected WebMarkupContainer createEditionLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_FILL);
     }
 
-    protected WebMarkupContainer criarLinkExigencia(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_FILL);
+    protected WebMarkupContainer createExigencyLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_FILL);
     }
 
-    protected WebMarkupContainer criarLinkVisualizacao(String id, IModel<T> peticao) {
-        return criarLink(id, peticao, FormAction.FORM_VIEW);
+    protected WebMarkupContainer createVisualizationLink(String id, IModel<T> requirementModel) {
+        return createLink(id, requirementModel, FormAction.FORM_VIEW);
     }
 
-    protected abstract WebMarkupContainer criarLink(String id, IModel<T> peticao, FormAction formAction);
+    protected abstract WebMarkupContainer createLink(String id, IModel<T> requirementModel, FormAction formAction);
 
-    protected Map<String, String> getCriarLinkParameters(T peticao) {
+    protected Map<String, String> getCreateLinkParameters(T requirement) {
         return Collections.emptyMap();
     }
 
-    protected BoxContentConfirmModal<T> construirModalDeleteBorder(IConsumer<T> action) {
+    protected BoxContentConfirmModal<T> createModalDeleteBorder(IConsumer<T> action) {
         return new BoxContentDeleteConfirmModal<T>(dataModel) {
             @Override
             protected void onConfirm(AjaxRequestTarget target) {
                 action.accept(dataModel.getObject());
                 dataModel.setObject(null);
-                target.add(tabela);
+                target.add(table);
             }
         };
     }
 
     private void deleteSelected(AjaxRequestTarget target, IModel<T> model) {
         dataModel = model;
-        showConfirm(target, construirModalDeleteBorder(this::onDelete));
+        showConfirm(target, createModalDeleteBorder(this::onDelete));
     }
 
     protected void showConfirm(AjaxRequestTarget target, BoxContentConfirmModal<T> boxContentConfirmModal) {
@@ -229,7 +229,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     }
 
     protected void onFiltroRapido(IModel<String> model, AjaxRequestTarget target) {
-        target.add(tabela);
+        target.add(table);
     }
 
     protected Integer getRowsPerPage() {
@@ -239,15 +239,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        module = petitionService.findByModuleCod(getModuleCod());
+        module = requirementService.findByModuleCod(getModuleCod());
 
-        BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(criarDataProvider());
+        BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
-        tabela = construirTabela(builder);
-        tabela.add($b.classAppender("worklist"));
+        table = createTable(builder);
+        table.add($b.classAppender("worklist"));
 
-        queue(form.add(filtroRapido, pesquisarButton, buildNewPetitionButton("newButtonArea")));
-        queue(tabela);
+        queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
+        queue(table);
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (menuService != null) {
@@ -261,7 +261,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         }
     }
 
-    protected BaseDataProvider<T, String> criarDataProvider() {
+    protected BaseDataProvider<T, String> createDataProvider() {
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
             @Override
             public long size() {
@@ -274,13 +274,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                                                   boolean ascending) {
-                QuickFilter filtroRapido = newFilter()
+                QuickFilter quickFilter = newFilter()
                         .withFirst(first)
                         .withCount(count)
                         .withSortProperty(sortProperty)
                         .withAscending(ascending);
 
-                return quickSearch(filtroRapido, getProcessesNames(), getFormNames()).iterator();
+                return quickSearch(quickFilter, getProcessesNames(), getFormNames()).iterator();
             }
 
             private List<String> getProcessesNames() {
@@ -289,7 +289,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 } else {
                     return getProcesses()
                             .stream()
-                            .map(ProcessDTO::getAbbreviation)
+                            .map(RequirementDefinitionDTO::getAbbreviation)
                             .collect(Collectors.toList());
                 }
             }
@@ -300,7 +300,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 } else {
                     return getProcesses()
                             .stream()
-                            .map(ProcessDTO::getFormName)
+                            .map(RequirementDefinitionDTO::getFormName)
                             .collect(Collectors.toList());
                 }
             }
@@ -337,11 +337,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
 
-    public List<ProcessDTO> getProcesses() {
+    public List<RequirementDefinitionDTO> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(List<ProcessDTO> processes) {
+    public void setProcesses(List<RequirementDefinitionDTO> processes) {
         this.processes = processes;
     }
 

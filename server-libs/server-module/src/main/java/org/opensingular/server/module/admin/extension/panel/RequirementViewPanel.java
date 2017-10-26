@@ -26,7 +26,7 @@ import org.apache.wicket.model.Model;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.server.module.SingularModuleConfiguration;
 import org.opensingular.server.module.SingularRequirementRef;
-import org.opensingular.server.module.admin.extension.RequirementDTO;
+import org.opensingular.server.module.admin.extension.HealthPanelRequirementDefinitionDTO;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -51,18 +51,18 @@ public class RequirementViewPanel extends Panel {
         return singularModuleConfiguration.getRequirements();
     }
 
-    private class RequirementTableBuilder extends BSDataTableBuilder<RequirementDTO, String, IColumn<RequirementDTO, String>> {
+    private class RequirementTableBuilder extends BSDataTableBuilder<HealthPanelRequirementDefinitionDTO, String, IColumn<HealthPanelRequirementDefinitionDTO, String>> {
         RequirementTableBuilder() {
             super(new RequirementProvider());
-            appendPropertyColumn("Nome", RequirementDTO::getName);
-            appendPropertyColumn("Form Principal", RequirementDTO::getMainFormName);
+            appendPropertyColumn("Nome", HealthPanelRequirementDefinitionDTO::getName);
+            appendPropertyColumn("Form Principal", HealthPanelRequirementDefinitionDTO::getMainFormName);
         }
     }
 
-    private class RequirementProvider extends SortableDataProvider<RequirementDTO, String> {
+    private class RequirementProvider extends SortableDataProvider<HealthPanelRequirementDefinitionDTO, String> {
         @Override
-        public Iterator<RequirementDTO> iterator(long first, long count) {
-            return getRequirements().stream().map(RequirementDTO::new)
+        public Iterator<HealthPanelRequirementDefinitionDTO> iterator(long first, long count) {
+            return getRequirements().stream().map(HealthPanelRequirementDefinitionDTO::new)
                     .collect(Collectors.toList())
                     .subList((int) first, (int) (first + count)).iterator();
         }
@@ -73,8 +73,8 @@ public class RequirementViewPanel extends Panel {
         }
 
         @Override
-        public IModel<RequirementDTO> model(RequirementDTO requirementDTO) {
-            return Model.of(requirementDTO);
+        public IModel<HealthPanelRequirementDefinitionDTO> model(HealthPanelRequirementDefinitionDTO healthPanelRequirementDefinitionDTO) {
+            return Model.of(healthPanelRequirementDefinitionDTO);
         }
     }
 

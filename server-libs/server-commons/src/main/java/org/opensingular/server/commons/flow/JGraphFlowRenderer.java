@@ -83,26 +83,26 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         stil.put(mxConstants.STYLE_FONTCOLOR, "#446299");
         foo.setDefaultEdgeStyle(stil);
 
-        addStyleIcone(foo, "TIMER", "timer.png");
-        addStyleIcone(foo, "END", "terminate.png");
-        addStyleIcone(foo, "MESSAGE", "message_intermediate.png");
-        addStyleIcone(foo, "START", "start.png");
-        addStyleIcone(foo, "JAVA", "gear.png");
-        addStyleIcone(foo, "HUMAN", "pessoinha.png");
+        addStyleIcon(foo, "TIMER", "timer.png");
+        addStyleIcon(foo, "END", "terminate.png");
+        addStyleIcon(foo, "MESSAGE", "message_intermediate.png");
+        addStyleIcon(foo, "START", "start.png");
+        addStyleIcon(foo, "JAVA", "gear.png");
+        addStyleIcon(foo, "HUMAN", "pessoinha.png");
 
         graph.setStylesheet(foo);
     }
 
-    private static void addStyleIcone(mxStylesheet foo, String nomeEstilo, String nomeImagem) {
+    private static void addStyleIcon(mxStylesheet foo, String styleName, String imageName) {
         final Map<String, Object> def = new HashMap<>();
         def.put(mxConstants.STYLE_SEGMENT, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_VERTICAL_LABEL_POSITION, mxConstants.ALIGN_BOTTOM);
         def.put(mxConstants.STYLE_SHAPE, mxConstants.SHAPE_IMAGE);
-        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace('.', '/'), nomeImagem));
-        foo.putCellStyle(nomeEstilo, def);
+        def.put(mxConstants.STYLE_IMAGE, String.format("/%s/%s", JGraphFlowRenderer.class.getPackage().getName().replace('.', '/'), imageName));
+        foo.putCellStyle(styleName, def);
     }
 
-    private static mxGraph renderGraph(FlowDefinition<?> definicao) {
+    private static mxGraph renderGraph(FlowDefinition<?> definition) {
 
         final mxGraph graph  = new mxGraph();
         final Object  parent = graph.getDefaultParent();
@@ -112,7 +112,7 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         graph.getModel().beginUpdate();
         graph.setAutoSizeCells(true);
 
-        final FlowMap fluxo = definicao.getFlowMap();
+        final FlowMap fluxo = definition.getFlowMap();
 
         final Map<String, Object> mapaVertice = new HashMap<>();
         for (final STask<?> task : fluxo.getTasks()) {
@@ -127,8 +127,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
 
         for (final STask<?> task : fluxo.getTasks()) {
-            for (final STransition transicao : task.getTransitions()) {
-                createTransition(graph, transicao, mapaVertice);
+            for (final STransition transition : task.getTransitions()) {
+                createTransition(graph, transition, mapaVertice);
             }
         }
 
@@ -153,25 +153,25 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         final Object v = graph.insertVertex(graph.getDefaultParent(), null, null, 20, 20, 20, 20);
 
         setStyle(v, "START");
-        final Object destino = mapaVertice.get(taskInicial.getAbbreviation());
-        graph.insertEdge(graph.getDefaultParent(), null, null, v, destino);
+        final Object destiny = mapaVertice.get(taskInicial.getAbbreviation());
+        graph.insertEdge(graph.getDefaultParent(), null, null, v, destiny);
     }
 
-    private static void createTransition(mxGraph graph, STransition transicao, Map<String, Object> mapaVertice) {
-        final Object origem  = mapaVertice.get(transicao.getOrigin().getAbbreviation());
-        final Object destino = mapaVertice.get(transicao.getDestination().getAbbreviation());
-        String       nome    = transicao.getName();
-        if (transicao.getDestination().getName().equals(nome)) {
-            nome = null;
+    private static void createTransition(mxGraph graph, STransition transition, Map<String, Object> mapNodes) {
+        final Object origin  = mapNodes.get(transition.getOrigin().getAbbreviation());
+        final Object destiny = mapNodes.get(transition.getDestination().getAbbreviation());
+        String       name    = transition.getName();
+        if (transition.getDestination().getName().equals(name)) {
+            name = null;
         } else {
-            nome = formatarNome(nome);
+            name = formatName(name);
         }
 
-        graph.insertEdge(graph.getDefaultParent(), null, nome, origem, destino);
+        graph.insertEdge(graph.getDefaultParent(), null, name, origin, destiny);
     }
 
     private static Object insertVertex(mxGraph graph, STask<?> task) {
-        final Object v = graph.insertVertex(graph.getDefaultParent(), task.getAbbreviation(), formatarNome(task.getName()),
+        final Object v = graph.insertVertex(graph.getDefaultParent(), task.getAbbreviation(), formatName(task.getName()),
                 20, 20, 20, 20);
         graph.updateCellSize(v);
         if (task.isWait()) {
@@ -194,8 +194,8 @@ public enum JGraphFlowRenderer implements IFlowRenderer {
         ((mxICell) v).setStyle(style);
     }
 
-    private static String formatarNome(String nome) {
-        return nome.replace(' ', '\n');
+    private static String formatName(String name) {
+        return name.replace(' ', '\n');
     }
 
 }
