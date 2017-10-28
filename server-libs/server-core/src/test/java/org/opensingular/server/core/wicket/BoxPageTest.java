@@ -75,15 +75,15 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester.assertNoErrorMessage();
 
         Component deleteButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("actions")
-                .getSubCompomentWithId("3")
-                .getSubCompomentWithId("link")
+                .getSubComponentWithId("actions")
+                .getSubComponentWithId("3")
+                .getSubComponentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
         tester.assertNoErrorMessage();
 
         Component confirmButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("confirm-btn")
+                .getSubComponentWithId("confirm-btn")
                 .getTarget();
         tester.executeAjaxEvent(confirmButton, "click");
         tester.assertNoErrorMessage();
@@ -101,15 +101,15 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester.assertRenderedPage(BoxPage.class);
 
         Component deleteButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("actions")
-                .getSubCompomentWithId("3")
-                .getSubCompomentWithId("link")
+                .getSubComponentWithId("actions")
+                .getSubComponentWithId("3")
+                .getSubComponentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
         tester.assertNoErrorMessage();
 
         Component confirmButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("cancel-btn")
+                .getSubComponentWithId("cancel-btn")
                 .getTarget();
         tester.executeAjaxEvent(confirmButton, "click");
 
@@ -126,21 +126,21 @@ public class BoxPageTest extends SingularServerBaseTest {
         tester.assertRenderedPage(BoxPage.class);
 
         Component deleteButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("actions")
-                .getSubCompomentWithId("4")
-                .getSubCompomentWithId("link")
+                .getSubComponentWithId("actions")
+                .getSubComponentWithId("4")
+                .getSubComponentWithId("link")
                 .getTarget();
         tester.executeAjaxEvent(deleteButton, "click");
         tester.assertNoErrorMessage();
 
         Component confirmationForm = tester.getAssertionsPage()
-                .getSubCompomentWithId("confirmationForm")
+                .getSubComponentWithId("confirmationForm")
                 .getTarget();
         SingularFormTester formTester = tester.newSingularFormTester(confirmationForm.getPageRelativePath());
         formTester.select("usersDropDownChoice", 0);
         tester.executeAjaxEvent(confirmationForm.get("confirmationModal:dialog:body:confirmationModal_body:usersDropDownChoice"), "change");
         Component confirmButton = tester.getAssertionsPage()
-                .getSubCompomentWithId("confirm-btn")
+                .getSubComponentWithId("confirm-btn")
                 .getTarget();
         tester.executeAjaxEvent(confirmButton, "click");
 
@@ -157,9 +157,9 @@ public class BoxPageTest extends SingularServerBaseTest {
         BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         Component historyLink = tester.getAssertionsPage()
-                .getSubCompomentWithId("actions")
-                .getSubCompomentWithId("5")
-                .getSubCompomentWithId("link")
+                .getSubComponentWithId("actions")
+                .getSubComponentWithId("5")
+                .getSubComponentWithId("link")
                 .getTarget();
         tester.clickLink(historyLink);
 

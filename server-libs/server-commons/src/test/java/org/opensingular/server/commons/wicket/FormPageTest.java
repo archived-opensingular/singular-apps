@@ -111,7 +111,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         TextField<String> t = (TextField<String>) new AssertionsWComponent(p).getSubComponents(TextField.class).first().getTarget();
         t.getModel().setObject(SUPER_TESTE_STRING);
-        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("save-btn").getTarget(), "click");
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("save-btn").getTarget(), "click");
 
         return p;
     }
@@ -176,14 +176,14 @@ public class FormPageTest extends SingularCommonsBaseTest {
         tester.assertRenderedPage(FormPage.class);
 
         Component transitionButton = new AssertionsWComponent(p2)
-                .getSubCompomentWithId("custom-buttons")
+                .getSubComponentWithId("custom-buttons")
                 .getSubComponents(SingularButton.class)
                 .first()
                 .getTarget();
         tester.executeAjaxEvent(transitionButton, "click");
 
         Component confirmationButton = new AssertionsWComponent(p2)
-                .getSubCompomentWithId("modals")
+                .getSubComponentWithId("modals")
                 .getSubComponents(TemplatePanel.class)
                 .last()
                 .getSubComponents(SingularButton.class)

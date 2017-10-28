@@ -100,7 +100,7 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
         tester = new SingularWicketTester(singularApplication);
         Page p = new HealthSystemPage(new PageParameters().add(ENTRY_PATH_PARAM, administrationEntryExtension.getKey()));
         tester.startPage(p);
-        Component container = new AssertionsWComponent(p).getSubCompomentWithId("content").getTarget();
+        Component container = new AssertionsWComponent(p).getSubComponentWithId("content").getTarget();
         if (tester.isRenderedPage(HealthSystemPage.class).wasFailed() || !administrationEntryExtension.makePanel("id").getClass().isInstance(container)) {
             Assert.fail(administrationEntryExtension + " não foi renderizado corretamente");
         }
