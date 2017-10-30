@@ -24,6 +24,8 @@ import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 
 public class SingularJSBehavior extends AbstractDefaultAjaxBehavior {
 
+    public static final String SINGULAR_JS_BEAHAVIOR_UPDATE_REGION = "update-region";
+
     @Override
     public void renderHead(Component component, IHeaderResponse response) {
         super.renderHead(component, response);
@@ -41,7 +43,7 @@ public class SingularJSBehavior extends AbstractDefaultAjaxBehavior {
     @Override
     protected void respond(AjaxRequestTarget target) {
         getComponent().getPage().visitChildren((component, visit) -> {
-            if ("tabela".equals(component.getId())) {
+            if (SINGULAR_JS_BEAHAVIOR_UPDATE_REGION.equals(component.getId())) {
                 target.add(component);
                 visit.stop();
             }
