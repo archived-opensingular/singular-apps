@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.wicket.error;
 
+import com.google.common.base.Throwables;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
@@ -23,15 +24,22 @@ import org.apache.wicket.model.Model;
 import org.joda.time.DateTime;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerIntegrationException;
+import org.opensingular.server.commons.service.SendEmailToSupportService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
+import org.springframework.transaction.UnexpectedRollbackException;
 import org.wicketstuff.annotation.mount.MountPath;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import static java.lang.String.format;
 
 @MountPath("public/error/500")
 public class Page500 extends ServerTemplate implements Loggable {
-
     private Exception exception;
+
+    @Inject
+    private SendEmailToSupportService singularSupportService;
 
     public Page500() {
         build();
@@ -53,6 +61,16 @@ public class Page500 extends ServerTemplate implements Loggable {
         String errorCode = errorCode();
         if (exception != null) {
             getLogger().warn(errorCode, this.exception);
+
+            String stackTrace = Throwables.getStackTraceAsString(exception);
+            String urlException = ((HttpServletRequest)getRequest().getContainerRequest()).getRequestURL()
+                    +"?"
+                    +((HttpServletRequest)getRequest().getContainerRequest()).getQueryString();
+            try{
+                singularSupportService.sendEmailToSupport(errorCode, stackTrace, urlException);
+            }catch (UnexpectedRollbackException e){
+                getLogger().warn("A unexpected Rollback happened because of a exception while sending an e-mail to support", e.getMessage());
+            }
         }
         add(new Label("codigo-erro", Model.of(errorCode)));
         pageHeader.setVisible(false);
