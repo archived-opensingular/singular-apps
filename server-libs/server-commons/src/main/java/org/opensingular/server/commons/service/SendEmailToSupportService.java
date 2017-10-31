@@ -49,9 +49,7 @@ public class SendEmailToSupportService implements Loggable {
                 email.addTo(emails);
                 email.withSubject("Exception in production");
 
-                SingularUserDetails userAtual = (SingularUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                String loggedUser = "Username: "+ userAtual.getUsername()+"\n" +
-                        "Display name: "+userAtual.getDisplayName();
+                String loggedUser = getLoggedUser();
 
                 email.withContent(
                         "<pre>"
@@ -66,5 +64,26 @@ public class SendEmailToSupportService implements Loggable {
                 getLogger().warn("Error ocurred while send e-mail to singular support", e);
             }
         }
+    }
+
+    private String getLoggedUser() {
+        StringBuffer returnString = new StringBuffer();
+        try{
+            if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String){
+                returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
+            }else if(SecurityContextHolder.getContext().getAuthentication() instanceof SingularUserDetails) {
+                SingularUserDetails userAtual = (SingularUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+                returnString.append("Username: "+ userAtual.getUsername()).append(
+                        "\nDisplay name: "+userAtual.getDisplayName());
+            }else{
+                returnString.append("User: - ");
+            }
+        }catch (Exception e){
+            getLogger().warn("Error ocurred while retrieving logged User", e);
+            returnString = new StringBuffer();
+            returnString.append("User not found");
+        }
+
+        return returnString.toString();
     }
 }
