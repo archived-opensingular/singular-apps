@@ -16,14 +16,11 @@
 
 package org.opensingular.server.commons.config;
 
-import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.server.commons.spring.SingularServerSpringAppConfig;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
 import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
-import org.springframework.core.type.filter.AnnotationTypeFilter;
-import org.springframework.core.type.filter.TypeFilter;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -33,6 +30,8 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 import java.util.Optional;
 
+import static org.opensingular.lib.support.spring.util.AutoScanDisabled.*;
+
 public class SpringHibernateInitializer {
 
     public static final String SPRING_MVC_DISPATCHER_SERVLET = "Spring MVC Dispatcher Servlet";
@@ -41,17 +40,15 @@ public class SpringHibernateInitializer {
 
     }
 
-    protected AnnotationConfigWebApplicationContext newApplicationContext(){
-        AnnotationConfigWebApplicationContext context =  new AnnotationConfigWebApplicationContext(){
+    protected AnnotationConfigWebApplicationContext newApplicationContext() {
+        return new AnnotationConfigWebApplicationContext() {
             @Override
             protected ClassPathBeanDefinitionScanner getClassPathBeanDefinitionScanner(DefaultListableBeanFactory beanFactory) {
                 ClassPathBeanDefinitionScanner scanner = super.getClassPathBeanDefinitionScanner(beanFactory);
-                scanner.addExcludeFilter(new AnnotationTypeFilter(AutoScanDisabled.class));
+                scanner.addExcludeFilter(AUTO_SCAN_DISABLED_FILTER);
                 return scanner;
             }
-
         };
-        return context;
     }
 
     public AnnotationConfigWebApplicationContext init(ServletContext ctx) {
