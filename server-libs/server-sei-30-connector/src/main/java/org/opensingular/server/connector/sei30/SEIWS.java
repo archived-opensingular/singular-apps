@@ -18,7 +18,7 @@
 
 package org.opensingular.server.connector.sei30;
 
-import org.opensingular.server.commons.util.WSClientSafeWrapper;
+import org.opensingular.lib.commons.util.WSClientSafeWrapper;
 import org.opensingular.server.connector.sei30.model.SimNao;
 import org.opensingular.server.connector.sei30.model.TipoBlocoEnum;
 import org.opensingular.server.connector.sei30.model.UnidadeSei;

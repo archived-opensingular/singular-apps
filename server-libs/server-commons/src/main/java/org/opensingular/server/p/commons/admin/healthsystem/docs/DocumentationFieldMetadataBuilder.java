@@ -29,7 +29,6 @@ import org.opensingular.form.type.core.STypeDate;
 import org.opensingular.form.type.core.STypeDateTime;
 import org.opensingular.form.type.core.STypeTime;
 import org.opensingular.form.type.core.attachment.STypeAttachment;
-import org.opensingular.form.type.core.attachment.STypeAttachmentImage;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
 import org.opensingular.form.view.SMultiSelectionByPicklistView;
 import org.opensingular.form.view.SView;
@@ -125,8 +124,6 @@ class DocumentationFieldMetadataBuilder implements Loggable {
             return HTMLComponentType.DATETIME;
         } else if (s instanceof STypeTime) {
             return HTMLComponentType.TIME;
-        } else if (s instanceof STypeAttachmentImage) {
-            return HTMLComponentType.IMAGE_UPLOAD;
         } else if (s instanceof STypeAttachment) {
             return HTMLComponentType.UPLOAD;
         } else if (s instanceof STypeAttachmentList) {

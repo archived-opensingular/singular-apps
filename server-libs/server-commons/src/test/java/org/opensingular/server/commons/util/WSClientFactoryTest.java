@@ -21,6 +21,7 @@ package org.opensingular.server.commons.util;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.WSClientDefaultFactory;
 
 import javax.xml.ws.BindingProvider;
 import java.util.HashMap;

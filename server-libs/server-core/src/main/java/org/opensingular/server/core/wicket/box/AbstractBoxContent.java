@@ -47,6 +47,7 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.FormDTO;
 import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.wicket.SingularSession;
+import org.opensingular.server.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.server.commons.wicket.view.template.MenuService;
 
 import javax.inject.Inject;
@@ -69,6 +70,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     public static final int DEFAULT_ROWS_PER_PAGE = 15;
     private static final long serialVersionUID = -3611649597709058163L;
+
 
     @Inject
     protected RequirementService<?, ?> requirementService;
@@ -173,7 +175,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         appendPropertyColumns(builder);
         appendActionColumns(builder);
         builder.setRowsPerPage(getRowsPerPage());
-        return builder.setRowsPerPage(getRowsPerPage()).build("table");
+        return builder.setRowsPerPage(getRowsPerPage()).build(SingularJSBehavior.SINGULAR_JS_BEAHAVIOR_UPDATE_REGION);
     }
 
     protected WebMarkupContainer createEditionLink(String id, IModel<T> requirementModel) {
