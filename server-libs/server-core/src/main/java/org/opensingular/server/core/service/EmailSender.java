@@ -121,7 +121,7 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                     MimeBodyPart part = new MimeBodyPart();
                     part.setDisposition(MimeBodyPart.ATTACHMENT);
                     part.setHeader("Content-ID", "<" + attachmentRef.getName() + ">");
-                    part.setDataHandler(new DataHandler(attachmentRef));
+                    part.setDataHandler(new DataHandler(new MailDataSourceIAttachmentRefAdapter(attachmentRef)));
                     part.setFileName(attachmentRef.getName());
                     part.setDescription(attachmentRef.getName());
                     content.addBodyPart(part);
