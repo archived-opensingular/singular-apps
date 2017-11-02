@@ -20,7 +20,6 @@ package org.opensingular.server.p.commons.admin.healthsystem;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
@@ -29,7 +28,6 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage;
 import org.opensingular.server.p.commons.admin.healthsystem.extension.DatabaseTablesAdminEntry;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
