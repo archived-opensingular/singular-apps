@@ -46,7 +46,7 @@ import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementContentHistoryDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.ApplicantEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;

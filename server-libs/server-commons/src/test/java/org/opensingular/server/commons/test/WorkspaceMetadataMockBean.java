@@ -21,7 +21,7 @@ package org.opensingular.server.commons.test;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.service.dto.BoxDefinitionData;
 import org.opensingular.server.commons.service.dto.DatatableField;
