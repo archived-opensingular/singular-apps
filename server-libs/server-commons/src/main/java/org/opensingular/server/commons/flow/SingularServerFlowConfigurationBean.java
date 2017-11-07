@@ -63,7 +63,7 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
 
     @Transactional
     public void initializeFlowDefinitionsDatabase() {
-        if ("true".equals(SingularProperties.get().getProperty(SingularProperties.SINGULAR_EAGER_LOAD_FLOW_DEFINITIONS))) {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_EAGER_LOAD_FLOW_DEFINITIONS)) {
             new TransactionTemplate(transactionManager).execute(status -> {
                 getLogger().info("INITIALIZING FLOW DEFINITIONS");
                 getDefinitions().forEach(d -> {

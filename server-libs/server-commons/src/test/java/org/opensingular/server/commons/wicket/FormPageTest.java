@@ -34,7 +34,7 @@ import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
-import org.opensingular.server.commons.STypeFOO;
+import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.service.RequirementService;
@@ -76,7 +76,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     public void testFormPageRendering() {
         tester = new SingularWicketTester(singularApplication);
         ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
         FormPage p = new FormPage(context);
         tester.startPage(p);
@@ -96,13 +96,13 @@ public class FormPageTest extends SingularCommonsBaseTest {
         assertNotNull(requirementService.getFormFlowInstanceEntity(fooInstance));
         assertNotNull(formService.loadFormEntity(formKey));
 
-        SInstance si = formService.loadSInstance(formKey, RefType.of(STypeFOO.class), documentFactory);
-        assertEquals(SUPER_TESTE_STRING, Value.of(si, STypeFOO.FIELD_NOME));
+        SInstance si = formService.loadSInstance(formKey, RefType.of(SPackageFOO.STypeFOO.class), documentFactory);
+        assertEquals(SUPER_TESTE_STRING, Value.of(si, SPackageFOO.STypeFOO.FIELD_NOME));
     }
 
     private FormPage saveDraft() {
         ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
         context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
         FormPage p = new FormPage(context);
@@ -120,7 +120,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     @Test
     public void testSendForm() {
         tester = new SingularWicketTester(singularApplication);
-        FormPage p = sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
+        FormPage p = sendRequirement(tester, SPackageFOO.STypeFOO.FULL_NAME, this::fillForm);
 
         RequirementInstance requirement = getRequirementFrom(p);
         assertNotNull(requirement.getFlowInstance());
@@ -141,7 +141,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         RequirementInstance requirement = getRequirementFrom(p);
 
         ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
         context.setRequirementId(requirement.getCod());
 
@@ -162,12 +162,12 @@ public class FormPageTest extends SingularCommonsBaseTest {
     public void testExecuteTransition() {
         tester = new SingularWicketTester(singularApplication);
 
-        FormPage p = sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
+        FormPage p = sendRequirement(tester, SPackageFOO.STypeFOO.FULL_NAME, this::fillForm);
 
         RequirementInstance requirement = getRequirementFrom(p);
 
         ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_ANALYSIS);
         context.setRequirementId(requirement.getCod());
 
@@ -201,7 +201,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     public void testFormPageWithoutContext() {
         tester = new SingularWicketTester(singularApplication);
         ActionContext context = new ActionContext();
-        context.setFormName(STypeFOO.FULL_NAME);
+        context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(Page500.class);

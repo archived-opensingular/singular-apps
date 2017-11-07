@@ -90,17 +90,17 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         final Map<String, String> params = new HashMap<>();
-        params.put(CAS_SERVER_LOGIN_URL_PARAM, SingularProperties.get().getProperty(getSingularContext().getServerPropertyKey(SSOFilter.SSO_LOGIN)));
+        params.put(CAS_SERVER_LOGIN_URL_PARAM, SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_LOGIN)).orElse(null));
         if (!Strings.isNullOrEmpty(filterConfig.getInitParameter(SERVICE_URL_PARAM))) {
             params.put(SERVICE_PARAM,
                     getServiceUrl(
                             filterConfig.getInitParameter(SERVICE_URL_PARAM),
-                            SingularProperties.get().getProperty(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)),
+                            SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)).orElse(null),
                             filterConfig.getServletContext().getContextPath()
                     )
             );
         } else {
-            params.put(SERVER_NAME_PARAM, SingularProperties.get().getProperty(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)));
+            params.put(SERVER_NAME_PARAM, SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)).orElse(null));
         }
 
         Enumeration enumeration = filterConfig.getInitParameterNames();

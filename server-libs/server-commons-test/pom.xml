@@ -5,34 +5,48 @@
 
     <parent>
         <groupId>org.opensingular</groupId>
-        <artifactId>singular-server</artifactId>
+        <artifactId>singular-server-libs</artifactId>
         <version>1.6.9-SNAPSHOT</version>
     </parent>
 
-    <artifactId>singular-server-libs</artifactId>
-    <name>[singular-server :: server-libs]</name>
-    <packaging>pom</packaging>
+    <artifactId>singular-server-commons-test</artifactId>
+    <name>[singular-server :: server-libs :: server-commons :: test]</name>
+    <packaging>jar</packaging>
 
-    <modules>
-        <module>server-commons</module>
-        <module>server-commons-test</module>
-        <module>server-module</module>
-        <module>server-core</module>
-        <module>server-sei-30-connector</module>
-        <module>server-sei-30-extensao-singular</module>
-        <module>server-single-app</module>
-        <module>server-studio-app</module>
-    </modules>
+    <build>
+        <resources>
+            <resource>
+                <filtering>true</filtering>
+                <directory>src/main/resources</directory>
+            </resource>
+            <resource>
+                <filtering>false</filtering>
+                <directory>src/main/java</directory>
+                <includes>
+                    <include>**/*.js</include>
+                    <include>**/*.css</include>
+                    <include>**/*.html</include>
+                    <include>**/*.properties</include>
+                </includes>
+            </resource>
+        </resources>
+    </build>
 
     <dependencies>
-
-
-        <!-- Tests -->
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-server-commons</artifactId>
+            <version>${singular.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-commons-test</artifactId>
+            <version>${singular.version}</version>
+        </dependency>
         <dependency>
             <groupId>org.springframework.security</groupId>
             <artifactId>spring-security-test</artifactId>
             <version>${spring.security.version}</version>
-            <scope>test</scope>
             <exclusions>
                 <exclusion>
                     <groupId>org.springframework</groupId>
@@ -56,6 +70,7 @@
                 </exclusion>
             </exclusions>
         </dependency>
+
     </dependencies>
 
 </project>

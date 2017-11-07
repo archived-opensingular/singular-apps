@@ -26,7 +26,6 @@ import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularFormTester;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-import org.opensingular.server.commons.STypeFOO;
 import org.opensingular.server.commons.test.ContextUtil;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.core.test.ServerApplicationMock;
@@ -152,7 +151,7 @@ public class BoxPageTest extends SingularServerBaseTest {
     @Test(expected = RestartResponseException.class)
     public void historyForm() {
         tester = new SingularWicketTester(singularApplication);
-        sendRequirement(tester, STypeFOO.FULL_NAME, this::fillForm);
+        sendRequirement(tester, SPackageFOO.STypeFOO.FULL_NAME, this::fillForm);
 
         BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);

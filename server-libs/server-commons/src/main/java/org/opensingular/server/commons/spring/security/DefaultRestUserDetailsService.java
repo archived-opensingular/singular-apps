@@ -46,7 +46,7 @@ public class DefaultRestUserDetailsService implements RestUserDetailsService {
     }
 
     protected String getAllowedCommonName() {
-        return SingularProperties.get().getProperty(SingularProperties.REST_ALLOWED_COMMON_NAME, "");
+        return SingularProperties.get(SingularProperties.REST_ALLOWED_COMMON_NAME, "");
     }
 
 }
