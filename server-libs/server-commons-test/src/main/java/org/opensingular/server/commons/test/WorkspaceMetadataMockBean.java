@@ -19,6 +19,7 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
@@ -112,9 +113,8 @@ public class WorkspaceMetadataMockBean {
                 return null;
             });
             map.put(moduleEntity, gimmeSomeMock());
-
-        } catch (Throwable t) {
-            throw new RuntimeException(t);
+        } catch (Exception e) {
+            throw SingularException.rethrow(e);
         }
     }
 

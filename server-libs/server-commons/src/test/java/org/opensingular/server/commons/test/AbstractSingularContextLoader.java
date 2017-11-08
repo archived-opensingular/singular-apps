@@ -35,6 +35,7 @@ package org.opensingular.server.commons.test;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.server.commons.config.SingularInitializer;
 import org.springframework.context.ApplicationContext;
@@ -282,7 +283,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
         try {
             new SingularInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
-            throw new RuntimeException(e.getMessage(), e);
+            throw SingularException.rethrow(e);
         }
     }
 

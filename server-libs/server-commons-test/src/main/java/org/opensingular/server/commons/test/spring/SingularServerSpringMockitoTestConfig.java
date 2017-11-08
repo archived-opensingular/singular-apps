@@ -100,19 +100,19 @@ public class SingularServerSpringMockitoTestConfig implements Loggable {
     private void registerBeanFactories(ApplicationContextMock applicationContext) {
         Set<Class<?>> beanFactoriesClasses = Sets.union(testClasspathScanner.findSubclassesOf(SingularDefaultBeanFactory.class),
                 testClasspathScanner.findClassesAnnotatedWith(Configuration.class));
-        for (Class<?> c : beanFactoriesClasses) {
-            new Mirror().on(c).reflectAll().methods().matching(element -> element.isAnnotationPresent(Bean.class)).forEach(m -> {
-                if (m.getParameterCount() == 0) {
-                    try {
-                        applicationContext.putOrReplaceBean(m.invoke(Mockito.spy(c)));
-                    } catch (Exception e) {
-                        getLogger().trace(e.getMessage(), e);
-                    }
+        beanFactoriesClasses.forEach(c -> registerMockBean(applicationContext, c));
+    }
+
+    private void registerMockBean(ApplicationContextMock applicationContext, Class<?> targetClass) {
+        new Mirror().on(targetClass).reflectAll().methods().matching(element -> element.isAnnotationPresent(Bean.class)).forEach(m -> {
+            if (m.getParameterCount() == 0) {
+                try {
+                    applicationContext.putOrReplaceBean(m.invoke(Mockito.spy(targetClass)));
+                } catch (Exception e) {
+                    getLogger().trace(e.getMessage(), e);
                 }
-
-            });
-        }
-
+            }
+        });
     }
 
     private static class TestScan extends SingularClassPathScanner {
