@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-server-libs</artifactId>
-        <version>1.6.9-RC3</version>
+        <version>1.6.9.1</version>
     </parent>
 
     <artifactId>server-sei-30-extensao-singular</artifactId>
