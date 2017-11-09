@@ -19,12 +19,13 @@
 package org.opensingular.server.module.admin.extension;
 
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.server.commons.admin.healthsystem.HealthSystemPage;
 import org.opensingular.server.module.admin.extension.panel.RequirementViewPanel;
-import org.opensingular.server.p.commons.admin.healthsystem.extension.AdministrationEntryExtension;
+import org.opensingular.server.commons.admin.healthsystem.extension.AdministrationEntryExtension;
 
 /**
  * Carregado por :
- * @see org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage#loadExtensions()
+ * @see HealthSystemPage#loadExtensions()
  * Registrado em:
  * @see
  */

@@ -26,7 +26,7 @@ import org.opensingular.server.module.ActionProviderBuilder;
 import org.opensingular.server.module.BoxItemDataProvider;
 import org.opensingular.server.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.server.module.workspace.BoxDefinition;
-import org.opensingular.server.p.commons.config.PServerContext;
+import org.opensingular.server.commons.config.PServerContext;
 
 import java.util.ArrayList;
 import java.util.List;

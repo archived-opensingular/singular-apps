@@ -32,10 +32,10 @@ import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfigur
 import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
 import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
-import org.opensingular.server.p.commons.admin.AdministrationApplication;
-import org.opensingular.server.p.commons.config.PServerContext;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
-import org.opensingular.server.p.commons.config.PWebInitializer;
+import org.opensingular.server.commons.admin.AdministrationApplication;
+import org.opensingular.server.commons.config.PServerContext;
+import org.opensingular.server.commons.config.PSingularInitializer;
+import org.opensingular.server.commons.config.PWebInitializer;
 import org.opensingular.server.single.page.SingleAppPage;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
