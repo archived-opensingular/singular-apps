@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.p.commons;
+package org.opensingular.server.commons;
 
 import freemarker.cache.StringTemplateLoader;
 import org.junit.Before;

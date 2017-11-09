@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.p.module.workspace;
+package org.opensingular.server.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.config.IServerContext;
