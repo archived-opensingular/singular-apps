@@ -33,7 +33,7 @@ import org.opensingular.server.core.test.ServerApplicationMock;
 import org.opensingular.server.core.test.SingularServerBaseTest;
 import org.opensingular.server.core.wicket.box.BoxPage;
 import org.opensingular.server.core.wicket.history.HistoryPage;
-import org.opensingular.server.p.commons.config.PServerContext;
+import org.opensingular.server.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
