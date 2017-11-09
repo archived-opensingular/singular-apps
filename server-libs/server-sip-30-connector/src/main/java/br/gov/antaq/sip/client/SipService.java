@@ -1,8 +1,8 @@
 
 package br.gov.antaq.sip.client;
 
-import java.net.MalformedURLException;
 import java.net.URL;
+
 import javax.xml.namespace.QName;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebEndpoint;
@@ -17,7 +17,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "sipService", targetNamespace = "sipns", wsdlLocation = "file:/home/torquato/desenv/workspace/outorga/integracao/client/sip-client/src/main/resources/ws_sip_autenticar.wsdl")
+@WebServiceClient(name = "sipService", targetNamespace = "sipns", wsdlLocation = "ws_sip_autenticar.wsdl")
 public class SipService
     extends Service
 {
@@ -30,8 +30,8 @@ public class SipService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("file:/home/torquato/desenv/workspace/outorga/integracao/client/sip-client/src/main/resources/ws_sip_autenticar.wsdl");
-        } catch (MalformedURLException ex) {
+            url = new URL("ws_sip_autenticar.wsdl");
+        } catch (Exception ex) {
             e = new WebServiceException(ex);
         }
         SIPSERVICE_WSDL_LOCATION = url;
