@@ -30,7 +30,7 @@ public class SipService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = new URL("ws_sip_autenticar.wsdl");
+          url = Thread.currentThread().getContextClassLoader().getResource("ws_sip_autenticar.wsdl");
         } catch (Exception ex) {
             e = new WebServiceException(ex);
         }
