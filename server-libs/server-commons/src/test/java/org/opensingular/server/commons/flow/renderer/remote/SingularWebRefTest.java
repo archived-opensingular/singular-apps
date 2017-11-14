@@ -22,7 +22,7 @@ import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.server.commons.flow.SingularWebRef;
-import org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage;
+import org.opensingular.server.commons.admin.healthsystem.HealthSystemPage;
 
 public class SingularWebRefTest {
 
