@@ -115,8 +115,8 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         tester.assertRenderedPage(FormPage.class);
 
         formFiller.accept(p);
-        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("send-btn").getTarget(), "click");
-        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubCompomentWithId("confirm-btn").getTarget(), "click");
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("send-btn").getTarget(), "click");
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("confirm-btn").getTarget(), "click");
         return p;
     }
 

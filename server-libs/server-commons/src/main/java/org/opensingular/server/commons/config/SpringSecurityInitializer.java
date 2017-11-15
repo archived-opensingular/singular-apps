@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.config;
 
+import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
 import org.opensingular.server.commons.spring.security.config.SingularLogoutFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -18,6 +18,7 @@
         <module>server-commons-test</module>
         <module>server-module</module>
         <module>server-core</module>
+	    <module>server-sip-30-connector</module>
         <module>server-sei-30-connector</module>
         <module>server-sei-30-extensao-singular</module>
         <module>server-single-app</module>
