@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem;
+package org.opensingular.server.commons.admin.healthsystem;
 
 import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -25,17 +25,20 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage;
-import org.opensingular.server.p.commons.admin.healthsystem.extension.CacheAdminEntry;
-import org.opensingular.server.p.commons.admin.healthsystem.extension.JobsAdminEntry;
-import org.opensingular.server.p.commons.admin.healthsystem.extension.WebAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.HealthSystemPage;
+import org.opensingular.server.commons.admin.healthsystem.extension.CacheAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.extension.JobsAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.extension.WebAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.extension.CacheAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.extension.JobsAdminEntry;
+import org.opensingular.server.commons.admin.healthsystem.extension.WebAdminEntry;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import static org.opensingular.server.p.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
+import static org.opensingular.server.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class HealthSystemPanelsTest extends SingularCommonsBaseTest {

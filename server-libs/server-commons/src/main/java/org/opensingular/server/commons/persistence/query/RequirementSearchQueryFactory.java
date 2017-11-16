@@ -130,7 +130,7 @@ public class RequirementSearchQueryFactory {
     @Nonnull
     private void appendWhere() {
         appendFilterByApplicant();
-        appendFilterByProcessAbbreviation();
+        appendFilterByFlowDefinitionAbbreviation();
         appendFilterByQuickFilter();
         appendFilterByTasks();
         if (quickFilter.isRascunho()) {
@@ -185,7 +185,7 @@ public class RequirementSearchQueryFactory {
         }
     }
 
-    private void appendFilterByProcessAbbreviation() {
+    private void appendFilterByFlowDefinitionAbbreviation() {
         if (!quickFilter.isRascunho()
                 && quickFilter.getProcessesAbbreviation() != null
                 && !quickFilter.getProcessesAbbreviation().isEmpty()) {

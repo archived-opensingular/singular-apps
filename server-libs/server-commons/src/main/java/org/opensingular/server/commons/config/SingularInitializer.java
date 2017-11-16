@@ -18,7 +18,6 @@ package org.opensingular.server.commons.config;
 
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;

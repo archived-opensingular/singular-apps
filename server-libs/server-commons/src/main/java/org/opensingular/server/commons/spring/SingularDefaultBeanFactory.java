@@ -56,7 +56,7 @@ import org.opensingular.server.commons.persistence.dao.form.RequirementContentHi
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultRequirementSender;
@@ -73,10 +73,10 @@ import org.opensingular.server.commons.service.attachment.ServerAttachmentPersis
 import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.server.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
-import org.opensingular.server.commons.spring.security.DefaultRestUserDetailsService;
+import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.server.commons.spring.security.RestUserDetailsService;
+import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;

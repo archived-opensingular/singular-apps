@@ -30,7 +30,7 @@ import org.opensingular.server.commons.service.dto.BoxConfigurationData;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.p.commons.config.PServerContext;
+import org.opensingular.server.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

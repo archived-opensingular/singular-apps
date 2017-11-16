@@ -18,7 +18,7 @@
 
 package org.opensingular.server.core.service;
 
-import org.fest.util.VisibleForTesting;
+import org.assertj.core.util.VisibleForTesting;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
