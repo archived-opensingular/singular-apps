@@ -19,6 +19,7 @@
 package org.opensingular.server.core.test;
 
 import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.config.PWebInitializer;
 import org.opensingular.server.commons.config.SchedulerInitializer;
 import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
@@ -26,7 +27,6 @@ import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
 import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
-import org.opensingular.server.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 

@@ -24,15 +24,15 @@ import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.form.TextField;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
-import org.opensingular.form.wicket.helpers.SingularFormTester;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.internal.lib.wicket.test.SingularFormTester;
+import org.opensingular.server.commons.config.PServerContext;
 import org.opensingular.server.commons.test.ContextUtil;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.core.test.ServerApplicationMock;
 import org.opensingular.server.core.test.SingularServerBaseTest;
 import org.opensingular.server.core.wicket.box.BoxPage;
 import org.opensingular.server.core.wicket.history.HistoryPage;
-import org.opensingular.server.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

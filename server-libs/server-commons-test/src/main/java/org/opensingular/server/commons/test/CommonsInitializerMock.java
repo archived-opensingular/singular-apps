@@ -20,11 +20,11 @@ package org.opensingular.server.commons.test;
 
 import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.config.PSingularInitializer;
+import org.opensingular.server.commons.config.PWebInitializer;
 import org.opensingular.server.commons.config.SchedulerInitializer;
 import org.opensingular.server.commons.config.SpringHibernateInitializer;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
-import org.opensingular.server.p.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
