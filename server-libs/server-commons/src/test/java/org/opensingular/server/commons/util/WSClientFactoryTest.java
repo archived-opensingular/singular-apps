@@ -42,7 +42,7 @@ public class WSClientFactoryTest {
 
         ServiceTest serviceTest = factory.getReference();
 
-        Assert.assertEquals(SingularProperties.get().getProperty("wswrapper.test.porttype"), map.get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY) + "?wsdl");
+        Assert.assertEquals(SingularProperties.getOpt("wswrapper.test.porttype").orElse(null), map.get(BindingProvider.ENDPOINT_ADDRESS_PROPERTY) + "?wsdl");
 
     }
 

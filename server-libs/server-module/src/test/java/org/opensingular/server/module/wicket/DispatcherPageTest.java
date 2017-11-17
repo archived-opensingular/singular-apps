@@ -84,6 +84,4 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(FormPage.class);
     }
-
-
 }

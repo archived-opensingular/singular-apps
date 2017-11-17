@@ -1,22 +1,20 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ *  you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-package org.opensingular.server.commons.spring.security;
+package org.opensingular.server.commons.test.spring;
 
 
 import com.google.common.collect.Sets;
@@ -32,6 +30,7 @@ import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.test.ApplicationContextMock;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -101,19 +100,19 @@ public class SingularServerSpringMockitoTestConfig implements Loggable {
     private void registerBeanFactories(ApplicationContextMock applicationContext) {
         Set<Class<?>> beanFactoriesClasses = Sets.union(testClasspathScanner.findSubclassesOf(SingularDefaultBeanFactory.class),
                 testClasspathScanner.findClassesAnnotatedWith(Configuration.class));
-        for (Class<?> c : beanFactoriesClasses) {
-            new Mirror().on(c).reflectAll().methods().matching(element -> element.isAnnotationPresent(Bean.class)).forEach(m -> {
-                if (m.getParameterCount() == 0) {
-                    try {
-                        applicationContext.putOrReplaceBean(m.invoke(Mockito.spy(c)));
-                    } catch (Exception e) {
-                        getLogger().trace(e.getMessage(), e);
-                    }
+        beanFactoriesClasses.forEach(c -> registerMockBean(applicationContext, c));
+    }
+
+    private void registerMockBean(ApplicationContextMock applicationContext, Class<?> targetClass) {
+        new Mirror().on(targetClass).reflectAll().methods().matching(element -> element.isAnnotationPresent(Bean.class)).forEach(m -> {
+            if (m.getParameterCount() == 0) {
+                try {
+                    applicationContext.putOrReplaceBean(m.invoke(Mockito.spy(targetClass)));
+                } catch (Exception e) {
+                    getLogger().trace(e.getMessage(), e);
                 }
-
-            });
-        }
-
+            }
+        });
     }
 
     private static class TestScan extends SingularClassPathScanner {

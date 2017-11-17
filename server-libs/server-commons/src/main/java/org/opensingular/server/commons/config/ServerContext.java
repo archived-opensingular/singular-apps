@@ -33,7 +33,7 @@ public enum ServerContext implements IServerContext {
     ServerContext(String defaultPath, String propertiesBaseKey) {
         this.propertiesBaseKey = propertiesBaseKey;
         String key = propertiesBaseKey + ".context";
-        String path = SingularProperties.get().getProperty(key);
+        String path = SingularProperties.getOpt(key).orElse(null);
         if (path == null || path.length() <= 0) {
             path = defaultPath;
         }

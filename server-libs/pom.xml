@@ -15,6 +15,7 @@
 
     <modules>
         <module>server-commons</module>
+        <module>server-commons-test</module>
         <module>server-module</module>
         <module>server-core</module>
 	    <module>server-sip-30-connector</module>

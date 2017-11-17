@@ -21,6 +21,7 @@ import org.hibernate.SessionFactory;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
+import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -36,12 +37,11 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 import java.util.Properties;
 
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
-import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_DEV_MODE;
-import static org.opensingular.lib.commons.base.SingularProperties.USE_EMBEDDED_DATABASE;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
@@ -116,15 +116,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Bean
     public DataSource dataSource() {
-        boolean useEmbedded = true;
-
-        if (SingularProperties.get().getProperty(USE_EMBEDDED_DATABASE) != null) {
-            useEmbedded = SingularProperties.get().isTrue(USE_EMBEDDED_DATABASE);
-        } else if (SingularProperties.get().isTrue(SINGULAR_DEV_MODE)) {
-            useEmbedded = false;
-        }
-
-        if (useEmbedded) {
+        if (SqlUtil.useEmbeddedDatabase()) {
             return embeddedDataSourceConfiguration();
         } else {
             return jndiDataSourceConfiguration();
@@ -135,7 +127,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         getLogger().info("Usando datasource configurado via JNDI");
         DataSource   dataSource     = null;
         JndiTemplate jndi           = new JndiTemplate();
-        String       dataSourceName = SingularProperties.get().getProperty(JNDI_DATASOURCE, "java:jboss/datasources/singular");
+        String       dataSourceName = SingularProperties.get(JNDI_DATASOURCE, "java:jboss/datasources/singular");
         try {
             dataSource = (DataSource) jndi.lookup(dataSourceName);
         } catch (NamingException e) {
@@ -171,9 +163,10 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(hibernateProperties());
         sessionFactoryBean.setPackagesToScan(hibernatePackagesToScan());
-        if (SingularProperties.get().containsKey(CUSTOM_SCHEMA_NAME)) {
+        Optional<String> schemaName = SingularProperties.getOpt(CUSTOM_SCHEMA_NAME);
+        if (schemaName.isPresent()) {
             sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor());
-            getLogger().info("Utilizando schema customizado: {}", SingularProperties.get().getProperty(CUSTOM_SCHEMA_NAME));
+            getLogger().info("Utilizando schema customizado: {}", schemaName.get());
         }
         return sessionFactoryBean;
     }
