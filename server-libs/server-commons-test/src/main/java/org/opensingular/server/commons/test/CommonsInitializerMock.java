@@ -16,32 +16,29 @@
  *
  */
 
-package org.opensingular.server.core.test;
+package org.opensingular.server.commons.test;
 
+import org.opensingular.server.commons.config.FlowInitializer;
 import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.config.PSingularInitializer;
 import org.opensingular.server.commons.config.PWebInitializer;
 import org.opensingular.server.commons.config.SchedulerInitializer;
 import org.opensingular.server.commons.config.SpringHibernateInitializer;
-import org.opensingular.server.commons.test.CommonsApplicationMock;
-import org.opensingular.server.commons.test.CommonsInitializerMock;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
-import org.opensingular.server.core.config.AttachmentGCSchedulerInitializer;
-import org.opensingular.server.core.config.MailSenderSchedulerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class ServerInitializerMock extends CommonsInitializerMock {
-
-    public static final String   TESTE                      = "Teste";
-    public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.server.commons.test"};
+public class CommonsInitializerMock implements PSingularInitializer {
+    
+    public static final String   TESTE                      = "GRUPO_TESTE";
     public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
-    public ServerInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
+    public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    public ServerInitializerMock() {
+    public CommonsInitializerMock() {
     }
 
     @Override
@@ -70,16 +67,27 @@ public class ServerInitializerMock extends CommonsInitializerMock {
     }
 
     @Override
+    public FlowInitializer flowConfiguration() {
+        return new FlowInitializer() {
+
+            @Override
+            public String moduleCod() {
+                return TESTE;
+            }
+        };
+    }
+
+    @Override
     public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
+                return Object.class;
             }
 
             @Override
             public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
+                return Object.class;
             }
         };
     }

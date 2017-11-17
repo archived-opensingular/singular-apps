@@ -27,6 +27,7 @@ import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 public class SingularTestRequestCycleListener extends AbstractRequestCycleListener {
@@ -54,19 +55,20 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
             private String pathInfo;
 
             @Override
-            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy) throws Throwable {
-                if (method.getName().equals("setContextPath")) {
+            public Object intercept(Object o, Method method, Object[] objects, MethodProxy methodProxy)
+                    throws InvocationTargetException, IllegalAccessException {
+                if ("setContextPath".equals(method.getName())) {
                     contextPath = (String) objects[0];
                     return null;
                 }
-                if (method.getName().equals("getContextPath")) {
+                if ("getContextPath".equals(method.getName())) {
                     return contextPath;
                 }
-                if (method.getName().equals("setPathInfo")) {
+                if ("setPathInfo".equals(method.getName())) {
                     pathInfo = (String) objects[0];
                     return null;
                 }
-                if (method.getName().equals("getPathInfo")) {
+                if ("getPathInfo".equals(method.getName())) {
                     return pathInfo;
                 }
                 return method.invoke(httpServletRequest, objects);
@@ -86,8 +88,9 @@ public class SingularTestRequestCycleListener extends AbstractRequestCycleListen
         enhancer.setInterfaces(new Class[]{SuperPowered.class});
         enhancer.setCallback(new InvocationHandler() {
             @Override
-            public Object invoke(Object o, Method method, Object[] objects) throws Throwable {
-                if (method.getName().equals("getContainerRequest")) {
+            public Object invoke(Object o, Method method, Object[] objects)
+                    throws InvocationTargetException, IllegalAccessException {
+                if ("getContainerRequest".equals(method.getName())) {
                     return superPoweredMockRequest;
                 }
                 return method.invoke(request, objects);

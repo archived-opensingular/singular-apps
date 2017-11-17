@@ -45,9 +45,8 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-server-commons</artifactId>
+            <artifactId>singular-server-commons-test</artifactId>
             <version>${singular.version}</version>
-            <type>test-jar</type>
             <scope>test</scope>
         </dependency>
     </dependencies>

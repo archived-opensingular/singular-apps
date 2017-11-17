@@ -18,11 +18,7 @@
 
 package org.opensingular.server.commons.spring.security.config.cas.util;
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
+import org.opensingular.lib.commons.base.SingularProperties;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -31,8 +27,11 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.opensingular.lib.commons.base.SingularProperties;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * The type Single sing out filter wrapper.
@@ -63,7 +62,7 @@ public class SingleSingOutFilterWrapper extends SSOConfigurableFilter {
     public void init(final FilterConfig filterConfig) throws ServletException {
         super.init(filterConfig);
         final Map<String, String> params = new HashMap<String, String>();
-        params.put(CAS_SERVER_URL_PREFIX_PARAM, SingularProperties.get().getProperty(getSingularContext().getServerPropertyKey(SSOFilter.SSO_URL_PREFIX)));
+        params.put(CAS_SERVER_URL_PREFIX_PARAM, SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_URL_PREFIX)).orElse(null));
         Enumeration enumeration = filterConfig.getInitParameterNames();
         while (enumeration.hasMoreElements()) {
             String s = (String) enumeration.nextElement();
