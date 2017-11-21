@@ -25,7 +25,7 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
-import org.opensingular.server.commons.STypeFOO;
+import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.test.FOOFlowWithTransition;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 
@@ -41,7 +41,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
     @Transactional
     public void testSomeFunctions(){
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
         RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
@@ -51,7 +51,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(requirement.getMainForm());
 
-        Assert.assertTrue(requirement.getMainForm(STypeFOO.class).getType() instanceof STypeFOO);
+        Assert.assertTrue(requirement.getMainForm(SPackageFOO.STypeFOO.class).getType() instanceof SPackageFOO.STypeFOO);
 
         Assert.assertNotNull(requirement.getMainFormAndCast(SIComposite.class));
 
@@ -63,6 +63,6 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(requirement.getMainFormCurrentFormVersion());
 
-        Assert.assertEquals(STypeFOO.FULL_NAME, requirement.getMainFormTypeName());
+        Assert.assertEquals(SPackageFOO.STypeFOO.FULL_NAME, requirement.getMainFormTypeName());
     }
 }

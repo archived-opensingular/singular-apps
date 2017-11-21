@@ -16,16 +16,20 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.commons.admin.healthsystem.docs;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SType;
+import org.opensingular.server.commons.admin.healthsystem.docs.DocBlock;
+import org.opensingular.server.commons.admin.healthsystem.docs.DocFieldMetadata;
+import org.opensingular.server.commons.admin.healthsystem.docs.DocTable;
+import org.opensingular.server.commons.admin.healthsystem.docs.DocumentationMetadataBuilder;
 
 import java.util.LinkedHashSet;
 
-import static org.opensingular.server.p.commons.admin.healthsystem.docs.DocFieldMetadata.DocFieldValue.*;
+import static org.opensingular.server.commons.admin.healthsystem.docs.DocFieldMetadata.DocFieldValue.*;
 public class DocBuilderTest {
 
     private DocumentationMetadataBuilder builderFor(Class<? extends SType<?>> clazz) {

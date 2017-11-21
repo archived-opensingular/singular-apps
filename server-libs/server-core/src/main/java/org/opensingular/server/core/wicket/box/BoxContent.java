@@ -362,7 +362,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> processAbbreviation, List<String> formNames) {
+    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
         return moduleDriver.searchFiltered(getModule(), getItemBoxModelObject(), filter);
     }
 

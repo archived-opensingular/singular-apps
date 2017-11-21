@@ -71,10 +71,10 @@ public class BoxConfigurationData implements Serializable {
         return null;
     }
 
-    public RequirementDefinitionDTO getProcessByAbbreviation(String processAbbreviation) {
+    public RequirementDefinitionDTO getProcessByAbbreviation(String flowDefinitionAbbreviation) {
         return getProcesses()
                 .stream()
-                .filter(p -> p.getAbbreviation().equalsIgnoreCase(processAbbreviation))
+                .filter(p -> p.getAbbreviation().equalsIgnoreCase(flowDefinitionAbbreviation))
                 .findFirst()
                 .orElse(null);
     }

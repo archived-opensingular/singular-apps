@@ -21,7 +21,7 @@ package org.opensingular.server.studio.spring;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.p.commons.config.PSpringSecurityInitializer;
+import org.opensingular.server.commons.config.PSpringSecurityInitializer;
 import org.opensingular.server.studio.user.SharedUserDetails;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -34,7 +34,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 

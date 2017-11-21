@@ -60,7 +60,7 @@ public class Page500 extends ServerTemplate implements Loggable {
     protected void build() {
         String errorCode = errorCode();
         if (exception != null) {
-            getLogger().warn(errorCode, this.exception);
+            getLogger().error(errorCode, this.exception);
 
             String stackTrace = Throwables.getStackTraceAsString(exception);
             String urlException = ((HttpServletRequest)getRequest().getContainerRequest()).getRequestURL()

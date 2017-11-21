@@ -24,7 +24,6 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.commons.wicket.error.AccessDeniedPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

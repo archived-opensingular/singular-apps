@@ -30,10 +30,10 @@ import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.server.commons.wicket.SingularServerApplication;
 import org.opensingular.server.module.wicket.view.util.dispatcher.DispatcherPage;
-import org.opensingular.server.p.commons.admin.AdministrationApplication;
-import org.opensingular.server.p.commons.config.PServerContext;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
-import org.opensingular.server.p.commons.config.PWebInitializer;
+import org.opensingular.server.commons.admin.AdministrationApplication;
+import org.opensingular.server.commons.config.PServerContext;
+import org.opensingular.server.commons.config.PSingularInitializer;
+import org.opensingular.server.commons.config.PWebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;

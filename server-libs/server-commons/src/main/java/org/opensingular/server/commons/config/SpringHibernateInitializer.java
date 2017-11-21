@@ -16,6 +16,7 @@
 
 package org.opensingular.server.commons.config;
 
+import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.server.commons.spring.SingularServerSpringAppConfig;
@@ -41,14 +42,7 @@ public class SpringHibernateInitializer {
     }
 
     protected AnnotationConfigWebApplicationContext newApplicationContext() {
-        return new AnnotationConfigWebApplicationContext() {
-            @Override
-            protected ClassPathBeanDefinitionScanner getClassPathBeanDefinitionScanner(DefaultListableBeanFactory beanFactory) {
-                ClassPathBeanDefinitionScanner scanner = super.getClassPathBeanDefinitionScanner(beanFactory);
-                scanner.addExcludeFilter(AUTO_SCAN_DISABLED_FILTER);
-                return scanner;
-            }
-        };
+        return new SingularAnnotationConfigWebApplicationContext();
     }
 
     public AnnotationConfigWebApplicationContext init(ServletContext ctx) {

@@ -335,7 +335,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     protected abstract QuickFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(QuickFilter filter, List<String> processAbbreviation, List<String> formNames);
+    protected abstract List<T> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames);
 
     protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
 

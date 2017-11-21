@@ -32,6 +32,7 @@ import org.apache.wicket.util.time.Duration;
 import org.opensingular.internal.lib.wicket.test.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;

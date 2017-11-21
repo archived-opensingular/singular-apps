@@ -16,12 +16,12 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.commons.admin.healthsystem.docs;
 
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
-import org.opensingular.server.p.commons.admin.healthsystem.DocumentationMetadataUtil;
+import org.opensingular.server.commons.admin.healthsystem.DocumentationMetadataUtil;
 
 public class DocUtilsTest {
 

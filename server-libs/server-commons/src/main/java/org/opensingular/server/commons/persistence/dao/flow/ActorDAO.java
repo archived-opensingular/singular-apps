@@ -87,7 +87,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         }
 
         if (result == null && cod == null) {
-            if ("sequence".equals(SingularProperties.get().getProperty(SingularProperties.HIBERNATE_GENERATOR))) {
+            if ("sequence".equals(SingularProperties.getOpt(SingularProperties.HIBERNATE_GENERATOR).orElse(null))) {
                 getSession().doWork(connection -> {
                     String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (" + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
                     PreparedStatement ps  = connection.prepareStatement(sql);

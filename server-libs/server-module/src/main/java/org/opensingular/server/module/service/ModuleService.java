@@ -23,7 +23,7 @@ import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.form.SingularServerSpringTypeLoader;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.server.commons.requirement.SingularRequirement;
 import org.opensingular.server.module.SingularModule;
