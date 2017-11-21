@@ -61,16 +61,7 @@ public class Page500 extends ServerTemplate implements Loggable {
         String errorCode = errorCode();
         if (exception != null) {
             getLogger().error(errorCode, this.exception);
-
-            String stackTrace = Throwables.getStackTraceAsString(exception);
-            String urlException = ((HttpServletRequest)getRequest().getContainerRequest()).getRequestURL()
-                    +"?"
-                    +((HttpServletRequest)getRequest().getContainerRequest()).getQueryString();
-            try{
-                singularSupportService.sendEmailToSupport(errorCode, stackTrace, urlException);
-            }catch (UnexpectedRollbackException e){
-                getLogger().warn("A unexpected Rollback happened because of a exception while sending an e-mail to support {}", e.getMessage());
-            }
+            sendExceptionEmail(errorCode, getStackTraceString(), getUrlException());
         }
         add(new Label("codigo-erro", Model.of(errorCode)));
         pageHeader.setVisible(false);
@@ -81,6 +72,23 @@ public class Page500 extends ServerTemplate implements Loggable {
             detail.setVisible(true);
             detail.replace(new Label("message", Model.of(exception.getMessage())));
         }
+    }
+
+    private void sendExceptionEmail(String errorCode, String stackTrace, String urlException) {
+        try{
+            singularSupportService.sendEmailToSupport(errorCode, stackTrace, urlException);
+        }catch (UnexpectedRollbackException e){
+            getLogger().warn("A Rollback happened because of a exception while sending an e-mail to support {}", e.getMessage());
+        }
+    }
+
+    private String getStackTraceString() {
+        return Throwables.getStackTraceAsString(exception);
+    }
+
+    private String getUrlException() {
+        return ((HttpServletRequest)getRequest().getContainerRequest()).getRequestURL()+"?"
+                +((HttpServletRequest)getRequest().getContainerRequest()).getQueryString();
     }
 
     @Override
