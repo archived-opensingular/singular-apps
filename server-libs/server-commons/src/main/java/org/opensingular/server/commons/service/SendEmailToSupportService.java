@@ -73,8 +73,7 @@ public class SendEmailToSupportService implements Loggable {
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             }else if(SecurityContextHolder.getContext().getAuthentication() instanceof SingularUserDetails) {
                 SingularUserDetails userAtual = (SingularUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                returnString.append("Username: "+ userAtual.getUsername()).append(
-                        "\nDisplay name: "+userAtual.getDisplayName());
+                returnString.append("Username: ").append(userAtual.getUsername()).append("\nDisplay name: ").append(userAtual.getDisplayName());
             }else{
                 returnString.append("User: - ");
             }
