@@ -37,7 +37,7 @@ public class SendEmailToSupportService implements Loggable {
 
     @Transactional
     public void sendEmailToSupport(String errorCode, String stackTrace, String urlException) {
-        String supportEmail = SingularProperties.get().getProperty(SINGULAR_SUPPORT_ADDRESS);
+        String supportEmail = SingularProperties.get().getProperty(SINGULAR_SUPPORT_ADDRESS, "");
         if(StringUtils.isNotBlank(supportEmail)){
             try{
                 Email email = new Email();
