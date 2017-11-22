@@ -78,6 +78,7 @@ public class Page500 extends ServerTemplate implements Loggable {
         try{
             singularSupportService.sendEmailToSupport(errorCode, stackTrace, urlException);
         }catch (UnexpectedRollbackException e){
+            getLogger().error(e.getMessage(), e);
             getLogger().warn("A Rollback happened because of a exception while sending an e-mail to support {}", e.getMessage());
         }
     }

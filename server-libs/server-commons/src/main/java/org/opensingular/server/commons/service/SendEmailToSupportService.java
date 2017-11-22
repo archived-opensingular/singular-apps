@@ -67,7 +67,7 @@ public class SendEmailToSupportService implements Loggable {
     }
 
     private String getLoggedUser() {
-        StringBuffer returnString = new StringBuffer();
+        StringBuilder returnString = new StringBuilder();
         try{
             if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String){
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
@@ -80,7 +80,7 @@ public class SendEmailToSupportService implements Loggable {
             }
         }catch (Exception e){
             getLogger().warn("Error ocurred while retrieving logged User", e);
-            returnString = new StringBuffer();
+            returnString.setLength(0);
             returnString.append("User not found");
         }
 
