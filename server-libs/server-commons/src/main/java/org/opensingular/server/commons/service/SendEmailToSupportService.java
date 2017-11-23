@@ -37,7 +37,7 @@ public class SendEmailToSupportService implements Loggable {
 
     @Transactional
     public void sendEmailToSupport(String errorCode, String stackTrace, String urlException) {
-        String supportEmail = SingularProperties.get().getProperty(SINGULAR_SUPPORT_ADDRESS);
+        String supportEmail = SingularProperties.get().getProperty(SINGULAR_SUPPORT_ADDRESS, "");
         if(StringUtils.isNotBlank(supportEmail)){
             try{
                 Email email = new Email();
@@ -67,20 +67,19 @@ public class SendEmailToSupportService implements Loggable {
     }
 
     private String getLoggedUser() {
-        StringBuffer returnString = new StringBuffer();
+        StringBuilder returnString = new StringBuilder();
         try{
             if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String){
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             }else if(SecurityContextHolder.getContext().getAuthentication() instanceof SingularUserDetails) {
                 SingularUserDetails userAtual = (SingularUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                returnString.append("Username: "+ userAtual.getUsername()).append(
-                        "\nDisplay name: "+userAtual.getDisplayName());
+                returnString.append("Username: ").append(userAtual.getUsername()).append("\nDisplay name: ").append(userAtual.getDisplayName());
             }else{
                 returnString.append("User: - ");
             }
         }catch (Exception e){
             getLogger().warn("Error ocurred while retrieving logged User", e);
-            returnString = new StringBuffer();
+            returnString.setLength(0);
             returnString.append("User not found");
         }
 
