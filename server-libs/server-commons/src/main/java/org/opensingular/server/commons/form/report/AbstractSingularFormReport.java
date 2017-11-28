@@ -51,12 +51,12 @@ public abstract class AbstractSingularFormReport<S extends SInstance> implements
 
 
     @Override
-    public void load(String xml) {
+    public void loadReportInstance(String xml) {
         setFilterValue(SFormXMLUtil.fromXML(RefType.of(getFilterType()), xml, documentFactory));
     }
 
     @Override
-    public String dumpXML() {
+    public String dumpReportInstanceXML() {
         return SFormXMLUtil.toStringXMLOrEmptyXML(getFilterValue());
     }
 
