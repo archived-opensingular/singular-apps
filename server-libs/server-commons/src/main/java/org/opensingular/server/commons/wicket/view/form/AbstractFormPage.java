@@ -31,6 +31,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
@@ -64,7 +65,6 @@ import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.exception.SingularServerFormValidationError;
 import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.server.commons.persistence.entity.form.RequirementDefinitionEntity;
@@ -99,28 +99,25 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.button;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.div;
-import static org.opensingular.server.commons.wicket.builder.MarkupCreator.span;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.server.commons.wicket.builder.MarkupCreator.*;
 
 public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends RequirementInstance> extends ServerTemplate implements Loggable {
 
-    protected final String typeName;
-    protected final IModel<FormKey> formKeyModel;
+    protected final String                   typeName;
+    protected final IModel<FormKey>          formKeyModel;
     protected final FormPageExecutionContext config;
-    protected final SingularFormPanel singularFormPanel;
-    protected final IModel<Boolean> inheritParentFormData;
-    protected final IModel<FormKey> parentRequirementFormKeyModel;
+    protected final SingularFormPanel        singularFormPanel;
+    protected final IModel<Boolean>          inheritParentFormData;
+    protected final IModel<FormKey>          parentRequirementFormKeyModel;
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
-    protected final BSModalBorder closeModal = construirCloseModal();
+    protected final BSModalBorder  closeModal     = construirCloseModal();
 
-    private final Map<String, TransitionController<?>> transitionControllerMap = new HashMap<>();
-    private Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
+    private final Map<String, TransitionController<?>>          transitionControllerMap   = new HashMap<>();
+    private       Map<String, STypeBasedFlowConfirmModal<?, ?>> transitionConfirmModalMap = new HashMap<>();
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
-    private IModel<RI> currentModel;
+    private           IModel<RI>             currentModel;
     private transient Optional<TaskInstance> currentTaskInstance;
 
     @Inject
@@ -129,18 +126,15 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     @Inject
     private FormRequirementService<RE> formRequirementService;
 
-    @Inject
-    private SingularServerMetadata singularServerMetadata;
-
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
     }
 
     public AbstractFormPage(@Nullable ActionContext context, @Nullable Class<? extends SType<?>> formType) {
         if (context == null) {
-            String url = singularServerMetadata.getServerBaseUrl();
-            getLogger().info(" Redirecting to {}", url);
-            throw new RedirectToUrlException(url);
+            String path = WebApplication.get().getServletContext().getContextPath();
+            getLogger().info(" Redirecting to {}", path);
+            throw new RedirectToUrlException(path);
         }
 
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), getTypeName(formType), getFlowResolver(context), getRequirementSender(context));
@@ -313,7 +307,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private RI loadRequirement() {
-        RI requirement;
+        RI             requirement;
         Optional<Long> requirementId = config.getRequirementId();
         if (requirementId.isPresent()) {
             requirement = requirementService.getRequirement(requirementId.get());
@@ -323,7 +317,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                 formKeyModel.setObject(formRequirementService.formKeyFromFormEntity(formEntityDraftOrRequirement));
             }
         } else {
-            RI parentRequirement = null;
+            RI             parentRequirement   = null;
             Optional<Long> parentRequirementId = config.getParentRequirementId();
             if (parentRequirementId.isPresent()) {
                 parentRequirement = requirementService.getRequirement(parentRequirementId.get());
@@ -362,8 +356,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private Component buildExtraContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendExtraContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -371,8 +365,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private Component buildPreFormPanelContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendBeforeFormContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -469,7 +463,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
 
             // Verifica se existe rascunho
             RequirementInstance requirement = requirementService.getRequirement(requirementId);
-            String typeName = RequirementUtil.getTypeName(requirement);
+            String              typeName    = RequirementUtil.getTypeName(requirement);
             if (requirement.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -634,7 +628,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             try {
                 //executa o envio, iniciando o fluxo informado
                 Class<? extends RequirementSender> senderClass = config.getRequirementSender();
-                RequirementSender sender = ApplicationContextProvider.get().getBean(senderClass);
+                RequirementSender                  sender      = ApplicationContextProvider.get().getBean(senderClass);
                 if (sender != null) {
                     RequirementSenderFeedback sendedFeedback = sender.send(requirement, instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
@@ -749,8 +743,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * @return Mapa de parametros
      */
     protected Map<String, String> getFlowParameters(String transition) {
-        Map<String, String> params = new HashMap<>();
-        TransitionController<?> controller = getTransitionControllerMap().get(transition);
+        Map<String, String>              params           = new HashMap<>();
+        TransitionController<?>          controller       = getTransitionControllerMap().get(transition);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transition);
         if (controller != null && flowConfirmModal != null) {
             Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
@@ -813,9 +807,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
-        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
+        TransitionController<?>          controller       = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean show = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        boolean                          show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
         if (show) {
             modal.show(ajaxRequestTarget);
         }
@@ -1012,8 +1006,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
 
     private Component buildNotificacoesModal(String id) {
 
-        final String modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
-        final TemplatePanel modalPanel = new TemplatePanel(id, modalPanelMarkup);
+        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
 
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override

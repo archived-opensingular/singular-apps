@@ -42,8 +42,6 @@ import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.connector.RESTModuleDriver;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
-import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
-import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
@@ -326,11 +324,6 @@ public class SingularDefaultBeanFactory {
     @Bean
     public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
-    }
-
-    @Bean
-    public SingularServerMetadata singularServerMetadata() {
-        return new DefaultSingularServerMetadata();
     }
 
     @Bean
