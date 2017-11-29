@@ -21,7 +21,6 @@ package org.opensingular.server.commons.config;
 import org.opensingular.lib.commons.context.SingularContext;
 import org.opensingular.lib.commons.context.SingularSingletonStrategy;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.server.p.commons.config.PSingularInitializer;
 
 import java.lang.reflect.Modifier;
 import java.util.List;

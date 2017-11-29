@@ -35,8 +35,8 @@ import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
 import org.opensingular.server.commons.flow.controllers.IController;
-import org.opensingular.server.commons.flow.metadata.RequirementHistoryTaskMetaDataValue;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.RequirementInstance;
@@ -124,13 +124,12 @@ public class ModuleBackstageService implements Loggable {
             boxConfigurationMetadata.setLabel(category);
             boxConfigurationMetadata.setProcesses(new ArrayList<>());
             definitions.forEach(d -> {
-                        List<STask<?>> tasks = d.getFlowMap().getTasksWithMetadata(RequirementHistoryTaskMetaDataValue.KEY);
-                        List<String> allowedHistoryTasks = tasks.stream().map(STask::getAbbreviation).collect(Collectors.toList());
-                        boxConfigurationMetadata
-                                .getProcesses()
-                                .add(new RequirementDefinitionDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
-                    }
-            );
+                List<String> allowedHistoryTasks = d.getFlowMap().getAllTasks().stream().filter(
+                        task -> task.getMetaDataValue(RequirementFlowDefinition.HIDE_FROM_HISTORY)).map(
+                        STask::getAbbreviation).collect(Collectors.toList());
+                boxConfigurationMetadata.getProcesses().add(
+                        new RequirementDefinitionDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
+            });
             addForms(boxConfigurationMetadata);
             groups.add(boxConfigurationMetadata);
         });

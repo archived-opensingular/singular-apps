@@ -52,7 +52,7 @@ public class SSOLogoutUtil {
             if (session != null) {
                 session.invalidate();
             }
-            String redirect = SingularProperties.get().getProperty(context.getServerPropertyKey(SSOFilter.SSO_LOGOUT)) + "?service=" + URLEncoder.encode(extractServiceParam(request), StandardCharsets.UTF_8.name());
+            String redirect = SingularProperties.get(context.getServerPropertyKey(SSOFilter.SSO_LOGOUT)) + "?service=" + URLEncoder.encode(extractServiceParam(request), StandardCharsets.UTF_8.name());
             logger.warn(" REDIRECIONANDO PARA: {}", StringEscapeUtils.escapeJava(redirect));
             response.sendRedirect(redirect);
         } catch (Exception e) {

@@ -19,8 +19,13 @@
 package org.opensingular.server.commons;
 
 import org.opensingular.form.PackageBuilder;
+import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoPackage;
+import org.opensingular.form.SInfoType;
 import org.opensingular.form.SPackage;
+import org.opensingular.form.STypeComposite;
+import org.opensingular.form.TypeBuilder;
+import org.opensingular.form.type.core.STypeString;
 
 import javax.annotation.Nonnull;
 
@@ -34,5 +39,21 @@ public class SPackageFOO extends SPackage {
     protected void onLoadPackage(@Nonnull PackageBuilder pb) {
         super.onLoadPackage(pb);
         pb.createType(STypeFOO.class);
+    }
+
+    @SInfoType(label = "Foo", name = STypeFOO.NAME, spackage = SPackageFOO.class)
+    public static class STypeFOO extends STypeComposite<SIComposite> {
+
+        public static final String NAME = "StypeFoo";
+
+        public static final String FULL_NAME = SPackageFOO.NAME + "." + NAME;
+        public static final String FIELD_NOME = "nome";
+
+        public STypeString nome;
+
+        @Override
+        protected void onLoadType(@Nonnull TypeBuilder tb) {
+            nome = this.addFieldString(FIELD_NOME);
+        }
     }
 }

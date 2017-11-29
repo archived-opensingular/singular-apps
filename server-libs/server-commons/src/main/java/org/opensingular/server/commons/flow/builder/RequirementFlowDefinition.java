@@ -20,6 +20,7 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.SingularFlowException;
+import org.opensingular.flow.core.property.MetaDataKey;
 import org.opensingular.flow.core.variable.VarDefinitionMap;
 
 import javax.annotation.Nonnull;
@@ -31,6 +32,9 @@ import javax.annotation.Nonnull;
  * @author Daniel C. Bordin on 22/03/2017.
  */
 public abstract class RequirementFlowDefinition<I extends FlowInstance> extends FlowDefinition<I> {
+
+    public static final MetaDataKey<Boolean> HIDE_FROM_HISTORY = MetaDataKey.of("hideFromHistory", Boolean.class,
+            Boolean.FALSE);
 
     protected RequirementFlowDefinition(Class<I> instanceClass) {
         super(instanceClass);

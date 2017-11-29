@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.commons.admin.healthsystem.docs;
 
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoType;

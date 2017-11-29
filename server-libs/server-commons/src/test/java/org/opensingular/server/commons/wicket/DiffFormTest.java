@@ -26,7 +26,7 @@ import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-import org.opensingular.server.commons.STypeFOO;
+import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
 import org.opensingular.server.commons.service.DefaultRequirementSender;
 import org.opensingular.server.commons.service.DefaultRequirementService;
@@ -88,7 +88,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     private SInstance createInstanceToRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
         return instance;
     }

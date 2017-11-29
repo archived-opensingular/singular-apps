@@ -16,19 +16,14 @@
  *
  */
 
-package org.opensingular.server.p.commons.admin.healthsystem.docs;
+package org.opensingular.server.commons.admin.healthsystem.docs;
 
-import org.apache.commons.io.output.WriterOutputStream;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
-import org.opensingular.form.io.IOUtil;
-import org.opensingular.server.p.commons.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
+import org.opensingular.server.commons.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
 
 import java.io.CharArrayWriter;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.OutputStream;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
