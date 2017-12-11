@@ -24,6 +24,7 @@ import org.opensingular.server.commons.util.url.UrlToolkit;
 import org.opensingular.server.commons.util.url.UrlToolkitBuilder;
 
 import java.io.Serializable;
+import java.util.Optional;
 
 public class SecurityAuthPaths implements Serializable {
 
@@ -53,9 +54,10 @@ public class SecurityAuthPaths implements Serializable {
         Request    request    = requestCycle.getRequest();
         Url        url        = request.getUrl();
         UrlToolkit urlToolkit = urlToolkitBuilder.build(url);
+        Optional<String> filterPath = Optional.ofNullable(request.getFilterPath());
 
         String logoutPath = urlToolkit.concatServerAdressWithContext(baseUrl);
-        logoutPath += "?service=" + urlToolkit.concatServerAdressWithContext(contextPath + request.getFilterPath());
+        logoutPath += "?service=" + urlToolkit.concatServerAdressWithContext(contextPath + filterPath.orElse(""));
         return logoutPath;
     }
 
