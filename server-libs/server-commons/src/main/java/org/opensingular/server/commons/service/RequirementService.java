@@ -317,7 +317,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
             saveRequirementHistory(requirement, formRequirementService.consolidateDrafts(requirement));
             FlowInstance flowInstance = requirement.getFlowInstance();
-            checkTaskIsEqual(requirement.getEntity().getFlowInstanceEntity(), flowInstance);
+            checkTaskIsEqual(requirement, flowInstance);
 
             if (processParameters != null && !processParameters.isEmpty()) {
                 for (Map.Entry<String, String> entry : processParameters.entrySet()) {
@@ -339,10 +339,15 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         }
     }
 
-    private void checkTaskIsEqual(FlowInstanceEntity flowInstanceEntity, FlowInstance currentFlowInstance) {
+    private void checkTaskIsEqual(RI requirement, FlowInstance currentFlowInstance) {
         //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
+        FlowInstanceEntity flowInstanceEntity = requirement.getEntity().getFlowInstanceEntity();
         if (!flowInstanceEntity.getCurrentTask().getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
-            throw new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
+            RequirementConcurrentModificationException e = new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
+            e.add(requirement);
+            e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask()", flowInstanceEntity.getCurrentTask().getTaskVersion().getAbbreviation());
+            e.add("flowInstance.getCurrentTask()", currentFlowInstance.getCurrentTaskOrException().getAbbreviation());
+            throw e;
         }
     }
 
