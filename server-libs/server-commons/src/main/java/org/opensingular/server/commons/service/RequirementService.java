@@ -317,7 +317,6 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
             saveRequirementHistory(requirement, formRequirementService.consolidateDrafts(requirement));
             FlowInstance flowInstance = requirement.getFlowInstance();
-            checkTaskIsEqual(requirement, flowInstance);
 
             if (processParameters != null && !processParameters.isEmpty()) {
                 for (Map.Entry<String, String> entry : processParameters.entrySet()) {
@@ -338,24 +337,6 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
     }
-
-    private void checkTaskIsEqual(RI requirement, FlowInstance currentFlowInstance) {
-        //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
-        FlowInstanceEntity flowInstanceEntity = requirement.getEntity().getFlowInstanceEntity();
-        if (!flowInstanceEntity.getCurrentTask().get().getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
-            RequirementConcurrentModificationException e = new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
-            e.add(requirement);
-            e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getAbbreviation()", flowInstanceEntity.getCurrentTask().get().getTaskVersion().getAbbreviation());
-            e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getCod()", flowInstanceEntity.getCurrentTask().get().getCod());
-            e.add("currentFlowInstance.getCurrentTaskOrException().getAbbreviation()", currentFlowInstance.getCurrentTaskOrException().getAbbreviation());
-            e.add("currentFlowInstance.getCurrentTaskOrException().getId()", currentFlowInstance.getCurrentTaskOrException().getId());
-            e.add("flowInstanceEntity.getCod()", flowInstanceEntity.getCod());
-            e.add("currentFlowInstance.getEntityCod()", currentFlowInstance.getEntityCod());
-            getLogger().error(e.getMessage());
-            throw e;
-        }
-    }
-
 
     public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
         return listTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
