@@ -104,13 +104,20 @@
             <version>2.7.3</version>
         </dependency>
 
-        <!-- JAVA MAIL -->
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <version>2.6.1</version>
+            <scope>compile</scope>
+        </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-commons-test</artifactId>
             <version>${singular.version}</version>
             <scope>compile</scope>
         </dependency>
+
+        <!-- JAVA MAIL -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>javax.mail-api</artifactId>
