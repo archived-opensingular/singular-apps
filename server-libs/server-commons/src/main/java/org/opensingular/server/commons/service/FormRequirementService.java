@@ -21,6 +21,7 @@ package org.opensingular.server.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.entity.IEntityTaskDefinition;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
@@ -178,7 +179,7 @@ public class FormRequirementService<P extends RequirementEntity> {
 
         if (!mainForm) {
             //Filter byTask
-            Optional<TaskDefinitionEntity> currentTask = RequirementUtil.getCurrentTaskDefinitionOpt(requirement.getEntity());
+            Optional<IEntityTaskDefinition> currentTask = RequirementUtil.getCurrentTaskDefinitionOpt(requirement.getEntity());
             if (currentTask.isPresent()) {
                 entities = entities.filter(x -> x.getTaskDefinitionEntity().equals(currentTask.get()));
             }
@@ -335,7 +336,7 @@ public class FormRequirementService<P extends RequirementEntity> {
             formRequirementEntity.setMainForm(SimNao.SIM);
         } else {
             formRequirementEntity.setMainForm(SimNao.NAO);
-            formRequirementEntity.setTaskDefinitionEntity(RequirementUtil.getCurrentTaskDefinitionOpt(requirement).orElse(null));
+            formRequirementEntity.setTaskDefinitionEntity((TaskDefinitionEntity) RequirementUtil.getCurrentTaskDefinitionOpt(requirement).orElse(null));
         }
         formRequirementDAO.saveOrUpdate(formRequirementEntity);
         return formRequirementEntity;

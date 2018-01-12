@@ -297,34 +297,6 @@ CREATE TABLE DBSINGULAR.TB_REQUISITANTE (
 );
 
 /*==============================================================*/
-/* Table: TB_DASHBOARD                                          */
-/*==============================================================*/
-CREATE TABLE DBSINGULAR.TB_DASHBOARD (
-   CO_DASHBOARD         BIGINT               IDENTITY,
-   NO_DASHBOARD         NVARCHAR(100)        NOT NULL,
-   CONSTRAINT PK_DASHBOARD PRIMARY KEY (CO_DASHBOARD)
-);
-
-
-/*==============================================================*/
-/* Table: TB_PORTLET                                            */
-/*==============================================================*/
-CREATE TABLE DBSINGULAR.TB_PORTLET (
-   CO_PORTLET           BIGINT               IDENTITY,
-   CO_DASHBOARD         BIGINT               NOT NULL,
-   NO_PORTLET           VARCHAR(200)         NOT NULL,
-   NO_PROCESSO          VARCHAR(200)         NULL,
-   NU_ORDEM             BIGINT               NOT NULL,
-   NU_TAMANHO           BIGINT               NOT NULL,
-   ST_DINAMICO          BIT                  NOT NULL,
-   CONSTRAINT PK_PORTLET PRIMARY KEY (CO_PORTLET)
-);
-
-ALTER TABLE DBSINGULAR.TB_PORTLET
-   ADD CONSTRAINT FK_DASHBOARD_PORTLET FOREIGN KEY (CO_DASHBOARD)
-      REFERENCES DBSINGULAR.TB_DASHBOARD (CO_DASHBOARD);
-
-/*==============================================================*/
 /* Table: RL_PAPEL_TAREFA                                       */
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.RL_PAPEL_TAREFA (
