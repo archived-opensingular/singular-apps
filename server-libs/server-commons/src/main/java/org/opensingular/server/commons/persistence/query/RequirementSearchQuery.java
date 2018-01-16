@@ -19,12 +19,15 @@
 package org.opensingular.server.commons.persistence.query;
 
 import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BeanPath;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.opensingular.server.commons.query.SelectBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
@@ -33,6 +36,9 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
     private BooleanBuilder whereClause            = new BooleanBuilder();
     private BooleanBuilder quickFilterWhereClause = new BooleanBuilder();
     private BeanPath<?>    countPath              = null;
+    // The default order will only be used if there isn't another
+    // order specified
+    private OrderSpecifier defaultOrder           = null;
 
     public RequirementSearchQuery(Session session) {
         super(session);
@@ -64,4 +70,17 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         this.countPath = entityPath;
     }
 
+    public OrderSpecifier getDefaultOrder() {
+        return defaultOrder;
+    }
+
+    /**
+     * Set the default order to be used when no other order
+     * is used, like the ones defined in the quick filter
+     *
+     * @param defaultOrder
+     */
+    public void setDefaultOrder(OrderSpecifier defaultOrder) {
+        this.defaultOrder = defaultOrder;
+    }
 }
