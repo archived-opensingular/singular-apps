@@ -58,6 +58,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
@@ -146,7 +147,7 @@ public class Menu extends Panel implements Loggable {
             pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
             pageParameters.add(ITEM_PARAM_NAME, t.name);
 
-            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
+            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.helpText, t.pageClass, t.page, pageParameters);
             group.addItem(i);
             itens.add(Pair.of(i.getHelper(), t.counterSupplier));
         }
@@ -168,7 +169,7 @@ public class Menu extends Panel implements Loggable {
 
         for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
             final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, abbreviations, module);
-            configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getIcone(), countSupplier));
+            configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
 
         }
 
@@ -258,23 +259,26 @@ public class Menu extends Panel implements Loggable {
     protected static class MenuItemConfig {
         public IRequestablePage page;
         public String name;
+        public String helpText;
         public Class<? extends IRequestablePage> pageClass;
         public Icon icon;
         public ISupplier<String> counterSupplier;
 
-        public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, Icon icon, ISupplier<String> counterSupplier) {
+        public static MenuItemConfig of(Class<? extends IRequestablePage> pageClass, String name, String helpText, Icon icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();
             mic.pageClass = pageClass;
             mic.name = name;
+            mic.helpText = helpText;
             mic.icon = icon;
             mic.counterSupplier = counterSupplier;
             return mic;
         }
 
-        static MenuItemConfig of(IRequestablePage page, String name, Icon icon, ISupplier<String> counterSupplier) {
+        static MenuItemConfig of(IRequestablePage page, String name, String helpText, Icon icon, ISupplier<String> counterSupplier) {
             MenuItemConfig mic = new MenuItemConfig();
             mic.page = page;
             mic.name = name;
+            mic.helpText = helpText;
             mic.icon = icon;
             mic.counterSupplier = counterSupplier;
             return mic;

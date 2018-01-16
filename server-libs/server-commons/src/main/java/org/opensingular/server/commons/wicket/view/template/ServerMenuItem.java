@@ -27,8 +27,8 @@ import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 public class ServerMenuItem extends MetronicMenuItem {
 
-    public ServerMenuItem(Icon icon, String title, Class<? extends IRequestablePage> responsePageClass, IRequestablePage page, PageParameters parameters) {
-        super(icon, title, responsePageClass, page, parameters);
+    public ServerMenuItem(Icon icon, String title, String helpText, Class<? extends IRequestablePage> responsePageClass, IRequestablePage page, PageParameters parameters) {
+        super(icon, title, helpText, responsePageClass, page, parameters);
     }
 
     @Override

@@ -32,6 +32,7 @@ public class ItemBox implements Serializable {
     private String id;
     private String name;
     private String description;
+    private String helpText;
     private boolean quickFilter   = true;
     private boolean showDraft     = false;
     private Boolean              endedTasks;
@@ -114,5 +115,13 @@ public class ItemBox implements Serializable {
 
     public String getCountEndpoint() {
         return "/count/" + id;
+    }
+
+    public String getHelpText() {
+        return helpText;
+    }
+
+    public void setHelpText(String helpText) {
+        this.helpText = helpText;
     }
 }
