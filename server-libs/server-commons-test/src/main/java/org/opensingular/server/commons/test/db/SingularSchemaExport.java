@@ -16,7 +16,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class SchemaExportTest implements Loggable {
+public class SingularSchemaExport implements Loggable {
 
     public static final String SCRIPT_FILE = "exportScript.sql";
 
@@ -53,7 +53,7 @@ public class SchemaExportTest implements Loggable {
         cfg.buildMappings();
 
         //execute the export
-        SchemaExport export = new SchemaExport(cfg);
+        org.hibernate.tool.hbm2ddl.SchemaExport export = new org.hibernate.tool.hbm2ddl.SchemaExport(cfg);
 
         export.setOutputFile(Strings.isNotEmpty(filename)? filename: SCRIPT_FILE);
         export.setDelimiter(";");
