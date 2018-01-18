@@ -31,7 +31,10 @@ import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.helpers.AssertionsSInstance;
+import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
+import org.opensingular.form.service.FormService;
+import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
@@ -52,11 +55,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.junit.Assert.*;
 
 @Transactional
 public class RequirementServiceTest extends SingularCommonsBaseTest {
@@ -69,6 +69,12 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     @Inject
     protected RequirementDAO<RequirementEntity> requirementDAO;
+
+    @Inject
+    protected FormService formService;
+
+    @Inject
+    SpringSDocumentFactory documentFactory;
 
     @Test
     public void testName() throws Exception {
@@ -319,5 +325,26 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         Optional<SIComposite> lastFormInstanceByType = requirementService.findLastFormInstanceByType(requirement, Collections.singletonList(SPackageFOO.STypeFOO.class));
 
         assertTrue(lastFormInstanceByType.isPresent());
+    }
+
+    @Test
+    public void updateRequirement() {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        ((SIComposite) instance).setValue(SPackageFOO.STypeFOO.FIELD_NOME, "Teste");
+        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(requirementDefinitionEntity);
+        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
+
+        FormKey formKey = requirementService.saveOrUpdate(requirementInstance, instance, true);
+
+        SInstance firstVersion = formService.loadSInstance(formKey, RefType.of(SPackageFOO.STypeFOO.class), documentFactory);
+        firstVersion.getDocument().setLastId(firstVersion.getDocument().getLastId() + 1000);
+
+        FormKey secondFormKey = requirementService.saveOrUpdate(requirementInstance, firstVersion, true);
+
+        SInstance secondVersion = formService.loadSInstance(secondFormKey, RefType.of(SPackageFOO.STypeFOO.class), documentFactory);
+
+        assertThat("Segunda versão não pode ter o lastId menor que a primeira versão",
+                secondVersion.getDocument().getLastId(), greaterThanOrEqualTo(firstVersion.getDocument().getLastId()));
     }
 }

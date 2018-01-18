@@ -508,6 +508,7 @@ public class FormRequirementService<P extends RequirementEntity> {
         target.initRestoreMode();
         Value.copyValues(source, target);
         copyIdValues(source.getRoot(), target.getRoot());
+        target.setLastId(source.getLastId());
         target.getDocumentAnnotations().copyAnnotationsFrom(source);
         target.finishRestoreMode();
     }
