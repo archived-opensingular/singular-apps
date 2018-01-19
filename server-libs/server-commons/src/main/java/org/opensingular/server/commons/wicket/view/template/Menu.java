@@ -58,10 +58,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class Menu extends Panel implements Loggable {
 
@@ -147,7 +144,7 @@ public class Menu extends Panel implements Loggable {
             pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
             pageParameters.add(ITEM_PARAM_NAME, t.name);
 
-            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.helpText, t.pageClass, t.page, pageParameters);
+            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
             group.addItem(i);
             itens.add(Pair.of(i.getHelper(), t.counterSupplier));
         }
