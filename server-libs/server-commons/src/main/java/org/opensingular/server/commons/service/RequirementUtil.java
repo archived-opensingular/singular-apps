@@ -21,6 +21,9 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.flow.core.entity.IEntityTaskDefinition;
+import org.opensingular.flow.core.entity.IEntityTaskInstance;
+import org.opensingular.flow.core.entity.IEntityTaskVersion;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.form.SFormUtil;
@@ -68,17 +71,17 @@ public final class RequirementUtil {
 
     /** Retorna a tarefa atual associada a petição ou dispara exception senão houver nenhuma. */
     @Nonnull
-    public static TaskDefinitionEntity getCurrentTaskDefinition(@Nonnull RequirementEntity requirement) {
+    public static IEntityTaskDefinition getCurrentTaskDefinition(@Nonnull RequirementEntity requirement) {
         return getCurrentTaskDefinitionOpt(requirement).orElseThrow(
                 () -> SingularServerException.rethrow("Não há uma tarefa corrente associada à petição."));
     }
 
     /** Retorna a tarefa atual associada a petição se existir. */
     @Nonnull
-    public static Optional<TaskDefinitionEntity> getCurrentTaskDefinitionOpt(@Nonnull RequirementEntity requirement) {
+    public static Optional<IEntityTaskDefinition> getCurrentTaskDefinitionOpt(@Nonnull RequirementEntity requirement) {
         final FlowInstanceEntity flowInstanceEntity = requirement.getFlowInstanceEntity();
         if (flowInstanceEntity != null) {
-            return Optional.of(flowInstanceEntity.getCurrentTask().getTaskVersion().getTaskDefinition());
+            return flowInstanceEntity.getCurrentTask().map(IEntityTaskInstance::getTaskVersion).map(IEntityTaskVersion::getTaskDefinition);
         }
         return Optional.empty();
     }

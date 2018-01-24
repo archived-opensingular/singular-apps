@@ -39,9 +39,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
@@ -169,4 +167,16 @@ public class BoxPage extends ServerBoxTemplate {
         };
     }
 
+    @Override
+    public IModel<String> getHelpText() {
+        return new Model<String>() {
+            @Override
+            public String getObject() {
+                if (boxDefinitionData != null) {
+                    return boxDefinitionData.getItemBox().getHelpText();
+                }
+                return null;
+            }
+        };
+    }
 }

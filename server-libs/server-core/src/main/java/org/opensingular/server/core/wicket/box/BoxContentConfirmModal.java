@@ -17,29 +17,16 @@ package org.opensingular.server.core.wicket.box;
 
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.form.wicket.mapper.components.ConfirmationModal;
+import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-
-public abstract class BoxContentConfirmModal<T extends Serializable> extends Panel {
+public abstract class BoxContentConfirmModal<T extends Serializable> extends ConfirmationModal {
     protected final BoxItemAction itemAction;
     protected final IModel<T> dataModel;
-    protected final Form<?> confirmationForm = new Form<>("confirmationForm");
-    protected final IModel<String> title = new Model<>();
-    protected final IModel<String> bodyText = new Model<>();
-    protected final BSModalBorder border = new BSModalBorder("confirmationModal", title);
-
-    protected AjaxButton confirmButton;
-    protected AjaxButton cancelButton;
 
     public BoxContentConfirmModal(BoxItemAction itemAction, IModel<T> dataModel) {
         super("confirmationModal");
@@ -50,58 +37,30 @@ public abstract class BoxContentConfirmModal<T extends Serializable> extends Pan
     protected abstract void onConfirm(AjaxRequestTarget target);
 
     @Override
-    protected void onInitialize() {
-        super.onInitialize();
-        title.setObject(getTitleText());
-        bodyText.setObject(getConfirmationMessage());
-        add(confirmationForm);
-        confirmationForm.add(border);
-        border.add(new Label("message", bodyText));
-        addCancelButton();
-        addConfirmButton();
-        setOutputMarkupId(true);
-    }
-
-    protected void addCancelButton() {
-        border.addButton(BSModalBorder.ButtonStyle.CANCEL, $m.get(this::getCancelButtonLabel),
-                cancelButton = (AjaxButton) new AjaxButton("cancel-btn", confirmationForm) {
-                    @Override
-                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                        dataModel.setObject(null);
-                        border.hide(target);
-                    }
-                }.setDefaultFormProcessing(false));
-    }
-
-    protected void addConfirmButton() {
-        border.addButton(BSModalBorder.ButtonStyle.CONFIRM, $m.get(this::getConfirmButtonLabel),
-                confirmButton = new AjaxButton("confirm-btn", confirmationForm) {
-                    @Override
-                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                        onConfirm(target);
-                        border.hide(target);
-                    }
-                });
-    }
-
     protected String getCancelButtonLabel() {
         return itemAction == null ? "" : itemAction.getConfirmation().getCancelButtonLabel();
     }
 
+    @Override
     protected String getConfirmButtonLabel() {
         return itemAction == null ? "" : itemAction.getConfirmation().getConfirmationButtonLabel();
     }
 
-
+    @Override
     protected String getConfirmationMessage() {
         return itemAction == null ? "" : itemAction.getConfirmation().getConfirmationMessage();
     }
 
+    @Override
     protected String getTitleText() {
         return itemAction == null ? "" : itemAction.getConfirmation().getTitle();
     }
 
     public void show(AjaxRequestTarget target) {
         border.show(target);
+    }
+
+    public void show(AjaxRequestTarget target, IConsumer<AjaxRequestTarget> confirmationAction) {
+        throw new UnsupportedOperationException("Método não suportado, use a classe " + ConfirmationModal.class.getName());
     }
 }

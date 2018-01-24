@@ -21,8 +21,8 @@ package org.opensingular.server.commons.wicket.view.template;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.commons.ui.Icon;
+import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.server.commons.wicket.view.util.ActionContext;
 
 public class ServerMenuItem extends MetronicMenuItem {

@@ -66,6 +66,12 @@ public class RequirementSearchQueryFactory {
         quickFilter = ctx.getQuickFilter();
         whereClause = query.getWhereClause();
         ctx.setQuery(query);
+
+        if (quickFilter.isRascunho()) {
+            query.setDefaultOrder(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
+        } else {
+            query.setDefaultOrder(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
+        }
     }
 
     private void appendSelect() {
@@ -207,12 +213,10 @@ public class RequirementSearchQueryFactory {
         if (quickFilter.getSortProperty() != null) {
             Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
             query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
-        } else if (!Boolean.TRUE.equals(ctx.getCount())) {
-            if (quickFilter.isRascunho()) {
-                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
-            } else {
-                query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
-            }
+        } else if (!Boolean.TRUE.equals(ctx.getCount())
+                && query.getMetadata().getOrderBy().isEmpty()
+                && query.getDefaultOrder() != null) {
+            query.orderBy(query.getDefaultOrder());
         }
     }
 

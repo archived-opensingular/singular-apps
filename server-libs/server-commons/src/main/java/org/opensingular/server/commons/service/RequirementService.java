@@ -317,7 +317,6 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
             saveRequirementHistory(requirement, formRequirementService.consolidateDrafts(requirement));
             FlowInstance flowInstance = requirement.getFlowInstance();
-            checkTaskIsEqual(requirement.getEntity().getFlowInstanceEntity(), flowInstance);
 
             if (processParameters != null && !processParameters.isEmpty()) {
                 for (Map.Entry<String, String> entry : processParameters.entrySet()) {
@@ -336,13 +335,6 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
             throw e;
         } catch (Exception e) {
             throw SingularServerException.rethrow(e.getMessage(), e);
-        }
-    }
-
-    private void checkTaskIsEqual(FlowInstanceEntity flowInstanceEntity, FlowInstance currentFlowInstance) {
-        //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
-        if (!flowInstanceEntity.getCurrentTask().getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
-            throw new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
         }
     }
 
@@ -388,7 +380,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     @Nonnull
     public RI createNewRequirementWithoutSave(@Nullable Class<? extends FlowDefinition> classFlowDefinition, @Nullable RI parentRequirement,
-                                           @Nullable Consumer<RI> creationListener, RequirementDefinitionEntity requirementDefinitionEntity) {
+                                              @Nullable Consumer<RI> creationListener, RequirementDefinitionEntity requirementDefinitionEntity) {
 
         final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
 
@@ -488,7 +480,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<FormRequirementEntity> findLastFormRequirementEntityByType(@Nonnull RequirementInstance requirement,
-                                                                         @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                               @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormRequirementService().findLastFormRequirementEntityByType(requirement, typeClass);
     }
 
@@ -497,7 +489,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<SInstance> findLastFormRequirementInstanceByType(@Nonnull RequirementInstance requirement,
-                                                                  @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                     @Nonnull Class<? extends SType<?>> typeClass) {
         return getFormRequirementService().findLastFormRequirementInstanceByType(requirement, typeClass);
     }
 
@@ -506,7 +498,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
-                                                               @Nonnull Class<? extends SType<?>> typeClass) {
+                                                            @Nonnull Class<? extends SType<?>> typeClass) {
         //TODO Verificar se esse método não está redundante com FormRequirementService.findLastFormRequirementEntityByType
         Objects.requireNonNull(requirement);
         return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
@@ -519,7 +511,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     protected Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
-                                                                  @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
+                                                               @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
         Objects.requireNonNull(requirement);
         FormVersionHistoryEntity max = null;
         for (Class<? extends SType<?>> type : typesClass) {
