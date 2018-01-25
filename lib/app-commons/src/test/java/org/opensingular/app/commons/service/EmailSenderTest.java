@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.core.service;
+package org.opensingular.app.commons.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -24,7 +24,8 @@ import org.junit.Test;
 import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
 import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
 import org.opensingular.app.commons.service.dto.Email;
-import org.opensingular.server.core.test.SingularServerBaseTest;
+import org.opensingular.lib.commons.util.Loggable;
+
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
-public class EmailSenderTest extends SingularServerBaseTest {
+public class EmailSenderTest implements Loggable {
 
     @Inject
     private EmailSenderScheduledJob emailSenderJob;

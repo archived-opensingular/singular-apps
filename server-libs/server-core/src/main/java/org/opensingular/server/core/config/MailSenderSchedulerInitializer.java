@@ -20,9 +20,9 @@ import org.opensingular.app.commons.service.IMailSenderREST;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
 
-import org.opensingular.server.core.service.DefaultMailSenderREST;
-import org.opensingular.server.core.service.EmailSender;
-import org.opensingular.server.core.service.EmailSenderScheduledJob;
+import org.opensingular.app.commons.service.DefaultMailSenderREST;
+import org.opensingular.app.commons.service.EmailSender;
+import org.opensingular.app.commons.service.EmailSenderScheduledJob;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 

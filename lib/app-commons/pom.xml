@@ -21,6 +21,11 @@
             <artifactId>singular-form-service</artifactId>
             <version>${singular.version}</version>
         </dependency>
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-flow-schedule</artifactId>
+            <version>${singular.version}</version>
+        </dependency>
         <!-- JAVA MAIL -->
         <dependency>
             <groupId>javax.mail</groupId>
