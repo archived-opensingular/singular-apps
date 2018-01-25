@@ -1,33 +1,39 @@
 /*
- * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
-package org.opensingular.server.commons.service;
+package org.opensingular.app.commons.service;
 
+import org.opensingular.app.commons.exception.SingularMailException;
+import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.persistence.dao.EmailDao;
+import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.persistence.entity.enums.EmailEntity;
+import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.validation.SingularEmailValidator;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.server.commons.persistence.dao.EmailDao;
-import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
-import org.opensingular.server.commons.service.dto.Email;
-import org.opensingular.server.commons.service.dto.Email.Addressee;
+
+
+
+
+
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -52,7 +58,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
     public boolean send(Email email) {
         EmailEntity emailEntity = new EmailEntity();
         if (!validateRecipients(email.getAllRecipients())) {
-            throw new SingularServerException("O destinatário de e-mail é inválido.");
+            throw new SingularMailException("O destinatário de e-mail é inválido.");
         }
         emailEntity.setSubject(email.getSubject());
         emailEntity.setContent(email.getContent());
@@ -65,7 +71,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
         emailEntity.setCreationDate(new Date());
         emailDao.save(emailEntity);
         
-        for (Addressee addressee : email.getAllRecipients()) {
+        for (Email.Addressee addressee : email.getAllRecipients()) {
             EmailAddresseeEntity addresseeEntity = new EmailAddresseeEntity();
             addresseeEntity.setAddress(addressee.getAddress());
             addresseeEntity.setAddresseType(addressee.getType());
@@ -76,8 +82,8 @@ public class EmailPersistenceService implements IEmailService<Email>{
         return true;
     }
 
-    private boolean validateRecipients(List<Addressee> recipients) {
-        for (Addressee addressee : recipients) {
+    private boolean validateRecipients(List<Email.Addressee> recipients) {
+        for (Email.Addressee addressee : recipients) {
             if (!SingularEmailValidator.getInstance(false).isValid(addressee.getAddress())) {
                 return false;
             }
@@ -86,7 +92,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void markAsSent(Addressee addressee){
+    public void markAsSent(Email.Addressee addressee){
         EmailAddresseeEntity entity = emailAddresseeDao.findOrException(addressee.getCod());
         entity.setSentDate(new Date());
         emailAddresseeDao.saveOrUpdate(entity);
@@ -98,7 +104,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
         return emailAddresseeDao.countPending();
     }
     
-    public List<Addressee> listPendingRecipients(int firstResult, int maxResults) {
+    public List<Email.Addressee> listPendingRecipients(int firstResult, int maxResults) {
         return emailAddresseeDao.listPending(firstResult, maxResults).stream().map(addressee -> {
             Email email = new Email();
             email.withSubject(addressee.getEmail().getSubject());
@@ -110,7 +116,7 @@ public class EmailPersistenceService implements IEmailService<Email>{
                 email.addAttachments(persistenceHandler.createRef(attachmentEntity));
             }
             
-            return new Addressee(email, addressee);
+            return new Email.Addressee(email, addressee);
         }).collect(Collectors.toList());
     }
 }

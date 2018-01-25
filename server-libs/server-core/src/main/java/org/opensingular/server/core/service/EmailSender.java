@@ -18,11 +18,11 @@ package org.opensingular.server.core.service;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.BooleanUtils;
+import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.service.dto.Email;
-import org.opensingular.server.commons.service.dto.Email.Addressee;
+
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.activation.DataHandler;
@@ -81,7 +81,7 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 .build();
     }
     
-    public boolean send(Addressee addressee){
+    public boolean send(Email.Addressee addressee){
         if(getHost() == null){
             getLogger().info("SMTP mail sender Disabled.");
             return false;

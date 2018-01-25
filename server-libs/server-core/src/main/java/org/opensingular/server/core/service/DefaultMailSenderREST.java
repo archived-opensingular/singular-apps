@@ -15,9 +15,10 @@
  */
 package org.opensingular.server.core.service;
 
+import org.opensingular.app.commons.service.IMailSenderREST;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.server.commons.service.IMailSenderREST;
+
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

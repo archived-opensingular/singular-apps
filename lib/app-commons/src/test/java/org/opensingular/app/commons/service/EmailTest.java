@@ -16,19 +16,18 @@
  *
  */
 
-package org.opensingular.server.commons.service;
+package org.opensingular.app.commons.service;
 
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.server.commons.persistence.dao.EmailDao;
-import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
-import org.opensingular.server.commons.service.dto.Email;
-import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+import org.opensingular.app.commons.exception.SingularMailException;
+import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.persistence.dao.EmailDao;
+import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.persistence.entity.enums.EmailEntity;
+import org.opensingular.app.commons.service.dto.Email;
 import org.springframework.test.annotation.Rollback;
 
 import javax.inject.Inject;
@@ -39,7 +38,7 @@ import java.util.Date;
 import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class EmailTest extends SingularCommonsBaseTest {
+public class EmailTest {
 
     @Inject
     private EmailPersistenceService emailPersistenceService;
@@ -52,15 +51,15 @@ public class EmailTest extends SingularCommonsBaseTest {
         e.addTo("nada@mada.com");
         e.withSubject("Teste e-mail");
         e.withContent("super corpo de e-mail, ativar!");
-        File f = File.createTempFile("nada","bada");
+        File f = File.createTempFile("nada", "bada");
         f.deleteOnExit();
         e.addAttachment(f, "lada");
         Assert.assertTrue(emailPersistenceService.send(e));
     }
 
-    @Test(expected = SingularServerException.class)
+    @Test(expected = SingularMailException.class)
     @Rollback
-    public void testEmailNaoExiste(){
+    public void testEmailNaoExiste() {
         Email e = new Email();
         emailPersistenceService.send(e);
     }
@@ -68,7 +67,7 @@ public class EmailTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     @Rollback
-    public void testCountPending(){
+    public void testCountPending() {
         generateMockEmailAddresseEntitties();
         Assert.assertEquals(2, emailPersistenceService.countPendingRecipients());
     }
@@ -76,7 +75,7 @@ public class EmailTest extends SingularCommonsBaseTest {
     @Test
     @Transactional
     @Rollback
-    public void testListPending(){
+    public void testListPending() {
         generateMockEmailAddresseEntitties();
         List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 10);
 
@@ -85,7 +84,7 @@ public class EmailTest extends SingularCommonsBaseTest {
 
     @Test
     @Rollback
-    public void testSentMarked(){
+    public void testSentMarked() {
         List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 1);
 
         Email.Addressee addressee = list.get(0);
@@ -105,7 +104,7 @@ public class EmailTest extends SingularCommonsBaseTest {
     }
 
     @Test
-    public void testEmailDaoAndEmailAddresseeDaoConstructos(){
+    public void testEmailDaoAndEmailAddresseeDaoConstructos() {
         Assert.assertNotNull(new EmailDao<>(EmailEntity.class));
         Assert.assertNotNull(new EmailAddresseeDao<>(EmailAddresseeEntity.class));
     }

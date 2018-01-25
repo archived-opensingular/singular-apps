@@ -20,9 +20,10 @@ package org.opensingular.server.core.service;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.server.commons.persistence.entity.enums.AddresseType;
-import org.opensingular.server.commons.service.dto.Email;
+
+import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
+import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.server.core.test.SingularServerBaseTest;
 
 import javax.inject.Inject;

@@ -39,6 +39,7 @@
     </developers>
 
     <modules>
+        <module>lib</module>
         <module>server-libs</module>
         <module>sso</module>
     </modules>

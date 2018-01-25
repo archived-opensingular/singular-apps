@@ -17,11 +17,12 @@ package org.opensingular.server.core.service;
 
 import javax.inject.Inject;
 
+import org.opensingular.app.commons.service.EmailPersistenceService;
+import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.schedule.IScheduleData;
 import org.opensingular.flow.schedule.IScheduledJob;
-import org.opensingular.server.commons.service.EmailPersistenceService;
-import org.opensingular.server.commons.service.dto.Email.Addressee;
+
 
 public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
     
@@ -51,7 +52,7 @@ public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
         int pending = totalPendingRecipients;
         int page = 0, sent = 0;
         while (pending > 0) {
-            for (Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage)) {
+            for (Email.Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage)) {
                 if(emailSender.send(addressee)){
                     emailPersistenceService.markAsSent(addressee);
                     sent++;
