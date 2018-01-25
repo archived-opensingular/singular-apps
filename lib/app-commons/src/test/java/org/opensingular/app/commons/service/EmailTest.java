@@ -28,6 +28,7 @@ import org.opensingular.app.commons.persistence.dao.EmailDao;
 import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
 import org.opensingular.app.commons.persistence.entity.enums.EmailEntity;
 import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.test.SpringBaseTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.util.List;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
-public class EmailTest {
+public class EmailTest extends SpringBaseTest {
 
     @Inject
     private EmailPersistenceService emailPersistenceService;

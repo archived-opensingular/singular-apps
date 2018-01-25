@@ -24,6 +24,7 @@ import org.junit.Test;
 import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
 import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
 import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.test.SpringBaseTest;
 import org.opensingular.lib.commons.util.Loggable;
 
 
@@ -34,7 +35,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Date;
 
-public class EmailSenderTest implements Loggable {
+public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
     @Inject
     private EmailSenderScheduledJob emailSenderJob;
@@ -114,6 +115,8 @@ public class EmailSenderTest implements Loggable {
 
         emailEntity.setAddress("opensingular@gmail.com");
         emailEntity.setAddresseType(AddresseType.TO);
+
+
         return emailEntity;
     }
 
