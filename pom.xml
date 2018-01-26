@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -41,6 +42,7 @@
     <modules>
         <module>lib</module>
         <module>server-libs</module>
+        <module>studio</module>
         <module>sso</module>
     </modules>
 
@@ -173,8 +175,8 @@
         <url>${project.scm.url}</url>
         <connection>${project.scm.connection}</connection>
         <developerConnection>${project.scm.developerConnection}</developerConnection>
-      <tag>1.6.4</tag>
-  </scm>
+        <tag>1.6.4</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -389,7 +391,8 @@
 
         <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.url>
         <project.scm.connection>scm:git:http://10.0.0.22/SINGULAR/singular-server.git</project.scm.connection>
-        <project.scm.developerConnection>scm:git:ssh://10.0.0.22/SINGULAR/singular-server.git</project.scm.developerConnection>
+        <project.scm.developerConnection>scm:git:ssh://10.0.0.22/SINGULAR/singular-server.git
+        </project.scm.developerConnection>
         <sonar.exclusions>**/*.less, **/*.sass, **/*.html, **/*.xml **/*.js, **/*.css</sonar.exclusions>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
