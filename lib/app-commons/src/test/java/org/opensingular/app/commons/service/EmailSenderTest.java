@@ -22,7 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
-import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.app.commons.test.SpringBaseTest;
 import org.opensingular.lib.commons.util.Loggable;
@@ -46,7 +46,7 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
     @Test
     @Transactional
     public void testJobWithoutEmailToSend(){
-        emailSenderJob.setEmailsPerPage(20);
+            emailSenderJob.setEmailsPerPage(20);
 
         Object run = emailSenderJob.run();
         Assert.assertEquals("0 sent from total of 0", run);

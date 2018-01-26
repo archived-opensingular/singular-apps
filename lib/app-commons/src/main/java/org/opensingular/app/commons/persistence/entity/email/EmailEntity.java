@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.persistence.entity.enums;
+package org.opensingular.app.commons.persistence.entity.email;
 
 import java.util.ArrayList;
 import java.util.Date;

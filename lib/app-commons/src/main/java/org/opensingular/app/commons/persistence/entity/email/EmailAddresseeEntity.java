@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.persistence.entity.enums;
+package org.opensingular.app.commons.persistence.entity.email;
 
 import java.util.Date;
 
@@ -32,6 +32,7 @@ import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 
 
+import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
@@ -57,7 +58,7 @@ public class EmailAddresseeEntity extends BaseEntity<Long> {
     private String address;
 
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = { 
-        @Parameter(name = "enumClass", value = AddresseType.CLASS_NAME), 
+        @Parameter(name = "enumClass", value = AddresseType.CLASS_NAME),
         @Parameter(name = "identifierMethod", value = "getCod"), 
         @Parameter(name = "valueOfMethod", value = "valueOfEnum") })
     @Column(name = "TP_ENVIO", nullable = false)

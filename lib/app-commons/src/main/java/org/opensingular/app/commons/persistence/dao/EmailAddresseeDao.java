@@ -21,7 +21,7 @@ import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 
 

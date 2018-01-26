@@ -60,7 +60,7 @@ import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitio
 import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultRequirementSender;
 import org.opensingular.server.commons.service.DefaultRequirementService;
 

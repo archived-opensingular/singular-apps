@@ -11,7 +11,7 @@
     </parent>
     
     <artifactId>server-sip-30-connector</artifactId>
-    <name>[singular-server :: server-libs :: sip-3.0-connector]</name>
+    <name>[singular-apps :: server-libs :: sip-3.0-connector]</name>
     <packaging>jar</packaging>
 
     <build>

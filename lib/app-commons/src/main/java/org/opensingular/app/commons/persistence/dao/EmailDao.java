@@ -17,7 +17,7 @@
  */
 package org.opensingular.app.commons.persistence.dao;
 
-import org.opensingular.app.commons.persistence.entity.enums.EmailEntity;
+import org.opensingular.app.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 
 

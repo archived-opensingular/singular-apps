@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>singular-server-commons</artifactId>
-    <name>[singular-server :: server-libs :: server-commons]</name>
+    <name>[singular-apps :: server-libs :: server-commons]</name>
     <packaging>jar</packaging>
 
     <build>

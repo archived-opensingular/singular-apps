@@ -35,7 +35,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
 
 import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
-import org.opensingular.app.commons.persistence.entity.enums.EmailAddresseeEntity;
+import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.io.HashUtil;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;

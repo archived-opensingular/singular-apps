@@ -19,15 +19,19 @@
 package org.opensingular.app.commons.test;
 
 import org.junit.runner.RunWith;
+import org.springframework.test.annotation.Commit;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
-@ActiveProfiles("mssql")
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = ApplicationContextConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public class SpringBaseTest {
+@Transactional
+@Commit
+public abstract class SpringBaseTest {
+
+
 
 }

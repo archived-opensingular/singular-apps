@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>singular-server-core</artifactId>
-    <name>[singular-server :: server-libs :: server-core]</name>
+    <name>[singular-apps :: server-libs :: server-core]</name>
     <packaging>jar</packaging>
 
     <build>
@@ -45,12 +45,7 @@
             <version>${singular.version}</version>
         </dependency>
 
-        <dependency>
-            <groupId>com.sun.mail</groupId>
-            <artifactId>javax.mail</artifactId>
-            <version>1.5.5</version>
-            <scope>test</scope>
-        </dependency>
+
 
     </dependencies>
 
