@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.app.commons.service;
+package org.opensingular.app.commons.service.email;
 
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 

@@ -16,7 +16,7 @@
 package org.opensingular.server.commons.service;
 
 import org.apache.commons.lang3.StringUtils;
-import org.opensingular.app.commons.service.IEmailService;
+import org.opensingular.app.commons.service.email.IEmailService;
 import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;

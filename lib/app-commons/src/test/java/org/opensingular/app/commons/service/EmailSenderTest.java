@@ -24,6 +24,8 @@ import org.junit.Test;
 import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
 import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.service.email.EmailSender;
+import org.opensingular.app.commons.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.test.SpringBaseTest;
 import org.opensingular.lib.commons.util.Loggable;
 

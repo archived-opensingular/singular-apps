@@ -9,7 +9,7 @@
         <version>1.7.0-SNAPSHOT</version>
     </parent>
     <artifactId>singular-studio</artifactId>
-    <name>[singular :: studio]</name>
+    <name>[singular-apps :: studio]</name>
     <packaging>pom</packaging>
     <modules>
         <module>core</module>

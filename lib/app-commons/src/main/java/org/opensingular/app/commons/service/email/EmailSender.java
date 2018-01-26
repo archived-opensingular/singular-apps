@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service;
+package org.opensingular.app.commons.service.email;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;

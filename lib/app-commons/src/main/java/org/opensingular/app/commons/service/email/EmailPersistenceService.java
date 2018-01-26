@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service;
+package org.opensingular.app.commons.service.email;
 
 import org.opensingular.app.commons.exception.SingularMailException;
 import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;

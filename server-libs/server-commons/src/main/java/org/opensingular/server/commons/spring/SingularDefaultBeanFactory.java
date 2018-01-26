@@ -16,8 +16,8 @@
 
 package org.opensingular.server.commons.spring;
 
-import org.opensingular.app.commons.service.EmailPersistenceService;
-import org.opensingular.app.commons.service.IEmailService;
+import org.opensingular.app.commons.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.service.email.IEmailService;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.schedule.IScheduleService;

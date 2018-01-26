@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service;
+package org.opensingular.app.commons.service.email;
 
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;

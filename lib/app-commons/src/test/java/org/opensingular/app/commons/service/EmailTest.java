@@ -28,6 +28,7 @@ import org.opensingular.app.commons.persistence.dao.EmailDao;
 import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.app.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.service.email.EmailPersistenceService;
 import org.opensingular.app.commons.test.SpringBaseTest;
 import org.springframework.test.annotation.Rollback;
 

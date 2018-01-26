@@ -20,23 +20,7 @@ package org.opensingular.app.commons.test;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
-import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.app.commons.persistence.dao.EmailDao;
-
-import org.opensingular.app.commons.schedule.TransactionalQuartzScheduledService;
-import org.opensingular.app.commons.service.DefaultMailSenderREST;
-import org.opensingular.app.commons.service.EmailPersistenceService;
-import org.opensingular.app.commons.service.EmailSender;
-import org.opensingular.app.commons.service.EmailSenderScheduledJob;
-import org.opensingular.app.commons.service.IEmailService;
-import org.opensingular.app.commons.service.IMailSenderREST;
-import org.opensingular.app.commons.service.dto.Email;
-import org.opensingular.flow.schedule.IScheduleService;
-import org.opensingular.flow.schedule.ScheduleDataBuilder;
-import org.opensingular.flow.schedule.quartz.QuartzScheduleService;
-import org.opensingular.form.persistence.dao.AttachmentContentDao;
-import org.opensingular.form.persistence.dao.AttachmentDao;
-import org.opensingular.form.persistence.service.AttachmentPersistenceService;
+import org.opensingular.app.commons.service.email.DefaultEmailConfiguration;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
@@ -70,63 +54,8 @@ import static org.opensingular.lib.commons.base.SingularProperties.*;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)
         })
-public class ApplicationContextConfiguration implements Loggable {
+public class ApplicationContextConfiguration extends DefaultEmailConfiguration implements Loggable {
 
-
-    @Bean
-    public AttachmentDao attachmentDao() {
-        return new AttachmentDao();
-    }
-
-    @Bean
-    public AttachmentContentDao attachmentContentDao() {
-        return new AttachmentContentDao<>();
-    }
-
-
-    @Bean
-    public AttachmentPersistenceService filePersistence() {
-        return new AttachmentPersistenceService();
-    }
-
-    @Bean
-    public EmailDao emailDao() {
-        return new EmailDao();
-    }
-
-    @Bean
-    public EmailAddresseeDao emailAddresseeDao() {
-        return new EmailAddresseeDao();
-    }
-
-    @Bean
-    public EmailSender emailSender() {
-        return new EmailSender();
-    }
-
-    @Bean
-    @DependsOn({"emailSender", "scheduleService", "emailService"})
-    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
-        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
-        scheduleService.schedule(emailSenderScheduledJob);
-        return emailSenderScheduledJob;
-    }
-
-    @Bean
-    public IMailSenderREST mailSenderREST() {
-        return new DefaultMailSenderREST();
-    }
-
-    @Bean
-    public IEmailService<Email> emailService() {
-        return new EmailPersistenceService();
-    }
-
-
-    @Bean
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService();
-    }
 
     @Bean
     @DependsOn("scriptsInitializer")
@@ -198,7 +127,6 @@ public class ApplicationContextConfiguration implements Loggable {
 
     @Value("classpath:db/ddl/create-sequences-form.sql")
     private Resource sqlCreateSequencesForm;
-
 
 
     protected ResourceDatabasePopulator databasePopulator() {
