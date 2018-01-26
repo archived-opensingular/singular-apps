@@ -8,7 +8,7 @@
         <version>1.7.0-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-analysis ]</name>
+    <name>[singular-apps :: sso :: sso-analysis ]</name>
     <artifactId>singular-sso-analysis</artifactId>
     <packaging>war</packaging>
 

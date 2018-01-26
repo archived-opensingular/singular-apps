@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.server.commons.schedule;
+package org.opensingular.app.commons.schedule;
 
 import javax.inject.Inject;
 
