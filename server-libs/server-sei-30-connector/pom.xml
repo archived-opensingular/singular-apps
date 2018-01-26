@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>server-sei-30-connector</artifactId>
-    <name>[singular-server :: server-libs :: sei-3.0-connector]</name>
+    <name>[singular-apps :: server-libs :: sei-3.0-connector]</name>
     <packaging>jar</packaging>
 
     <build>

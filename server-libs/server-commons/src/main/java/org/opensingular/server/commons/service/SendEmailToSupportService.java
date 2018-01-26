@@ -16,17 +16,18 @@
 package org.opensingular.server.commons.service;
 
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.app.commons.service.email.IEmailService;
+import org.opensingular.app.commons.service.dto.Email;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.service.dto.Email;
+
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 
 @Named
 public class SendEmailToSupportService implements Loggable {

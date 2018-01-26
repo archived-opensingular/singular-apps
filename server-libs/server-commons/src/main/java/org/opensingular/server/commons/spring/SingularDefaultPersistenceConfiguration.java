@@ -55,6 +55,9 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/create-tables.sql")
     private Resource sqlCreateTables;
 
+    @Value("classpath:db/ddl/create-tables-emails.sql")
+    private Resource sqlCreateTablesEmail;
+
     @Value("classpath:db/ddl/create-constraints.sql")
     private Resource sqlCreateConstraints;
 
@@ -73,6 +76,9 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/create-sequences-server.sql")
     private Resource sqlCreateSequencesServer;
 
+    @Value("classpath:db/ddl/create-email-sequences.sql")
+    private Resource sqlCreateSequencesEmail;
+
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
 
@@ -82,9 +88,11 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         populator.addScript(drops);
         populator.addScript(sqlCreateTablesForm);
         populator.addScript(sqlCreateTables);
+        populator.addScript(sqlCreateTablesEmail);
         populator.addScript(sqlCreateTablesActor);
         populator.addScript(sqlCreateSequencesServer);
         populator.addScript(sqlCreateSequencesForm);
+        populator.addScript(sqlCreateSequencesEmail);
         populator.addScript(sqlCreateConstraints);
         populator.addScript(sqlCreateConstraintsForm);
         populator.addScript(insertSingularData);
@@ -183,6 +191,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return new String[]{
                 "org.opensingular.flow.persistence.entity",
                 "org.opensingular.server.commons.persistence.entity",
+                "org.opensingular.app.commons.persistence.entity",
                 "org.opensingular.form.persistence.entity"};
     }
 

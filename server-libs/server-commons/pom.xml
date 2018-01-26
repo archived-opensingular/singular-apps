@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>singular-server-commons</artifactId>
-    <name>[singular-server :: server-libs :: server-commons]</name>
+    <name>[singular-apps :: server-libs :: server-commons]</name>
     <packaging>jar</packaging>
 
     <build>
@@ -69,7 +69,7 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-form-service</artifactId>
+            <artifactId>app-commons</artifactId>
             <version>${singular.version}</version>
         </dependency>
 
@@ -117,12 +117,7 @@
             <scope>compile</scope>
         </dependency>
 
-        <!-- JAVA MAIL -->
-        <dependency>
-            <groupId>javax.mail</groupId>
-            <artifactId>javax.mail-api</artifactId>
-            <version>1.5.6</version>
-        </dependency>
+
 
         <dependency>
             <groupId>com.querydsl</groupId>

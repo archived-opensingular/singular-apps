@@ -16,6 +16,8 @@
 
 package org.opensingular.server.commons.spring;
 
+import org.opensingular.app.commons.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.service.email.IEmailService;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.schedule.IScheduleService;
@@ -42,8 +44,10 @@ import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.connector.RESTModuleDriver;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
-import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.server.commons.persistence.dao.EmailDao;
+import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
+import org.opensingular.server.commons.metadata.SingularServerMetadata;
+import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -56,12 +60,12 @@ import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitio
 import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.server.commons.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultRequirementSender;
 import org.opensingular.server.commons.service.DefaultRequirementService;
-import org.opensingular.server.commons.service.EmailPersistenceService;
+
 import org.opensingular.server.commons.service.FormRequirementService;
-import org.opensingular.server.commons.service.IEmailService;
+
 import org.opensingular.server.commons.service.ParameterService;
 import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.SingularDiffService;

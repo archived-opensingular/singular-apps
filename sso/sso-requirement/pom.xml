@@ -8,7 +8,7 @@
         <version>1.7.0-SNAPSHOT</version>
     </parent>
 
-    <name>[singular-server :: sso :: sso-requirement ]</name>
+    <name>[singular-apps :: sso :: sso-requirement ]</name>
     <artifactId>singular-sso-requirement</artifactId>
     <packaging>war</packaging>
 
