@@ -44,8 +44,6 @@ import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.connector.RESTModuleDriver;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
-import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
-import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
