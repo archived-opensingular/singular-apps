@@ -31,11 +31,6 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-form-core</artifactId>
-            <version>${singular.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.opensingular</groupId>
             <artifactId>singular-studio-core</artifactId>
             <version>${singular.version}</version>
         </dependency>
