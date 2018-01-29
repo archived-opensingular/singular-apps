@@ -22,11 +22,16 @@ import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.internal.lib.commons.injection.SingularInjector;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.server.commons.config.IServerContext;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import javax.inject.Inject;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class SingularSession extends AuthenticatedWebSession {
@@ -88,11 +93,7 @@ public class SingularSession extends AuthenticatedWebSession {
 
 
     public <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication() != null
-                && SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
-            return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        return null;
+       return ApplicationContextProvider.get().getBean((Class<T>) SingularUserDetails.class);
     }
 
     public ModuleEntity getCategoriaSelecionada() {

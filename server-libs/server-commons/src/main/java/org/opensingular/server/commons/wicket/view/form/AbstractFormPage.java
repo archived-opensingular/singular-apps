@@ -408,8 +408,12 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     @Nonnull
     protected abstract Optional<String> getIdentifier();
 
-    protected void onNewRequirementCreation(RI requirement) {
-    }
+    /**
+     * será removido na próxima versão do Singular
+     * @param requirement
+     */
+    @Deprecated
+    protected void onNewRequirementCreation(RI requirement) {}
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> requirementId = config.getRequirementId();

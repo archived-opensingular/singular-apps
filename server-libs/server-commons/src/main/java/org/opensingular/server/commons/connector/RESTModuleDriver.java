@@ -37,21 +37,24 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static org.opensingular.server.commons.RESTPaths.*;
 
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 
+    @Inject
+    private Provider<SingularUserDetails> singularUserDetails;
+
     private <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
-            return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        return null;
+        return (T) singularUserDetails.get();
     }
 
     @Override

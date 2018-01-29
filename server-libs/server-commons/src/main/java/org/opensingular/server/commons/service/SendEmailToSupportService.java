@@ -26,6 +26,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.inject.Provider;
 import javax.transaction.Transactional;
 
 @Named
@@ -33,17 +34,20 @@ public class SendEmailToSupportService implements Loggable {
     private static final String SINGULAR_SUPPORT_ADDRESS = "singular.mail.support.address";
 
     @Inject
+    private Provider<SingularUserDetails> singularUserDetails;
+
+    @Inject
     private IEmailService<Email> emailService;
 
     @Transactional
     public void sendEmailToSupport(String errorCode, String stackTrace, String urlException) {
         String supportEmail = SingularProperties.get().getProperty(SINGULAR_SUPPORT_ADDRESS, "");
-        if(StringUtils.isNotBlank(supportEmail)){
-            try{
+        if (StringUtils.isNotBlank(supportEmail)) {
+            try {
                 Email email = new Email();
 
                 String[] emails = supportEmail.split(",");
-                for (int i=0; i< emails.length;i++){
+                for (int i = 0; i < emails.length; i++) {
                     emails[i] = emails[i].trim();
                 }
                 email.addTo(emails);
@@ -53,14 +57,14 @@ public class SendEmailToSupportService implements Loggable {
 
                 email.withContent(
                         "<pre>"
-                                +"Url: "+urlException+"\n\n"
-                                + loggedUser+"\n\n"
-                                + "Error code: "+errorCode+"\n\n"
-                                + "Stack Trace:\n\n"+stackTrace
-                                +"</pre>");
+                                + "Url: " + urlException + "\n\n"
+                                + loggedUser + "\n\n"
+                                + "Error code: " + errorCode + "\n\n"
+                                + "Stack Trace:\n\n" + stackTrace
+                                + "</pre>");
 
                 emailService.send(email);
-            } catch (SingularServerException e){
+            } catch (SingularServerException e) {
                 getLogger().warn("Error ocurred while send e-mail to singular support", e);
             }
         }
@@ -68,16 +72,16 @@ public class SendEmailToSupportService implements Loggable {
 
     private String getLoggedUser() {
         StringBuilder returnString = new StringBuilder();
-        try{
-            if(SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String){
+        try {
+            SingularUserDetails userDetails = singularUserDetails.get();
+            if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
-            }else if(SecurityContextHolder.getContext().getAuthentication() instanceof SingularUserDetails) {
-                SingularUserDetails userAtual = (SingularUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-                returnString.append("Username: ").append(userAtual.getUsername()).append("\nDisplay name: ").append(userAtual.getDisplayName());
-            }else{
+            } else if (userDetails != null) {
+                returnString.append("Username: ").append(userDetails.getUsername()).append("\nDisplay name: ").append(userDetails.getDisplayName());
+            } else {
                 returnString.append("User: - ");
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             getLogger().warn("Error ocurred while retrieving logged User", e);
             returnString.setLength(0);
             returnString.append("User not found");
