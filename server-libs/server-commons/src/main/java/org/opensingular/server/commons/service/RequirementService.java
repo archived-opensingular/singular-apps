@@ -114,6 +114,15 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private Provider<SingularUserDetails> singularUserDetails;
 
     /**
+     * FOR INTERNAL USE ONLY,
+     * MUST NOT BE EXPOSED BY SUBCLASSES
+     * @return
+     */
+    protected SingularUserDetails getSingularUserDetails() {
+        return singularUserDetails.get();
+    }
+
+    /**
      * Deve cria uma instância com base na entidade fornecida.
      */
     @Nonnull
