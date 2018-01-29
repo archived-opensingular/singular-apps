@@ -15,15 +15,14 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.persistence.dao;
+package org.opensingular.app.commons.mail.persistence.dao;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
-import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
-
 
 import javax.transaction.Transactional;
 import java.util.List;

@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.app.commons.persistence.entity.enums;
+package org.opensingular.app.commons.mail.persistence.entity.enums;
 
 import javax.mail.Message.RecipientType;
 
@@ -27,7 +27,7 @@ public enum AddresseType {
     BCC("Bcc", RecipientType.BCC)
     ;
 
-    public static final String CLASS_NAME = "org.opensingular.app.commons.persistence.entity.enums.AddresseType";
+    public static final String CLASS_NAME = "org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType";
 
     private final String cod;
     private final RecipientType recipientType;

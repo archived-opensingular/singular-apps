@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.app.commons.schedule;
+package org.opensingular.app.commons.mail.schedule;
 
 import org.opensingular.flow.schedule.IScheduleData;
 import org.opensingular.flow.schedule.IScheduledJob;

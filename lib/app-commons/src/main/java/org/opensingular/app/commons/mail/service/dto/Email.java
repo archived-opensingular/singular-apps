@@ -15,7 +15,18 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service.dto;
+package org.opensingular.app.commons.mail.service.dto;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.SetMultimap;
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
+import org.opensingular.form.SingularFormException;
+import org.opensingular.form.io.HashUtil;
+import org.opensingular.form.type.core.attachment.IAttachmentRef;
+import org.opensingular.form.type.core.attachment.handlers.FileSystemAttachmentRef;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -27,19 +38,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.commons.lang3.StringUtils;
-
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.SetMultimap;
-
-import org.opensingular.app.commons.persistence.entity.enums.AddresseType;
-import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.form.SingularFormException;
-import org.opensingular.form.io.HashUtil;
-import org.opensingular.form.type.core.attachment.IAttachmentRef;
-import org.opensingular.form.type.core.attachment.handlers.FileSystemAttachmentRef;
 
 
 

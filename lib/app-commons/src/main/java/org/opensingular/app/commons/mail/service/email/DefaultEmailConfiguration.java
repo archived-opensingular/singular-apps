@@ -16,12 +16,12 @@
  *
  */
 
-package org.opensingular.app.commons.service.email;
+package org.opensingular.app.commons.mail.service.email;
 
-import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.app.commons.persistence.dao.EmailDao;
-import org.opensingular.app.commons.schedule.TransactionalQuartzScheduledService;
-import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;

@@ -15,24 +15,22 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.persistence.dao;
-
-import org.opensingular.app.commons.persistence.entity.email.EmailEntity;
-import org.opensingular.lib.support.persistence.BaseDAO;
+package org.opensingular.app.commons.mail.service.email;
 
 
-import javax.transaction.Transactional;
+import org.opensingular.app.commons.mail.service.dto.Email;
 
-@SuppressWarnings("unchecked")
-@Transactional(Transactional.TxType.MANDATORY)
-public class EmailDao<T extends EmailEntity> extends BaseDAO<T, Long>{
+/**
+ * Serviço de envio de e-mail
+ * 
+ * @author lucas.lopes
+ */
+public interface IEmailService<X extends Email> {
+
+    boolean send(X email);
     
-    public EmailDao() {
-        super((Class<T>) EmailEntity.class);
+    @SuppressWarnings("unchecked")
+    default X createEmail(String subject) {
+        return (X) new Email().withSubject(subject);
     }
-
-    public EmailDao(Class<T> entityClass) {
-        super(entityClass);
-    }
-
 }

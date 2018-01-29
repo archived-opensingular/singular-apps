@@ -16,13 +16,12 @@
 
 package org.opensingular.server.core.config;
 
-import org.opensingular.app.commons.service.email.IMailSenderREST;
+import org.opensingular.app.commons.mail.service.email.DefaultMailSenderREST;
+import org.opensingular.app.commons.mail.service.email.EmailSender;
+import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
+import org.opensingular.app.commons.mail.service.email.IMailSenderREST;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
-
-import org.opensingular.app.commons.service.email.DefaultMailSenderREST;
-import org.opensingular.app.commons.service.email.EmailSender;
-import org.opensingular.app.commons.service.email.EmailSenderScheduledJob;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 

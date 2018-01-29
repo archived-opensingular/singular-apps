@@ -15,11 +15,13 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.persistence.entity.email;
+package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.hibernate.annotations.GenericGenerator;
+import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
+import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -31,13 +33,9 @@ import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @GenericGenerator(name = EmailEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)

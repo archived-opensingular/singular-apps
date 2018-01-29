@@ -15,7 +15,7 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service.email;
+package org.opensingular.app.commons.mail.service.email;
 
 import org.opensingular.lib.commons.util.Loggable;
 

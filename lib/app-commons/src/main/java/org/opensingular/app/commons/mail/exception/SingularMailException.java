@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.app.commons.exception;
+package org.opensingular.app.commons.mail.exception;
 
 import org.opensingular.lib.commons.base.SingularException;
 

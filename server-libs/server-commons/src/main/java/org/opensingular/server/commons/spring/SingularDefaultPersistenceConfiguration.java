@@ -191,7 +191,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return new String[]{
                 "org.opensingular.flow.persistence.entity",
                 "org.opensingular.server.commons.persistence.entity",
-                "org.opensingular.app.commons.persistence.entity",
+                "org.opensingular.app.commons.mail.persistence.entity",
                 "org.opensingular.form.persistence.entity"};
     }
 

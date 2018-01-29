@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.opensingular.app.commons.schedule;
+package org.opensingular.app.commons.mail.schedule;
 
-import javax.inject.Inject;
-
-import org.springframework.transaction.PlatformTransactionManager;
-
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.schedule.IScheduledJob;
 import org.opensingular.flow.schedule.quartz.QuartzScheduleService;
+import org.opensingular.lib.commons.util.Loggable;
+import org.springframework.transaction.PlatformTransactionManager;
+
+import javax.inject.Inject;
 
 public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable{
 

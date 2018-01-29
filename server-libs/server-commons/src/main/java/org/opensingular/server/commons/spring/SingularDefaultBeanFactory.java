@@ -16,10 +16,14 @@
 
 package org.opensingular.server.commons.spring;
 
-import org.opensingular.app.commons.service.email.EmailPersistenceService;
-import org.opensingular.app.commons.service.email.IEmailService;
+import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.core.service.IUserService;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
@@ -39,6 +43,8 @@ import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
+import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
+import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.connector.ModuleDriver;
@@ -46,8 +52,6 @@ import org.opensingular.server.commons.connector.RESTModuleDriver;
 import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
-import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.app.commons.persistence.dao.EmailDao;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -58,14 +62,10 @@ import org.opensingular.server.commons.persistence.dao.form.RequirementContentHi
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.server.commons.persistence.dao.server.BoxDAO;
-import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.app.commons.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.server.commons.service.DefaultRequirementSender;
 import org.opensingular.server.commons.service.DefaultRequirementService;
-
 import org.opensingular.server.commons.service.FormRequirementService;
-
 import org.opensingular.server.commons.service.ParameterService;
 import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.SingularDiffService;
@@ -75,10 +75,8 @@ import org.opensingular.server.commons.service.attachment.ServerAttachmentPersis
 import org.opensingular.server.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.server.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
 import org.opensingular.server.commons.spring.security.AuthorizationService;
-import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
-import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;

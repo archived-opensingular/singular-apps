@@ -15,11 +15,10 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service.email;
+package org.opensingular.app.commons.mail.service.email;
 
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;

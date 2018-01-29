@@ -15,25 +15,20 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service.email;
+package org.opensingular.app.commons.mail.service.email;
 
-import org.opensingular.app.commons.exception.SingularMailException;
-import org.opensingular.app.commons.persistence.dao.EmailAddresseeDao;
-import org.opensingular.app.commons.persistence.dao.EmailDao;
-import org.opensingular.app.commons.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.app.commons.persistence.entity.email.EmailEntity;
-import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.mail.exception.SingularMailException;
+import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.app.commons.mail.persistence.entity.email.EmailEntity;
+import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.validation.SingularEmailValidator;
-
-
-
-
-
 
 import javax.inject.Inject;
 import javax.inject.Named;

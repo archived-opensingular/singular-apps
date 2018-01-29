@@ -15,16 +15,15 @@
  *  * limitations under the License.
  *
  */
-package org.opensingular.app.commons.service.email;
+package org.opensingular.app.commons.mail.service.email;
 
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.BooleanUtils;
-import org.opensingular.app.commons.service.dto.Email;
+import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import javax.activation.DataHandler;
