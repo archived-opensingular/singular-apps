@@ -23,6 +23,7 @@ import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
+import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.module.connector.LocalModuleConnector;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +34,7 @@ import java.util.Map;
 import static org.opensingular.server.commons.RESTPaths.*;
 
 @RestController
-@RequestMapping("/rest/flow")
+@RequestMapping(ModuleDriver.REST_FLOW)
 public class RESTModuleConnector extends LocalModuleConnector {
 
     @Override
