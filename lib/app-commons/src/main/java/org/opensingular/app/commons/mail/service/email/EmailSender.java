@@ -38,6 +38,8 @@ import java.util.Date;
 import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
+import static org.opensingular.lib.commons.base.SingularProperties.*;
+
 public class EmailSender extends JavaMailSenderImpl implements Loggable {
 
     private static final String EMAIL_DEVELOPMENT = "opensingular@gmail.com";
@@ -46,16 +48,16 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
     private Cache<Class, Boolean> errorCache;
 
     @PostConstruct
-    public void init(){
+    public void init() {
         SingularProperties properties = SingularProperties.get();
         setHost(properties.getPropertyOpt("singular.mail.host").orElse(null));
-        if(getHost() != null){
+        if (getHost() != null) {
             from = properties.getPropertyOpt("singular.mail.from").orElse(null);
             setPort(properties.getPropertyOpt("singular.mail.port").orElse(null));
             setUsername(properties.getPropertyOpt("singular.mail.username").orElse(null));
             setPassword(properties.getPropertyOpt("singular.mail.password").orElse(null));
             setProtocol(properties.getPropertyOpt("singular.mail.protocol").orElse(null));
-            
+
             getJavaMailProperties().setProperty("mail.smtp.host", getHost());
             getJavaMailProperties().setProperty("mail.smtp.port", String.valueOf(getPort()));
             if (getUsername() != null) {
@@ -81,21 +83,21 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 .expireAfterWrite(1, TimeUnit.DAYS)
                 .build();
     }
-    
-    public boolean send(Email.Addressee addressee){
-        if(getHost() == null){
+
+    public boolean send(Email.Addressee addressee) {
+        if (getHost() == null) {
             getLogger().info("SMTP mail sender Disabled.");
             return false;
         }
-        if(addressee.getSentDate() == null){
+        if (addressee.getSentDate() == null) {
             try {
-                Email e = addressee.getEmail();
+                Email             e   = addressee.getEmail();
                 final MimeMessage msg = createMimeMessage();
-                
+
                 // Para que email "out of office" não seja enviados como resposta automatica
                 msg.setHeader("Precedence", "bulk");
                 msg.setHeader("X-Auto-Response-Suppress", "OOF");
-                
+
                 msg.setSubject(e.getSubject());
                 msg.setSentDate(Optional.ofNullable(e.getCreationDate()).orElseGet(Date::new));
                 msg.setFrom(new InternetAddress(Optional.ofNullable(from).orElseGet(this::getUsername)));
@@ -104,16 +106,16 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_SEND_EMAIL)) {
                     msg.addRecipient(recipientType, new InternetAddress(addressee.getAddress()));
                 } else {
-                    msg.addRecipient(recipientType, new InternetAddress(EMAIL_DEVELOPMENT));
+                    msg.addRecipient(recipientType, new InternetAddress(SingularProperties.get().getProperty(SINGULAR_EMAIL_TEST_RECPT, EMAIL_DEVELOPMENT)));
                 }
-                
+
                 // Cria o "contêiner" das várias partes do e-mail
                 final Multipart content = new MimeMultipart("related");
-                
+
                 final MimeBodyPart mainContent = new MimeBodyPart();
                 mainContent.setContent(e.getContent(), "text/html; charset=iso-8859-1");
                 content.addBodyPart(mainContent);
-                
+
                 // Adiciona anexos
                 for (IAttachmentRef attachmentRef : e.getAttachments()) {
                     MimeBodyPart part = new MimeBodyPart();
@@ -126,11 +128,11 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 }
                 msg.setContent(content);
                 msg.saveChanges();
-                
+
                 send(msg);
-                
+
                 addressee.setSentDate(new Date());
-                
+
                 getLogger().info("Email enviado para o destinatário(cod={})={}", addressee.getCod(), addressee.getAddress());
             } catch (Exception ex) {
                 addressee.setSentDate(null);
@@ -149,9 +151,9 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
         }
         return true;
     }
-    
+
     public void setPort(String port) {
-        if(port != null){
+        if (port != null) {
             super.setPort(Integer.parseInt(port));
         }
     }
