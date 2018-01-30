@@ -58,7 +58,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
             @Parameter(name = "enumClass", value = PersonType.CLASS_NAME),
             @Parameter(name = "identifierMethod", value = "getCod"),
             @Parameter(name = "valueOfMethod", value = "valueOfEnum")})
-    @Column(name = "TP_PESSOA", insertable = false, updatable = false)
+    @Column(name = "TP_PESSOA")
     private PersonType personType;
 
     @Override
