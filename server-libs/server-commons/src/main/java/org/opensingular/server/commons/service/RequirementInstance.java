@@ -182,6 +182,10 @@ public class RequirementInstance implements Serializable {
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
 
+    public String getRequirementDefinitionName(){
+        return getEntity().getRequirementDefinitionEntity().getName();
+    }
+
     public String getApplicantName(){
         return Optional.of(getEntity()).map(RequirementEntity::getApplicant).map(ApplicantEntity::getName).orElse(null);
     }

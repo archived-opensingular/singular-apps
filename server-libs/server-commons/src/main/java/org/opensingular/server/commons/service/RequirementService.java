@@ -60,6 +60,7 @@ import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
@@ -180,17 +181,19 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * @param requirement
      */
     protected void configureApplicant(RI requirement) {
-        SingularUserDetails userDetails = singularUserDetails.get();
-        if (userDetails != null) {
+        UserDetails userDetails = singularUserDetails.get();
+        if (userDetails != null && userDetails instanceof SingularUserDetails) {
             ApplicantEntity p;
             p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
             if (p == null) {
                 p = new ApplicantEntity();
                 p.setIdPessoa(userDetails.getUsername());
-                p.setName(userDetails.getDisplayName());
+                p.setName(((SingularUserDetails)userDetails).getDisplayName());
                 p.setPersonType(PersonType.FISICA);
             }
             requirement.getEntity().setApplicant(p);
+        } else {
+            getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
         }
     }
 
