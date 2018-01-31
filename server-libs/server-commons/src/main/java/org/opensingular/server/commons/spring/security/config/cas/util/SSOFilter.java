@@ -73,7 +73,7 @@ public class SSOFilter extends SSOConfigurableFilter {
     /**
      * The constant SERVICE_URL_PARAM.
      */
-    public static final String SERVICE_URL_PARAM = "cas.serviceUrl";
+    public static final String SERVICE_URL_PARAM = "cas.service.url";
 
 
 
