@@ -34,9 +34,10 @@ import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.client.RestTemplate;
 
+import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -47,18 +48,38 @@ import static org.opensingular.server.commons.RESTPaths.*;
 
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 
+    @Inject
+    private Provider<SingularUserDetails> singularUserDetails;
+
     private <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
-            return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        return (T) singularUserDetails.get();
+    }
+
+
+    private String getConnectionURL(ModuleEntity module) {
+        String path = removeFlowPathIfExists(module.getConnectionURL());
+        return path + ModuleDriver.REST_FLOW;
+    }
+
+    /**
+     * @param path
+     * @return
+     * @deprecated to be removed on version 1.7.1
+     */
+    @Deprecated
+    private String removeFlowPathIfExists(String path) {
+        String flowPath = "/rest/flow";
+        if (path.endsWith(flowPath)) {
+            return path.replaceAll(flowPath, "");
         }
-        return null;
+        return path;
     }
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = module.getConnectionURL() + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
-        SingularUserDetails userDetails = getUserDetails();
+        RestTemplate        restTemplate = new RestTemplate();
+        String              url          = getConnectionURL(module) + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
+        SingularUserDetails userDetails  = getUserDetails();
         if (userDetails != null) {
             url += "&" + USER + "=" + userDetails.getUserPermissionKey();
         }
@@ -67,9 +88,9 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
-        final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getCountEndpoint();
-        long qtd;
+        final String connectionURL = getConnectionURL(module);
+        final String url           = connectionURL + box.getCountEndpoint();
+        long         qtd;
         try {
             QuickFilter filter = new QuickFilter()
                     .withProcessesAbbreviation(flowNames)
@@ -87,8 +108,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
-        final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getCountEndpoint();
+        final String connectionURL = getConnectionURL(module);
+        final String url           = connectionURL + box.getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
@@ -99,8 +120,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
-        final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getSearchEndpoint();
+        final String connectionURL = getConnectionURL(module);
+        final String url           = connectionURL + box.getSearchEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
                     .getBoxItemDataList()
@@ -115,8 +136,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
-        final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
+        final String connectionURL = getConnectionURL(module);
+        final String url           = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
 
         try {
             return Arrays.asList(new RestTemplate().postForObject(url, rowItemData, Actor[].class));
@@ -137,8 +158,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
-        final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
-        final String endpoint = StringUtils.trimToEmpty(action.getEndpoint());
+        final BoxItemAction action   = rowItemData.getActionByName(rowAction.getName());
+        final String        endpoint = StringUtils.trimToEmpty(action.getEndpoint());
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {

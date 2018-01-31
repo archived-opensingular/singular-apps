@@ -77,7 +77,10 @@ import org.opensingular.server.commons.service.attachment.ServerTemporaryAttachm
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
+import org.opensingular.server.commons.spring.security.SingularUserDetails;
+import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -86,6 +89,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
@@ -346,6 +350,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public ModuleDriver moduleDriver(){
         return new RESTModuleDriver();
+    }
+
+    @Bean
+    public SingularUserDetailsFactoryBean<? extends SingularUserDetails> singularUserDetails(){
+        return new SingularUserDetailsFactoryBean<>(SingularUserDetails.class);
     }
 
 }

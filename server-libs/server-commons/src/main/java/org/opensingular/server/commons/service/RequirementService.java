@@ -23,6 +23,7 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
@@ -38,7 +39,6 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.exception.RequirementConcurrentModificationException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -46,8 +46,8 @@ import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementContentHistoryDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
+import org.opensingular.server.commons.persistence.entity.enums.PersonType;
 import org.opensingular.server.commons.persistence.entity.form.ApplicantEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
@@ -59,11 +59,13 @@ import org.opensingular.server.commons.persistence.requirement.RequirementSearch
 import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.server.commons.spring.security.SingularPermission;
+import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -76,7 +78,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
+import static org.opensingular.flow.core.TaskInstance.*;
 
 @Transactional
 public abstract class RequirementService<RE extends RequirementEntity, RI extends RequirementInstance> implements Loggable {
@@ -108,6 +110,18 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
+    @Inject
+    private Provider<SingularUserDetails> singularUserDetails;
+
+    /**
+     * FOR INTERNAL USE ONLY,
+     * MUST NOT BE EXPOSED BY SUBCLASSES
+     * @return
+     */
+    protected SingularUserDetails getSingularUserDetails() {
+        return singularUserDetails.get();
+    }
+
     /**
      * Deve cria uma instância com base na entidade fornecida.
      */
@@ -116,6 +130,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     /**
      * Deve cria uma nova entidade vazia de persistência.
+     *
      * @param requirementDefinitionEntity
      */
     @Nonnull
@@ -157,6 +172,26 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     @Nonnull
     protected FormRequirementService<RE> getFormRequirementService() {
         return Objects.requireNonNull(formRequirementService);
+    }
+
+    /**
+     * Configures the applicant in an requirement.
+     *
+     * @param requirement
+     */
+    protected void configureApplicant(RI requirement) {
+        SingularUserDetails userDetails = singularUserDetails.get();
+        if (userDetails != null) {
+            ApplicantEntity p;
+            p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
+            if (p == null) {
+                p = new ApplicantEntity();
+                p.setIdPessoa(userDetails.getUsername());
+                p.setName(userDetails.getDisplayName());
+                p.setPersonType(PersonType.FISICA);
+            }
+            requirement.getEntity().setApplicant(p);
+        }
     }
 
     /**
@@ -268,7 +303,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     public void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByRequirementId(requirement.getCod());
-        FormEntity formEntity = requirement.getEntity().getMainForm();
+        FormEntity                   formEntity   = requirement.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -380,7 +415,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     @Nonnull
     public RI createNewRequirementWithoutSave(@Nullable Class<? extends FlowDefinition> classFlowDefinition, @Nullable RI parentRequirement,
-                                              @Nullable Consumer<RI> creationListener, RequirementDefinitionEntity requirementDefinitionEntity) {
+                                              @Deprecated @Nullable Consumer<RI> creationListener, RequirementDefinitionEntity requirementDefinitionEntity) {
 
         final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
 
@@ -398,6 +433,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         }
 
         RI requirement = newRequirementInstance(requirementEntity);
+        configureApplicant(requirement);
         if (creationListener != null) {
             creationListener.accept(requirement);
         }
@@ -436,7 +472,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codRequirement) {
         RequirementEntity requirementEntity = requirementDAO.findOrException(codRequirement);
-        FormEntity mainForm = requirementEntity.getMainForm();
+        FormEntity        mainForm          = requirementEntity.getMainForm();
         return formRequirementService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -534,7 +570,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
         FlowInstanceEntity flowEntity = newFlowInstance.saveEntity();
 
-        if(codSubmitterActor != null) {
+        if (codSubmitterActor != null) {
             RequirementUtil.findUser(codSubmitterActor).filter(u -> u instanceof Actor).ifPresent(user -> {
                 flowEntity.setUserCreator((Actor) user);
             });

@@ -34,11 +34,12 @@ import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.wicket.SingularSession;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Inject;
+import javax.inject.Provider;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class LocalModuleDriver implements ModuleDriver {
@@ -46,11 +47,11 @@ public class LocalModuleDriver implements ModuleDriver {
     @Inject
     private ModuleConnector moduleConnector;
 
+    @Inject
+    private Provider<SingularUserDetails> singularUserDetails;
+
     private <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
-            return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        return null;
+        return (T) singularUserDetails.get();
     }
 
     @Override
@@ -60,7 +61,7 @@ public class LocalModuleDriver implements ModuleDriver {
 
     private String getUserName() {
         SingularUserDetails userDetails = getUserDetails();
-        return userDetails != null ? userDetails.getUsername(): null;
+        return userDetails != null ? userDetails.getUsername() : null;
     }
 
     @Override
@@ -94,7 +95,7 @@ public class LocalModuleDriver implements ModuleDriver {
     @Override
     public ActionResponse executeAction(ModuleEntity module, BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest) {
         Url.QueryParameter idQueryParam = Url.parse(rowAction.getEndpoint()).getQueryParameter("id");
-        Long action = null;
+        Long               action       = null;
         if (idQueryParam != null) {
             action = Long.valueOf(idQueryParam.getValue());
         }
@@ -103,8 +104,8 @@ public class LocalModuleDriver implements ModuleDriver {
 
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
-        final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
-        final String endpoint = action.getEndpoint();
+        final BoxItemAction action   = rowItemData.getActionByName(rowAction.getName());
+        final String        endpoint = action.getEndpoint();
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {

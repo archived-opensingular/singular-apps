@@ -27,9 +27,7 @@ import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
@@ -56,14 +54,14 @@ public class SingularServerSessionConfiguration implements Loggable {
     private SingularServerConfiguration singularServerConfiguration;
 
     @Inject
-    private ModuleDriver rmoduleDriver;
+    private ModuleDriver moduleDriver;
 
     @PostConstruct
     public void init() {
         try {
             IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                configMaps.put(module, rmoduleDriver.retrieveModuleWorkspace(module, menuContext));
+                configMaps.put(module, moduleDriver.retrieveModuleWorkspace(module, menuContext));
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
@@ -83,14 +81,6 @@ public class SingularServerSessionConfiguration implements Loggable {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = sra.getRequest();
         return IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
-    }
-
-    @SuppressWarnings("unchecked")
-    private <T extends SingularUserDetails> T getUserDetails() {
-        if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof SingularUserDetails) {
-            return (T) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        }
-        return null;
     }
 
     public LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> getModuleBoxConfigurationMap() {
