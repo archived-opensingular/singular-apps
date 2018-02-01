@@ -34,6 +34,7 @@ import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -62,10 +63,9 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
     private static final String SERVICE_PARAM = "service";
 
     /**
-     * Constante SERVICE_URL_PARAM.
+     * The constant SERVICE_URL_PARAM.
      */
-    private static final String SERVICE_URL_PARAM = "serviceUrl";
-
+    public static final String SERVICE_URL_PARAM = "serviceUrl";
 
     /**
      * Campo delegate.
@@ -91,14 +91,9 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
         super.init(filterConfig);
         final Map<String, String> params = new HashMap<>();
         params.put(CAS_SERVER_LOGIN_URL_PARAM, SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_LOGIN)).orElse(null));
-        if (!Strings.isNullOrEmpty(filterConfig.getInitParameter(SERVICE_URL_PARAM))) {
-            params.put(SERVICE_PARAM,
-                    getServiceUrl(
-                            filterConfig.getInitParameter(SERVICE_URL_PARAM),
-                            SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)).orElse(null),
-                            filterConfig.getServletContext().getContextPath()
-                    )
-            );
+        Optional<String> serviceUrl = resolveServiceUrl(filterConfig);
+        if (serviceUrl.isPresent()) {
+            params.put(SERVICE_PARAM, serviceUrl.get());
         } else {
             params.put(SERVER_NAME_PARAM, SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SSO_CLIENT_SERVER)).orElse(null));
         }
@@ -108,6 +103,8 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
             String s = (String) enumeration.nextElement();
             params.put(s, filterConfig.getInitParameter(s));
         }
+
+
         try {
             FilterConfig newConfig = new FilterConfig() {
 
@@ -164,12 +161,14 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
     /**
      * Obtém uma referência de service url.
      *
-     * @param serviceUrlParam um service url param
-     * @param serverName      um server name
-     * @param context         um context
+     * @param filterConfig         filterConfig
      * @return uma referência de service url
      */
-    public String getServiceUrl(String serviceUrlParam, String serverName, String context) {
-        return serverName + context + serviceUrlParam;
+    public Optional<String> resolveServiceUrl(FilterConfig filterConfig) {
+        String filterServiceURL = filterConfig.getInitParameter(SERVICE_URL_PARAM);
+        if (filterServiceURL == null){
+            return SingularProperties.getOpt(getSingularContext().getServerPropertyKey(SSOFilter.SERVICE_URL_PARAM));
+        }
+        return Optional.ofNullable(filterServiceURL);
     }
 }
