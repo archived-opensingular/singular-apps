@@ -182,7 +182,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     protected void configureApplicant(RI requirement) {
         UserDetails userDetails = singularUserDetails.get();
-        if (userDetails != null && userDetails instanceof SingularUserDetails) {
+        if (userDetails instanceof SingularUserDetails) {
             ApplicantEntity p;
             p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
             if (p == null) {
