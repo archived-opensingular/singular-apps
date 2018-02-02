@@ -18,23 +18,20 @@ package org.opensingular.server.core.wicket.box;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
-import org.opensingular.form.wicket.mapper.components.ConfirmationModal;
-import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.form.wicket.mapper.components.AbstractConfirmationModal;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 
 import java.io.Serializable;
 
-public abstract class BoxContentConfirmModal<T extends Serializable> extends ConfirmationModal {
+public abstract class BoxContentConfirmModal<T extends Serializable> extends AbstractConfirmationModal {
     protected final BoxItemAction itemAction;
-    protected final IModel<T> dataModel;
+    protected final IModel<T>     dataModel;
 
     public BoxContentConfirmModal(BoxItemAction itemAction, IModel<T> dataModel) {
         super("confirmationModal");
         this.itemAction = itemAction;
         this.dataModel = dataModel;
     }
-
-    protected abstract void onConfirm(AjaxRequestTarget target);
 
     @Override
     protected String getCancelButtonLabel() {
@@ -60,7 +57,4 @@ public abstract class BoxContentConfirmModal<T extends Serializable> extends Con
         border.show(target);
     }
 
-    public void show(AjaxRequestTarget target, IConsumer<AjaxRequestTarget> confirmationAction) {
-        throw new UnsupportedOperationException("Método não suportado, use a classe " + ConfirmationModal.class.getName());
-    }
 }
