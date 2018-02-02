@@ -150,7 +150,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
     @Override
     public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction,
                                         Map<String, String> params, ActionRequest actionRequest) {
-        String url = moduleEntity.getConnectionURL()
+        String url = getConnectionURL(moduleEntity)
                 + itemAction.getEndpoint()
                 + appendParameters(params);
         return new RestTemplate().postForObject(url, actionRequest, ActionResponse.class);
