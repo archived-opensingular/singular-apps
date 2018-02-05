@@ -41,7 +41,7 @@
 
     <modules>
         <module>lib</module>
-        <module>server-libs</module>
+        <module>requirement</module>
         <module>studio</module>
         <module>sso</module>
     </modules>
