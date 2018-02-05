@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.opensingular</groupId>
-        <artifactId>singular-server-libs</artifactId>
+        <artifactId>singular-requirement</artifactId>
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>server-sei-30-connector</artifactId>
-    <name>[singular-apps :: server-libs :: sei-3.0-connector]</name>
+    <artifactId>requirement-sei-30-extensao-singular</artifactId>
+    <name>[singular-apps :: requirement :: sei-3.0-connector-extensao-singular]</name>
     <packaging>jar</packaging>
 
     <build>
@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-server-commons</artifactId>
+            <artifactId>singular-requirement-commons</artifactId>
             <version>${singular.version}</version>
         </dependency>
     </dependencies>

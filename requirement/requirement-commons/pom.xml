@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.opensingular</groupId>
-        <artifactId>singular-server-libs</artifactId>
+        <artifactId>singular-requirement</artifactId>
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>singular-server-commons</artifactId>
-    <name>[singular-apps :: server-libs :: server-commons]</name>
+    <artifactId>singular-requirement-commons</artifactId>
+    <name>[singular-apps :: requirement :: commons]</name>
     <packaging>jar</packaging>
 
     <build>

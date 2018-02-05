@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.opensingular</groupId>
-        <artifactId>singular-server-libs</artifactId>
+        <artifactId>singular-requirement</artifactId>
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>singular-server-commons-test</artifactId>
-    <name>[singular-apps :: server-libs :: server-commons :: test]</name>
+    <artifactId>singular-requirement-commons-test</artifactId>
+    <name>[singular-apps :: requirement :: commons :: test]</name>
     <packaging>jar</packaging>
 
     <build>
@@ -35,7 +35,7 @@
     <dependencies>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-server-commons</artifactId>
+            <artifactId>singular-requirement-commons</artifactId>
             <version>${singular.version}</version>
         </dependency>
         <dependency>

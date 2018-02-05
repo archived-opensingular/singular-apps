@@ -5,12 +5,12 @@
 
     <parent>
         <groupId>org.opensingular</groupId>
-        <artifactId>singular-server-libs</artifactId>
+        <artifactId>singular-requirement</artifactId>
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>singular-server-module</artifactId>
-    <name>[singular-apps :: server-libs :: server-module]</name>
+    <artifactId>requirement-sei-30-connector</artifactId>
+    <name>[singular-apps :: requirement :: sei-3.0-connector]</name>
     <packaging>jar</packaging>
 
     <build>
@@ -23,9 +23,7 @@
                 <filtering>false</filtering>
                 <directory>src/main/java</directory>
                 <includes>
-                    <include>**/*.js</include>
-                    <include>**/*.css</include>
-                    <include>**/*.html</include>
+                    <include>**/*.wsdl</include>
                     <include>**/*.properties</include>
                 </includes>
             </resource>
@@ -35,16 +33,9 @@
     <dependencies>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-server-commons-test</artifactId>
-            <version>${singular.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-server-commons</artifactId>
+            <artifactId>singular-requirement-commons</artifactId>
             <version>${singular.version}</version>
         </dependency>
     </dependencies>
-
 
 </project>

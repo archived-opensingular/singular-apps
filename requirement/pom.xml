@@ -9,20 +9,20 @@
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>singular-server-libs</artifactId>
-    <name>[singular-apps :: server-libs]</name>
+    <artifactId>singular-requirement</artifactId>
+    <name>[singular-apps :: requirement]</name>
     <packaging>pom</packaging>
 
     <modules>
-        <module>server-commons</module>
-        <module>server-commons-test</module>
-        <module>server-module</module>
-        <module>server-core</module>
-	    <module>server-sip-30-connector</module>
-        <module>server-sei-30-connector</module>
-        <module>server-sei-30-extensao-singular</module>
-        <module>server-single-app</module>
-        <module>server-studio-app</module>
+        <module>requirement-commons</module>
+        <module>requirement-commons-test</module>
+        <module>requirement-module</module>
+        <module>requirement-core</module>
+	    <module>requirement-sip-30-connector</module>
+        <module>requirement-sei-30-connector</module>
+        <module>requirement-sei-30-extensao-singular</module>
+        <module>requirement-single-app</module>
+        <module>requirement-studio-app</module>
     </modules>
 
     <dependencies>
