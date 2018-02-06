@@ -33,7 +33,6 @@ import java.util.Optional;
 public class StudioHeader extends Panel {
 
 
-    @Inject
     @Autowired(required = false)
     private UserDetails userDetails;
 
