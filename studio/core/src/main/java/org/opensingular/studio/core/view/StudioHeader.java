@@ -23,6 +23,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.studio.core.util.StudioWicketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -31,10 +32,6 @@ import javax.inject.Inject;
 import java.util.Optional;
 
 public class StudioHeader extends Panel {
-
-
-    @Autowired(required = false)
-    private UserDetails userDetails;
 
     private WebMarkupContainer rightNavbar = new WebMarkupContainer("rightNavbar");
 
@@ -77,7 +74,7 @@ public class StudioHeader extends Panel {
     }
 
     private Optional<UserDetails> getUserDetails() {
-        return Optional.ofNullable(userDetails);
+        return Optional.ofNullable(ApplicationContextProvider.get().getBean(UserDetails.class));
     }
 
 
