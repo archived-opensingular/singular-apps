@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-apps</artifactId>
 
-    <version>1.7.0-SNAPSHOT</version>
+    <version>1.7.1-SNAPSHOT</version>
     <name>[singular-apps]</name>
     <description>Singular Apps</description>
     <url>http://opensingular.org</url>
@@ -41,7 +41,7 @@
 
     <modules>
         <module>lib</module>
-        <module>server-libs</module>
+        <module>requirement</module>
         <module>studio</module>
         <module>sso</module>
     </modules>
@@ -389,16 +389,16 @@
         <sonar.jacoco.reportPaths>${project.basedir}/../target/jacoco.exec</sonar.jacoco.reportPaths>
         <sonar.language>java</sonar.language>
 
-        <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-server.git</project.scm.url>
-        <project.scm.connection>scm:git:http://10.0.0.22/SINGULAR/singular-server.git</project.scm.connection>
-        <project.scm.developerConnection>scm:git:ssh://10.0.0.22/SINGULAR/singular-server.git
+        <project.scm.url>http://10.0.0.22/r/SINGULAR/singular-apps.git</project.scm.url>
+        <project.scm.connection>scm:git:http://10.0.0.22/SINGULAR/singular-apps.git</project.scm.connection>
+        <project.scm.developerConnection>scm:git:ssh://10.0.0.22/SINGULAR/singular-apps.git
         </project.scm.developerConnection>
         <sonar.exclusions>**/*.less, **/*.sass, **/*.html, **/*.xml **/*.js, **/*.css</sonar.exclusions>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.3.0</wicket.version>
-        <singular.version>1.7.0-SNAPSHOT</singular.version>
+        <singular.version>1.7.1-SNAPSHOT</singular.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
         <slf4j.version>1.7.12</slf4j.version>
         <cas.version>4.0.4</cas.version>

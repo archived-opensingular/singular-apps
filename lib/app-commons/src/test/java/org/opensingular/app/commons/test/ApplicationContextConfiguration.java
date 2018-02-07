@@ -20,7 +20,7 @@ package org.opensingular.app.commons.test;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
-import org.opensingular.app.commons.service.email.DefaultEmailConfiguration;
+import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
@@ -44,7 +44,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Properties;
 
-import static org.opensingular.lib.commons.base.SingularProperties.*;
+import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration

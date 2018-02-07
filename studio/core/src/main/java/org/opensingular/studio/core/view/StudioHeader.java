@@ -23,11 +23,12 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.studio.core.util.StudioWicketUtils;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.inject.Inject;
 import java.util.Optional;
 
 public class StudioHeader extends Panel {
@@ -72,15 +73,8 @@ public class StudioHeader extends Panel {
         rightNavbar.add(new Label("username", getUserDetails().map(UserDetails::getUsername).orElse("")));
     }
 
-    private Optional<Authentication> getAuth() {
-        return Optional.ofNullable(SecurityContextHolder.getContext().getAuthentication());
-    }
-
     private Optional<UserDetails> getUserDetails() {
-        return getAuth()
-                .map(Authentication::getPrincipal)
-                .filter(auth -> auth instanceof UserDetails)
-                .map(userDetails -> (UserDetails) userDetails);
+        return Optional.ofNullable(ApplicationContextProvider.get().getBean(UserDetails.class));
     }
 
 
