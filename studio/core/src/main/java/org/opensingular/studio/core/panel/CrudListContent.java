@@ -84,7 +84,7 @@ public class CrudListContent extends CrudShellContent {
                 actionColumn -> configuredStudioTable.getActions().forEach(listAction -> {
                     BSActionPanel.ActionConfig<SInstance> config = newConfig();
                     listAction.configure(config);
-                    actionColumn.appendAction(config, listAction::onAction);
+                    actionColumn.appendAction(config, (org.opensingular.lib.wicket.util.datatable.IBSAction<SInstance>) (target, model) -> listAction.onAction(target, model, getCrudShellManager() ));
                 }));
 
         add(tableBuilder.build("table"));
@@ -210,7 +210,7 @@ public class CrudListContent extends CrudShellContent {
     public interface ListAction extends Serializable {
         void configure(BSActionPanel.ActionConfig<SInstance> config);
 
-        void onAction(AjaxRequestTarget target, IModel<SInstance> model);
+        void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager);
     }
 
     public static class EditAction implements ListAction {
@@ -228,9 +228,9 @@ public class CrudListContent extends CrudShellContent {
         }
 
         @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model) {
-            CrudEditContent crudEditContent = crudShellManager.makeEditContent(crudShellManager.getCrudShellContent(), model);
-            crudShellManager.replaceContent(target, crudEditContent);
+        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
+            CrudEditContent crudEditContent = this.crudShellManager.makeEditContent(this.crudShellManager.getCrudShellContent(), model);
+            this.crudShellManager.replaceContent(target, crudEditContent);
         }
     }
 
@@ -249,11 +249,11 @@ public class CrudListContent extends CrudShellContent {
         }
 
         @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model) {
-            CrudEditContent crudEditContent = crudShellManager
-                    .makeEditContent(crudShellManager.getCrudShellContent(), model);
+        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
+            CrudEditContent crudEditContent = this.crudShellManager
+                    .makeEditContent(this.crudShellManager.getCrudShellContent(), model);
             crudEditContent.setViewMode(ViewMode.READ_ONLY);
-            crudShellManager.replaceContent(target, crudEditContent);
+            this.crudShellManager.replaceContent(target, crudEditContent);
         }
     }
 
@@ -274,11 +274,11 @@ public class CrudListContent extends CrudShellContent {
         }
 
         @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model) {
-            crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
+        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
+            this.crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
                 studioDefinition.getRepository().delete(FormKey.from(model.getObject()));
-                crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluido com sucesso.");
-                crudShellManager.update(ajaxRequestTarget);
+                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluido com sucesso.");
+                this.crudShellManager.update(ajaxRequestTarget);
             });
         }
 
