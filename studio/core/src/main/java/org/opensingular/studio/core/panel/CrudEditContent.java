@@ -151,7 +151,7 @@ public class CrudEditContent extends CrudShellContent {
     }
 
 
-    public static class SaveButtonFactory implements ButtonFactory {
+    public class SaveButtonFactory implements ButtonFactory {
 
         private final CrudShellManager crudShellManager;
 
@@ -170,7 +170,11 @@ public class CrudEditContent extends CrudShellContent {
         }
     }
 
-    public static class StudioSaveButton extends SingularSaveButton {
+    protected CrudShellContent getAfterSaveContent() {
+        return getCrudShellManager().makeListContent();
+    }
+
+    public class StudioSaveButton extends SingularSaveButton {
 
         private final CrudShellManager crudShellManager;
 
@@ -183,7 +187,7 @@ public class CrudEditContent extends CrudShellContent {
         protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
             StudioDefinition studioDefinition = crudShellManager.getStudioDefinition();
             studioDefinition.getRepository().insertOrUpdate(instanceModel.getObject(), null);
-            crudShellManager.replaceContent(target, crudShellManager.makeListContent());
+            crudShellManager.replaceContent(target, getAfterSaveContent());
             crudShellManager.addToastrMessage(ToastrType.INFO, "Item salvo com sucesso.");
         }
 

@@ -73,12 +73,12 @@ public class DefaultEmailConfiguration {
         return new EmailPersistenceService();
     }
 
-    @Bean
-    @DependsOn({"emailSender", "scheduleService", "emailService"})
-    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
-        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
-        scheduleService.schedule(emailSenderScheduledJob);
-        return emailSenderScheduledJob;
-    }
+//    @Bean
+//    @DependsOn({"emailSender", "scheduleService", "emailService"})
+//    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
+//        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
+//        scheduleService.schedule(emailSenderScheduledJob);
+//        return emailSenderScheduledJob;
+//    }
 
 }
