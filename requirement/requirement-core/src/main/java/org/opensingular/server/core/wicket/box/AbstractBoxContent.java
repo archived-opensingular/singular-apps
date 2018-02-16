@@ -127,7 +127,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     }
 
     protected String getBaseUrl() {
-        return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
+        return SingularSession.get().getServerContext().getUrlPath();
     }
 
     protected String getModuleCod() {
@@ -312,21 +312,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             dataProvider.setSort(sort.getLeft(), sort.getRight());
         }
         return dataProvider;
-    }
-
-
-    public String getModuleContext() {
-        final String groupConnectionURL = getModule().getConnectionURL();
-        try {
-            final String path = new URL(groupConnectionURL).getPath();
-            int indexOf = path.indexOf('/', 1);
-            if(indexOf > 0) {
-                return path.substring(0, indexOf);
-            }
-            return groupConnectionURL;
-        } catch (Exception e) {
-            throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
-        }
     }
 
     protected QuickFilter newFilter() {

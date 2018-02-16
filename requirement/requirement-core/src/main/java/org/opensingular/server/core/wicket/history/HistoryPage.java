@@ -201,23 +201,8 @@ public class HistoryPage extends ServerTemplate {
     }
 
     protected String getBaseUrl() {
-        return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
+        return SingularSession.get().getServerContext().getUrlPath();
     }
-
-    public String getModuleContext() {
-        final String groupConnectionURL = requirementService.findByModuleCod(modulePK).getConnectionURL();
-        try {
-            final String path    = new URL(groupConnectionURL).getPath();
-            int          indexOf = path.indexOf('/', 1);
-            if (indexOf > 0) {
-                return path.substring(0, indexOf);
-            }
-            return groupConnectionURL;
-        } catch (Exception e) {
-            throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
-        }
-    }
-
 
     @Override
     protected IModel<String> getContentTitle() {
