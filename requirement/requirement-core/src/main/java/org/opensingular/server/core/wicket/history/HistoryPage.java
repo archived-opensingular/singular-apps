@@ -43,17 +43,14 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.net.URL;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 
 @MountPath("history")
@@ -64,7 +61,7 @@ public class HistoryPage extends ServerTemplate {
     @Inject
     private RequirementService<?, ?> requirementService;
 
-    private long requirementPK;
+    private Long   requirementPK;
     private String modulePK;
     private String menu;
 
@@ -78,7 +75,7 @@ public class HistoryPage extends ServerTemplate {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toLong();
+        requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
         modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
         menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         add(setupDataTable(createDataProvider()));
@@ -175,12 +172,13 @@ public class HistoryPage extends ServerTemplate {
     protected BaseDataProvider<RequirementHistoryDTO, String> createDataProvider() {
         return new BaseDataProvider<RequirementHistoryDTO, String>() {
 
-            transient List<RequirementHistoryDTO> cache = requirementService.listRequirementContentHistoryByCodRequirement(
-                    requirementPK, menu, isFilterAllowedHistoryTasks());
+            transient List<RequirementHistoryDTO> cache = null;
 
             @Override
             public long size() {
-                if (cache == null) {
+                if (requirementPK == null) {
+                    cache = Collections.emptyList();
+                } else if (cache == null) {
                     cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
                 }
                 return cache.size();
@@ -188,7 +186,9 @@ public class HistoryPage extends ServerTemplate {
 
             @Override
             public Iterator<RequirementHistoryDTO> iterator(int first, int count, String sortProperty, boolean ascending) {
-                if (cache == null) {
+                if (requirementPK == null) {
+                    cache = Collections.emptyList();
+                } else if (cache == null) {
                     cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
                 }
                 return cache.subList(first, first + count).iterator();
@@ -207,9 +207,9 @@ public class HistoryPage extends ServerTemplate {
     public String getModuleContext() {
         final String groupConnectionURL = requirementService.findByModuleCod(modulePK).getConnectionURL();
         try {
-            final String path = new URL(groupConnectionURL).getPath();
-            int indexOf = path.indexOf('/', 1);
-            if(indexOf > 0) {
+            final String path    = new URL(groupConnectionURL).getPath();
+            int          indexOf = path.indexOf('/', 1);
+            if (indexOf > 0) {
                 return path.substring(0, indexOf);
             }
             return groupConnectionURL;
