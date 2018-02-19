@@ -44,6 +44,7 @@ public class DefaultDraftbox implements BoxDefinition {
         rascunho.setName("Rascunho");
         rascunho.setDescription("Requerimentos de rascunho");
         rascunho.setIcone(DefaultIcons.DOCS);
+        rascunho.setShowHistoryAction(false);
         rascunho.setShowDraft(true);
         return rascunho;
     }
