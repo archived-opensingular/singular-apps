@@ -16,8 +16,11 @@
 
 package org.opensingular.server.commons.flow;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.persistence.util.HibernateSingularFlowConfigurationBean;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.commons.base.SingularProperties;
@@ -25,10 +28,6 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.config.SingularServerConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 public class SingularServerFlowConfigurationBean extends HibernateSingularFlowConfigurationBean implements Loggable {
 
@@ -40,20 +39,12 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
     @Inject
     private IScheduleService scheduleService;
 
-    @Inject
-    private IFlowRenderer flowRenderer;
-
     @PostConstruct
     protected void postConstruct() {
         this.setModuleCod(singularServerConfiguration.getModuleCod());
         this.setDefinitionsPackages(singularServerConfiguration.getDefinitionsPackages());
         Flow.setConf(this, true);
         initializeFlowDefinitionsDatabase();
-    }
-
-    @Override
-    public IFlowRenderer getFlowRenderer() {
-        return flowRenderer;
     }
     
     @Override

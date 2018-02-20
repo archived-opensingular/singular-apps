@@ -21,7 +21,7 @@ import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
 import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
-import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
@@ -49,7 +49,6 @@ import org.opensingular.server.commons.cache.SingularKeyGenerator;
 import org.opensingular.server.commons.config.ServerStartExecutorBean;
 import org.opensingular.server.commons.connector.ModuleDriver;
 import org.opensingular.server.commons.connector.RESTModuleDriver;
-import org.opensingular.server.commons.flow.renderer.remote.YFilesFlowRemoteRenderer;
 import org.opensingular.server.commons.metadata.DefaultSingularServerMetadata;
 import org.opensingular.server.commons.metadata.SingularServerMetadata;
 import org.opensingular.server.commons.persistence.dao.ParameterDAO;
@@ -78,9 +77,7 @@ import org.opensingular.server.commons.spring.security.AuthorizationService;
 import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
-import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -89,7 +86,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
@@ -270,11 +266,6 @@ public class SingularDefaultBeanFactory {
     @Bean
     public IScheduleService scheduleService() {
         return new TransactionalQuartzScheduledService();
-    }
-
-    @Bean
-    public IFlowRenderer flowRenderer() {
-        return new YFilesFlowRemoteRenderer(null);
     }
 
     @Bean
