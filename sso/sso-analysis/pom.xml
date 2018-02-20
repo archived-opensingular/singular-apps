@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-sso</artifactId>
-        <version>1.6.9.1</version>
+        <version>1.6.9.2-SNAPSHOT</version>
     </parent>
 
     <name>[singular-server :: sso :: sso-analysis ]</name>

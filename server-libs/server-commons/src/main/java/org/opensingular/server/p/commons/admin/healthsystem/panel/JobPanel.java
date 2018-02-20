@@ -15,45 +15,71 @@
  */
 package org.opensingular.server.p.commons.admin.healthsystem.panel;
 
-import javax.inject.Inject;
-
-import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
-import org.apache.wicket.markup.html.form.Form;
+import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.util.ListModel;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.admin.AdminFacade;
 import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
 import org.quartz.SchedulerException;
 
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 
 @SuppressWarnings("serial")
 public class JobPanel extends Panel implements Loggable {
-	
-	@Inject
+
+    @Inject
     private AdminFacade adminFacade;
 
-	public JobPanel(String id) {
-		super(id);
-	}
+    private ListModel<String> runnedJobsModel = new ListModel<>(new ArrayList<>());
 
-	@Override
-	protected void onInitialize() {
-		super.onInitialize();
-		
-		add(new AjaxButton("runAllJobs") {
-			@Override
-			protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-				try {
-					adminFacade.runAllJobs();
-					
-					new SingularToastrHelper(this).
-						addToastrMessage(ToastrType.SUCCESS, "All jobs runned!");
-				} catch (SchedulerException e) {
-					getLogger().error(e.getMessage(), e);
-				}
-			}
-		});
-	}
+    public JobPanel(String id) {
+        super(id);
+    }
+
+    @Override
+    protected void onInitialize() {
+        super.onInitialize();
+
+        add(new Button("runAllJobs") {
+            @Override
+            public void onSubmit() {
+                try {
+                    List<String> runnedJobs = adminFacade.runAllJobs();
+                    runnedJobsModel.setObject(runnedJobs);
+                    new SingularToastrHelper(this).
+                            addToastrMessage(ToastrType.SUCCESS, "All jobs runned!");
+                } catch (SchedulerException e) {
+                    getLogger().error(e.getMessage(), e);
+                }
+            }
+        });
+
+        RefreshingView<String> repeatingView = new RefreshingView<String>("runnedJobs") {
+            @Override
+            protected Iterator<IModel<String>> getItemModels() {
+                return runnedJobsModel.getObject().stream().map(this::toModel).iterator();
+            }
+
+            private IModel<String> toModel(String s) {
+                return $m.ofValue(s);
+            }
+
+            @Override
+            protected void populateItem(Item<String> item) {
+                item.add(new Label("job", item.getModel()));
+            }
+        };
+        add(repeatingView);
+    }
 }
