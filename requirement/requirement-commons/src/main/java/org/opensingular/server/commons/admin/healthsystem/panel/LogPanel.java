@@ -40,6 +40,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -114,6 +115,12 @@ public class LogPanel extends Panel implements Loggable {
         } catch (IOException ex) {
             getLogger().error(ex.getMessage(), ex);
         }
+        uris.sort(new Comparator<URI>() {
+            @Override
+            public int compare(URI o1, URI o2) {
+                return ((Comparator<String>) Comparator.naturalOrder()).compare(o1.toString(), o2.toString());
+            }
+        });
         return uris;
     }
 
