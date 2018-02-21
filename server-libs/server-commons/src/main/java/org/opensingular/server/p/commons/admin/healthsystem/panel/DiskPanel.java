@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.server.commons.admin.healthsystem.panel;
+package org.opensingular.server.p.commons.admin.healthsystem.panel;
 
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
