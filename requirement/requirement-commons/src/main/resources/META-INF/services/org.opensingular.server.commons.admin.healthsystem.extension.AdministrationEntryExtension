@@ -25,3 +25,4 @@ org.opensingular.server.commons.admin.healthsystem.extension.XSDViewAdminEntry
 org.opensingular.server.commons.admin.healthsystem.extension.DocsAdminEntry
 org.opensingular.server.commons.admin.healthsystem.extension.ThreadsAdminEntry
 org.opensingular.server.commons.admin.healthsystem.extension.MemoryAdminEntry
+org.opensingular.server.commons.admin.healthsystem.extension.DiskAdminEntry
