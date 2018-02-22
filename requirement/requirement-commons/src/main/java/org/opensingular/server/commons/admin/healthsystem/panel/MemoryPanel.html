@@ -16,18 +16,26 @@
 
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
-    <div class="portlet light">
-        <div class="portlet-title">
-            <div class="caption">
-                <span class="caption-subject bold uppercase"> Jobs</span>
-            </div>
-        </div>
-        <div class="portlet-body">
-            <button type="submit" wicket:id="runAllJobs" class="btn default-btn">Run All Jobs</button>
-            <ul wicket:id="runnedJobs">
-                <li wicket:id="job"></li>
-            </ul>
-        </div>
-    </div>
+	<div class="portlet light">
+		<div class="portlet-title">
+			<div class="caption">
+				<span class="caption-subject bold uppercase">Memory Stats</span>
+			</div>
+		</div>
+		<div class="portlet-body">
+			<label>Heap</label>
+			<ul wicket:id="heap">
+				<li wicket:id="stat"></li>
+			</ul>
+			<label>GC</label>
+			<ul wicket:id="gc">
+				<li wicket:id="stat"></li>
+			</ul>
+			<label>Memory Pools</label>
+			<ul wicket:id="memPools">
+				<li wicket:id="stat"></li>
+			</ul>
+		</div>
+	</div>
 </wicket:panel>
 </html>
