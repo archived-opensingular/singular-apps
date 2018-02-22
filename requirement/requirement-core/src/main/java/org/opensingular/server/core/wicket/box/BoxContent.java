@@ -65,12 +65,8 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -150,11 +146,12 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                         getMessage("label.table.column.history"),
                         DefaultIcons.HISTORY,
                         BoxContent.this::createHistoryLink,
-                        (x) -> Boolean.TRUE,
+                        (x)-> getItemBoxModelObject().isShowHistoryAction(),
                         c -> c.styleClasses($m.ofValue("worklist-action-btn")));
 
                 super.onPopulateActions(rowModel, actionPanel);
             }
+
         };
 
         builder.appendColumn(actionColumn);
@@ -180,7 +177,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String url = moduleDriver.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, getBaseUrl());
+            String             url  = moduleDriver.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -301,7 +298,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
             BoxItemDataMap boxItemDataMap = model.getObject();
-            boolean visible = boxItemDataMap.hasAction(itemAction);
+            boolean        visible        = boxItemDataMap.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemDataMap.getCod());
             }
