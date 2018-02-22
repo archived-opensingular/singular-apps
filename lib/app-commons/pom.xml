@@ -10,7 +10,7 @@
         <version>1.7.1-SNAPSHOT</version>
     </parent>
 
-    <artifactId>app-commons</artifactId>
+    <artifactId>singular-app-commons</artifactId>
     <name>[singular-apps :: libs :: app-commons]</name>
     <packaging>jar</packaging>
 
