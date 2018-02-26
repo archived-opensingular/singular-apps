@@ -62,7 +62,6 @@ public class DocBuilderTest {
         Assert.assertEquals("Bairro", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[5].getValue(FIELD_NAME));
         Assert.assertEquals("Cidade", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[6].getValue(FIELD_NAME));
         Assert.assertEquals("Estado", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[7].getValue(FIELD_NAME));
-        Assert.assertEquals("País", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[8].getValue(FIELD_NAME));
     }
 
 
