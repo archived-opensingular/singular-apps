@@ -27,26 +27,28 @@ import org.opensingular.studio.core.definition.StudioTableDataProvider;
 
 import java.util.Iterator;
 
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 public class StudioDataProviderAdapter extends SortableDataProvider<SInstance, String> {
 
-    private StudioTableDataProvider<?> studioTableDataProvider;
+    private StudioTableDataProvider<?>    studioTableDataProvider;
     private IFunction<FormKey, SInstance> instanceLoader;
+    private IModel<? extends SInstance>   filter;
 
-    public StudioDataProviderAdapter(StudioTableDataProvider<?> studioTableDataProvider, IFunction<FormKey, SInstance> instanceLoader) {
+    public StudioDataProviderAdapter(StudioTableDataProvider<?> studioTableDataProvider, IFunction<FormKey, SInstance> instanceLoader, IModel<? extends SInstance> filter) {
         this.studioTableDataProvider = studioTableDataProvider;
         this.instanceLoader = instanceLoader;
+        this.filter = filter;
     }
 
     @Override
     public Iterator<? extends SInstance> iterator(long first, long count) {
-        return studioTableDataProvider.iterator(first, count);
+        return studioTableDataProvider.iterator(first, count, filter);
     }
 
     @Override
     public long size() {
-        return studioTableDataProvider.size();
+        return studioTableDataProvider.size(filter);
     }
 
     @Override
