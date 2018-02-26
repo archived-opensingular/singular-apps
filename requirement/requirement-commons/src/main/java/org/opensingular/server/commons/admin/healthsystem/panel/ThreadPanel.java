@@ -54,7 +54,7 @@ public class ThreadPanel extends Panel {
                             HttpServletResponse response = (HttpServletResponse) requestCycle.getResponse().getContainerResponse();
                             response.setContentType("text/plain");
                             response.setCharacterEncoding("UTF-8");
-                            String filename = "ThreadDump_" + new Date().toString() + ".txt";
+                            String filename = "ThreadDump_" + new Date() + ".txt";
                             filename = filename.replaceAll(" ", "_");
                             response.setHeader("Content-Disposition", "attachment; filename=" + filename);
                             Writer w = response.getWriter();
