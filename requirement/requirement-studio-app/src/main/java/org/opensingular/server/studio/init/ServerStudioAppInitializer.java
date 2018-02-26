@@ -30,6 +30,7 @@ import org.opensingular.server.commons.admin.AdministrationApplication;
 import org.opensingular.server.commons.config.PServerContext;
 import org.opensingular.server.commons.config.PSpringSecurityInitializer;
 import org.opensingular.server.commons.config.PWebInitializer;
+import org.opensingular.server.single.config.SingleAppBeanFactory;
 import org.opensingular.server.single.config.SingleAppInitializer;
 import org.opensingular.server.studio.spring.ServerStudioRequirementBeanFactory;
 import org.opensingular.server.studio.spring.StudioSpringSecurityInitializer;
@@ -45,7 +46,7 @@ public interface ServerStudioAppInitializer extends SingleAppInitializer {
     PServerContext STUDIO = new PServerContext("STUDIO", "/*", "singular.studio");
 
     @Override
-    default Class<? extends SingularDefaultBeanFactory> beanFactory() {
+    default Class<? extends SingleAppBeanFactory> beanFactory() {
         return ServerStudioRequirementBeanFactory.class;
     }
 
