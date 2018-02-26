@@ -22,10 +22,6 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SType;
-import org.opensingular.server.commons.admin.healthsystem.docs.DocBlock;
-import org.opensingular.server.commons.admin.healthsystem.docs.DocFieldMetadata;
-import org.opensingular.server.commons.admin.healthsystem.docs.DocTable;
-import org.opensingular.server.commons.admin.healthsystem.docs.DocumentationMetadataBuilder;
 
 import java.util.LinkedHashSet;
 
@@ -66,7 +62,6 @@ public class DocBuilderTest {
         Assert.assertEquals("Bairro", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[5].getValue(FIELD_NAME));
         Assert.assertEquals("Cidade", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[6].getValue(FIELD_NAME));
         Assert.assertEquals("Estado", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[7].getValue(FIELD_NAME));
-        Assert.assertEquals("País", saida.toArray(new DocTable[0])[2].getBlockList().toArray(new DocBlock[0])[0].getMetadataList().toArray(new DocFieldMetadata[0])[8].getValue(FIELD_NAME));
     }
 
 
