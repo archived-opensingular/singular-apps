@@ -25,6 +25,7 @@ import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.lang.Bytes;
+import org.opensingular.lib.commons.util.Loggable;
 
 import java.io.IOException;
 import java.nio.file.FileStore;
@@ -37,7 +38,7 @@ import java.util.Iterator;
 import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 
 @SuppressWarnings("serial")
-public class DiskPanel extends Panel {
+public class DiskPanel extends Panel implements Loggable {
 
     private ListModel<String> disk = new ListModel<>(new ArrayList<>(0));
 
@@ -55,10 +56,11 @@ public class DiskPanel extends Panel {
             disk.getObject().add("<b>Disk Root: "+ root+"</b>");
             try {
                 FileStore store = Files.getFileStore(root);
-                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Available: " + Bytes.bytes(store.getUsableSpace()).toString());
-                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Total: " + Bytes.bytes(store.getTotalSpace()).toString());
+                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Available: " + Bytes.bytes(store.getUsableSpace()));
+                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Total: " + Bytes.bytes(store.getTotalSpace()));
             } catch (IOException e) {
-                disk.getObject().add("error querying space: " + e.toString());
+                disk.getObject().add("error querying space: " + e);
+                getLogger().error("Error querying disk space", e);
             }
         }
     }
