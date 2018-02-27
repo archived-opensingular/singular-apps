@@ -30,6 +30,7 @@ import org.opensingular.server.commons.admin.AdministrationApplication;
 import org.opensingular.server.commons.config.PServerContext;
 import org.opensingular.server.commons.config.PSpringSecurityInitializer;
 import org.opensingular.server.commons.config.PWebInitializer;
+import org.opensingular.server.single.config.SingleAppBeanFactory;
 import org.opensingular.server.single.config.SingleAppInitializer;
 import org.opensingular.server.studio.spring.ServerStudioRequirementBeanFactory;
 import org.opensingular.server.studio.spring.StudioSpringSecurityInitializer;
@@ -45,48 +46,72 @@ public interface ServerStudioAppInitializer extends SingleAppInitializer {
     PServerContext STUDIO = new PServerContext("STUDIO", "/*", "singular.studio");
 
     @Override
-    default Class<? extends SingularDefaultBeanFactory> beanFactory() {
+    default Class<? extends SingleAppBeanFactory> beanFactory() {
         return ServerStudioRequirementBeanFactory.class;
     }
 
     @Override
     default PWebInitializer webConfiguration() {
         return new PWebInitializer() {
-
             @Override
             protected void configureCAS(ServletContext servletContext) {
             }
 
             @Override
             public IServerContext[] serverContexts() {
-                return new IServerContext[]{PServerContext.REQUIREMENT, PServerContext.WORKLIST, PServerContext.ADMINISTRATION, STUDIO};
+                return getServerContexts();
             }
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
                 String contextPath = servletContext.getContextPath();//NOSONAR
-                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
+                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM,
+                        (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
 
             @Override
             protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext currentContext) {
-                Predicate<IServerContext> sameContextCheck = (i) -> i.isSameContext(currentContext);
-                if (sameContextCheck.test(PServerContext.WORKLIST)) {
-                    return AnalysisApplication.class;
-                }
-                if (sameContextCheck.test(PServerContext.REQUIREMENT)) {
-                    return RequirementApplication.class;
-                }
-                if (sameContextCheck.test(PServerContext.ADMINISTRATION)) {
-                    return AdministrationApplication.class;
-                }
-                if (sameContextCheck.test(STUDIO)) {
-                    return ServerStudioApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
+                return getWicketApplicationByContext(currentContext);
             }
         };
+    }
+
+    default Class<? extends SingularServerApplication> getWicketApplicationByContext(IServerContext currentContext) {
+        Predicate<IServerContext> sameContextCheck = (i) -> i.isSameContext(currentContext);
+        if (sameContextCheck.test(PServerContext.WORKLIST)) {
+            return getWorklistWicketApplication();
+        }
+        if (sameContextCheck.test(PServerContext.REQUIREMENT)) {
+            return getRequirementWicketApplication();
+        }
+        if (sameContextCheck.test(PServerContext.ADMINISTRATION)) {
+            return getAdministrationWicketApplication();
+        }
+        if (sameContextCheck.test(STUDIO)) {
+            return getStudioWicketApplication();
+        }
+        throw new SingularServerException("Contexto inválido");
+    }
+
+    default Class<? extends SingularServerApplication> getStudioWicketApplication() {
+        return ServerStudioApplication.class;
+    }
+
+    default Class<? extends SingularServerApplication> getAdministrationWicketApplication() {
+        return AdministrationApplication.class;
+    }
+
+    default Class<? extends SingularServerApplication> getRequirementWicketApplication() {
+        return RequirementApplication.class;
+    }
+
+    default Class<? extends SingularServerApplication> getWorklistWicketApplication() {
+        return AnalysisApplication.class;
+    }
+
+    default IServerContext[] getServerContexts() {
+        return new IServerContext[]{PServerContext.REQUIREMENT, PServerContext.WORKLIST, PServerContext.ADMINISTRATION, STUDIO};
     }
 
     @Override

@@ -51,14 +51,6 @@ public class ItemBox implements Serializable {
         this.showHistoryAction = showHistoryAction;
     }
 
-    public Icon getIcon() {
-        return icon;
-    }
-
-    public void setIcon(Icon icon) {
-        this.icon = icon;
-    }
-
     public String getName() {
         return name;
     }
