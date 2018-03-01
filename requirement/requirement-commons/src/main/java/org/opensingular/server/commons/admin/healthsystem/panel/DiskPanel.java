@@ -15,62 +15,63 @@
  *  * limitations under the License.
  *
  */
+
 package org.opensingular.server.commons.admin.healthsystem.panel;
 
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.markup.repeater.RefreshingView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.util.lang.Bytes;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.admin.AdminFacade;
-import org.opensingular.server.commons.wicket.view.SingularToastrHelper;
-import org.quartz.SchedulerException;
 
-import javax.inject.Inject;
+import java.io.IOException;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 
 @SuppressWarnings("serial")
-public class JobPanel extends Panel implements Loggable {
+public class DiskPanel extends Panel implements Loggable {
 
-    @Inject
-    private AdminFacade adminFacade;
+    private ListModel<String> disk = new ListModel<>(new ArrayList<>(0));
 
-    private ListModel<String> runnedJobsModel = new ListModel<>(new ArrayList<>());
-
-    public JobPanel(String id) {
+    public DiskPanel(String id) {
         super(id);
+    }
+
+    @Override
+    protected void onConfigure() {
+        super.onConfigure();
+
+        disk.getObject().clear();
+        for (Path root : FileSystems.getDefault().getRootDirectories()) {
+
+            disk.getObject().add("<b>Disk Root: "+ root+"</b>");
+            try {
+                FileStore store = Files.getFileStore(root);
+                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Available: " + Bytes.bytes(store.getUsableSpace()));
+                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Total: " + Bytes.bytes(store.getTotalSpace()));
+            } catch (IOException e) {
+                disk.getObject().add("error querying space: " + e);
+                getLogger().error("Error querying disk space", e);
+            }
+        }
     }
 
     @Override
     protected void onInitialize() {
         super.onInitialize();
-
-        add(new Button("runAllJobs") {
-            @Override
-            public void onSubmit() {
-                try {
-                    List<String> runnedJobs = adminFacade.runAllJobs();
-                    runnedJobsModel.setObject(runnedJobs);
-                    new SingularToastrHelper(this).
-                            addToastrMessage(ToastrType.SUCCESS, "All jobs runned!");
-                } catch (SchedulerException e) {
-                    getLogger().error(e.getMessage(), e);
-                }
-            }
-        });
-
-        RefreshingView<String> repeatingView = new RefreshingView<String>("runnedJobs") {
+        add(new RefreshingView<String>("disk") {
             @Override
             protected Iterator<IModel<String>> getItemModels() {
-                return runnedJobsModel.getObject().stream().map(this::toModel).iterator();
+                return disk.getObject().stream().map(this::toModel).iterator();
             }
 
             private IModel<String> toModel(String s) {
@@ -79,9 +80,11 @@ public class JobPanel extends Panel implements Loggable {
 
             @Override
             protected void populateItem(Item<String> item) {
-                item.add(new Label("job", item.getModel()));
+                Label label = new Label("stat", item.getModel());
+                label.setEscapeModelStrings(false);
+                item.add(label);
             }
-        };
-        add(repeatingView);
+        });
+
     }
 }

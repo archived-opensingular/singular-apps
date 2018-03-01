@@ -33,13 +33,22 @@ public class ItemBox implements Serializable {
     private String name;
     private String description;
     private String helpText;
-    private boolean quickFilter   = true;
-    private boolean showDraft     = false;
+    private boolean quickFilter       = true;
+    private boolean showDraft         = false;
+    private boolean showHistoryAction = true;
     private Boolean              endedTasks;
     private Icon                 icon;
     private List<DatatableField> fieldsDatatable;
 
     public ItemBox() {
+    }
+
+    public boolean isShowHistoryAction() {
+        return showHistoryAction;
+    }
+
+    public void setShowHistoryAction(boolean showHistoryAction) {
+        this.showHistoryAction = showHistoryAction;
     }
 
     public String getName() {

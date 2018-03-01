@@ -25,6 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Named
@@ -33,14 +35,16 @@ public class AdminFacade {
     @Inject
     private Optional<IScheduleService> scheduleService;
 
-    public void runAllJobs() throws SchedulerException {
+    public List<String> runAllJobs() throws SchedulerException {
+        List<String> runnedJobs = new ArrayList<>();
         if (scheduleService.isPresent()) {
             for (JobKey jobKey : scheduleService.get().getAllJobKeys()) {
                 ScheduledJob scheduledJob = new ScheduledJob(jobKey.getName(), null, null);
                 scheduleService.get().trigger(scheduledJob);
+                runnedJobs.add(jobKey.getName()+ " - " + scheduledJob);
             }
         }
-
+        return runnedJobs;
     }
 
     public void clearCaches() {

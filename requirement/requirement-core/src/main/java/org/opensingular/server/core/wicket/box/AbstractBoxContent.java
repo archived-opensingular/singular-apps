@@ -61,15 +61,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
 /**
  * Classe base para construição de caixas do servidor de petições
  */
 public abstract class AbstractBoxContent<T extends Serializable> extends Panel implements Loggable {
 
-    public static final int DEFAULT_ROWS_PER_PAGE = 15;
-    private static final long serialVersionUID = -3611649597709058163L;
+    public static final  int  DEFAULT_ROWS_PER_PAGE = 15;
+    private static final long serialVersionUID      = -3611649597709058163L;
 
 
     @Inject
@@ -82,27 +82,27 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     /**
      * Tabela de registros
      */
-    protected BSDataTable<T, String> table;
+    protected BSDataTable<T, String>         table;
     /**
      * Confirmation Form
      */
 
-    private String moduleCod;
-    private String menu;
-    private List<RequirementDefinitionDTO> processes;
-    private List<FormDTO> forms;
+    private   String                         moduleCod;
+    private   String                         menu;
+    private   List<RequirementDefinitionDTO> processes;
+    private   List<FormDTO>                  forms;
     /**
      * Form padrão
      */
-    private Form<?> form = new Form<>("form");
+    private Form<?>           form            = new Form<>("form");
     /**
      * Filtro Rapido
      */
-    private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
+    private TextField<String> filtroRapido    = new TextField<>("filtroRapido", new Model<>());
     /**
      * Botão de pesquisa do filtro rapido
      */
-    private AjaxButton pesquisarButton = new AjaxButton("pesquisar") {
+    private AjaxButton        pesquisarButton = new AjaxButton("pesquisar") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
             super.onSubmit(target, form);
@@ -263,6 +263,21 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         }
     }
 
+
+    public String getModuleContext() {
+        final String groupConnectionURL = getModule().getConnectionURL();
+        try {
+            final String path    = new URL(groupConnectionURL).getPath();
+            if (path.endsWith("/")){
+                return path.substring(0, path.length() - 1);
+            } else {
+                return path;
+            }
+        } catch (Exception e) {
+            throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
+        }
+    }
+
     protected BaseDataProvider<T, String> createDataProvider() {
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
             @Override
@@ -312,21 +327,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             dataProvider.setSort(sort.getLeft(), sort.getRight());
         }
         return dataProvider;
-    }
-
-
-    public String getModuleContext() {
-        final String groupConnectionURL = getModule().getConnectionURL();
-        try {
-            final String path = new URL(groupConnectionURL).getPath();
-            int indexOf = path.indexOf('/', 1);
-            if(indexOf > 0) {
-                return path.substring(0, indexOf);
-            }
-            return groupConnectionURL;
-        } catch (Exception e) {
-            throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
-        }
     }
 
     protected QuickFilter newFilter() {
