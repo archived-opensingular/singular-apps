@@ -82,6 +82,7 @@ public class RequirementSearchQueryFactory {
                     .add($.requirement.cod.as("codRequirement"))
                     .add($.requirement.description.as("description"))
                     .add($.taskVersion.name.as("situation"))
+                    .add($.applicantEntity.name.as("solicitante"))
                     .add($.taskVersion.name.as("taskName"))
                     .add($.taskVersion.type.as("taskType"))
                     .add($.flowDefinitionEntity.name.as("processName"))
