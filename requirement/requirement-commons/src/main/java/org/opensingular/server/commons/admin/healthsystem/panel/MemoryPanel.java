@@ -54,14 +54,14 @@ public class MemoryPanel extends Panel {
         heap.getObject().clear();
         MemoryUsage mu   = ManagementFactory.getMemoryMXBean().getHeapMemoryUsage();
         MemoryUsage muNH = ManagementFactory.getMemoryMXBean().getNonHeapMemoryUsage();
-        heap.getObject().add("Init: " + Bytes.bytes(mu.getInit()).toString());
-        heap.getObject().add("Max: " + Bytes.bytes(mu.getMax()).toString());
-        heap.getObject().add("Used: " + Bytes.bytes(mu.getUsed()).toString());
-        heap.getObject().add("Commited: " + Bytes.bytes(mu.getCommitted()).toString());
-        heap.getObject().add("Init NonHeap: " + Bytes.bytes(muNH.getInit()).toString());
-        heap.getObject().add("Max NonHeap: " + (muNH.getMax() > 0 ? Bytes.bytes(muNH.getMax()).toString() : muNH.getMax()));
-        heap.getObject().add("Used NonHeap: " + Bytes.bytes(muNH.getUsed()).toString());
-        heap.getObject().add("Commited NonHeap: " + Bytes.bytes(muNH.getCommitted()).toString());
+        heap.getObject().add("Init: " + Bytes.bytes(mu.getInit()));
+        heap.getObject().add("Max: " + Bytes.bytes(mu.getMax()));
+        heap.getObject().add("Used: " + Bytes.bytes(mu.getUsed()));
+        heap.getObject().add("Commited: " + Bytes.bytes(mu.getCommitted()));
+        heap.getObject().add("Init NonHeap: " + Bytes.bytes(muNH.getInit()));
+        heap.getObject().add("Max NonHeap: " + (muNH.getMax() > 0 ? Bytes.bytes(muNH.getMax()) : muNH.getMax()));
+        heap.getObject().add("Used NonHeap: " + Bytes.bytes(muNH.getUsed()));
+        heap.getObject().add("Commited NonHeap: " + Bytes.bytes(muNH.getCommitted()));
 
 
         gc.getObject().clear();
@@ -71,13 +71,13 @@ public class MemoryPanel extends Panel {
             gc.getObject().add("<b>Name: " + tmpGC.getName() + "</b>");
             gc.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Collection count: " + tmpGC.getCollectionCount());
             gc.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Collection time: " + tmpGC.getCollectionTime());
-            String pools = "&nbsp;&nbsp;&nbsp;&nbsp; Memory Pools: ";
+            StringBuilder pools = new StringBuilder("&nbsp;&nbsp;&nbsp;&nbsp; Memory Pools: ");
 
             String[] memoryPoolNames = tmpGC.getMemoryPoolNames();
             for (String mpnTmp : memoryPoolNames) {
-                pools = pools + ", " + mpnTmp;
+                pools.append(", ").append(mpnTmp);
             }
-            gc.getObject().add(pools);
+            gc.getObject().add(pools.toString());
         }
 
 
@@ -92,14 +92,14 @@ public class MemoryPanel extends Panel {
             memPools.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Type: " + tmpMem.getType());
 
 
-            String manager = "&nbsp;&nbsp;&nbsp;&nbsp; Memory Manager Names: ";
+            StringBuilder manager = new StringBuilder("&nbsp;&nbsp;&nbsp;&nbsp; Memory Manager Names: ");
 
 
             String[] memManagerNames = tmpMem.getMemoryManagerNames();
             for (String mmnTmp : memManagerNames) {
-                manager = manager + ", " + mmnTmp;
+                manager.append(", ").append(mmnTmp);
             }
-            memPools.getObject().add(manager);
+            memPools.getObject().add(manager.toString());
         }
     }
 

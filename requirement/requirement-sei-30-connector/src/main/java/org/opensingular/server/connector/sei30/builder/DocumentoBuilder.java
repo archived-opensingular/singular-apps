@@ -102,6 +102,18 @@ public class DocumentoBuilder implements Serializable, Loggable {
     }
 
     /**
+     * Atualiza o novo valor de tipo serie.
+     *
+     * @param serieId
+     *            o(a) value.
+     * @return o valor de documento builder
+     */
+    public DocumentoBuilder setSerie(String serieId) {
+        this.documento.setIdSerie(serieId);
+        return this;
+    }
+
+    /**
      * Atualiza o novo valor de numero.
      * 
      * @param value
