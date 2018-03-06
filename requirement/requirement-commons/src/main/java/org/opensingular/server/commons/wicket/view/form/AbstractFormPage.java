@@ -286,6 +286,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         super.onInitialize();
         final RI requirement = loadRequirement();
 
+
         currentModel = $m.loadable(() -> requirement != null && requirement.getCod() != null ? requirementService.getRequirement(requirement.getCod()) : requirement);
         currentModel.setObject(requirement);
 
@@ -293,9 +294,11 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         SingularSpringInjector.get().injectAll(transitionControllerMap.values());
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
+        modalContainer.setOutputMarkupId(true);
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
         singularFormPanel.setInstanceCreator(() -> createInstance(formRequirementService.loadRefType(config.getFormName())));
+        singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
