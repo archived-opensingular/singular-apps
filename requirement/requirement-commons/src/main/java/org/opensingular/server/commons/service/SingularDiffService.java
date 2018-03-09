@@ -20,6 +20,7 @@ package org.opensingular.server.commons.service;
 
 
 import org.opensingular.form.SInstance;
+import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
@@ -29,6 +30,7 @@ import org.opensingular.server.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.server.commons.persistence.entity.form.FormRequirementEntity;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.Date;
@@ -41,56 +43,88 @@ public class SingularDiffService {
     protected FormRequirementService<?> formRequirementService;
 
     @Inject
-    protected IFormService formService;
+    protected FormVersionDAO formVersionDAO;
 
     @Inject
     private RequirementService<?, ?> requirementService;
 
-    public DiffSummary diffFromPrevious(@Nonnull Long requirementId) {
-        FormVersionEntity originalFormVersion = null;
-        FormVersionEntity newerFormVersion;
+    /**
+     * * Diffs, any two form versions be it draft or not or same type or not or whatever
+     * @param currentFormVersion
+     * @param previousFormVersion
+     * @return
+     */
+    public DiffSummary diffFormVersions(@Nonnull Long currentFormVersion, @Nullable Long previousFormVersion) {
+        return diffFormVersions(formVersionDAO.findOrException(currentFormVersion), formVersionDAO.find(previousFormVersion).orElse(null));
+    }
 
-        RequirementInstance requirement    = requirementService.getRequirement(requirementId);
+    /**
+     * @see SingularDiffService#diffFormVersions(Long, Long)
+     * @param current
+     * @param previous
+     * @return
+     */
+    public DiffSummary diffFormVersions(@Nonnull FormVersionEntity current, @Nullable FormVersionEntity previous) {
+        SInstance currentInstance = formRequirementService.getSInstance(current);
+        Date      currentDate     = current.getInclusionDate();
+
+        SInstance previousInstance = formRequirementService.getSInstance(previous);
+        Date      previousDate     = Optional.ofNullable(previous).map(FormVersionEntity::getInclusionDate).orElse(null);
+
+
+        DocumentDiff diff = DocumentDiffUtil.calculateDiff(previousInstance, currentInstance).removeUnchangedAndCompact();
+        return new DiffSummary(current.getCod(), Optional.ofNullable(previous).map(FormVersionEntity::getCod).orElse(null), currentDate, previousDate, diff);
+
+    }
+
+    /**
+     * Diffs the last main form version of each requirement.
+     * @param currentRequirementId
+     * @param otherRequirementId
+     * @return
+     */
+    public DiffSummary diffRequirementsLastMainForms(@Nonnull Long currentRequirementId, @Nonnull Long otherRequirementId) {
+        RequirementInstance currentRequirement = requirementService.getRequirement(currentRequirementId);
+        RequirementInstance otherRequirement   = requirementService.getRequirement(otherRequirementId);
+        return diffFormVersions(currentRequirement.getMainFormCurrentFormVersion(), otherRequirement.getMainFormCurrentFormVersion());
+    }
+
+
+    /**
+     * Diff current form version from the previous one. If the most recent version is a draft it will be compared with
+     * the last closed version.
+     * @param requirementId
+     * @return
+     */
+    public DiffSummary diffFromPrevious(@Nonnull Long requirementId) {
+        FormVersionEntity previousFormVersion = null;
+        FormVersionEntity currentFormVersion;
+
+        RequirementInstance   requirement = requirementService.getRequirement(requirementId);
         String                typeName    = RequirementUtil.getTypeName(requirement);
         Optional<DraftEntity> draftEntity = requirement.getEntity().currentEntityDraftByType(typeName);
 
-        SInstance original = null;
-        SInstance newer;
-
-        Date originalDate = null;
-        Date newerDate;
 
         if (draftEntity.isPresent()) {
             Optional<FormRequirementEntity> lastForm = formRequirementService.findLastFormRequirementEntityByType(requirement,
-                                                                                                         typeName);
+                    typeName);
             if (lastForm.isPresent()) {
                 FormEntity originalForm = lastForm.get().getForm();
-                original = formRequirementService.getSInstance(originalForm);
-                originalFormVersion = originalForm.getCurrentFormVersionEntity();
-                originalDate = originalFormVersion.getInclusionDate();
+                previousFormVersion = originalForm.getCurrentFormVersionEntity();
             }
+            currentFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
 
-            newerFormVersion = draftEntity.get().getForm().getCurrentFormVersionEntity();
-            FormEntity newerForm = newerFormVersion.getFormEntity();
-            newer = formRequirementService.getSInstance(newerForm);
-            newerDate = draftEntity.get().getEditionDate();
-
-        }
-        else {
+        } else {
             List<FormVersionEntity> formRequirementEntities = requirementService
                     .buscarDuasUltimasVersoesForm(requirementId);
 
-            originalFormVersion = formRequirementEntities.get(1);
-            original = formRequirementService.getSInstance(originalFormVersion);
-            originalDate = originalFormVersion.getInclusionDate();
+            previousFormVersion = formRequirementEntities.get(1);
 
-            newerFormVersion = formRequirementEntities.get(0);
-            newer = formRequirementService.getSInstance(newerFormVersion);
-            newerDate = newerFormVersion.getInclusionDate();
+            currentFormVersion = formRequirementEntities.get(0);
+
         }
 
-        DocumentDiff diff = DocumentDiffUtil.calculateDiff(original, newer).removeUnchangedAndCompact();
-        return new DiffSummary(newerFormVersion.getCod(), originalFormVersion != null ? originalFormVersion.getCod() : null, newerDate, originalDate, diff);
+        return diffFormVersions(currentFormVersion, previousFormVersion);
     }
 
     public static class DiffSummary implements Serializable {

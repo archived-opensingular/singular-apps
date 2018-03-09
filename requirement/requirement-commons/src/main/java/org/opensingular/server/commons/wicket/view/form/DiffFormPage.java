@@ -17,6 +17,7 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.service.IFormService;
@@ -37,23 +38,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 
 public class DiffFormPage extends ServerTemplate {
+
+    public static final String CURRENT_FORM_VERSION_ID  = "cfv";
+    public static final String PREVIOUS_FORM_VERSION_ID = "pfv";
+
+    public static final String CURRENT_REQUIREMENT_ID  = "cr";
+    public static final String PREVIOUS_REQUIREMENT_ID = "pr";
 
     @Inject
     protected FormRequirementService<?> formRequirementService;
 
     @Inject
-    protected IFormService formService;
-
-    @Inject
     protected SingularDiffService singularDiffService;
 
 
-    private ActionContext config;
+    private   ActionContext                     config;
     protected BSDataTable<DocumentDiff, String> table;
-    protected SingularDiffService.DiffSummary diffSummary;
+    protected SingularDiffService.DiffSummary   diffSummary;
     protected BSGrid contentGrid = new BSGrid("content");
 
     public DiffFormPage(ActionContext config) {
@@ -65,12 +69,26 @@ public class DiffFormPage extends ServerTemplate {
         super.onConfigure();
         Optional<Long> requirementId = config.getRequirementId();
 
-        if (requirementId.isPresent()) {
+        if (config.getParam(CURRENT_FORM_VERSION_ID).isPresent()) {
+
+            Long current  = Long.valueOf(config.getParam(CURRENT_FORM_VERSION_ID).get());
+            Long previous = config.getParam(PREVIOUS_FORM_VERSION_ID).map(NumberUtils::toLong).orElse(null);
+            diffSummary = singularDiffService.diffFormVersions(current, previous);
+
+        } else if (config.getParam(CURRENT_REQUIREMENT_ID).isPresent() && config.getParam(PREVIOUS_REQUIREMENT_ID).isPresent()) {
+
+            Long current  = Long.valueOf(config.getParam(CURRENT_REQUIREMENT_ID).get());
+            Long previous = Long.valueOf(config.getParam(PREVIOUS_REQUIREMENT_ID).get());
+            diffSummary = singularDiffService.diffRequirementsLastMainForms(current, previous);
+
+        } else if (requirementId.isPresent()) {
             diffSummary = singularDiffService.diffFromPrevious(requirementId.get());
+        }
+
+        if (diffSummary != null) {
             add(contentGrid);
             adicionarDatas(diffSummary.getPreviousFormVersionDate(), diffSummary.getCurrentFormVersionDate());
             add(new DiffVisualizer("diff", diffSummary.getDiff()));
-
         }
     }
 
