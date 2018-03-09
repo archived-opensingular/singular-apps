@@ -76,7 +76,7 @@ public class DefaultEmailConfiguration {
     @Bean
     @DependsOn({"emailSender", "scheduleService", "emailService"})
     public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
-        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(5));
+        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
         scheduleService.schedule(emailSenderScheduledJob);
         return emailSenderScheduledJob;
     }
