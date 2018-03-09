@@ -55,7 +55,11 @@ public class SingularDiffService {
      * @return
      */
     public DiffSummary diffFormVersions(@Nonnull Long currentFormVersion, @Nullable Long previousFormVersion) {
-        return diffFormVersions(formVersionDAO.findOrException(currentFormVersion), formVersionDAO.find(previousFormVersion).orElse(null));
+        FormVersionEntity formVersionEntity = null;
+        if (previousFormVersion != null){
+            formVersionEntity = formVersionDAO.findOrException(previousFormVersion);
+        }
+        return diffFormVersions(formVersionDAO.findOrException(currentFormVersion), formVersionEntity);
     }
 
     /**
@@ -68,9 +72,13 @@ public class SingularDiffService {
         SInstance currentInstance = formRequirementService.getSInstance(current);
         Date      currentDate     = current.getInclusionDate();
 
-        SInstance previousInstance = formRequirementService.getSInstance(previous);
-        Date      previousDate     = Optional.ofNullable(previous).map(FormVersionEntity::getInclusionDate).orElse(null);
+        SInstance previousInstance = null;
+        Date      previousDate     = null;
 
+        if (previous != null) {
+            previousInstance = formRequirementService.getSInstance(previous);
+            previousDate = previous.getInclusionDate();
+        }
 
         DocumentDiff diff = DocumentDiffUtil.calculateDiff(previousInstance, currentInstance).removeUnchangedAndCompact();
         return new DiffSummary(current.getCod(), Optional.ofNullable(previous).map(FormVersionEntity::getCod).orElse(null), currentDate, previousDate, diff);

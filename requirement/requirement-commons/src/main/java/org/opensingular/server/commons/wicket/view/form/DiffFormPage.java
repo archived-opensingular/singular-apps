@@ -20,7 +20,6 @@ package org.opensingular.server.commons.wicket.view.form;
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.diff.DocumentDiff;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSGrid;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
@@ -67,18 +66,20 @@ public class DiffFormPage extends ServerTemplate {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        Optional<Long> requirementId = config.getRequirementId();
+        Optional<Long>   requirementId         = config.getRequirementId();
+        Optional<String> formVersionId         = config.getParam(CURRENT_FORM_VERSION_ID);
+        Optional<String> currentRequirementId  = config.getParam(CURRENT_REQUIREMENT_ID);
+        Optional<String> previousRequirementId = config.getParam(PREVIOUS_REQUIREMENT_ID);
 
-        if (config.getParam(CURRENT_FORM_VERSION_ID).isPresent()) {
-
-            Long current  = Long.valueOf(config.getParam(CURRENT_FORM_VERSION_ID).get());
+        if (formVersionId.isPresent()) {
+            Long current  = Long.valueOf(formVersionId.get());
             Long previous = config.getParam(PREVIOUS_FORM_VERSION_ID).map(NumberUtils::toLong).orElse(null);
             diffSummary = singularDiffService.diffFormVersions(current, previous);
 
-        } else if (config.getParam(CURRENT_REQUIREMENT_ID).isPresent() && config.getParam(PREVIOUS_REQUIREMENT_ID).isPresent()) {
+        } else if (currentRequirementId.isPresent() && previousRequirementId.isPresent()) {
 
-            Long current  = Long.valueOf(config.getParam(CURRENT_REQUIREMENT_ID).get());
-            Long previous = Long.valueOf(config.getParam(PREVIOUS_REQUIREMENT_ID).get());
+            Long current  = Long.valueOf(currentRequirementId.get());
+            Long previous = Long.valueOf(previousRequirementId.get());
             diffSummary = singularDiffService.diffRequirementsLastMainForms(current, previous);
 
         } else if (requirementId.isPresent()) {
