@@ -17,9 +17,9 @@
 package org.opensingular.server.commons.wicket.view.form;
 
 
+import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.opensingular.form.service.IFormService;
 import org.opensingular.form.util.diff.DocumentDiff;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSGrid;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
@@ -37,23 +37,26 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 
 public class DiffFormPage extends ServerTemplate {
+
+    public static final String CURRENT_FORM_VERSION_ID  = "cfv";
+    public static final String PREVIOUS_FORM_VERSION_ID = "pfv";
+
+    public static final String CURRENT_REQUIREMENT_ID  = "cr";
+    public static final String PREVIOUS_REQUIREMENT_ID = "pr";
 
     @Inject
     protected FormRequirementService<?> formRequirementService;
 
     @Inject
-    protected IFormService formService;
-
-    @Inject
     protected SingularDiffService singularDiffService;
 
 
-    private ActionContext config;
+    private   ActionContext                     config;
     protected BSDataTable<DocumentDiff, String> table;
-    protected SingularDiffService.DiffSummary diffSummary;
+    protected SingularDiffService.DiffSummary   diffSummary;
     protected BSGrid contentGrid = new BSGrid("content");
 
     public DiffFormPage(ActionContext config) {
@@ -63,14 +66,30 @@ public class DiffFormPage extends ServerTemplate {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-        Optional<Long> requirementId = config.getRequirementId();
+        Optional<Long>   requirementId         = config.getRequirementId();
+        Optional<String> formVersionId         = config.getParam(CURRENT_FORM_VERSION_ID);
+        Optional<String> currentRequirementId  = config.getParam(CURRENT_REQUIREMENT_ID);
+        Optional<String> previousRequirementId = config.getParam(PREVIOUS_REQUIREMENT_ID);
 
-        if (requirementId.isPresent()) {
+        if (formVersionId.isPresent()) {
+            Long current  = Long.valueOf(formVersionId.get());
+            Long previous = config.getParam(PREVIOUS_FORM_VERSION_ID).map(NumberUtils::toLong).orElse(null);
+            diffSummary = singularDiffService.diffFormVersions(current, previous);
+
+        } else if (currentRequirementId.isPresent() && previousRequirementId.isPresent()) {
+
+            Long current  = Long.valueOf(currentRequirementId.get());
+            Long previous = Long.valueOf(previousRequirementId.get());
+            diffSummary = singularDiffService.diffRequirementsLastMainForms(current, previous);
+
+        } else if (requirementId.isPresent()) {
             diffSummary = singularDiffService.diffFromPrevious(requirementId.get());
+        }
+
+        if (diffSummary != null) {
             add(contentGrid);
             adicionarDatas(diffSummary.getPreviousFormVersionDate(), diffSummary.getCurrentFormVersionDate());
             add(new DiffVisualizer("diff", diffSummary.getDiff()));
-
         }
     }
 
