@@ -193,7 +193,7 @@ public class CrudListContent extends CrudShellContent {
 
         default boolean isVisible() {
             return true;
-        };
+        }
     }
 
     public interface ListAction extends Serializable {
