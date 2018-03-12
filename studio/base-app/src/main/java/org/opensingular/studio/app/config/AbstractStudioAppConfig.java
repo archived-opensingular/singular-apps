@@ -72,7 +72,7 @@ public abstract class AbstractStudioAppConfig implements StudioAppConfig {
         return StudioSpringConfiguration.class;
     }
 
-    public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfig() {
+    public Class<?> getSpringSecurityConfig() {
         return DefaulSpringSecurityConfig.class;
     }
 

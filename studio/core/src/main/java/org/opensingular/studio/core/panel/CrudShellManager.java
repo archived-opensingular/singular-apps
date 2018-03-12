@@ -41,6 +41,12 @@ public class CrudShellManager implements Serializable {
         this.crudShellContent = studioDefinition.buildStartContent(this);
     }
 
+    public CrudShellManager(StudioDefinition studioDefinition, CrudShell crudShell, CrudShellContent crudShellContent) {
+        this.studioDefinition = studioDefinition;
+        this.crudShell = crudShell;
+        this.crudShellContent = crudShellContent;
+    }
+
     public void replaceContent(AjaxRequestTarget ajaxRequestTarget, CrudShellContent newContent) {
         crudShellContent = (CrudShellContent) crudShellContent.replaceWith(newContent);
         ajaxRequestTarget.add(crudShell);
@@ -90,4 +96,7 @@ public class CrudShellManager implements Serializable {
         return studioDefinition.buildListContent(this);
     }
 
+    public CrudShell getCrudShell() {
+        return crudShell;
+    }
 }

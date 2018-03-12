@@ -39,7 +39,7 @@ public class SWebHealth extends STypeComposite<SIComposite> {
 	protected void onLoadType(TypeBuilder tb) {
 
         STypeList<STypeComposite<SIComposite>, SIComposite> urlsList = this.addFieldListOfComposite("urls", "urlsList");
-        urlsList.setView(()->new SViewListByTable());
+        urlsList.withView(()->new SViewListByTable());
 
         this
         	.asAtr()

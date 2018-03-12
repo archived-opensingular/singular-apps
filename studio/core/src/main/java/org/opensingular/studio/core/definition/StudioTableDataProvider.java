@@ -18,6 +18,7 @@
 
 package org.opensingular.studio.core.definition;
 
+import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 
 import java.io.Serializable;
@@ -35,10 +36,10 @@ public interface StudioTableDataProvider<T extends SInstance> extends Serializab
      * @param count the number of rows to return
      * @return An iterator of results.
      */
-    Iterator<T> iterator(long first, long count);
+    Iterator<T> iterator(long first, long count, IModel<? extends SInstance> filter);
 
     /**
      * @return The total number of records.
      */
-    long size();
+    long size(IModel<? extends SInstance> filter);
 }

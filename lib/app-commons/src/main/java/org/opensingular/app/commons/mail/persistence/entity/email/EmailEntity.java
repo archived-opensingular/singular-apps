@@ -29,6 +29,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -55,6 +56,7 @@ public class EmailEntity extends BaseEntity<Long> {
     @Column(name = "TX_ASSUNTO", nullable = false, length = 200)
     private String subject;
 
+    @Lob
     @Column(name = "TX_CONTEUDO", nullable = false)
     private String content;
     
