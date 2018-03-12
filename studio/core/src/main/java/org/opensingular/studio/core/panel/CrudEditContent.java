@@ -48,7 +48,7 @@ public class CrudEditContent extends CrudShellContent {
     private ISupplier<SInstance> instanceFactory;
     private ViewMode viewMode = ViewMode.EDIT;
     private ButtonFactory cancelButtonFactory = new CancelButtonFactory();
-    private ButtonFactory saveButtonFactory = new SaveButtonFactory(getCrudShellManager());
+    private ButtonFactory saveButtonFactory = new SaveButtonFactory(getCrudShellManager(), this);
 
     public CrudEditContent(CrudShellManager crudShellManager, CrudShellContent previousContent, IModel<SInstance> instance) {
         super(crudShellManager);
@@ -153,15 +153,17 @@ public class CrudEditContent extends CrudShellContent {
 
     public static class SaveButtonFactory implements ButtonFactory {
 
-        private final CrudShellManager crudShellManager;
+        protected final CrudShellManager crudShellManager;
+        protected final CrudEditContent crudEditContent;
 
-        public SaveButtonFactory(CrudShellManager crudShellManager) {
+        public SaveButtonFactory(CrudShellManager crudShellManager, CrudEditContent crudEditContent) {
             this.crudShellManager = crudShellManager;
+            this.crudEditContent = crudEditContent;
         }
 
         @Override
         public Button make(String id, IModel<SInstance> instanceModel) {
-            return new StudioSaveButton(id, instanceModel, crudShellManager);
+            return new StudioSaveButton(id, instanceModel, crudShellManager, crudEditContent);
         }
 
         @Override
@@ -170,20 +172,27 @@ public class CrudEditContent extends CrudShellContent {
         }
     }
 
-    public static class StudioSaveButton extends SingularSaveButton {
+    protected CrudShellContent getAfterSaveContent() {
+        return getCrudShellManager().makeListContent();
+    }
 
-        private final CrudShellManager crudShellManager;
+        public static class StudioSaveButton extends SingularSaveButton {
 
-        public StudioSaveButton(String id, IModel<? extends SInstance> currentInstance, CrudShellManager crudShellManager) {
+        protected final CrudShellManager crudShellManager;
+        protected final CrudEditContent crudEditContent;
+
+        public StudioSaveButton(String id, IModel<? extends SInstance> currentInstance,
+                                CrudShellManager crudShellManager, CrudEditContent crudEditContent) {
             super(id, currentInstance);
             this.crudShellManager = crudShellManager;
+            this.crudEditContent = crudEditContent;
         }
 
         @Override
         protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
             StudioDefinition studioDefinition = crudShellManager.getStudioDefinition();
             studioDefinition.getRepository().insertOrUpdate(instanceModel.getObject(), null);
-            crudShellManager.replaceContent(target, crudShellManager.makeListContent());
+            crudShellManager.replaceContent(target, crudEditContent.getAfterSaveContent());
             crudShellManager.addToastrMessage(ToastrType.INFO, "Item salvo com sucesso.");
         }
 

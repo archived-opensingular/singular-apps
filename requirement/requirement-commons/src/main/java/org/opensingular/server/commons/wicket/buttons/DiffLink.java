@@ -26,9 +26,45 @@ import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.server.commons.wicket.view.form.DiffFormPage.*;
+
 
 public class DiffLink extends Panel {
+
+    public static class FormVersionsToDiff {
+        private Long current;
+        private Long previous;
+
+        public FormVersionsToDiff(Long current, Long previous) {
+            this.current = current;
+            this.previous = previous;
+        }
+    }
+
+
+    public static class RequirementVersionsToDiff {
+        private Long current;
+        private Long previous;
+
+        public RequirementVersionsToDiff(Long current, Long previous) {
+            this.current = current;
+            this.previous = previous;
+        }
+    }
+
+
+    public DiffLink(String id, IModel<String> labelModel, ActionContext context, RequirementVersionsToDiff requirementVersionsToDiff) {
+        this(id, labelModel, new ActionContext(context)
+                .setParam(CURRENT_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.current))
+                .setParam(PREVIOUS_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.previous)));
+    }
+
+    public DiffLink(String id, IModel<String> labelModel, ActionContext context, FormVersionsToDiff formVersionsToDiff) {
+        this(id, labelModel, new ActionContext(context)
+                .setParam(CURRENT_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.current))
+                .setParam(PREVIOUS_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.previous)));
+    }
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
@@ -37,7 +73,7 @@ public class DiffLink extends Panel {
             protected void onConfigure() {
                 super.onConfigure();
                 Optional<Long> requirementId = context.getRequirementId();
-                if(requirementId.isPresent()){
+                if (requirementId.isPresent()) {
                     this.add($b.attr("target", String.format("diff%s", requirementId.get())));
                     this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
                     this.setBody(labelModel);

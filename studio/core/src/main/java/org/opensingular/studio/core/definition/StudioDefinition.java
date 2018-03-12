@@ -21,6 +21,7 @@ package org.opensingular.studio.core.definition;
 
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
+import org.opensingular.form.SType;
 import org.opensingular.form.persistence.FormRespository;
 import org.opensingular.form.studio.StudioCRUDPermissionStrategy;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
@@ -38,6 +39,10 @@ public interface StudioDefinition extends Serializable {
     void configureStudioDataTable(StudioTableDefinition studioDataTable);
 
     String getTitle();
+
+    default Class<? extends SType<?>> getFilterType() {
+        return null;
+    }
 
     default StudioCRUDPermissionStrategy getPermissionStrategy() {
         return StudioCRUDPermissionStrategy.ALL;
