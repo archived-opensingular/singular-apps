@@ -43,12 +43,12 @@ import java.util.Set;
 public class CrudEditContent extends CrudShellContent {
 
     private SingularFormPanel singularFormPanel;
-    private CrudShellContent previousContent;
+    private CrudShellContent  previousContent;
     private List<ButtonFactory> buttonFactories = new ArrayList<>();
     private ISupplier<SInstance> instanceFactory;
-    private ViewMode viewMode = ViewMode.EDIT;
+    private ViewMode      viewMode            = ViewMode.EDIT;
     private ButtonFactory cancelButtonFactory = new CancelButtonFactory();
-    private ButtonFactory saveButtonFactory = new SaveButtonFactory(getCrudShellManager(), this);
+    private ButtonFactory saveButtonFactory   = new SaveButtonFactory(getCrudShellManager(), this);
 
     public CrudEditContent(CrudShellManager crudShellManager, CrudShellContent previousContent, IModel<SInstance> instance) {
         super(crudShellManager);
@@ -70,7 +70,7 @@ public class CrudEditContent extends CrudShellContent {
             @Override
             protected void populateItem(ListItem<ButtonFactory> item) {
                 ButtonFactory buttonFactory = item.getModelObject();
-                Button button = buttonFactory.make("button", (IModel<SInstance>) singularFormPanel.getInstanceModel());
+                Button        button        = buttonFactory.make("button", (IModel<SInstance>) singularFormPanel.getInstanceModel());
                 button.add(new Label("label", buttonFactory.getLabel()));
                 item.add(button);
             }
@@ -154,7 +154,7 @@ public class CrudEditContent extends CrudShellContent {
     public static class SaveButtonFactory implements ButtonFactory {
 
         protected final CrudShellManager crudShellManager;
-        protected final CrudEditContent crudEditContent;
+        protected final CrudEditContent  crudEditContent;
 
         public SaveButtonFactory(CrudShellManager crudShellManager, CrudEditContent crudEditContent) {
             this.crudShellManager = crudShellManager;
@@ -176,10 +176,10 @@ public class CrudEditContent extends CrudShellContent {
         return getCrudShellManager().makeListContent();
     }
 
-        public static class StudioSaveButton extends SingularSaveButton {
+    public static class StudioSaveButton extends SingularSaveButton {
 
         protected final CrudShellManager crudShellManager;
-        protected final CrudEditContent crudEditContent;
+        protected final CrudEditContent  crudEditContent;
 
         public StudioSaveButton(String id, IModel<? extends SInstance> currentInstance,
                                 CrudShellManager crudShellManager, CrudEditContent crudEditContent) {
@@ -212,6 +212,12 @@ public class CrudEditContent extends CrudShellContent {
         protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
             super.onValidationError(target, form, instanceModel);
             crudShellManager.addToastrMessage(ToastrType.ERROR, "Existem correções a serem feitas no formulário.");
+        }
+
+        @Override
+        protected void onConfigure() {
+            super.onConfigure();
+            setVisible(crudEditContent.viewMode == ViewMode.EDIT);
         }
     }
 
