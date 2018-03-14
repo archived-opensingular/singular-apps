@@ -17,20 +17,31 @@
 package org.opensingular.server.core.wicket.history;
 
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.apache.wicket.request.resource.DynamicImageResource;
+import org.apache.wicket.request.resource.IResource;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
-import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.form.FormAction;
 import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.FormVersionHistoryEntity;
@@ -40,15 +51,6 @@ import org.opensingular.server.commons.wicket.SingularSession;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
-
-import javax.inject.Inject;
-import java.net.URL;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
@@ -61,7 +63,7 @@ public class HistoryPage extends ServerTemplate {
     @Inject
     private RequirementService<?, ?> requirementService;
 
-    private Long   requirementPK;
+    private Long requirementPK;
     private String modulePK;
     private String menu;
 
@@ -79,7 +81,28 @@ public class HistoryPage extends ServerTemplate {
         modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
         menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         add(setupDataTable(createDataProvider()));
+//        configureExtensionButton();
+        add(createImageHistoryFLow());
         add(getBtnCancelar());
+    }
+
+    private Component createImageHistoryFLow() {
+        IResource imageResource = new DynamicImageResource() {
+            @Override
+            protected byte[] getImageData(IResource.Attributes attributes) {
+                //TODO COLOCAR AQUI O BYTE ARRAY DO YFILES
+                return new byte[0];
+            }
+        };
+        return new Image("imageHist", imageResource);
+    }
+
+    private void configureExtensionButton() {
+//        List<FlowExecutionImageExtension> flowsExecution = SingularExtensionUtil.get().findExtensionsByClass(YFilesFlowExecutionHistory.class);
+//        if (CollectionUtils.isNotEmpty(flowsExecution)) {
+//            //TODO descobrir como faço para pegar o FlowInstance.
+//            flowsExecution.get(0).generateHistoryImage();
+//        }
     }
 
     protected AjaxLink<?> getBtnCancelar() {
