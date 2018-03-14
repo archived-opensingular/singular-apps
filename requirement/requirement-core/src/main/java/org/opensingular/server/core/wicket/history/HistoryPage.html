@@ -18,12 +18,16 @@
 <wicket:extend>
     <div class="portlet light">
         <div class="portlet-body form">
-            <img wicket:id="imageHist" width="500" height="377">
+            <div style="text-align:center">
+                <img class="imageFlow" wicket:id="imageHist">
+            </div>
             <div class="dataTables_wrapper no-footer">
-                <table wicket:id="tabela" ></table>
+                <table wicket:id="tabela"></table>
             </div>
 
-            <a href="#" class="btn default" wicket:id="btnVoltar" ><wicket:message key="label.botao.voltar"/></a>
+            <a href="#" class="btn default" wicket:id="btnVoltar">
+                <wicket:message key="label.botao.voltar"/>
+            </a>
         </div>
     </div>
 </wicket:extend>
