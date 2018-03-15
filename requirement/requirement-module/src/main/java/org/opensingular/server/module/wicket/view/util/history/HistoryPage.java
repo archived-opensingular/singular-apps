@@ -1,20 +1,22 @@
 /*
- * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *  *
+ *  * Licensed under the Apache License, Version 2.0 (the "License");
+ *  *  you may not use this file except in compliance with the License.
+ *  * You may obtain a copy of the License at
+ *  *
+ *  * http://www.apache.org/licenses/LICENSE-2.0
+ *  *
+ *  * Unless required by applicable law or agreed to in writing, software
+ *  * distributed under the License is distributed on an "AS IS" BASIS,
+ *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *  * See the License for the specific language governing permissions and
+ *  * limitations under the License.
  *
- * http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
  */
 
-package org.opensingular.server.core.wicket.history;
+package org.opensingular.server.module.wicket.view.util.history;
 
 
 import java.util.Collections;
@@ -65,8 +67,6 @@ public class HistoryPage extends ServerTemplate {
     private RequirementService<?, ?> requirementService;
 
     private Long requirementPK;
-    private String modulePK;
-    private String menu;
 
     public HistoryPage() {
     }
@@ -79,11 +79,9 @@ public class HistoryPage extends ServerTemplate {
     protected void onInitialize() {
         super.onInitialize();
         requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
-        modulePK = getPage().getPageParameters().get(MODULE_PARAM_NAME).toString();
-        menu = getPage().getPageParameters().get(MENU_PARAM_NAME).toString();
         add(setupDataTable(createDataProvider()));
         addImageHistoryFLow();
-        add(getBtnCancelar());
+        add(getBtnFechar());
     }
 
     private void addImageHistoryFLow() {
@@ -105,7 +103,7 @@ public class HistoryPage extends ServerTemplate {
                 .orElse(new byte[0]);
     }
 
-    protected AjaxLink<?> getBtnCancelar() {
+    protected AjaxLink<?> getBtnFechar() {
         return new AjaxLink<Void>("btnVoltar") {
             @Override
             public void onClick(AjaxRequestTarget target) {
@@ -115,7 +113,7 @@ public class HistoryPage extends ServerTemplate {
     }
 
     protected void onCancelar(AjaxRequestTarget t) {
-        t.appendJavaScript("window.history.go(-1);");
+        t.appendJavaScript("window.close();");
     }
 
     protected BSDataTable<RequirementHistoryDTO, String> setupDataTable(BaseDataProvider<RequirementHistoryDTO, String> dataProvider) {
@@ -203,7 +201,7 @@ public class HistoryPage extends ServerTemplate {
                 if (requirementPK == null) {
                     cache = Collections.emptyList();
                 } else if (cache == null) {
-                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
+                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK);
                 }
                 return cache.size();
             }
@@ -213,16 +211,12 @@ public class HistoryPage extends ServerTemplate {
                 if (requirementPK == null) {
                     cache = Collections.emptyList();
                 } else if (cache == null) {
-                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, menu, isFilterAllowedHistoryTasks());
+                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK);
                 }
 
                 return cache.subList(first, first + count).iterator();
             }
         };
-    }
-
-    protected boolean isFilterAllowedHistoryTasks() {
-        return false;
     }
 
     protected String getBaseUrl() {

@@ -298,7 +298,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void searchRequirementHistory() {
         RequirementInstance requirement  = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-        List<RequirementHistoryDTO> histories = requirementService.listRequirementContentHistoryByCodRequirement(requirement.getCod(), "", true);
+        List<RequirementHistoryDTO> histories = requirementService.listRequirementContentHistoryByCodRequirement(requirement.getCod());
 
         assertTrue(histories.isEmpty());
     }

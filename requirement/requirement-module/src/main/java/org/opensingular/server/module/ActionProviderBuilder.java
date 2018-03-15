@@ -81,6 +81,12 @@ public class ActionProviderBuilder implements ActionProvider {
     }
 
 
+    public ActionProviderBuilder addHistoryAction() {
+        actionConfigurers.add((boxInfo, line, filter, list) -> list.addHistoryAction(line));
+        return this;
+    }
+
+
     @Override
     public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
         BoxItemActionList list = new BoxItemActionList();

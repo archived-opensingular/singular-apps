@@ -24,6 +24,7 @@ import org.opensingular.server.commons.box.action.defaults.AnalyseAction;
 import org.opensingular.server.commons.box.action.defaults.AssignAction;
 import org.opensingular.server.commons.box.action.defaults.DeleteAction;
 import org.opensingular.server.commons.box.action.defaults.EditAction;
+import org.opensingular.server.commons.box.action.defaults.HistoryAction;
 import org.opensingular.server.commons.box.action.defaults.RelocateAction;
 import org.opensingular.server.commons.box.action.defaults.ViewAction;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
@@ -70,4 +71,8 @@ public class BoxItemActionList extends ArrayList<BoxItemAction> {
     }
 
 
+    public BoxItemActionList addHistoryAction(BoxItemData line) {
+        addAction(new HistoryAction(line));
+        return this;
+    }
 }
