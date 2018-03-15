@@ -74,7 +74,7 @@ public class CrudShellManager implements Serializable {
 
         StringBuilder bootBoxcall = new StringBuilder();
         bootBoxcall.append("bootbox.confirm({");
-        bootBoxcall.append("    message:").append("'").append(message).append("',");
+        bootBoxcall.append("    message:").append('\'').append(message).append("',");
         bootBoxcall.append("    buttons:{");
         bootBoxcall.append("        confirm:{label: 'Sim', className: 'btn'},");
         bootBoxcall.append("        cancel: {label: 'Não', className: 'btn-default'}");
