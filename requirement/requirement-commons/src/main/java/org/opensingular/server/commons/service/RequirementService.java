@@ -444,9 +444,9 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     }
 
 
-    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(long codRequirement, String menu, boolean filter) {
+    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(long codRequirement) {
         RE requirement = requirementDAO.findOrException(codRequirement);
-        return requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(requirement, menu, filter);
+        return requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(requirement);
     }
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {

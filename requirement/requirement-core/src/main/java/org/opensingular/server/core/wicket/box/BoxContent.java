@@ -24,11 +24,9 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.link.BookmarkablePageLink;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.PropertyModel;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
@@ -37,7 +35,6 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionAtribuirRequest;
 import org.opensingular.server.commons.box.action.ActionRequest;
@@ -54,7 +51,6 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.commons.service.dto.RequirementData;
 import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
 import org.opensingular.server.commons.wicket.buttons.NewRequirementLink;
-import org.opensingular.server.core.wicket.history.HistoryPage;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -66,7 +62,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -142,12 +137,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
                     }
                 }
 
-                appendStaticAction(
-                        getMessage("label.table.column.history"),
-                        DefaultIcons.HISTORY,
-                        BoxContent.this::createHistoryLink,
-                        (x)-> getItemBoxModelObject().isShowHistoryAction(),
-                        c -> c.styleClasses($m.ofValue("worklist-action-btn")));
 
                 super.onPopulateActions(rowModel, actionPanel);
             }
@@ -157,23 +146,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         builder.appendColumn(actionColumn);
     }
 
-    private MarkupContainer createHistoryLink(String id, IModel<BoxItemDataMap> boxItemModel) {
-        BoxItemDataMap boxItem        = boxItemModel.getObject();
-        PageParameters pageParameters = new PageParameters();
-        if (boxItem.getFlowInstanceId() != null) {
-            pageParameters.add(REQUIREMENT_ID, boxItem.getCod());
-            pageParameters.add(INSTANCE_ID, boxItem.getFlowInstanceId());
-            pageParameters.add(MODULE_PARAM_NAME, getModule().getCod());
-            pageParameters.add(MENU_PARAM_NAME, getMenu());
-        }
-        BookmarkablePageLink<?> historiLink = new BookmarkablePageLink<>(id, getHistoricoPage(), pageParameters);
-        historiLink.setVisible(boxItem.getProcessBeginDate() != null);
-        return historiLink;
-    }
-
-    protected Class<? extends HistoryPage> getHistoricoPage() {
-        return HistoryPage.class;
-    }
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {

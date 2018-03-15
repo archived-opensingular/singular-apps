@@ -16,7 +16,6 @@
 
 package org.opensingular.server.commons.persistence.dao.form;
 
-import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
@@ -25,31 +24,25 @@ import org.opensingular.server.commons.persistence.entity.form.FormVersionHistor
 import org.opensingular.server.commons.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.service.RequirementUtil;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.service.dto.RequirementDefinitionDTO;
-import org.opensingular.server.commons.wicket.view.template.MenuService;
 
-import javax.inject.Inject;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHistoryEntity, Long> {
 
-    @Inject
-    private Optional<MenuService> menuService;
-
     public RequirementContentHistoryDAO() {
         super(RequirementContentHistoryEntity.class);
     }
 
-    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(RequirementEntity requirementEntity, String menu, boolean filter) {
+    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(RequirementEntity requirementEntity) {
 
-        final List<TaskInstanceEntity>           tasks;
+        final List<TaskInstanceEntity>              tasks;
         final List<RequirementContentHistoryEntity> histories;
-        final List<RequirementHistoryDTO> requirementHistoryDTOS;
-        final List<Integer> requirementHistoryTaskCods;
+        final List<RequirementHistoryDTO>           requirementHistoryDTOS;
+        final List<Integer>                         requirementHistoryTaskCods;
 
         tasks = getSession()
                 .createQuery("select task from RequirementEntity p " +
@@ -77,29 +70,12 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
                 .filter(task -> !requirementHistoryTaskCods.contains(task.getCod()))
                 .forEach(task -> requirementHistoryDTOS.add(new RequirementHistoryDTO().setTask(task)));
 
-        BoxConfigurationData boxConfigurationMetadata;
-
-        boxConfigurationMetadata = menuService.map(ms -> ms.getMenuByLabel(menu)).orElse(null);
 
         return requirementHistoryDTOS
                 .stream()
-                .filter(p -> filterAllowedHistoryTasks(p, boxConfigurationMetadata, filter))
-                .sorted((a, b) -> a.getTask().getBeginDate().compareTo(b.getTask().getBeginDate()))
+                .sorted(Comparator.comparing(a -> a.getTask().getBeginDate()))
                 .collect(Collectors.toList());
 
-    }
-
-
-    private boolean filterAllowedHistoryTasks(RequirementHistoryDTO requirementHistoryDTO, BoxConfigurationData boxConfigurationMetadata, boolean filter) {
-        if (!filter) {
-            return true;
-        }
-
-        FlowDefinitionEntity flowDefinition     = requirementHistoryDTO.getTask().getFlowInstance().getFlowVersion().getFlowDefinition();
-        RequirementDefinitionDTO processByAbbreviation = boxConfigurationMetadata.getProcessByAbbreviation(flowDefinition.getKey());
-        return processByAbbreviation != null
-                && processByAbbreviation.getAllowedHistoryTasks().contains(
-                requirementHistoryDTO.getTask().getTaskVersion().getAbbreviation());
     }
 
     public Optional<FormVersionHistoryEntity> findLastByCodRequirementAndType(Class<? extends SType<?>> typeClass, Long cod) {
