@@ -85,13 +85,16 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private void addImageHistoryFLow() {
-        IResource imageResource = new DynamicImageResource() {
+        byte[] bytes = generateHistImage();
+        DynamicImageResource imageResource = new DynamicImageResource() {
             @Override
             protected byte[] getImageData(IResource.Attributes attributes) {
-                return generateHistImage();
+                return bytes;
             }
         };
-        add(new Image("imageHist", imageResource));
+        Image imageHistFlow = new Image("imageHist", imageResource);
+        imageHistFlow.setVisible(bytes.length != 0);
+        add(imageHistFlow);
     }
 
     private byte[] generateHistImage() {
