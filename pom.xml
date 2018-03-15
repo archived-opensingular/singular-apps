@@ -177,31 +177,39 @@
         <developerConnection>${project.scm.developerConnection}</developerConnection>
         <tag>1.6.4</tag>
     </scm>
+    
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.opensingular</groupId>
+                <artifactId>bom</artifactId>
+                <version>1.7.1-SNAPSHOT</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
 
     <dependencies>
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
-            <version>${slf4j.version}</version>
         </dependency>
 
         <!-- FOR JAVADOC GENERATION -->
         <dependency>
             <groupId>javax.interceptor</groupId>
             <artifactId>javax.interceptor-api</artifactId>
-            <version>1.2</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
-            <version>3.1.0</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-commons-test</artifactId>
-            <version>${singular.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

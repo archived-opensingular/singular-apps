@@ -34,12 +34,10 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-requirement-single-app</artifactId>
-            <version>${singular.version}</version>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-studio-core</artifactId>
-            <version>${singular.version}</version>
         </dependency>
     </dependencies>
 </project>
