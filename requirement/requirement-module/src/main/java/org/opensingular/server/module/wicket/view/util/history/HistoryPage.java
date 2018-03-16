@@ -29,8 +29,10 @@ import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.model.IModel;
@@ -40,6 +42,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.FlowExecutionImageExtension;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
@@ -58,7 +61,9 @@ import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 
 @MountPath("history")
@@ -96,24 +101,39 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private void addImageHistoryFLow() {
-        byte[] bytes = generateHistImage();
-        DynamicImageResource imageResource = new DynamicImageResource() {
-            @Override
-            protected byte[] getImageData(IResource.Attributes attributes) {
-                return bytes;
+        WebComponent imageHistFlow;
+        if (requirementPK != null) {
+            String classCss = " col-lg-12 ";
+            FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+            flowInstance.getTasksOlderFirst();
+            if (flowInstance.getTasksOlderFirst().size() <= 8) {
+                classCss = " col-lg-6 col-lg-offset-3 ";
             }
-        };
-        Image imageHistFlow = new Image("imageHist", imageResource);
-        imageHistFlow.setVisible(bytes.length != 0);
+            byte[] bytes = generateHistImage(flowInstance);
+            DynamicImageResource imageResource = new DynamicImageResource() {
+                @Override
+                protected byte[] getImageData(IResource.Attributes attributes) {
+                    return bytes;
+                }
+            };
+            imageHistFlow = new Image("imageHist", imageResource);
+            imageHistFlow.setVisible(bytes.length != 0);
+            imageHistFlow.add(new AttributeAppender("class", classCss));
+        } else {
+            imageHistFlow = new WebComponent("imageHist");
+            imageHistFlow.setVisible(false);
+        }
+
+
         add(imageHistFlow);
     }
 
-    private byte[] generateHistImage() {
+    private byte[] generateHistImage(FlowInstance flowInstance) {
         return SingularExtensionUtil.get()
                 .findExtensionsByClass(FlowExecutionImageExtension.class)
                 .stream()
                 .findFirst()
-                .map(p -> p.generateHistoryImage(requirementService.getRequirement(requirementPK).getFlowInstance()))
+                .map(p -> p.generateHistoryImage(flowInstance))
                 .orElse(new byte[0]);
     }
 
