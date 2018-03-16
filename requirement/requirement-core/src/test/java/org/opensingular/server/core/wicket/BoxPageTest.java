@@ -32,7 +32,6 @@ import org.opensingular.server.commons.test.SingularServletContextTestExecutionL
 import org.opensingular.server.core.test.ServerApplicationMock;
 import org.opensingular.server.core.test.SingularServerBaseTest;
 import org.opensingular.server.core.wicket.box.BoxPage;
-import org.opensingular.server.core.wicket.history.HistoryPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -145,24 +144,6 @@ public class BoxPageTest extends SingularServerBaseTest {
 
         tester.assertRenderedPage(BoxPage.class);
         tester.assertNoErrorMessage();
-    }
-
-    @WithUserDetails("vinicius.nunes")
-    @Test(expected = RestartResponseException.class)
-    public void historyForm() {
-        tester = new SingularWicketTester(singularApplication);
-        sendRequirement(tester, SPackageFOO.STypeFOO.FULL_NAME, this::fillForm);
-
-        BoxPage boxPage = new BoxPage(null);
-        tester.startPage(boxPage);
-        Component historyLink = tester.getAssertionsPage()
-                .getSubComponentWithId("actions")
-                .getSubComponentWithId("5")
-                .getSubComponentWithId("link")
-                .getTarget();
-        tester.clickLink(historyLink);
-
-        tester.assertRenderedPage(HistoryPage.class);
     }
 
     private void fillForm(Page page) {

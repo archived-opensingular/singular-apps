@@ -16,22 +16,20 @@
  *
  */
 
-package org.opensingular.studio.core.definition;
+package org.opensingular.server.commons.box.action.defaults;
 
-import org.apache.wicket.model.IModel;
-import org.opensingular.form.SInstance;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.server.commons.box.BoxItemData;
+import org.opensingular.server.commons.box.action.AbstractURLPopupBoxItemAction;
+import org.opensingular.server.commons.wicket.view.util.DispatcherPageUtil;
 
-import java.io.Serializable;
-import java.util.Iterator;
+public class HistoryAction extends AbstractURLPopupBoxItemAction {
 
-/**
- * Data provider for Singular Studio listings of relational data
- * T the return type
- * F the filter
- */
-public interface StudioTableDataProvider<T extends SInstance, F extends SInstance> extends Serializable {
-
-    Iterator<T> iterator(StudioQueryContext<F> studioQueryContext);
-
-    long size(StudioQueryContext<F> studioQueryContext);
+    public HistoryAction(BoxItemData line) {
+        super("history", "Histórico", DefaultIcons.HISTORY, DispatcherPageUtil
+                .baseURL("/history")
+                .formAction(null)
+                .requirementId(line.getRequirementId())
+                .build());
+    }
 }

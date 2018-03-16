@@ -38,7 +38,6 @@ import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.persistence.dao.form.RequirementDAO;
-import org.opensingular.server.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.server.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.spring.security.SingularPermission;
@@ -55,7 +54,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import static org.hamcrest.Matchers.*;
 import static org.junit.Assert.*;
 
 @Transactional
@@ -295,13 +294,6 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         assertNull(requirement.getCod());
     }
 
-    @Test
-    public void searchRequirementHistory() {
-        RequirementInstance requirement  = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-        List<RequirementHistoryDTO> histories = requirementService.listRequirementContentHistoryByCodRequirement(requirement.getCod(), "", true);
-
-        assertTrue(histories.isEmpty());
-    }
 
     @Test
     public void previousTransition() {

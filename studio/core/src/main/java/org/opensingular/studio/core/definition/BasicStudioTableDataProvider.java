@@ -27,11 +27,30 @@ import java.util.Iterator;
 /**
  * Data provider for Singular Studio listings of relational data
  * T the return type
- * F the filter
  */
-public interface StudioTableDataProvider<T extends SInstance, F extends SInstance> extends Serializable {
+public interface BasicStudioTableDataProvider<T extends SInstance> extends StudioTableDataProvider<T, SInstance>{
 
-    Iterator<T> iterator(StudioQueryContext<F> studioQueryContext);
+    /**
+     * An iterator of results.
+     *
+     * @param first the first row to return
+     * @param count the number of rows to return
+     * @return An iterator of results.
+     */
+    Iterator<T> iterator(long first, long count);
 
-    long size(StudioQueryContext<F> studioQueryContext);
+    /**
+     * @return The total number of records.
+     */
+    long size();
+
+    @Override
+    default Iterator<T> iterator(StudioQueryContext<SInstance> studioQueryContext){
+        return iterator(studioQueryContext.getFirst(), studioQueryContext.getCount());
+    }
+
+    @Override
+    default long size(StudioQueryContext<SInstance> studioQueryContext){
+        return size();
+    }
 }
