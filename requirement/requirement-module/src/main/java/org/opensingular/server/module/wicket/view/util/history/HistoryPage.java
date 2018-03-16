@@ -104,11 +104,11 @@ public class HistoryPage extends ServerTemplate {
     private void addImageHistoryFLow() {
         WebComponent imageHistFlow;
         if (requirementPK != null) {
-            String classCss = " col-lg-12 ";
+            String classCss = " col-md-12 ";
             FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
             flowInstance.getTasksOlderFirst();
             if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
-                classCss = " col-lg-6 col-lg-offset-3 ";
+                classCss = " col-md-6 col-md-offset-3 ";
             }
             byte[] bytes = generateHistImage(flowInstance);
             DynamicImageResource imageResource = new DynamicImageResource() {
