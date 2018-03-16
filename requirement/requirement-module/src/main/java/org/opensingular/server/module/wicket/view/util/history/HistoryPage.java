@@ -70,6 +70,7 @@ import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQ
 public class HistoryPage extends ServerTemplate {
 
     private static final long serialVersionUID = -3344810189307767761L;
+    private static final int QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE = 5;
 
     @Inject
     private RequirementService<?, ?> requirementService;
@@ -106,7 +107,7 @@ public class HistoryPage extends ServerTemplate {
             String classCss = " col-lg-12 ";
             FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
             flowInstance.getTasksOlderFirst();
-            if (flowInstance.getTasksOlderFirst().size() <= 8) {
+            if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
                 classCss = " col-lg-6 col-lg-offset-3 ";
             }
             byte[] bytes = generateHistImage(flowInstance);
