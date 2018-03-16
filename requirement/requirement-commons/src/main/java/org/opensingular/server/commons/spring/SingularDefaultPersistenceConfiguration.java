@@ -16,12 +16,19 @@
 
 package org.opensingular.server.commons.spring;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
+import org.opensingular.server.commons.db.SingularSchemaExport;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -34,12 +41,6 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.naming.NamingException;
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
-
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOURCE;
 
@@ -49,50 +50,60 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/drops.sql")
     private Resource drops;
 
-    @Value("classpath:db/ddl/create-tables-form.sql")
-    private Resource sqlCreateTablesForm;
-
-    @Value("classpath:db/ddl/create-tables.sql")
-    private Resource sqlCreateTables;
-
-    @Value("classpath:db/ddl/create-tables-emails.sql")
-    private Resource sqlCreateTablesEmail;
-
+    @Value("classpath:db/ddl/create-schema.sql")
+    private Resource sqlCreateSchema;
+//
+//    @Value("classpath:db/ddl/create-tables.sql")
+//    private Resource sqlCreateTables;
+//
+//    @Value("classpath:db/ddl/create-tables-emails.sql")
+//    private Resource sqlCreateTablesEmail;
+//
     @Value("classpath:db/ddl/create-constraints.sql")
     private Resource sqlCreateConstraints;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
     private Resource sqlCreateConstraintsForm;
-
-    @Value("classpath:db/ddl/create-sequences-form.sql")
-    private Resource sqlCreateSequencesForm;
+//
+//    @Value("classpath:db/ddl/create-sequences-form.sql")
+//    private Resource sqlCreateSequencesForm;
 
     @Value("classpath:db/ddl/create-function.sql")
     private Resource sqlCreateFunction;
 
     @Value("classpath:db/ddl/create-tables-actor.sql")
     private Resource sqlCreateTablesActor;
-
-    @Value("classpath:db/ddl/create-sequences-server.sql")
-    private Resource sqlCreateSequencesServer;
-
-    @Value("classpath:db/ddl/create-email-sequences.sql")
-    private Resource sqlCreateSequencesEmail;
+//
+//    @Value("classpath:db/ddl/create-sequences-server.sql")
+//    private Resource sqlCreateSequencesServer;
+//
+//    @Value("classpath:db/ddl/create-email-sequences.sql")
+//    private Resource sqlCreateSequencesEmail;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
 
+    @Value("classpath:db/ddl/exportScript.sql")
+    private Resource exportScript;
+
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
+        //A ordem dos scripts se estiver incorreto pode gerar Compilation error
         populator.addScript(drops);
-        populator.addScript(sqlCreateTablesForm);
-        populator.addScript(sqlCreateTables);
-        populator.addScript(sqlCreateTablesEmail);
+        populator.addScript(sqlCreateSchema);
         populator.addScript(sqlCreateTablesActor);
-        populator.addScript(sqlCreateSequencesServer);
-        populator.addScript(sqlCreateSequencesForm);
-        populator.addScript(sqlCreateSequencesEmail);
+        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular",
+                hibernateProperties().getProperty("hibernate.dialectd"), null);
+        if(singularSchemaScript != null) {
+            populator.addScript(singularSchemaScript);
+        }
+
+//        populator.addScript(sqlCreateTables);
+//        populator.addScript(sqlCreateTablesEmail);
+//        populator.addScript(sqlCreateSequencesServer);
+//        populator.addScript(sqlCreateSequencesForm);
+//        populator.addScript(sqlCreateSequencesEmail);
         populator.addScript(sqlCreateConstraints);
         populator.addScript(sqlCreateConstraintsForm);
         populator.addScript(insertSingularData);

@@ -1,19 +1,19 @@
 package org.opensingular.server.commons.test.db;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.persistence.Entity;
+
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.cfg.Configuration;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 
-import javax.persistence.Entity;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 
 public class SingularSchemaExport implements Loggable {
 
-    public static final String SCRIPT_FILE = "exportScript.sql";
+    public static final String SCRIPT_FILE = "resources/db/exportScript.sql";
 
     public static final String H2         = "org.hibernate.dialect.H2Dialect";
     public static final String POSTGRE    = "org.hibernate.dialect.PostgreSQLDialect";
@@ -24,11 +24,11 @@ public class SingularSchemaExport implements Loggable {
     public static final String SQLSERVER  = "org.hibernate.dialect.SQLServerDialect";
 
 
-    public void generateScript() {
+    public static void generateScript() {
         generateScript(null, null, null);
     }
 
-    public void generateScript(String packageStr, String dialect, String filename) {
+    public static void generateScript(String packageStr, String dialect, String filename) {
 
         Set<Class<?>> typesAnnotatedWith = SingularClassPathScanner.get().findClassesAnnotatedWith(Entity.class);
         List<Class<?>> list = typesAnnotatedWith.stream().filter(c ->
