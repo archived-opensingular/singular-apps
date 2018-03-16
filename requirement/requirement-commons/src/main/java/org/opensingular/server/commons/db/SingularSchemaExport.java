@@ -32,11 +32,6 @@ public class SingularSchemaExport implements Loggable {
     public static final String ORACLE_10G = "org.hibernate.dialect.Oracle10gDialect";
     public static final String SQLSERVER = "org.hibernate.dialect.SQLServerDialect";
 
-
-    public static void generateScript() {
-        generateScript(null, null, null);
-    }
-
     public static Resource generateScript(String packageStr, String dialect, String directoryFileName) {
         try {
             Set<Class<?>> typesAnnotatedWith = SingularClassPathScanner.get().findClassesAnnotatedWith(Entity.class);

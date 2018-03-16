@@ -94,7 +94,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         populator.addScript(sqlCreateSchema);
         populator.addScript(sqlCreateTablesActor);
         Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular",
-                hibernateProperties().getProperty("hibernate.dialectd"), null);
+                hibernateProperties().getProperty("hibernate.dialect"), null);
         if(singularSchemaScript != null) {
             populator.addScript(singularSchemaScript);
         }
@@ -175,8 +175,8 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
     }
 
-    @DependsOn("createFunctionInitializer")
     @Bean
+    @DependsOn("scriptsInitializer")
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
