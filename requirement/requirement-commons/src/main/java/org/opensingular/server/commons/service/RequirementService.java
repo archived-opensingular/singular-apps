@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
@@ -40,6 +41,7 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
 import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
@@ -71,10 +73,12 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
@@ -117,6 +121,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     /**
      * FOR INTERNAL USE ONLY,
      * MUST NOT BE EXPOSED BY SUBCLASSES
+     *
      * @return
      */
     protected SingularUserDetails getSingularUserDetails() {
@@ -188,7 +193,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
             if (p == null) {
                 p = new ApplicantEntity();
                 p.setIdPessoa(userDetails.getUsername());
-                p.setName(((SingularUserDetails)userDetails).getDisplayName());
+                p.setName(((SingularUserDetails) userDetails).getDisplayName());
                 p.setPersonType(PersonType.FISICA);
             }
             requirement.getEntity().setApplicant(p);
@@ -444,10 +449,36 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     }
 
 
-    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(long codRequirement) {
-        RE requirement = requirementDAO.findOrException(codRequirement);
-        return requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(requirement);
+    /**
+     * List history entries.
+     * Hidden entries could be removed from the result wheter {@param showHidden} is true or not.
+     * An entry is considered hidden if the metadata {@link RequirementFlowDefinition#HIDE_FROM_HISTORY}
+     * is set on the corresponding flow task.
+     *
+     * @param codRequirement
+     * @return
+     */
+    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(long codRequirement, boolean showHidden) {
+        List<RequirementHistoryDTO> entries = requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(codRequirement);
+        if (!showHidden) {
+            RequirementInstance requirementInstance = getRequirement(codRequirement);
+            Set<String> hiddenEntriesAbbreviation = requirementInstance
+                    .getFlowDefinition()
+                    .getFlowMap()
+                    .getAllTasks()
+                    .stream()
+                    .filter(task -> task.getMetaDataValue(RequirementFlowDefinition.HIDE_FROM_HISTORY))
+                    .map(STask::getAbbreviation)
+                    .collect(HashSet::new, HashSet::add, HashSet::addAll);
+
+            return entries
+                    .stream()
+                    .filter(e -> !hiddenEntriesAbbreviation.contains(e.getTask().getTaskVersion().getAbbreviation()))
+                    .collect(Collectors.toList());
+        }
+        return entries;
     }
+
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
         Integer taskInstanceId = Integer.valueOf(String.valueOf(selectedTask.get("taskInstanceId")));

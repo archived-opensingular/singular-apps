@@ -37,7 +37,7 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
         super(RequirementContentHistoryEntity.class);
     }
 
-    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(RequirementEntity requirementEntity) {
+    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(Long codRequirement) {
 
         final List<TaskInstanceEntity>              tasks;
         final List<RequirementContentHistoryEntity> histories;
@@ -47,12 +47,12 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
         tasks = getSession()
                 .createQuery("select task from RequirementEntity p " +
                         " inner join p.flowInstanceEntity.tasks as task where p.cod = :codRequirement")
-                .setParameter("codRequirement", requirementEntity.getCod()).list();
+                .setParameter("codRequirement", codRequirement).list();
 
         histories = getSession()
                 .createQuery("select h from RequirementContentHistoryEntity h " +
                         " where h.requirementEntity.cod = :codRequirement")
-                .setParameter("codRequirement", requirementEntity.getCod()).list();
+                .setParameter("codRequirement", codRequirement).list();
 
         requirementHistoryDTOS = new ArrayList<>();
 

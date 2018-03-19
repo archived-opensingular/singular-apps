@@ -236,7 +236,7 @@ public class HistoryPage extends ServerTemplate {
                 if (requirementPK == null) {
                     cache = Collections.emptyList();
                 } else if (cache == null) {
-                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK);
+                    cache = getHistoryTasks();
                 }
                 return cache.size();
             }
@@ -246,12 +246,20 @@ public class HistoryPage extends ServerTemplate {
                 if (requirementPK == null) {
                     cache = Collections.emptyList();
                 } else if (cache == null) {
-                    cache = requirementService.listRequirementContentHistoryByCodRequirement(requirementPK);
+                    cache = getHistoryTasks();
                 }
 
                 return cache.subList(first, first + count).iterator();
             }
         };
+    }
+
+    private List<RequirementHistoryDTO> getHistoryTasks() {
+        return requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, showHiddenTasks());
+    }
+
+    protected boolean showHiddenTasks() {
+        return false;
     }
 
     protected String getBaseUrl() {
