@@ -25,6 +25,8 @@ import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
@@ -34,6 +36,7 @@ import org.opensingular.server.commons.persistence.entity.enums.PersonType;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISITANTE")
+@Check(constraints ="TP_PESSOA IN ('J','F')")
 @SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
 public class ApplicantEntity extends BaseEntity<Long> {
 
@@ -59,6 +62,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
             @Parameter(name = "identifierMethod", value = "getCod"),
             @Parameter(name = "valueOfMethod", value = "valueOfEnum")})
     @Column(name = "TP_PESSOA")
+    @ColumnDefault(value = "'J'")
     private PersonType personType;
 
     @Override

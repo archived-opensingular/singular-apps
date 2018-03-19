@@ -30,6 +30,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Type;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
@@ -41,6 +42,7 @@ import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO")
 @SequenceGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_FORMULARIO_REQUISICAO", schema = Constants.SCHEMA)
+@Check(constraints ="ST_FORM_PRINCIPAL IN ('S','N')")
 public class FormRequirementEntity extends BaseEntity<Long> implements Comparable<FormRequirementEntity> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_FORMULARIO_REQUISICAO";

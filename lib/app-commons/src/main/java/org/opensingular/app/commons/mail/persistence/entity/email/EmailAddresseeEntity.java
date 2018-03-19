@@ -29,6 +29,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
@@ -39,6 +40,7 @@ import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 @Entity
 @SequenceGenerator(name = EmailAddresseeEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
 @Table(name = "TB_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
+@Check(constraints = "TP_ENVIO IN ('To','Cc','Bcc')")
 public class EmailAddresseeEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_DESTINATARIO_EMAIL";

@@ -65,13 +65,13 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
 
-    @Value("classpath:db/dml/create-function-to_charMSSQL.sql")
+    @Value("classpath:db/ddl/create-function-to_charMSSQL.sql")
     private Resource functionToChar;
 
-    @Value("classpath:db/dml/functions-oracle.sql.sql")
+    @Value("classpath:db/ddl/functions-oracle.sql.sql")
     private Resource functionDateDiff;
 
-    @Value("classpath:db/dml/create-function.sql")
+    @Value("classpath:db/ddl/create-function.sql")
     private Resource functionAliasDateDiff;
 
     protected ResourceDatabasePopulator databasePopulator() {
