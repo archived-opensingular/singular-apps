@@ -53,17 +53,14 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/create-schema.sql")
     private Resource sqlCreateSchema;
 
+    @Value("classpath:db/ddl/create-tables-actor.sql")
+    private Resource sqlCreateTablesActor;
+
     @Value("classpath:db/ddl/create-constraints.sql")
     private Resource sqlCreateConstraints;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
     private Resource sqlCreateConstraintsForm;
-
-    @Value("classpath:db/ddl/create-function.sql")
-    private Resource sqlCreateFunction;
-
-    @Value("classpath:db/ddl/create-tables-actor.sql")
-    private Resource sqlCreateTablesActor;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
@@ -71,13 +68,16 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/dml/create-function-to_charMSSQL.sql")
     private Resource functionToChar;
 
-    @Value("classpath:db/dml/create-function-datediff_indaysORACLESQL.sql")
+    @Value("classpath:db/dml/functions-oracle.sql.sql")
     private Resource functionDateDiff;
+
+    @Value("classpath:db/dml/create-function.sql")
+    private Resource functionAliasDateDiff;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        //A ordem dos scripts se estiver incorreto pode gerar Compilation error
+        //A ordem dos scripts é importante, se estiver incorreto pode gerar Compilation error
         populator.addScript(drops);
         populator.addScript(sqlCreateSchema);
         populator.addScript(sqlCreateTablesActor);
@@ -86,17 +86,22 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         if(singularSchemaScript != null) {
             populator.addScript(singularSchemaScript);
         }
+
+        populator.addScript(sqlCreateConstraints);
+        populator.addScript(sqlCreateConstraintsForm);
+        populator.addScript(insertSingularData);
+
         if(!SqlUtil.useEmbeddedDatabase()){
             if(SqlUtil.isOracleDialect(dialect)) {
                 populator.addScript(functionDateDiff);
             } else if(SqlUtil.isSqlServer(dialect)){
                 populator.addScript(functionToChar);
             }
+        } else {
+            populator.addScript(functionAliasDateDiff);
         }
 
-        populator.addScript(sqlCreateConstraints);
-        populator.addScript(sqlCreateConstraintsForm);
-        populator.addScript(insertSingularData);
+
         return populator;
     }
 
@@ -117,7 +122,6 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSeparator("#");
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        populator.addScript(sqlCreateFunction);
         initializer.setDatabasePopulator(populator);
         initializer.setEnabled(isDatabaseInitializerEnabled());
         return initializer;
