@@ -68,6 +68,12 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
 
+    @Value("classpath:db/dml/create-function-to_charMSSQL.sql")
+    private Resource functionToChar;
+
+    @Value("classpath:db/dml/create-function-datediff_indaysORACLESQL.sql")
+    private Resource functionDateDiff;
+
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
@@ -81,10 +87,12 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
             populator.addScript(singularSchemaScript);
         }
         if(!SqlUtil.useEmbeddedDatabase()){
-
+            if(SqlUtil.isOracleDialect(dialect)) {
+                populator.addScript(functionDateDiff);
+            } else if(SqlUtil.isSqlServer(dialect)){
+                populator.addScript(functionToChar);
+            }
         }
-
-
 
         populator.addScript(sqlCreateConstraints);
         populator.addScript(sqlCreateConstraintsForm);

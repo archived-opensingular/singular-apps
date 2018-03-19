@@ -13,6 +13,7 @@ import org.hibernate.cfg.Configuration;
 import org.hibernate.tool.hbm2ddl.SchemaExport;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.RESTPaths;
 import org.opensingular.server.commons.exception.ExportScriptGenerationException;
 import org.springframework.core.io.ByteArrayResource;
@@ -20,18 +21,6 @@ import org.springframework.core.io.Resource;
 
 
 public class SingularSchemaExport implements Loggable {
-
-
-    public static final String SCRIPT_FILE = "/src/main/resources/db/ddl/exportScript.sql";
-
-    public static final String H2 = "org.hibernate.dialect.H2Dialect";
-    public static final String POSTGRE = "org.hibernate.dialect.PostgreSQLDialect";
-    public static final String ORACLE = "org.hibernate.dialect.OracleDialect";
-    public static final String ORACLE_8I = "org.hibernate.dialect.Oracle8iDialect";
-    public static final String ORACLE_9I = "org.hibernate.dialect.Oracle9iDialect";
-    public static final String ORACLE_10G = "org.hibernate.dialect.Oracle10gDialect";
-    public static final String SQLSERVER = "org.hibernate.dialect.SQLServerDialect";
-    public static final String SQLSERVER_2012 =  "org.hibernate.dialect.SQLServer2012Dialect";
 
     public static Resource generateScript(String packageStr, String dialect, String directoryFileName) {
         try {
@@ -43,7 +32,7 @@ public class SingularSchemaExport implements Loggable {
 
             //create a minimal configuration
             Configuration cfg = new Configuration();
-            cfg.setProperty("hibernate.dialect", Strings.isNotEmpty(dialect) ? dialect : H2);
+            cfg.setProperty("hibernate.dialect", Strings.isNotEmpty(dialect) ? dialect : SqlUtil.H2);
             cfg.setProperty("hibernate.hbm2ddl.auto", "create");
 
             for (Class<?> c : list) {
