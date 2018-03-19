@@ -79,7 +79,7 @@ public class RequirementEntity extends BaseEntity<Long> {
     private SortedSet<FormRequirementEntity> formRequirementEntities;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "CO_REQUISICAO_RAIZ")
+    @JoinColumn(name = "CO_REQUISICAO_RAIZ", foreignKey = @ForeignKey(name = "FK_REQ_REQUISICAO_RAIZ"))
     private RequirementEntity rootRequirement;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})

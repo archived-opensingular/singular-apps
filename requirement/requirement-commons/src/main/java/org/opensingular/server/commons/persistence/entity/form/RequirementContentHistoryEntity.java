@@ -34,6 +34,7 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
@@ -62,10 +63,13 @@ public class RequirementContentHistoryEntity extends BaseEntity<Long> {
     private Date historyDate;
 
 
+    //TODO VERIFICAR FK [ESTA GERANDO UMA RANDOMICA]
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "RL_HIST_CONT_REQ_VER_ANOTACAO", schema = Constants.SCHEMA,
-            joinColumns = @JoinColumn(name = "CO_HISTORICO", foreignKey = @ForeignKey(name = "FK_HIST_CONT_REQ_VER_ANOTACAO")),
-            inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO", foreignKey = @ForeignKey(name = "FK_VER_ANOTACAO_HIST_CONT_REQ")))
+            uniqueConstraints = {@UniqueConstraint(name = "UK_HIST_CONT_REQ_VER_ANOT", columnNames = "CO_VERSAO_ANOTACAO")},
+            joinColumns = @JoinColumn(name = "CO_HISTORICO"),
+            inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO"))
+    @org.hibernate.annotations.ForeignKey(name = "FK_HIST_CONT_REQ_VER_ANOTACAO", inverseName = "FK_VER_ANOTACAO_HIST_CONT_REQ")
     private List<FormAnnotationVersionEntity> formAnnotationsVersions;
 
     @ManyToOne(fetch = FetchType.LAZY)

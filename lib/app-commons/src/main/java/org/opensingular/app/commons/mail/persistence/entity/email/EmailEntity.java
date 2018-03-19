@@ -22,7 +22,6 @@ import java.util.Date;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -34,7 +33,9 @@ import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
+import org.hibernate.annotations.ForeignKey;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
@@ -45,7 +46,7 @@ import org.opensingular.lib.support.persistence.util.Constants;
 public class EmailEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_EMAIL";
-    
+
     @Id
     @Column(name = "CO_EMAIL")
     @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
@@ -53,29 +54,29 @@ public class EmailEntity extends BaseEntity<Long> {
 
     @Column(name = "TX_RESPONDER_PARA", length = 200)
     private String replyTo;
-    
+
     @Column(name = "TX_ASSUNTO", nullable = false, length = 200)
     private String subject;
 
     @Lob
     @Column(name = "TX_CONTEUDO", nullable = false)
     private String content;
-    
+
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_CRIACAO", nullable = false)
     private Date creationDate;
-    
+
     @OneToMany(mappedBy = "email")
     private List<EmailAddresseeEntity> recipients;
-    
+
     @OneToMany
     @JoinTable(schema = Constants.SCHEMA, name = "TB_EMAIL_ARQUIVO",
-        joinColumns = @JoinColumn(name = "CO_EMAIL"),
-        inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO")
-            ,foreignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL")
-            , inverseForeignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_ARQUIVO"))
+            uniqueConstraints = {@UniqueConstraint(name = "UK_EMAIL_ARQUIVO", columnNames = "CO_ARQUIVO")},
+            joinColumns = @JoinColumn(name = "CO_EMAIL"),
+            inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
+    @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL", inverseName = "FK_EMAIL_ARQUIVO_ARQUIVO")
     private List<AttachmentEntity> attachments = new ArrayList<>();
-    
+
     @Override
     public Long getCod() {
         return cod;
