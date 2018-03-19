@@ -16,29 +16,40 @@
 
 package org.opensingular.server.commons.persistence.entity.form;
 
+import java.util.Date;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-import org.hibernate.annotations.GenericGenerator;
-
-import javax.persistence.*;
-import java.util.Date;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_RASCUNHO")
-@GenericGenerator(name = DraftEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = DraftEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_RASCUNHO", schema = Constants.SCHEMA)
 public class DraftEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_RASCUNHO";
 
     @Id
     @Column(name = "CO_RASCUNHO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "CO_FORMULARIO")
+    @JoinColumn(name = "CO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_RASCUNHO_FORMULARIO"))
     private FormEntity form;
 
     @Temporal(TemporalType.TIMESTAMP)

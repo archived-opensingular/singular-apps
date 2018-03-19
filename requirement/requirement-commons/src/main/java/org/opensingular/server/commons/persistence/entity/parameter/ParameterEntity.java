@@ -19,17 +19,16 @@ package org.opensingular.server.commons.persistence.entity.parameter;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
 @Entity
-@GenericGenerator(name = ParameterEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = ParameterEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_PARAMETRO", schema = Constants.SCHEMA)
 @Table(name = "TB_PARAMETRO", schema = Constants.SCHEMA)
 public class ParameterEntity extends BaseEntity<Long> {
 
@@ -37,7 +36,7 @@ public class ParameterEntity extends BaseEntity<Long> {
     
     @Id
     @Column(name = "CO_PARAMETRO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @Column(name = "CO_MODULO", nullable = false)

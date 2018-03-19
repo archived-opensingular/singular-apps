@@ -31,6 +31,7 @@ public class SingularSchemaExport implements Loggable {
     public static final String ORACLE_9I = "org.hibernate.dialect.Oracle9iDialect";
     public static final String ORACLE_10G = "org.hibernate.dialect.Oracle10gDialect";
     public static final String SQLSERVER = "org.hibernate.dialect.SQLServerDialect";
+    public static final String SQLSERVER_2012 =  "org.hibernate.dialect.SQLServer2012Dialect";
 
     public static Resource generateScript(String packageStr, String dialect, String directoryFileName) {
         try {

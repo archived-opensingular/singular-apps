@@ -17,24 +17,24 @@
 package org.opensingular.server.commons.persistence.entity.form;
 
 
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 import org.opensingular.server.commons.persistence.entity.enums.PersonType;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISITANTE")
-@GenericGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
 public class ApplicantEntity extends BaseEntity<Long> {
 
 
@@ -42,7 +42,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
 
     @Id
     @Column(name = "CO_REQUISITANTE")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @Column(name = "DS_NOME")

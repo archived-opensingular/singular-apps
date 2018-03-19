@@ -17,26 +17,27 @@
  */
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import org.hibernate.annotations.GenericGenerator;
+import java.util.Date;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import java.util.Date;
 
 @Entity
-@GenericGenerator(name = EmailAddresseeEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = EmailAddresseeEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
 @Table(name = "TB_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
 public class EmailAddresseeEntity extends BaseEntity<Long> {
 
@@ -44,11 +45,11 @@ public class EmailAddresseeEntity extends BaseEntity<Long> {
 
     @Id
     @Column(name = "CO_DESTINATARIO_EMAIL")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_EMAIL", nullable = false)
+    @JoinColumn(name = "CO_EMAIL", nullable = false , foreignKey = @ForeignKey(name = "FK_DESTINATARIO_EMAIL_CO_EMAIL"))
     private EmailEntity email;
 
     @Column(name = "TX_ENDERECO", nullable = false, length = 100)

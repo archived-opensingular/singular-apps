@@ -18,18 +18,18 @@ package org.opensingular.server.commons.persistence.entity.form;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.flow.persistence.entity.AbstractModuleEntity;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
 import static org.opensingular.server.commons.persistence.entity.form.BoxEntity.PK_GENERATOR_NAME;
 
@@ -38,18 +38,18 @@ import static org.opensingular.server.commons.persistence.entity.form.BoxEntity.
  */
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_CAIXA")
-@GenericGenerator(name = PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = PK_GENERATOR_NAME, sequenceName = "SQ_CO_CAIXA", schema = Constants.SCHEMA)
 public class BoxEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_CAIXA";
 
     @Id
     @Column(name = "CO_CAIXA")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_MODULO", nullable = false)
+    @JoinColumn(name = "CO_MODULO", nullable = false, foreignKey = @ForeignKey(name = "FK_CAIXA_CO_MODULO"))
     private ModuleEntity module;
 
     @Column(name = "NO_CAIXA", nullable = false)

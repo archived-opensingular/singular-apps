@@ -17,29 +17,30 @@
  */
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
-@GenericGenerator(name = EmailEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = EmailEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_EMAIL", schema = Constants.SCHEMA)
 @Table(name = "TB_EMAIL", schema = Constants.SCHEMA)
 public class EmailEntity extends BaseEntity<Long> {
 
@@ -47,7 +48,7 @@ public class EmailEntity extends BaseEntity<Long> {
     
     @Id
     @Column(name = "CO_EMAIL")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @Column(name = "TX_RESPONDER_PARA", length = 200)
@@ -70,7 +71,9 @@ public class EmailEntity extends BaseEntity<Long> {
     @OneToMany
     @JoinTable(schema = Constants.SCHEMA, name = "TB_EMAIL_ARQUIVO",
         joinColumns = @JoinColumn(name = "CO_EMAIL"),
-        inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
+        inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO")
+            ,foreignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL")
+            , inverseForeignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_ARQUIVO"))
     private List<AttachmentEntity> attachments = new ArrayList<>();
     
     @Override

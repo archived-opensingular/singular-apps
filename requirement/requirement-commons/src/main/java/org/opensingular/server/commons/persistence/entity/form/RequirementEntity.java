@@ -16,7 +16,27 @@
 
 package org.opensingular.server.commons.persistence.entity.form;
 
-import org.hibernate.annotations.GenericGenerator;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
+import javax.annotation.Nonnull;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.form.SType;
@@ -24,50 +44,31 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.service.RequirementUtil;
 
-import javax.annotation.Nonnull;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OrderBy;
-import javax.persistence.Table;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
-
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISICAO")
-@GenericGenerator(name = RequirementEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = RequirementEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_REQUISICAO", schema = Constants.SCHEMA)
 public class RequirementEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_REQUISICAO";
 
     @Id
     @Column(name = "CO_REQUISICAO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_INSTANCIA_PROCESSO")
+    @JoinColumn(name = "CO_INSTANCIA_PROCESSO", foreignKey = @ForeignKey(name = "FK_REQ_INSTANCIA_PROCESSO"))
     private FlowInstanceEntity flowInstanceEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_DEFINICAO_PROCESSO")
+    @JoinColumn(name = "CO_DEFINICAO_PROCESSO", foreignKey = @ForeignKey(name = "FK_REQ_DEFINICAO_PROCESSO"))
     private FlowDefinitionEntity flowDefinitionEntity;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_REQUISITANTE")
+    @JoinColumn(name = "CO_REQUISITANTE", foreignKey = @ForeignKey(name = "FK_REQ_REQUISITANTE"))
     private ApplicantEntity applicant;
 
     @Column(name = "DS_REQUISICAO")
@@ -82,11 +83,11 @@ public class RequirementEntity extends BaseEntity<Long> {
     private RequirementEntity rootRequirement;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name = "CO_REQUISICAO_PAI")
+    @JoinColumn(name = "CO_REQUISICAO_PAI", foreignKey = @ForeignKey(name = "FK_REQ_REQUISICAO_PAI"))
     private RequirementEntity parentRequirement;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name =  "CO_DEFINICAO_REQUISICAO")
+    @JoinColumn(name =  "CO_DEFINICAO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_REQ_DEFINICAO_REQUISICAO"))
     private RequirementDefinitionEntity requirementDefinitionEntity;
 
     @Override

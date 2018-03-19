@@ -16,66 +16,68 @@
 
 package org.opensingular.server.commons.persistence.entity.form;
 
-import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.form.persistence.entity.FormAnnotationVersionEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-
+import java.util.Date;
+import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.util.Date;
-import java.util.List;
+
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.persistence.entity.FormAnnotationVersionEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_HISTORICO_CONTEUDO_REQUISIC")
-@GenericGenerator(name = RequirementContentHistoryEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = RequirementContentHistoryEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_HISTORICO", schema = Constants.SCHEMA)
 public class RequirementContentHistoryEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_HISTORICO";
 
     @Id
     @Column(name = "CO_HISTORICO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_REQUISICAO")
+    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_REQ"))
     private RequirementEntity requirementEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DT_HISTORICO")
     private Date historyDate;
 
+
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "RL_HIST_CONT_REQ_VER_ANOTACAO", schema = Constants.SCHEMA,
-            joinColumns = @JoinColumn(name = "CO_HISTORICO"),
-            inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO"))
+            joinColumns = @JoinColumn(name = "CO_HISTORICO", foreignKey = @ForeignKey(name = "FK_HIST_CONT_REQ_VER_ANOTACAO")),
+            inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO", foreignKey = @ForeignKey(name = "FK_VER_ANOTACAO_HIST_CONT_REQ")))
     private List<FormAnnotationVersionEntity> formAnnotationsVersions;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_INSTANCIA_TAREFA")
+    @JoinColumn(name = "CO_INSTANCIA_TAREFA", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_INSTANCIA_TRF"))
     private TaskInstanceEntity taskInstanceEntity;
 
     @ManyToOne
-    @JoinColumn(name = "CO_AUTOR")
+    @JoinColumn(name = "CO_AUTOR", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_REQ_AUTOR"))
     private Actor actor;
 
     @ManyToOne
-    @JoinColumn(name = "CO_REQUISITANTE")
+    @JoinColumn(name = "CO_REQUISITANTE", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_REQUISITANTE"))
     private ApplicantEntity applicantEntity;
 
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL, mappedBy = "requirementContentHistory")
