@@ -52,39 +52,21 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Value("classpath:db/ddl/create-schema.sql")
     private Resource sqlCreateSchema;
-//
-//    @Value("classpath:db/ddl/create-tables.sql")
-//    private Resource sqlCreateTables;
-//
-//    @Value("classpath:db/ddl/create-tables-emails.sql")
-//    private Resource sqlCreateTablesEmail;
-//
+
     @Value("classpath:db/ddl/create-constraints.sql")
     private Resource sqlCreateConstraints;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
     private Resource sqlCreateConstraintsForm;
-//
-//    @Value("classpath:db/ddl/create-sequences-form.sql")
-//    private Resource sqlCreateSequencesForm;
 
     @Value("classpath:db/ddl/create-function.sql")
     private Resource sqlCreateFunction;
 
     @Value("classpath:db/ddl/create-tables-actor.sql")
     private Resource sqlCreateTablesActor;
-//
-//    @Value("classpath:db/ddl/create-sequences-server.sql")
-//    private Resource sqlCreateSequencesServer;
-//
-//    @Value("classpath:db/ddl/create-email-sequences.sql")
-//    private Resource sqlCreateSequencesEmail;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
-
-    @Value("classpath:db/ddl/exportScript.sql")
-    private Resource exportScript;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
@@ -93,17 +75,17 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         populator.addScript(drops);
         populator.addScript(sqlCreateSchema);
         populator.addScript(sqlCreateTablesActor);
-        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular",
-                hibernateProperties().getProperty("hibernate.dialect"), null);
+        String dialect = hibernateProperties().getProperty("hibernate.dialect");
+        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular", dialect, null);
         if(singularSchemaScript != null) {
             populator.addScript(singularSchemaScript);
         }
+        if(!SqlUtil.useEmbeddedDatabase()){
 
-//        populator.addScript(sqlCreateTables);
-//        populator.addScript(sqlCreateTablesEmail);
-//        populator.addScript(sqlCreateSequencesServer);
-//        populator.addScript(sqlCreateSequencesForm);
-//        populator.addScript(sqlCreateSequencesEmail);
+        }
+
+
+
         populator.addScript(sqlCreateConstraints);
         populator.addScript(sqlCreateConstraintsForm);
         populator.addScript(insertSingularData);
