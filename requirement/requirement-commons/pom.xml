@@ -81,6 +81,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-wkhtmltopdf-client</artifactId>
+            <version>${singular.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>
             <version>${cas.client.version}</version>
