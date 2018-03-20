@@ -211,6 +211,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
         /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
