@@ -44,6 +44,7 @@ import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.util.WicketUtils;
+import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
@@ -90,7 +91,7 @@ public class CrudListContent extends CrudShellContent {
         tableBuilder.setBorderedTable(false);
         StudioTableDefinition configuredStudioTable = getConfiguredStudioTable();
         configuredStudioTable.getColumns()
-                .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), ins -> ins.getField(path).toStringDisplay()));
+                .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), path, ins -> ins.getField(path).toStringDisplay()));
 
         tableBuilder.appendActionColumn("", (BSDataTableBuilder.BSActionColumnCallback<SInstance, String>)
                 actionColumn -> configuredStudioTable.getActions().forEach(listAction -> {
@@ -369,15 +370,15 @@ public class CrudListContent extends CrudShellContent {
         addPorletHeaderRightAction(btnFilter);
     }
 
-    private class DefaultStudioTableDataProvider implements StudioTableDataProvider<SInstance> {
+    private class DefaultStudioTableDataProvider implements BasicStudioTableDataProvider<SInstance> {
 
         @Override
-        public Iterator<SInstance> iterator(long first, long count, IModel<? extends SInstance> filter) {
+        public Iterator<SInstance> iterator(long first, long count) {
             return getFormPersistence().loadAll(first, count).iterator();
         }
 
         @Override
-        public long size(IModel<? extends SInstance> filter) {
+        public long size() {
             return getFormPersistence().countAll();
         }
     }
