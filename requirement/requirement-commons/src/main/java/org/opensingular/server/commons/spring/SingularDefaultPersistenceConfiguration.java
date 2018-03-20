@@ -28,7 +28,6 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-import org.opensingular.server.commons.db.SingularSchemaExport;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -47,17 +46,12 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
 
-    @Value("classpath:db/ddl/drops.sql")
-    private Resource drops;
 
-    @Value("classpath:db/ddl/create-schema.sql")
-    private Resource sqlCreateSchema;
+    @Value("classpath:db/ddl/create-tables.sql")
+    private Resource sqlCreateTables;
 
-    @Value("classpath:db/ddl/create-tables-actor.sql")
-    private Resource sqlCreateTablesActor;
-
-    @Value("classpath:db/ddl/create-constraints.sql")
-    private Resource sqlCreateConstraints;
+    @Value("classpath:db/ddl/create-indexes.sql")
+    private Resource sqlCreateIndexs;
 
     @Value("classpath:db/ddl/create-constraints-form.sql")
     private Resource sqlCreateConstraintsForm;
@@ -68,26 +62,18 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/create-function-to_charMSSQL.sql")
     private Resource functionToChar;
 
-    @Value("classpath:db/ddl/functions-oracle.sql.sql")
+    @Value("classpath:db/ddl/functions-oracle.sql")
     private Resource functionDateDiff;
 
-    @Value("classpath:db/ddl/create-function.sql")
+    @Value("classpath:db/ddl/create-function-h2.sql")
     private Resource functionAliasDateDiff;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        //A ordem dos scripts é importante, se estiver incorreto pode gerar Compilation error
-        populator.addScript(drops);
-        populator.addScript(sqlCreateSchema);
-        populator.addScript(sqlCreateTablesActor);
+        populator.addScript(sqlCreateTables);
         String dialect = hibernateProperties().getProperty("hibernate.dialect");
-        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular", dialect, null);
-        if(singularSchemaScript != null) {
-            populator.addScript(singularSchemaScript);
-        }
-
-        populator.addScript(sqlCreateConstraints);
+        populator.addScript(sqlCreateIndexs);
         populator.addScript(sqlCreateConstraintsForm);
         populator.addScript(insertSingularData);
 
@@ -166,7 +152,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     }
 
     protected String getUrlConnection() {
-        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
+        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;INIT=CREATE SCHEMA if not exists DBSINGULAR";
     }
 
     @Bean
@@ -211,7 +197,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");

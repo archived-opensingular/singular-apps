@@ -1,1 +1,0 @@
-CREATE SCHEMA if not exists DBSINGULAR;
