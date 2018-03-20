@@ -42,7 +42,9 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
+import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.server.commons.cache.SingularKeyGenerator;
@@ -78,6 +80,8 @@ import org.opensingular.server.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.server.commons.spring.security.PermissionResolverService;
 import org.opensingular.server.commons.spring.security.SingularUserDetails;
 import org.opensingular.server.commons.spring.security.SingularUserDetailsService;
+import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
+import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -346,6 +350,15 @@ public class SingularDefaultBeanFactory {
     @Bean
     public SingularUserDetailsFactoryBean<? extends SingularUserDetails> singularUserDetails(){
         return new SingularUserDetailsFactoryBean<>(SingularUserDetails.class);
+    }
+
+    @Bean
+    public HtmlToPdfConverter htmlToPdfConverter() {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_DEV_MODE)) {
+            return new MockHtmlToPdfConverter();
+        } else {
+            return RestfulHtmlToPdfConverter.createUsingDefaultConfig();
+        }
     }
 
 }

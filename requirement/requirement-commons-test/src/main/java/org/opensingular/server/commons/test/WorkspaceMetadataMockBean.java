@@ -68,7 +68,7 @@ public class WorkspaceMetadataMockBean {
         box.setId("id-teste-SingularServerSessionConfigurationMock");
         box.setLabel("super caixa");
         box.setProcesses(new ArrayList<>());
-        RequirementDefinitionDTO p = new RequirementDefinitionDTO("ajaaja", "ajaaja", null, Collections.emptyList());
+        RequirementDefinitionDTO p = new RequirementDefinitionDTO("ajaaja", "ajaaja", null);
         box.getProcesses().add(p);
         box.setBoxesDefinition(new ArrayList<>());
         BoxDefinitionData boxDefinitionData = new BoxDefinitionData();

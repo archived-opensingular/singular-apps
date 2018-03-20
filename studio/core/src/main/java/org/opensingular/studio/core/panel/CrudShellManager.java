@@ -33,12 +33,18 @@ public class CrudShellManager implements Serializable {
 
     private StudioDefinition studioDefinition;
     private CrudShellContent crudShellContent;
-    private CrudShell crudShell;
+    private CrudShell        crudShell;
 
     public CrudShellManager(StudioDefinition studioDefinition, CrudShell crudShell) {
         this.studioDefinition = studioDefinition;
         this.crudShell = crudShell;
         this.crudShellContent = studioDefinition.buildStartContent(this);
+    }
+
+    public CrudShellManager(StudioDefinition studioDefinition, CrudShell crudShell, CrudShellContent crudShellContent) {
+        this.studioDefinition = studioDefinition;
+        this.crudShell = crudShell;
+        this.crudShellContent = crudShellContent;
     }
 
     public void replaceContent(AjaxRequestTarget ajaxRequestTarget, CrudShellContent newContent) {
@@ -65,8 +71,22 @@ public class CrudShellManager implements Serializable {
     public void addConfirm(String message, AjaxRequestTarget ajaxRequestTarget, IConsumer<AjaxRequestTarget> onConfirm) {
         CallbackAjaxBehaviour callbackAjaxBehaviour = new CallbackAjaxBehaviour(onConfirm);
         crudShell.add(callbackAjaxBehaviour);
-        ajaxRequestTarget.appendJavaScript("bootbox.confirm('" + message + "', " +
-                "function(ok){if(ok){Wicket.Ajax.get({u:'" + callbackAjaxBehaviour.getCallbackUrl() + "'});}})");
+
+        StringBuilder bootBoxcall = new StringBuilder();
+        bootBoxcall.append("bootbox.confirm({");
+        bootBoxcall.append("    message:").append('\'').append(message).append("',");
+        bootBoxcall.append("    buttons:{");
+        bootBoxcall.append("        confirm:{label: 'Sim', className: 'btn'},");
+        bootBoxcall.append("        cancel: {label: 'Não', className: 'btn-default'}");
+        bootBoxcall.append("    },");
+        bootBoxcall.append("    callback: function(ok){");
+        bootBoxcall.append("        if(ok){");
+        bootBoxcall.append("            Wicket.Ajax.get({u:'").append(callbackAjaxBehaviour.getCallbackUrl()).append("'});");
+        bootBoxcall.append("        }");
+        bootBoxcall.append("    }");
+        bootBoxcall.append("});");
+
+        ajaxRequestTarget.appendJavaScript(bootBoxcall.toString());
     }
 
     private static class CallbackAjaxBehaviour extends AbstractDefaultAjaxBehavior {
@@ -90,4 +110,7 @@ public class CrudShellManager implements Serializable {
         return studioDefinition.buildListContent(this);
     }
 
+    public CrudShell getCrudShell() {
+        return crudShell;
+    }
 }

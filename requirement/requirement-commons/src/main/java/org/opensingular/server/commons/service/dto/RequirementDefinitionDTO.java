@@ -24,16 +24,14 @@ public class RequirementDefinitionDTO implements Serializable {
     private String       name;
     private String       formName;
     private String       abbreviation;
-    private List<String> allowedHistoryTasks;
 
     public RequirementDefinitionDTO() {
     }
 
-    public RequirementDefinitionDTO(String abbreviation, String name, String formName, List<String> allowedHistoryTasks) {
+    public RequirementDefinitionDTO(String abbreviation, String name, String formName) {
         this.abbreviation = abbreviation;
         this.name = name;
         this.formName = formName;
-        this.allowedHistoryTasks = allowedHistoryTasks;
     }
 
     public String getName() {
@@ -50,9 +48,5 @@ public class RequirementDefinitionDTO implements Serializable {
 
     public String getAbbreviation() {
         return abbreviation;
-    }
-
-    public List<String> getAllowedHistoryTasks() {
-        return allowedHistoryTasks;
     }
 }

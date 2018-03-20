@@ -52,9 +52,9 @@ public class STypeDocSample extends STypeComposite<SIComposite> {
         anexinhos = this.addFieldListOfAttachment(ANEXINHOS, "anexo");
         idade = this.addFieldInteger(IDADE);
         enderecos = this.addFieldListOf(ENDERECOS, STypeAddress.class);
-        enderecos.setView(SViewListByMasterDetail::new);
+        enderecos.withView(SViewListByMasterDetail::new);
 
-        this.setView(() -> new SViewByBlock()
+        this.withView(() -> new SViewByBlock()
                 .newBlock(ANEXOS)
                 .add(anexinhos)
                 .add(anexinho)

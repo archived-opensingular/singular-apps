@@ -124,11 +124,8 @@ public class ModuleBackstageService implements Loggable {
             boxConfigurationMetadata.setLabel(category);
             boxConfigurationMetadata.setProcesses(new ArrayList<>());
             definitions.forEach(d -> {
-                List<String> allowedHistoryTasks = d.getFlowMap().getAllTasks().stream().filter(
-                        task -> task.getMetaDataValue(RequirementFlowDefinition.HIDE_FROM_HISTORY)).map(
-                        STask::getAbbreviation).collect(Collectors.toList());
                 boxConfigurationMetadata.getProcesses().add(
-                        new RequirementDefinitionDTO(d.getKey(), d.getName(), null, allowedHistoryTasks));
+                        new RequirementDefinitionDTO(d.getKey(), d.getName(), null));
             });
             addForms(boxConfigurationMetadata);
             groups.add(boxConfigurationMetadata);

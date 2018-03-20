@@ -55,7 +55,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
     protected void onLoadType(@Nonnull TypeBuilder tb) {
 
         tablesList = this.addFieldListOfComposite("tablesList", "tabela");
-        tablesList.setView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
+        tablesList.withView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
 
         STypeComposite<SIComposite> table = tablesList.getElementsType();
 
@@ -91,13 +91,13 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .enabled(true)
                 .asAtrBootstrap()
                 .colPreference(2);
-        userPrivs.setView(() -> new SViewListByTable().disableNew().disableDelete());
+        userPrivs.withView(() -> new SViewListByTable().disableNew().disableDelete());
 
         table.addInstanceValidator(this::tableValidation);
 
         columnsInfo = table.addFieldListOfComposite("columnsInfo", "column");
 
-        columnsInfo.setView(() -> new SViewListByTable().disableNew().disableDelete());
+        columnsInfo.withView(() -> new SViewListByTable().disableNew().disableDelete());
         columnsInfo.asAtr().label("Colunas");
 
         STypeComposite<SIComposite> column = columnsInfo.getElementsType();
