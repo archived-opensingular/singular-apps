@@ -28,6 +28,18 @@
         </resources>
     </build>
 
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.jasig.cas</groupId>
+                <artifactId>cas-server</artifactId>
+                <version>4.0.4</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
     <dependencies>
 
         <!-- CAS SERVER WEBAPP -->
@@ -42,6 +54,7 @@
             <groupId>org.jasig.cas</groupId>
             <artifactId>cas-server-support-ldap</artifactId>
         </dependency>
+
     </dependencies>
 
 
