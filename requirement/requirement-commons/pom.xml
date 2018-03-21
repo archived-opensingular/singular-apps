@@ -71,7 +71,6 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-wkhtmltopdf-client</artifactId>
-            <version>${singular.version}</version>
         </dependency>
         <!-- JGraph API -->
         <dependency>
@@ -82,7 +81,6 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-wkhtmltopdf-client</artifactId>
-            <version>${singular.version}</version>
         </dependency>
 
         <dependency>
