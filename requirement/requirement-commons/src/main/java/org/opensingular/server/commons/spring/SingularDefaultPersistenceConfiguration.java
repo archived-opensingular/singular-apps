@@ -16,7 +16,6 @@
 
 package org.opensingular.server.commons.spring;
 
-import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nonnull;
@@ -31,6 +30,9 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.spring.database.H2ResourceDatabasePopulator;
+import org.opensingular.server.commons.spring.database.MSSQLResourceDatabasePopulator;
+import org.opensingular.server.commons.spring.database.OracleResourceDatabasePopulator;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -55,37 +57,28 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Value("classpath:db/ddl/create-tables.sql")
     private Resource sqlCreateTables;
 
-    @Value("classpath:db/ddl/create-indexes.sql")
-    private Resource sqlCreateIndexs;
-
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
 
-    @Value("classpath:db/ddl/create-function-to_charMSSQL.sql")
-    private Resource functionToChar;
-
-    @Value("classpath:db/ddl/functions-oracle.sql")
-    private Resource functionDateDiff;
-
-    @Value("classpath:db/ddl/create-function-h2.sql")
+    @Value("classpath:db/ddl/h2/create-function.sql")
     private Resource functionAliasDateDiff;
 
-    protected ResourceDatabasePopulator databasePopulator() {
+    @Value("classpath:db/ddl/sqlserver/create-function.sql")
+    private Resource functionToChar;
+
+    @Value("classpath:db/ddl/oracle/create-function.sql")
+    private Resource functionDateDiff;
+
+/*    protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
         populator.addScript(sqlDropAndCreateSchema);
         populator.addScript(sqlCreateTables);
         String dialect = hibernateProperties().getProperty("hibernate.dialect");
-//        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular", dialect, null);
-//        if(singularSchemaScript != null) {
-//            populator.addScript(singularSchemaScript);
-//        }
-        populator.addScript(insertSingularData);
-
-        if(!SqlUtil.useEmbeddedDatabase()){
-            if(SqlUtil.isOracleDialect(dialect)) {
+        if (!SqlUtil.useEmbeddedDatabase()) {
+            if (SqlUtil.isOracleDialect(dialect)) {
                 populator.addScript(functionDateDiff);
-            } else if(SqlUtil.isSqlServer(dialect)){
+            } else if (SqlUtil.isSqlServer(dialect)) {
                 populator.addScript(functionToChar);
             }
         } else {
@@ -94,27 +87,31 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
 
         return populator;
+    }*/
+
+    @Bean
+    protected ResourceDatabasePopulator databasePopulator() {
+        final ResourceDatabasePopulator populator;
+        String dialect = hibernateProperties().getProperty("hibernate.dialect");
+        if (!SqlUtil.useEmbeddedDatabase()) {
+            if (SqlUtil.isOracleDialect(dialect)) {
+                populator = new OracleResourceDatabasePopulator();
+            } else if (SqlUtil.isSqlServer(dialect)) {
+                populator = new MSSQLResourceDatabasePopulator();
+            } else
+                populator = null;
+        } else {
+            populator = new H2ResourceDatabasePopulator();
+        }
+
+        return populator;
     }
 
     @Bean
-    public DataSourceInitializer scriptsInitializer(final DataSource dataSource) {
+    public DataSourceInitializer scriptsInitializer(final DataSource dataSource, final ResourceDatabasePopulator databasePopulator) {
         final DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
-        initializer.setDatabasePopulator(databasePopulator());
-        initializer.setEnabled(isDatabaseInitializerEnabled());
-        return initializer;
-    }
-
-    @Bean
-    @DependsOn("scriptsInitializer")
-    //TODO Posso remover
-    public DataSourceInitializer createFunctionInitializer(final DataSource dataSource) {
-        final DataSourceInitializer initializer = new DataSourceInitializer();
-        initializer.setDataSource(dataSource);
-        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.setSeparator("#");
-        populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        initializer.setDatabasePopulator(populator);
+        initializer.setDatabasePopulator(databasePopulator);
         initializer.setEnabled(isDatabaseInitializerEnabled());
         return initializer;
     }
@@ -130,9 +127,9 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     protected DataSource jndiDataSourceConfiguration() {
         getLogger().info("Usando datasource configurado via JNDI");
-        DataSource   dataSource     = null;
-        JndiTemplate jndi           = new JndiTemplate();
-        String       dataSourceName = SingularProperties.get(JNDI_DATASOURCE, "java:jboss/datasources/singular");
+        DataSource dataSource = null;
+        JndiTemplate jndi = new JndiTemplate();
+        String dataSourceName = SingularProperties.get(JNDI_DATASOURCE, "java:jboss/datasources/singular");
         try {
             dataSource = (DataSource) jndi.lookup(dataSourceName);
         } catch (NamingException e) {
@@ -205,7 +202,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        if(isDatabaseInitializerEnabled()) {
+        if (isDatabaseInitializerEnabled()) {
             hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         }
         /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
