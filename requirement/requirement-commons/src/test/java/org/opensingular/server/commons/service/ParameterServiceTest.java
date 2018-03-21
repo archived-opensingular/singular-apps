@@ -59,10 +59,10 @@ public class ParameterServiceTest extends SingularCommonsBaseTest {
         parameterDAO.save(entity);
 
         Optional<ParameterEntity> testParameter = parameterService
-                .findByNameAndModule("testParameter", groupEntity);
+                .findByNameAndModule("testParameter", groupEntity.getCod());
         Assert.assertEquals(entity, testParameter.get());
 
-        testParameter = parameterService.findByNameAndModule("testParameter", groupEntity);
+        testParameter = parameterService.findByNameAndModule("testParameter", groupEntity.getCod());
         Assert.assertEquals(entity, testParameter.get());
 
         Assert.assertEquals(entity.getName(), testParameter.get().getName());
