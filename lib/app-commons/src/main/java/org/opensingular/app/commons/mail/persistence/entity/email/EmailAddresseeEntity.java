@@ -61,7 +61,7 @@ public class EmailAddresseeEntity extends BaseEntity<Long> {
         @Parameter(name = "enumClass", value = AddresseType.CLASS_NAME),
         @Parameter(name = "identifierMethod", value = "getCod"), 
         @Parameter(name = "valueOfMethod", value = "valueOfEnum") })
-    @Column(name = "TP_ENVIO", nullable = false)
+    @Column(name = "TP_ENVIO", nullable = false, length = 3)
     private AddresseType addresseType;
 
     @Column(name = "DT_ENVIO")

@@ -55,15 +55,13 @@ public class RequirementContentHistoryEntity extends BaseEntity<Long> {
     private Long cod;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_REQ"))
+    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_HIST_CTD_REQ_REQ"), nullable = false)
     private RequirementEntity requirementEntity;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DT_HISTORICO")
+    @Column(name = "DT_HISTORICO", nullable = false)
     private Date historyDate;
 
-
-    //TODO VERIFICAR FK [ESTA GERANDO UMA RANDOMICA]
     @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "RL_HIST_CONT_REQ_VER_ANOTACAO", schema = Constants.SCHEMA,
             uniqueConstraints = {@UniqueConstraint(name = "UK_HIST_CONT_REQ_VER_ANOT", columnNames = "CO_VERSAO_ANOTACAO")},

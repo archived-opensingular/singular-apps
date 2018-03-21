@@ -18,18 +18,25 @@ package org.opensingular.server.commons.persistence.entity.parameter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @SequenceGenerator(name = ParameterEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_PARAMETRO", schema = Constants.SCHEMA)
-@Table(name = "TB_PARAMETRO", schema = Constants.SCHEMA)
+@Table(name = "TB_PARAMETRO", schema = Constants.SCHEMA, indexes = {
+        @Index(columnList = "CO_MODULO ASC, NO_PARAMETRO ASC", name = "IX_PARAMETRO")
+})
 public class ParameterEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_PARAMETRO";
@@ -39,13 +46,14 @@ public class ParameterEntity extends BaseEntity<Long> {
     @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
-    @Column(name = "CO_MODULO", nullable = false)
-    private String codModule;
+    @ManyToOne
+    @JoinColumn(name = "CO_MODULO" , foreignKey = @ForeignKey(name = "FK_PARAMETRO_MODULO"), nullable = false)
+    private ModuleEntity module;
     
-    @Column(name = "NO_PARAMETRO", nullable = false)
+    @Column(name = "NO_PARAMETRO", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "VL_PARAMETRO", nullable = false)
+    @Column(name = "VL_PARAMETRO", nullable = false, length = 1000)
     private String value;
     
     @Override
@@ -57,20 +65,20 @@ public class ParameterEntity extends BaseEntity<Long> {
         this.cod = cod;
     }
 
-    public String getCodModule() {
-        return codModule;
-    }
-
-    public void setCodModule(String codModule) {
-        this.codModule = codModule;
-    }
-
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public ModuleEntity getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleEntity module) {
+        this.module = module;
     }
 
     public String getValue() {

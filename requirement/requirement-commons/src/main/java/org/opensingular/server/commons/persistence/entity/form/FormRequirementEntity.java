@@ -53,14 +53,14 @@ public class FormRequirementEntity extends BaseEntity<Long> implements Comparabl
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_FORMO_REQ_REQUISICAO"))
+    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_FORMO_REQ_REQUISICAO"), nullable = false)
     private RequirementEntity requirement;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "CO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_FORM_REQ_FORMULARIO"))
     private FormEntity form;
 
-    @Column(name = "ST_FORM_PRINCIPAL", length = 1)
+    @Column(name = "ST_FORM_PRINCIPAL", length = 1, nullable = false)
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = {
             @org.hibernate.annotations.Parameter(name = "enumClass", value = SimNao.ENUM_CLASS_NAME),
             @org.hibernate.annotations.Parameter(name = "identifierMethod", value = "getCodigo"),

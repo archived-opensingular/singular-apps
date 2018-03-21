@@ -19,11 +19,13 @@ package org.opensingular.server.commons.spring;
 import java.nio.charset.StandardCharsets;
 import java.util.Optional;
 import java.util.Properties;
+import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
+import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
@@ -47,14 +49,14 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 public class SingularDefaultPersistenceConfiguration implements Loggable {
 
 
+    @Value("classpath:db/ddl/create-schema-drop-all.sql")
+    private Resource sqlDropAndCreateSchema;
+
     @Value("classpath:db/ddl/create-tables.sql")
     private Resource sqlCreateTables;
 
     @Value("classpath:db/ddl/create-indexes.sql")
     private Resource sqlCreateIndexs;
-
-    @Value("classpath:db/ddl/create-constraints-form.sql")
-    private Resource sqlCreateConstraintsForm;
 
     @Value("classpath:db/dml/insert-flow-data.sql")
     private Resource insertSingularData;
@@ -71,10 +73,13 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
+        populator.addScript(sqlDropAndCreateSchema);
         populator.addScript(sqlCreateTables);
         String dialect = hibernateProperties().getProperty("hibernate.dialect");
-        populator.addScript(sqlCreateIndexs);
-        populator.addScript(sqlCreateConstraintsForm);
+//        Resource singularSchemaScript = SingularSchemaExport.generateScript("org.opensingular", dialect, null);
+//        if(singularSchemaScript != null) {
+//            populator.addScript(singularSchemaScript);
+//        }
         populator.addScript(insertSingularData);
 
         if(!SqlUtil.useEmbeddedDatabase()){
@@ -102,6 +107,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Bean
     @DependsOn("scriptsInitializer")
+    //TODO Posso remover
     public DataSourceInitializer createFunctionInitializer(final DataSource dataSource) {
         final DataSourceInitializer initializer = new DataSourceInitializer();
         initializer.setDataSource(dataSource);
@@ -152,7 +158,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     }
 
     protected String getUrlConnection() {
-        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;INIT=CREATE SCHEMA if not exists DBSINGULAR";
+        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000";
     }
 
     @Bean
@@ -167,6 +173,8 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
             sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor());
             getLogger().info("Utilizando schema customizado: {}", schemaName.get());
         }
+
+
         return sessionFactoryBean;
     }
 
@@ -188,7 +196,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     protected Properties hibernateProperties() {
         final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
+        hibernateProperties.setProperty("hibernate.dialect", getHibernateDialect().getName());
         hibernateProperties.setProperty("hibernate.connection.isolation", "2");
         hibernateProperties.setProperty("hibernate.jdbc.batch_size", "30");
         hibernateProperties.setProperty("hibernate.show_sql", "false");
@@ -197,11 +205,18 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        if(isDatabaseInitializerEnabled()) {
+            hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        }
         /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         return hibernateProperties;
+    }
+
+    @Nonnull
+    protected Class<? extends Dialect> getHibernateDialect() {
+        return org.hibernate.dialect.Oracle10gDialect.class;
     }
 
     protected boolean isDatabaseInitializerEnabled() {

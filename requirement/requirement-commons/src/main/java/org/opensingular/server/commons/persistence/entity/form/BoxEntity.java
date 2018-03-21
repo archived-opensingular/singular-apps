@@ -52,13 +52,13 @@ public class BoxEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_MODULO", nullable = false, foreignKey = @ForeignKey(name = "FK_CAIXA_CO_MODULO"))
     private ModuleEntity module;
 
-    @Column(name = "NO_CAIXA", nullable = false)
+    @Column(name = "NO_CAIXA", nullable = false, length = 100)
     private String name;
 
-    @Column(name = "DS_CAIXA")
+    @Column(name = "DS_CAIXA", length = 500)
     private String description;
 
-    @Column(name = "NO_ICONE", nullable = false)
+    @Column(name = "NO_ICONE", nullable = false, length = 100)
     private String iconName;
 
     @Override

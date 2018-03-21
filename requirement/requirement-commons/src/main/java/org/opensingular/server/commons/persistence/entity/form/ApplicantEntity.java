@@ -48,20 +48,20 @@ public class ApplicantEntity extends BaseEntity<Long> {
     @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
-    @Column(name = "DS_NOME")
+    @Column(name = "DS_NOME", length = 200, nullable = false)
     private String name;
 
-    @Column(name = "ID_PESSOA")
+    @Column(name = "ID_PESSOA", length = 32, nullable = false)
     private String idPessoa;
 
-    @Column(name = "NU_CPF_CNPJ")
+    @Column(name = "NU_CPF_CNPJ", length = 14)
     private String cpfCNPJ;
 
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = {
             @Parameter(name = "enumClass", value = PersonType.CLASS_NAME),
             @Parameter(name = "identifierMethod", value = "getCod"),
             @Parameter(name = "valueOfMethod", value = "valueOfEnum")})
-    @Column(name = "TP_PESSOA")
+    @Column(name = "TP_PESSOA", length = 1, nullable = false)
     @ColumnDefault(value = "'J'")
     private PersonType personType;
 

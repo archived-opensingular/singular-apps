@@ -71,7 +71,7 @@ public class RequirementEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_REQUISITANTE", foreignKey = @ForeignKey(name = "FK_REQ_REQUISITANTE"))
     private ApplicantEntity applicant;
 
-    @Column(name = "DS_REQUISICAO")
+    @Column(name = "DS_REQUISICAO", length = 200)
     private String description;
 
     @OneToMany(mappedBy = "requirement", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
@@ -87,7 +87,7 @@ public class RequirementEntity extends BaseEntity<Long> {
     private RequirementEntity parentRequirement;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-    @JoinColumn(name =  "CO_DEFINICAO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_REQ_DEFINICAO_REQUISICAO"))
+    @JoinColumn(name =  "CO_DEFINICAO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_REQ_DEFINICAO_REQUISICAO"), nullable = false)
     private RequirementDefinitionEntity requirementDefinitionEntity;
 
     @Override

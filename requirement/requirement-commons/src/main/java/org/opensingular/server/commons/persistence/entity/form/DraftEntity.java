@@ -49,15 +49,15 @@ public class DraftEntity extends BaseEntity<Long> {
     private Long cod;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "CO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_RASCUNHO_FORMULARIO"))
+    @JoinColumn(name = "CO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_RASCUNHO_FORMULARIO"), nullable = false)
     private FormEntity form;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DT_INICIO")
+    @Column(name = "DT_INICIO", nullable = false)
     private Date startDate;
 
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "DT_EDICAO")
+    @Column(name = "DT_EDICAO", nullable = false)
     private Date editionDate;
 
     @Override
