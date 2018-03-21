@@ -23,13 +23,19 @@ public class STypePdfHealth extends STypeComposite<SIPdfHealth> {
     @Override
     protected void onLoadType(@Nonnull TypeBuilder tb) {
         endpoint = this.addFieldString("endpoint");
+        htmlToExport = this.addField("htmlToExport", STypeHTML.class);
+
         endpoint.setInitialValue(RestfulHtmlToPdfConverter.getEndpointDefault());
         endpoint.asAtr()
                 .label("Endpoint:")
                 .maxLength(155)
                 .enabled(true);
-        htmlToExport = this.addField("htmlToExport", STypeHTML.class);
-        htmlToExport.withView(SViewByRichText::new);
-        htmlToExport.asAtr().label("HTML Exportação");
+
+        htmlToExport
+                .withInitListener(s -> s.setValue(" teste "))
+                .withView(SViewByRichText::new)
+                .asAtr()
+                .label("HTML Exportação");
+
     }
 }
