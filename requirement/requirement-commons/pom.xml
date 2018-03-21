@@ -68,7 +68,11 @@
             <groupId>org.opensingular</groupId>
             <artifactId>singular-app-commons</artifactId>
         </dependency>
-
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-wkhtmltopdf-client</artifactId>
+            <version>${singular.version}</version>
+        </dependency>
         <!-- JGraph API -->
         <dependency>
             <groupId>org.tinyjee.jgraphx</groupId>
@@ -106,8 +110,6 @@
             <artifactId>singular-commons-test</artifactId>
             <scope>compile</scope>
         </dependency>
-
-
 
         <dependency>
             <groupId>com.querydsl</groupId>
