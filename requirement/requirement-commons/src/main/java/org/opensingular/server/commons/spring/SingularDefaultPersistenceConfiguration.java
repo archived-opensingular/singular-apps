@@ -30,13 +30,10 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.spring.database.H2ResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.MSSQLResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.OracleResourceDatabasePopulator;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jndi.JndiTemplate;
@@ -50,45 +47,6 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
 
-
-    @Value("classpath:db/ddl/create-schema-drop-all.sql")
-    private Resource sqlDropAndCreateSchema;
-
-    @Value("classpath:db/ddl/create-tables.sql")
-    private Resource sqlCreateTables;
-
-    @Value("classpath:db/dml/insert-flow-data.sql")
-    private Resource insertSingularData;
-
-    @Value("classpath:db/ddl/h2/create-function.sql")
-    private Resource functionAliasDateDiff;
-
-    @Value("classpath:db/ddl/sqlserver/create-function.sql")
-    private Resource functionToChar;
-
-    @Value("classpath:db/ddl/oracle/create-function.sql")
-    private Resource functionDateDiff;
-
-/*    protected ResourceDatabasePopulator databasePopulator() {
-        final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
-        populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        populator.addScript(sqlDropAndCreateSchema);
-        populator.addScript(sqlCreateTables);
-        String dialect = hibernateProperties().getProperty("hibernate.dialect");
-        if (!SqlUtil.useEmbeddedDatabase()) {
-            if (SqlUtil.isOracleDialect(dialect)) {
-                populator.addScript(functionDateDiff);
-            } else if (SqlUtil.isSqlServer(dialect)) {
-                populator.addScript(functionToChar);
-            }
-        } else {
-            populator.addScript(functionAliasDateDiff);
-        }
-
-
-        return populator;
-    }*/
-
     @Bean
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator;
@@ -101,7 +59,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
             } else
                 populator = null;
         } else {
-            populator = new H2ResourceDatabasePopulator();
+            populator = new OracleResourceDatabasePopulator();
         }
 
         return populator;

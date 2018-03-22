@@ -15,7 +15,7 @@ public class OracleResourceDatabasePopulator extends AbstractResourceDatabasePop
 
     @PostConstruct
     public void init(){
-        addScript(functionDateDiff);
+//        addScript(functionDateDiff);
         addScript(createSequence);
         super.init();
     }
