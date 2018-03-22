@@ -10,8 +10,12 @@ public class H2ResourceDatabasePopulator extends AbstractResourceDatabasePopulat
     @Value("classpath:db/ddl/h2/create-function.sql")
     private Resource functionAliasDateDiff;
 
+    @Value("classpath:db/ddl/oracle/create-sequence.sql")
+    private Resource createSequence;
+
     @PostConstruct
     public void init(){
+        addScript(createSequence);
         addScript(functionAliasDateDiff);
         super.init();
     }

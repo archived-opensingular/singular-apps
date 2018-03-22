@@ -30,6 +30,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.server.commons.spring.database.H2ResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.MSSQLResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.OracleResourceDatabasePopulator;
 import org.springframework.context.annotation.Bean;
@@ -59,7 +60,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
             } else
                 populator = null;
         } else {
-            populator = new OracleResourceDatabasePopulator();
+            populator = new H2ResourceDatabasePopulator();
         }
 
         return populator;
