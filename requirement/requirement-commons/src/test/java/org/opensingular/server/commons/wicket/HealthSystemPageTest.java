@@ -25,16 +25,11 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.server.commons.admin.healthsystem.extension.*;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.commons.admin.healthsystem.HealthSystemPage;
-import org.opensingular.server.commons.admin.healthsystem.extension.AdministrationEntryExtension;
-import org.opensingular.server.commons.admin.healthsystem.extension.CacheAdminEntry;
-import org.opensingular.server.commons.admin.healthsystem.extension.DatabaseTablesAdminEntry;
-import org.opensingular.server.commons.admin.healthsystem.extension.JobsAdminEntry;
-import org.opensingular.server.commons.admin.healthsystem.extension.PermissionAdminEntry;
-import org.opensingular.server.commons.admin.healthsystem.extension.WebAdminEntry;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -94,6 +89,13 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @Test
     public void testClickWebButton() {
         clickButtonAndCheckPanel(new WebAdminEntry());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void testClickHtmlToPdfButton() {
+        clickButtonAndCheckPanel(new HtmlToPdfAdminEntry());
     }
 
     private void clickButtonAndCheckPanel(AdministrationEntryExtension administrationEntryExtension) {
