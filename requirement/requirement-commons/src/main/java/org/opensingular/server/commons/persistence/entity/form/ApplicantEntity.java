@@ -51,7 +51,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
     @Column(name = "DS_NOME", length = 200, nullable = false)
     private String name;
 
-    @Column(name = "ID_PESSOA", length = 32, nullable = false)
+    @Column(name = "ID_PESSOA", length = 200, nullable = false)
     private String idPessoa;
 
     @Column(name = "NU_CPF_CNPJ", length = 14)
