@@ -1,6 +1,7 @@
 package org.opensingular.server.commons.spring.database;
 
-import java.io.File;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
 import java.util.Set;
@@ -21,7 +22,6 @@ import org.springframework.core.io.Resource;
 
 public class SingularSchemaExport implements Loggable {
 
-
     /**
      * Método com objeto de gerar o script de toda a base do singular, inclusive com os inserts.
      *
@@ -32,7 +32,7 @@ public class SingularSchemaExport implements Loggable {
      * @return
      */
     public static Resource generateScript(String packageStr, Class<? extends Dialect> dialect,
-            String directoryFileName, List<String> scriptsAdicionais) {
+            String directoryFileName, StringBuilder scriptsAdicionais) {
 
         try {
             Set<Class<?>> typesAnnotatedWith = SingularClassPathScanner.get().findClassesAnnotatedWith(Entity.class);
@@ -55,49 +55,29 @@ public class SingularSchemaExport implements Loggable {
 
 
             RESTPaths.class.getClassLoader().getResource("db/ddl/drops.sql");
-            File tempFile = new File(directoryFileName);
-            try (PrintWriter writer = new PrintWriter(tempFile)) {
+            try (PrintWriter writer = new PrintWriter(
+                    new OutputStreamWriter(new FileOutputStream(directoryFileName), "UTF-8"))) {
                 Dialect hibDialect = Dialect.getDialect(cfg.getProperties());
                 String[] strings = cfg.generateSchemaCreationScript(hibDialect);
                 write(writer, strings, scriptsAdicionais);
             }
             return null;
-
-            //execute the export    NÃO É POSSIVEL FAZER COM SCRIPTS ADICIONAIS POR CAUSA do exporter.acceptsImportScripts()
-//           SchemaExport export = new SchemaExport(cfg);
-//
-//
-//            if (Strings.isEmpty(directoryFileName)) {
-//                File tempFile = File.createTempFile("schema-singular", ".sql");
-//                exportParameters(export,tempFile.getAbsolutePath());
-//                StringBuilder sqls = new StringBuilder("");
-//                for (String sql : FileUtils.readLines(tempFile, StandardCharsets.UTF_8.name())) {
-//                    sqls.append(sql);
-//                }
-//                return new ByteArrayResource(sqls.toString().getBytes());
-//            } else {
-//                exportParameters(export, directoryFileName);
-//                return null;
-//            }
-
-
         } catch (Exception e) {
             throw new ExportScriptGenerationException(e.getMessage(), e);
         }
     }
 
-    private static void write(PrintWriter writer, String[] lines, List<String> scriptsAdicionais) {
+    private static void write(PrintWriter writer, String[] lines, StringBuilder scriptsAdicionais) {
         Formatter formatter = FormatStyle.DDL.getFormatter();
+
+        System.out.println(scriptsAdicionais);
+        writer.write(formatter.format(scriptsAdicionais.toString()));
+
         for (String string : lines) {
             String lineFormated = formatter.format(string) + "; \n";
             System.out.println(lineFormated);
             writer.write(lineFormated);
         }
-        scriptsAdicionais.forEach(s -> {
-            String lineFormated = formatter.format(s) + "; \n";
-            System.out.println(lineFormated);
-            writer.write(lineFormated);
-        });
     }
 
 

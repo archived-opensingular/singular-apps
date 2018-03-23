@@ -1,13 +1,12 @@
 package org.opensingular.server.commons.spring.database;
 
-import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
@@ -26,7 +25,7 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
 
     private List<Resource> scripts = new ArrayList<>();
 
-    private List<String> scriptsText = new ArrayList<>();
+    private StringBuilder scriptsText = new StringBuilder();
 
     @PostConstruct
     public void init() {
@@ -49,15 +48,14 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
         super.addScript(script);
     }
 
-    public List<String> getScriptsText() {
-        return new ArrayList<>(scriptsText);
+    public StringBuilder getScriptsText() {
+       return scriptsText;
     }
 
     private void addScriptTextToList(Resource script) {
         try {
-            File myFile = new File(script.getURI());
-            String content = FileUtils.readFileToString(myFile, "UTF-8");
-            scriptsText.add(content);
+            String content = IOUtils.toString(script.getInputStream(), "UTF-8");
+            scriptsText.append(content);
         } catch (IOException e) {
             e.printStackTrace();
         }

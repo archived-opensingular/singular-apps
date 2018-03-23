@@ -61,7 +61,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     @Bean
     private ResourceDatabasePopulator databasePopulator() {
 
-        if (!SqlUtil.useEmbeddedDatabase()) {
+        if (SqlUtil.useEmbeddedDatabase()) {
             return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
         }
         return getSupportedDatabases()
