@@ -11,8 +11,8 @@ public class MSSQLResourceDatabasePopulator extends AbstractResourceDatabasePopu
     private Resource functionToChar;
 
     @PostConstruct
-    public void init(){
-        addScript(functionToChar);
+    public void init() {
+     //   addScript(functionToChar);
         super.init();
     }
 

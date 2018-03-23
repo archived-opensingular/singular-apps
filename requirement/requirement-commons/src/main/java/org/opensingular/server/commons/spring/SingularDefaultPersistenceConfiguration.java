@@ -16,24 +16,27 @@
 
 package org.opensingular.server.commons.spring;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Properties;
 import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.google.common.base.Joiner;
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.SQLServer2008Dialect;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.ResourceDatabasePopularException;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.spring.database.H2ResourceDatabasePopulator;
-import org.opensingular.server.commons.spring.database.MSSQLResourceDatabasePopulator;
-import org.opensingular.server.commons.spring.database.OracleResourceDatabasePopulator;
+import org.opensingular.server.commons.spring.database.SingularDataBaseEnum;
+import org.opensingular.server.commons.spring.database.SingularDataBaseSuport;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
@@ -51,20 +54,26 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Bean
     protected ResourceDatabasePopulator databasePopulator() {
-        final ResourceDatabasePopulator populator;
-        String dialect = hibernateProperties().getProperty("hibernate.dialect");
-        if (!SqlUtil.useEmbeddedDatabase()) {
-            if (SqlUtil.isOracleDialect(dialect)) {
-                populator = new OracleResourceDatabasePopulator();
-            } else if (SqlUtil.isSqlServer(dialect)) {
-                populator = new MSSQLResourceDatabasePopulator();
-            } else
-                throw new ResourceDatabasePopularException("Não foi encontrado nenhum ResourceDatabasePopulator para o seu dialect");
-        } else {
-            populator = new H2ResourceDatabasePopulator();
-        }
 
-        return populator;
+        if (SqlUtil.useEmbeddedDatabase()) {
+            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
+        }
+        return getSupportedDatabases()
+                .stream()
+                .filter(f -> f.isDialectSupported(getHibernateDialect()))
+                .findFirst()
+                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
+                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in " + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
+    }
+
+    /**
+     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
+     *
+     * @return Lista de Data Base suportado pelo projeto.
+     * @See SingularDataBaseEnum
+     */
+    protected List<SingularDataBaseSuport> getSupportedDatabases() {
+        return Arrays.asList(SingularDataBaseEnum.values());
     }
 
     @Bean
@@ -162,6 +171,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", getImportFiles());
         if (isDatabaseInitializerEnabled()) {
             hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         }
@@ -171,9 +181,13 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return hibernateProperties;
     }
 
+    protected String getImportFiles(String... directoryAndFile) {
+        return Joiner.on(", ").join(directoryAndFile);
+    }
+
     @Nonnull
     protected Class<? extends Dialect> getHibernateDialect() {
-        return org.hibernate.dialect.SQLServer2008Dialect.class;
+        return SQLServer2008Dialect.class;
     }
 
     protected boolean isDatabaseInitializerEnabled() {

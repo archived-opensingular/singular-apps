@@ -5,7 +5,7 @@ import javax.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 
-public class OracleResourceDatabasePopulator extends AbstractResourceDatabasePopulator{
+public class OracleResourceDatabasePopulator extends AbstractResourceDatabasePopulator {
 
     @Value("classpath:db/ddl/oracle/create-function.sql")
     private Resource functionDateDiff;
@@ -13,8 +13,9 @@ public class OracleResourceDatabasePopulator extends AbstractResourceDatabasePop
     @Value("classpath:db/ddl/oracle/create-sequence.sql")
     private Resource createSequence;
 
+
     @PostConstruct
-    public void init(){
+    public void init() {
         addScript(functionDateDiff);
         addScript(createSequence);
         super.init();

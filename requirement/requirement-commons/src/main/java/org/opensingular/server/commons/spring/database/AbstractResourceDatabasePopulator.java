@@ -11,8 +11,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 public class AbstractResourceDatabasePopulator extends ResourceDatabasePopulator {
 
-    @Value("classpath:db/ddl/create-schema-drop-all.sql")
-    private Resource sqlDropAndCreateSchema;
 
     @Value("classpath:db/ddl/create-tables.sql")
     private Resource sqlCreateTables;
@@ -23,9 +21,8 @@ public class AbstractResourceDatabasePopulator extends ResourceDatabasePopulator
     private List<Resource> scripts = new ArrayList<>();
 
     @PostConstruct
-    public void init(){
+    public void init() {
         setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        super.addScript(sqlDropAndCreateSchema);
         super.addScript(sqlCreateTables);
         super.addScript(insertSingularData);
         scripts.forEach(s -> super.addScript(s));
@@ -35,5 +32,9 @@ public class AbstractResourceDatabasePopulator extends ResourceDatabasePopulator
     @Override
     public void addScript(Resource script) {
         scripts.add(script);
+    }
+
+    public void addScriptOnInitialize(Resource script) {
+        super.addScript(script);
     }
 }
