@@ -52,10 +52,16 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
 
+    /**
+     * Responsavel por criar um DataBasePopulator de acordo com o dialect informado.
+     * Favor olhar o metodo getSupportedDatabases() para maiores informações.
+     *
+     * @return retorna o dataBasePopulator especifico de acordo com o dialect.
+     */
     @Bean
-    protected ResourceDatabasePopulator databasePopulator() {
+    private ResourceDatabasePopulator databasePopulator() {
 
-        if (SqlUtil.useEmbeddedDatabase()) {
+        if (!SqlUtil.useEmbeddedDatabase()) {
             return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
         }
         return getSupportedDatabases()
@@ -64,16 +70,6 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
                 .findFirst()
                 .map(SingularDataBaseSuport::getPopulatorBeanInstance)
                 .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in " + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
-    }
-
-    /**
-     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
-     *
-     * @return Lista de Data Base suportado pelo projeto.
-     * @See SingularDataBaseEnum
-     */
-    protected List<SingularDataBaseSuport> getSupportedDatabases() {
-        return Arrays.asList(SingularDataBaseEnum.values());
     }
 
     @Bean
@@ -193,4 +189,15 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     protected boolean isDatabaseInitializerEnabled() {
         return !SingularProperties.get().isFalse("singular.enabled.h2.inserts");
     }
+
+    /**
+     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
+     *
+     * @return Lista de Data Base suportado pelo projeto.
+     * @See SingularDataBaseEnum
+     */
+    protected List<SingularDataBaseSuport> getSupportedDatabases() {
+        return Arrays.asList(SingularDataBaseEnum.values());
+    }
+
 }

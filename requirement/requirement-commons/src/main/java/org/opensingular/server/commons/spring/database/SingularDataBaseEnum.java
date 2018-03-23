@@ -4,7 +4,6 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.SQLServerDialect;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 public enum SingularDataBaseEnum implements SingularDataBaseSuport {
 
@@ -12,16 +11,16 @@ public enum SingularDataBaseEnum implements SingularDataBaseSuport {
     MSSQL(new MSSQLResourceDatabasePopulator(), SQLServerDialect.class),
     H2(new H2ResourceDatabasePopulator(), H2Dialect.class);
 
-    private ResourceDatabasePopulator resourceDatabasePopulator;
+    private AbstractResourceDatabasePopulator resourceDatabasePopulator;
     private Class<? extends Dialect> dialect;
 
-    SingularDataBaseEnum(ResourceDatabasePopulator resourceDatabasePopulator, Class<? extends Dialect> dialect) {
+    SingularDataBaseEnum(AbstractResourceDatabasePopulator resourceDatabasePopulator, Class<? extends Dialect> dialect) {
         this.dialect = dialect;
         this.resourceDatabasePopulator = resourceDatabasePopulator;
     }
 
     @Override
-    public ResourceDatabasePopulator getPopulatorBeanInstance() {
+    public AbstractResourceDatabasePopulator getPopulatorBeanInstance() {
         return resourceDatabasePopulator;
     }
 
