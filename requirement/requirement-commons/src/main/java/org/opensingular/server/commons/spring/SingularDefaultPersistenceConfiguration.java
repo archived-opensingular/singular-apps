@@ -29,6 +29,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
+import org.opensingular.server.commons.exception.ResourceDatabasePopularException;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.spring.database.H2ResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.MSSQLResourceDatabasePopulator;
@@ -58,7 +59,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
             } else if (SqlUtil.isSqlServer(dialect)) {
                 populator = new MSSQLResourceDatabasePopulator();
             } else
-                populator = null;
+                throw new ResourceDatabasePopularException("Não foi encontrado nenhum ResourceDatabasePopulator para o seu dialect");
         } else {
             populator = new H2ResourceDatabasePopulator();
         }
@@ -172,7 +173,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
 
     @Nonnull
     protected Class<? extends Dialect> getHibernateDialect() {
-        return org.hibernate.dialect.Oracle10gDialect.class;
+        return org.hibernate.dialect.SQLServer2008Dialect.class;
     }
 
     protected boolean isDatabaseInitializerEnabled() {
