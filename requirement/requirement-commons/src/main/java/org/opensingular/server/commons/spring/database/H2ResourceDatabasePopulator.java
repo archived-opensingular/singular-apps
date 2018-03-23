@@ -26,6 +26,7 @@ public class H2ResourceDatabasePopulator extends AbstractResourceDatabasePopulat
         addScript(createSequence);
         addScript(functionAliasDateDiff);
         super.init();
+        setContinueOnError(false);
     }
 
 }
