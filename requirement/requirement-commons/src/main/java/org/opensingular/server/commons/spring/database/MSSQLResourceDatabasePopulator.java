@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.spring.database;
 
+import java.util.List;
 import javax.annotation.PostConstruct;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -12,8 +13,15 @@ public class MSSQLResourceDatabasePopulator extends AbstractResourceDatabasePopu
 
     @PostConstruct
     public void init() {
-     //   addScript(functionToChar);
+        addScript(functionToChar);
         super.init();
     }
 
+
+    @Override
+    public List<String> getScriptsPath() {
+        List<String> scriptsPath = super.getScriptsPath();
+        scriptsPath.add("db/ddl/sqlserver/create-function.sql");
+        return scriptsPath;
+    }
 }

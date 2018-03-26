@@ -1,6 +1,8 @@
 package org.opensingular.server.commons.spring.database;
 
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.util.List;
@@ -8,16 +10,19 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import javax.persistence.Entity;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.util.Strings;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.SQLServer2008Dialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.hibernate.engine.jdbc.internal.Formatter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.RESTPaths;
 import org.opensingular.server.commons.exception.ExportScriptGenerationException;
+import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.springframework.core.io.Resource;
 
 public class SingularSchemaExport implements Loggable {
@@ -28,11 +33,14 @@ public class SingularSchemaExport implements Loggable {
      * @param packageStr        O pacote na qual deverá ser gerado o script.
      * @param dialect           O dialect do banco escolhido.
      * @param directoryFileName O diretorio na qual será gerado o script.
-     * @param scriptsAdicionais scripts adicionais.
+     * @param scriptsPath O path dos scripts adicionais.
      * @return
      */
     public static Resource generateScript(String packageStr, Class<? extends Dialect> dialect,
-            String directoryFileName, StringBuilder scriptsAdicionais) {
+            String directoryFileName, List<String> scriptsPath) {
+
+        StringBuilder scriptsText = gerarScriptsTextByFilesPath(scriptsPath);
+
 
         try {
             Set<Class<?>> typesAnnotatedWith = SingularClassPathScanner.get().findClassesAnnotatedWith(Entity.class);
@@ -43,7 +51,7 @@ public class SingularSchemaExport implements Loggable {
 
             //create a minimal configuration
             Configuration cfg = new Configuration();
-            cfg.setProperty("hibernate.dialect", dialect != null ? dialect.getName() : SQLServer2008Dialect.class.getName());
+            cfg.setProperty("hibernate.dialect", dialect != null ? dialect.getName() : H2Dialect.class.getName());
             cfg.setProperty("hibernate.hbm2ddl.auto", "create-drop");
 
             for (Class<?> c : list) {
@@ -59,7 +67,7 @@ public class SingularSchemaExport implements Loggable {
                     new OutputStreamWriter(new FileOutputStream(directoryFileName), "UTF-8"))) {
                 Dialect hibDialect = Dialect.getDialect(cfg.getProperties());
                 String[] strings = cfg.generateSchemaCreationScript(hibDialect);
-                write(writer, strings, scriptsAdicionais);
+                write(writer, strings, scriptsText);
             }
             return null;
         } catch (Exception e) {
@@ -67,11 +75,30 @@ public class SingularSchemaExport implements Loggable {
         }
     }
 
+    private static StringBuilder gerarScriptsTextByFilesPath(List<String> scriptsPath) {
+        StringBuilder scriptsText = new StringBuilder("");
+        if(CollectionUtils.isNotEmpty(scriptsPath)) {
+            ClassLoader classLoader = SingularDefaultPersistenceConfiguration.class.getClassLoader();
+            scriptsPath.forEach(script -> {
+                InputStream stream = classLoader.getResourceAsStream(script);
+                try {
+                    String content = IOUtils.toString(stream, "UTF-8");
+                    scriptsText.append(content);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+        }
+        return scriptsText;
+    }
+
     private static void write(PrintWriter writer, String[] lines, StringBuilder scriptsAdicionais) {
         Formatter formatter = FormatStyle.DDL.getFormatter();
 
-        System.out.println(scriptsAdicionais);
-        writer.write(formatter.format(scriptsAdicionais.toString()));
+        if(scriptsAdicionais != null) {
+            System.out.println(scriptsAdicionais);
+            writer.write(formatter.format(scriptsAdicionais.toString()));
+        }
 
         for (String string : lines) {
             String lineFormated = formatter.format(string) + "; \n";

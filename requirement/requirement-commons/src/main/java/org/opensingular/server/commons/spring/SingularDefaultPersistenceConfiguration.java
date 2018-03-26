@@ -16,31 +16,22 @@
 
 package org.opensingular.server.commons.spring;
 
-import java.util.Arrays;
-import java.util.List;
+import java.nio.charset.StandardCharsets;
 import java.util.Optional;
-import java.util.Properties;
-import javax.annotation.Nonnull;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import com.google.common.base.Joiner;
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.SQLServer2008Dialect;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-import org.opensingular.server.commons.exception.ResourceDatabasePopularException;
 import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.spring.database.SingularDataBaseEnum;
-import org.opensingular.server.commons.spring.database.SingularDataBaseSuport;
+import org.opensingular.server.commons.spring.database.AbstractResourceDatabasePopulator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jndi.JndiTemplate;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
@@ -52,6 +43,18 @@ import static org.opensingular.lib.commons.base.SingularProperties.JNDI_DATASOUR
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularDefaultPersistenceConfiguration implements Loggable {
 
+
+    @Bean
+    public DataSourceInitializer scriptsInitializer(final DataSource dataSource,
+            final AbstractResourceDatabasePopulator databasePopulator) {
+        final DataSourceInitializer initializer = new DataSourceInitializer();
+        databasePopulator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
+        initializer.setDataSource(dataSource);
+        initializer.setDatabasePopulator(databasePopulator);
+        initializer.setEnabled(getConfigureDatabaseResource().isDatabaseInitializerEnabled());
+        return initializer;
+    }
+
     /**
      * Responsavel por criar um DataBasePopulator de acordo com o dialect informado.
      * Favor olhar o metodo getSupportedDatabases() para maiores informações.
@@ -59,26 +62,8 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
      * @return retorna o dataBasePopulator especifico de acordo com o dialect.
      */
     @Bean
-    private ResourceDatabasePopulator databasePopulator() {
-
-        if (SqlUtil.useEmbeddedDatabase()) {
-            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
-        }
-        return getSupportedDatabases()
-                .stream()
-                .filter(f -> f.isDialectSupported(getHibernateDialect()))
-                .findFirst()
-                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
-                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in " + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
-    }
-
-    @Bean
-    public DataSourceInitializer scriptsInitializer(final DataSource dataSource, final ResourceDatabasePopulator databasePopulator) {
-        final DataSourceInitializer initializer = new DataSourceInitializer();
-        initializer.setDataSource(dataSource);
-        initializer.setDatabasePopulator(databasePopulator);
-        initializer.setEnabled(isDatabaseInitializerEnabled());
-        return initializer;
+    private AbstractResourceDatabasePopulator databasePopulator() {
+        return getConfigureDatabaseResource().databasePopulator();
     }
 
     @Bean
@@ -120,16 +105,18 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     }
 
     protected String getUrlConnection() {
-        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000";
+        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
     }
 
     @Bean
     @DependsOn("scriptsInitializer")
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
+
+
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
-        sessionFactoryBean.setHibernateProperties(hibernateProperties());
-        sessionFactoryBean.setPackagesToScan(hibernatePackagesToScan());
+        sessionFactoryBean.setHibernateProperties(getConfigureDatabaseResource().getHibernateProperties());
+        sessionFactoryBean.setPackagesToScan(getConfigureDatabaseResource().getHibernatePackagesToScan());
         Optional<String> schemaName = SingularProperties.getOpt(CUSTOM_SCHEMA_NAME);
         if (schemaName.isPresent()) {
             sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor());
@@ -140,6 +127,10 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return sessionFactoryBean;
     }
 
+    public ConfigureDatabaseResource getConfigureDatabaseResource() {
+        return new ConfigureDatabaseResource();
+    }
+
     @Bean
     public HibernateTransactionManager transactionManager(final SessionFactory sessionFactory, final DataSource dataSource) {
         final HibernateTransactionManager tx = new HibernateTransactionManager(sessionFactory);
@@ -147,57 +138,5 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return tx;
     }
 
-
-    protected String[] hibernatePackagesToScan() {
-        return new String[]{
-                "org.opensingular.flow.persistence.entity",
-                "org.opensingular.server.commons.persistence.entity",
-                "org.opensingular.app.commons.mail.persistence.entity",
-                "org.opensingular.form.persistence.entity"};
-    }
-
-    protected Properties hibernateProperties() {
-        final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", getHibernateDialect().getName());
-        hibernateProperties.setProperty("hibernate.connection.isolation", "2");
-        hibernateProperties.setProperty("hibernate.jdbc.batch_size", "30");
-        hibernateProperties.setProperty("hibernate.show_sql", "false");
-        hibernateProperties.setProperty("hibernate.format_sql", "true");
-        hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
-        hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
-        hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
-        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", getImportFiles());
-        if (isDatabaseInitializerEnabled()) {
-            hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        }
-        /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
-        hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
-        hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
-        return hibernateProperties;
-    }
-
-    protected String getImportFiles(String... directoryAndFile) {
-        return Joiner.on(", ").join(directoryAndFile);
-    }
-
-    @Nonnull
-    protected Class<? extends Dialect> getHibernateDialect() {
-        return SQLServer2008Dialect.class;
-    }
-
-    protected boolean isDatabaseInitializerEnabled() {
-        return !SingularProperties.get().isFalse("singular.enabled.h2.inserts");
-    }
-
-    /**
-     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
-     *
-     * @return Lista de Data Base suportado pelo projeto.
-     * @See SingularDataBaseEnum
-     */
-    protected List<SingularDataBaseSuport> getSupportedDatabases() {
-        return Arrays.asList(SingularDataBaseEnum.values());
-    }
 
 }
