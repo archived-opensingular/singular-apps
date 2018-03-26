@@ -92,7 +92,7 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         try {
             getLogger().warn("Usando datasource banco embarcado H2");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
-            dataSource.setJdbcUrl(getUrlConnection());
+            dataSource.setJdbcUrl(getConfigureDatabaseResource().getUrlConnection());
 
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
@@ -104,9 +104,6 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         }
     }
 
-    protected String getUrlConnection() {
-        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
-    }
 
     @Bean
     @DependsOn("scriptsInitializer")

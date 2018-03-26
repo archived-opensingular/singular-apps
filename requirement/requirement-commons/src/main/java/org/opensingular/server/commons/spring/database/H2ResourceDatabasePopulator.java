@@ -1,5 +1,6 @@
 package org.opensingular.server.commons.spring.database;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
@@ -32,9 +33,10 @@ public class H2ResourceDatabasePopulator extends AbstractResourceDatabasePopulat
 
     @Override
     public List<String> getScriptsPath() {
-        List<String> scriptsPath = super.getScriptsPath();
-        scriptsPath.add("classpath:db/ddl/h2/drop-all.sql");
+        List<String> scriptsPath = new ArrayList<>();
+        scriptsPath.add("db/ddl/h2/drop-all.sql");
         scriptsPath.add("db/ddl/h2/create-schema.sql");
+        scriptsPath.addAll(super.getScriptsPath());
         scriptsPath.add("db/ddl/h2/create-function.sql");
         scriptsPath.add("db/ddl/oracle/create-sequence.sql");
         return scriptsPath;

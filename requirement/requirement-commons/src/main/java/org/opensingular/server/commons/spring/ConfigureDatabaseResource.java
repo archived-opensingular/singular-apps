@@ -25,6 +25,10 @@ public class ConfigureDatabaseResource {
                 "org.opensingular.form.persistence.entity"};
     }
 
+    protected String getUrlConnection() {
+        return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
+    }
+
     public Properties getHibernateProperties() {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", getHibernateDialect().getName());
