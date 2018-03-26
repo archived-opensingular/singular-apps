@@ -11,22 +11,21 @@ public class OracleResourceDatabasePopulator extends AbstractResourceDatabasePop
     @Value("classpath:db/ddl/oracle/create-function.sql")
     private Resource functionDateDiff;
 
-    @Value("classpath:db/ddl/oracle/create-sequence.sql")
-    private Resource createSequence;
-
+    @Value("classpath:db/ddl/oracle/create-table-actor.sql")
+    private Resource sqlCreateTableActor;
 
     @PostConstruct
     public void init() {
+        addScriptOnInitialize(sqlCreateTableActor);
         addScript(functionDateDiff);
-        addScript(createSequence);
         super.init();
     }
 
     @Override
     public List<String> getScriptsPath() {
         List<String> scriptsPath = super.getScriptsPath();
+        scriptsPath.add("db/ddl/oracle/create-table-actor.sql");
         scriptsPath.add("db/ddl/oracle/create-function.sql");
-        scriptsPath.add("db/ddl/oracle/create-sequence.sql");
         return scriptsPath;
     }
 

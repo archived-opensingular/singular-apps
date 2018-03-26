@@ -4,7 +4,7 @@
 /* Table: TB_ATOR                                               */
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_ATOR (
-   CO_ATOR  BIGINT       IDENTITY,
+   CO_ATOR  INTEGER     IDENTITY,
    CO_USUARIO           VARCHAR(60)          NOT NULL,
   CONSTRAINT PK_ATOR PRIMARY KEY (CO_ATOR)
 );

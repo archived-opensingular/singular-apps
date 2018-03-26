@@ -124,15 +124,20 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
         return sessionFactoryBean;
     }
 
-    public ConfigureDatabaseResource getConfigureDatabaseResource() {
-        return new ConfigureDatabaseResource();
-    }
-
     @Bean
     public HibernateTransactionManager transactionManager(final SessionFactory sessionFactory, final DataSource dataSource) {
         final HibernateTransactionManager tx = new HibernateTransactionManager(sessionFactory);
         tx.setDataSource(dataSource);
         return tx;
+    }
+
+    /**
+     * Metodo para ser sobrescito, para que cada projeto possa conter seu proprio dataBaseResource com as configurações
+     * do hibernate properties especificas.
+     * @return
+     */
+    protected ConfigureDatabaseResource getConfigureDatabaseResource() {
+        return new ConfigureDatabaseResource();
     }
 
 
