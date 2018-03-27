@@ -85,7 +85,7 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
-        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "flase");
+        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "false");
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         return hibernateProperties;
     }
@@ -103,7 +103,6 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
             getLogger().warn("Usando datasource banco embarcado H2");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
             dataSource.setJdbcUrl("jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
-
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
             dataSource.setDriverClassName("org.h2.Driver");
@@ -114,22 +113,14 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         }
     }
 
+    @Value("classpath:create-scrips-email-test.sql")
+    private Resource sqlScriptsEmailTest;
 
-    @Value("classpath:drops.sql")
-    private Resource drops;
-
-    @Value("classpath:create-schema.sql")
-    private Resource sqlSchema;
-
-    @Value("classpath:create-sequence.sql")
-    private Resource sqlSequence;
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        populator.addScript(drops);
-        populator.addScript(sqlSchema);
-        populator.addScript(sqlSequence);
+        populator.addScript(sqlScriptsEmailTest);
         return populator;
     }
 

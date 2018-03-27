@@ -1,3 +1,7 @@
+drop all objects;
+
+CREATE SCHEMA if not exists DBSINGULAR;
+
 /*Esse Script é um default, provavelmente deverá ser alterado para suportar o ator especifico do cliente.*/
 
 /*==============================================================*/
@@ -21,3 +25,4 @@ CREATE SEQUENCE DBSINGULAR.SQ_CO_ATOR  START WITH 1 INCREMENT BY 1;
 
 
 ALTER TABLE DBSINGULAR.TB_ATOR ALTER COLUMN CO_ATOR BIGINT NOT NULL;
+
