@@ -2,12 +2,12 @@ package org.opensingular.server.commons.spring;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Joiner;
-import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.SQLServer2008Dialect;
 import org.opensingular.lib.commons.base.SingularProperties;
@@ -16,7 +16,6 @@ import org.opensingular.server.commons.exception.ResourceDatabasePopularExceptio
 import org.opensingular.server.commons.spring.database.AbstractResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.SingularDataBaseEnum;
 import org.opensingular.server.commons.spring.database.SingularDataBaseSuport;
-import org.springframework.core.io.Resource;
 
 public class ConfigureDatabaseResource {
 
@@ -43,7 +42,8 @@ public class ConfigureDatabaseResource {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", getImportFiles());
+        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", getFormatImporFiles());
+        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor"); //Propriedade necessária para aceitar formatação das linhas dos import_files
         if (isDatabaseInitializerEnabled()) {
             hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         } else {
@@ -55,8 +55,15 @@ public class ConfigureDatabaseResource {
         return hibernateProperties;
     }
 
-    public String getImportFiles(String... directoryAndFile) {
-        return Joiner.on(", ").join(directoryAndFile);
+    private String getFormatImporFiles() {
+        List<String> listOrdenada = getImportFiles();
+        //O hibernate executa os scripts na ordem reversa que é colocado na lista.
+        listOrdenada.sort(Collections.reverseOrder());
+        return Joiner.on(", ").join(listOrdenada);
+    }
+
+    public List<String> getImportFiles(String... directoryAndFile) {
+        return new ArrayList<>();
     }
 
     @Nonnull
@@ -90,26 +97,18 @@ public class ConfigureDatabaseResource {
      * @return retorna o dataBasePopulator especifico de acordo com o dialect.
      */
     AbstractResourceDatabasePopulator databasePopulator() {
-        AbstractResourceDatabasePopulator databasePopulator;
         if (SqlUtil.useEmbeddedDatabase()) {
-            databasePopulator = SingularDataBaseEnum.H2.getPopulatorBeanInstance();
-        } else {
-            databasePopulator = getSupportedDatabases()
-                    .stream()
-                    .filter(f -> f.isDialectSupported(getHibernateDialect()))
-                    .findFirst()
-                    .map(SingularDataBaseSuport::getPopulatorBeanInstance)
-                    .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in "
-                            + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
+            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
         }
-        if (CollectionUtils.isNotEmpty(getInsertScriptResources())) {
-            getInsertScriptResources().forEach(databasePopulator::addScript);
-        }
-        return databasePopulator;
+        return getSupportedDatabases()
+                .stream()
+                .filter(f -> f.isDialectSupported(getHibernateDialect()))
+                .findFirst()
+                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
+                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in "
+                        + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
+
     }
 
-    public List<Resource> getInsertScriptResources() {
-        return new ArrayList<>();
-    }
 
 }
