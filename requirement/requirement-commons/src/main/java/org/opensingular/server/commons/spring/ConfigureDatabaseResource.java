@@ -9,7 +9,7 @@ import javax.annotation.Nonnull;
 
 import com.google.common.base.Joiner;
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.SQLServer2008Dialect;
+import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.server.commons.exception.ResourceDatabasePopularException;
@@ -68,7 +68,7 @@ public class ConfigureDatabaseResource {
 
     @Nonnull
     public Class<? extends Dialect> getHibernateDialect() {
-        return SQLServer2008Dialect.class;
+        return Oracle10gDialect.class;
     }
 
     public boolean isDatabaseInitializerEnabled() {

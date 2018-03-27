@@ -6,7 +6,7 @@ import org.hibernate.dialect.Dialect;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
-import org.opensingular.server.commons.spring.database.SingularSchemaExport;
+import org.opensingular.server.commons.test.db.SingularSchemaExport;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
