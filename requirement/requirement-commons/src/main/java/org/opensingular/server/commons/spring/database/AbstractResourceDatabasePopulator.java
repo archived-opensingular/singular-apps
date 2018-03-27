@@ -5,14 +5,10 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 
 public abstract class AbstractResourceDatabasePopulator extends ResourceDatabasePopulator {
-
-    @Value("classpath:db/ddl/create-table-actor.sql")
-    private Resource sqlCreateTableActor;
 
 
     private List<Resource> scripts = new ArrayList<>();
@@ -20,7 +16,6 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
     @PostConstruct
     public void init() {
         setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        addScriptOnInitialize(sqlCreateTableActor);
         scripts.forEach(s -> addScriptOnInitialize(s));
         scripts.clear();
         setContinueOnError(true);
@@ -36,8 +31,6 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
     }
 
     public List<String> getScriptsPath(){
-        List<String> scriptsPath = new ArrayList<>();
-        scriptsPath.add("db/ddl/create-table-actor.sql");
-        return scriptsPath;
+        return new ArrayList<>();
     }
 }

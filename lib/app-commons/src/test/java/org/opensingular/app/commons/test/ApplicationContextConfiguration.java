@@ -30,7 +30,6 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
-import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -87,9 +86,7 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "flase");
-        if (SqlUtil.useEmbeddedDatabase()) {
-            hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
-        }
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         return hibernateProperties;
     }
 
@@ -117,36 +114,22 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         }
     }
 
-    @Value("classpath:db/ddl/create-email-sequences.sql")
-    private Resource emailSequences;
-
-    @Value("classpath:db/ddl/create-tables-emails.sql")
-    private Resource emailTables;
 
     @Value("classpath:drops.sql")
     private Resource drops;
 
-    @Value("classpath:create-tables.sql")
-    private Resource sqlCreateTablesForm;
-
-    @Value("classpath:create-schema-drop-all.sql")
-    private Resource sqlCreateSequencesForm;
+    @Value("classpath:create-schema.sql")
+    private Resource sqlSchema;
 
     @Value("classpath:create-sequence.sql")
     private Resource sqlSequence;
 
-
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        populator.addScript(sqlCreateSequencesForm);
-        populator.addScript(sqlCreateTablesForm);
-        populator.addScript(emailTables);
-        populator.addScript(emailSequences);
-
-        if (SqlUtil.useEmbeddedDatabase()) {
-            populator.addScript(sqlSequence);
-        }
+        populator.addScript(drops);
+        populator.addScript(sqlSchema);
+        populator.addScript(sqlSequence);
         return populator;
     }
 

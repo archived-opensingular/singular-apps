@@ -1,11 +1,13 @@
 package org.opensingular.server.commons.spring;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import javax.annotation.Nonnull;
 
 import com.google.common.base.Joiner;
+import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.SQLServer2008Dialect;
 import org.opensingular.lib.commons.base.SingularProperties;
@@ -14,10 +16,11 @@ import org.opensingular.server.commons.exception.ResourceDatabasePopularExceptio
 import org.opensingular.server.commons.spring.database.AbstractResourceDatabasePopulator;
 import org.opensingular.server.commons.spring.database.SingularDataBaseEnum;
 import org.opensingular.server.commons.spring.database.SingularDataBaseSuport;
+import org.springframework.core.io.Resource;
 
 public class ConfigureDatabaseResource {
 
-    public String[] getHibernatePackagesToScan() {
+    protected String[] getHibernatePackagesToScan() {
         return new String[]{
                 "org.opensingular.flow.persistence.entity",
                 "org.opensingular.server.commons.persistence.entity",
@@ -29,7 +32,7 @@ public class ConfigureDatabaseResource {
         return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
     }
 
-    public Properties getHibernateProperties() {
+    protected Properties getHibernateProperties() {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", getHibernateDialect().getName());
         hibernateProperties.setProperty("hibernate.connection.isolation", "2");
@@ -43,6 +46,8 @@ public class ConfigureDatabaseResource {
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", getImportFiles());
         if (isDatabaseInitializerEnabled()) {
             hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+        } else {
+            hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "update");
         }
         /*não utilizar a singleton region factory para não conflitar com o cache do singular-server */
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
@@ -63,8 +68,8 @@ public class ConfigureDatabaseResource {
         return !SingularProperties.get().isFalse("singular.enabled.h2.inserts");
     }
 
-    public List<String> getScriptsPath(){
-         return databasePopulator().getScriptsPath();
+    public List<String> getScriptsPath() {
+        return databasePopulator().getScriptsPath();
     }
 
     /**
@@ -85,15 +90,26 @@ public class ConfigureDatabaseResource {
      * @return retorna o dataBasePopulator especifico de acordo com o dialect.
      */
     AbstractResourceDatabasePopulator databasePopulator() {
-
+        AbstractResourceDatabasePopulator databasePopulator;
         if (SqlUtil.useEmbeddedDatabase()) {
-            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
+            databasePopulator = SingularDataBaseEnum.H2.getPopulatorBeanInstance();
+        } else {
+            databasePopulator = getSupportedDatabases()
+                    .stream()
+                    .filter(f -> f.isDialectSupported(getHibernateDialect()))
+                    .findFirst()
+                    .map(SingularDataBaseSuport::getPopulatorBeanInstance)
+                    .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in "
+                            + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
         }
-        return getSupportedDatabases()
-                .stream()
-                .filter(f -> f.isDialectSupported(getHibernateDialect()))
-                .findFirst()
-                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
-                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in " + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
+        if (CollectionUtils.isNotEmpty(getInsertScriptResources())) {
+            getInsertScriptResources().forEach(databasePopulator::addScript);
+        }
+        return databasePopulator;
     }
+
+    public List<Resource> getInsertScriptResources() {
+        return new ArrayList<>();
+    }
+
 }

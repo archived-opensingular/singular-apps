@@ -23,9 +23,13 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.RESTPaths;
 import org.opensingular.server.commons.exception.ExportScriptGenerationException;
 import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 
 public class SingularSchemaExport implements Loggable {
+
+    private static final Logger logger = LoggerFactory.getLogger(SingularSchemaExport.class);
 
     /**
      * Método com objeto de gerar o script de toda a base do singular, inclusive com os inserts.
@@ -85,7 +89,7 @@ public class SingularSchemaExport implements Loggable {
                     String content = IOUtils.toString(stream, "UTF-8");
                     scriptsText.append(content);
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    logger.error(e.getMessage(), e);
                 }
             });
         }
