@@ -177,6 +177,7 @@ public class CrudListContent extends CrudShellContent {
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    filterPanel.getInstance().clearInstance();
                     modalFilter.hide(target);
                 }
             };
