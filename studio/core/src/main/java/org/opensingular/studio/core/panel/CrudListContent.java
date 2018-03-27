@@ -34,7 +34,7 @@ import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.component.BFModalWindow;
-import org.opensingular.form.wicket.component.SingularButton;
+import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.commons.ui.Icon;
@@ -160,17 +160,24 @@ public class CrudListContent extends CrudShellContent {
             filterPanel.setNested(true);
             modalFilter.setBody(filterPanel);
 
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularButton("btnPesquisar", filterPanel.getInstanceModel()) {
+            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", filterPanel.getInstanceModel()) {
                 @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                     target.add(CrudListContent.this);
+                }
+
+                @Override
+                protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                    super.onValidationError(target, form, instanceModel);
                     modalFilter.hide(target);
+                    modalFilter.show(target);
                 }
             });
 
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    filterPanel.getInstance().clearInstance();
                     modalFilter.hide(target);
                 }
             };
