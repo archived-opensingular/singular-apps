@@ -46,8 +46,9 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.server.commons.exception.SingularServerException;
-import org.opensingular.server.commons.service.RequirementUtil;
+import org.opensingular.requirement.commons.exception.SingularServerException;
+import org.opensingular.requirement.commons.service.RequirementUtil;
+
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISICAO")

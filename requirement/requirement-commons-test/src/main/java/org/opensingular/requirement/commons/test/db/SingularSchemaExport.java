@@ -20,9 +20,11 @@ import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.hibernate.engine.jdbc.internal.Formatter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.RESTPaths;
-import org.opensingular.server.commons.exception.ExportScriptGenerationException;
-import org.opensingular.server.commons.spring.SingularDefaultPersistenceConfiguration;
+
+import org.opensingular.requirement.commons.RESTPaths;
+import org.opensingular.requirement.commons.exception.ExportScriptGenerationException;
+
+import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;

@@ -30,7 +30,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.server.commons.spring.database.AbstractResourceDatabasePopulator;
+import org.opensingular.requirement.commons.spring.database.AbstractResourceDatabasePopulator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
