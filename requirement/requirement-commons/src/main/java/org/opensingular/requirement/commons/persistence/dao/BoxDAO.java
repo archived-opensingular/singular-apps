@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.requirement.commons.persistence.dao.server;
+package org.opensingular.requirement.commons.persistence.dao;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;

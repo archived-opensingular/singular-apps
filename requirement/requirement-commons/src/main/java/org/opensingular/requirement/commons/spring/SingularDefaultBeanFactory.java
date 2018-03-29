@@ -66,7 +66,7 @@ import org.opensingular.requirement.commons.persistence.dao.form.FormRequirement
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementContentHistoryDAO;
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.requirement.commons.persistence.dao.server.BoxDAO;
+import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.DefaultRequirementSender;
 import org.opensingular.requirement.commons.service.DefaultRequirementService;

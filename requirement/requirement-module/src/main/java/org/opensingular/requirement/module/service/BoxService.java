@@ -22,7 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.persistence.dao.server.BoxDAO;
+import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.entity.form.BoxEntity;
 import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
