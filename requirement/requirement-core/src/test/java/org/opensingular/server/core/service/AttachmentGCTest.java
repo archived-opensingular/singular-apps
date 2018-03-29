@@ -18,12 +18,6 @@
 
 package org.opensingular.server.core.service;
 
-import java.sql.SQLException;
-import java.util.Calendar;
-import javax.inject.Inject;
-import javax.sql.rowset.serial.SerialBlob;
-import javax.transaction.Transactional;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.flow.schedule.IScheduleData;
@@ -32,6 +26,12 @@ import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.server.core.test.SingularServerBaseTest;
+
+import javax.inject.Inject;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.transaction.Transactional;
+import java.sql.SQLException;
+import java.util.Calendar;
 
 public class AttachmentGCTest extends SingularServerBaseTest {
     @Inject
@@ -80,7 +80,7 @@ public class AttachmentGCTest extends SingularServerBaseTest {
         entity.setHashSha1("SHA1");
         entity.setName("name");
         entity.setSize(3512);
-        entity.setCodContent(attachment);
+        entity.setCodContent(attachment.getCod());
 
         attachmentDao.insert(entity);
     }
