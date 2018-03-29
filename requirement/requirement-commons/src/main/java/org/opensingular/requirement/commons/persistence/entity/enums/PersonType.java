@@ -24,7 +24,7 @@ public enum PersonType {
     JURIDICA("J", "Jurídica"),
     FISICA("F", "Física");
 
-    public static final String CLASS_NAME = "PersonType";
+    public static final String CLASS_NAME = "org.opensingular.requirement.commons.persistence.entity.enums.PersonType";
 
     private String cod;
     private String descricao;
