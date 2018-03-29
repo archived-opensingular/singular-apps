@@ -45,9 +45,9 @@ import org.opensingular.requirement.commons.persistence.entity.form.RequirementE
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
-import org.opensingular.server.commons.SPackageFOO;
-import org.opensingular.server.commons.test.FOOFlow;
-import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.commons.SPackageFOO;
+import org.opensingular.requirement.commons.test.FOOFlow;
+import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
 
 import javax.inject.Inject;

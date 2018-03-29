@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.opensingular.requirement.commons.config.SingularInitializer;
 import org.opensingular.requirement.commons.test.SingularServletContextMock;
 
-import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.requirement.commons.test.CommonsInitializerMock;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletException;

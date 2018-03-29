@@ -38,8 +38,8 @@ import java.io.Serializable;
  * {@link org.opensingular.lib.commons.extension.SingularExtensionUtil}<br />
  * <p>
  * Classes no qual o botão será avaliado: <br />
- * {@link org.opensingular.server.commons.wicket.view.form.AbstractFormPage#buildExtensionButtons}<br />
- * {@link org.opensingular.server.commons.wicket.view.form.ExtensionButtonsPanel}<br />
+ * {@link org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage#buildExtensionButtons}<br />
+ * {@link org.opensingular.requirement.commons.wicket.view.form.ExtensionButtonsPanel}<br />
  * <p>
  * Classe comum de extensões: <br />
  * {@link org.opensingular.lib.commons.extension.SingularExtension}<br />
@@ -53,10 +53,10 @@ public interface RequirementButtonExtension extends SingularExtension, Serializa
     /**
      * Executado quando o botão é disparado
      *
-     * @see org.opensingular.server.commons.wicket.view.extension.RequirementButtonExtension.ButtonExtensionActionContext
-     * @see org.opensingular.server.commons.wicket.view.form.AbstractFormPage
-     * @see org.opensingular.server.commons.wicket.view.form.ExtensionButtonsPanel
-     * @see org.opensingular.server.commons.wicket.view.form.ExtensionButtonsPanel#addButtons()
+     * @see org.opensingular.requirement.commons.wicket.view.extension.RequirementButtonExtension.ButtonExtensionActionContext
+     * @see org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage
+     * @see org.opensingular.requirement.commons.wicket.view.form.ExtensionButtonsPanel
+     * @see org.opensingular.requirement.commons.wicket.view.form.ExtensionButtonsPanel#addButtons()
      */
     void onAction(ButtonExtensionActionContext actionContext);
 
@@ -65,7 +65,7 @@ public interface RequirementButtonExtension extends SingularExtension, Serializa
      * ira executar o método {@link RequirementButtonExtension#onAction} caso o form esteja valido.
      *
      * @return se deve validar o formulario
-     * @see org.opensingular.server.commons.wicket.view.form.ExtensionButtonsPanel#addButtons
+     * @see org.opensingular.requirement.commons.wicket.view.form.ExtensionButtonsPanel#addButtons
      */
     default boolean shouldValidateForm() {
         return false;

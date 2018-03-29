@@ -23,7 +23,7 @@ import javax.servlet.ServletException;
 
 import org.opensingular.requirement.commons.config.SingularInitializer;
 
-import org.opensingular.server.commons.test.AbstractSingularContextLoader;
+import org.opensingular.requirement.commons.test.AbstractSingularContextLoader;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 

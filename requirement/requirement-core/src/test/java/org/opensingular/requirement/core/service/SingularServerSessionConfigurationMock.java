@@ -20,7 +20,7 @@ package org.opensingular.requirement.core.service;
 
 import org.opensingular.requirement.core.service.SingularServerSessionConfiguration;
 
-import org.opensingular.server.commons.test.WorkspaceMetadataMockBean;
+import org.opensingular.requirement.commons.test.WorkspaceMetadataMockBean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;

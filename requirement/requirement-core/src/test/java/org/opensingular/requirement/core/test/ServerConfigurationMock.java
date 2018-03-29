@@ -22,7 +22,7 @@ import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 
 import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.opensingular.requirement.core.service.ServerMenuService;
-import org.opensingular.server.commons.test.CommonsConfigurationMock;
+import org.opensingular.requirement.commons.test.CommonsConfigurationMock;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

@@ -27,15 +27,15 @@ import org.opensingular.requirement.commons.config.SpringHibernateInitializer;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.core.config.AttachmentGCSchedulerInitializer;
 import org.opensingular.requirement.core.config.MailSenderSchedulerInitializer;
-import org.opensingular.server.commons.test.CommonsApplicationMock;
-import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.requirement.commons.test.CommonsApplicationMock;
+import org.opensingular.requirement.commons.test.CommonsInitializerMock;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
 public class ServerInitializerMock extends CommonsInitializerMock {
 
     public static final String   TESTE                      = "Teste";
-    public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.server.commons.test"};
+    public static final String[] DEFINITIONS_PACKS_ARRAY    = new String[]{"org.opensingular.requirement.commons.test"};
     public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
