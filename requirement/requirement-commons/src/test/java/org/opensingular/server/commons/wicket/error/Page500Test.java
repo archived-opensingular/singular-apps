@@ -24,7 +24,8 @@ import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.util.tester.WicketTestCase;
 import org.junit.Test;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
-import org.opensingular.server.commons.wicket.view.template.Footer;
+import org.opensingular.requirement.commons.wicket.error.Page500;
+import org.opensingular.requirement.commons.wicket.view.template.Footer;
 
 public class Page500Test extends WicketTestCase {
 

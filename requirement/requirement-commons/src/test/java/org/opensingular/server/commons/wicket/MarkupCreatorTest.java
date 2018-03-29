@@ -20,8 +20,8 @@ package org.opensingular.server.commons.wicket;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.wicket.builder.HTMLParameters;
-import org.opensingular.server.commons.wicket.builder.MarkupCreator;
+import org.opensingular.requirement.commons.wicket.builder.HTMLParameters;
+import org.opensingular.requirement.commons.wicket.builder.MarkupCreator;
 
 public class MarkupCreatorTest {
 

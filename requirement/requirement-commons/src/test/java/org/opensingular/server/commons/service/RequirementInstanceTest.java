@@ -25,9 +25,12 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
+import org.opensingular.requirement.commons.service.DefaultRequirementService;
+import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.server.commons.SPackageFOO;
 import org.opensingular.server.commons.test.FOOFlowWithTransition;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;

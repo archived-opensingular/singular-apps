@@ -20,12 +20,13 @@ package org.opensingular.server.commons.test;
 
 
 import org.apache.wicket.Page;
-import org.opensingular.server.commons.wicket.SingularServerApplication;
+import org.opensingular.requirement.commons.test.SingularTestRequestCycleListener;
+import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 
 import javax.inject.Named;
 
 @Named
-public class CommonsApplicationMock extends SingularServerApplication {
+public class CommonsApplicationMock extends SingularRequirementApplication {
 
     @Override
     public void init() {

@@ -26,7 +26,9 @@ import org.apache.wicket.protocol.http.mock.MockServletContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
-import org.opensingular.server.commons.config.ServerContext;
+import org.opensingular.requirement.commons.config.ServerContext;
+import org.opensingular.requirement.commons.spring.security.config.cas.util.SSOConfigurableFilter;
+import org.opensingular.requirement.commons.spring.security.config.cas.util.SSOFilter;
 import org.springframework.mock.web.MockFilterConfig;
 
 import javax.servlet.FilterChain;

@@ -25,18 +25,25 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-import org.opensingular.server.commons.admin.healthsystem.extension.*;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.AdministrationEntryExtension;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.CacheAdminEntry;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.DatabaseTablesAdminEntry;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.HtmlToPdfAdminEntry;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.JobsAdminEntry;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.PermissionAdminEntry;
+import org.opensingular.requirement.commons.admin.healthsystem.extension.WebAdminEntry;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.commons.admin.healthsystem.HealthSystemPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import static org.opensingular.server.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
+import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class HealthSystemPageTest extends SingularCommonsBaseTest {

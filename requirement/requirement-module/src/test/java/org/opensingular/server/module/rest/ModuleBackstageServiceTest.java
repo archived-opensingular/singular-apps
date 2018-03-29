@@ -24,13 +24,14 @@ import javax.inject.Inject;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.opensingular.server.commons.box.BoxItemDataList;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.box.BoxItemDataList;
+import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.rest.ModuleBackstageService;
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.commons.config.PServerContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

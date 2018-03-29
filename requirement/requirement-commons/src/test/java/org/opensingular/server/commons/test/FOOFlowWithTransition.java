@@ -26,8 +26,8 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
-import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
-import org.opensingular.server.commons.wicket.view.form.FormPage;
+import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
+import org.opensingular.requirement.commons.wicket.view.form.FormPage;
 
 import javax.annotation.Nonnull;
 

@@ -21,7 +21,7 @@ package org.opensingular.server.commons.admin.healthsystem.docs;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
-import org.opensingular.server.commons.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
+import org.opensingular.requirement.commons.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
 
 import java.io.CharArrayWriter;
 import java.nio.charset.Charset;

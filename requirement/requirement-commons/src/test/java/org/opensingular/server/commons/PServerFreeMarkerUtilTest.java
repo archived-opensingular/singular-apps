@@ -23,7 +23,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.form.*;
 import org.opensingular.form.type.core.STypeString;
-import org.opensingular.server.commons.PServerFreeMarkerUtil;
+import org.opensingular.requirement.commons.PServerFreeMarkerUtil;
 
 import javax.annotation.Nonnull;
 import java.util.HashMap;

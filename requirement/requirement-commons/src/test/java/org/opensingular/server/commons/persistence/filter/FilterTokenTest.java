@@ -20,6 +20,7 @@ package org.opensingular.server.commons.persistence.filter;
 
 import org.hamcrest.Matchers;
 import org.junit.Test;
+import org.opensingular.requirement.commons.persistence.filter.FilterToken;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;

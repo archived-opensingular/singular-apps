@@ -19,9 +19,10 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.server.commons.admin.healthsystem.validation.database.IValidatorDatabase;
-import org.opensingular.server.commons.spring.security.AuthorizationService;
-import org.opensingular.server.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.test.ValidatorOracleMock;
+import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;

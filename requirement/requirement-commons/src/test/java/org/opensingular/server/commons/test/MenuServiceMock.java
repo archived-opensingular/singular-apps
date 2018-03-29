@@ -19,9 +19,9 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.server.commons.service.dto.BoxConfigurationData;
-import org.opensingular.server.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.commons.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 
 import javax.inject.Inject;
 import java.util.ArrayList;

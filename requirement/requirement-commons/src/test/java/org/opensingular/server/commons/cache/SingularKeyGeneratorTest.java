@@ -19,6 +19,7 @@
 package org.opensingular.server.commons.cache;
 
 import org.junit.Test;
+import org.opensingular.requirement.commons.cache.SingularKeyGenerator;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;

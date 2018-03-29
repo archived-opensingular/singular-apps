@@ -17,7 +17,7 @@
 package org.opensingular.server.commons.test;
 
 import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.server.commons.config.SingularInitializer;
+import org.opensingular.requirement.commons.config.SingularInitializer;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 

@@ -21,7 +21,8 @@ package org.opensingular.server.commons.wicket.view.util;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.form.FormAction;
+import org.opensingular.requirement.commons.form.FormAction;
+import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 public class ActionContextTest {
 

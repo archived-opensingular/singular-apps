@@ -21,9 +21,11 @@ package org.opensingular.server.commons.wicket.error;
 import org.apache.wicket.Page;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.requirement.commons.wicket.error.Page410;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

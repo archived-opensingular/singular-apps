@@ -18,13 +18,13 @@
 
 package org.opensingular.server.commons.test;
 
-import org.opensingular.server.commons.config.FlowInitializer;
-import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.config.PSingularInitializer;
-import org.opensingular.server.commons.config.PWebInitializer;
-import org.opensingular.server.commons.config.SchedulerInitializer;
-import org.opensingular.server.commons.config.SpringHibernateInitializer;
-import org.opensingular.server.commons.wicket.SingularServerApplication;
+import org.opensingular.requirement.commons.config.FlowInitializer;
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.PSingularInitializer;
+import org.opensingular.requirement.commons.config.PWebInitializer;
+import org.opensingular.requirement.commons.config.SchedulerInitializer;
+import org.opensingular.requirement.commons.config.SpringHibernateInitializer;
+import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
@@ -45,7 +45,7 @@ public class CommonsInitializerMock implements PSingularInitializer {
     public PWebInitializer webConfiguration() {
         return new PWebInitializer() {
             @Override
-            protected Class<? extends SingularServerApplication> getWicketApplicationClass(IServerContext context) {
+            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
                 return CommonsApplicationMock.class;
             }
         };

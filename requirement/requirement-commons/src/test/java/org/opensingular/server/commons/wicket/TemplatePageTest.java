@@ -24,9 +24,10 @@ import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

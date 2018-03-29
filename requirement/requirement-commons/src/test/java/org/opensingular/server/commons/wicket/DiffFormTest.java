@@ -26,17 +26,19 @@ import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+
+import org.opensingular.requirement.commons.persistence.dao.form.ApplicantDAO;
+import org.opensingular.requirement.commons.service.DefaultRequirementSender;
+import org.opensingular.requirement.commons.service.DefaultRequirementService;
+import org.opensingular.requirement.commons.service.RequirementInstance;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.commons.wicket.view.form.DiffFormPage;
+import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 import org.opensingular.server.commons.SPackageFOO;
-import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
-import org.opensingular.server.commons.service.DefaultRequirementSender;
-import org.opensingular.server.commons.service.DefaultRequirementService;
-import org.opensingular.server.commons.service.RequirementInstance;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.FOOFlowWithTransition;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.commons.wicket.view.form.DiffFormPage;
-import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

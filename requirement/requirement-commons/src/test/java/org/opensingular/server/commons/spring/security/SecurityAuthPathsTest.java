@@ -27,9 +27,9 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
-import org.opensingular.server.commons.spring.security.SecurityAuthPaths;
-import org.opensingular.server.commons.util.url.UrlToolkit;
-import org.opensingular.server.commons.util.url.UrlToolkitBuilder;
+import org.opensingular.requirement.commons.spring.security.SecurityAuthPaths;
+import org.opensingular.requirement.commons.util.url.UrlToolkit;
+import org.opensingular.requirement.commons.util.url.UrlToolkitBuilder;
 
 import static org.junit.Assert.*;
 

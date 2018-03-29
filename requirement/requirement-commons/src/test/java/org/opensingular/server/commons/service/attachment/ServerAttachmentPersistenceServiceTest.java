@@ -32,6 +32,8 @@ import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
+import org.opensingular.requirement.commons.service.attachment.FormAttachmentService;
+import org.opensingular.requirement.commons.service.attachment.ServerAttachmentPersistenceService;
 
 import java.util.Optional;
 

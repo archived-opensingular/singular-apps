@@ -20,9 +20,10 @@ package org.opensingular.server.commons.admin.healthsystem;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.persistence.dto.healthsystem.HealthInfoDTO;
-import org.opensingular.server.commons.service.HealthSystemDbService;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.HealthInfoDTO;
+import org.opensingular.requirement.commons.service.HealthSystemDbService;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 import javax.inject.Inject;
 

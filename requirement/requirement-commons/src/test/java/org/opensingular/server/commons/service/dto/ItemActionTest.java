@@ -20,12 +20,15 @@ package org.opensingular.server.commons.service.dto;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.requirement.commons.service.dto.BoxItemAction;
+import org.opensingular.requirement.commons.service.dto.ItemActionConfirmation;
+import org.opensingular.requirement.commons.service.dto.ItemActionType;
 
 public class ItemActionTest {
 
     @Test
     public void constructorTest(){
-        BoxItemAction action = new BoxItemAction();
+        BoxItemAction action  = new BoxItemAction();
         BoxItemAction action2 = new BoxItemAction();
         action2.setName("name");
         Assert.assertNotEquals(action, action2);

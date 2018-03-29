@@ -23,10 +23,10 @@ import java.util.Optional;
 import javax.inject.Named;
 
 import org.opensingular.form.SType;
-import org.opensingular.server.commons.flow.FlowResolver;
-import org.opensingular.server.commons.requirement.SingularRequirement;
-import org.opensingular.server.commons.service.SingularRequirementService;
-import org.opensingular.server.commons.wicket.view.util.ActionContext;
+import org.opensingular.requirement.commons.flow.FlowResolver;
+import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.commons.service.SingularRequirementService;
+import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 @Named
 public class SingularRequirementServiceMock implements SingularRequirementService {

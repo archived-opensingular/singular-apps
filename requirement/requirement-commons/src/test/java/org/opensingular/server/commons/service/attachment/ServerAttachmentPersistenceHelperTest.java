@@ -31,6 +31,8 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.SIAttachment;
 import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersistenceHelper;
+import org.opensingular.requirement.commons.service.attachment.IFormAttachmentService;
+import org.opensingular.requirement.commons.service.attachment.ServerAttachmentPersistenceHelper;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -20,10 +20,11 @@ package org.opensingular.server.commons.persistence.dao;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.persistence.dao.form.ApplicantDAO;
-import org.opensingular.server.commons.persistence.entity.enums.PersonType;
-import org.opensingular.server.commons.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.commons.persistence.dao.form.ApplicantDAO;
+import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
+import org.opensingular.requirement.commons.persistence.entity.form.ApplicantEntity;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;

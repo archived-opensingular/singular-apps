@@ -20,6 +20,7 @@ package org.opensingular.server.commons.spring.security;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
 public class SingularPermissionTest {
 

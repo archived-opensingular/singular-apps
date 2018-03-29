@@ -21,9 +21,11 @@ package org.opensingular.server.commons.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.server.commons.persistence.dao.ParameterDAO;
+import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.server.commons.persistence.entity.parameter.ParameterEntity;
+import org.opensingular.requirement.commons.persistence.entity.parameter.ParameterEntity;
+import org.opensingular.requirement.commons.service.ParameterService;
+
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
 

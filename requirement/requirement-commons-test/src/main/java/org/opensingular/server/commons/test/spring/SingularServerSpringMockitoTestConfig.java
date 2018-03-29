@@ -32,7 +32,7 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.test.ApplicationContextMock;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.server.commons.spring.SingularDefaultBeanFactory;
+import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;

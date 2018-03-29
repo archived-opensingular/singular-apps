@@ -24,10 +24,10 @@ import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
-import org.opensingular.server.commons.flow.SingularRequirementTaskPageStrategy;
-import org.opensingular.server.commons.flow.builder.RequirementFlowBuilder;
-import org.opensingular.server.commons.flow.builder.RequirementFlowDefinition;
-import org.opensingular.server.commons.wicket.view.form.FormPage;
+import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
+import org.opensingular.requirement.commons.flow.builder.RequirementFlowBuilder;
+import org.opensingular.requirement.commons.flow.builder.RequirementFlowDefinition;
+import org.opensingular.requirement.commons.wicket.view.form.FormPage;
 
 
 @DefinitionInfo("fooFlowCommons")

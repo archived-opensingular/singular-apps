@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
-import org.opensingular.server.commons.persistence.dao.flow.ActorDAO;
+import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;

@@ -20,11 +20,12 @@ package org.opensingular.server.commons.admin.healthsystem;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.opensingular.server.commons.admin.healthsystem.validation.database.IValidatorDatabase;
-import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
-import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
+import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.ColumnInfoDTO;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.TableInfoDTO;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;

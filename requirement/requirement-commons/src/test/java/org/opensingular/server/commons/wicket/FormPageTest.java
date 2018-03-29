@@ -34,16 +34,18 @@ import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
+
+import org.opensingular.requirement.commons.form.FormAction;
+import org.opensingular.requirement.commons.service.RequirementInstance;
+import org.opensingular.requirement.commons.service.RequirementService;
+
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.commons.wicket.error.Page500;
+import org.opensingular.requirement.commons.wicket.view.form.FormPage;
+import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 import org.opensingular.server.commons.SPackageFOO;
-import org.opensingular.server.commons.form.FormAction;
-import org.opensingular.server.commons.service.RequirementInstance;
-import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.test.CommonsApplicationMock;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
-import org.opensingular.server.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.server.commons.wicket.error.Page500;
-import org.opensingular.server.commons.wicket.view.form.FormPage;
-import org.opensingular.server.commons.wicket.view.util.ActionContext;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

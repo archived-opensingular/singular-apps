@@ -20,9 +20,10 @@ package org.opensingular.server.commons.admin.healthsystem;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.admin.healthsystem.validation.database.ValidatorFactory;
-import org.opensingular.server.commons.exception.SingularServerException;
+import org.opensingular.requirement.commons.admin.healthsystem.validation.database.ValidatorFactory;
+import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 public class ValidatorFactoryTest extends SingularCommonsBaseTest {
 

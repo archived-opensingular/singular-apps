@@ -26,8 +26,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.server.commons.service.dto.BoxItemAction;
-import org.opensingular.server.commons.service.dto.ItemBox;
+import org.opensingular.requirement.commons.jackson.IconJsonDeserializer;
+import org.opensingular.requirement.commons.jackson.IconJsonSerializer;
+import org.opensingular.requirement.commons.jackson.SingularObjectMapper;
+import org.opensingular.requirement.commons.service.dto.BoxItemAction;
+import org.opensingular.requirement.commons.service.dto.ItemBox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;

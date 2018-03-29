@@ -20,14 +20,11 @@ package org.opensingular.server.commons.admin.healthsystem;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.persistence.dto.healthsystem.ColumnInfoDTO;
-import org.opensingular.server.commons.persistence.dto.healthsystem.SequenceInfoDTO;
-import org.opensingular.server.commons.persistence.dto.healthsystem.TableInfoDTO;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.ColumnInfoDTO;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.SequenceInfoDTO;
+import org.opensingular.requirement.commons.persistence.dto.healthsystem.TableInfoDTO;
 
-import java.io.IOException;
 import java.math.BigDecimal;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.Arrays;
 
 public class HealthSystemDTOTest {

@@ -19,6 +19,8 @@
 package org.opensingular.server.commons.persistence.filter;
 
 import org.junit.Test;
+import org.opensingular.requirement.commons.persistence.filter.FilterToken;
+import org.opensingular.requirement.commons.persistence.filter.FilterTokenFactory;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.hamcrest.Matchers.equalTo;

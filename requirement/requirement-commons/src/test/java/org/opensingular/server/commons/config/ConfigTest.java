@@ -20,8 +20,10 @@ package org.opensingular.server.commons.config;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.server.commons.test.CommonsInitializerMock;
+import org.opensingular.server.commons.test.SingularCommonsBaseTest;
+
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;

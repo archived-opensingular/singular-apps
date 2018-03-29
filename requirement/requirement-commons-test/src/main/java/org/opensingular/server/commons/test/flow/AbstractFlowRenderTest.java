@@ -23,7 +23,7 @@ import org.opensingular.flow.core.variable.VarService;
 import org.opensingular.lib.commons.junit.AbstractTestTempFileSupport;
 import org.opensingular.lib.commons.junit.MockInjectorRule;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.server.commons.flow.JGraphFlowRenderer;
+import org.opensingular.requirement.commons.flow.JGraphFlowRenderer;
 
 import javax.annotation.Nonnull;
 
