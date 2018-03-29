@@ -24,6 +24,7 @@ import org.opensingular.requirement.commons.config.PSingularInitializer;
 import org.opensingular.requirement.commons.config.PWebInitializer;
 import org.opensingular.requirement.commons.config.SchedulerInitializer;
 import org.opensingular.requirement.commons.config.SpringHibernateInitializer;
+import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -62,6 +63,11 @@ public class CommonsInitializerMock implements PSingularInitializer {
             @Override
             protected String springMVCServletMapping() {
                 return SPRING_MVC_SERVLET_MAPPING;
+            }
+
+            @Override
+            protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
+              return SingularPersistenceConfigurationMock.class;
             }
         };
     }

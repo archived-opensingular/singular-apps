@@ -29,13 +29,20 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
 import org.opensingular.requirement.commons.exception.ResourceDatabasePopularException;
 import org.opensingular.requirement.commons.spring.database.AbstractResourceDatabasePopulator;
 import org.opensingular.requirement.commons.spring.database.SingularDataBaseEnum;
 import org.opensingular.requirement.commons.spring.database.SingularDataBaseSuport;
 
 public class ConfigureDatabaseResource {
+
+    public boolean isDatabaseInitializerEnabled() {
+        return !SingularProperties.get().isFalse("singular.enabled.h2.inserts");
+    }
+
+    public List<String> getScriptsPath() {
+        return databasePopulator().getScriptsPath();
+    }
 
     protected String[] getHibernatePackagesToScan() {
         return new String[]{
@@ -49,12 +56,57 @@ public class ConfigureDatabaseResource {
         return "jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
     }
 
-    protected Properties getHibernateProperties() {
+
+    protected boolean isHibernateShowSql(){
+        return false;
+    }
+
+    protected List<String> getImportFiles(String... directoryAndFile) {
+        return Arrays.asList(directoryAndFile);
+    }
+
+    @Nonnull
+    protected Class<? extends Dialect> getHibernateDialect() {
+        return Oracle10gDialect.class;
+    }
+
+    /**
+     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
+     *
+     * @return Lista de Data Base suportado pelo projeto.
+     * @See SingularDataBaseEnum
+     */
+    protected List<SingularDataBaseSuport> getSupportedDatabases() {
+        return Arrays.asList(SingularDataBaseEnum.values());
+    }
+
+    /**
+     * Responsavel por criar um DataBasePopulator de acordo com o dialect informado.
+     * Favor olhar o metodo getSupportedDatabases() para maiores informações.
+     *
+     * @return retorna o dataBasePopulator especifico de acordo com o dialect.
+     */
+    AbstractResourceDatabasePopulator databasePopulator() {
+        if (SqlUtil.useEmbeddedDatabase()) {
+            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
+        }
+        return getSupportedDatabases()
+                .stream()
+                .filter(f -> f.isDialectSupported(getHibernateDialect()))
+                .findFirst()
+                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
+                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in "
+                        + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
+
+    }
+
+    //Default para não permitir ser sobrescrito.
+    Properties getHibernateProperties() {
         final Properties hibernateProperties = new Properties();
         hibernateProperties.setProperty("hibernate.dialect", getHibernateDialect().getName());
         hibernateProperties.setProperty("hibernate.connection.isolation", "2");
         hibernateProperties.setProperty("hibernate.jdbc.batch_size", "30");
-        hibernateProperties.setProperty("hibernate.show_sql", "false");
+        hibernateProperties.setProperty("hibernate.show_sql", String.valueOf(isHibernateShowSql()));
         hibernateProperties.setProperty("hibernate.format_sql", "true");
         hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
@@ -78,54 +130,6 @@ public class ConfigureDatabaseResource {
         //O hibernate executa os scripts na ordem reversa que é colocado na lista.
         listOrdenada.sort(Collections.reverseOrder());
         return Joiner.on(", ").join(listOrdenada);
-    }
-
-    public List<String> getImportFiles(String... directoryAndFile) {
-        return Arrays.asList(directoryAndFile);
-    }
-
-    @Nonnull
-    public Class<? extends Dialect> getHibernateDialect() {
-        return Oracle10gDialect.class;
-    }
-
-    public boolean isDatabaseInitializerEnabled() {
-        return !SingularProperties.get().isFalse("singular.enabled.h2.inserts");
-    }
-
-    public List<String> getScriptsPath() {
-        return databasePopulator().getScriptsPath();
-    }
-
-    /**
-     * Retorna os DataBase Populator supportado ate o momento, caso seja necessário adicioanr alterar o SingularDataBaseEnum
-     *
-     * @return Lista de Data Base suportado pelo projeto.
-     * @See SingularDataBaseEnum
-     */
-    protected List<SingularDataBaseSuport> getSupportedDatabases() {
-        return Arrays.asList(SingularDataBaseEnum.values());
-    }
-
-
-    /**
-     * Responsavel por criar um DataBasePopulator de acordo com o dialect informado.
-     * Favor olhar o metodo getSupportedDatabases() para maiores informações.
-     *
-     * @return retorna o dataBasePopulator especifico de acordo com o dialect.
-     */
-    AbstractResourceDatabasePopulator databasePopulator() {
-        if (SqlUtil.useEmbeddedDatabase()) {
-            return SingularDataBaseEnum.H2.getPopulatorBeanInstance();
-        }
-        return getSupportedDatabases()
-                .stream()
-                .filter(f -> f.isDialectSupported(getHibernateDialect()))
-                .findFirst()
-                .map(SingularDataBaseSuport::getPopulatorBeanInstance)
-                .orElseThrow(() -> new ResourceDatabasePopularException("Dialect not Supported. Look for supported values in "
-                        + SingularDefaultPersistenceConfiguration.class + ".getSupportedDatabases()"));
-
     }
 
 

@@ -4,7 +4,7 @@
 /* Table: TB_ATOR                                               */
 /*==============================================================*/
 CREATE TABLE DBSINGULAR.TB_ATOR (
-   CO_ATOR  INTEGER,
+   CO_ATOR  INTEGER NOT NULL,
    CO_USUARIO           VARCHAR(60)          NOT NULL,
   CONSTRAINT PK_ATOR PRIMARY KEY (CO_ATOR)
 );
@@ -18,6 +18,4 @@ FROM DBSINGULAR.TB_ATOR A;
 
 CREATE SEQUENCE DBSINGULAR.SQ_CO_ATOR  START WITH 1 INCREMENT BY 1;
 
-
-ALTER TABLE DBSINGULAR.TB_ATOR ALTER COLUMN CO_ATOR BIGINT NOT NULL;
 

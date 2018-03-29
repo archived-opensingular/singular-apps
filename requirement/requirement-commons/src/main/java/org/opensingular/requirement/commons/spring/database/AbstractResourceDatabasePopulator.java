@@ -30,13 +30,18 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
 
 
     private List<Resource> scripts = new ArrayList<>();
+    private boolean adicionarAtorDefault;
 
     @PostConstruct
     public void init() {
         setSqlScriptEncoding(StandardCharsets.UTF_8.name());
         scripts.forEach(s -> addScriptOnInitialize(s));
         scripts.clear();
-        setContinueOnError(true);
+    }
+
+    @Override
+    public void setContinueOnError(boolean continueOnError) {
+        super.setContinueOnError(true);
     }
 
     @Override
@@ -50,5 +55,14 @@ public abstract class AbstractResourceDatabasePopulator extends ResourceDatabase
 
     public List<String> getScriptsPath(){
         return new ArrayList<>();
+    }
+
+
+    public boolean isAdicionarAtorDefault() {
+        return adicionarAtorDefault;
+    }
+
+    public void setAdicionarAtorDefault(boolean adicionarAtorDefault) {
+        this.adicionarAtorDefault = adicionarAtorDefault;
     }
 }

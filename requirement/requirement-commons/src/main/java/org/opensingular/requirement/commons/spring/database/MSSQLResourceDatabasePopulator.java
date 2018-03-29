@@ -29,12 +29,9 @@ public class MSSQLResourceDatabasePopulator extends AbstractResourceDatabasePopu
     @Value("classpath:db/ddl/sqlserver/create-function.sql")
     private Resource functionToChar;
 
-    @Value("classpath:db/ddl/sqlserver/create-table-actor.sql")
-    private Resource sqlCreateTableActor;
 
     @PostConstruct
     public void init() {
-        addScriptOnInitialize(sqlCreateTableActor);
         addScript(functionToChar);
         super.init();
     }
@@ -43,7 +40,6 @@ public class MSSQLResourceDatabasePopulator extends AbstractResourceDatabasePopu
     @Override
     public List<String> getScriptsPath() {
         List<String> scriptsPath = super.getScriptsPath();
-        scriptsPath.add("db/ddl/sqlserver/create-table-actor.sql");
         scriptsPath.add("db/ddl/sqlserver/create-function.sql");
         return scriptsPath;
     }

@@ -58,6 +58,15 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
     }
 
     /**
+     * Por default o ator não é criado (false), mas é possivel sobrescrever para que ele seja criado.
+     * A opção de criar (true) Funciona apenas para o banco H2.
+     * @return  retorna true para criar o ator e false para não criar.
+     */
+    protected boolean getAdicionarAtorDefault(){
+        return false;
+    }
+
+    /**
      * Responsavel por criar um DataBasePopulator de acordo com o dialect informado.
      * Favor olhar o metodo getSupportedDatabases() para maiores informações.
      *
@@ -65,7 +74,9 @@ public class SingularDefaultPersistenceConfiguration implements Loggable {
      */
     @Bean
     private AbstractResourceDatabasePopulator databasePopulator() {
-        return getConfigureDatabaseResource().databasePopulator();
+        AbstractResourceDatabasePopulator databasePopulator = getConfigureDatabaseResource().databasePopulator();
+        databasePopulator.setAdicionarAtorDefault(getAdicionarAtorDefault());
+        return databasePopulator;
     }
 
     @Bean

@@ -44,10 +44,16 @@ public class H2ResourceDatabasePopulator extends AbstractResourceDatabasePopulat
     public void init() {
         addScriptOnInitialize(dropSchema);
         addScriptOnInitialize(createSchema);
-        addScriptOnInitialize(sqlCreateTableActor);
+        if(isAdicionarAtorDefault()) {
+            addScriptOnInitialize(sqlCreateTableActor);
+        }
         addScript(functionAliasDateDiff);
         super.init();
-        setContinueOnError(false);
+    }
+
+    @Override
+    public void setContinueOnError(boolean continueOnError) {
+        super.setContinueOnError(false);
     }
 
     @Override
@@ -55,7 +61,9 @@ public class H2ResourceDatabasePopulator extends AbstractResourceDatabasePopulat
         List<String> scriptsPath = new ArrayList<>();
         scriptsPath.add("db/ddl/h2/drop-all.sql");
         scriptsPath.add("db/ddl/h2/create-schema.sql");
-        scriptsPath.add("db/ddl/oracle/create-table-actor.sql");
+        if(isAdicionarAtorDefault()) {
+            scriptsPath.add("db/ddl/oracle/create-table-actor.sql");
+        }
         scriptsPath.add("db/ddl/h2/create-function.sql");
         return scriptsPath;
     }
