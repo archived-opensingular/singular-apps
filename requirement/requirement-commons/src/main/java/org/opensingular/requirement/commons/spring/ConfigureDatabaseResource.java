@@ -45,11 +45,7 @@ public class ConfigureDatabaseResource {
     }
 
     protected String[] getHibernatePackagesToScan() {
-        return new String[]{
-                "org.opensingular.flow.persistence.entity",
-                "org.opensingular.server.commons.persistence.entity",
-                "org.opensingular.app.commons.mail.persistence.entity",
-                "org.opensingular.form.persistence.entity"};
+        return new String[]{"org.opensingular"};
     }
 
     protected String getUrlConnection() {
