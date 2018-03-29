@@ -19,8 +19,8 @@
 package org.opensingular.singular.pet.module;
 
 
-import org.opensingular.server.commons.config.IServerContext;
-import org.opensingular.server.commons.config.ServerContext;
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.ServerContext;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
