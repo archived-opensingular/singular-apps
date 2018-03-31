@@ -164,6 +164,7 @@ public class CrudListContent extends CrudShellContent {
                 @Override
                 protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                     target.add(CrudListContent.this);
+                    modalFilter.hide(target);
                 }
 
                 @Override
