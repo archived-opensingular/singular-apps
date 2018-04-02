@@ -22,8 +22,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
-    <script src="/singular-static/resources/comum/plugins/jquery.min.js" type="text/javascript"></script>
-    <script src="/singular-static/resources/comum/scripts/singular-resource-handler.js" type="text/javascript"></script>
+    <script src="/singular-static/resources/singular/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="/singular-static/resources/singular/scripts/singular-resource-handler.js" type="text/javascript"></script>
     <link rel="stylesheet" href="${pageContext.request.contextPath}/resources/login.css" type="text/css">
 </head>
 
