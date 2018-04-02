@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.commons.config.IServerContext;
 import org.opensingular.requirement.commons.config.ServerContext;
@@ -26,9 +29,6 @@ import org.opensingular.requirement.commons.service.dto.ItemBox;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DefaultInbox implements BoxDefinition {
 
@@ -53,7 +53,8 @@ public class DefaultInbox implements BoxDefinition {
                 .addAssignAction()
                 .addAnalyseAction()
                 .addRelocateAction()
-                .addViewAction());
+                .addViewAction()
+                .addHistoryAction());
     }
 
     @Override
