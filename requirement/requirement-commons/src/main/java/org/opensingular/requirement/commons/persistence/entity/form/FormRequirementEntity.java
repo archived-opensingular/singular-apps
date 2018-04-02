@@ -27,6 +27,7 @@ import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
@@ -42,7 +43,10 @@ import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 
 @Entity
-@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO")
+@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO",
+        indexes = {
+                @Index(columnList = "ST_FORM_PRINCIPAL ASC, CO_REQUISICAO ASC", name = "IX_FORMULARIO_PRINCIPAL")
+        })
 @SequenceGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_FORMULARIO_REQUISICAO", schema = Constants.SCHEMA)
 @Check(constraints ="ST_FORM_PRINCIPAL IN ('S','N')")
 public class FormRequirementEntity extends BaseEntity<Long> implements Comparable<FormRequirementEntity> {
