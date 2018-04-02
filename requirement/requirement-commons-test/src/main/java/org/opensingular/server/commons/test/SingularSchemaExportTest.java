@@ -1,7 +1,7 @@
 package org.opensingular.server.commons.test;
 
 import org.junit.Test;
-import org.opensingular.app.commons.spring.persistence.database.ConfigurationProcessor;
+import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;
 import org.opensingular.requirement.commons.test.db.SingularSchemaExport;
 
 public abstract class SingularSchemaExportTest {
@@ -16,17 +16,17 @@ public abstract class SingularSchemaExportTest {
     }
 
     protected void generateScript(String scriptFilePath) {
-        ConfigurationProcessor configurationProcessor = getPersistenceConfiguration();
+        PersistenceConfigurationProvider persistenceConfigurationProvider = getPersistenceConfiguration();
         SingularSchemaExport.generateScript(
-                configurationProcessor.getPackagesToScan(),
-                configurationProcessor.getDialect(),
+                persistenceConfigurationProvider.getPackagesToScan(),
+                persistenceConfigurationProvider.getDialect(),
                 scriptFilePath,
-                configurationProcessor.getSQLScritps()
+                persistenceConfigurationProvider.getSQLScritps()
         );
     }
 
-    protected ConfigurationProcessor getPersistenceConfiguration() {
-        return new ConfigurationProcessor();
+    protected PersistenceConfigurationProvider getPersistenceConfiguration() {
+        return new PersistenceConfigurationProvider();
     }
 
 }

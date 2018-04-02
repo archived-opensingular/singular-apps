@@ -29,19 +29,26 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import javax.sql.DataSource;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-public class ConfigurationProcessor {
+public class PersistenceConfigurationProvider {
 
     private SingularPersistenceConfiguration persistenceConfiguration;
 
-    public ConfigurationProcessor() {
+    public PersistenceConfigurationProvider(SingularPersistenceConfiguration configuration) {
+        this.persistenceConfiguration = configuration;
+    }
+
+    public PersistenceConfigurationProvider() {
         try {
             Set<Class<? extends SingularPersistenceConfiguration>> configs = SingularClassPathScanner.get().findSubclassesOf(SingularPersistenceConfiguration.class);
-            if (configs.size() != 1) {
+            if (configs.size() < 1) {
                 throw new SingularException(String.format("Implementation of  %s not found. It is not possible to configure persistence properly.", SingularPersistenceConfiguration.class));
+            } else if (configs.size() > 1) {
+                throw new SingularException(String.format("One or more implementation of  %s was found: %s. It is not possible to configure persistence properly.", SingularPersistenceConfiguration.class, Arrays.toString(configs.toArray())));
             }
             this.persistenceConfiguration = configs.stream().findFirst().get().newInstance();
         } catch (Exception e) {

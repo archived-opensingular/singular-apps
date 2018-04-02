@@ -19,7 +19,7 @@
 package org.opensingular.app.commons.spring.persistence;
 
 import org.hibernate.SessionFactory;
-import org.opensingular.app.commons.spring.persistence.database.ConfigurationProcessor;
+import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -32,7 +32,7 @@ import javax.sql.DataSource;
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularPersistenceDefaultBeanFactory implements Loggable {
 
-    private ConfigurationProcessor configurationProcessor;
+    private PersistenceConfigurationProvider persistenceConfigurationProvider;
 
     @Bean
     public DataSource dataSource() {
@@ -56,10 +56,10 @@ public class SingularPersistenceDefaultBeanFactory implements Loggable {
         return tx;
     }
 
-    protected ConfigurationProcessor getPersistenceConfiguration() {
-        if (configurationProcessor == null) {
-            configurationProcessor = new ConfigurationProcessor();
+    protected PersistenceConfigurationProvider getPersistenceConfiguration() {
+        if (persistenceConfigurationProvider == null) {
+            persistenceConfigurationProvider = new PersistenceConfigurationProvider();
         }
-        return configurationProcessor;
+        return persistenceConfigurationProvider;
     }
 }

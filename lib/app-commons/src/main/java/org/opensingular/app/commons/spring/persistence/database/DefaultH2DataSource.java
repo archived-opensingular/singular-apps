@@ -19,6 +19,7 @@
 package org.opensingular.app.commons.spring.persistence.database;
 
 import com.zaxxer.hikari.HikariDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
@@ -26,23 +27,99 @@ import org.springframework.jdbc.datasource.DelegatingDataSource;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
+import java.util.HashMap;
+import java.util.Map;
 
 public class DefaultH2DataSource extends DelegatingDataSource implements Loggable {
 
-    private String init = "CREATE SCHEMA if not exists DBSINGULAR;";
-    private final String jdbcURL;
+    private Map<String, String> options = new HashMap<>();
+    private String jdbcURL;
 
-    public DefaultH2DataSource(boolean dropAllObjects, String appendToInitScript, String jdbcURL) {
-        this.init = init + appendToInitScript;
+    public DefaultH2DataSource(boolean dropAllObjects, String jdbcURL) {
+        this.jdbcURL = jdbcURL;
         if (dropAllObjects) {
-            init = "DROP ALL OBJECTS; " + init;
+            options.put("INIT", "DROP ALL OBJECTS; ");
         }
-        this.jdbcURL = jdbcURL + "INIT=" + init.replaceAll(";","\\\\;") + ";";
+        addToInit("CREATE SCHEMA if not exists DBSINGULAR;");
     }
 
     public DefaultH2DataSource() {
-        this(SqlUtil.isDropCreateDatabase(), "", "jdbc:h2:file:./singulardb;AUTO_SERVER=TRUE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
+        this(SqlUtil.isDropCreateDatabase(), "jdbc:h2:file:./singulardb");
+        setAutoServer(true);
+        setCacheSize(4096);
+        setEarlyFilter(true);
+        setMultiThreaded(true);
+        setLockTimeout(15000);
     }
+
+    private String getJdbcUrl() {
+        StringBuilder renderedOptions = new StringBuilder();
+        for (Map.Entry<String, String> opt : options.entrySet()) {
+            renderedOptions.append(opt.getKey()).append('=').append(escapeSemiColons(opt.getValue())).append(';');
+        }
+        if (!jdbcURL.endsWith(";") && renderedOptions.length() > 0) {
+            jdbcURL = jdbcURL + ";";
+        }
+        return jdbcURL + renderedOptions.toString();
+    }
+
+    public DefaultH2DataSource addToInit(String sqlToAppend) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(StringUtils.defaultString(options.get("INIT")));
+        sb.append(sqlToAppend);
+        if (!sqlToAppend.endsWith(";")) {
+            sb.append(";");
+        }
+        options.put("INIT", sb.toString());
+        return this;
+    }
+
+    private String escapeSemiColons(String sqlToEscape) {
+        return sqlToEscape.replaceAll(";", "\\\\;");
+    }
+
+    public DefaultH2DataSource setAutoServer(boolean autoServer) {
+        if (autoServer) {
+            options.put("AUTO_SERVER", "TRUE");
+        } else {
+            options.put("AUTO_SERVER", "FALSE");
+        }
+        return this;
+    }
+
+    public DefaultH2DataSource setEarlyFilter(boolean earlyFilter) {
+        if (earlyFilter) {
+            options.put("EARLY_FILTER", "TRUE");
+        } else {
+            options.put("EARLY_FILTER", "FALSE");
+        }
+        return this;
+    }
+
+    public DefaultH2DataSource setMultiThreaded(boolean multiThreaded) {
+        if (multiThreaded) {
+            options.put("MULTI_THREADED", "TRUE");
+        } else {
+            options.put("MULTI_THREADED", "FALSE");
+        }
+        return this;
+    }
+
+    public DefaultH2DataSource setCacheSize(int cacheSize) {
+        options.put("CACHE_SIZE", String.valueOf(cacheSize));
+        return this;
+    }
+
+    public DefaultH2DataSource setLockTimeout(int lockTimeout) {
+        options.put("LOCK_TIMEOUT", String.valueOf(lockTimeout));
+        return this;
+    }
+
+    public DefaultH2DataSource setMode(String mode) {
+        options.put("MODE", mode);
+        return this;
+    }
+
 
     @PostConstruct
     protected void init() {
@@ -51,8 +128,10 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
 
     protected DataSource embeddedDataSourceConfiguration() {
         try {
-            getLogger().warn("Usando datasource banco embarcado H2");
+            getLogger().warn("Using h2 embbeded data source");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
+            String           jdbcURL    = getJdbcUrl();
+            getLogger().info("H2 CONNECTION URL: {}", jdbcURL);
             dataSource.setJdbcUrl(jdbcURL);
 
             dataSource.setUsername("sa");
