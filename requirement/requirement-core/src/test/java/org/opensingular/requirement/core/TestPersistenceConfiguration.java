@@ -16,16 +16,17 @@
  *
  */
 
-package org.opensingular.requirement.commons.test;
+package org.opensingular.requirement.core;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2Dialect;
+import org.hibernate.dialect.Oracle10gDialect;
+import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
 
+import javax.sql.DataSource;
 import java.util.List;
 
-public class SingularCommonsTestPersistenceConfiguration implements SingularPersistenceConfiguration {
-
+public class TestPersistenceConfiguration implements SingularPersistenceConfiguration {
     @Override
     public void configureHibernatePackagesToScan(List<String> packagesToScan) {
 
@@ -38,7 +39,12 @@ public class SingularCommonsTestPersistenceConfiguration implements SingularPers
 
     @Override
     public Class<? extends Dialect> getHibernateDialect() {
-        return H2Dialect.class;
+        return Oracle10gDialect.class;
+    }
+
+    @Override
+    public DataSource getEmbeddedDataSource() {
+        return new DefaultH2DataSource().setMode("ORACLE");
     }
 
     @Override
