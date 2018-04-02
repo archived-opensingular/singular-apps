@@ -53,8 +53,7 @@ public class DefaultDraftbox implements BoxDefinition {
         return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder()
                 .addEditAction()
                 .addViewAction()
-                .addDeleteAction()
-                .addHistoryAction());
+                .addDeleteAction());
     }
 
     @Override
