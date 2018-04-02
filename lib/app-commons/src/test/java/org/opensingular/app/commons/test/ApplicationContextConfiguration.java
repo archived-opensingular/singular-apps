@@ -29,7 +29,7 @@ import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
+import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

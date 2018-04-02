@@ -1,9 +1,7 @@
 package org.opensingular.server.commons.test;
 
-import java.util.List;
-
-import org.hibernate.dialect.Dialect;
 import org.junit.Test;
+import org.opensingular.app.commons.spring.persistence.database.ConfigurationProcessor;
 import org.opensingular.requirement.commons.test.db.SingularSchemaExport;
 
 public abstract class SingularSchemaExportTest {
@@ -13,11 +11,22 @@ public abstract class SingularSchemaExportTest {
     @Test
     public abstract void generateScriptByDialect();
 
-    protected void generateScript(String scriptFilePath, String packageToScan, Class<? extends Dialect> dialect, List<String> scriptsPath) {
+    protected void generateScript() {
+        generateScript(System.getProperty("user.dir") + SCRIPT_FILE);
+    }
 
-        String directoryName = scriptFilePath == null ? System.getProperty("user.dir") + SCRIPT_FILE : scriptFilePath;
-        SingularSchemaExport.generateScript(packageToScan, dialect,
-                directoryName, scriptsPath);
+    protected void generateScript(String scriptFilePath) {
+        ConfigurationProcessor configurationProcessor = getPersistenceConfiguration();
+        SingularSchemaExport.generateScript(
+                configurationProcessor.getPackagesToScan(),
+                configurationProcessor.getDialect(),
+                scriptFilePath,
+                configurationProcessor.getSQLScritps()
+        );
+    }
+
+    protected ConfigurationProcessor getPersistenceConfiguration() {
+        return new ConfigurationProcessor();
     }
 
 }

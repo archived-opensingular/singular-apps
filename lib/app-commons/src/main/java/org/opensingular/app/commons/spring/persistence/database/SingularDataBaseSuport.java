@@ -16,13 +16,17 @@
  *
  */
 
-package org.opensingular.requirement.commons.spring.database;
+package org.opensingular.app.commons.spring.persistence.database;
 
 import org.hibernate.dialect.Dialect;
 
+import java.util.List;
+
 public interface SingularDataBaseSuport {
 
-    AbstractResourceDatabasePopulator getPopulatorBeanInstance();
+    List<String> getScripts();
+
+    String getDefaultActorScript();
 
     boolean isDialectSupported(Class<? extends Dialect> dialect);
 }
