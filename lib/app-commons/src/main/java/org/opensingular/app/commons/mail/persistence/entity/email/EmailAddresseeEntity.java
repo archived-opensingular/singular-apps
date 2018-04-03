@@ -38,7 +38,7 @@ import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 
 @Entity
-@SequenceGenerator(name = EmailAddresseeEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
+@SequenceGenerator(name = EmailAddresseeEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
 @Table(name = "TB_DESTINATARIO_EMAIL", schema = Constants.SCHEMA)
 @Check(constraints = "TP_ENVIO IN ('To','Cc','Bcc')")
 public class EmailAddresseeEntity extends BaseEntity<Long> {

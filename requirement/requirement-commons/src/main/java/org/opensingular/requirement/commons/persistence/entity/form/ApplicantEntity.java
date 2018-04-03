@@ -40,7 +40,7 @@ import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISITANTE")
 @Check(constraints ="TP_PESSOA IN ('J','F')")
-@SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
+@SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
 public class ApplicantEntity extends BaseEntity<Long> {
 
 

@@ -46,7 +46,7 @@ import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_HISTORICO_CONTEUDO_REQUISIC")
-@SequenceGenerator(name = RequirementContentHistoryEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_HISTORICO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = RequirementContentHistoryEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_HISTORICO", schema = Constants.SCHEMA)
 public class RequirementContentHistoryEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_HISTORICO";

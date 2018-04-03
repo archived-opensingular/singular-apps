@@ -52,7 +52,7 @@ import org.opensingular.requirement.commons.service.RequirementUtil;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISICAO")
-@SequenceGenerator(name = RequirementEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_REQUISICAO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = RequirementEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_REQUISICAO", schema = Constants.SCHEMA)
 public class RequirementEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_REQUISICAO";

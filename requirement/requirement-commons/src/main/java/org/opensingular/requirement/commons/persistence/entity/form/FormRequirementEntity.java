@@ -47,7 +47,7 @@ import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
         indexes = {
                 @Index(columnList = "ST_FORM_PRINCIPAL ASC, CO_REQUISICAO ASC", name = "IX_FORMULARIO_PRINCIPAL")
         })
-@SequenceGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_FORMULARIO_REQUISICAO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_FORMULARIO_REQUISICAO", schema = Constants.SCHEMA)
 @Check(constraints ="ST_FORM_PRINCIPAL IN ('S','N')")
 public class FormRequirementEntity extends BaseEntity<Long> implements Comparable<FormRequirementEntity> {
 

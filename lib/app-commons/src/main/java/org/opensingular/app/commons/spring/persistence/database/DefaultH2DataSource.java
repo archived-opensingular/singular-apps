@@ -136,7 +136,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
 
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
-            dataSource.setDriverClassName("org.h2.Driver");
+            dataSource.setDriverClassName(org.h2.Driver.class.getName());
 
             return dataSource;
         } catch (Exception e) {

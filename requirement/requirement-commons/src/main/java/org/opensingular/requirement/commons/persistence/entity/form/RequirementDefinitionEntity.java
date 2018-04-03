@@ -39,7 +39,7 @@ import org.opensingular.lib.support.persistence.util.Constants;
  *
  */
 @Entity
-@SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
 @Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", indexes = {
         @Index(columnList = "CO_MODULO ASC, NO_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO")
 })

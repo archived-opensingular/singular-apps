@@ -39,7 +39,7 @@ import static org.opensingular.requirement.commons.persistence.entity.form.BoxEn
  */
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_CAIXA")
-@SequenceGenerator(name = PK_GENERATOR_NAME, sequenceName = "SQ_CO_CAIXA", schema = Constants.SCHEMA)
+@SequenceGenerator(name = BoxEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_CAIXA", schema = Constants.SCHEMA)
 public class BoxEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_CAIXA";

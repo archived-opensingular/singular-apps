@@ -35,7 +35,7 @@ import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
-@SequenceGenerator(name = ParameterEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_PARAMETRO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = ParameterEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_PARAMETRO", schema = Constants.SCHEMA)
 @Table(name = "TB_PARAMETRO", schema = Constants.SCHEMA, indexes = {
         @Index(columnList = "CO_MODULO ASC, NO_PARAMETRO ASC", name = "IX_PARAMETRO")
 })

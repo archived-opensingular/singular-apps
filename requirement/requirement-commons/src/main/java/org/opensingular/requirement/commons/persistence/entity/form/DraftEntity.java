@@ -40,7 +40,7 @@ import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_RASCUNHO")
-@SequenceGenerator(name = DraftEntity.PK_GENERATOR_NAME, sequenceName = "SQ_CO_RASCUNHO", schema = Constants.SCHEMA)
+@SequenceGenerator(name = DraftEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_RASCUNHO", schema = Constants.SCHEMA)
 public class DraftEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_RASCUNHO";
