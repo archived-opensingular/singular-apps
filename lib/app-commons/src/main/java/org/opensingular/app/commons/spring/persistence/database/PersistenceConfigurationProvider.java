@@ -20,9 +20,11 @@ package org.opensingular.app.commons.spring.persistence.database;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
+import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
@@ -34,7 +36,31 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-public class PersistenceConfigurationProvider {
+public class PersistenceConfigurationProvider implements Loggable {
+
+    @Deprecated
+    private Boolean isSingularModule;
+
+    {
+        try {
+            Properties p = new Properties();
+            p.load(Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties").openStream());
+            isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server"));
+        } catch (Exception e) {
+            isSingularModule = true;
+            getLogger().trace(e.getMessage(), e);
+        }
+    }
+
+
+    /**
+     * @return
+     * @deprecated para ser removido tão logo seja eliminada a solução multi módulo em favor do single-app
+     */
+    @Deprecated
+    private boolean isCreateDrop() {
+        return isSingularModule && SqlUtil.isDropCreateDatabase();
+    }
 
     private SingularPersistenceConfiguration persistenceConfiguration;
 
@@ -75,7 +101,7 @@ public class PersistenceConfigurationProvider {
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(", ").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", SqlUtil.isDropCreateDatabase() ? "create" : "none");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", isCreateDrop() ? "create" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         persistenceConfiguration.configureHibernateProperties(hibernateProperties);
@@ -106,6 +132,12 @@ public class PersistenceConfigurationProvider {
         DataSource dataSource;
         if (SqlUtil.useEmbeddedDatabase()) {
             dataSource = persistenceConfiguration.getEmbeddedDataSource();
+            EmbeddedDataSource embeddedDataSource = (EmbeddedDataSource) dataSource;
+            if (embeddedDataSource.isCreateDropSet() && !isSingularModule) {
+                embeddedDataSource.setCreateDrop(false);
+            } else if (!embeddedDataSource.isCreateDropSet()) {
+                embeddedDataSource.setCreateDrop(isCreateDrop());
+            }
         } else {
             dataSource = persistenceConfiguration.getNonEmbeddedDataSource();
         }

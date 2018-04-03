@@ -42,7 +42,7 @@ public interface SingularPersistenceConfiguration {
     default void configureHibernateProperties(Properties properties) {
     }
 
-    default DataSource getEmbeddedDataSource() {
+    default EmbeddedDataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource();
     }
 

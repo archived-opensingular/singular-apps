@@ -22,7 +22,6 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 
 import javax.annotation.PostConstruct;
@@ -30,21 +29,33 @@ import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
 
-public class DefaultH2DataSource extends DelegatingDataSource implements Loggable {
+public class DefaultH2DataSource extends DelegatingDataSource implements Loggable, EmbeddedDataSource {
 
     private Map<String, String> options = new HashMap<>();
-    private String jdbcURL;
+    private String  jdbcURL;
+    private boolean isCreateDropSet;
 
-    public DefaultH2DataSource(boolean dropAllObjects, String jdbcURL) {
+    public DefaultH2DataSource(String jdbcURL) {
         this.jdbcURL = jdbcURL;
-        if (dropAllObjects) {
-            options.put("INIT", "DROP ALL OBJECTS; ");
-        }
         addToInit("CREATE SCHEMA if not exists DBSINGULAR;");
     }
 
+    @Override
+    public DefaultH2DataSource setCreateDrop(boolean createDrop) {
+        isCreateDropSet = true;
+        if (createDrop) {
+            addToInit("DROP ALL OBJECTS;", false);
+        }
+        return this;
+    }
+
+    @Override
+    public boolean isCreateDropSet() {
+        return isCreateDropSet;
+    }
+
     public DefaultH2DataSource() {
-        this(SqlUtil.isDropCreateDatabase(), "jdbc:h2:file:./singulardb");
+        this("jdbc:h2:file:./singulardb");
         setAutoServer(true);
         setCacheSize(4096);
         setEarlyFilter(true);
@@ -52,7 +63,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         setLockTimeout(15000);
     }
 
-    private String getJdbcUrl() {
+    protected String getJdbcUrl() {
         StringBuilder renderedOptions = new StringBuilder();
         for (Map.Entry<String, String> opt : options.entrySet()) {
             renderedOptions.append(opt.getKey()).append('=').append(escapeSemiColons(opt.getValue())).append(';');
@@ -63,21 +74,31 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return jdbcURL + renderedOptions.toString();
     }
 
+    @Override
     public DefaultH2DataSource addToInit(String sqlToAppend) {
+        addToInit(sqlToAppend, true);
+        return this;
+    }
+
+    private void addToInit(String sqlToAppend, boolean appendToEnd) {
         StringBuilder sb = new StringBuilder();
-        sb.append(StringUtils.defaultString(options.get("INIT")));
         sb.append(sqlToAppend);
         if (!sqlToAppend.endsWith(";")) {
             sb.append(";");
         }
+        if (appendToEnd) {
+            sb.insert(0, StringUtils.defaultString(options.get("INIT")));
+        } else {
+            sb.append(StringUtils.defaultString(options.get("INIT")));
+        }
         options.put("INIT", sb.toString());
-        return this;
     }
 
-    private String escapeSemiColons(String sqlToEscape) {
+    protected String escapeSemiColons(String sqlToEscape) {
         return sqlToEscape.replaceAll(";", "\\\\;");
     }
 
+    @Override
     public DefaultH2DataSource setAutoServer(boolean autoServer) {
         if (autoServer) {
             options.put("AUTO_SERVER", "TRUE");
@@ -87,6 +108,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
+    @Override
     public DefaultH2DataSource setEarlyFilter(boolean earlyFilter) {
         if (earlyFilter) {
             options.put("EARLY_FILTER", "TRUE");
@@ -96,6 +118,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
+    @Override
     public DefaultH2DataSource setMultiThreaded(boolean multiThreaded) {
         if (multiThreaded) {
             options.put("MULTI_THREADED", "TRUE");
@@ -105,16 +128,19 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
+    @Override
     public DefaultH2DataSource setCacheSize(int cacheSize) {
         options.put("CACHE_SIZE", String.valueOf(cacheSize));
         return this;
     }
 
+    @Override
     public DefaultH2DataSource setLockTimeout(int lockTimeout) {
         options.put("LOCK_TIMEOUT", String.valueOf(lockTimeout));
         return this;
     }
 
+    @Override
     public DefaultH2DataSource setMode(String mode) {
         options.put("MODE", mode);
         return this;
