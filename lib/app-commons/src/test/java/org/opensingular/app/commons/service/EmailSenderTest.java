@@ -26,6 +26,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
@@ -64,6 +65,7 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
 
     @Test
+    @Ignore
     public void testSendEmailReal(){
         //See properties of e-mail in singular.properties.
         EmailAddresseeEntity entity = createMockEmailAddresseeEntity(new Date());
@@ -72,9 +74,6 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
         Email.Addressee addressee = new Email.Addressee(email, entity);
         Assert.assertTrue(emailSender.send(addressee));
     }
-
-
-
 
     @Test
     public void sendEmailExceptionTest(){
