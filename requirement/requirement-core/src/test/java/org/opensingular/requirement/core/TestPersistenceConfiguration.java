@@ -47,8 +47,5 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
         return new DefaultH2DataSource().setMode("ORACLE");
     }
 
-    @Override
-    public boolean isCreateDropDatabase() {
-        return true;
-    }
+
 }

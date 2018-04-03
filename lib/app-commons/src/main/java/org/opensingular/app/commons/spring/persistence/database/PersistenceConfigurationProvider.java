@@ -23,7 +23,7 @@ import com.google.common.collect.Lists;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.lib.support.persistence.DatabaseSchemaReplacement;
+import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
@@ -75,7 +75,7 @@ public class PersistenceConfigurationProvider {
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(", ").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", persistenceConfiguration.isCreateDropDatabase() ? "create-drop" : "none");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", SqlUtil.isDropCreateDatabase() ? "create-drop" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         persistenceConfiguration.configureHibernateProperties(hibernateProperties);
@@ -88,13 +88,17 @@ public class PersistenceConfigurationProvider {
 
     public List<String> getSQLScritps() {
         List<String> scripts = new ArrayList<>();
-        scripts.add(persistenceConfiguration.getActorTableScript());
-        scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
+        if (SqlUtil.useEmbeddedDatabase()) {
+            scripts.addAll(SingularDataBaseEnum.H2.getScripts());
+        } else {
+            scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
+        }
         persistenceConfiguration.configureInitSQLScripts(scripts);
+        scripts.add(persistenceConfiguration.getActorTableScript());
         return scripts;
     }
 
-    public List<DatabaseSchemaReplacement> getSchemaReplacements() {
+    public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
         return persistenceConfiguration.getSchemaReplacements();
     }
 

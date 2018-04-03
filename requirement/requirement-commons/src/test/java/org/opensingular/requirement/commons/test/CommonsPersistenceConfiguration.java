@@ -47,8 +47,4 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
         return Oracle10gDialect.class;
     }
 
-    @Override
-    public boolean isCreateDropDatabase() {
-        return true;
-    }
 }

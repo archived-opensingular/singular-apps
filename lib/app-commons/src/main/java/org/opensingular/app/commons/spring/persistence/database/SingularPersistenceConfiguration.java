@@ -19,7 +19,7 @@
 package org.opensingular.app.commons.spring.persistence.database;
 
 import org.hibernate.dialect.Dialect;
-import org.opensingular.lib.support.persistence.DatabaseSchemaReplacement;
+import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import javax.sql.DataSource;
@@ -42,10 +42,6 @@ public interface SingularPersistenceConfiguration {
     default void configureHibernateProperties(Properties properties) {
     }
 
-    default boolean isCreateDropDatabase() {
-        return SqlUtil.isDropCreateDatabase();
-    }
-
     default DataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource();
     }
@@ -58,7 +54,7 @@ public interface SingularPersistenceConfiguration {
         return SingularDataBaseEnum.getForDialect(getHibernateDialect());
     }
 
-    default List<DatabaseSchemaReplacement> getSchemaReplacements() {
+    default List<DatabaseObjectNameReplacement> getSchemaReplacements() {
         return new ArrayList<>();
     }
 }
