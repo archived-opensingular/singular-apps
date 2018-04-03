@@ -22,6 +22,8 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
+import org.opensingular.internal.lib.commons.util.RandomUtil;
+import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import javax.sql.DataSource;
 import java.util.List;
@@ -38,13 +40,18 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
     }
 
     @Override
-    public Class<? extends Dialect> getHibernateDialect() {
-        return Oracle10gDialect.class;
+    public DataSource getEmbeddedDataSource() {
+        return new DefaultH2DataSource(SqlUtil.isDropCreateDatabase(), "jdbc:h2:mem:singulardb" + RandomUtil.generateRandomPassword(10))
+                .setCacheSize(4096)
+                .setEarlyFilter(true)
+                .setMultiThreaded(true)
+                .setMode("ORACLE")
+                .setLockTimeout(15000);
     }
 
     @Override
-    public DataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource().setMode("ORACLE");
+    public Class<? extends Dialect> getHibernateDialect() {
+        return Oracle10gDialect.class;
     }
 
 

@@ -40,11 +40,11 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public DataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource(SqlUtil.isDropCreateDatabase(), "jdbc:h2:file:./singulardb" + RandomUtil.generateRandomPassword(10))
-                .setAutoServer(true)
+        return new DefaultH2DataSource(SqlUtil.isDropCreateDatabase(), "jdbc:h2:mem:singulardb" + RandomUtil.generateRandomPassword(10))
                 .setCacheSize(4096)
                 .setEarlyFilter(true)
                 .setMultiThreaded(true)
+                .setMode("ORACLE")
                 .setLockTimeout(15000);
     }
 
