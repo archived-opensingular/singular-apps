@@ -18,6 +18,13 @@
 
 package org.opensingular.app.commons.service;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.Date;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
@@ -27,13 +34,6 @@ import org.opensingular.app.commons.mail.service.email.EmailSender;
 import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.test.SpringBaseTest;
 import org.opensingular.lib.commons.util.Loggable;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
 
 public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
@@ -61,6 +61,20 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
         emailSender.setHost(null);
         Assert.assertFalse(emailSender.send((Email.Addressee) null));
     }
+
+
+    @Test
+    public void testSendEmailReal(){
+        //See properties of e-mail in singular.properties.
+        EmailAddresseeEntity entity = createMockEmailAddresseeEntity(new Date());
+        Email email = createMockEmail();
+        email.addAliasFrom("TestMock");
+        Email.Addressee addressee = new Email.Addressee(email, entity);
+        Assert.assertTrue(emailSender.send(addressee));
+    }
+
+
+
 
     @Test
     public void sendEmailExceptionTest(){
