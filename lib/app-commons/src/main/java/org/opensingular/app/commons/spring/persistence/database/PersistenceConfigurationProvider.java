@@ -97,7 +97,7 @@ public class PersistenceConfigurationProvider implements Loggable {
         hibernateProperties.setProperty("hibernate.dialect", getDialect().getName());
         hibernateProperties.setProperty("hibernate.connection.isolation", "2");
         hibernateProperties.setProperty("hibernate.jdbc.batch_size", "30");
-        hibernateProperties.setProperty("hibernate.show_sql", "false");
+        hibernateProperties.setProperty("hibernate.show_sql", "true");
         hibernateProperties.setProperty("hibernate.format_sql", "true");
         hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
