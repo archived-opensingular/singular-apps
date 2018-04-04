@@ -41,7 +41,7 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
 
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource("jdbc:h2:mem:singulardb" + RandomUtil.generateRandomPassword(10))
+        return new DefaultH2DataSource("jdbc:h2:mem:singulardb;MVCC=TRUE")
                 .setCreateDrop(true)
                 .setCacheSize(4096)
                 .setEarlyFilter(true)
