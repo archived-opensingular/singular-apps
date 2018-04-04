@@ -19,12 +19,10 @@
 package org.opensingular.studio.core.menu;
 
 import com.google.common.collect.Lists;
-import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.studio.core.util.StudioWicketUtils;
 import org.opensingular.studio.core.view.StudioContent;
-import org.opensingular.studio.core.view.StudioPage;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -86,6 +84,6 @@ public interface MenuEntry extends Serializable {
     }
 
     default String getEndpoint(){
-        return StudioWicketUtils.getMergedPathIntoURL(StudioPage.class, getMenuPath());
+        return StudioWicketUtils.getMergedPathIntoURL(getMenuPath());
     }
 }
