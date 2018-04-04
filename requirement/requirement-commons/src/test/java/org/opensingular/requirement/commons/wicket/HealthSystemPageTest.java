@@ -22,7 +22,9 @@ import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
+import org.junit.FixMethodOrder;
 import org.junit.Test;
+import org.junit.runners.MethodSorters;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.admin.healthsystem.extension.AdministrationEntryExtension;
@@ -45,6 +47,7 @@ import javax.transaction.Transactional;
 
 import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class HealthSystemPageTest extends SingularCommonsBaseTest {
 
@@ -56,7 +59,7 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testHealthSystemPageRendering() {
+    public void test1HealthSystemPageRendering() {
         tester = new SingularWicketTester(singularApplication);
         Page p = new HealthSystemPage();
         tester.startPage(p);
@@ -66,42 +69,42 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickDbButton() {
+    public void test2ClickDbButton() {
         clickButtonAndCheckPanel(new DatabaseTablesAdminEntry());
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickCacheButton() {
+    public void test9ClickCacheButton() {
         clickButtonAndCheckPanel(new CacheAdminEntry());
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickJobButton() {
+    public void test4ClickJobButton() {
         clickButtonAndCheckPanel(new JobsAdminEntry());
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickPermissionButton() {
+    public void test5ClickPermissionButton() {
         clickButtonAndCheckPanel(new PermissionAdminEntry());
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickWebButton() {
+    public void test6ClickWebButton() {
         clickButtonAndCheckPanel(new WebAdminEntry());
     }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
     @Test
-    public void testClickHtmlToPdfButton() {
+    public void test7ClickHtmlToPdfButton() {
         clickButtonAndCheckPanel(new HtmlToPdfAdminEntry());
     }
 
