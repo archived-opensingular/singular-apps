@@ -19,6 +19,7 @@
 package org.opensingular.requirement.commons.test;
 
 import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.EmbeddedDataSource;
@@ -41,12 +42,11 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource("jdbc:h2:mem:singulardb" + RandomUtil.generateRandomPassword(10))
+        return new DefaultH2DataSource("jdbc:h2:file:./singulardb" + RandomUtil.generateRandomPassword(10)+";DB_CLOSE_ON_EXIT=FALSE;")
                 .setCreateDrop(SqlUtil.isDropCreateDatabase())
                 .setCacheSize(4096)
-                .setEarlyFilter(true)
-                .setMultiThreaded(true)
                 .setMode("ORACLE")
+                .setEarlyFilter(true)
                 .setLockTimeout(15000);
     }
 
