@@ -30,6 +30,7 @@ import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import javax.sql.DataSource;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,8 +44,11 @@ public class PersistenceConfigurationProvider implements Loggable {
 
     {
         try {
-            Properties p = new Properties();
-            p.load(Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties").openStream());
+            Properties p   = new Properties();
+            URL        url = Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties");
+            if (url != null) {
+                p.load(url.openStream());
+            }
             isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server"));
         } catch (Exception e) {
             isSingularModule = true;
