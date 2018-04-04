@@ -19,15 +19,14 @@
 package org.opensingular.requirement.commons.spring.security;
 
 
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
-
-import org.opensingular.requirement.commons.config.IServerContext;
 
 public interface SingularUserDetails extends UserDetails {
 
@@ -95,5 +94,7 @@ public interface SingularUserDetails extends UserDetails {
     default boolean keepLoginThroughContexts() {
         return false;
     }
+
+    String getApplicantId();
 
 }

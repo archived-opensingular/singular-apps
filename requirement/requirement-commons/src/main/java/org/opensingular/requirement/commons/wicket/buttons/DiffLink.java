@@ -26,9 +26,8 @@ import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.requirement.commons.wicket.view.form.DiffFormPage.*;
-
 
 public class DiffLink extends Panel {
 
@@ -42,7 +41,6 @@ public class DiffLink extends Panel {
         }
     }
 
-
     public static class RequirementVersionsToDiff {
         private Long current;
         private Long previous;
@@ -55,19 +53,35 @@ public class DiffLink extends Panel {
 
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context, RequirementVersionsToDiff requirementVersionsToDiff) {
-        this(id, labelModel, new ActionContext(context)
-                .setParam(CURRENT_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.current))
-                .setParam(PREVIOUS_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.previous)));
+        super(id);
+        ActionContext actionContext = new ActionContext(context)
+                .setParam(CURRENT_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.current));
+
+        if (requirementVersionsToDiff.previous != null) {
+            actionContext.setParam(PREVIOUS_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.previous));
+        }
+
+        init(labelModel, actionContext);
     }
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context, FormVersionsToDiff formVersionsToDiff) {
-        this(id, labelModel, new ActionContext(context)
-                .setParam(CURRENT_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.current))
-                .setParam(PREVIOUS_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.previous)));
+        super(id);
+        ActionContext actionContext = new ActionContext(context)
+                .setParam(CURRENT_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.current));
+
+        if (formVersionsToDiff.previous != null) {
+            actionContext.setParam(PREVIOUS_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.previous));
+        }
+
+        init(labelModel, actionContext);
     }
 
     public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
+        init(labelModel, context);
+    }
+
+    private void init(IModel<String> labelModel, ActionContext context) {
         Link<String> link = new Link<String>("diffLink") {
             @Override
             protected void onConfigure() {
