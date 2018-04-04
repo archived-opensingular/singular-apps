@@ -23,6 +23,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
 import org.junit.FixMethodOrder;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
@@ -73,12 +74,13 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
         clickButtonAndCheckPanel(new DatabaseTablesAdminEntry());
     }
 
-    @WithUserDetails("vinicius.nunes")
-    @Transactional
-    @Test
-    public void test9ClickCacheButton() {
-        clickButtonAndCheckPanel(new CacheAdminEntry());
-    }
+//    @WithUserDetails("vinicius.nunes")
+//    @Transactional
+//    @Test
+//    @Ignore
+//    public void test9ClickCacheButton() {
+//        clickButtonAndCheckPanel(new CacheAdminEntry());
+//    }
 
     @WithUserDetails("vinicius.nunes")
     @Transactional
