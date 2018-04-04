@@ -57,13 +57,11 @@ import org.opensingular.requirement.commons.spring.security.SingularPermission;
 import org.opensingular.requirement.commons.SPackageFOO;
 import org.opensingular.requirement.commons.test.FOOFlow;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @Transactional
 public class RequirementServiceTest extends SingularCommonsBaseTest {
 

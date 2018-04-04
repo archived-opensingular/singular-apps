@@ -30,13 +30,11 @@ import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.SPackageFOO;
 import org.opensingular.requirement.commons.test.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
     @Inject

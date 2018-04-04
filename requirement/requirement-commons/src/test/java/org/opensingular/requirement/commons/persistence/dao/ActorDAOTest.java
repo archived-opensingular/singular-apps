@@ -25,7 +25,6 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
 import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
@@ -33,7 +32,6 @@ import javax.transaction.Transactional;
 import java.util.List;
 import java.util.Optional;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ActorDAOTest extends SingularCommonsBaseTest {
 
     @Inject

@@ -24,13 +24,11 @@ import org.opensingular.requirement.commons.persistence.dao.form.ApplicantDAO;
 import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.commons.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ApplicantDAOTest extends SingularCommonsBaseTest {
 
     @Inject

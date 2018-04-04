@@ -32,7 +32,6 @@ import org.opensingular.requirement.module.wicket.view.util.dispatcher.Dispatche
 import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
@@ -44,7 +43,6 @@ import static org.opensingular.requirement.commons.wicket.view.util.ActionContex
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_NAME;
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {
 

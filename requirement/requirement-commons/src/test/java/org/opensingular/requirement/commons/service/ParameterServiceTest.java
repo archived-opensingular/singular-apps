@@ -31,10 +31,8 @@ import org.opensingular.requirement.commons.persistence.entity.parameter.Paramet
 import org.opensingular.requirement.commons.service.ParameterService;
 
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.annotation.Rollback;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ParameterServiceTest extends SingularCommonsBaseTest {
     @Inject
     private ParameterService parameterService;

@@ -23,13 +23,11 @@ import org.junit.Test;
 import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.requirement.commons.test.CommonsInitializerMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ConfigTest extends SingularCommonsBaseTest {
 
     @Inject

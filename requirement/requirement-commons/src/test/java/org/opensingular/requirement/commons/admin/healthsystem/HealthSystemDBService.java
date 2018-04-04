@@ -23,12 +23,10 @@ import org.junit.Test;
 import org.opensingular.requirement.commons.persistence.dto.healthsystem.HealthInfoDTO;
 import org.opensingular.requirement.commons.service.HealthSystemDbService;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class HealthSystemDBService extends SingularCommonsBaseTest {
     @Inject
     private HealthSystemDbService service;

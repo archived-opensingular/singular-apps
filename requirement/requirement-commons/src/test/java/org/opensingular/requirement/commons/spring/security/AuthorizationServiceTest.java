@@ -36,14 +36,12 @@ import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.List;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AuthorizationServiceTest extends SingularCommonsBaseTest {
 

@@ -26,7 +26,6 @@ import org.opensingular.requirement.commons.persistence.dto.healthsystem.TableIn
 
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
@@ -37,7 +36,6 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class ValidatorTest extends SingularCommonsBaseTest {
     

@@ -33,13 +33,11 @@ import org.opensingular.requirement.commons.test.SingularServletContextTestExecu
 import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     
