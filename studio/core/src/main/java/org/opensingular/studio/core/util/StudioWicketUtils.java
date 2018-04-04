@@ -18,16 +18,17 @@
 
 package org.opensingular.studio.core.util;
 
+import org.apache.wicket.Page;
 import org.apache.wicket.core.request.handler.BookmarkablePageRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.IRequestMapper;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.studio.core.view.StudioPage;
 
 public class StudioWicketUtils {
+
+    public static final String PLACEHOLDER = "REPLACE_ME";
 
     /**
      * Monta a URL completa a partir da pagina informada e do "path"
@@ -36,18 +37,19 @@ public class StudioWicketUtils {
      * por exemplo, caso a entrada possua uma pagina que esteja anotada com @MountPath("/page/${path}")
      * e um path com valor de "foo/bar", o valor retornado será "/page/foo/bar"
      *
-     * @param page    classe montada
      * @param pathURI o path que será substituido na URL
      * @return a url completa
      */
-    public static String getMergedPathIntoURL(Class<? extends WebPage> page, String pathURI) {
+    public static String getMergedPathIntoURL(String pathURI) {
         String[] paths                       = pathURI.split("/");
         String   moutedPathWithPathParameter = "";
         if (paths.length > 0 && WebApplication.exists()) {
-            final PageParameters pageParameters    = new PageParameters().add("path", "REPLACE_ME");
-            final IRequestMapper rootRequestMapper = WebApplication.get().getRootRequestMapper();
-            final Url            url               = rootRequestMapper.mapHandler(new BookmarkablePageRequestHandler(new PageProvider(page, pageParameters)));
-            moutedPathWithPathParameter = "/" + url.getPath().replace("REPLACE_ME", pathURI);
+            final WebApplication        webApplication    = WebApplication.get();
+            final IRequestMapper        rootRequestMapper = webApplication.getRootRequestMapper();
+            final Class<? extends Page> homePage          = webApplication.getHomePage();
+            final PageParameters        pageParameters    = new PageParameters().add("path", PLACEHOLDER);
+            final Url                   url               = rootRequestMapper.mapHandler(new BookmarkablePageRequestHandler(new PageProvider(homePage, pageParameters)));
+            moutedPathWithPathParameter = "/" + url.getPath().replace(PLACEHOLDER, pathURI);
         }
         return getServerContextPath() + moutedPathWithPathParameter;
     }
