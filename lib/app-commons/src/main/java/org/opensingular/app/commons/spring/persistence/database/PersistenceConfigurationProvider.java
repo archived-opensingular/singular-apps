@@ -105,8 +105,7 @@ public class PersistenceConfigurationProvider implements Loggable {
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(", ").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
-        //TODO remover o create fixo.
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", isCreateDrop() ? "create" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         persistenceConfiguration.configureHibernateProperties(hibernateProperties);
