@@ -31,6 +31,7 @@ import org.opensingular.requirement.commons.admin.healthsystem.extension.WebAdmi
 import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
@@ -38,6 +39,7 @@ import javax.transaction.Transactional;
 
 import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class HealthSystemPanelsTest extends SingularCommonsBaseTest {
 

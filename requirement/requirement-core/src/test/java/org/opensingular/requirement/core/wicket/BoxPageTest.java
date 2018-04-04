@@ -34,11 +34,13 @@ import org.opensingular.requirement.core.wicket.box.BoxPage;
 import org.opensingular.requirement.core.test.ServerApplicationMock;
 import org.opensingular.requirement.core.test.SingularServerBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class BoxPageTest extends SingularServerBaseTest {
 

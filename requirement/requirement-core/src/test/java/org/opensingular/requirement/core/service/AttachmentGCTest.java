@@ -27,6 +27,7 @@ import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.requirement.core.service.AttachmentGCJob;
 import org.opensingular.requirement.core.test.SingularServerBaseTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 
 import javax.inject.Inject;
@@ -35,6 +36,7 @@ import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.Calendar;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class AttachmentGCTest extends SingularServerBaseTest {
     @Inject
     private AttachmentGCJob job;

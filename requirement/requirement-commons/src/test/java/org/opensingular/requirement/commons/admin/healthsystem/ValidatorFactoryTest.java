@@ -23,8 +23,9 @@ import org.junit.Test;
 import org.opensingular.requirement.commons.admin.healthsystem.validation.database.ValidatorFactory;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.springframework.test.annotation.DirtiesContext;
 
-
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 public class ValidatorFactoryTest extends SingularCommonsBaseTest {
 
     @Test(expected = SingularServerException.class)

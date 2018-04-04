@@ -27,11 +27,13 @@ import org.opensingular.requirement.commons.test.SingularServletContextTestExecu
 import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AccessDeniedPageTest extends SingularCommonsBaseTest {
     @Inject
