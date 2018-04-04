@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.core;
 
+import java.util.List;
+
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
@@ -25,9 +27,6 @@ import org.opensingular.app.commons.spring.persistence.database.EmbeddedDataSour
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-
-import javax.sql.DataSource;
-import java.util.List;
 
 public class TestPersistenceConfiguration implements SingularPersistenceConfiguration {
     @Override
@@ -37,13 +36,13 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
 
     @Override
     public void configureInitSQLScripts(List<String> scripts) {
-
     }
+
 
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource("jdbc:h2:mem:singulardb" + RandomUtil.generateRandomPassword(10))
-                .setCreateDrop(SqlUtil.isDropCreateDatabase())
+                .setCreateDrop(true)
                 .setCacheSize(4096)
                 .setEarlyFilter(true)
                 .setMultiThreaded(true)
