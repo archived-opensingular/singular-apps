@@ -37,6 +37,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.commons.flow.SingularWebRef;
@@ -238,7 +239,7 @@ public class DispatcherPage extends WebPage implements Loggable {
                 context.getFormAction().map(FormAction::name).orElse(null)
         );
 
-        if (requirementId != null) {
+        if (requirementId != null && userDetails.isContext(PServerContext.REQUIREMENT)) {
             hasPermission &= isOwner(userDetails, requirementId);
         }
 
