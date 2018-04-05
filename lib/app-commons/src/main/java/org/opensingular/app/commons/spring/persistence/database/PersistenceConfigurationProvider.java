@@ -103,7 +103,7 @@ public class PersistenceConfigurationProvider implements Loggable {
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "true");
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(", ").join(getSQLScritps()));
+        hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(",").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
         hibernateProperties.setProperty("hibernate.hbm2ddl.auto", isCreateDrop() ? "create" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
@@ -128,8 +128,7 @@ public class PersistenceConfigurationProvider implements Loggable {
             scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
         }
         persistenceConfiguration.configureInitSQLScripts(scripts);
-        scripts.add(persistenceConfiguration.getActorTableScript());
-        return scripts;
+        scripts.add(persistenceConfiguration.getActorTableScript());return scripts;
     }
 
     public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
