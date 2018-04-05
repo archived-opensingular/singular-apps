@@ -52,6 +52,7 @@ import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.form.wicket.panel.ModalEventListenerBehavior;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
@@ -64,6 +65,7 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
+import org.opensingular.requirement.commons.SingularRequirement;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.commons.flow.FlowResolver;
@@ -72,7 +74,6 @@ import org.opensingular.requirement.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.commons.SingularRequirement;
 import org.opensingular.requirement.commons.service.FormRequirementService;
 import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.service.RequirementSender;
@@ -102,7 +103,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.requirement.commons.wicket.builder.MarkupCreator.*;
 
 public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends RequirementInstance> extends ServerTemplate implements Loggable {
@@ -295,6 +297,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
         modalContainer.setOutputMarkupId(true);
+        modalContainer.add(new ModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
         singularFormPanel.setInstanceCreator(() -> createInstance(formRequirementService.loadRefType(config.getFormName())));
