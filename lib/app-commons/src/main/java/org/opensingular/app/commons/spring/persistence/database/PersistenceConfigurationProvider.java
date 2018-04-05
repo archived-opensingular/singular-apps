@@ -51,7 +51,7 @@ public class PersistenceConfigurationProvider implements Loggable {
             }
             isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server"));
         } catch (Exception e) {
-            isSingularModule = true;
+            isSingularModule = Boolean.TRUE;
             getLogger().trace(e.getMessage(), e);
         }
     }
@@ -75,12 +75,12 @@ public class PersistenceConfigurationProvider implements Loggable {
     public PersistenceConfigurationProvider() {
         try {
             Set<Class<? extends SingularPersistenceConfiguration>> configs = SingularClassPathScanner.get().findSubclassesOf(SingularPersistenceConfiguration.class);
-            if (configs.size() < 1) {
+            if (configs.isEmpty()) {
                 throw new SingularException(String.format("Implementation of  %s not found. It is not possible to configure persistence properly.", SingularPersistenceConfiguration.class));
             } else if (configs.size() > 1) {
                 throw new SingularException(String.format("One or more implementation of  %s was found: %s. It is not possible to configure persistence properly.", SingularPersistenceConfiguration.class, Arrays.toString(configs.toArray())));
             }
-            this.persistenceConfiguration = configs.stream().findFirst().get().newInstance();
+            this.persistenceConfiguration = configs.stream().findFirst().get().newInstance();//NOSONAR
         } catch (Exception e) {
             throw SingularException.rethrow(e);
         }

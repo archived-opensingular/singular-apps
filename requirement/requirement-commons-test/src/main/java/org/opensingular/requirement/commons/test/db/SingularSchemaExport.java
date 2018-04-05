@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -57,8 +59,7 @@ public class SingularSchemaExport implements Loggable {
             cfg.buildMappings();
 
             Thread.currentThread().getContextClassLoader().getResource("db/ddl/drops.sql");
-            try (PrintWriter writer = new PrintWriter(
-                    new OutputStreamWriter(new FileOutputStream(directoryFileName), "UTF-8"))) {
+            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(directoryFileName), StandardCharsets.UTF_8))) {
                 Dialect  hibDialect = Dialect.getDialect(cfg.getProperties());
                 String[] strings    = cfg.generateSchemaCreationScript(hibDialect);
                 write(writer, strings, scriptsText);
@@ -80,13 +81,11 @@ public class SingularSchemaExport implements Loggable {
 
     private static StringBuilder readScriptsContent(List<String> scriptsPath) {
         try {
-            StringBuilder scriptsText = new StringBuilder("");
+            StringBuilder scriptsText = new StringBuilder();
             if (CollectionUtils.isNotEmpty(scriptsPath)) {
                 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
                 for (String script : scriptsPath) {
-                    if (script.startsWith("/")) {
-                        script = script.replaceFirst("/", "");
-                    }
+                    script = removeStartingSlash(script);
                     InputStream stream  = classLoader.getResourceAsStream(script);
                     String      content = IOUtils.toString(stream, "UTF-8");
                     scriptsText.append(content);
@@ -96,6 +95,13 @@ public class SingularSchemaExport implements Loggable {
         } catch (IOException e) {
             throw SingularException.rethrow(e);
         }
+    }
+
+    private static String removeStartingSlash(String script) {
+        if (script.startsWith("/")) {
+            return script.replaceFirst("/", "");
+        }
+        return script;
     }
 
     private static void write(PrintWriter writer, String[] lines, StringBuilder scriptsAdicionais) {

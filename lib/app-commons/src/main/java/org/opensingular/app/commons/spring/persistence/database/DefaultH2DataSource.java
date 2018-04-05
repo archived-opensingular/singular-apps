@@ -85,7 +85,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         StringBuilder sb = new StringBuilder();
         sb.append(sqlToAppend);
         if (!sqlToAppend.endsWith(";")) {
-            sb.append(";");
+            sb.append(';');
         }
         if (appendToEnd) {
             sb.insert(0, StringUtils.defaultString(options.get("INIT")));
