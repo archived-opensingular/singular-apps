@@ -46,6 +46,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         isCreateDropSet = true;
         if (createDrop) {
             addToInit(H2Functions.DROPALLONCE_SCRIPT, false);
+            setDbCloseDelay(-1);// TO ENSURE THAT THE DATABASE WILL LIVE AS LONG AS THE JVM LIVES. WITHOUT THIS, THE DROP/CREATE SOLUTION WILL NOT WORK ACCORDINGLY.
         }
         return this;
     }
@@ -142,6 +143,12 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
     @Override
     public DefaultH2DataSource setCacheSize(int cacheSize) {
         options.put("CACHE_SIZE", String.valueOf(cacheSize));
+        return this;
+    }
+
+    @Override
+    public DefaultH2DataSource setDbCloseDelay(int closeDelay) {
+        options.put("DB_CLOSE_DELAY", String.valueOf(closeDelay));
         return this;
     }
 

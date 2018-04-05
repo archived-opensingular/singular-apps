@@ -33,6 +33,8 @@ public interface EmbeddedDataSource extends DataSource {
 
     EmbeddedDataSource setCacheSize(int cacheSize);
 
+    DefaultH2DataSource setDbCloseDelay(int closeDelay);
+
     EmbeddedDataSource setLockTimeout(int lockTimeout);
 
     EmbeddedDataSource setMode(String mode);
