@@ -45,10 +45,12 @@ public class PersistenceConfigurationProvider implements Loggable {
     {
         try {
             Properties p   = new Properties();
+            //TODO THIAGO -> porque está pegando de um properties especial? O ideal não é colocar a propriedade na classe SingularProperties
             URL        url = Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties");
             if (url != null) {
                 p.load(url.openStream());
             }
+            //TODO THIAGO -> O ideal não é colocar a propriedade na classe SingularProperties, e não seria melhor colocar um default em lugar de negar?
             isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server"));
         } catch (Exception e) {
             isSingularModule = Boolean.TRUE;

@@ -34,12 +34,14 @@ public interface SingularPersistenceConfiguration {
     default void configureHibernateProperties(Properties properties) {
     }
 
+    //TODO THIAGO ->  para que serve esse método?
     default void configureSchemaReplacements(List<DatabaseObjectNameReplacement> replacements) {
     }
 
     Class<? extends Dialect> getHibernateDialect();
 
     default String getActorTableScript() {
+        //TODO THIAGO -> não seria melhor utilizar getDatabaseSupport().getDefaultActorScript(); ??
         return SingularDataBaseEnum.getForDialect(getHibernateDialect()).getDefaultActorScript();
     }
 

@@ -28,5 +28,6 @@ public interface SingularDataBaseSuport {
 
     String getDefaultActorScript();
 
+    //TODO THIAGO -> É realmente necessário ter esse boolean? Quem sobrescrever vai utilizar essa implementação para que?
     boolean isDialectSupported(Class<? extends Dialect> dialect);
 }

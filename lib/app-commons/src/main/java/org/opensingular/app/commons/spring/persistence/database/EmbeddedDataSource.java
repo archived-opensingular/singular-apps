@@ -21,6 +21,8 @@ package org.opensingular.app.commons.spring.persistence.database;
 import javax.sql.DataSource;
 
 public interface EmbeddedDataSource extends DataSource {
+    //TODO THIAGO -> Para que essa interface, ela vai ser implementada por alguem em algum momento?
+
     EmbeddedDataSource addToInit(String sqlToAppend);
 
     EmbeddedDataSource setAutoServer(boolean autoServer);
