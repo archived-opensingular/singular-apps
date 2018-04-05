@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
@@ -59,7 +58,7 @@ public class SingularSchemaExport implements Loggable {
             cfg.buildMappings();
 
             Thread.currentThread().getContextClassLoader().getResource("db/ddl/drops.sql");
-            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(directoryFileName), StandardCharsets.UTF_8))) {
+            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(directoryFileName), StandardCharsets.UTF_8))) {//NOSONAR
                 Dialect  hibDialect = Dialect.getDialect(cfg.getProperties());
                 String[] strings    = cfg.generateSchemaCreationScript(hibDialect);
                 write(writer, strings, scriptsText);
