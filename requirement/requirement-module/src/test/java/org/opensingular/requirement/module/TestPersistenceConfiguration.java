@@ -42,13 +42,9 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
 
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource("jdbc:h2:mem:singulardb;MVCC=TRUE")
+        return new DefaultH2DataSource()
                 .setCreateDrop(SqlUtil.isDropCreateDatabase())
-                .setCacheSize(4096)
-                .setEarlyFilter(true)
-                .setMultiThreaded(true)
-                .setMode("ORACLE")
-                .setLockTimeout(15000);
+                .setMode("ORACLE");
     }
 
     @Override
