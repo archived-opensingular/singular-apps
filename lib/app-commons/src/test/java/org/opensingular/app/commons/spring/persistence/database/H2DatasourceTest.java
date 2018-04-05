@@ -18,8 +18,12 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
+import com.zaxxer.hikari.HikariDataSource;
+import org.junit.Assert;
 import org.junit.Test;
 
+import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class H2DatasourceTest {
@@ -33,5 +37,65 @@ public class H2DatasourceTest {
         defaultH2DataSource.init();
 
         defaultH2DataSource.getConnection();
+    }
+
+    private void createTableAndInsertTwoRows(Connection c) throws SQLException {
+        c.prepareStatement("create table dbsingular.whatever(nada int not null)").executeUpdate();
+        c.prepareStatement("insert into  dbsingular.whatever values(1)").executeUpdate();
+        c.prepareStatement("insert into  dbsingular.whatever values(2)").executeUpdate();
+        c.commit();
+        c.close();
+    }
+
+    private HikariDataSource createNewH2DataSource(){
+        DefaultH2DataSource defaultH2DataSource = new DefaultH2DataSource("jdbc:h2:file:./test;TRACE_LEVEL_SYSTEM_OUT=3;");
+        defaultH2DataSource.setCreateDrop(true);
+        defaultH2DataSource.init();
+        return ((HikariDataSource)defaultH2DataSource.getTargetDataSource());
+    }
+
+    private void lookForInitOnceAndTwoRowsInWhatever(Connection c) throws SQLException {
+        ResultSet rs = c.prepareStatement("select count(*) from dbsingular.whatever ").executeQuery();
+        rs.next();
+        Assert.assertEquals(2, rs.getInt(1));
+        ResultSet rsOnce    = c.createStatement().executeQuery(" SELECT COUNT(*) FROM INITONCE");
+        rsOnce.next();
+        Assert.assertEquals(1, rsOnce.getInt(1));
+        c.close();
+    }
+
+    @Test
+    public void testDoNotRecreateDatabase() throws SQLException {
+        HikariDataSource someDataSource = createNewH2DataSource();
+        createTableAndInsertTwoRows(someDataSource.getConnection());
+
+        lookForInitOnceAndTwoRowsInWhatever(someDataSource.getConnection());
+
+        HikariDataSource otherDataSource = createNewH2DataSource();
+        lookForInitOnceAndTwoRowsInWhatever(otherDataSource.getConnection());
+
+        someDataSource.close();
+        otherDataSource.close();
+
+        while(!someDataSource.isClosed() || !otherDataSource.isClosed()){
+            Thread.yield();
+        }
+    }
+
+
+    @Test
+    public void testRecreateDatabase() throws SQLException {
+        HikariDataSource someDataSource = createNewH2DataSource();
+        createTableAndInsertTwoRows(someDataSource.getConnection());
+
+        lookForInitOnceAndTwoRowsInWhatever(someDataSource.getConnection());
+        someDataSource.close();
+
+        HikariDataSource otherDataSource = createNewH2DataSource();
+        createTableAndInsertTwoRows(otherDataSource.getConnection());
+
+        lookForInitOnceAndTwoRowsInWhatever(otherDataSource.getConnection());
+        someDataSource.close();
+
     }
 }

@@ -25,6 +25,8 @@ public interface EmbeddedDataSource extends DataSource {
 
     EmbeddedDataSource setAutoServer(boolean autoServer);
 
+    DefaultH2DataSource setCloseOnExit(boolean closeOnExit);
+
     EmbeddedDataSource setEarlyFilter(boolean earlyFilter);
 
     EmbeddedDataSource setMultiThreaded(boolean multiThreaded);

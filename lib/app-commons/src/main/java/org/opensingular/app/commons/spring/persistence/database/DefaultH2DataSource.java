@@ -22,6 +22,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.persistence.util.H2Functions;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 
 import javax.annotation.PostConstruct;
@@ -44,7 +45,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
     public DefaultH2DataSource setCreateDrop(boolean createDrop) {
         isCreateDropSet = true;
         if (createDrop) {
-            addToInit("DROP ALL OBJECTS;", false);
+            addToInit(H2Functions.DROPALLONCE_SCRIPT, false);
         }
         return this;
     }
@@ -104,6 +105,16 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
             options.put("AUTO_SERVER", "TRUE");
         } else {
             options.put("AUTO_SERVER", "FALSE");
+        }
+        return this;
+    }
+
+    @Override
+    public DefaultH2DataSource setCloseOnExit(boolean closeOnExit) {
+        if (closeOnExit) {
+            options.put("DB_CLOSE_ON_EXIT", "TRUE");
+        } else {
+            options.put("DB_CLOSE_ON_EXIT", "FALSE");
         }
         return this;
     }
