@@ -9,7 +9,7 @@ public abstract class SingularSchemaExportTest {
     static final String SCRIPT_FILE = "/src/main/resources/exportScript.sql";
 
     @Test
-    public abstract void generateScriptByDialect();
+    public abstract void exportScriptToFile();
 
     protected void generateScript() {
         generateScript(System.getProperty("user.dir") + SCRIPT_FILE);
