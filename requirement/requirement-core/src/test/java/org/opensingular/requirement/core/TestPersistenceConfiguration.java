@@ -42,7 +42,6 @@ public class TestPersistenceConfiguration implements SingularPersistenceConfigur
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource()
-                .setCreateDrop(true)
                 .setMode("ORACLE");
     }
 

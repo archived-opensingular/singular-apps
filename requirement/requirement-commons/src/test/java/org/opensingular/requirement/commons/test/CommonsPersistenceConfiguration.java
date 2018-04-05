@@ -40,7 +40,6 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
     @Override
     public EmbeddedDataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource()
-                .setCreateDrop(SqlUtil.isDropCreateDatabase())
                 .setMode("ORACLE");
     }
 

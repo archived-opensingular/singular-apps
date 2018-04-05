@@ -18,24 +18,21 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import javax.sql.DataSource;
+import org.opensingular.lib.commons.util.Loggable;
+import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.jdbc.datasource.init.ScriptException;
 
-public interface EmbeddedDataSource extends DataSource {
-    EmbeddedDataSource addToInit(String sqlToAppend);
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Statement;
 
-    EmbeddedDataSource setAutoServer(boolean autoServer);
+public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable{
 
-    DefaultH2DataSource setCloseOnExit(boolean closeOnExit);
-
-    EmbeddedDataSource setEarlyFilter(boolean earlyFilter);
-
-    EmbeddedDataSource setMultiThreaded(boolean multiThreaded);
-
-    EmbeddedDataSource setCacheSize(int cacheSize);
-
-    DefaultH2DataSource setDbCloseDelay(int closeDelay);
-
-    EmbeddedDataSource setLockTimeout(int lockTimeout);
-
-    EmbeddedDataSource setMode(String mode);
+    @Override
+    public void populate(Connection connection) throws SQLException, ScriptException {
+        try (Statement s = connection.createStatement()) {
+            getLogger().warn("DROPPING EMBBEDED H2 DATABASE, SQL: DROP ALL OBJECTS");
+            s.execute("DROP ALL OBJECTS");
+        }
+    }
 }

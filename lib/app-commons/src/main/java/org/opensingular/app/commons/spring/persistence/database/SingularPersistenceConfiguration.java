@@ -20,10 +20,8 @@ package org.opensingular.app.commons.spring.persistence.database;
 
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
-import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 import javax.sql.DataSource;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
@@ -33,19 +31,30 @@ public interface SingularPersistenceConfiguration {
 
     void configureInitSQLScripts(List<String> scripts);
 
+    default void configureHibernateProperties(Properties properties) {
+    }
+
+    default void configureSchemaReplacements(List<DatabaseObjectNameReplacement> replacements) {
+    }
+
     Class<? extends Dialect> getHibernateDialect();
 
     default String getActorTableScript() {
         return SingularDataBaseEnum.getForDialect(getHibernateDialect()).getDefaultActorScript();
     }
 
-    default void configureHibernateProperties(Properties properties) {
-    }
-
+    /**
+     * Must return a Pooled data source backed by H2 engine
+     * Defaults to {@link DefaultH2DataSource} pooled by {@link com.zaxxer.hikari.HikariDataSource}
+     */
     default EmbeddedDataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource();
     }
 
+    /**
+     * Must return a Pooled data source.
+     * Defaults to {@link DefaultJNDIDataSource} pooled by {@link com.zaxxer.hikari.HikariDataSource}
+     */
     default DataSource getNonEmbeddedDataSource() {
         return new DefaultJNDIDataSource();
     }
@@ -54,7 +63,4 @@ public interface SingularPersistenceConfiguration {
         return SingularDataBaseEnum.getForDialect(getHibernateDialect());
     }
 
-    default List<DatabaseObjectNameReplacement> getSchemaReplacements() {
-        return new ArrayList<>();
-    }
 }

@@ -18,11 +18,8 @@
 
 package org.opensingular.studio.app.spring;
 
-import java.util.Properties;
-
-import javax.sql.DataSource;
-
 import org.hibernate.SessionFactory;
+import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.form.persistence.RelationalDatabase;
 import org.opensingular.form.persistence.service.RelationalDatabaseHibernate;
 import org.opensingular.lib.commons.base.SingularException;
@@ -32,8 +29,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.zaxxer.hikari.HikariConfig;
-import com.zaxxer.hikari.HikariDataSource;
+import javax.sql.DataSource;
+import java.util.Properties;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class StudioPersistenceConfiguration implements Loggable {
@@ -41,12 +38,7 @@ public class StudioPersistenceConfiguration implements Loggable {
     @Bean
     public DataSource dataSource() {
         try {
-            HikariConfig hc = new HikariConfig();
-            hc.setUsername("sa");
-            hc.setPassword("sa");
-            hc.setDriverClassName("org.h2.Driver");
-            hc.setJdbcUrl(getUrlConnection());
-            return new HikariDataSource(hc);//NOSONAR;
+            return new DefaultH2DataSource(getUrlConnection());
         } catch (Exception e) {
             throw SingularException.rethrow(e.getMessage(), e);
         }

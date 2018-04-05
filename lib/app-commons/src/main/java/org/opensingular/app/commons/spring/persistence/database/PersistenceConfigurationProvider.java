@@ -116,6 +116,10 @@ public class PersistenceConfigurationProvider implements Loggable {
         return persistenceConfiguration.getHibernateDialect();
     }
 
+    public boolean isDropAllH2() {
+        return SqlUtil.useEmbeddedDatabase() && isCreateDrop();
+    }
+
     public List<String> getSQLScritps() {
         List<String> scripts = new ArrayList<>();
         if (SqlUtil.useEmbeddedDatabase()) {
@@ -129,24 +133,19 @@ public class PersistenceConfigurationProvider implements Loggable {
     }
 
     public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
-        return persistenceConfiguration.getSchemaReplacements();
+        List<DatabaseObjectNameReplacement> replacements = new ArrayList<>();
+        persistenceConfiguration.configureSchemaReplacements(replacements);
+        return replacements;
     }
 
     public DataSource getDataSource() {
         DataSource dataSource;
         if (SqlUtil.useEmbeddedDatabase()) {
             dataSource = persistenceConfiguration.getEmbeddedDataSource();
-            EmbeddedDataSource embeddedDataSource = (EmbeddedDataSource) dataSource;
-            if (embeddedDataSource.isCreateDropSet() && !isSingularModule) {
-                embeddedDataSource.setCreateDrop(false);
-            } else if (!embeddedDataSource.isCreateDropSet()) {
-                embeddedDataSource.setCreateDrop(isCreateDrop());
-            }
+        } else if (SingularDataBaseEnum.MSSQL.isDialectSupported(getDialect())) {
+            dataSource = new JTDSHibernateDataSourceWrapper(persistenceConfiguration.getNonEmbeddedDataSource());
         } else {
             dataSource = persistenceConfiguration.getNonEmbeddedDataSource();
-        }
-        if (SingularDataBaseEnum.MSSQL.isDialectSupported(getDialect())) {
-            dataSource = new JTDSHibernateDataSourceWrapper(dataSource);
         }
         return dataSource;
     }

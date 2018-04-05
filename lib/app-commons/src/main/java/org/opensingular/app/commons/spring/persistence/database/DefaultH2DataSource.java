@@ -22,10 +22,8 @@ import com.zaxxer.hikari.HikariDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.persistence.util.H2Functions;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 
-import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
 import java.util.HashMap;
 import java.util.Map;
@@ -34,35 +32,19 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
 
     private Map<String, String> options = new HashMap<>();
     private String  jdbcURL;
-    private boolean isCreateDropSet;
 
     public DefaultH2DataSource(String jdbcURL) {
         this.jdbcURL = jdbcURL;
         addToInit("CREATE SCHEMA if not exists DBSINGULAR;");
-    }
-
-    @Override
-    public DefaultH2DataSource setCreateDrop(boolean createDrop) {
-        isCreateDropSet = true;
-        if (createDrop) {
-            addToInit(H2Functions.DROPALLONCE_SCRIPT, false);
-            setDbCloseDelay(-1);// TO ENSURE THAT THE DATABASE WILL LIVE AS LONG AS THE JVM LIVES. WITHOUT THIS, THE DROP/CREATE SOLUTION WILL NOT WORK ACCORDINGLY.
-        }
-        return this;
-    }
-
-    @Override
-    public boolean isCreateDropSet() {
-        return isCreateDropSet;
-    }
-
-    public DefaultH2DataSource() {
-        this("jdbc:h2:file:./singulardb");
         setAutoServer(true);
         setCacheSize(4096);
         setEarlyFilter(true);
         setMultiThreaded(true);
         setLockTimeout(15000);
+    }
+
+    public DefaultH2DataSource() {
+        this("jdbc:h2:file:./singulardb");
     }
 
     protected String getJdbcUrl() {
@@ -164,10 +146,12 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
-
-    @PostConstruct
-    protected void init() {
-        setTargetDataSource(embeddedDataSourceConfiguration());
+    @Override
+    public DataSource getTargetDataSource() {
+        if (super.getTargetDataSource() == null) {
+            setTargetDataSource(embeddedDataSourceConfiguration());
+        }
+        return super.getTargetDataSource();
     }
 
     protected DataSource embeddedDataSourceConfiguration() {

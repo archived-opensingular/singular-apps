@@ -23,7 +23,6 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.springframework.jdbc.datasource.DelegatingDataSource;
 import org.springframework.jndi.JndiTemplate;
 
-import javax.annotation.PostConstruct;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
@@ -31,9 +30,12 @@ import static org.opensingular.lib.commons.base.SingularProperties.*;
 
 public class DefaultJNDIDataSource extends DelegatingDataSource implements Loggable {
 
-    @PostConstruct
-    protected void init() {
-        setTargetDataSource(jndiDataSourceConfiguration());
+    @Override
+    public DataSource getTargetDataSource() {
+        if (super.getTargetDataSource() == null) {
+            setTargetDataSource(jndiDataSourceConfiguration());
+        }
+        return super.getTargetDataSource();
     }
 
     protected DataSource jndiDataSourceConfiguration() {
