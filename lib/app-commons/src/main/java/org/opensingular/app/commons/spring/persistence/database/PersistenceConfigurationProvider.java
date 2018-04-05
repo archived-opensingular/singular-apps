@@ -18,6 +18,14 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import javax.sql.DataSource;
+
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
 import org.apache.commons.lang3.BooleanUtils;
@@ -29,14 +37,6 @@ import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
-import javax.sql.DataSource;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-
 public class PersistenceConfigurationProvider implements Loggable {
 
     @Deprecated
@@ -45,13 +45,13 @@ public class PersistenceConfigurationProvider implements Loggable {
     {
         try {
             Properties p   = new Properties();
-            //TODO THIAGO -> porque está pegando de um properties especial? O ideal não é colocar a propriedade na classe SingularProperties
             URL        url = Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties");
             if (url != null) {
                 p.load(url.openStream());
             }
-            //TODO THIAGO -> O ideal não é colocar a propriedade na classe SingularProperties, e não seria melhor colocar um default em lugar de negar?
-            isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server"));
+            /*The default of isSingularModule is false, when the project singular-requirement-core don't exists in the Maven dependencies.
+            This will be removed in the feature, just exists because of projects Module and Server.*/
+            isSingularModule = BooleanUtils.toBoolean(p.getProperty("singular.server", "false"));
         } catch (Exception e) {
             isSingularModule = Boolean.TRUE;
             getLogger().trace(e.getMessage(), e);

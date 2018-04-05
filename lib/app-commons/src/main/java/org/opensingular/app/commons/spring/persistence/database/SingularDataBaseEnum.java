@@ -18,14 +18,14 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.opensingular.lib.commons.base.SingularException;
-
-import java.util.Arrays;
-import java.util.List;
 
 public enum SingularDataBaseEnum implements SingularDataBaseSuport {
 
@@ -49,7 +49,6 @@ public enum SingularDataBaseEnum implements SingularDataBaseSuport {
         return scripts;
     }
 
-    @Override
     public boolean isDialectSupported(Class<? extends Dialect> dialect) {
         return this.dialect.isAssignableFrom(dialect);
     }

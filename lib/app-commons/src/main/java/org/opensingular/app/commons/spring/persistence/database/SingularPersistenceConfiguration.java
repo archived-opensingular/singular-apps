@@ -18,12 +18,12 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import org.hibernate.dialect.Dialect;
-import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
-
-import javax.sql.DataSource;
 import java.util.List;
 import java.util.Properties;
+import javax.sql.DataSource;
+
+import org.hibernate.dialect.Dialect;
+import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 
 public interface SingularPersistenceConfiguration {
 
@@ -34,22 +34,20 @@ public interface SingularPersistenceConfiguration {
     default void configureHibernateProperties(Properties properties) {
     }
 
-    //TODO THIAGO ->  para que serve esse método?
     default void configureSchemaReplacements(List<DatabaseObjectNameReplacement> replacements) {
     }
 
     Class<? extends Dialect> getHibernateDialect();
 
     default String getActorTableScript() {
-        //TODO THIAGO -> não seria melhor utilizar getDatabaseSupport().getDefaultActorScript(); ??
-        return SingularDataBaseEnum.getForDialect(getHibernateDialect()).getDefaultActorScript();
+        return getDatabaseSupport().getDefaultActorScript();
     }
 
     /**
      * Must return a Pooled data source backed by H2 engine
      * Defaults to {@link DefaultH2DataSource} pooled by {@link com.zaxxer.hikari.HikariDataSource}
      */
-    default EmbeddedDataSource getEmbeddedDataSource() {
+    default DefaultH2DataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource();
     }
 

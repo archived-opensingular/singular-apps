@@ -18,8 +18,6 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import org.hibernate.dialect.Dialect;
-
 import java.util.List;
 
 public interface SingularDataBaseSuport {
@@ -28,6 +26,4 @@ public interface SingularDataBaseSuport {
 
     String getDefaultActorScript();
 
-    //TODO THIAGO -> É realmente necessário ter esse boolean? Quem sobrescrever vai utilizar essa implementação para que?
-    boolean isDialectSupported(Class<? extends Dialect> dialect);
 }

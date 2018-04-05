@@ -18,14 +18,12 @@
 
 package org.opensingular.requirement.commons.test;
 
+import java.util.List;
+
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
-import org.opensingular.app.commons.spring.persistence.database.EmbeddedDataSource;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
-import org.opensingular.lib.support.persistence.util.SqlUtil;
-
-import java.util.List;
 
 public class CommonsPersistenceConfiguration implements SingularPersistenceConfiguration {
     @Override
@@ -38,7 +36,7 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
     }
 
     @Override
-    public EmbeddedDataSource getEmbeddedDataSource() {
+    public DefaultH2DataSource getEmbeddedDataSource() {
         return new DefaultH2DataSource()
                 .setMode("ORACLE");
     }
