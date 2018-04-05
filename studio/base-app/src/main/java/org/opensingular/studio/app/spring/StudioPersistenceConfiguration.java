@@ -66,7 +66,7 @@ public class StudioPersistenceConfiguration implements Loggable {
     }
 
     protected String getUrlConnection() {
-        return "jdbc:h2:./singularstudiodb;AUTO_SERVER=TRUE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;";
+        return "jdbc:h2:./singularstudiodb;";
     }
 
     protected Properties hibernateProperties() {

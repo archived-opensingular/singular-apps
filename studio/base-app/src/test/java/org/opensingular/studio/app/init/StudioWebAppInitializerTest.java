@@ -49,6 +49,8 @@ public class StudioWebAppInitializerTest {
         }
     };
 
+
+
     @Test
     public void ok() throws Exception {
         new StudioWebAppInitializer().onStartup(servletContext);
