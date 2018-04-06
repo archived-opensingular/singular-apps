@@ -17,6 +17,18 @@
  */
 package org.opensingular.app.commons.mail.service.email;
 
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
+import javax.activation.DataHandler;
+import javax.annotation.PostConstruct;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.BooleanUtils;
@@ -26,19 +38,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
-import javax.activation.DataHandler;
-import javax.annotation.PostConstruct;
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-import java.util.Date;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-
-import static org.opensingular.lib.commons.base.SingularProperties.*;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_EMAIL_TEST_RECPT;
 
 public class EmailSender extends JavaMailSenderImpl implements Loggable {
 
@@ -100,7 +100,7 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
 
                 msg.setSubject(e.getSubject());
                 msg.setSentDate(Optional.ofNullable(e.getCreationDate()).orElseGet(Date::new));
-                msg.setFrom(new InternetAddress(Optional.ofNullable(from).orElseGet(this::getUsername)));
+                msg.setFrom(new InternetAddress(Optional.ofNullable(from).orElseGet(this::getUsername), addressee.getEmail().getAliasFrom()));
                 // destinatários
                 Message.RecipientType recipientType = addressee.getType().getRecipientType();
                 if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_SEND_EMAIL)) {

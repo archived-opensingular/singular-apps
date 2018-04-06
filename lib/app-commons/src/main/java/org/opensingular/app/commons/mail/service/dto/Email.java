@@ -17,17 +17,6 @@
  */
 package org.opensingular.app.commons.mail.service.dto;
 
-import com.google.common.collect.HashMultimap;
-import com.google.common.collect.Lists;
-import com.google.common.collect.SetMultimap;
-import org.apache.commons.lang3.StringUtils;
-import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
-import org.opensingular.form.SingularFormException;
-import org.opensingular.form.io.HashUtil;
-import org.opensingular.form.type.core.attachment.IAttachmentRef;
-import org.opensingular.form.type.core.attachment.handlers.FileSystemAttachmentRef;
-
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +27,17 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import com.google.common.collect.HashMultimap;
+import com.google.common.collect.Lists;
+import com.google.common.collect.SetMultimap;
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
+import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
+import org.opensingular.form.SingularFormException;
+import org.opensingular.form.io.HashUtil;
+import org.opensingular.form.type.core.attachment.IAttachmentRef;
+import org.opensingular.form.type.core.attachment.handlers.FileSystemAttachmentRef;
 
 
 
@@ -54,6 +54,8 @@ public class Email {
     private List<IAttachmentRef> attachments = new ArrayList<>(0);
     
     private Date creationDate;
+
+    private String aliasFrom;
     
     public Email() {
     }
@@ -165,7 +167,16 @@ public class Email {
         addresses.filter(StringUtils::isNotBlank).forEach(address -> recipients.put(addresseType, new Addressee(null, this, addresseType, address, null)));
         return this;
     }
-    
+
+    public String getAliasFrom() {
+        return aliasFrom;
+    }
+
+    public Email setAliasFrom(String aliasFrom) {
+        this.aliasFrom = aliasFrom;
+        return this;
+    }
+
     public static class Addressee {
         private final Long cod;
         private final Email email;

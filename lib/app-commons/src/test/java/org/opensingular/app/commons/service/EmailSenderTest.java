@@ -21,7 +21,6 @@ package org.opensingular.app.commons.service;
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
-import org.opensingular.app.commons.mail.persistence.entity.enums.AddresseType;
 import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.app.commons.mail.service.email.EmailSender;
 import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
@@ -30,11 +29,9 @@ import org.opensingular.lib.commons.util.Loggable;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.io.File;
-import java.io.IOException;
-import java.util.Arrays;
 import java.util.Date;
 
+import static org.opensingular.app.commons.service.EmailTestMocks.*;
 public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
     @Inject
@@ -45,25 +42,25 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
     @Test
     @Transactional
-    public void testJobWithoutEmailToSend(){
-            emailSenderJob.setEmailsPerPage(20);
+    public void testJobWithoutEmailToSend() {
+        emailSenderJob.setEmailsPerPage(20);
 
         Object run = emailSenderJob.run();
         Assert.assertEquals("0 sent from total of 0", run);
 
         Assert.assertEquals("EmailSenderScheduledJob [getScheduleData()="
-                        +emailSenderJob.getScheduleData().toString()+", getId()="+emailSenderJob.getId()+"]",
+                        + emailSenderJob.getScheduleData().toString() + ", getId()=" + emailSenderJob.getId() + "]",
                 emailSenderJob.toString());
     }
 
     @Test
-    public void testNotSendEmail(){
+    public void testNotSendEmail() {
         emailSender.setHost(null);
         Assert.assertFalse(emailSender.send((Email.Addressee) null));
     }
 
     @Test
-    public void sendEmailExceptionTest(){
+    public void sendEmailExceptionTest() {
         emailSender.setHost("opensingular.org");
 
         Date date = new Date();
@@ -92,8 +89,8 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
     }
 
     @Test
-    public void testEmailAddresseEntity(){
-        Date date = new Date();
+    public void testEmailAddresseEntity() {
+        Date                 date   = new Date();
         EmailAddresseeEntity entity = createMockEmailAddresseeEntity(date);
 
         entity.setSentDate(date);
@@ -103,44 +100,5 @@ public class EmailSenderTest extends SpringBaseTest implements Loggable {
 
         Assert.assertEquals("opensingular@gmail.com", entity.getAddress());
 
-    }
-
-    private EmailAddresseeEntity createMockEmailAddresseeEntity(Date date) {
-        EmailAddresseeEntity emailEntity = new EmailAddresseeEntity();
-        emailEntity.setCod((long)1);
-        Assert.assertEquals(new Long(1), emailEntity.getCod());
-
-        Assert.assertNull(emailEntity.getAddress());
-        Assert.assertNull(emailEntity.getAddresseType());
-
-        emailEntity.setAddress("opensingular@gmail.com");
-        emailEntity.setAddresseType(AddresseType.TO);
-
-
-        return emailEntity;
-    }
-
-    private Email createMockEmail() {
-        Email email = new Email();
-        email.withSubject("Test");
-        email.withContent("Some context to test.");
-        email.addTo(Arrays.asList("email1@email.com", "email2@email.com", "email3@email.com"));
-
-        email.addCc(Arrays.asList("email1@email.com", "email2@email.com", "email3@email.com"));
-        email.addCc("email1@email.com", "email2@email.com", "email3@email.com");
-
-        email.addBcc(Arrays.asList("email1@email.com", "email2@email.com", "email3@email.com"));
-        email.addBcc("email1@email.com", "email2@email.com", "email3@email.com");
-
-        File f = null;
-        try {
-            f = File.createTempFile("nada","de nada");
-        } catch (IOException e) {
-            getLogger().error("erro ao criar arquivo temporario");
-        }
-        f.deleteOnExit();
-        email.addAttachment(f, "lada");
-
-        return email;
     }
 }

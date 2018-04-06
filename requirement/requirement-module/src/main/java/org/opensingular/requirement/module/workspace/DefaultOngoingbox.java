@@ -18,17 +18,17 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.service.dto.DatatableField;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.requirement.commons.config.PServerContext;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class DefaultOngoingbox implements BoxDefinition {
 
@@ -48,7 +48,10 @@ public class DefaultOngoingbox implements BoxDefinition {
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder().addViewAction());
+        return new RequirementBoxItemDataProvider(Boolean.FALSE,
+                new ActionProviderBuilder()
+                        .addViewAction()
+                        .addHistoryAction());
     }
 
     @Override
