@@ -49,7 +49,7 @@ public class PersistenceConfigurationProvider implements Loggable {
             if (url != null) {
                 p.load(url.openStream());
             }
-            /*The default of isSingularModule is false, when the project singular-requirement-core don't exists in the Maven dependencies.
+            /*The default of isSingularModule is false when the project singular-requirement-core don't exists in the Maven dependencies.
             This will be removed in the feature, just exists because of projects Module and Server.*/
             isSingularModule = BooleanUtils.toBoolean(p.getProperty("singular.server", "false"));
         } catch (Exception e) {
@@ -57,7 +57,6 @@ public class PersistenceConfigurationProvider implements Loggable {
             getLogger().trace(e.getMessage(), e);
         }
     }
-
 
     /**
      * @return
