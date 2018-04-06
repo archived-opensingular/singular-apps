@@ -172,7 +172,7 @@ public class Email {
         return aliasFrom;
     }
 
-    public Email addAliasFrom(String aliasFrom) {
+    public Email setAliasFrom(String aliasFrom) {
         this.aliasFrom = aliasFrom;
         return this;
     }
