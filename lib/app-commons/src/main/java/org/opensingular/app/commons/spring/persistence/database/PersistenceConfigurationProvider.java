@@ -51,7 +51,7 @@ public class PersistenceConfigurationProvider implements Loggable {
             }
             /*The default of isSingularModule is false when the project singular-requirement-core don't exists in the Maven dependencies.
             This will be removed in the feature, just exists because of projects Module and Server.*/
-            isSingularModule = BooleanUtils.toBoolean(p.getProperty("singular.server", "false"));
+            isSingularModule = !BooleanUtils.toBoolean(p.getProperty("singular.server", "false"));
         } catch (Exception e) {
             isSingularModule = Boolean.TRUE;
             getLogger().trace(e.getMessage(), e);
