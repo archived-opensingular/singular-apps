@@ -36,12 +36,14 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.commons.flow.SingularWebRef;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
@@ -59,6 +61,7 @@ import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
+import java.util.Objects;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
@@ -228,12 +231,17 @@ public class DispatcherPage extends WebPage implements Loggable {
 
         SingularUserDetails userDetails = SingularSession.get().getUserDetails();
 
+        Long requirementId = context.getRequirementId().orElse(null);
         boolean hasPermission = authorizationService.hasPermission(
-                context.getRequirementId().orElse(null),
+                requirementId,
                 context.getFormName().orElse(null),
                 String.valueOf(userDetails.getUserPermissionKey()),
                 context.getFormAction().map(FormAction::name).orElse(null)
         );
+
+        if (requirementId != null && userDetails.isContext(PServerContext.REQUIREMENT)) {
+            hasPermission &= isOwner(userDetails, requirementId);
+        }
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
@@ -243,6 +251,12 @@ public class DispatcherPage extends WebPage implements Loggable {
             return hasPermission;
         }
 
+    }
+
+    protected boolean isOwner(SingularUserDetails userDetails, Long requirementId) {
+        String applicantId = userDetails.getApplicantId();
+        RequirementInstance requirement = requirementService.getRequirement(requirementId);
+        return Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
     }
 
     private boolean isViewModeEdit(ActionContext context) {

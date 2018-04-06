@@ -19,12 +19,21 @@
 package org.opensingular.requirement.module.wicket.view.util.history;
 
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -42,15 +51,9 @@ import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 
 @MountPath("history")
@@ -200,8 +203,9 @@ public class HistoryPage extends ServerTemplate {
         return false;
     }
 
+
     protected String getBaseUrl() {
-        return SingularSession.get().getServerContext().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getUrlPath();
     }
 
     @Override

@@ -425,7 +425,7 @@ public class SEIWS implements SEIPortType {
     @Override
     public RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento, SimNao sinRetornarAndamentoGeracao,
                                                        SimNao sinRetornarAssinaturas, SimNao sinRetornarPublicacao, SimNao sinRetornarCampos) {
-        return seiPortType.consultarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento,
+        return seiPortType.consultarDocumento(siglaSistema, identificacaoServico, unidade != null ? unidade.getId() : "", protocoloDocumento,
                 sinRetornarAndamentoGeracao.getCodigo(), sinRetornarAssinaturas.getCodigo(),
                 sinRetornarPublicacao.getCodigo(), sinRetornarCampos.getCodigo());
     }

@@ -19,10 +19,10 @@
 package org.opensingular.requirement.commons.spring.security;
 
 
+import org.opensingular.requirement.commons.config.IServerContext;
+
 import java.util.ArrayList;
 import java.util.List;
-
-import org.opensingular.requirement.commons.config.IServerContext;
 
 public class DefaultUserDetails implements SingularUserDetails {
 
@@ -71,4 +71,8 @@ public class DefaultUserDetails implements SingularUserDetails {
         return username;
     }
 
+    @Override
+    public String getApplicantId() {
+        return getUsername();
+    }
 }
