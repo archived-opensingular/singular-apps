@@ -54,7 +54,7 @@
 <div class="logo">
     <a>
         <img alt="logo" class="logo-default logo-sso" id="brandLogo3"
-             src="/singular-static/resources/singular/img/logo_singular.png">
+             src="/singular-static/resources/singular/img/logo/logo_singular.png">
     </a>
 </div>
 
