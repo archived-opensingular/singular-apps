@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.core.wicket.box;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -115,7 +116,7 @@ public class BoxPage extends ServerBoxTemplate {
         }
     }
 
-    protected BoxContent newBoxContent(String id, String moduleCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
+    protected Component newBoxContent(String id, String moduleCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
         return new BoxContent(id, moduleCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
     }
 
