@@ -74,8 +74,24 @@ public class GroupMenuEntry extends AbstractMenuEntry {
             return this;
         }
 
+
+        public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon) {
+            groupEntry.add(new StudioMenuEntry(icon, name, contentFactory, true));
+            return this;
+        }
+
+        public Builder addStudioItemWithoutMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon) {
+            groupEntry.add(new StudioMenuEntry(icon, name, contentFactory, false));
+            return this;
+        }
+
         public Builder addStudioItem(String name, StudioDefinition definition) {
             groupEntry.add(new StudioCRUDMenuEntry(null, name, definition));
+            return this;
+        }
+
+        public Builder addStudioItem(String name, StudioDefinition definition, Icon icon) {
+            groupEntry.add(new StudioCRUDMenuEntry(icon, name, definition));
             return this;
         }
 
