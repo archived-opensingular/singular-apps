@@ -27,7 +27,7 @@
     SingularResourceHandler
             .addStyle('/global/plugins/font-awesome/css/font-awesome.min.css')
             .addStyle('/global/plugins/simple-line-icons/simple-line-icons.min.css')
-            .addStyle('/global/plugins/bootstrap/css/bootstrap.min.css')
+            .addStyle('/global/plugins/bootstrap/css/bootstrap.css')
             .addStyle('/global/plugins/uniform/css/uniform.default.css')
             .addStyle('/global/css/components-rounded.css')
             .addStyle('/global/css/plugins.css')
