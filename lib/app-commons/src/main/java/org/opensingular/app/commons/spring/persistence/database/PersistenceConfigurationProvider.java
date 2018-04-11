@@ -134,7 +134,7 @@ public class PersistenceConfigurationProvider implements Loggable {
 
     public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
         List<DatabaseObjectNameReplacement> replacements = new ArrayList<>();
-        persistenceConfiguration.configureSchemaReplacements(replacements);
+        persistenceConfiguration.configureQueryReplacements(replacements);
         return replacements;
     }
 

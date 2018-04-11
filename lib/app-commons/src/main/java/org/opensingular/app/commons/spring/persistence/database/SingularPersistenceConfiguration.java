@@ -34,7 +34,7 @@ public interface SingularPersistenceConfiguration {
     default void configureHibernateProperties(Properties properties) {
     }
 
-    default void configureSchemaReplacements(List<DatabaseObjectNameReplacement> replacements) {
+    default void configureQueryReplacements(List<DatabaseObjectNameReplacement> replacements) {
     }
 
     Class<? extends Dialect> getHibernateDialect();
