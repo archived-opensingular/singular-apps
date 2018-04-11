@@ -38,7 +38,6 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         addToInit("CREATE SCHEMA if not exists DBSINGULAR;");
         setAutoServer(true);
         setCacheSize(4096);
-        setEarlyFilter(true);
         setMultiThreaded(true);
         setLockTimeout(15000);
     }
@@ -99,18 +98,9 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
-    public DefaultH2DataSource setEarlyFilter(boolean earlyFilter) {
-        if (earlyFilter) {
-            options.put("EARLY_FILTER", "TRUE");
-        } else {
-            options.put("EARLY_FILTER", "FALSE");
-        }
-        return this;
-    }
-
     public DefaultH2DataSource setMultiThreaded(boolean multiThreaded) {
         if (multiThreaded) {
-            options.put("MULTI_THREADED", "TRUE");
+            options.put("MULTI_THREADED", "1");
         } else {
             options.put("MULTI_THREADED", "FALSE");
         }
