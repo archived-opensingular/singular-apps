@@ -21,6 +21,8 @@ package org.opensingular.requirement.commons.wicket;
 import net.vidageek.mirror.dsl.Mirror;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
@@ -33,26 +35,24 @@ import org.opensingular.form.util.transformer.Value;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.lib.wicket.util.ajax.ActionAjaxLink;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
-
+import org.opensingular.requirement.commons.SPackageFOO;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.service.RequirementService;
-
+import org.opensingular.requirement.commons.test.CommonsApplicationMock;
+import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.wicket.error.Page500;
 import org.opensingular.requirement.commons.wicket.view.form.FormPage;
 import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
-import org.opensingular.requirement.commons.SPackageFOO;
-import org.opensingular.requirement.commons.test.CommonsApplicationMock;
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class FormPageTest extends SingularCommonsBaseTest {
@@ -209,5 +209,33 @@ public class FormPageTest extends SingularCommonsBaseTest {
         tester.assertRenderedPage(Page500.class);
     }
 
+    @WithUserDetails("vinicius.nunes")
+    @Test
+    public void testOpenAnnotationAfterOpeningModal() {
+        tester = new SingularWicketTester(singularApplication);
+
+        ActionContext context = new ActionContext();
+        context.setFormName(SPackageFOO.STypeFOOModal.FULL_NAME);
+        context.setFormAction(FormAction.FORM_FILL_WITH_ANALYSIS_FILL);
+        context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
+        FormPage p = new FormPage(context);
+        tester.startPage(p);
+        tester.assertRenderedPage(FormPage.class);
+
+        Form f = (Form) new AssertionsWComponent(p).getSubComponents(Form.class).first().getTarget();
+        f.setMultiPart(false);
+
+        Component addPessoa = p.get("save-form:singular-panel:generated:_:1:_:1:_:1:_:1:_:2:_:1:_:3:_:1:_:1:panel:form:footer:addButton");
+        tester.executeAjaxEvent(addPessoa, "click");
+
+        Component linkAnnotation = tester.getAssertionsPage().getSubComponents(ActionAjaxLink.class).first().getTarget();
+        tester.executeAjaxEvent(linkAnnotation, "click");
+
+        Component justificativa = tester.getAssertionsPage().getSubComponents(TextArea.class).first().getTarget();
+
+        assertEquals(justificativa.getId(), "justificativa");
+        assertTrue(justificativa.isVisibleInHierarchy());
+
+    }
 
 }
