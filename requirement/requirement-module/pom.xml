@@ -36,13 +36,11 @@
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-requirement-commons-test</artifactId>
-            <version>${singular.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-requirement-commons</artifactId>
-            <version>${singular.version}</version>
         </dependency>
     </dependencies>
 

@@ -34,7 +34,7 @@ import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.component.BFModalWindow;
-import org.opensingular.form.wicket.component.SingularButton;
+import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.commons.ui.Icon;
@@ -44,6 +44,7 @@ import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.util.WicketUtils;
+import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
@@ -90,7 +91,7 @@ public class CrudListContent extends CrudShellContent {
         tableBuilder.setBorderedTable(false);
         StudioTableDefinition configuredStudioTable = getConfiguredStudioTable();
         configuredStudioTable.getColumns()
-                .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), ins -> ins.getField(path).toStringDisplay()));
+                .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), path, ins -> ins.getField(path).toStringDisplay()));
 
         tableBuilder.appendActionColumn("", (BSDataTableBuilder.BSActionColumnCallback<SInstance, String>)
                 actionColumn -> configuredStudioTable.getActions().forEach(listAction -> {
@@ -159,17 +160,25 @@ public class CrudListContent extends CrudShellContent {
             filterPanel.setNested(true);
             modalFilter.setBody(filterPanel);
 
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularButton("btnPesquisar", filterPanel.getInstanceModel()) {
+            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", filterPanel.getInstanceModel()) {
                 @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                     target.add(CrudListContent.this);
                     modalFilter.hide(target);
+                }
+
+                @Override
+                protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                    super.onValidationError(target, form, instanceModel);
+                    modalFilter.hide(target);
+                    modalFilter.show(target);
                 }
             });
 
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    filterPanel.getInstance().clearInstance();
                     modalFilter.hide(target);
                 }
             };
@@ -369,15 +378,15 @@ public class CrudListContent extends CrudShellContent {
         addPorletHeaderRightAction(btnFilter);
     }
 
-    private class DefaultStudioTableDataProvider implements StudioTableDataProvider<SInstance> {
+    private class DefaultStudioTableDataProvider implements BasicStudioTableDataProvider<SInstance> {
 
         @Override
-        public Iterator<SInstance> iterator(long first, long count, IModel<? extends SInstance> filter) {
+        public Iterator<SInstance> iterator(long first, long count) {
             return getFormPersistence().loadAll(first, count).iterator();
         }
 
         @Override
-        public long size(IModel<? extends SInstance> filter) {
+        public long size() {
             return getFormPersistence().countAll();
         }
     }
