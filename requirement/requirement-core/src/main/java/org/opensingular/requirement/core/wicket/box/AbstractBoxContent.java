@@ -144,6 +144,18 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return new WebMarkupContainer(id);
     }
 
+    protected Component buildBeforeTableContainer(String id) {
+        Component c =  new WebMarkupContainer(id);
+        c.setVisible(false);
+        return c;
+    }
+
+    protected Component buildAfterTableContainer(String id) {
+        Component c = new WebMarkupContainer(id);
+        c.setVisible(false);
+        return c;
+    }
+
     protected abstract void appendPropertyColumns(BSDataTableBuilder<T, String, IColumn<T, String>> builder);
 
     /**
@@ -251,7 +263,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         table.add($b.classAppender("worklist"));
 
         queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
+        queue(buildBeforeTableContainer("beforeTableContainer"));
         queue(table);
+        queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (menuService != null) {
