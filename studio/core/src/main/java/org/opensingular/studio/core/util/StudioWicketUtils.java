@@ -18,13 +18,17 @@
 
 package org.opensingular.studio.core.util;
 
-import net.vidageek.mirror.dsl.Mirror;
-import org.apache.wicket.WicketRuntimeException;
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.Page;
+import org.apache.wicket.core.request.handler.BookmarkablePageRequestHandler;
+import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.wicketstuff.annotation.mount.MountPath;
+import org.apache.wicket.request.IRequestMapper;
+import org.apache.wicket.request.Url;
+import org.apache.wicket.request.mapper.parameter.PageParameters;
 
 public class StudioWicketUtils {
+
+    public static final String PLACEHOLDER = "REPLACE_ME";
 
     /**
      * Monta a URL completa a partir da pagina informada e do "path"
@@ -33,34 +37,25 @@ public class StudioWicketUtils {
      * por exemplo, caso a entrada possua uma pagina que esteja anotada com @MountPath("/page/${path}")
      * e um path com valor de "foo/bar", o valor retornado será "/page/foo/bar"
      *
-     * @param annotatedPage classe com path parameter anotada com @MountPath
-     * @param pathURI       o path que será substituido na URL
+     * @param pathURI o path que será substituido na URL
      * @return a url completa
      */
-    public static String getMergedPathIntoURL(Class<? extends WebPage> annotatedPage, String pathURI) {
-        String[] paths = pathURI.split("/");
-        String moutedPathWithPathParameter = "";
-        if (paths.length > 0) {
-            String mountPath = getMountPath(annotatedPage);
-            if (mountPath == null) {
-                throw new NotAnnotatedWithMountPathException(annotatedPage);
-            }
-            moutedPathWithPathParameter = mountPath.replace("${path}", pathURI);
+    public static String getMergedPathIntoURL(String pathURI) {
+        String[] paths                       = pathURI.split("/");
+        String   moutedPathWithPathParameter = "";
+        if (paths.length > 0 && WebApplication.exists()) {
+            final WebApplication        webApplication    = WebApplication.get();
+            final IRequestMapper        rootRequestMapper = webApplication.getRootRequestMapper();
+            final Class<? extends Page> homePage          = webApplication.getHomePage();
+            final PageParameters        pageParameters    = new PageParameters().add("path", PLACEHOLDER);
+            final Url                   url               = rootRequestMapper.mapHandler(new BookmarkablePageRequestHandler(new PageProvider(homePage, pageParameters)));
+            moutedPathWithPathParameter = "/" + url.getPath().replace(PLACEHOLDER, pathURI);
         }
         return getServerContextPath() + moutedPathWithPathParameter;
-    }
-
-    public static String getMountPath(Class<? extends WebPage> page) {
-        return new Mirror().on(page).reflect().annotation(MountPath.class).atClass().value();
     }
 
     public static String getServerContextPath() {
         return WebApplication.get().getServletContext().getContextPath();
     }
 
-    private static class NotAnnotatedWithMountPathException extends WicketRuntimeException {
-        NotAnnotatedWithMountPathException(Class<? extends WebPage> page) {
-            super("A Pagina " + page + " não está anotada com @MountPath");
-        }
-    }
 }

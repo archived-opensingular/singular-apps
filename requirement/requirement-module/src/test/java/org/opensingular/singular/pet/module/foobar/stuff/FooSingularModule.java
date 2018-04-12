@@ -18,13 +18,13 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
-import org.opensingular.server.module.RequirementConfiguration;
-import org.opensingular.server.module.SingularModule;
-import org.opensingular.server.module.WorkspaceConfiguration;
-import org.opensingular.server.commons.requirement.SingularRequirement;
-import org.opensingular.server.module.requirement.builder.SingularRequirementBuilder;
-import org.opensingular.server.module.workspace.DefaultDonebox;
-import org.opensingular.server.module.workspace.DefaultInbox;
+import org.opensingular.requirement.module.RequirementConfiguration;
+import org.opensingular.requirement.module.SingularModule;
+import org.opensingular.requirement.module.WorkspaceConfiguration;
+import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.workspace.DefaultDonebox;
+import org.opensingular.requirement.module.workspace.DefaultInbox;
 
 public class FooSingularModule implements SingularModule {
 

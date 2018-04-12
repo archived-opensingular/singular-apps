@@ -12,8 +12,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
-    <script src="/singular-static/resources/comum/plugins/jquery.min.js" type="text/javascript"></script>
-    <script src="/singular-static/resources/comum/scripts/singular-resource-handler.js" type="text/javascript"></script>
+    <script src="/singular-static/resources/singular/plugins/jquery.min.js" type="text/javascript"></script>
+    <script src="/singular-static/resources/singular/scripts/singular-resource-handler.js" type="text/javascript"></script>
     <style type="text/css">
         .login .logo img.logo-sso {
             height: auto;
@@ -27,7 +27,7 @@
     SingularResourceHandler
             .addStyle('/global/plugins/font-awesome/css/font-awesome.min.css')
             .addStyle('/global/plugins/simple-line-icons/simple-line-icons.min.css')
-            .addStyle('/global/plugins/bootstrap/css/bootstrap.min.css')
+            .addStyle('/global/plugins/bootstrap/css/bootstrap.css')
             .addStyle('/global/plugins/uniform/css/uniform.default.css')
             .addStyle('/global/css/components-rounded.css')
             .addStyle('/global/css/plugins.css')
@@ -54,7 +54,7 @@
 <div class="logo">
     <a>
         <img alt="logo" class="logo-default logo-sso" id="brandLogo3"
-             src="/singular-static/resources/singular/img/logo_singular.png">
+             src="/singular-static/resources/singular/img/logo/logo_singular.png">
     </a>
 </div>
 

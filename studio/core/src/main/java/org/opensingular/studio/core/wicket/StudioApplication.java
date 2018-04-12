@@ -41,7 +41,6 @@ import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.view.StudioFooter;
 import org.opensingular.studio.core.view.StudioHeader;
 import org.opensingular.studio.core.view.StudioPage;
-import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
