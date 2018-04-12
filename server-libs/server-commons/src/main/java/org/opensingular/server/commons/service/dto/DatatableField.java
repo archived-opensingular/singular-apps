@@ -28,13 +28,13 @@ public class DatatableField implements Serializable {
     public DatatableField() {
     }
 
-    public DatatableField(String key, String label) {
-        this.key = key;
+    public DatatableField(String label, String key) {
         this.label = label;
+        this.key = key;
     }
 
-    public static DatatableField of(String key, String label) {
-        return new DatatableField(key, label);
+    public static DatatableField of(String label, String key) {
+        return new DatatableField(label, key);
     }
 
     public String getKey() {

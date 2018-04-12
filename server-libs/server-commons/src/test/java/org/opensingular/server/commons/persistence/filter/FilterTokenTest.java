@@ -22,12 +22,7 @@ import org.hamcrest.Matchers;
 import org.junit.Test;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 
 public class FilterTokenTest {
@@ -75,8 +70,8 @@ public class FilterTokenTest {
 
     @Test
     public void testGetOnlyNumbersAndLettersExact() throws Exception {
-        FilterToken filter = new FilterToken("###danilo-$123", true);
-        assertThat(filter.getOnlyNumbersAndLetters(), Matchers.equalTo("danilo123"));
+        FilterToken filter = new FilterToken("'\"!@#$%¨¨*()_+-=[{]}/?;:.>,<|danilo-$0123456789áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙãẽĩõũÃẼĨÕŨâêîôûÂÊÎÔÛäëïöüÄËÏÖÜ", true);
+        assertThat(filter.getOnlyNumbersAndLetters(), Matchers.equalTo("danilo0123456789áéíóúÁÉÍÓÚàèìòùÀÈÌÒÙãẽĩõũÃẼĨÕŨâêîôûÂÊÎÔÛäëïöüÄËÏÖÜ"));
     }
 
     @Test

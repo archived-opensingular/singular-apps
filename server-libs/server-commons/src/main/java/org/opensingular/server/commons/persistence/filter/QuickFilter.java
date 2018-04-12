@@ -35,6 +35,7 @@ public class QuickFilter implements Serializable {
     private List<String> tasks;
     private List<String> processesAbbreviation;
     private List<String> typesNames;
+    private List<String> enabledFieldFilters;
 
     public QuickFilter withFilter(String filter) {
         this.filter = filter;
@@ -166,4 +167,11 @@ public class QuickFilter implements Serializable {
         return filter;
     }
 
+    public List<String> getEnabledFieldFilters() {
+        return enabledFieldFilters;
+    }
+
+    public void setEnabledFieldFilters(List<String> enabledFieldFilters) {
+        this.enabledFieldFilters = enabledFieldFilters;
+    }
 }

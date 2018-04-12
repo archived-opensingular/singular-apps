@@ -49,7 +49,7 @@ public class DefaultOngoingbox implements BoxDefinition {
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder().addViewAction());
+        return new RequirementBoxItemDataProvider(Boolean.FALSE, new ActionProviderBuilder().addViewAction(), getDatatableFieldKeys());
     }
 
     @Override

@@ -23,16 +23,22 @@ import com.querydsl.core.types.dsl.BeanPath;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.opensingular.server.commons.query.QuickFilterBuilder;
 import org.opensingular.server.commons.query.SelectBuilder;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
 
     private SelectBuilder  select                 = new SelectBuilder();
     private BooleanBuilder whereClause            = new BooleanBuilder();
+    private QuickFilterBuilder quickFilter        = new QuickFilterBuilder();
     private BooleanBuilder quickFilterWhereClause = new BooleanBuilder();
     private BeanPath<?>    countPath              = null;
+    private Set<String> enabledFieldFilters = new HashSet<>();
 
     public RequirementSearchQuery(Session session) {
         super(session);
@@ -48,7 +54,7 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         } else {
             select(select.build());
         }
-        where(whereClause.and(quickFilterWhereClause));
+        where(whereClause.and(quickFilter.build(enabledFieldFilters)));
         return createQuery();
     }
 
@@ -64,4 +70,15 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         this.countPath = entityPath;
     }
 
+    public QuickFilterBuilder getQuickFilter() {
+        return quickFilter;
+    }
+
+    public void addEnabledFieldFilterNames(List<String> enabledFieldFilters) {
+        this.enabledFieldFilters.addAll(enabledFieldFilters);
+    }
+
+    public void addEnabledFieldFilterName(String enabledFieldFilter) {
+        this.enabledFieldFilters.add(enabledFieldFilter);
+    }
 }

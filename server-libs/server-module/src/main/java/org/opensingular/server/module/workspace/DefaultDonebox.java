@@ -49,7 +49,7 @@ public class DefaultDonebox implements BoxDefinition {
 
     @Override
     public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.TRUE, new ActionProviderBuilder().addViewAction());
+        return new RequirementBoxItemDataProvider(Boolean.TRUE, new ActionProviderBuilder().addViewAction(), getDatatableFieldKeys());
     }
 
     @Override

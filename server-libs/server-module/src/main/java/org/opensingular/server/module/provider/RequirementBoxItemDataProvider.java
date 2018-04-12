@@ -47,14 +47,19 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private List<IConsumer<List<Map<String, Serializable>>>> filters;
 
-    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
+    private List<String> enabledFieldFilters;
+
+    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider,
+                                          @Nonnull List<String> enabledFieldFilters) {
         this.evalPermissions = evalPermissions;
         this.actionProvider = actionProvider;
+        this.enabledFieldFilters = enabledFieldFilters;
     }
 
     @Override
     public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
         addEnabledTasksToFilter(filter);
+        filter.setEnabledFieldFilters(enabledFieldFilters);
         List<Map<String, Serializable>> requirements;
         if (Boolean.TRUE.equals(evalPermissions)) {
             requirements = lookupRequirementService().listTasks(filter, searchPermissions(filter), extenders);
@@ -70,6 +75,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     @Override
     public Long count(QuickFilter filter, BoxInfo boxInfo) {
         addEnabledTasksToFilter(filter);
+        filter.setEnabledFieldFilters(enabledFieldFilters);
         if (Boolean.TRUE.equals(evalPermissions)) {
             return lookupRequirementService().countTasks(filter, searchPermissions(filter), extenders);
         } else {
@@ -135,6 +141,14 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> tasks) {
         tasks.forEach(this::addTask);
         return this;
+    }
+
+    public void addEnabledFieldFilter(@Nonnull String enabledFieldFilter) {
+        if (enabledFieldFilters == null) {
+            enabledFieldFilters = new ArrayList<>();
+        }
+
+        enabledFieldFilters.add(enabledFieldFilter);
     }
 
 }

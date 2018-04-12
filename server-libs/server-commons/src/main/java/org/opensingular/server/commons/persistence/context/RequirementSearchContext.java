@@ -18,8 +18,6 @@
 
 package org.opensingular.server.commons.persistence.context;
 
-
-import org.hibernate.Session;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.server.commons.persistence.requirement.RequirementSearchExtender;

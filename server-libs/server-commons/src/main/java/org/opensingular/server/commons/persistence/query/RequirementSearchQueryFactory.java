@@ -31,8 +31,8 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
-import org.opensingular.server.commons.persistence.filter.FilterToken;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
+import org.opensingular.server.commons.query.QuickFilterBuilder;
 
 import javax.annotation.Nonnull;
 
@@ -167,15 +167,22 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByQuickFilter() {
         if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
-            for (FilterToken token : quickFilter.listFilterTokens()) {
-                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
-                for (String filter : token.getAllPossibleMatches()) {
-                    tokenBooleanBuilder.or(buildQuickFilterBooleanExpression($, filter));
-                }
-                filterBooleanBuilder.and(tokenBooleanBuilder);
-            }
-            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
+
+            QuickFilterBuilder quickFilterBuilder = query.getQuickFilter();
+            quickFilterBuilder.addTokens(quickFilter.listFilterTokens());
+
+            quickFilterBuilder.registerFieldFilter("nomeUsuarioAlocado", $.allocatedUser.nome::likeIgnoreCase);
+            quickFilterBuilder.registerFieldFilter("description", $.requirement.description::likeIgnoreCase);
+            quickFilterBuilder.registerFieldFilter("processName", $.flowDefinitionEntity.name::likeIgnoreCase);
+            quickFilterBuilder.registerFieldFilter("situation", $.taskVersion.name::likeIgnoreCase);
+            quickFilterBuilder.registerFieldFilter("taskName", $.taskVersion.name::likeIgnoreCase);
+            quickFilterBuilder.registerFieldFilter("codRequirement", $.requirement.cod::like);
+            quickFilterBuilder.registerFieldFilter("creationDate", toCharDate($.currentFormVersion.inclusionDate)::like);
+            quickFilterBuilder.registerFieldFilter("creationDate", toCharDate($.currentFormDraftVersionEntity.inclusionDate)::like);
+            quickFilterBuilder.registerFieldFilter("editionDate", toCharDate($.currentDraftEntity.editionDate)::like);
+            quickFilterBuilder.registerFieldFilter("situationBeginDate", toCharDate($.task.beginDate)::like);
+            quickFilterBuilder.registerFieldFilter("processBeginDate", toCharDate($.flowInstance.beginDate)::like);
+
         }
     }
 
@@ -214,20 +221,6 @@ public class RequirementSearchQueryFactory {
                 query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
             }
         }
-    }
-
-    private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
-        return new BooleanBuilder()
-                .or($.allocatedUser.nome.likeIgnoreCase(filter))
-                .or($.requirement.description.likeIgnoreCase(filter))
-                .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
-                .or($.taskVersion.name.likeIgnoreCase(filter))
-                .or($.requirement.cod.like(filter))
-                .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
-                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
-                .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
-                .or(toCharDate($.task.beginDate).like(filter))
-                .or(toCharDate($.flowInstance.beginDate).like(filter));
     }
 
     @Nonnull

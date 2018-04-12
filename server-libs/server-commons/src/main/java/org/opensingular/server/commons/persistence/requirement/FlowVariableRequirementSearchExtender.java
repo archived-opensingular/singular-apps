@@ -18,15 +18,13 @@
 
 package org.opensingular.server.commons.persistence.requirement;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.server.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.server.commons.persistence.context.RequirementSearchContext;
-import org.opensingular.server.commons.persistence.filter.FilterToken;
-import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.persistence.query.RequirementSearchQuery;
+import org.opensingular.server.commons.query.QuickFilterBuilder;
 
 import javax.annotation.Nonnull;
 
@@ -37,9 +35,9 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
     public static final String TO_CHAR_TEMPLATE = "to_char({0})";
     public static final String TO_CHAR_DATE_TEMPLATE = "to_date(to_char({0}), 'dd/MM/yyyy')";
 
-    private final String variableName;
-    private final String queryAlias;
-    private final String toCharTemplate;
+    protected final String variableName;
+    protected final String queryAlias;
+    protected final String toCharTemplate;
 
     public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
                                                  @Nonnull String queryAlias) {
@@ -64,18 +62,8 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
         query.leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
 
-        QuickFilter quickFilter = context.getQuickFilter();
-        if (context.getQuickFilter().hasFilter()) {
-            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
-            for (FilterToken token : quickFilter.listFilterTokens()) {
-                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
-                for (String filter : token.getAllPossibleMatches()) {
-                    tokenBooleanBuilder.or(toChar(variableEntity).likeIgnoreCase(filter));
-                }
-                filterBooleanBuilder.and(tokenBooleanBuilder);
-            }
-            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
-        }
+        QuickFilterBuilder quickFilterBuilder = context.getQuery().getQuickFilter();
+        quickFilterBuilder.registerFieldFilter(queryAlias, toChar(variableEntity)::likeIgnoreCase);
     }
 
     protected void createSelect(QVariableInstanceEntity variableEntity, RequirementSearchContext context) {

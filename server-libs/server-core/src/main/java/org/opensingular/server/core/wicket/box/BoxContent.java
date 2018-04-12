@@ -67,10 +67,7 @@ import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.INSTANCE_ID;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
-import static org.opensingular.server.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
+import static org.opensingular.server.commons.wicket.view.util.ActionContext.*;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
@@ -109,7 +106,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     protected void appendPropertyColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
         for (DatatableField entry : getFieldsDatatable()) {
-            builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getLabel(), entry.getLabel());
+            builder.appendPropertyColumn($m.ofValue(entry.getLabel()), entry.getKey(), entry.getKey());
         }
     }
 

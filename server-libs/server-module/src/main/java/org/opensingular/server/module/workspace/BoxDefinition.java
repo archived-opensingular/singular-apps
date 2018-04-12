@@ -24,6 +24,7 @@ import org.opensingular.server.commons.service.dto.ItemBox;
 import org.opensingular.server.module.BoxItemDataProvider;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
@@ -53,6 +54,12 @@ public interface BoxDefinition {
 
 
     BoxItemDataProvider getDataProvider();
+
+    default List<String> getDatatableFieldKeys() {
+        return getDatatableFields().stream()
+                .map(DatatableField::getKey)
+                .collect(Collectors.toList());
+    }
 
     List<DatatableField> getDatatableFields();
 

@@ -18,12 +18,11 @@
 
 package org.opensingular.server.commons.persistence.filter;
 
-
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class FilterToken {
 
@@ -39,11 +38,11 @@ public class FilterToken {
         this.exact = exact;
     }
 
-    public List<String> getAllPossibleMatches() {
+    public Set<String> getAllPossibleMatches() {
         if (exact) {
-            return Collections.singletonList(token);
+            return Collections.singleton(token);
         } else {
-            List<String> matches = new ArrayList<>();
+            Set<String> matches = new HashSet<>();
             matches.add(get());
             matches.add(getOnlyNumbersAndLetters());
             return matches;
@@ -67,7 +66,7 @@ public class FilterToken {
     }
 
     public String getOnlyNumbersAndLetters() {
-        return anywhereOrExact(token.replaceAll("[^\\da-zA-Z]", ""));
+        return anywhereOrExact(token.replaceAll("[^\\d\\p{IsAlphabetic}]", ""));
     }
 
     public boolean isExact() {

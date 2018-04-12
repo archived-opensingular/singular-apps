@@ -53,7 +53,8 @@ public class DefaultInbox implements BoxDefinition {
                 .addAssignAction()
                 .addAnalyseAction()
                 .addRelocateAction()
-                .addViewAction());
+                .addViewAction(),
+                getDatatableFieldKeys());
     }
 
     @Override
