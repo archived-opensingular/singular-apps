@@ -92,14 +92,14 @@ public class MemoryPanel extends Panel {
             memPools.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Type: " + tmpMem.getType());
 
 
-            String manager = "&nbsp;&nbsp;&nbsp;&nbsp; Memory Manager Names: ";
+            StringBuilder manager = new StringBuilder("&nbsp;&nbsp;&nbsp;&nbsp; Memory Manager Names: ");
 
 
             String[] memManagerNames = tmpMem.getMemoryManagerNames();
             for (String mmnTmp : memManagerNames) {
-                manager = manager + ", " + mmnTmp;
+                manager.append(", ").append(mmnTmp);
             }
-            memPools.getObject().add(manager);
+            memPools.getObject().add(manager.toString());
         }
     }
 

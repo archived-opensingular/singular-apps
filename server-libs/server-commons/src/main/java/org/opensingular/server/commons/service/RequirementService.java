@@ -23,6 +23,7 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
+import org.opensingular.flow.core.entity.IEntityTaskInstance;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
@@ -342,18 +343,20 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private void checkTaskIsEqual(RI requirement, FlowInstance currentFlowInstance) {
         //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
         FlowInstanceEntity flowInstanceEntity = requirement.getEntity().getFlowInstanceEntity();
-        if (flowInstanceEntity.getCurrentTask().isPresent()
-                && !flowInstanceEntity.getCurrentTask().get().getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
-            RequirementConcurrentModificationException e = new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
-            e.add(requirement);
-            e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getAbbreviation()", flowInstanceEntity.getCurrentTask().get().getTaskVersion().getAbbreviation());
-            e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getCod()", flowInstanceEntity.getCurrentTask().get().getCod());
-            e.add("currentFlowInstance.getCurrentTaskOrException().getAbbreviation()", currentFlowInstance.getCurrentTaskOrException().getAbbreviation());
-            e.add("currentFlowInstance.getCurrentTaskOrException().getId()", currentFlowInstance.getCurrentTaskOrException().getId());
-            e.add("flowInstanceEntity.getCod()", flowInstanceEntity.getCod());
-            e.add("currentFlowInstance.getEntityCod()", currentFlowInstance.getEntityCod());
-            getLogger().error(e.getMessage());
-            throw e;
+        if (flowInstanceEntity.getCurrentTask().isPresent()) {
+            IEntityTaskInstance currentTask = flowInstanceEntity.getCurrentTask().get();
+            if (!currentTask.getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
+                RequirementConcurrentModificationException e = new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
+                e.add(requirement);
+                e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getAbbreviation()", currentTask.getTaskVersion().getAbbreviation());
+                e.add("requirement.getEntity().getFlowInstanceEntity().getCurrentTask().getCod()", currentTask.getCod());
+                e.add("currentFlowInstance.getCurrentTaskOrException().getAbbreviation()", currentFlowInstance.getCurrentTaskOrException().getAbbreviation());
+                e.add("currentFlowInstance.getCurrentTaskOrException().getId()", currentFlowInstance.getCurrentTaskOrException().getId());
+                e.add("flowInstanceEntity.getCod()", flowInstanceEntity.getCod());
+                e.add("currentFlowInstance.getEntityCod()", currentFlowInstance.getEntityCod());
+                getLogger().error(e.getMessage());
+                throw e;
+            }
         }
     }
 
