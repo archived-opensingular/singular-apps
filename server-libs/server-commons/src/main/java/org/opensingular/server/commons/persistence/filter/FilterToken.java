@@ -19,12 +19,13 @@
 package org.opensingular.server.commons.persistence.filter;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-public class FilterToken {
+public class FilterToken implements Serializable {
 
     private String token;
     private boolean exact;
