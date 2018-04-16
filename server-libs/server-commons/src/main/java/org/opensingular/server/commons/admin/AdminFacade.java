@@ -21,7 +21,6 @@ import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduledJob;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -41,7 +40,7 @@ public class AdminFacade {
             for (JobKey jobKey : scheduleService.get().getAllJobKeys()) {
                 ScheduledJob scheduledJob = new ScheduledJob(jobKey.getName(), null, null);
                 scheduleService.get().trigger(scheduledJob);
-                runnedJobs.add(jobKey.getName()+ " - " + scheduledJob.toString());
+                runnedJobs.add(jobKey.getName()+ " - " + scheduledJob);
             }
         }
         return runnedJobs;
