@@ -343,8 +343,9 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private void checkTaskIsEqual(RI requirement, FlowInstance currentFlowInstance) {
         //TODO (Daniel) Não creio que esse método esteja sendo completamente efetivo (revisar)
         FlowInstanceEntity flowInstanceEntity = requirement.getEntity().getFlowInstanceEntity();
-        if (flowInstanceEntity.getCurrentTask().isPresent()) {
-            IEntityTaskInstance currentTask = flowInstanceEntity.getCurrentTask().get();
+        Optional<IEntityTaskInstance> currentTaskOpt = flowInstanceEntity.getCurrentTask();
+        if (currentTaskOpt.isPresent()) {
+            IEntityTaskInstance currentTask = currentTaskOpt.get();
             if (!currentTask.getTaskVersion().getAbbreviation().equalsIgnoreCase(currentFlowInstance.getCurrentTaskOrException().getAbbreviation())) {
                 RequirementConcurrentModificationException e = new RequirementConcurrentModificationException("A instância está em uma tarefa diferente da esperada.");
                 e.add(requirement);
