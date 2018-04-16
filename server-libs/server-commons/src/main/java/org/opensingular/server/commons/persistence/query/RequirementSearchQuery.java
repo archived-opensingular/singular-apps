@@ -75,7 +75,9 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
     }
 
     public void addEnabledFieldFilterNames(List<String> enabledFieldFilters) {
-        this.enabledFieldFilters.addAll(enabledFieldFilters);
+        if (enabledFieldFilters != null) {
+            this.enabledFieldFilters.addAll(enabledFieldFilters);
+        }
     }
 
     public void addEnabledFieldFilterName(String enabledFieldFilter) {

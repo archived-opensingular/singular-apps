@@ -77,7 +77,7 @@ public class FilterTokenTest {
     @Test
     public void testGetAllPossibleMatches() throws Exception {
         FilterToken filterToken = new FilterToken("teste");
-        assertThat(filterToken.getAllPossibleMatches(), containsInAnyOrder(filterToken.get(), filterToken.getOnlyNumbersAndLetters()));
+        assertThat(filterToken.getAllPossibleMatches(), containsInAnyOrder("%teste%"));
     }
 
     @Test

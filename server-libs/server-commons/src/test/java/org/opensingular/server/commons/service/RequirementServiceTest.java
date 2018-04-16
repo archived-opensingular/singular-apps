@@ -52,11 +52,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 @Transactional
 public class RequirementServiceTest extends SingularCommonsBaseTest {
@@ -223,7 +219,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     @Rollback
     public void countTasks() {
-        QuickFilter filter = new QuickFilter();
+        QuickFilter filter = buildQuickFilter();
         filter.withFilter("filter");
         filter.withProcessesAbbreviation(Arrays.asList("task1", "task2"));
 
@@ -235,10 +231,13 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void listTasks() {
         String description = "Descrição XYZ única - " + System.nanoTime();
+        sendRequirement("Teste 1");
+        sendRequirement("Teste2");
+        sendRequirement("Teste_");
         sendRequirement(description);
 
-        QuickFilter filter = new QuickFilter();
-        filter.withFilter(description);
+        QuickFilter filter = buildQuickFilter();
+        filter.withFilter(String.format("\"%s\"", description));
         List<Map<String, Serializable>> maps = requirementService.listTasks(filter, Collections.emptyList());
 
         assertEquals(1, maps.size());
@@ -249,6 +248,13 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         assertEquals(TaskType.HUMAN, task.get("taskType"));
         assertEquals("foooooo.StypeFoo", task.get("type"));
         assertEquals(description, task.get("description"));
+    }
+
+    private QuickFilter buildQuickFilter() {
+        QuickFilter filter = new QuickFilter();
+        filter.setEnabledFieldFilters(Arrays.asList("nomeUsuarioAlocado", "description", "processName", "situation",
+                "taskName", "codRequirement", "creationDate", "editionDate", "situationBeginDate", "processBeginDate"));
+        return filter;
     }
 
     public RequirementInstance sendRequirement(String description) {
