@@ -22,6 +22,7 @@ import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.filter.FilterToken;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -29,7 +30,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class QuickFilterBuilder {
+public class QuickFilterBuilder implements Serializable {
     private List<FilterToken> tokens = new ArrayList<>();
     private Map<String, List<IFunction<String, BooleanExpression>>> fieldFilters = new HashMap<>();
 
@@ -49,14 +50,11 @@ public class QuickFilterBuilder {
             validateEnabledFilters(enabledFieldFilters);
             BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
             for (String filter : token.getAllPossibleMatches()) {
-                for (Map.Entry<String, List<IFunction<String, BooleanExpression>>> entry : fieldFilters.entrySet()) {
-                    if (enabledFieldFilters.contains(entry.getKey())) {
-                        List<IFunction<String, BooleanExpression>> value = entry.getValue();
-                        for (IFunction<String, BooleanExpression> function : value) {
-                            tokenBooleanBuilder.or(function.apply(filter));
-                        }
-                    }
-                }
+                fieldFilters.entrySet().stream()
+                        .filter(entry -> enabledFieldFilters.contains(entry.getKey()))
+                        .map(Map.Entry::getValue)
+                        .flatMap(List::stream)
+                        .forEach(function -> tokenBooleanBuilder.or(function.apply(filter)));
             }
             filterBooleanBuilder.and(tokenBooleanBuilder);
         }
