@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-apps</artifactId>
 
-    <version>1.7.0.3-SNAPSHOT</version>
+    <version>1.7.0.3</version>
     <name>[singular-apps]</name>
     <description>Singular Apps</description>
     <url>http://opensingular.org</url>
@@ -398,7 +398,7 @@
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.3.0</wicket.version>
-        <singular.version>1.7.0.3-SNAPSHOT</singular.version>
+        <singular.version>1.7.0.3</singular.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
         <slf4j.version>1.7.12</slf4j.version>
         <cas.version>4.0.4</cas.version>
