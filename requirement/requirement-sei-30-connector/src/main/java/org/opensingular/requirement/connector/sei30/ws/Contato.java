@@ -1,27 +1,27 @@
 
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.connector.sei30.ws;
 
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -45,16 +45,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="IdContatoAssociado" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="NomeContatoAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="SinEnderecoAssociado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="EnderecoAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="ComplementoAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="BairroAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="IdCidadeAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="NomeCidadeAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="IdEstadoAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="SiglaEstadoAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="IdPaisAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="NomePaisAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="CepAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="CnpjAssociado" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="Endereco" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Complemento" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Bairro" type="{http://www.w3.org/2001/XMLSchema}string"/>
@@ -111,62 +102,44 @@ public class Contato {
     protected String nome;
     @XmlElement(name = "StaNatureza", required = true)
     protected String staNatureza;
-    @XmlElement(name = "IdContatoAssociado", required = true)
+    @XmlElement(name = "IdContatoAssociado", required = true, nillable = true)
     protected String idContatoAssociado;
-    @XmlElement(name = "NomeContatoAssociado")
-    protected String nomeContatoAssociado;
+    @XmlElementRef(name = "NomeContatoAssociado", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> nomeContatoAssociado;
     @XmlElement(name = "SinEnderecoAssociado", required = true)
     protected String sinEnderecoAssociado;
-    @XmlElement(name = "EnderecoAssociado")
-    protected String enderecoAssociado;
-    @XmlElement(name = "ComplementoAssociado")
-    protected String complementoAssociado;
-    @XmlElement(name = "BairroAssociado")
-    protected String bairroAssociado;
-    @XmlElement(name = "IdCidadeAssociado")
-    protected String idCidadeAssociado;
-    @XmlElement(name = "NomeCidadeAssociado")
-    protected String nomeCidadeAssociado;
-    @XmlElement(name = "IdEstadoAssociado")
-    protected String idEstadoAssociado;
-    @XmlElement(name = "SiglaEstadoAssociado")
-    protected String siglaEstadoAssociado;
-    @XmlElement(name = "IdPaisAssociado")
-    protected String idPaisAssociado;
-    @XmlElement(name = "NomePaisAssociado")
-    protected String nomePaisAssociado;
-    @XmlElement(name = "CepAssociado")
-    protected String cepAssociado;
+    @XmlElementRef(name = "CnpjAssociado", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> cnpjAssociado;
     @XmlElement(name = "Endereco", required = true)
     protected String endereco;
     @XmlElement(name = "Complemento", required = true)
     protected String complemento;
     @XmlElement(name = "Bairro", required = true)
     protected String bairro;
-    @XmlElement(name = "IdCidade", required = true)
+    @XmlElement(name = "IdCidade", required = true, nillable = true)
     protected String idCidade;
-    @XmlElement(name = "NomeCidade")
-    protected String nomeCidade;
-    @XmlElement(name = "IdEstado", required = true)
+    @XmlElementRef(name = "NomeCidade", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> nomeCidade;
+    @XmlElement(name = "IdEstado", required = true, nillable = true)
     protected String idEstado;
-    @XmlElement(name = "SiglaEstado")
-    protected String siglaEstado;
-    @XmlElement(name = "IdPais", required = true)
+    @XmlElementRef(name = "SiglaEstado", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> siglaEstado;
+    @XmlElement(name = "IdPais", required = true, nillable = true)
     protected String idPais;
-    @XmlElement(name = "NomePais")
-    protected String nomePais;
+    @XmlElementRef(name = "NomePais", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> nomePais;
     @XmlElement(name = "Cep", required = true)
     protected String cep;
     @XmlElement(name = "StaGenero", required = true)
     protected String staGenero;
-    @XmlElement(name = "IdCargo", required = true)
+    @XmlElement(name = "IdCargo", required = true, nillable = true)
     protected String idCargo;
-    @XmlElement(name = "ExpressaoCargo")
-    protected String expressaoCargo;
-    @XmlElement(name = "ExpressaoTratamento")
-    protected String expressaoTratamento;
-    @XmlElement(name = "ExpressaoVocativo")
-    protected String expressaoVocativo;
+    @XmlElementRef(name = "ExpressaoCargo", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> expressaoCargo;
+    @XmlElementRef(name = "ExpressaoTratamento", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> expressaoTratamento;
+    @XmlElementRef(name = "ExpressaoVocativo", type = JAXBElement.class, required = false)
+    protected JAXBElement<String> expressaoVocativo;
     @XmlElement(name = "Cpf", required = true)
     protected String cpf;
     @XmlElement(name = "Cnpj", required = true)
@@ -391,10 +364,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getNomeContatoAssociado() {
+    public JAXBElement<String> getNomeContatoAssociado() {
         return nomeContatoAssociado;
     }
 
@@ -403,10 +376,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setNomeContatoAssociado(String value) {
+    public void setNomeContatoAssociado(JAXBElement<String> value) {
         this.nomeContatoAssociado = value;
     }
 
@@ -435,243 +408,27 @@ public class Contato {
     }
 
     /**
-     * Obtém o valor da propriedade enderecoAssociado.
+     * Obtém o valor da propriedade cnpjAssociado.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getEnderecoAssociado() {
-        return enderecoAssociado;
+    public JAXBElement<String> getCnpjAssociado() {
+        return cnpjAssociado;
     }
 
     /**
-     * Define o valor da propriedade enderecoAssociado.
+     * Define o valor da propriedade cnpjAssociado.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setEnderecoAssociado(String value) {
-        this.enderecoAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade complementoAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getComplementoAssociado() {
-        return complementoAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade complementoAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setComplementoAssociado(String value) {
-        this.complementoAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade bairroAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getBairroAssociado() {
-        return bairroAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade bairroAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setBairroAssociado(String value) {
-        this.bairroAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade idCidadeAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdCidadeAssociado() {
-        return idCidadeAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade idCidadeAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdCidadeAssociado(String value) {
-        this.idCidadeAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade nomeCidadeAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNomeCidadeAssociado() {
-        return nomeCidadeAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade nomeCidadeAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNomeCidadeAssociado(String value) {
-        this.nomeCidadeAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade idEstadoAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdEstadoAssociado() {
-        return idEstadoAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade idEstadoAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdEstadoAssociado(String value) {
-        this.idEstadoAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade siglaEstadoAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getSiglaEstadoAssociado() {
-        return siglaEstadoAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade siglaEstadoAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setSiglaEstadoAssociado(String value) {
-        this.siglaEstadoAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade idPaisAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getIdPaisAssociado() {
-        return idPaisAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade idPaisAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setIdPaisAssociado(String value) {
-        this.idPaisAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade nomePaisAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getNomePaisAssociado() {
-        return nomePaisAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade nomePaisAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setNomePaisAssociado(String value) {
-        this.nomePaisAssociado = value;
-    }
-
-    /**
-     * Obtém o valor da propriedade cepAssociado.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getCepAssociado() {
-        return cepAssociado;
-    }
-
-    /**
-     * Define o valor da propriedade cepAssociado.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setCepAssociado(String value) {
-        this.cepAssociado = value;
+    public void setCnpjAssociado(JAXBElement<String> value) {
+        this.cnpjAssociado = value;
     }
 
     /**
@@ -775,10 +532,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getNomeCidade() {
+    public JAXBElement<String> getNomeCidade() {
         return nomeCidade;
     }
 
@@ -787,10 +544,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setNomeCidade(String value) {
+    public void setNomeCidade(JAXBElement<String> value) {
         this.nomeCidade = value;
     }
 
@@ -823,10 +580,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getSiglaEstado() {
+    public JAXBElement<String> getSiglaEstado() {
         return siglaEstado;
     }
 
@@ -835,10 +592,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setSiglaEstado(String value) {
+    public void setSiglaEstado(JAXBElement<String> value) {
         this.siglaEstado = value;
     }
 
@@ -871,10 +628,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getNomePais() {
+    public JAXBElement<String> getNomePais() {
         return nomePais;
     }
 
@@ -883,10 +640,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setNomePais(String value) {
+    public void setNomePais(JAXBElement<String> value) {
         this.nomePais = value;
     }
 
@@ -967,10 +724,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getExpressaoCargo() {
+    public JAXBElement<String> getExpressaoCargo() {
         return expressaoCargo;
     }
 
@@ -979,10 +736,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setExpressaoCargo(String value) {
+    public void setExpressaoCargo(JAXBElement<String> value) {
         this.expressaoCargo = value;
     }
 
@@ -991,10 +748,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getExpressaoTratamento() {
+    public JAXBElement<String> getExpressaoTratamento() {
         return expressaoTratamento;
     }
 
@@ -1003,10 +760,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setExpressaoTratamento(String value) {
+    public void setExpressaoTratamento(JAXBElement<String> value) {
         this.expressaoTratamento = value;
     }
 
@@ -1015,10 +772,10 @@ public class Contato {
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public String getExpressaoVocativo() {
+    public JAXBElement<String> getExpressaoVocativo() {
         return expressaoVocativo;
     }
 
@@ -1027,10 +784,10 @@ public class Contato {
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link JAXBElement }{@code <}{@link String }{@code >}
      *     
      */
-    public void setExpressaoVocativo(String value) {
+    public void setExpressaoVocativo(JAXBElement<String> value) {
         this.expressaoVocativo = value;
     }
 
