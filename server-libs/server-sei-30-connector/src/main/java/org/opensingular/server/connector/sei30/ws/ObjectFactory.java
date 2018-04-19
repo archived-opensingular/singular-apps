@@ -1,31 +1,32 @@
 
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.server.connector.sei30.ws;
 
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.namespace.QName;
 
 
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.opensingular.server.connector.sei30.ws package.
+ * generated in the org.opensingular.server.connector.sei30.ws package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -39,6 +40,14 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _ContatoNomeCidade_QNAME = new QName("", "NomeCidade");
+    private final static QName _ContatoNomePais_QNAME = new QName("", "NomePais");
+    private final static QName _ContatoExpressaoTratamento_QNAME = new QName("", "ExpressaoTratamento");
+    private final static QName _ContatoCnpjAssociado_QNAME = new QName("", "CnpjAssociado");
+    private final static QName _ContatoExpressaoCargo_QNAME = new QName("", "ExpressaoCargo");
+    private final static QName _ContatoSiglaEstado_QNAME = new QName("", "SiglaEstado");
+    private final static QName _ContatoNomeContatoAssociado_QNAME = new QName("", "NomeContatoAssociado");
+    private final static QName _ContatoExpressaoVocativo_QNAME = new QName("", "ExpressaoVocativo");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.opensingular.server.connector.sei30.ws
@@ -589,6 +598,78 @@ public class ObjectFactory {
      */
     public UnidadeProcedimentoAberto createUnidadeProcedimentoAberto() {
         return new UnidadeProcedimentoAberto();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "NomeCidade", scope = Contato.class)
+    public JAXBElement<String> createContatoNomeCidade(String value) {
+        return new JAXBElement<String>(_ContatoNomeCidade_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "NomePais", scope = Contato.class)
+    public JAXBElement<String> createContatoNomePais(String value) {
+        return new JAXBElement<String>(_ContatoNomePais_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "ExpressaoTratamento", scope = Contato.class)
+    public JAXBElement<String> createContatoExpressaoTratamento(String value) {
+        return new JAXBElement<String>(_ContatoExpressaoTratamento_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "CnpjAssociado", scope = Contato.class)
+    public JAXBElement<String> createContatoCnpjAssociado(String value) {
+        return new JAXBElement<String>(_ContatoCnpjAssociado_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "ExpressaoCargo", scope = Contato.class)
+    public JAXBElement<String> createContatoExpressaoCargo(String value) {
+        return new JAXBElement<String>(_ContatoExpressaoCargo_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "SiglaEstado", scope = Contato.class)
+    public JAXBElement<String> createContatoSiglaEstado(String value) {
+        return new JAXBElement<String>(_ContatoSiglaEstado_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "NomeContatoAssociado", scope = Contato.class)
+    public JAXBElement<String> createContatoNomeContatoAssociado(String value) {
+        return new JAXBElement<String>(_ContatoNomeContatoAssociado_QNAME, String.class, Contato.class, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link String }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "", name = "ExpressaoVocativo", scope = Contato.class)
+    public JAXBElement<String> createContatoExpressaoVocativo(String value) {
+        return new JAXBElement<String>(_ContatoExpressaoVocativo_QNAME, String.class, Contato.class, value);
     }
 
 }

@@ -1,20 +1,18 @@
 
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.server.connector.sei30.ws;
@@ -41,8 +39,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="Especificacao" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="Assuntos" type="{Sei}ArrayOfAssunto"/>
  *         &lt;element name="Interessados" type="{Sei}ArrayOfInteressado"/>
- *         &lt;element name="Observacao" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="NivelAcesso" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Observacao" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
+ *         &lt;element name="NivelAcesso" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *         &lt;element name="IdHipoteseLegal" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
  *       &lt;/all>
  *     &lt;/restriction>
@@ -70,9 +68,9 @@ public class Procedimento {
     protected ArrayOfAssunto assuntos;
     @XmlElement(name = "Interessados", required = true)
     protected ArrayOfInteressado interessados;
-    @XmlElement(name = "Observacao", required = true)
+    @XmlElement(name = "Observacao")
     protected String observacao;
-    @XmlElement(name = "NivelAcesso", required = true)
+    @XmlElement(name = "NivelAcesso")
     protected String nivelAcesso;
     @XmlElement(name = "IdHipoteseLegal")
     protected String idHipoteseLegal;
