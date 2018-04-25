@@ -18,6 +18,8 @@
 
 package org.opensingular.studio.core.menu;
 
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 
 import java.util.ArrayList;
@@ -59,8 +61,26 @@ public class StudioMenu {
             return this;
         }
 
-        public Builder addSidebarGroup(Icon icon, String name, Consumer<GroupMenuEntry.Builder> groupConsumer) {
+        public Builder addHTTPEndpoint(Icon icon, String name, String endpoint,
+                                       IPredicate<RequestCycle> visibilityFunction) {
+            studioMenu.add(new UrlMenuEntry(icon, name, endpoint, visibilityFunction));
+            return this;
+        }
+
+        public Builder addSidebarGroup(Icon icon, String name,
+                                       Consumer<GroupMenuEntry.Builder> groupConsumer) {
             GroupMenuEntry g = studioMenu.add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR));
+            if (groupConsumer != null) {
+                groupConsumer.accept(new GroupMenuEntry.Builder(g));
+            }
+            return this;
+        }
+
+        public Builder addSidebarGroup(Icon icon, String name,
+                                       IPredicate<RequestCycle> visibilityFunction,
+                                       Consumer<GroupMenuEntry.Builder> groupConsumer) {
+            GroupMenuEntry g = studioMenu
+                    .add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, visibilityFunction));
             if (groupConsumer != null) {
                 groupConsumer.accept(new GroupMenuEntry.Builder(g));
             }
@@ -69,6 +89,17 @@ public class StudioMenu {
 
         public Builder addPortalGroup(Icon icon, String name, Consumer<GroupMenuEntry.Builder> groupConsumer) {
             GroupMenuEntry g = studioMenu.add(new GroupMenuEntry(icon, name, MenuView.PORTAL));
+            if (groupConsumer != null) {
+                groupConsumer.accept(new GroupMenuEntry.Builder(g));
+            }
+            return this;
+        }
+
+        public Builder addPortalGroup(Icon icon, String name,
+                                      IPredicate<RequestCycle> visibilityFunction,
+                                      Consumer<GroupMenuEntry.Builder> groupConsumer) {
+            GroupMenuEntry g = studioMenu
+                    .add(new GroupMenuEntry(icon, name, MenuView.PORTAL, visibilityFunction));
             if (groupConsumer != null) {
                 groupConsumer.accept(new GroupMenuEntry.Builder(g));
             }

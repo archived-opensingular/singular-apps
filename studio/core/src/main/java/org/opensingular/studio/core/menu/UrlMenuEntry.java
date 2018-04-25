@@ -18,14 +18,21 @@
 
 package org.opensingular.studio.core.menu;
 
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 
 public class UrlMenuEntry extends ItemMenuEntry {
-
     private final String endpoint;
 
+    public UrlMenuEntry(Icon icon, String name, String endpoint,
+                        IPredicate<RequestCycle> visibilityFunction) {
+        super(icon, name, visibilityFunction);
+        this.endpoint = endpoint;
+    }
+
     public UrlMenuEntry(Icon icon, String name, String endpoint) {
-        super(icon, name);
+        super(icon, name, null);
         this.endpoint = endpoint;
     }
 

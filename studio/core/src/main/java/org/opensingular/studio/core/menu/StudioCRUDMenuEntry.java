@@ -18,6 +18,8 @@
 
 package org.opensingular.studio.core.menu;
 
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.view.StudioCRUDContent;
@@ -28,7 +30,12 @@ public class StudioCRUDMenuEntry extends ItemMenuEntry {
     private final StudioDefinition studioDefinition;
 
     public StudioCRUDMenuEntry(Icon icon, String name, StudioDefinition studioDefinition) {
-        super(icon, name);
+        super(icon, name, null);
+        this.studioDefinition = studioDefinition;
+    }
+
+    public StudioCRUDMenuEntry(Icon icon, String name, StudioDefinition studioDefinition, IPredicate<RequestCycle> visibilityFunction) {
+        super(icon, name, visibilityFunction);
         this.studioDefinition = studioDefinition;
     }
 

@@ -19,9 +19,12 @@
 package org.opensingular.studio.core.view;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.wicket.Component;
+import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.opensingular.lib.wicket.util.menu.AbstractMenuItem;
@@ -78,8 +81,7 @@ public class StudioPage extends SingularAdminTemplate {
         StringValue pathStringValue = getPageParameters().get("path");
         if (pathStringValue.isNull() || pathStringValue.isEmpty()) {
             menuPath = "";
-        }
-        else {
+        } else {
             StringBuilder path = new StringBuilder(pathStringValue.toString());
             for (int i = 0; i < getPageParameters().getIndexedCount(); i++) {
                 path.append('/').append(getPageParameters().get(i));
@@ -158,14 +160,14 @@ public class StudioPage extends SingularAdminTemplate {
                 metronicMenuGroup.setOpen();
             }
             metronicMenu.addItem(menu);
-        }
-        else {
+        } else {
             studioMenu.getChildren().forEach(e -> metronicMenu.addItem(buildMenu(e, false)));
         }
         return metronicMenu;
     }
 
     private AbstractMenuItem buildMenu(MenuEntry menuEntry, boolean groupNestedSidebars) {
+        AbstractMenuItem menu = null;
         if (menuEntry instanceof GroupMenuEntry) {
             GroupMenuEntry group = (GroupMenuEntry) menuEntry;
             if (groupNestedSidebars && (group.getMenuView() == null || group.getMenuView() == MenuView.SIDEBAR)) {
@@ -173,10 +175,14 @@ public class StudioPage extends SingularAdminTemplate {
                 for (MenuEntry child : group.getChildren()) {
                     metronicMenuGroup.addItem(buildMenu(child, true));
                 }
-                return metronicMenuGroup;
+                menu = metronicMenuGroup;
             }
         }
-        return new MetronicMenuItem(menuEntry.getIcon(), menuEntry.getName(), menuEntry.getEndpoint());
+        if (menu == null) {
+            menu = new MetronicMenuItem(menuEntry.getIcon(), menuEntry.getName(), menuEntry.getEndpoint());
+        }
+        menu.add(new VisibilityMenuBehaviour(menuEntry));
+        return menu;
     }
 
     @Override
@@ -186,4 +192,20 @@ public class StudioPage extends SingularAdminTemplate {
                 .map(Model::new)
                 .orElse(new Model<>());
     }
+
+    private static class VisibilityMenuBehaviour extends Behavior {
+        private final MenuEntry menuEntry;
+
+        private VisibilityMenuBehaviour(MenuEntry menuEntry) {
+            this.menuEntry = menuEntry;
+        }
+
+        @Override
+        public void onConfigure(Component component) {
+            super.onConfigure(component);
+            component.setVisible(menuEntry.isVisible(RequestCycle.get()));
+        }
+    }
+
+
 }
