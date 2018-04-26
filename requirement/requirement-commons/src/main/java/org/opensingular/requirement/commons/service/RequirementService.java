@@ -565,6 +565,19 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return getFormRequirementService().findLastFormRequirementInstanceByType(requirement, typeClass);
     }
 
+    @Nonnull
+    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+        return findLastFormEntityByTypeAndTask(requirement, typeClass, taskInstance)
+                .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
+    }
+
+    @Nonnull
+    public Optional<FormVersionEntity> findLastFormEntityByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+        Objects.requireNonNull(requirement);
+        return requirementContentHistoryDAO.findLastByCodRequirementCodTaskInstanceAndType(typeClass, requirement.getCod(), (Integer) taskInstance.getId())
+                .map(FormVersionHistoryEntity::getFormVersion);
+    }
+
     /**
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
@@ -576,6 +589,17 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
                 .map(FormVersionHistoryEntity::getFormVersion)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
+    }
+
+    /**
+     * Procura na petição a versão mais recente do formulário do tipo informado.
+     */
+    @Nonnull
+    public Optional<FormVersionEntity> findLastFormEntityByType(@Nonnull RequirementInstance requirement,
+                                                                        @Nonnull Class<? extends SType<?>> typeClass) {
+        Objects.requireNonNull(requirement);
+        return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
+                .map(FormVersionHistoryEntity::getFormVersion);
     }
 
     /**
