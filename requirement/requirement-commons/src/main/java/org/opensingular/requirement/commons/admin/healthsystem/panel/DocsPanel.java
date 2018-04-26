@@ -87,7 +87,7 @@ public class DocsPanel extends Panel implements Loggable {
 
     private String formatLabel(Class<? extends STypeComposite> c) {
         String typeName = SFormUtil.getTypeName((Class<? extends SType<?>>) c);
-        return SFormUtil.getTypeLabel(c).map(l -> l + " (" + typeName + ")").orElse(typeName);
+        return SFormUtil.getTypeLabel((Class<? extends SType<?>>) c).map(l -> l + " (" + typeName + ")").orElse(typeName);
     }
 
     private BaseDataProvider<Class<? extends STypeComposite>, String> createDataProvider() {
