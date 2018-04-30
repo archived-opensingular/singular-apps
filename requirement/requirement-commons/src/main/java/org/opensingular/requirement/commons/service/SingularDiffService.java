@@ -31,11 +31,13 @@ import org.opensingular.requirement.commons.persistence.entity.form.FormRequirem
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public class SingularDiffService {
 
     @Inject

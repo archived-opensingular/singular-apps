@@ -84,7 +84,7 @@ public class DocumentationMetadataUtil {
         if (defaultString == null) {
             String label = type.asAtr().getLabel();
             if (label == null) {
-                label = SFormUtil.getTypeLabel(type.getClass()).orElse(null);
+                label = SFormUtil.getTypeLabel((Class<? extends SType<?>>) type.getClass()).orElse(null);
                 if (label == null) {
                     label = type.getNameSimple();
                 }
