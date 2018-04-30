@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.commons.persistence.dao.form;
 
+import org.hibernate.Query;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
@@ -26,6 +27,8 @@ import org.opensingular.requirement.commons.persistence.entity.form.FormVersionH
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.commons.service.RequirementUtil;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
@@ -84,15 +87,41 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
     }
 
     public Optional<FormVersionHistoryEntity> findLastByCodRequirementAndType(String typeName, Long cod) {
-        return findUniqueResult(FormVersionHistoryEntity.class, getSession()
-                .createQuery(" select fvhe from RequirementContentHistoryEntity p " +
-                        " inner join p.formVersionHistoryEntities  fvhe " +
-                        " inner join fvhe.formVersion fv  " +
-                        " inner join fv.formEntity fe  " +
-                        " inner join fe.formType ft  " +
-                        " where ft.abbreviation = :typeName and p.requirementEntity.cod = :cod " +
-                        " order by p.historyDate desc ")
+        return findLastByCodRequirementCodTaskInstanceAndType(typeName, cod, null);
+    }
+
+
+    public Optional<FormVersionHistoryEntity> findLastByCodRequirementCodTaskInstanceAndType(Class<? extends SType<?>> typeClass, Long codRequirement, Integer codTaskInstance) {
+        return findLastByCodRequirementCodTaskInstanceAndType(RequirementUtil.getTypeName(typeClass), codRequirement, codTaskInstance);
+    }
+
+    public Optional<FormVersionHistoryEntity> findLastByCodRequirementCodTaskInstanceAndType(@Nonnull String typeName, @Nonnull Long codRequirement, @Nullable Integer codTaskInstance) {
+        boolean filterByTask = codTaskInstance != null;
+        StringBuilder query = new StringBuilder()
+                .append(" select fvhe from RequirementContentHistoryEntity p ")
+                .append(" inner join p.formVersionHistoryEntities  fvhe ")
+                .append(" inner join fvhe.formVersion fv  ")
+                .append(" inner join fv.formEntity fe  ")
+                .append(" inner join fe.formType ft  ");
+        if (filterByTask) {
+            query.append(" inner join p.taskInstanceEntity tie ");
+        }
+        query.append(" where ft.abbreviation = :typeName and p.requirementEntity.cod = :codRequirement ");
+        if (filterByTask) {
+            query.append(" and tie.cod = :codTaskInstance ");
+        }
+        query.append(" order by p.historyDate desc ");
+
+
+        Query hql = getSession().createQuery(query.toString());
+
+        hql
                 .setParameter("typeName", typeName)
-                .setParameter("cod", cod));
+                .setParameter("codRequirement", codRequirement);
+        if (filterByTask) {
+            hql.setParameter("codTaskInstance", codTaskInstance);
+        }
+
+        return findUniqueResult(FormVersionHistoryEntity.class, hql);
     }
 }
