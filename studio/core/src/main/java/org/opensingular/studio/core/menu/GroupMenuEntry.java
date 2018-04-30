@@ -18,7 +18,6 @@
 
 package org.opensingular.studio.core.menu;
 
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
@@ -42,7 +41,7 @@ public class GroupMenuEntry extends AbstractMenuEntry {
     }
 
     public GroupMenuEntry(Icon icon, String name, MenuView menuView,
-                          IPredicate<RequestCycle> visibilityFunction) {
+                          IPredicate<MenuEntry> visibilityFunction) {
         super(icon, name, visibilityFunction);
         this.children = new ArrayList<>();
         this.menuView = menuView;
@@ -109,7 +108,7 @@ public class GroupMenuEntry extends AbstractMenuEntry {
             return this;
         }
 
-        public Builder addSidebarGroup(Icon icon, String name, Consumer<Builder> groupConsumer, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addSidebarGroup(Icon icon, String name, Consumer<Builder> groupConsumer, IPredicate<MenuEntry> visibilityFunction) {
             GroupMenuEntry g = groupEntry.add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, visibilityFunction));
             if (groupConsumer != null) {
                 groupConsumer.accept(new GroupMenuEntry.Builder(g));
@@ -117,38 +116,38 @@ public class GroupMenuEntry extends AbstractMenuEntry {
             return this;
         }
 
-        public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioMenuEntry(null, name, contentFactory, true, visibilityFunction));
             return this;
         }
 
-        public Builder addStudioItemWithoutMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItemWithoutMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioMenuEntry(null, name, contentFactory, false, visibilityFunction));
             return this;
         }
 
 
-        public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioMenuEntry(icon, name, contentFactory, true, visibilityFunction));
             return this;
         }
 
-        public Builder addStudioItemWithoutMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItemWithoutMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, Icon icon, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioMenuEntry(icon, name, contentFactory, false, visibilityFunction));
             return this;
         }
 
-        public Builder addStudioItem(String name, StudioDefinition definition, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItem(String name, StudioDefinition definition, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioCRUDMenuEntry(null, name, definition, visibilityFunction));
             return this;
         }
 
-        public Builder addStudioItem(String name, StudioDefinition definition, Icon icon, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addStudioItem(String name, StudioDefinition definition, Icon icon, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioCRUDMenuEntry(icon, name, definition, visibilityFunction));
             return this;
         }
 
-        public Builder addHTTPEndpoint(Icon ico, String name, String endpoint, IPredicate<RequestCycle> visibilityFunction) {
+        public Builder addHTTPEndpoint(Icon ico, String name, String endpoint, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new UrlMenuEntry(ico, name, endpoint, visibilityFunction));
             return this;
         }
