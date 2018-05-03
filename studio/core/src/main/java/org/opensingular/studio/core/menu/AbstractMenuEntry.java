@@ -18,18 +18,17 @@
 
 package org.opensingular.studio.core.menu;
 
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 
 public abstract class AbstractMenuEntry implements MenuEntry {
 
-    private Icon                     icon;
-    private String                   name;
-    private MenuEntry                parent;
-    private IPredicate<RequestCycle> visibilityFunction;
+    private Icon                  icon;
+    private String                name;
+    private MenuEntry             parent;
+    private IPredicate<MenuEntry> visibilityFunction;
 
-    public AbstractMenuEntry(Icon icon, String name, IPredicate<RequestCycle> visibilityFunction) {
+    public AbstractMenuEntry(Icon icon, String name, IPredicate<MenuEntry> visibilityFunction) {
         this.icon = icon;
         this.name = name;
         this.visibilityFunction = visibilityFunction;
@@ -56,7 +55,7 @@ public abstract class AbstractMenuEntry implements MenuEntry {
     }
 
     @Override
-    public boolean isVisible(RequestCycle requestCycle) {
-        return visibilityFunction == null || visibilityFunction.test(requestCycle);
+    public boolean isVisible() {
+        return visibilityFunction == null || visibilityFunction.test(this);
     }
 }

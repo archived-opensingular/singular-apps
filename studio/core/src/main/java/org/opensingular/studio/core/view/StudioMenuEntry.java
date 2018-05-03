@@ -18,7 +18,6 @@
 
 package org.opensingular.studio.core.view;
 
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
@@ -33,7 +32,7 @@ public class StudioMenuEntry extends ItemMenuEntry {
     public StudioMenuEntry(Icon icon, String name,
                            IBiFunction<String, MenuEntry, StudioContent> contentFactory,
                            boolean withMenu,
-                           IPredicate<RequestCycle> visibilityFunction) {
+                           IPredicate<MenuEntry> visibilityFunction) {
         super(icon, name, visibilityFunction);
         this.contentFactory = contentFactory;
         this.withMenu = withMenu;

@@ -24,7 +24,6 @@ import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.util.string.StringValue;
 import org.opensingular.lib.wicket.util.menu.AbstractMenuItem;
@@ -90,7 +89,7 @@ public class StudioPage extends SingularAdminTemplate {
         }
     }
 
-    private MenuEntry findCurrentMenuEntry() {
+    protected MenuEntry findCurrentMenuEntry() {
         return findCurrentMenuEntry(getStudioMenu().getChildren());
     }
 
@@ -188,9 +187,9 @@ public class StudioPage extends SingularAdminTemplate {
     @Override
     protected IModel<String> getPageTitleModel() {
         return Optional.ofNullable(findCurrentMenuEntry())
-                .map(MenuEntry::getName)
-                .map(Model::new)
-                .orElse(new Model<>());
+                       .map(MenuEntry::getName)
+                       .map(Model::new)
+                       .orElse(new Model<>());
     }
 
     private static class VisibilityMenuBehaviour extends Behavior {
@@ -203,9 +202,8 @@ public class StudioPage extends SingularAdminTemplate {
         @Override
         public void onConfigure(Component component) {
             super.onConfigure(component);
-            component.setVisible(menuEntry.isVisible(RequestCycle.get()));
+            component.setVisible(menuEntry.isVisible());
         }
     }
-
 
 }

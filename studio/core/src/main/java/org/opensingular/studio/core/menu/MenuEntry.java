@@ -88,8 +88,9 @@ public interface MenuEntry extends Serializable {
         return StudioWicketUtils.getMergedPathIntoURL(getMenuPath());
     }
 
-    default boolean isVisible(RequestCycle requestCycle){
+    default boolean isVisible(){
         return true;
     }
+
 
 }

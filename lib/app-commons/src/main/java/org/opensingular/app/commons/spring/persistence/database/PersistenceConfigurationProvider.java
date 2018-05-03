@@ -45,7 +45,7 @@ public class PersistenceConfigurationProvider implements Loggable {
     {
         try {
             Properties p   = new Properties();
-            URL        url = Thread.currentThread().getContextClassLoader().getResource("/_singular_module.properties");
+            URL        url = Thread.currentThread().getContextClassLoader().getResource("_singular_module.properties");
             if (url != null) {
                 p.load(url.openStream());
             }

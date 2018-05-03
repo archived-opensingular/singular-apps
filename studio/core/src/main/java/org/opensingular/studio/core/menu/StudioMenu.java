@@ -18,7 +18,6 @@
 
 package org.opensingular.studio.core.menu;
 
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 
@@ -62,7 +61,7 @@ public class StudioMenu {
         }
 
         public Builder addHTTPEndpoint(Icon icon, String name, String endpoint,
-                                       IPredicate<RequestCycle> visibilityFunction) {
+                                       IPredicate<MenuEntry> visibilityFunction) {
             studioMenu.add(new UrlMenuEntry(icon, name, endpoint, visibilityFunction));
             return this;
         }
@@ -77,7 +76,7 @@ public class StudioMenu {
         }
 
         public Builder addSidebarGroup(Icon icon, String name,
-                                       IPredicate<RequestCycle> visibilityFunction,
+                                       IPredicate<MenuEntry> visibilityFunction,
                                        Consumer<GroupMenuEntry.Builder> groupConsumer) {
             GroupMenuEntry g = studioMenu
                     .add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, visibilityFunction));
@@ -96,7 +95,7 @@ public class StudioMenu {
         }
 
         public Builder addPortalGroup(Icon icon, String name,
-                                      IPredicate<RequestCycle> visibilityFunction,
+                                      IPredicate<MenuEntry> visibilityFunction,
                                       Consumer<GroupMenuEntry.Builder> groupConsumer) {
             GroupMenuEntry g = studioMenu
                     .add(new GroupMenuEntry(icon, name, MenuView.PORTAL, visibilityFunction));
