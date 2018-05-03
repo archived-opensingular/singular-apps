@@ -68,7 +68,7 @@ public class DocsPanel extends Panel implements Loggable {
     protected BSDataTable<Class<? extends STypeComposite>, String> setupDataTable() {
         return new BSDataTableBuilder<>(createDataProvider())
                 .appendPropertyColumn($m.ofValue("Formulários Encontrados"), this::formatLabel)
-                .appendActionColumn("Docs Table", this::buildColumn)
+                .appendActionColumn("Docs Table", col -> this.buildColumn(col))
                 .setRowsPerPage(Long.MAX_VALUE)
                 .setStripedRows(false)
                 .setBorderedTable(false)
