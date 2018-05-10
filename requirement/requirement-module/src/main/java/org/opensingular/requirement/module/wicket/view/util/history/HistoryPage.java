@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.module.wicket.view.util.history;
 
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -25,19 +26,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import javax.inject.Inject;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 import javax.inject.Inject;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebComponent;
@@ -69,10 +62,6 @@ import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
-
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 
 @MountPath("history")
@@ -113,12 +102,7 @@ public class HistoryPage extends ServerTemplate {
     private void addImageHistoryFLow() {
         WebComponent imageHistFlow;
         if (requirementPK != null) {
-            String classCss = " col-md-12 ";
             FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
-            flowInstance.getTasksOlderFirst();
-            if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
-                classCss = " col-md-6 col-md-offset-3 ";
-            }
             byte[] bytes = generateHistImage(flowInstance);
             DynamicImageResource imageResource = new DynamicImageResource() {
                 @Override
@@ -128,12 +112,10 @@ public class HistoryPage extends ServerTemplate {
             };
             imageHistFlow = new Image("imageHist", imageResource);
             imageHistFlow.setVisible(bytes.length != 0);
-            imageHistFlow.add(new AttributeAppender("class", classCss));
         } else {
             imageHistFlow = new WebComponent("imageHist");
             imageHistFlow.setVisible(false);
         }
-
 
         add(imageHistFlow);
     }
