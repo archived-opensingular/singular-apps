@@ -308,6 +308,10 @@ public class JavaBeanComplianceTest {
         assinatura.setNome(assinatura.getNome());
         assinatura.setDataHora(assinatura.getDataHora());
         assinatura.setCargoFuncao(assinatura.getCargoFuncao());
+        assinatura.setIdUsuario(assinatura.getIdUsuario());
+        assinatura.setIdOrigem(assinatura.getIdOrigem());
+        assinatura.setIdOrgao(assinatura.getIdOrgao());
+        assinatura.setSigla(assinatura.getSigla());
     }
 
     @Test
@@ -376,16 +380,7 @@ public class JavaBeanComplianceTest {
         contato.setIdContatoAssociado(contato.getIdContatoAssociado());
         contato.setNomeContatoAssociado(contato.getNomeContatoAssociado());
         contato.setSinEnderecoAssociado(contato.getSinEnderecoAssociado());
-        contato.setEnderecoAssociado(contato.getEnderecoAssociado());
-        contato.setComplementoAssociado(contato.getComplementoAssociado());
-        contato.setBairroAssociado(contato.getBairroAssociado());
-        contato.setIdCidadeAssociado(contato.getIdCidadeAssociado());
-        contato.setNomeCidadeAssociado(contato.getNomeCidadeAssociado());
-        contato.setIdEstadoAssociado(contato.getIdEstadoAssociado());
-        contato.setSiglaEstadoAssociado(contato.getSiglaEstadoAssociado());
-        contato.setIdPaisAssociado(contato.getIdPaisAssociado());
-        contato.setNomePaisAssociado(contato.getNomePaisAssociado());
-        contato.setCepAssociado(contato.getCepAssociado());
+        contato.setCnpjAssociado(contato.getCnpjAssociado());
         contato.setEndereco(contato.getEndereco());
         contato.setComplemento(contato.getComplemento());
         contato.setBairro(contato.getBairro());
@@ -644,6 +639,9 @@ public class JavaBeanComplianceTest {
         unidade.setSigla(unidade.getSigla());
         unidade.setIdUnidade(unidade.getIdUnidade());
         unidade.setDescricao(unidade.getDescricao());
+        unidade.setSinProtocolo(unidade.getSinProtocolo());
+        unidade.setSinArquivamento(unidade.getSinArquivamento());
+        unidade.setSinOuvidoria(unidade.getSinOuvidoria());
     }
 
     @Test
