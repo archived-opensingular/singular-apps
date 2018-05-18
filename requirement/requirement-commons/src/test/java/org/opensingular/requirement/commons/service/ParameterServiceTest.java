@@ -18,20 +18,20 @@
 
 package org.opensingular.requirement.commons.service;
 
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
-import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.requirement.commons.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.commons.service.ParameterService;
 
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.Optional;
 
 public class ParameterServiceTest extends SingularCommonsBaseTest {
     @Inject
@@ -55,7 +55,7 @@ public class ParameterServiceTest extends SingularCommonsBaseTest {
 
         ParameterEntity entity = new ParameterEntity();
         entity.setName("testParameter");
-        entity.setCodModule(groupEntity.getCod());
+        entity.setModule(groupEntity);
         entity.setValue("valor teste");
 
         parameterDAO.save(entity);
@@ -64,7 +64,7 @@ public class ParameterServiceTest extends SingularCommonsBaseTest {
                 .findByNameAndModule("testParameter", groupEntity.getCod());
         Assert.assertEquals(entity, testParameter.get());
 
-        testParameter = parameterService.findByNameAndModule("testParameter", groupEntity);
+        testParameter = parameterService.findByNameAndModule("testParameter", groupEntity.getCod());
         Assert.assertEquals(entity, testParameter.get());
 
         Assert.assertEquals(entity.getName(), testParameter.get().getName());

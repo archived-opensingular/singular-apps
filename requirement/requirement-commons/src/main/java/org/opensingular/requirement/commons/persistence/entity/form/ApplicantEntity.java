@@ -19,24 +19,28 @@
 package org.opensingular.requirement.commons.persistence.entity.form;
 
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Check;
+import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Parameter;
 import org.hibernate.annotations.Type;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.Table;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISITANTE")
-@GenericGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@Check(constraints ="TP_PESSOA IN ('J','F')")
+@SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
 public class ApplicantEntity extends BaseEntity<Long> {
 
 
@@ -44,23 +48,24 @@ public class ApplicantEntity extends BaseEntity<Long> {
 
     @Id
     @Column(name = "CO_REQUISITANTE")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
-    @Column(name = "DS_NOME")
+    @Column(name = "DS_NOME", length = 200, nullable = false)
     private String name;
 
-    @Column(name = "ID_PESSOA")
+    @Column(name = "ID_PESSOA", length = 200, nullable = false)
     private String idPessoa;
 
-    @Column(name = "NU_CPF_CNPJ")
+    @Column(name = "NU_CPF_CNPJ", length = 14)
     private String cpfCNPJ;
 
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = {
             @Parameter(name = "enumClass", value = PersonType.CLASS_NAME),
             @Parameter(name = "identifierMethod", value = "getCod"),
             @Parameter(name = "valueOfMethod", value = "valueOfEnum")})
-    @Column(name = "TP_PESSOA")
+    @Column(name = "TP_PESSOA", length = 1, nullable = false)
+    @ColumnDefault(value = "'J'")
     private PersonType personType;
 
     @Override

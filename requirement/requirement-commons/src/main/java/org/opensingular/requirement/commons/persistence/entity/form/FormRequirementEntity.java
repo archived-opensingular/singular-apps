@@ -19,7 +19,21 @@
 package org.opensingular.requirement.commons.persistence.entity.form;
 
 
-import org.hibernate.annotations.GenericGenerator;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ForeignKey;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Index;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
+import org.hibernate.annotations.Check;
 import org.hibernate.annotations.Type;
 import org.opensingular.flow.persistence.entity.TaskDefinitionEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
@@ -27,39 +41,32 @@ import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
-@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO")
-@GenericGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@Table(schema = Constants.SCHEMA, name = "TB_FORMULARIO_REQUISICAO",
+        indexes = {
+                @Index(columnList = "ST_FORM_PRINCIPAL ASC, CO_REQUISICAO ASC", name = "IX_FORMULARIO_PRINCIPAL")
+        })
+@SequenceGenerator(name = FormRequirementEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_FORMULARIO_REQUISICAO", schema = Constants.SCHEMA)
+@Check(constraints ="ST_FORM_PRINCIPAL IN ('S','N')")
 public class FormRequirementEntity extends BaseEntity<Long> implements Comparable<FormRequirementEntity> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_FORMULARIO_REQUISICAO";
 
     @Id
     @Column(name = "CO_FORMULARIO_REQUISICAO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_REQUISICAO")
+    @JoinColumn(name = "CO_REQUISICAO", foreignKey = @ForeignKey(name = "FK_FORMO_REQ_REQUISICAO"), nullable = false)
     private RequirementEntity requirement;
 
     @ManyToOne(cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "CO_FORMULARIO")
+    @JoinColumn(name = "CO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_FORM_REQ_FORMULARIO"))
     private FormEntity form;
 
-    @Column(name = "ST_FORM_PRINCIPAL", length = 1)
+    @Column(name = "ST_FORM_PRINCIPAL", length = 1, nullable = false)
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = {
             @org.hibernate.annotations.Parameter(name = "enumClass", value = SimNao.ENUM_CLASS_NAME),
             @org.hibernate.annotations.Parameter(name = "identifierMethod", value = "getCodigo"),
@@ -67,11 +74,11 @@ public class FormRequirementEntity extends BaseEntity<Long> implements Comparabl
     private SimNao mainForm;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "CO_DEFINICAO_TAREFA")
+    @JoinColumn(name = "CO_DEFINICAO_TAREFA", foreignKey = @ForeignKey(name = "FK_FORM_REQ_DEFINICAO_TAREFA"))
     private TaskDefinitionEntity taskDefinitionEntity;
 
     @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
-    @JoinColumn(name = "CO_RASCUNHO_ATUAL")
+    @JoinColumn(name = "CO_RASCUNHO_ATUAL", foreignKey = @ForeignKey(name = "FK_FORM_REQ_RASCUNHO_ATUAL"))
     private DraftEntity currentDraftEntity;
 
     @Override
