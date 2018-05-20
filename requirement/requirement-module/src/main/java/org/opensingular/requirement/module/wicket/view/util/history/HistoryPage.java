@@ -19,22 +19,6 @@
 package org.opensingular.requirement.module.wicket.view.util.history;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -69,6 +53,14 @@ import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_NAME;
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
@@ -140,9 +132,7 @@ public class HistoryPage extends ServerTemplate {
 
     private byte[] generateHistImage(FlowInstance flowInstance) {
         return SingularExtensionUtil.get()
-                .findExtensionsByClass(FlowExecutionImageExtension.class)
-                .stream()
-                .findFirst()
+                .findExtension(FlowExecutionImageExtension.class)
                 .map(p -> p.generateHistoryImage(flowInstance))
                 .orElse(new byte[0]);
     }

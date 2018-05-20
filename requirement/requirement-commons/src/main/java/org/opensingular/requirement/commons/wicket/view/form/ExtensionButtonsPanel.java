@@ -51,7 +51,7 @@ public class ExtensionButtonsPanel<RI extends RequirementInstance> extends Panel
     }
 
     private List<RequirementButtonExtension> lookupExtensions() {
-        return SingularExtensionUtil.get().findExtensionsByClass(RequirementButtonExtension.class);
+        return SingularExtensionUtil.get().findExtensions(RequirementButtonExtension.class);
     }
 
     private void addButtons() {

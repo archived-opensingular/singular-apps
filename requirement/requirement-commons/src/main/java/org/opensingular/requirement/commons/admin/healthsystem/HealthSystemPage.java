@@ -56,7 +56,7 @@ public class HealthSystemPage extends ServerTemplate implements Loggable {
     }
 
     private void loadExtensions() {
-        adminEntries = SingularExtensionUtil.get().findExtensionsByClass(AdministrationEntryExtension.class);
+        adminEntries = SingularExtensionUtil.get().findExtensions(AdministrationEntryExtension.class);
     }
 
     private void addForm() {
