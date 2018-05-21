@@ -27,6 +27,13 @@ import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 
 public interface SingularPersistenceConfiguration {
 
+    /**
+     * Configure hibernates packages to scan in addition to the singular platform packages, ie: singular entities packages
+     * is already configured by the platform.
+     * @param packagesToScan
+     *  A pre-populated list with singular default packages, cleaning or removing pre-populated data in this list
+     *  would led to platform malfunction.
+     */
     void configureHibernatePackagesToScan(List<String> packagesToScan);
 
     void configureInitSQLScripts(List<String> scripts);
