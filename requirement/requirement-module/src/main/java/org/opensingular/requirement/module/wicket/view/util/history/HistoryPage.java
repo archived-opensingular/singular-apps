@@ -36,8 +36,7 @@ import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
-import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
-import org.opensingular.lib.commons.extension.SingularExtensionUtil;
+import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
@@ -131,9 +130,8 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private byte[] generateHistImage(FlowInstance flowInstance) {
-        return SingularExtensionUtil.get()
-                .findExtension(FlowRendererProviderExtension.class)
-                .map(p -> p.generateHistoryImage(flowInstance))
+        return RendererUtil.findRendererForUserDisplay()
+                .map(p -> p.generateHistoryPng(flowInstance))
                 .orElse(new byte[0]);
     }
 
