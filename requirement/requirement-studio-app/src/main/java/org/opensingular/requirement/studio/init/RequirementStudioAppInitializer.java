@@ -51,9 +51,6 @@ public interface RequirementStudioAppInitializer extends SingleAppInitializer {
     @Override
     default PWebInitializer webConfiguration() {
         return new PWebInitializer() {
-            @Override
-            protected void configureCAS(ServletContext servletContext) {
-            }
 
             @Override
             public IServerContext[] serverContexts() {

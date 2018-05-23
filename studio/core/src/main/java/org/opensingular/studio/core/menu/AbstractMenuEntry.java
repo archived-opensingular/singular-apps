@@ -18,17 +18,20 @@
 
 package org.opensingular.studio.core.menu;
 
+import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 
 public abstract class AbstractMenuEntry implements MenuEntry {
 
-    private Icon icon;
-    private String name;
-    private MenuEntry parent;
+    private Icon                  icon;
+    private String                name;
+    private MenuEntry             parent;
+    private IPredicate<MenuEntry> visibilityFunction;
 
-    public AbstractMenuEntry(Icon icon, String name) {
+    public AbstractMenuEntry(Icon icon, String name, IPredicate<MenuEntry> visibilityFunction) {
         this.icon = icon;
         this.name = name;
+        this.visibilityFunction = visibilityFunction;
     }
 
     @Override
@@ -51,4 +54,8 @@ public abstract class AbstractMenuEntry implements MenuEntry {
         this.parent = parent;
     }
 
+    @Override
+    public boolean isVisible() {
+        return visibilityFunction == null || visibilityFunction.test(this);
+    }
 }

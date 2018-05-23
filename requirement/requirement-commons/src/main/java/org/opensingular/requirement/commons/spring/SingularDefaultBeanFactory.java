@@ -330,11 +330,6 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public SingularServerMetadata singularServerMetadata() {
-        return new DefaultSingularServerMetadata();
-    }
-
-    @Bean
     public DefaultRequirementSender defaultRequirementSender() {
         return new DefaultRequirementSender();
     }

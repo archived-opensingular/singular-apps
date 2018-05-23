@@ -68,7 +68,7 @@ public abstract class AbstractStudioAppConfig implements StudioAppConfig {
         return new SpringServiceRegistry();
     }
 
-    public Class<? extends StudioSpringConfiguration> getSpringConfig() {
+    public Class<?> getSpringConfig() {
         return StudioSpringConfiguration.class;
     }
 
@@ -80,7 +80,7 @@ public abstract class AbstractStudioAppConfig implements StudioAppConfig {
         return StudioWebConfiguration.class;
     }
 
-    public Class<? extends StudioPersistenceConfiguration> getSpringPersistenceConfig() {
+    public Class<?> getSpringPersistenceConfig() {
         return StudioPersistenceConfiguration.class;
     }
 
