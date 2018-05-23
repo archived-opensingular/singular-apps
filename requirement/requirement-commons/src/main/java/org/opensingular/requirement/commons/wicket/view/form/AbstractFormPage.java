@@ -33,6 +33,7 @@ import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.STask;
@@ -131,18 +132,15 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     @Inject
     private FormRequirementService<RE> formRequirementService;
 
-    @Inject
-    private SingularServerMetadata singularServerMetadata;
-
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
     }
 
     public AbstractFormPage(@Nullable ActionContext context, @Nullable Class<? extends SType<?>> formType) {
         if (context == null) {
-            String url = singularServerMetadata.getServerBaseUrl();
-            getLogger().info(" Redirecting to {}", url);
-            throw new RedirectToUrlException(url);
+            String path = WebApplication.get().getServletContext().getContextPath();
+            getLogger().info(" Redirecting to {}", path);
+            throw new RedirectToUrlException(path);
         }
 
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), getTypeName(formType), getFlowResolver(context), getRequirementSender(context));

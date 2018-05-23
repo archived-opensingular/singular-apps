@@ -29,7 +29,7 @@ import org.opensingular.requirement.commons.config.SchedulerInitializer;
 import org.opensingular.requirement.commons.config.SpringHibernateInitializer;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
-import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
+import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.core.config.AttachmentGCSchedulerInitializer;
 import org.opensingular.requirement.core.config.MailSenderSchedulerInitializer;
@@ -86,7 +86,7 @@ public interface SingleAppInitializer extends PSingularInitializer {
             }
 
             @Override
-            protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
+            protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
                 return SingleAppInitializer.this.persistenceConfiguration();
             }
 
@@ -114,8 +114,8 @@ public interface SingleAppInitializer extends PSingularInitializer {
     default void initSkins(String contextPath, SkinOptions skinOptions) {
     }
 
-    default Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
-        return SingularDefaultPersistenceConfiguration.class;
+    default Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+        return SingularPersistenceDefaultBeanFactory.class;
     }
 
     @Override

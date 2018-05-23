@@ -20,45 +20,47 @@ package org.opensingular.requirement.commons.persistence.entity.form;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.GenericGenerator;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
-
-import static org.opensingular.requirement.commons.persistence.entity.form.RequirementDefinitionEntity.PK_GENERATOR_NAME;
 
 /**
  *
  */
 @Entity
-@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO")
-@GenericGenerator(name = PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
+@SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
+@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", indexes = {
+        @Index(columnList = "CO_MODULO ASC, NO_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO")
+})
 public class RequirementDefinitionEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_DEFINICAO_REQUISICAO";
 
     @Id
     @Column(name = "CO_DEFINICAO_REQUISICAO")
-    @GeneratedValue(generator = PK_GENERATOR_NAME)
+    @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
     @ManyToOne
-    @JoinColumn(name = "CO_TIPO_FORMULARIO")
+    @JoinColumn(name = "CO_TIPO_FORMULARIO" , foreignKey = @ForeignKey(name = "FK_DEFI_REQ_TIPO_FORMULARIO"), nullable = false)
     private FormTypeEntity formType;
 
     @ManyToOne
-    @JoinColumn(name = "CO_MODULO")
+    @JoinColumn(name = "CO_MODULO" , foreignKey = @ForeignKey(name = "FK_DEFI_REQ_MODULO"), nullable = false)
     private ModuleEntity module;
 
-    @Column(name = "NO_DEFINICAO_REQUISICAO")
+    @Column(name = "NO_DEFINICAO_REQUISICAO", nullable = false, length = 300)
     private String name;
 
     @Override

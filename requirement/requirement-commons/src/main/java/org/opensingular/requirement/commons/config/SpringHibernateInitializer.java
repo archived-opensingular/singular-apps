@@ -20,7 +20,7 @@ package org.opensingular.requirement.commons.config;
 
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
-import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
+import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.commons.spring.SingularServerSpringAppConfig;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
@@ -88,8 +88,8 @@ public class SpringHibernateInitializer {
         return SingularDefaultBeanFactory.class;
     }
 
-    protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
-        return SingularDefaultPersistenceConfiguration.class;
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+        return SingularPersistenceDefaultBeanFactory.class;
     }
 
     protected String springMVCServletMapping() {

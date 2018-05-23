@@ -28,6 +28,11 @@ import javax.servlet.ServletContext;
 public abstract class FlowInitializer {
 
 
+    /**
+     * TODO will be moved to bean factory in future releases
+     * @return
+     */
+    @Deprecated
     public Class<? extends SingularFlowConfigurationBean> singularFlowConfiguration() {
         return SingularServerFlowConfigurationBean.class;
     }

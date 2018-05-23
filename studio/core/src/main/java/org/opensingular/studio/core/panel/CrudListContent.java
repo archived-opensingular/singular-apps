@@ -37,6 +37,8 @@ import org.opensingular.form.wicket.component.BFModalWindow;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.form.wicket.util.FormStateUtil;
+import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.wicket.util.ajax.ActionAjaxLink;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
@@ -60,8 +62,10 @@ public class CrudListContent extends CrudShellContent {
     private IModel<Icon>            iconModel          = new Model<>();
     private IModel<String>          titleModel         = new Model<>();
     private List<HeaderRightButton> headerRightButtons = new ArrayList<>();
-    private BFModalWindow     modalFilter;
-    private SingularFormPanel filterPanel;
+
+    private   BFModalWindow           modalFilter;
+    private   SingularFormPanel       filterPanel;
+    protected FormStateUtil.FormState filterState;
 
     public CrudListContent(CrudShellManager crudShellManager) {
         super(crudShellManager);
@@ -178,7 +182,7 @@ public class CrudListContent extends CrudShellContent {
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    filterPanel.getInstance().clearInstance();
+                    rollbackFilterState();
                     modalFilter.hide(target);
                 }
             };
@@ -357,6 +361,7 @@ public class CrudListContent extends CrudShellContent {
         HeaderRightButton btnFilter = new HeaderRightButton() {
             @Override
             public void onAction(AjaxRequestTarget target) {
+                saveFilterState();
                 modalFilter.show(target);
             }
 
@@ -391,5 +396,18 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
+    private void saveFilterState() {
+        filterState = FormStateUtil.keepState(filterPanel.getInstance());
+    }
+
+    private void rollbackFilterState() {
+        try {
+            if (filterState != null && filterPanel != null && filterPanel.getInstanceModel().getObject() != null) {
+                FormStateUtil.restoreState(filterPanel.getInstanceModel().getObject(), filterState);
+            }
+        } catch (Exception e) {
+            throw SingularException.rethrow(e.getMessage(), e);
+        }
+    }
 
 }

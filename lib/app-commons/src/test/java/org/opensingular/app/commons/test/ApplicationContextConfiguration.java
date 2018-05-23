@@ -18,13 +18,18 @@
 
 package org.opensingular.app.commons.test;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.persistence.entity.SingularEntityInterceptor;
+import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -38,11 +43,6 @@ import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
 
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 
@@ -85,7 +85,8 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         hibernateProperties.setProperty("hibernate.enable_lazy_load_no_trans", "true");
         hibernateProperties.setProperty("hibernate.jdbc.use_get_generated_keys", "true");
         hibernateProperties.setProperty("hibernate.cache.use_second_level_cache", "false");
-        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "flase");
+        hibernateProperties.setProperty("hibernate.cache.use_query_cache", "false");
+        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", "create-drop");
         return hibernateProperties;
     }
 
@@ -102,7 +103,6 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
             getLogger().warn("Usando datasource banco embarcado H2");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
             dataSource.setJdbcUrl("jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
-
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
             dataSource.setDriverClassName("org.h2.Driver");
@@ -113,30 +113,14 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         }
     }
 
-    @Value("classpath:db/ddl/create-email-sequences.sql")
-    private Resource emmailSequences;
-
-    @Value("classpath:db/ddl/create-tables-emails.sql")
-    private Resource emailTables;
-
-    @Value("classpath:drops.sql")
-    private Resource drops;
-
-    @Value("classpath:db/ddl/create-tables-form.sql")
-    private Resource sqlCreateTablesForm;
-
-    @Value("classpath:db/ddl/create-sequences-form.sql")
-    private Resource sqlCreateSequencesForm;
+    @Value("classpath:create-scrips-email-test.sql")
+    private Resource sqlScriptsEmailTest;
 
 
     protected ResourceDatabasePopulator databasePopulator() {
         final ResourceDatabasePopulator populator = new ResourceDatabasePopulator();
         populator.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
-        populator.addScript(drops);
-        populator.addScript(emailTables);
-        populator.addScript(emmailSequences);
-        populator.addScript(sqlCreateTablesForm);
-        populator.addScript(sqlCreateSequencesForm);
+        populator.addScript(sqlScriptsEmailTest);
         return populator;
     }
 

@@ -29,15 +29,12 @@ import org.opensingular.requirement.commons.box.BoxItemDataImpl;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
 import org.opensingular.requirement.commons.box.action.defaults.AssignAction;
 import org.opensingular.requirement.commons.box.action.defaults.EditAction;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
 import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO;
-
-import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 

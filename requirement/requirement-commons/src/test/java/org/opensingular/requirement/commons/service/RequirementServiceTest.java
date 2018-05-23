@@ -18,6 +18,15 @@
 
 package org.opensingular.requirement.commons.service;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
@@ -50,16 +59,7 @@ import org.opensingular.requirement.commons.test.FOOFlow;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.test.annotation.Rollback;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.hamcrest.Matchers.*;
+import static org.hamcrest.Matchers.greaterThanOrEqualTo;
 import static org.junit.Assert.*;
 
 @Transactional
