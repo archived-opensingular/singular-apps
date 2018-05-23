@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.commons.service;
 
+import org.hibernate.SessionFactory;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -45,19 +46,19 @@ import java.util.Optional;
  */
 public class RequirementInstance implements Serializable {
 
-    private final RequirementEntity requirementEntity;
+    private final Long requirementEntityId;
 
     private transient FlowInstance flowInstance;
 
     private transient SIComposite mainForm;
 
     public RequirementInstance(RequirementEntity requirementEntity) {
-        this.requirementEntity = Objects.requireNonNull(requirementEntity);
+        this.requirementEntityId = Objects.requireNonNull(requirementEntity).getCod();
     }
 
     public FlowInstance getFlowInstance() {
-        if (flowInstance == null && requirementEntity.getFlowInstanceEntity() != null) {
-            flowInstance = RequirementUtil.getFlowInstance(requirementEntity);
+        if (flowInstance == null && getEntity().getFlowInstanceEntity() != null) {
+            flowInstance = RequirementUtil.getFlowInstance(getEntity());
         }
         return flowInstance;
     }
@@ -67,13 +68,13 @@ public class RequirementInstance implements Serializable {
     }
 
     public boolean isFlowInstanceCreated() {
-        return requirementEntity.getFlowInstanceEntity() != null;
+        return getEntity().getFlowInstanceEntity() != null;
     }
 
     @Nonnull
     public SIComposite getMainForm() {
         if (mainForm == null) {
-            mainForm = getRequirementService().getMainFormAsInstance(requirementEntity);
+            mainForm = getRequirementService().getMainFormAsInstance(getEntity());
         }
         return mainForm;
     }
@@ -100,20 +101,20 @@ public class RequirementInstance implements Serializable {
     }
 
     public FlowDefinition<?> getFlowDefinition() {
-        return RequirementUtil.getFlowDefinition(requirementEntity);
+        return RequirementUtil.getFlowDefinition(getEntity());
     }
 
     public void setFlowDefinition(@Nonnull Class<? extends FlowDefinition> clazz) {
         FlowDefinition<?> flowDefinition = Flow.getFlowDefinition(clazz);
-        requirementEntity.setFlowDefinitionEntity((FlowDefinitionEntity) flowDefinition.getEntityFlowDefinition());
+        getEntity().setFlowDefinitionEntity((FlowDefinitionEntity) flowDefinition.getEntityFlowDefinition());
     }
 
     public Optional<FlowDefinition<?>> getFlowDefinitionOpt() {
-        return RequirementUtil.getFlowDefinitionOpt(requirementEntity);
+        return RequirementUtil.getFlowDefinitionOpt(getEntity());
     }
 
     public Long getCod() {
-        return requirementEntity.getCod();
+        return requirementEntityId;
     }
 
     public TaskInstance getCurrentTaskOrException() {
@@ -126,7 +127,7 @@ public class RequirementInstance implements Serializable {
 
     @Nonnull
     public Optional<RequirementInstance> getParentRequirement() {
-        return Optional.ofNullable(requirementEntity.getParentRequirement()).map(
+        return Optional.ofNullable(getEntity().getParentRequirement()).map(
                 parent -> ((RequirementService<RequirementEntity, ?>) getRequirementService()).newRequirementInstance(parent));
     }
 
@@ -137,17 +138,17 @@ public class RequirementInstance implements Serializable {
     }
 
     public String getDescription() {
-        return requirementEntity.getDescription();
+        return getEntity().getDescription();
     }
 
     public void setDescription(String description) {
-        requirementEntity.setDescription(description);
+        getEntity().setDescription(description);
     }
 
     public void setNewFlow(FlowInstance newFlowInstance) {
         FlowInstanceEntity flowEntity = newFlowInstance.saveEntity();
-        requirementEntity.setFlowInstanceEntity(flowEntity);
-        requirementEntity.setFlowDefinitionEntity(flowEntity.getFlowVersion().getFlowDefinition());
+        getEntity().setFlowInstanceEntity(flowEntity);
+        getEntity().setFlowDefinitionEntity(flowEntity.getFlowVersion().getFlowDefinition());
 
     }
 
@@ -157,11 +158,11 @@ public class RequirementInstance implements Serializable {
     }
 
     public RequirementEntity getEntity() {
-        return requirementEntity;
+        return (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, requirementEntityId);
     }
 
     public ApplicantEntity getApplicant() {
-        return requirementEntity.getApplicant();
+        return getEntity().getApplicant();
     }
 
     //TODO REFACTOR
@@ -173,7 +174,7 @@ public class RequirementInstance implements Serializable {
     }
 
     public FormVersionEntity getMainFormCurrentFormVersion() {
-        return requirementEntity.getMainForm().getCurrentFormVersionEntity();
+        return getEntity().getMainForm().getCurrentFormVersionEntity();
     }
 
     public Long getMainFormCurrentFormVersionCod() {
