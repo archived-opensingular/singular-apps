@@ -46,6 +46,14 @@ public abstract class AbstractFlowRenderTest extends AbstractTestTempFileSupport
      */
     protected final void renderImage(@Nonnull Consumer<FlowBuilderImpl> flowCreator) {
         FlowDefinition<?> flowDefinition = SFlowUtil.instanceForDebug(flowCreator);
+        renderImage(flowDefinition);
+    }
+
+    /**
+     * Renders the image with a graph of the process. It may show on the developer console the result if {@link
+     * #setOpenGeneratedFiles(boolean)} is set true.
+     */
+    protected final void renderImage(FlowDefinition<?> flowDefinition) {
         generateFileAndShowOnDesktopForUser("png", out -> {
             RendererUtil.findRenderer().generatePng(flowDefinition, out);
         });
