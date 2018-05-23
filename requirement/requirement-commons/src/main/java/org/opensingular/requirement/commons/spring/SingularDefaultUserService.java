@@ -29,6 +29,7 @@ import javax.inject.Inject;
 import java.util.Objects;
 import java.util.Optional;
 
+@Transactional
 public class SingularDefaultUserService implements IUserService {
 
 
