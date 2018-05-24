@@ -29,6 +29,7 @@ import org.opensingular.requirement.commons.service.dto.DatatableField;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
 import org.opensingular.requirement.commons.service.dto.RequirementData;
 import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 

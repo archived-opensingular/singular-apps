@@ -18,20 +18,21 @@
 
 package org.opensingular.requirement.commons.persistence.entity.form;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
+import javax.persistence.Id;
+import javax.persistence.IdClass;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+
 import org.hibernate.annotations.Type;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.IdClass;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 @Entity
 @IdClass(FormVersionHistoryPK.class)
@@ -46,7 +47,7 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
     @Column(name = "CO_VERSAO_FORMULARIO")
     private Long codFormVersion;
 
-    @Column(name = "ST_FORM_PRINCIPAL", length = 1)
+    @Column(name = "ST_FORM_PRINCIPAL", length = 1, nullable = false)
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = {
             @org.hibernate.annotations.Parameter(name = "enumClass", value = SimNao.ENUM_CLASS_NAME),
             @org.hibernate.annotations.Parameter(name = "identifierMethod", value = "getCodigo"),
@@ -54,11 +55,11 @@ public class FormVersionHistoryEntity extends BaseEntity<FormVersionHistoryPK> {
     private SimNao mainForm;
 
     @ManyToOne
-    @JoinColumn(name = "CO_HISTORICO", insertable = false, updatable = false)
+    @JoinColumn(name = "CO_HISTORICO", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_HIST_VER_FORM_HISTORICO"), nullable = false)
     private RequirementContentHistoryEntity requirementContentHistory;
 
     @ManyToOne
-    @JoinColumn(name = "CO_VERSAO_FORMULARIO", insertable = false, updatable = false)
+    @JoinColumn(name = "CO_VERSAO_FORMULARIO", insertable = false, updatable = false, foreignKey = @ForeignKey(name = "FK_HIST_VER_FORM_VER_FORM"), nullable = false)
     private FormVersionEntity formVersion;
 
     @Override

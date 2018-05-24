@@ -22,14 +22,13 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.wicket.protocol.http.WicketFilter;
+import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
+import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
@@ -53,6 +52,7 @@ public abstract class WebInitializer {
     protected void onStartup(ServletContext ctx) throws ServletException {
         addSessionListener(ctx);
         addOpenSessionInView(ctx);
+        addPublicUploadServlet(ctx);
         for (IServerContext context : serverContexts()) {
             logger.info(SINGULAR_SECURITY, "Setting up web context:", context.getContextPath());
             addWicketFilter(ctx, context);
@@ -78,6 +78,11 @@ public abstract class WebInitializer {
         opensessioninview.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
     }
 
+    private void addPublicUploadServlet(ServletContext servletContext) {
+        ServletRegistration.Dynamic uploadServlet = servletContext.addServlet(SimplePostFilesStrategy.class.getName(), FileUploadServlet.class);
+        uploadServlet.addMapping(SimplePostFilesStrategy.URL_PATTERN);
+    }
+
     protected String[] getDefaultPublicUrls() {
         List<String> urls = new ArrayList<>();
         urls.add("/rest/*");
@@ -95,7 +100,7 @@ public abstract class WebInitializer {
     /**
      * Configura o timeout da sessão web em minutos
      *
-     * @return
+     * x@return
      */
     protected int getSessionTimeoutMinutes() {
         return 15;//15 minutos

@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.single.config;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -104,7 +105,7 @@ public class LocalModuleDriver implements ModuleDriver {
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
         final BoxItemAction action   = rowItemData.getActionByName(rowAction.getName());
-        final String        endpoint = action.getEndpoint();
+        final String        endpoint = StringUtils.trimToEmpty(action.getEndpoint());
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {

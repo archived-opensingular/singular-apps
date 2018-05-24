@@ -48,6 +48,7 @@ import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.FlowExecutionImageExtension;
+import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -65,6 +66,7 @@ import org.opensingular.requirement.commons.wicket.view.image.PhotoSwipePanel;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
+
 
 @MountPath("history")
 public class HistoryPage extends ServerTemplate {
@@ -127,6 +129,12 @@ public class HistoryPage extends ServerTemplate {
             .findExtensionsByClass(FlowExecutionImageExtension.class)
             .stream()
             .findFirst();
+    }
+
+    private byte[] generateHistImage(FlowInstance flowInstance) {
+        return RendererUtil.findRendererForUserDisplay()
+                .map(p -> p.generateHistoryPng(flowInstance))
+                .orElse(new byte[0]);
     }
 
     protected AjaxLink<?> getBtnFechar() {

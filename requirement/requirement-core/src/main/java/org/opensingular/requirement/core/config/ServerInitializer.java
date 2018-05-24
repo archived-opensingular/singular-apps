@@ -27,7 +27,7 @@ import org.opensingular.requirement.commons.config.SchedulerInitializer;
 import org.opensingular.requirement.commons.config.SpringHibernateInitializer;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
-import org.opensingular.requirement.commons.spring.SingularDefaultPersistenceConfiguration;
+import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.core.wicket.box.BoxPage;
 import org.opensingular.requirement.commons.admin.AdministrationApplication;
@@ -83,7 +83,7 @@ public abstract class ServerInitializer implements PSingularInitializer {
             }
 
             @Override
-            protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
+            protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
                 return ServerInitializer.this.persistenceConfiguration();
             }
 
@@ -94,8 +94,8 @@ public abstract class ServerInitializer implements PSingularInitializer {
         };
     }
 
-    protected Class<? extends SingularDefaultPersistenceConfiguration> persistenceConfiguration() {
-        return SingularDefaultPersistenceConfiguration.class;
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+        return SingularPersistenceDefaultBeanFactory.class;
     }
 
 
