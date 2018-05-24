@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.module.wicket.view.util.history;
 
+import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
 
 import java.util.Collections;
@@ -29,6 +30,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.head.CssHeaderItem;
@@ -59,21 +61,20 @@ import org.opensingular.requirement.commons.persistence.entity.form.FormVersionH
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.wicket.SingularSession;
+import org.opensingular.requirement.commons.wicket.view.image.PhotoSwipePanel;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
 
-
 @MountPath("history")
 public class HistoryPage extends ServerTemplate {
 
-    private static final long serialVersionUID = -3344810189307767761L;
-    private static final int QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE = 5;
+    private static final long        serialVersionUID = -3344810189307767761L;
 
     @Inject
     private RequirementService<?, ?> requirementService;
 
-    private Long requirementPK;
+    private Long                     requirementPK;
 
     public HistoryPage() {
     }
@@ -87,7 +88,7 @@ public class HistoryPage extends ServerTemplate {
         super.onInitialize();
         requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
         add(setupDataTable(createDataProvider()));
-        addImageHistoryFLow();
+        addImageHistoryFLow("imageHist");
         add(getBtnFechar());
     }
 
@@ -96,37 +97,36 @@ public class HistoryPage extends ServerTemplate {
         super.renderHead(response);
         response.render(CssHeaderItem.forReference(new PackageResourceReference(HistoryPage.class, "HistoryPage.css")));
 
-
     }
 
-    private void addImageHistoryFLow() {
-        WebComponent imageHistFlow;
-        if (requirementPK != null) {
-            FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
-            byte[] bytes = generateHistImage(flowInstance);
-            DynamicImageResource imageResource = new DynamicImageResource() {
+    private void addImageHistoryFLow(String id) {
+        Component imageHistFlow;
+        if ((requirementPK != null) && findFlowExecutionImageExtension().isPresent()) {
+            imageHistFlow = new Image(id, new DynamicImageResource() {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
+                    FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+                    byte[] bytes = findFlowExecutionImageExtension()
+                        .map(it -> it.generateHistoryImage(flowInstance))
+                        .orElse(new byte[0]);
                     return bytes;
                 }
-            };
-            imageHistFlow = new Image("imageHist", imageResource);
-            imageHistFlow.setVisible(bytes.length != 0);
-        } else {
-            imageHistFlow = new WebComponent("imageHist");
-            imageHistFlow.setVisible(false);
-        }
+            });
 
+        } else {
+            imageHistFlow = new WebComponent(id).setVisible(false);
+        }
         add(imageHistFlow);
+        add(new PhotoSwipePanel("gallery", $m.get(() -> (imageHistFlow instanceof Image)
+            ? new Image[] { (Image) imageHistFlow }
+            : new Image[0])));
     }
 
-    private byte[] generateHistImage(FlowInstance flowInstance) {
+    private Optional<FlowExecutionImageExtension> findFlowExecutionImageExtension() {
         return SingularExtensionUtil.get()
-                .findExtensionsByClass(FlowExecutionImageExtension.class)
-                .stream()
-                .findFirst()
-                .map(p -> p.generateHistoryImage(flowInstance))
-                .orElse(new byte[0]);
+            .findExtensionsByClass(FlowExecutionImageExtension.class)
+            .stream()
+            .findFirst();
     }
 
     protected AjaxLink<?> getBtnFechar() {
@@ -144,54 +144,49 @@ public class HistoryPage extends ServerTemplate {
 
     protected BSDataTable<RequirementHistoryDTO, String> setupDataTable(BaseDataProvider<RequirementHistoryDTO, String> dataProvider) {
         return new BSDataTableBuilder<>(dataProvider)
-                .appendPropertyColumn(
-                        getMessage("label.table.column.task.name"),
-                        p -> p.getTaskName()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.begin.date"),
-                        p -> p.getBeginDate()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.end.date"),
-                        p -> p.getEndDate()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.allocated.user"),
-                        p -> p.getAllocatedUser()
-                )
-                .appendActionColumn(
-                        Model.of(""),
-                        column -> column.appendComponentFactory((id, model) -> {
+            .appendPropertyColumn(
+                getMessage("label.table.column.task.name"),
+                p -> p.getTaskName())
+            .appendPropertyColumn(
+                getMessage("label.table.column.begin.date"),
+                p -> p.getBeginDate())
+            .appendPropertyColumn(
+                getMessage("label.table.column.end.date"),
+                p -> p.getEndDate())
+            .appendPropertyColumn(
+                getMessage("label.table.column.allocated.user"),
+                p -> p.getAllocatedUser())
+            .appendActionColumn(
+                Model.of(""),
+                column -> column.appendComponentFactory((id, model) -> {
 
-                            final DropDownButtonPanel dropDownButtonPanel;
+                    final DropDownButtonPanel dropDownButtonPanel;
 
-                            dropDownButtonPanel = new DropDownButtonPanel(id)
-                                    .setDropdownLabel(Model.of("Formulários"))
-                                    .setInvisibleIfEmpty(Boolean.TRUE)
-                                    .setPullRight(Boolean.TRUE);
+                    dropDownButtonPanel = new DropDownButtonPanel(id)
+                        .setDropdownLabel(Model.of("Formulários"))
+                        .setInvisibleIfEmpty(Boolean.TRUE)
+                        .setPullRight(Boolean.TRUE);
 
-                            Optional.of(model.getObject())
-                                    .map(RequirementHistoryDTO::getRequirementContentHistory)
-                                    .map(RequirementContentHistoryEntity::getFormVersionHistoryEntities)
-                                    .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
-                                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
+                    Optional.of(model.getObject())
+                        .map(RequirementHistoryDTO::getRequirementContentHistory)
+                        .map(RequirementContentHistoryEntity::getFormVersionHistoryEntities)
+                        .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
+                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
 
-                            return dropDownButtonPanel;
-                        })
-                )
-                .build("tabela");
+                    return dropDownButtonPanel;
+                }))
+            .build("tabela");
 
     }
 
     private IFunction<String, Button> viewFormButton(final FormVersionHistoryEntity formVersionHistoryEntity) {
         final String url = DispatcherPageUtil
-                .baseURL(getBaseUrl())
-                .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
-                .requirementId(null)
-                .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
-                .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
-                .build();
+            .baseURL(getBaseUrl())
+            .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
+            .requirementId(null)
+            .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
+            .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
+            .build();
         return id -> new Button(id) {
             @Override
             protected String getOnClickScript() {
@@ -204,15 +199,15 @@ public class HistoryPage extends ServerTemplate {
         final Map<String, String> params = new HashMap<>();
         if (model.getObject().getRequirementContentHistory() != null) {
             params.put(FORM_VERSION_KEY, model
-                    .getObject()
-                    .getRequirementContentHistory()
-                    .getFormVersionHistoryEntities()
-                    .stream()
-                    .filter(f -> SimNao.SIM == f.getMainForm())
-                    .findFirst()
-                    .map(FormVersionHistoryEntity::getCodFormVersion)
-                    .map(Object::toString)
-                    .orElse(null));
+                .getObject()
+                .getRequirementContentHistory()
+                .getFormVersionHistoryEntities()
+                .stream()
+                .filter(f -> SimNao.SIM == f.getMainForm())
+                .findFirst()
+                .map(FormVersionHistoryEntity::getCodFormVersion)
+                .map(Object::toString)
+                .orElse(null));
         }
         return params;
     }
@@ -252,7 +247,6 @@ public class HistoryPage extends ServerTemplate {
     protected boolean showHiddenTasks() {
         return false;
     }
-
 
     protected String getBaseUrl() {
         return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getUrlPath();
