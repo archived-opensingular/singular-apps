@@ -46,14 +46,14 @@ import java.util.Optional;
  */
 public class RequirementInstance implements Serializable {
 
-    private final Long requirementEntityId;
+    private RequirementEntity requirementEntity;
 
     private transient FlowInstance flowInstance;
 
     private transient SIComposite mainForm;
 
     public RequirementInstance(RequirementEntity requirementEntity) {
-        this.requirementEntityId = Objects.requireNonNull(requirementEntity).getCod();
+        this.requirementEntity = Objects.requireNonNull(requirementEntity);
     }
 
     public FlowInstance getFlowInstance() {
@@ -114,7 +114,7 @@ public class RequirementInstance implements Serializable {
     }
 
     public Long getCod() {
-        return requirementEntityId;
+        return getEntity().getCod();
     }
 
     public TaskInstance getCurrentTaskOrException() {
@@ -158,7 +158,10 @@ public class RequirementInstance implements Serializable {
     }
 
     public RequirementEntity getEntity() {
-        return (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, requirementEntityId);
+        if (requirementEntity.getCod() != null) {
+            requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, requirementEntity.getCod());
+        }
+        return requirementEntity;
     }
 
     public ApplicantEntity getApplicant() {
@@ -181,15 +184,15 @@ public class RequirementInstance implements Serializable {
         return getMainFormCurrentFormVersion().getCod();
     }
 
-    public String getMainFormTypeName(){
+    public String getMainFormTypeName() {
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
 
-    public String getRequirementDefinitionName(){
+    public String getRequirementDefinitionName() {
         return getEntity().getRequirementDefinitionEntity().getName();
     }
 
-    public String getApplicantName(){
+    public String getApplicantName() {
         return Optional.of(getEntity()).map(RequirementEntity::getApplicant).map(ApplicantEntity::getName).orElse(null);
     }
 
