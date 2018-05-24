@@ -47,8 +47,7 @@ import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
-import org.opensingular.flow.core.renderer.FlowExecutionImageExtension;
-import org.opensingular.flow.core.renderer.RendererUtil;
+import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -109,7 +108,8 @@ public class HistoryPage extends ServerTemplate {
                 protected byte[] getImageData(IResource.Attributes attributes) {
                     FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
                     byte[] bytes = findFlowExecutionImageExtension()
-                        .map(it -> it.generateHistoryImage(flowInstance))
+                        .map(it -> it.getRenderer())
+                        .map(it -> it.generateHistoryPng(flowInstance))
                         .orElse(new byte[0]);
                     return bytes;
                 }
@@ -124,17 +124,11 @@ public class HistoryPage extends ServerTemplate {
             : new Image[0])));
     }
 
-    private Optional<FlowExecutionImageExtension> findFlowExecutionImageExtension() {
+    private Optional<FlowRendererProviderExtension> findFlowExecutionImageExtension() {
         return SingularExtensionUtil.get()
-            .findExtensionsByClass(FlowExecutionImageExtension.class)
+            .findExtensions(FlowRendererProviderExtension.class)
             .stream()
             .findFirst();
-    }
-
-    private byte[] generateHistImage(FlowInstance flowInstance) {
-        return RendererUtil.findRendererForUserDisplay()
-                .map(p -> p.generateHistoryPng(flowInstance))
-                .orElse(new byte[0]);
     }
 
     protected AjaxLink<?> getBtnFechar() {
