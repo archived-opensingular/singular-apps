@@ -30,8 +30,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.PrimaryKeyJoinColumns;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -64,9 +66,9 @@ public class RequirementContentHistoryEntity extends BaseEntity<Long> {
     @Column(name = "DT_HISTORICO", nullable = false)
     private Date historyDate;
 
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinTable(name = "RL_HIST_CONT_REQ_VER_ANOTACAO", schema = Constants.SCHEMA,
-            uniqueConstraints = {@UniqueConstraint(name = "UK_HIST_CONT_REQ_VER_ANOT", columnNames = "CO_VERSAO_ANOTACAO")},
+            uniqueConstraints = {@UniqueConstraint(name = "UK_HIST_CONT_REQ_VER_ANOT", columnNames = {"CO_VERSAO_ANOTACAO","CO_HISTORICO"})},
             joinColumns = @JoinColumn(name = "CO_HISTORICO"),
             inverseJoinColumns = @JoinColumn(name = "CO_VERSAO_ANOTACAO"))
     @org.hibernate.annotations.ForeignKey(name = "FK_HIST_CONT_REQ_VER_ANOTACAO", inverseName = "FK_VER_ANOTACAO_HIST_CONT_REQ")
