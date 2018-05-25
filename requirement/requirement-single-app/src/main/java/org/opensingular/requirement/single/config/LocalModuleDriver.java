@@ -33,7 +33,7 @@ import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
 import org.opensingular.requirement.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -48,9 +48,9 @@ public class LocalModuleDriver implements ModuleDriver {
     private ModuleConnector moduleConnector;
 
     @Inject
-    private Provider<SingularUserDetails> singularUserDetails;
+    private Provider<SingularRequirementUserDetails> singularUserDetails;
 
-    private <T extends SingularUserDetails> T getUserDetails() {
+    private <T extends SingularRequirementUserDetails> T getUserDetails() {
         return (T) singularUserDetails.get();
     }
 
@@ -60,7 +60,7 @@ public class LocalModuleDriver implements ModuleDriver {
     }
 
     private String getUserName() {
-        SingularUserDetails userDetails = getUserDetails();
+        SingularRequirementUserDetails userDetails = getUserDetails();
         return userDetails != null ? userDetails.getUsername() : null;
     }
 

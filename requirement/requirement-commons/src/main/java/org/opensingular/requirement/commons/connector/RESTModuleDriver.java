@@ -32,7 +32,7 @@ import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
 import org.opensingular.requirement.commons.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.springframework.web.client.RestTemplate;
 
@@ -49,9 +49,9 @@ import static org.opensingular.requirement.commons.RESTPaths.*;
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Inject
-    private Provider<SingularUserDetails> singularUserDetails;
+    private Provider<SingularRequirementUserDetails> singularUserDetails;
 
-    private <T extends SingularUserDetails> T getUserDetails() {
+    private <T extends SingularRequirementUserDetails> T getUserDetails() {
         return (T) singularUserDetails.get();
     }
 
@@ -77,9 +77,9 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        RestTemplate        restTemplate = new RestTemplate();
-        String              url          = getConnectionURL(module) + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
-        SingularUserDetails userDetails  = getUserDetails();
+        RestTemplate                   restTemplate = new RestTemplate();
+        String                         url          = getConnectionURL(module) + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
+        SingularRequirementUserDetails userDetails  = getUserDetails();
         if (userDetails != null) {
             url += "&" + USER + "=" + userDetails.getUserPermissionKey();
         }

@@ -53,10 +53,8 @@ import org.opensingular.requirement.commons.cache.SingularKeyGenerator;
 import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
 import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.connector.RESTModuleDriver;
-import org.opensingular.requirement.commons.metadata.DefaultSingularServerMetadata;
-import org.opensingular.requirement.commons.metadata.SingularServerMetadata;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -345,8 +343,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public SingularUserDetailsFactoryBean<? extends SingularUserDetails> singularUserDetails(){
-        return new SingularUserDetailsFactoryBean<>(SingularUserDetails.class);
+    public SingularUserDetailsFactoryBean<? extends SingularRequirementUserDetails> singularUserDetails(){
+        return new SingularUserDetailsFactoryBean<>(SingularRequirementUserDetails.class);
     }
 
     @Bean

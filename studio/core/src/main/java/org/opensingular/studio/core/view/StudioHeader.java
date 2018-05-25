@@ -23,6 +23,7 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.opensingular.form.spring.SingularUserDetails;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.studio.core.util.StudioWicketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,17 +65,18 @@ public class StudioHeader extends Panel {
                     path = "/";
                 }
                 tag.put("href", path);
+
             }
         });
         add(anchor);
     }
 
     private void addUsername() {
-        rightNavbar.add(new Label("username", getUserDetails().map(UserDetails::getUsername).orElse("")));
+        rightNavbar.add(new Label("username", getUserDetails().map(SingularUserDetails::getDisplayName).orElse("")));
     }
 
-    private Optional<UserDetails> getUserDetails() {
-        return Optional.ofNullable(ApplicationContextProvider.get().getBean(UserDetails.class));
+    private Optional<SingularUserDetails> getUserDetails() {
+        return Optional.ofNullable((SingularUserDetails)ApplicationContextProvider.get().getBean(UserDetails.class));
     }
 
 

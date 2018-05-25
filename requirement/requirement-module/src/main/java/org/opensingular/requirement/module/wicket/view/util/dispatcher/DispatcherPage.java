@@ -47,7 +47,7 @@ import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
@@ -228,7 +228,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private boolean hasAccess(ActionContext context) {
 
-        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
 
         Long requirementId = context.getRequirementId().orElse(null);
         boolean hasPermission = authorizationService.hasPermission(
@@ -252,13 +252,13 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     }
 
-    protected boolean isOwner(SingularUserDetails userDetails, Long requirementId) {
+    protected boolean isOwner(SingularRequirementUserDetails userDetails, Long requirementId) {
         String              applicantId = userDetails.getApplicantId();
         RequirementInstance requirement = requirementService.getRequirement(requirementId);
         boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()
-                    .info("User {} (SingularUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
+                    .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
                             userDetails.getUsername(), applicantId, requirementId, requirement.getApplicant().getIdPessoa());
         }
         return truth;

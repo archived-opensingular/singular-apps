@@ -24,7 +24,7 @@ import org.opensingular.requirement.commons.config.IServerContext;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultUserDetails implements SingularUserDetails {
+public class DefaultUserDetails implements SingularRequirementUserDetails {
 
     private String displayName;
 

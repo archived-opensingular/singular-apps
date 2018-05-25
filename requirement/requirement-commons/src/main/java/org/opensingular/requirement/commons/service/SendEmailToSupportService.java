@@ -23,7 +23,7 @@ import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import javax.inject.Inject;
@@ -36,7 +36,7 @@ public class SendEmailToSupportService implements Loggable {
     private static final String SINGULAR_SUPPORT_ADDRESS = "singular.mail.support.address";
 
     @Inject
-    private Provider<SingularUserDetails> singularUserDetails;
+    private Provider<SingularRequirementUserDetails> singularUserDetails;
 
     @Inject
     private IEmailService<Email> emailService;
@@ -75,7 +75,7 @@ public class SendEmailToSupportService implements Loggable {
     private String getLoggedUser() {
         StringBuilder returnString = new StringBuilder();
         try {
-            SingularUserDetails userDetails = singularUserDetails.get();
+            SingularRequirementUserDetails userDetails = singularUserDetails.get();
             if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             } else if (userDetails != null) {
