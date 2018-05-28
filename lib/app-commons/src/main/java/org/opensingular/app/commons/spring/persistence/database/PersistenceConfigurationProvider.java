@@ -38,16 +38,11 @@ import java.util.Set;
 public class PersistenceConfigurationProvider implements Loggable {
 
 
-    /**
-     * @return
-     * @deprecated para ser removido tão logo seja eliminada a solução multi módulo em favor do single-app
-     */
-    @Deprecated
-    private boolean isCreateDrop() {
+    protected boolean isCreateDrop() {
         return SqlUtil.isDropCreateDatabase();
     }
 
-    private SingularPersistenceConfiguration persistenceConfiguration;
+    protected SingularPersistenceConfiguration persistenceConfiguration;
 
     public PersistenceConfigurationProvider(SingularPersistenceConfiguration configuration) {
         this.persistenceConfiguration = configuration;
