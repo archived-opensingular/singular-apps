@@ -18,17 +18,8 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import javax.sql.DataSource;
-
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
@@ -37,26 +28,15 @@ import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+
 public class PersistenceConfigurationProvider implements Loggable {
 
-    @Deprecated
-    private Boolean isSingularModule;
-
-    {
-        try {
-            Properties p   = new Properties();
-            URL        url = Thread.currentThread().getContextClassLoader().getResource("_singular_module.properties");
-            if (url != null) {
-                p.load(url.openStream());
-            }
-            /*The default of isSingularModule is false when the project singular-requirement-core don't exists in the Maven dependencies.
-            This will be removed in the feature, just exists because of projects Module and Server.*/
-            isSingularModule = BooleanUtils.toBoolean(p.getProperty("singular.module", "false"));
-        } catch (Exception e) {
-            isSingularModule = Boolean.FALSE;
-            getLogger().trace(e.getMessage(), e);
-        }
-    }
 
     /**
      * @return
@@ -64,7 +44,7 @@ public class PersistenceConfigurationProvider implements Loggable {
      */
     @Deprecated
     private boolean isCreateDrop() {
-        return isSingularModule && SqlUtil.isDropCreateDatabase();
+        return SqlUtil.isDropCreateDatabase();
     }
 
     private SingularPersistenceConfiguration persistenceConfiguration;
