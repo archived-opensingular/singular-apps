@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,9 +27,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Campo complex type.
+ * <p>Classe Java de Campo complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Campo">
@@ -57,7 +58,7 @@ public class Campo {
     protected String valor;
 
     /**
-     * Gets the value of the nome property.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -69,7 +70,7 @@ public class Campo {
     }
 
     /**
-     * Sets the value of the nome property.
+     * Define o valor da propriedade nome.
      * 
      * @param value
      *     allowed object is
@@ -81,7 +82,7 @@ public class Campo {
     }
 
     /**
-     * Gets the value of the valor property.
+     * Obtém o valor da propriedade valor.
      * 
      * @return
      *     possible object is
@@ -93,7 +94,7 @@ public class Campo {
     }
 
     /**
-     * Sets the value of the valor property.
+     * Define o valor da propriedade valor.
      * 
      * @param value
      *     allowed object is

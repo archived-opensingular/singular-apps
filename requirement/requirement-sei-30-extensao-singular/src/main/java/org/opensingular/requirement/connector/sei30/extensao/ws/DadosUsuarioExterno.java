@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,9 +27,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DadosUsuarioExterno complex type.
+ * <p>Classe Java de DadosUsuarioExterno complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DadosUsuarioExterno">
@@ -63,7 +64,7 @@ public class DadosUsuarioExterno {
     protected String cpf;
 
     /**
-     * Gets the value of the numIdUsuario property.
+     * Obtém o valor da propriedade numIdUsuario.
      * 
      */
     public long getNumIdUsuario() {
@@ -71,7 +72,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Sets the value of the numIdUsuario property.
+     * Define o valor da propriedade numIdUsuario.
      * 
      */
     public void setNumIdUsuario(long value) {
@@ -79,7 +80,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Gets the value of the nome property.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -91,7 +92,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Sets the value of the nome property.
+     * Define o valor da propriedade nome.
      * 
      * @param value
      *     allowed object is
@@ -103,7 +104,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Gets the value of the strSigla property.
+     * Obtém o valor da propriedade strSigla.
      * 
      * @return
      *     possible object is
@@ -115,7 +116,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Sets the value of the strSigla property.
+     * Define o valor da propriedade strSigla.
      * 
      * @param value
      *     allowed object is
@@ -127,7 +128,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Gets the value of the cpf property.
+     * Obtém o valor da propriedade cpf.
      * 
      * @return
      *     possible object is
@@ -139,7 +140,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Sets the value of the cpf property.
+     * Define o valor da propriedade cpf.
      * 
      * @param value
      *     allowed object is

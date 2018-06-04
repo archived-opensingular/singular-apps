@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,9 +27,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Serie complex type.
+ * <p>Classe Java de Serie complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Serie">
@@ -60,7 +61,7 @@ public class Serie {
     protected String aplicabilidade;
 
     /**
-     * Gets the value of the idSerie property.
+     * Obtém o valor da propriedade idSerie.
      * 
      * @return
      *     possible object is
@@ -72,7 +73,7 @@ public class Serie {
     }
 
     /**
-     * Sets the value of the idSerie property.
+     * Define o valor da propriedade idSerie.
      * 
      * @param value
      *     allowed object is
@@ -84,7 +85,7 @@ public class Serie {
     }
 
     /**
-     * Gets the value of the nome property.
+     * Obtém o valor da propriedade nome.
      * 
      * @return
      *     possible object is
@@ -96,7 +97,7 @@ public class Serie {
     }
 
     /**
-     * Sets the value of the nome property.
+     * Define o valor da propriedade nome.
      * 
      * @param value
      *     allowed object is
@@ -108,7 +109,7 @@ public class Serie {
     }
 
     /**
-     * Gets the value of the aplicabilidade property.
+     * Obtém o valor da propriedade aplicabilidade.
      * 
      * @return
      *     possible object is
@@ -120,7 +121,7 @@ public class Serie {
     }
 
     /**
-     * Sets the value of the aplicabilidade property.
+     * Define o valor da propriedade aplicabilidade.
      * 
      * @param value
      *     allowed object is

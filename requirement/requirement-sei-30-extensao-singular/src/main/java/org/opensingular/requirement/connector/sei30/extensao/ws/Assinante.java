@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,9 +27,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for Assinante complex type.
+ * <p>Classe Java de Assinante complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="Assinante">
@@ -57,7 +58,7 @@ public class Assinante {
     protected String cargoFuncao;
 
     /**
-     * Gets the value of the idAssinante property.
+     * Obtém o valor da propriedade idAssinante.
      * 
      * @return
      *     possible object is
@@ -69,7 +70,7 @@ public class Assinante {
     }
 
     /**
-     * Sets the value of the idAssinante property.
+     * Define o valor da propriedade idAssinante.
      * 
      * @param value
      *     allowed object is
@@ -81,7 +82,7 @@ public class Assinante {
     }
 
     /**
-     * Gets the value of the cargoFuncao property.
+     * Obtém o valor da propriedade cargoFuncao.
      * 
      * @return
      *     possible object is
@@ -93,7 +94,7 @@ public class Assinante {
     }
 
     /**
-     * Sets the value of the cargoFuncao property.
+     * Define o valor da propriedade cargoFuncao.
      * 
      * @param value
      *     allowed object is
