@@ -16,25 +16,28 @@
  *
  */
 
-package org.opensingular.requirement.single.page;
+package org.opensingular.requirement.module.test;
 
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.mapper.parameter.PageParameters;
+
+import org.apache.wicket.Page;
+import org.opensingular.requirement.commons.test.SingularTestRequestCycleListener;
+import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
-import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
 
-public class SingleAppPage extends WebPage {
-    public SingleAppPage() {
-        throw new RestartResponseException(BoxPage.class);
+
+import javax.inject.Named;
+
+@Named
+public class ServerApplicationMock extends SingularRequirementApplication {
+
+    @Override
+    public void init() {
+        super.init();
+        getRequestCycleListeners().add(new SingularTestRequestCycleListener());
     }
 
-    public SingleAppPage(PageParameters parameters) {
-        super(parameters);
-        if (parameters.get("dispatch").toBoolean(false)) {
-            throw new RestartResponseException(DispatcherPage.class, parameters);
-        } else {
-            throw new RestartResponseException(BoxPage.class, parameters);
-        }
+    @Override
+    public Class<? extends Page> getHomePage() {
+        return BoxPage.class;
     }
 }

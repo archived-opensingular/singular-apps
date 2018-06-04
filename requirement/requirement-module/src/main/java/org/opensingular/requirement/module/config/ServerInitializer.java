@@ -16,13 +16,11 @@
  *
  */
 
-package org.opensingular.requirement.single.config;
+package org.opensingular.requirement.module.config;
 
 import org.apache.wicket.Page;
 import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.single.page.SingleAppPage;
 import org.opensingular.requirement.commons.config.FlowInitializer;
 import org.opensingular.requirement.commons.config.IServerContext;
 import org.opensingular.requirement.commons.config.SchedulerInitializer;
@@ -31,8 +29,7 @@ import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.module.config.AttachmentGCSchedulerInitializer;
-import org.opensingular.requirement.module.config.MailSenderSchedulerInitializer;
+import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.opensingular.requirement.commons.admin.AdministrationApplication;
 import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.config.PSingularInitializer;
@@ -42,84 +39,80 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
+public abstract class ServerInitializer implements PSingularInitializer {
 
-public interface SingleAppInitializer extends PSingularInitializer {
-    String moduleCod();
-
-    String[] springPackagesToScan();
+    private static final String INITSKIN_CONSUMER_PARAM = "INITSKIN_CONSUMER_PARAM";
 
     @Override
-    default PWebInitializer webConfiguration() {
+    public PWebInitializer webConfiguration() {
         return new PWebInitializer() {
 
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
-                String contextPath = servletContext.getContextPath();//NOSONAR
-                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
+                servletContext.setAttribute(INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) ServerInitializer.this::initSkins);
                 super.onStartup(servletContext);
             }
 
             @Override
             protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return AnalysisApplication.class;
-                }
-                else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return RequirementApplication.class;
-                }
-                else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
+                return ServerInitializer.this.wicketApplicationClass(iServerContext);
             }
+
         };
     }
 
+    protected Class<? extends SingularRequirementApplication> wicketApplicationClass(IServerContext iServerContext) {
+        if (PServerContext.WORKLIST.isSameContext(iServerContext)) {
+            return AnalysisApplication.class;
+        } else if (PServerContext.REQUIREMENT.isSameContext(iServerContext)) {
+            return RequirementApplication.class;
+        } else if (PServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
+            return AdministrationApplication.class;
+        }
+        throw new SingularServerException("Contexto inválido");
+    }
+
     @Override
-    default SpringHibernateInitializer springHibernateConfiguration() {
+    public SpringHibernateInitializer springHibernateConfiguration() {
         return new SpringHibernateInitializer() {
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 AnnotationConfigWebApplicationContext context = super.newApplicationContext();
-                context.scan(SingleAppInitializer.this.springPackagesToScan());
+                context.scan(ServerInitializer.this.springPackagesToScan());
                 return context;
             }
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-                return SingleAppInitializer.this.persistenceConfiguration();
+                return ServerInitializer.this.persistenceConfiguration();
             }
 
             @Override
             protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
-                return SingleAppInitializer.this.beanFactory();
+                return ServerInitializer.this.beanFactory();
             }
         };
     }
 
-    @Override
-    default FlowInitializer flowConfiguration() {
-        return new FlowInitializer() {
-            @Override
-            public String moduleCod() {
-                return SingleAppInitializer.this.moduleCod();
-            }
-        };
-    }
-
-    default Class<? extends SingularDefaultBeanFactory> beanFactory() {
-        return SingleAppBeanFactory.class;
-    }
-
-    default void initSkins(String contextPath, SkinOptions skinOptions) {
-    }
-
-    default Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 
+
+    protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
+        return SingularDefaultBeanFactory.class;
+    }
+
+
+    protected abstract String[] springPackagesToScan();
+
     @Override
-    default SchedulerInitializer schedulerConfiguration() {
+    public FlowInitializer flowConfiguration() {
+        return null;
+    }
+
+    @Override
+    public SchedulerInitializer schedulerConfiguration() {
         return new SchedulerInitializer() {
             @Override
             public Class<?> mailConfiguration() {
@@ -133,31 +126,39 @@ public interface SingleAppInitializer extends PSingularInitializer {
         };
     }
 
-    class AnalysisApplication extends SingularRequirementApplication {
+    public void initSkins(SkinOptions skinOptions) {
+
+    }
+
+
+    public static class AnalysisApplication extends SingularRequirementApplication {
+
         @Override
         public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
+            return BoxPage.class;
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_PARAM);
             initSKin.accept(skinOptions);
         }
     }
 
-    class RequirementApplication extends SingularRequirementApplication {
+    public static class RequirementApplication extends SingularRequirementApplication {
+
         @Override
         public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
+            return BoxPage.class;
         }
 
         @SuppressWarnings("unchecked")
         @Override
         public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
+            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(INITSKIN_CONSUMER_PARAM);
             initSKin.accept(skinOptions);
         }
+
     }
 }
