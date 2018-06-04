@@ -45,6 +45,7 @@ import org.opensingular.requirement.module.service.ModuleService;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -77,7 +78,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
                 .findFirst()
                 .map(SingularRequirementRef::getId)
                 .orElseThrow(() -> new SingularRequirementException(String.format("Requirement Definition form '%s' not found.", requirement.getName())));
-        redirectToResolvedRequirement(idRequirementDefinition, MapUtils.EMPTY_SORTED_MAP);
+        redirectToResolvedRequirement(idRequirementDefinition, new HashMap<>(0));
     }
 
     @Override

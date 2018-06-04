@@ -50,10 +50,6 @@ public class NewRequirementUrlBuilder {
                 .param(MODULE_PARAM_NAME, moduleCod)
                 .param(REQUIREMENT_DEFINITION_ID, requirementDefinitionId)
                 .params(params);
-
-        for (Map.Entry<String, String> paramEntry : params.entrySet()) {
-            builder.param(paramEntry.getKey(), paramEntry.getValue());
-        }
         return builder.build();
     }
 
