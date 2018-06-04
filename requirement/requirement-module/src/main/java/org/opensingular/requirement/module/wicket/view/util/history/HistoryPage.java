@@ -48,6 +48,8 @@ import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
+import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.flow.core.renderer.NullFlowRenderer;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -55,17 +57,16 @@ import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.lib.wicket.util.image.PhotoSwipePanel;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.commons.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.view.image.PhotoSwipePanel;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
-
 
 @MountPath("history")
 public class HistoryPage extends ServerTemplate {
@@ -107,11 +108,10 @@ public class HistoryPage extends ServerTemplate {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
                     FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
-                    byte[] bytes = findFlowExecutionImageExtension()
+                    IFlowRenderer renderer = findFlowExecutionImageExtension()
                         .map(it -> it.getRenderer())
-                        .map(it -> it.generateHistoryPng(flowInstance))
-                        .orElse(new byte[0]);
-                    return bytes;
+                        .orElse(NullFlowRenderer.INSTANCE);
+                    return renderer.generateHistoryPng(flowInstance);
                 }
             });
 
