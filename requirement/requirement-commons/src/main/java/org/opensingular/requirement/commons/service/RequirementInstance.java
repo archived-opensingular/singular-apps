@@ -193,7 +193,7 @@ public class RequirementInstance implements Serializable {
     }
 
     public String getApplicantName() {
-        return Optional.of(getEntity()).map(RequirementEntity::getApplicant).map(ApplicantEntity::getName).orElse(null);
+        return Optional.of(getApplicant()).map(ApplicantEntity::getName).orElse(null);
     }
 
 

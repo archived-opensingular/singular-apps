@@ -33,8 +33,8 @@ public class SecurityAuthPathsFactory implements Serializable {
         SingularSession                singularSession                = SingularSession.get();
         SingularRequirementApplication singularRequirementApplication = SingularRequirementApplication.get();
 
-        SingularUserDetails userDetails = singularSession.getUserDetails();
-        IServerContext serverContext = userDetails.getServerContext();
+        SingularRequirementUserDetails userDetails   = singularSession.getUserDetails();
+        IServerContext                 serverContext = userDetails.getServerContext();
 
         ServletContext servletContext = singularRequirementApplication.getServletContext();
 

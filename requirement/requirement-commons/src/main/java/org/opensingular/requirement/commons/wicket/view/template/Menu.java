@@ -45,7 +45,7 @@ import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.ItemBox;
 import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -182,9 +182,9 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected String getIdCurrentUser() {
-        SingularUserDetails singularUserDetails = SingularSession.get().getUserDetails();
+        SingularRequirementUserDetails singularUserDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(singularUserDetails)
-                .map(SingularUserDetails::getUsername)
+                .map(SingularRequirementUserDetails::getUsername)
                 .orElse(null);
     }
 

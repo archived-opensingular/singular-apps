@@ -47,7 +47,7 @@ import org.opensingular.requirement.commons.service.RequirementInstance;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
@@ -64,8 +64,7 @@ import java.lang.reflect.Constructor;
 import java.util.Objects;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
 @SuppressWarnings("serial")
 public class DispatcherPage extends WebPage implements Loggable {
@@ -119,8 +118,8 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
-        Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<TaskInstance> ti   = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
+        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
 
             Optional<FormAction> formActionOpt = actionContext.getFormAction();
@@ -174,13 +173,13 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long formVersionPK;
+        Long    formVersionPK;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
         Optional<Long> formVersionId = context.getFormVersionId();
         Optional<Long> requirementId = context.getRequirementId();
-        
+
         if (formVersionId.isPresent()) {
             formVersionPK = formVersionId.get();
         } else if (requirementId.isPresent()) {
@@ -229,7 +228,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private boolean hasAccess(ActionContext context) {
 
-        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
 
         Long requirementId = context.getRequirementId().orElse(null);
         boolean hasPermission = authorizationService.hasPermission(
@@ -253,19 +252,25 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     }
 
-    protected boolean isOwner(SingularUserDetails userDetails, Long requirementId) {
-        String applicantId = userDetails.getApplicantId();
+    protected boolean isOwner(SingularRequirementUserDetails userDetails, Long requirementId) {
+        String              applicantId = userDetails.getApplicantId();
         RequirementInstance requirement = requirementService.getRequirement(requirementId);
-        return Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        if (!truth) {
+            getLogger()
+                    .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
+                            userDetails.getUsername(), applicantId, requirementId, requirement.getApplicant().getIdPessoa());
+        }
+        return truth;
     }
 
     private boolean isViewModeEdit(ActionContext context) {
         return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
     }
- 
+
     private boolean isTaskAssignedToAnotherUser(ActionContext config) {
-        String username = SingularSession.get().getUsername();
-        Optional<Long> requirementIdOpt =  config.getRequirementId();
+        String         username         = SingularSession.get().getUsername();
+        Optional<Long> requirementIdOpt = config.getRequirementId();
         if (requirementIdOpt.isPresent()) {
             return requirementService.findCurrentTaskEntityByRequirementId(requirementIdOpt.get())
                     .map(AbstractTaskInstanceEntity::getTaskHistory)

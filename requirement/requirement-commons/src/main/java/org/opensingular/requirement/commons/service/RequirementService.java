@@ -63,7 +63,7 @@ import org.opensingular.requirement.commons.persistence.query.RequirementSearchE
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -118,7 +118,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
-    private Provider<SingularUserDetails> singularUserDetails;
+    private Provider<SingularRequirementUserDetails> singularUserDetails;
 
     /**
      * FOR INTERNAL USE ONLY,
@@ -126,7 +126,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      *
      * @return
      */
-    protected SingularUserDetails getSingularUserDetails() {
+    protected SingularRequirementUserDetails getSingularUserDetails() {
         return singularUserDetails.get();
     }
 
@@ -189,18 +189,18 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     protected void configureApplicant(RI requirement) {
         UserDetails userDetails = singularUserDetails.get();
-        if (userDetails instanceof SingularUserDetails) {
+        if (userDetails instanceof SingularRequirementUserDetails) {
             ApplicantEntity p;
             p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
             if (p == null) {
                 p = new ApplicantEntity();
                 p.setIdPessoa(userDetails.getUsername());
-                p.setName(((SingularUserDetails) userDetails).getDisplayName());
+                p.setName(((SingularRequirementUserDetails) userDetails).getDisplayName());
                 p.setPersonType(PersonType.FISICA);
             }
             requirement.getEntity().setApplicant(p);
         } else {
-            getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
+            getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularRequirementUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
         }
     }
 

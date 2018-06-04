@@ -28,6 +28,7 @@ import org.slf4j.LoggerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
@@ -68,6 +69,10 @@ public class SSOLogoutUtil {
             String url = request.getRequestURL().toString();
             int index = url.lastIndexOf(request.getContextPath());
             service = url.substring(0, index) + request.getContextPath();
+            int logoutIndex = service.lastIndexOf("/logout");
+            if (logoutIndex > 0){
+                service = service.substring(0, logoutIndex);
+            }
         }
         return service;
     }

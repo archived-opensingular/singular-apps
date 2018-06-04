@@ -36,7 +36,7 @@ import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.spring.security.SecurityAuthPaths;
 import org.opensingular.requirement.commons.spring.security.SecurityAuthPathsFactory;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.Page410;
@@ -54,7 +54,7 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
         SingularServerConfiguration singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
-            SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+            SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
             if (!userDetails.keepLoginThroughContexts()) {
                 HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
                 IServerContext newContext = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());

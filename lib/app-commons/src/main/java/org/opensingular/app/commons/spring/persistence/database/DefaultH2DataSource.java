@@ -30,6 +30,7 @@ import org.springframework.jdbc.datasource.DelegatingDataSource;
 
 public class DefaultH2DataSource extends DelegatingDataSource implements Loggable {
 
+    public static final String INIT = "INIT";
     private Map<String, String> options = new HashMap<>();
     private String  jdbcURL;
 
@@ -62,6 +63,11 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         return this;
     }
 
+    public String getInitScript(){
+        return options.get(INIT);
+    }
+
+
     private void addToInit(String sqlToAppend, boolean appendToEnd) {
         StringBuilder sb = new StringBuilder();
         sb.append(sqlToAppend);
@@ -69,11 +75,11 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
             sb.append(';');
         }
         if (appendToEnd) {
-            sb.insert(0, StringUtils.defaultString(options.get("INIT")));
+            sb.insert(0, StringUtils.defaultString(options.get(INIT)));
         } else {
-            sb.append(StringUtils.defaultString(options.get("INIT")));
+            sb.append(StringUtils.defaultString(options.get(INIT)));
         }
-        options.put("INIT", sb.toString());
+        options.put(INIT, sb.toString());
     }
 
     protected String escapeSemiColons(String sqlToEscape) {

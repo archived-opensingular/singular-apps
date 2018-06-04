@@ -41,7 +41,7 @@ public interface SingularUserDetailsService extends UserDetailsService, UserDeta
 
 
     @Override
-    public default SingularUserDetails mapUserFromContext(DirContextOperations dirContextOperations, String s, Collection<? extends GrantedAuthority> collection) {
+    public default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations, String s, Collection<? extends GrantedAuthority> collection) {
         return loadUserByUsername(s);
     }
 
@@ -50,13 +50,13 @@ public interface SingularUserDetailsService extends UserDetailsService, UserDeta
     }
 
     @Override
-    public default SingularUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+    public default SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
         return loadUserByUsername(username, IServerContext.getContextFromRequest(request, getContexts()));
     }
 
 
-    public SingularUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException;
+    public SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException;
 
     public IServerContext[] getContexts();
 

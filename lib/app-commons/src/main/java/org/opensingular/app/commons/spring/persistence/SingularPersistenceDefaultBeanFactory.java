@@ -46,7 +46,7 @@ public class SingularPersistenceDefaultBeanFactory implements Loggable {
     public DataSourceInitializer dataSourceInitializer(DataSource dataSource) {
         DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
         dataSourceInitializer.setDataSource(dataSource);
-        dataSourceInitializer.setDatabasePopulator(new H2DropAllObjectsPopulator());
+        dataSourceInitializer.setDatabasePopulator(new H2DropAllObjectsPopulator(dataSource));
         dataSourceInitializer.setEnabled(getPersistenceConfiguration().isDropAllH2());
         return dataSourceInitializer;
     }

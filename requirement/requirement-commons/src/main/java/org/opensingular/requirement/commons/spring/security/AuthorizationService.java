@@ -123,7 +123,7 @@ public class AuthorizationService implements Loggable {
 
     private List<SingularPermission> searchPermissions(String userPermissionKey) {
         if (SingularSession.exists()) {
-            SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+            SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
             if (userPermissionKey.equals(userDetails.getUserPermissionKey())) {
                 if (CollectionUtils.isEmpty(userDetails.getPermissions())) {
                     userDetails.addPermissions(peticionamentoUserDetailService.searchPermissions((String) userDetails.getUserPermissionKey()));

@@ -19,16 +19,13 @@
 package org.opensingular.requirement.commons.spring.security;
 
 
+import org.opensingular.form.spring.SingularUserDetails;
 import org.opensingular.requirement.commons.config.IServerContext;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
-public interface SingularUserDetails extends UserDetails {
+public interface SingularRequirementUserDetails extends SingularUserDetails {
 
     default boolean isContext(IServerContext context) {
         return context.equals(getServerContext());
@@ -38,20 +35,7 @@ public interface SingularUserDetails extends UserDetails {
 
     IServerContext getServerContext();
 
-    String getDisplayName();
-
     List<SingularPermission> getPermissions();
-
-    @Override
-    default Collection<? extends GrantedAuthority> getAuthorities() {
-        return Collections.emptyList();
-    }
-
-    @Override
-    default String getPassword() {
-        return null;
-    }
-
 
     void addPermission(SingularPermission role);
 
@@ -65,26 +49,6 @@ public interface SingularUserDetails extends UserDetails {
                 addPermission(role);
             }
         }
-    }
-
-    @Override
-    default boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    default boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    default boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    default boolean isEnabled() {
-        return true;
     }
 
     default String getUserId() {

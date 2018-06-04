@@ -28,7 +28,7 @@ import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.commons.spring.security.SingularUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.template.MenuService;
@@ -131,16 +131,16 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected String getIdUsuario() {
-        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
-                .map(SingularUserDetails::getUsername)
+                .map(SingularRequirementUserDetails::getUsername)
                 .orElse(null);
     }
 
     protected String getIdPessoa() {
-        SingularUserDetails userDetails = SingularSession.get().getUserDetails();
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
-                .map(SingularUserDetails::getUserId)
+                .map(SingularRequirementUserDetails::getUserId)
                 .orElse(null);
     }
 
