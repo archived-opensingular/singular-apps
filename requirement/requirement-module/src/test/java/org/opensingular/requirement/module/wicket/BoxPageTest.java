@@ -28,12 +28,10 @@ import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
 import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.test.ContextUtil;
+import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
-
-import org.opensingular.requirement.module.test.SingularServerBaseTest;
-import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.opensingular.requirement.module.test.ServerApplicationMock;
-
+import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -41,7 +39,7 @@ import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class BoxPageTest extends SingularServerBaseTest {
+public class BoxPageTest extends SingularCommonsBaseTest {
 
     public static final String SINGULAR = "/singular";
 

@@ -20,6 +20,8 @@ package org.opensingular.requirement.module.wicket.box;
 
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.util.tester.WicketTester;
+import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,6 +31,12 @@ import java.io.Serializable;
 public class BoxContentConfirmModalTest {
     WicketTester           tester;
     BoxContentConfirmModal boxContentConfirmModal;
+
+
+    @After
+    public void destroy(){
+        tester.destroy();
+    }
 
     @Before
     public void setUp() throws Exception {

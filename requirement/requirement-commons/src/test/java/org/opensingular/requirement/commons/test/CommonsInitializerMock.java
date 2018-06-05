@@ -54,6 +54,9 @@ public class CommonsInitializerMock implements PSingularInitializer {
     @Override
     public SpringHibernateInitializer springHibernateConfiguration() {
         return new SpringHibernateInitializer() {
+
+
+
             @Override
             protected AnnotationConfigWebApplicationContext newApplicationContext() {
                 return applicationContext;

@@ -24,12 +24,14 @@ import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.opensingular.requirement.commons.test.CommonsConfigurationMock;
 import org.opensingular.requirement.module.service.ServerMenuService;
 import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -53,6 +55,14 @@ public class ServerConfigurationMock extends CommonsConfigurationMock {
     @Scope("session")
     public MenuService menuService() {
         return new ServerMenuService();
+    }
+
+    @Primary
+    @Bean
+    public EhCacheManagerFactoryBean ehCacheCacheManager() {
+        EhCacheManagerFactoryBean cacheManager = new EhCacheManagerFactoryBean();
+        cacheManager.setShared(false);
+        return cacheManager;
     }
 
 }
