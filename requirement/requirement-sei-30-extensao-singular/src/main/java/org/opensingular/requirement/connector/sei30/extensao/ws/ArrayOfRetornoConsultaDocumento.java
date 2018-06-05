@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import java.util.ArrayList;
@@ -28,9 +29,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ArrayOfRetornoConsultaDocumento complex type.
+ * <p>Classe Java de ArrayOfRetornoConsultaDocumento complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="ArrayOfRetornoConsultaDocumento">

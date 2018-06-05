@@ -17,15 +17,12 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
-import java.net.URL;
 import javax.xml.namespace.QName;
-import javax.xml.ws.Service;
-import javax.xml.ws.WebEndpoint;
-import javax.xml.ws.WebServiceClient;
-import javax.xml.ws.WebServiceException;
-import javax.xml.ws.WebServiceFeature;
+import javax.xml.ws.*;
+import java.net.URL;
 
 
 /**
@@ -34,7 +31,7 @@ import javax.xml.ws.WebServiceFeature;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "extensaoService", targetNamespace = "extensaons", wsdlLocation = "http://treinamentosei3singular.antaq.gov.br/sei/controlador_ws.php?servico=wsextensao")
+@WebServiceClient(name = "extensaoService", targetNamespace = "extensaons", wsdlLocation = "wsextensao.wsdl")
 public class ExtensaoService
     extends Service
 {
