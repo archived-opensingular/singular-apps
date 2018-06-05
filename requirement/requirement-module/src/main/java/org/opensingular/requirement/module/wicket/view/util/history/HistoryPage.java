@@ -31,6 +31,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.markup.head.CssHeaderItem;
@@ -57,6 +58,7 @@ import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.lib.wicket.util.image.PhotoSwipeBehavior;
 import org.opensingular.lib.wicket.util.image.PhotoSwipePanel;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.dto.RequirementHistoryDTO;
@@ -73,10 +75,23 @@ public class HistoryPage extends ServerTemplate {
 
     private static final long        serialVersionUID = -3344810189307767761L;
 
+    private static final String      IMAGE_HIST_ID    = "imageHist";
+
     @Inject
     private RequirementService<?, ?> requirementService;
 
     private Long                     requirementPK;
+    //    private PhotoSwipePanel          gallery          = new PhotoSwipePanel("gallery", PhotoSwipeBehavior.forURLs($m.get(() -> {
+    //                                                          return IntStream.range(0, 100)
+    //                                                              .mapToObj(it -> "https://picsum.photos/200/300?image=" + it)
+    //                                                              .toArray(n -> new String[n]);
+    //                                                      })));
+    private PhotoSwipePanel          gallery          = new PhotoSwipePanel("gallery", PhotoSwipeBehavior.forImages($m.get(() -> {
+                                                          Component img = get(IMAGE_HIST_ID);
+                                                          return (img instanceof Image)
+                                                              ? new Image[] { (Image) img }
+                                                              : new Image[0];
+                                                      })));
 
     public HistoryPage() {
     }
@@ -90,7 +105,8 @@ public class HistoryPage extends ServerTemplate {
         super.onInitialize();
         requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
         add(setupDataTable(createDataProvider()));
-        addImageHistoryFLow("imageHist");
+        add(gallery);
+        add(newImageHistoryFLow(IMAGE_HIST_ID));
         add(getBtnFechar());
     }
 
@@ -101,7 +117,7 @@ public class HistoryPage extends ServerTemplate {
 
     }
 
-    private void addImageHistoryFLow(String id) {
+    private Component newImageHistoryFLow(String id) {
         Component imageHistFlow;
         if ((requirementPK != null) && findFlowExecutionImageExtension().isPresent()) {
             imageHistFlow = new Image(id, new DynamicImageResource() {
@@ -114,14 +130,18 @@ public class HistoryPage extends ServerTemplate {
                     return renderer.generateHistoryPng(flowInstance);
                 }
             });
+            imageHistFlow.add(new AjaxEventBehavior("click") {
+                @Override
+                protected void onEvent(AjaxRequestTarget target) {
+                    gallery.setVisible(true);
+                    target.add(gallery);
+                }
+            });
 
         } else {
             imageHistFlow = new WebComponent(id).setVisible(false);
         }
-        add(imageHistFlow);
-        add(new PhotoSwipePanel("gallery", $m.get(() -> (imageHistFlow instanceof Image)
-            ? new Image[] { (Image) imageHistFlow }
-            : new Image[0])));
+        return imageHistFlow;
     }
 
     private Optional<FlowRendererProviderExtension> findFlowExecutionImageExtension() {
