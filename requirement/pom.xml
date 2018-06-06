@@ -17,7 +17,6 @@
         <module>requirement-commons</module>
         <module>requirement-commons-test</module>
         <module>requirement-module</module>
-        <module>requirement-core</module>
 	    <module>requirement-sip-30-connector</module>
         <module>requirement-sei-30-connector</module>
         <module>requirement-sei-30-extensao-singular</module>

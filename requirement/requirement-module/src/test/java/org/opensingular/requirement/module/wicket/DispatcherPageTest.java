@@ -28,6 +28,7 @@ import org.opensingular.requirement.commons.spring.security.AuthorizationService
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
 import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
@@ -44,7 +45,7 @@ import static org.opensingular.requirement.commons.wicket.view.util.ActionContex
 import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class DispatcherPageTest extends SingularCommonsBaseTest {
+public class DispatcherPageTest extends SingularModuleBaseTest {
 
 
     @Inject

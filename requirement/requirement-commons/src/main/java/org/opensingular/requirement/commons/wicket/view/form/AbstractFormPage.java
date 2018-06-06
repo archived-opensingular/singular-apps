@@ -70,7 +70,6 @@ import org.opensingular.requirement.commons.SingularRequirement;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.commons.flow.FlowResolver;
-import org.opensingular.requirement.commons.metadata.SingularServerMetadata;
 import org.opensingular.requirement.commons.persistence.entity.form.DraftEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementDefinitionEntity;
@@ -192,7 +191,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         return getSingularRequirement(context).map(SingularRequirement::getRequirementSenderBeanClass).orElse(null);
     }
 
-    private Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
+    protected Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
         SingularRequirementService requirementService = SingularRequirementService.get();
         return Optional.ofNullable(requirementService.getSingularRequirement(context));
     }
@@ -259,7 +258,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * Retorna as configurações da página de edição de formulário.
      */
     @Nonnull
-    protected final FormPageExecutionContext getConfig() {
+    protected FormPageExecutionContext getConfig() {
         return config;
     }
 
@@ -307,7 +306,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
-        form.add(buildSaveButton());
+        form.add(buildSaveButton("save-btn"));
         form.add(buildFlowButtons());
         form.add(buildValidateButton());
         form.add(buildExtensionButtons());
@@ -925,8 +924,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
 
-    private Component buildSaveButton() {
-        final Component button = new SingularButton("save-btn", getFormInstance()) {
+    protected Component buildSaveButton(String id) {
+        final Component button = new SingularButton(id, getFormInstance()) {
 
             @Override
             protected void onSubmit(AjaxRequestTarget target, Form<?> form) {

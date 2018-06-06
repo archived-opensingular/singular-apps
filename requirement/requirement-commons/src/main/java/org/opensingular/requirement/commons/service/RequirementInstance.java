@@ -114,7 +114,7 @@ public class RequirementInstance implements Serializable {
     }
 
     public Long getCod() {
-        return getEntity().getCod();
+        return requirementEntity.getCod();
     }
 
     public TaskInstance getCurrentTaskOrException() {
@@ -158,8 +158,8 @@ public class RequirementInstance implements Serializable {
     }
 
     public RequirementEntity getEntity() {
-        if (requirementEntity.getCod() != null) {
-            requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, requirementEntity.getCod());
+        if (getCod() != null) {
+            requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
         }
         return requirementEntity;
     }

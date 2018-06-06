@@ -18,11 +18,19 @@
 
 package org.opensingular.requirement.module.test;
 
+import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.test.ValidatorOracleMock;
+import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.service.ServerMenuService;
 import org.opensingular.requirement.module.service.SingularRequirementServiceImpl;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+
+import static org.mockito.Mockito.*;
 
 @Configuration
 public class ModuleConfigurationMock {
@@ -31,5 +39,25 @@ public class ModuleConfigurationMock {
     @Bean
     public SingularRequirementService requirementService(){
         return new SingularRequirementServiceImpl();
+    }
+
+
+    @Primary
+    @Bean
+    @Scope("session")
+    public MenuService menuService() {
+        return new ServerMenuService();
+    }
+
+    @Primary
+    @Bean
+    public AuthorizationService authorizationService() {
+        return spy(AuthorizationService.class);
+    }
+
+    @Primary
+    @Bean
+    public IValidatorDatabase validatorDatabase() {
+        return spy(ValidatorOracleMock.class);
     }
 }

@@ -42,7 +42,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import javax.servlet.ServletException;
 
-public class SingularCommonsContextLoader extends AbstractSingularContextLoader {
+public class  SingularCommonsContextLoader extends AbstractSingularContextLoader {
 
     /**
      * Customização para iniciar o singular

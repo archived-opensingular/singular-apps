@@ -24,6 +24,7 @@ import org.springframework.jdbc.datasource.init.ScriptException;
 
 import javax.sql.DataSource;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
@@ -32,7 +33,7 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
     private final String initScript;
 
     public H2DropAllObjectsPopulator(DataSource dataSource) {
-        if (dataSource instanceof DefaultH2DataSource) {
+        if (dataSource instanceof DefaultH2DataSource) {//NOSONAR
             this.initScript = ((DefaultH2DataSource) dataSource).getInitScript();
         } else {
             this.initScript = "";
@@ -41,11 +42,12 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
 
     @Override
     public void populate(Connection connection) throws SQLException, ScriptException {
-        try (Statement s = connection.createStatement()) {
+        try (PreparedStatement drop = connection.prepareStatement("DROP ALL OBJECTS");
+             PreparedStatement ps = connection.prepareStatement(initScript)) {
             getLogger().warn("DROPPING EMBBEDED H2 DATABASE, SQL: DROP ALL OBJECTS");
-            s.execute("DROP ALL OBJECTS");
+            drop.execute();//NOSONAR
             getLogger().warn("REEXECUTING EMBBEDED H2 DATABASE INIT SCRIPTS");
-            s.execute(initScript);
+            ps.execute();//NOSONAR
         }
     }
 }
