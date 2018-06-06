@@ -258,7 +258,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * Retorna as configurações da página de edição de formulário.
      */
     @Nonnull
-    protected final FormPageExecutionContext getConfig() {
+    protected FormPageExecutionContext getConfig() {
         return config;
     }
 
