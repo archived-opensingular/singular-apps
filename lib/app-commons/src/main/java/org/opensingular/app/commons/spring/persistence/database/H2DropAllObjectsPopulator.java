@@ -32,7 +32,7 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
 
     private final String initScript;
 
-    public H2DropAllObjectsPopulator(DataSource dataSource) {
+    public H2DropAllObjectsPopulator(DataSource dataSource) {//NOSONAR
         if (dataSource instanceof DefaultH2DataSource) {//NOSONAR
             this.initScript = ((DefaultH2DataSource) dataSource).getInitScript();
         } else {
@@ -42,8 +42,8 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
 
     @Override
     public void populate(Connection connection) throws SQLException, ScriptException {
-        try (PreparedStatement drop = connection.prepareStatement("DROP ALL OBJECTS");
-             PreparedStatement ps = connection.prepareStatement(initScript)) {
+        try (PreparedStatement drop = connection.prepareStatement("DROP ALL OBJECTS");//NOSONAR
+             PreparedStatement ps = connection.prepareStatement(initScript)) {//NOSONAR
             getLogger().warn("DROPPING EMBBEDED H2 DATABASE, SQL: DROP ALL OBJECTS");
             drop.execute();//NOSONAR
             getLogger().warn("REEXECUTING EMBBEDED H2 DATABASE INIT SCRIPTS");
