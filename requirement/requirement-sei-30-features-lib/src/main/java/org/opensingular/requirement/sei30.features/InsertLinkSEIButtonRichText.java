@@ -9,11 +9,11 @@ import org.opensingular.form.view.richtext.RichTextAction;
 import org.opensingular.form.view.richtext.RichTextInsertContext;
 import org.opensingular.lib.commons.lambda.IFunction;
 
-public class InsertLinkSeiButtonRichText implements RichTextAction<RichTextInsertContext> {
+public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInsertContext> {
 
-    private IFunction<SILinkSei, String> functionActionLink;
+    private IFunction<SILinkSEI, String> functionActionLink;
 
-    public InsertLinkSeiButtonRichText(@Nonnull IFunction<SILinkSei, String> functionActionLink) {
+    public InsertLinkSEIButtonRichText(@Nonnull IFunction<SILinkSEI, String> functionActionLink) {
         this.functionActionLink = functionActionLink;
     }
 
@@ -30,7 +30,7 @@ public class InsertLinkSeiButtonRichText implements RichTextAction<RichTextInser
 
     @Override
     public Optional<Class<? extends SType<?>>> getForm() {
-        return Optional.of(STypeLinkSei.class);
+        return Optional.of(STypeLinkSEI.class);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class InsertLinkSeiButtonRichText implements RichTextAction<RichTextInser
     @Override
     public void onAction(RichTextInsertContext richTextActionContext, Optional<SInstance> optional) {
         optional.ifPresent(instance -> {
-            SILinkSei instanceLinkSei = (SILinkSei) instance;
+            SILinkSEI instanceLinkSei = (SILinkSEI) instance;
             String protocolo = instanceLinkSei.getProtocolo();
             String idProtocolo = functionActionLink.apply(instanceLinkSei);
             String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"

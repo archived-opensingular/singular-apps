@@ -7,13 +7,13 @@ import org.opensingular.lib.commons.lambda.IFunction;
 
 public class ModeloSEIActionBuilder {
 
-    private SViewSeiRichText view;
+    private SViewSEIRichText view;
 
-    ModeloSEIActionBuilder(SViewSeiRichText view) {
+    ModeloSEIActionBuilder(SViewSEIRichText view) {
         this.view = view;
     }
 
-    public SViewSeiRichText configureModeloSeiAction(@Nonnull IFunction<SILinkSei, String> functionActionLink) {
+    public SViewSEIRichText configureModeloSeiAction(@Nonnull IFunction<SILinkSEI, String> functionActionLink) {
         Objects.requireNonNull(functionActionLink, "Action Link Function must not be null!");
         view.configureModeloSeiAction(functionActionLink);
         return view;

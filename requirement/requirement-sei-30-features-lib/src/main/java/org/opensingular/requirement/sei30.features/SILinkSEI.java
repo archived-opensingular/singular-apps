@@ -4,12 +4,12 @@ import javax.annotation.Nonnull;
 
 import org.opensingular.form.SIComposite;
 
-public class SILinkSei extends SIComposite {
+public class SILinkSEI extends SIComposite {
 
     @Nonnull
     @Override
-    public STypeLinkSei getType() {
-        return (STypeLinkSei) super.getType();
+    public STypeLinkSEI getType() {
+        return (STypeLinkSEI) super.getType();
     }
 
     public String getProtocolo() {
