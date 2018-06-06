@@ -37,6 +37,8 @@ public abstract class RequirementResolver<SI extends SInstance> {
 
     private List<SingularRequirement> requirements;
 
+
+
     public RequirementResolver(SingularRequirement... requirements) {
         this.requirements = Collections.unmodifiableList(Arrays.asList(requirements));
     }
@@ -44,7 +46,7 @@ public abstract class RequirementResolver<SI extends SInstance> {
 
     SingularRequirement resolve(SI instance) {
         SingularRequirement requirement = resolve(instance, requirements);
-        if (!requirements.contains(requirement)) {//NOSONAR
+        if (!requirements.contains(requirement)) {
             throw new SingularRequirementException("The resolved requirement: \"" + Optional.ofNullable(requirement).map(SingularRequirement::getName).orElse(null) + "\" is not available in the given requirement list.");
         }
         return requirement;
