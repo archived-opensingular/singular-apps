@@ -16,25 +16,33 @@
  *
  */
 
-package org.opensingular.requirement.single.page;
+package org.opensingular.requirement.module.wicket.template;
 
-import org.apache.wicket.RestartResponseException;
-import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
-import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
+import org.opensingular.requirement.commons.wicket.view.template.Menu;
+import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 
-public class SingleAppPage extends WebPage {
-    public SingleAppPage() {
-        throw new RestartResponseException(BoxPage.class);
+import javax.annotation.Nonnull;
+
+public abstract class ServerBoxTemplate extends ServerTemplate {
+
+    public ServerBoxTemplate() {
     }
 
-    public SingleAppPage(PageParameters parameters) {
+    public ServerBoxTemplate(PageParameters parameters) {
         super(parameters);
-        if (parameters.get("dispatch").toBoolean(false)) {
-            throw new RestartResponseException(DispatcherPage.class, parameters);
-        } else {
-            throw new RestartResponseException(BoxPage.class, parameters);
-        }
+    }
+
+    @Override
+    protected @Nonnull
+    WebMarkupContainer buildPageMenu(String id) {
+        return new Menu(id, BoxPage.class);
+    }
+
+    @Override
+    protected boolean isWithMenu() {
+        return true;
     }
 }

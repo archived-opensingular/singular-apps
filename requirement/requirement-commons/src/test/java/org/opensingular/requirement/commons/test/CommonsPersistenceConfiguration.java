@@ -19,6 +19,7 @@
 package org.opensingular.requirement.commons.test;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
@@ -37,7 +38,8 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public DefaultH2DataSource getEmbeddedDataSource() {
-        return new DefaultH2DataSource()
+        return new DefaultH2DataSource("jdbc:h2:mem:./singulardb"+ UUID.randomUUID().toString())
+                .setAutoServer(false)
                 .setMode("ORACLE");
     }
 

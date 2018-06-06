@@ -26,29 +26,31 @@ import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.service.dto.RequirementData;
+import org.opensingular.requirement.commons.wicket.NewRequirementUrlBuilder;
 import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
 
 public class NewRequirementLink extends Panel {
 
+    private final String                        moduleCod;
     private final String                        url;
     private final Map<String, String>           params;
     private       IModel<List<RequirementData>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
-    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
-        this(id, null, url, params, requirements);
+    public NewRequirementLink(String id, String moduleCod, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
+        this(id, null, moduleCod, url, params, requirements);
     }
 
-    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
+    public NewRequirementLink(String id, IModel<String> labelModel, String moduleCod, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
         super(id);
+        this.moduleCod = moduleCod;
         this.url = url;
         this.params = params;
         this.labelModel = labelModel == null ? this.labelModel : labelModel;
@@ -63,7 +65,7 @@ public class NewRequirementLink extends Panel {
 
     protected void addSingleButton(ISupplier<Boolean> visibleSupplier) {
         Optional<RequirementData> findFirst = requirements.getObject().stream().findFirst();
-        if(findFirst.isPresent()){
+        if (findFirst.isPresent()) {
             Link<String> newButton = buildLink("_botao", labelModel, findFirst.get());
             newButton.add($b.visibleIf(visibleSupplier));
             this.add(newButton);
@@ -101,15 +103,7 @@ public class NewRequirementLink extends Panel {
     }
 
     protected String buildURL(RequirementData requirement) {
-        String result = DispatcherPageUtil
-                .baseURL(url)
-                .formAction(FormAction.FORM_FILL.getId())
-                .requirementId(null)
-                .param(REQUIREMENT_DEFINITION_ID, requirement.getId())
-                .params(params)
-                .build();
-        return result;
-
+        return new NewRequirementUrlBuilder(url, moduleCod, requirement.getId()).getURL();
     }
 
     @Override
