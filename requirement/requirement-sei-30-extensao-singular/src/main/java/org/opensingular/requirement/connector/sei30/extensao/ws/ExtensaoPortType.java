@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.jws.WebMethod;
@@ -54,14 +55,14 @@ public interface ExtensaoPortType {
     @WebMethod(action = "extensaons/assinarDocumento")
     @WebResult(name = "retorno", partName = "retorno")
     public String assinarDocumento(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "DadosAssinatura", partName = "DadosAssinatura")
-                    DadosAssinatura dadosAssinatura);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "DadosAssinatura", partName = "DadosAssinatura")
+        DadosAssinatura dadosAssinatura);
 
     /**
      * Listar assinantes por unidade
@@ -70,17 +71,17 @@ public interface ExtensaoPortType {
      * @param idUnidade
      * @param siglaSistema
      * @return
-     *     returns ArrayOfAssinante
+     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.ArrayOfAssinante
      */
     @WebMethod(action = "extensaons/listarAssinantesPorUnidade")
     @WebResult(name = "retorno", partName = "retorno")
     public ArrayOfAssinante listarAssinantesPorUnidade(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade);
 
     /**
      * Listar documentos por processo
@@ -90,19 +91,19 @@ public interface ExtensaoPortType {
      * @param siglaSistema
      * @param idProcedimento
      * @return
-     *     returns ArrayOfRetornoConsultaDocumento
+     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.ArrayOfRetornoConsultaDocumento
      */
     @WebMethod(action = "extensaons/listarDocumentosPorProcedimento")
     @WebResult(name = "retorno", partName = "retorno")
     public ArrayOfRetornoConsultaDocumento listarDocumentosPorProcedimento(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
-                    String idProcedimento);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
+        String idProcedimento);
 
     /**
      * Autentica um usuario externo. true: autenticado, false: nao autenticado
@@ -119,40 +120,18 @@ public interface ExtensaoPortType {
     @WebMethod(action = "extensaons/autenticarUsuarioExterno")
     @WebResult(name = "autenticado", partName = "autenticado")
     public boolean autenticarUsuarioExterno(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "Login", partName = "Login")
-                    String login,
-            @WebParam(name = "Senha", partName = "Senha")
-                    String senha,
-            @WebParam(name = "PermitePendente", partName = "PermitePendente")
-                    boolean permitePendente);
-
-    /**
-     * Autentica um usuario interno. true: autenticado, false: nao autenticado
-     * 
-     * @param identificacaoServico
-     * @param idUnidade
-     * @param siglaSistema
-     * @param loginInterno
-     * @return
-     *     returns boolean
-     */
-    @WebMethod(action = "extensaons/autenticarUsuarioInterno")
-    @WebResult(name = "Autenticado", partName = "Autenticado")
-    public boolean autenticarUsuarioInterno(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "LoginInterno", partName = "LoginInterno")
-                    LoginInterno loginInterno);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "Login", partName = "Login")
+        String login,
+        @WebParam(name = "Senha", partName = "Senha")
+        String senha,
+        @WebParam(name = "PermitePendente", partName = "PermitePendente")
+        boolean permitePendente);
 
     /**
      * Busca informações do usuário externo.
@@ -162,19 +141,19 @@ public interface ExtensaoPortType {
      * @param siglaSistema
      * @param login
      * @return
-     *     returns DadosUsuarioExterno
+     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.DadosUsuarioExterno
      */
     @WebMethod(action = "extensaons/buscarDadosUsuarioExterno")
     @WebResult(name = "dadosUsuarioExterno", partName = "dadosUsuarioExterno")
     public DadosUsuarioExterno buscarDadosUsuarioExterno(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "Login", partName = "Login")
-                    String login);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "Login", partName = "Login")
+        String login);
 
     /**
      * Consultar conteúdo de documento.
@@ -184,18 +163,37 @@ public interface ExtensaoPortType {
      * @param idUnidade
      * @param siglaSistema
      * @return
-     *     returns RetornoConsultarConteudoDocumento
+     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.RetornoConsultarConteudoDocumento
      */
     @WebMethod(action = "extensaons/consultarConteudoDocumento")
     @WebResult(name = "conteudoDocumento", partName = "conteudoDocumento")
     public RetornoConsultarConteudoDocumento consultarConteudoDocumento(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "IdDocumento", partName = "IdDocumento")
-                    String idDocumento);
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "IdUnidade", partName = "IdUnidade")
+        String idUnidade,
+        @WebParam(name = "IdDocumento", partName = "IdDocumento")
+        String idDocumento);
+
+    /**
+     * Listar Assuntos do SEI.
+     * 
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @param strPalavrasPesquisa
+     * @return
+     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.ArrayOfAssunto
+     */
+    @WebMethod(action = "extensaons/listarAssuntos")
+    @WebResult(name = "retorno", partName = "retorno")
+    public ArrayOfAssunto listarAssuntos(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "strPalavrasPesquisa", partName = "strPalavrasPesquisa")
+        String strPalavrasPesquisa);
 
 }

@@ -17,6 +17,7 @@
  *
  */
 
+
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -26,9 +27,9 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DadosAssinatura complex type.
+ * <p>Classe Java de DadosAssinatura complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
  * 
  * <pre>
  * &lt;complexType name="DadosAssinatura">
@@ -69,7 +70,7 @@ public class DadosAssinatura {
     protected ArrayOfIdDocumento idsDocumento;
 
     /**
-     * Gets the value of the idOrgaoUsuario property.
+     * Obtém o valor da propriedade idOrgaoUsuario.
      * 
      */
     public long getIdOrgaoUsuario() {
@@ -77,7 +78,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the idOrgaoUsuario property.
+     * Define o valor da propriedade idOrgaoUsuario.
      * 
      */
     public void setIdOrgaoUsuario(long value) {
@@ -85,7 +86,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the idContextoUsuario property.
+     * Obtém o valor da propriedade idContextoUsuario.
      * 
      */
     public long getIdContextoUsuario() {
@@ -93,7 +94,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the idContextoUsuario property.
+     * Define o valor da propriedade idContextoUsuario.
      * 
      */
     public void setIdContextoUsuario(long value) {
@@ -101,7 +102,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the siglaUsuario property.
+     * Obtém o valor da propriedade siglaUsuario.
      * 
      * @return
      *     possible object is
@@ -113,7 +114,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the siglaUsuario property.
+     * Define o valor da propriedade siglaUsuario.
      * 
      * @param value
      *     allowed object is
@@ -125,7 +126,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the senhaUsuario property.
+     * Obtém o valor da propriedade senhaUsuario.
      * 
      * @return
      *     possible object is
@@ -137,7 +138,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the senhaUsuario property.
+     * Define o valor da propriedade senhaUsuario.
      * 
      * @param value
      *     allowed object is
@@ -149,7 +150,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the cargoFuncao property.
+     * Obtém o valor da propriedade cargoFuncao.
      * 
      * @return
      *     possible object is
@@ -161,7 +162,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the cargoFuncao property.
+     * Define o valor da propriedade cargoFuncao.
      * 
      * @param value
      *     allowed object is
@@ -173,7 +174,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the idsDocumento property.
+     * Obtém o valor da propriedade idsDocumento.
      * 
      * @return
      *     possible object is
@@ -185,7 +186,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Sets the value of the idsDocumento property.
+     * Define o valor da propriedade idsDocumento.
      * 
      * @param value
      *     allowed object is
