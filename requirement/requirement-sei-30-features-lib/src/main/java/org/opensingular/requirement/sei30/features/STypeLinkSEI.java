@@ -19,7 +19,9 @@ public class STypeLinkSEI extends STypeComposite<SILinkSEI> {
     @Override
     protected void onLoadType(@Nonnull TypeBuilder tb) {
         protocolo = this.addFieldString("protocolo");
-        protocolo.asAtr().label("Protocolo");
+        protocolo.asAtr()
+                .required()
+                .label("Protocolo");
 
     }
 }

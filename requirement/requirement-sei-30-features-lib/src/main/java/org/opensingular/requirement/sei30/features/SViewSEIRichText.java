@@ -24,9 +24,9 @@ public class SViewSEIRichText extends SViewByRichTextNewTab {
     }
 
 
-    void configureModeloSeiAction(IFunction<SILinkSEI, String> functionActionLink) {
+    void configureModeloSeiAction(IFunction<SIModeloSEI, String> functionActionLink) {
         //TODO REMOVER ISSO.
-        this.addAction(new InsertLinkSEIButtonRichText(functionActionLink));
+        this.addAction(new InsertModeloSEIButtonRichText(functionActionLink));
 
     }
 }
