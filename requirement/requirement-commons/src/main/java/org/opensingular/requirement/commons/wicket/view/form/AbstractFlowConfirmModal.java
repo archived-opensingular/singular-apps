@@ -23,6 +23,7 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.RequirementInstance;
@@ -57,13 +58,29 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
 
     }
 
+    /**
+     * Add the confirm button to confirmation modal. The button label can be customized by creating the
+     * wicket resource bundle using  label.button.confirm. plus the java identity of the transition name, for example
+     * the transition name Analisar Outorga has java identity equals to analisarOutorga, creating the resource key
+     * label.button.confirm.analisarOutorga=Confirmar Analise, will override the button label.
+     *
+     * @see SingularUtil#convertToJavaIdentity(String, boolean)
+     * @see org.apache.wicket.resource.loader.IStringResourceLoader
+     * @see <a href='https://ci.apache.org/projects/wicket/guide/6.x/guide/i18n.html'>Internationalization with Wicket</a>
+     *
+     * @param modal the modal to add the button
+     */
     protected void addDefaultConfirmButton(BSModalBorder modal) {
-        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
-                "label.button.confirm",
-                newFlowConfirmButton(getTransition(),
-                        formPage.getFormInstance(),
-                        getFormPage().getViewMode(getFormPage().getConfig()),
-                        modal));
+        String transition = getTransition();
+        IModel<? extends SInstance> formInstance = getFormPage().getFormInstance();
+        ViewMode viewMode = getFormPage().getViewMode(getFormPage().getConfig());
+
+        FlowConfirmButton<RE, RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal);
+
+        String transitionButtonLabel= "label.button.confirm."+ SingularUtil.convertToJavaIdentity(transition, true);
+        String defaultButtonLabelWhenNull = getString("label.button.confirm", null, "Confirmar");
+
+        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, transitionButtonLabel, defaultButtonLabelWhenNull, button );
     }
 
     protected void addDefaultCancelButton(final BSModalBorder modal) {
