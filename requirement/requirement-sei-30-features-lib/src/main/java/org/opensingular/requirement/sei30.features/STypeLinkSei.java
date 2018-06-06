@@ -7,7 +7,7 @@ import org.opensingular.form.STypeComposite;
 import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.core.STypeString;
 
-@SInfoType(spackage = SeiFeaturePackage.class)
+@SInfoType(spackage = SeiFeaturePackage.class, label = "Propriedades do Link")
 public class STypeLinkSei  extends STypeComposite<SILinkSei> {
 
     public STypeString protocolo;

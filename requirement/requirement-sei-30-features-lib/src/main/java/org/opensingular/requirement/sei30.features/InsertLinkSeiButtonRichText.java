@@ -24,6 +24,7 @@ public class InsertLinkSeiButtonRichText implements RichTextAction<RichTextInser
 
     @Override
     public String getIconUrl() {
+        //TODO ALTERAR ISSO, DEVERÁ SER COLOCADA NA LIB.
         return "http://treinamentosei3singular.antaq.gov.br/sei/editor/ck/plugins/linksei/images/sei.png?t=G2FW";
     }
 

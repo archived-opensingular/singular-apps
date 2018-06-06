@@ -1,5 +1,6 @@
 package org.opensingular.requirement.sei30.features;
 
+import java.util.Objects;
 import javax.annotation.Nonnull;
 
 import org.opensingular.form.view.richtext.SViewByRichTextNewTab;
@@ -12,6 +13,7 @@ public class SViewSeiRichText extends SViewByRichTextNewTab {
     }
 
     public static ModeloSEIActionBuilder configLinkSeiAction(@Nonnull IFunction<SILinkSei, String> functionActionLink) {
+        Objects.requireNonNull(functionActionLink, "Action Link Function must not be null!");
         SViewSeiRichText view = new SViewSeiRichText();
         view.configureLinkSeiAction(functionActionLink);
         return new ModeloSEIActionBuilder(view);

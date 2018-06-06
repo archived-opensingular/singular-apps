@@ -6,7 +6,6 @@ import org.opensingular.form.SIComposite;
 
 public class SILinkSei extends SIComposite {
 
-
     @Nonnull
     @Override
     public STypeLinkSei getType() {
