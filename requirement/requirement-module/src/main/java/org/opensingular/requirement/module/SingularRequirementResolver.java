@@ -33,10 +33,16 @@ import org.opensingular.requirement.module.wicket.view.RequirementResolverPage;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.util.Map;
 import java.util.Optional;
 
 /**
- * Basic singular requirement adapter.
+ * Defines an 'virtual' requirement that preform a pre-step to decide which requirement should be initialized
+ * This kind of requirement can not be saved as a draft and it represents an atomic step.
+ * The target requirement is decided by the execution of the {@link RequirementResolver#resolve(SInstance)} method.
+ * In this method the SIinstance is defined byt the {@link SType} class supplied through the avaiblable constructors.
+ * It is possible to pass aditional parameters (URL parameters) to the target requirement using custom {@link RequirementResolverPage}
+ * and overriding the {@link RequirementResolverPage#redirectToResolvedRequirement(Long, Map)}
  */
 public class SingularRequirementResolver implements SingularRequirement {
 

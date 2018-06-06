@@ -29,7 +29,9 @@ import java.util.List;
 import java.util.Optional;
 
 /**
- * Basic singular requirement adapter.
+ * Decide wich requirement should be presented based
+ * on a SInstance filled by the user.
+ * See {@link SingularRequirementResolver}.
  */
 public abstract class RequirementResolver<SI extends SInstance> {
 

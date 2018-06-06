@@ -18,7 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.view;
 
-import org.apache.commons.collections4.MapUtils;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -51,6 +50,12 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
+/**
+ * For Singular Requirement Resolver use only.
+ * See {@link SingularRequirementResolver}
+ * @param <RE>
+ * @param <RI>
+ */
 public class RequirementResolverPage<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFormPage<RE, RI> {
 
     @Inject
