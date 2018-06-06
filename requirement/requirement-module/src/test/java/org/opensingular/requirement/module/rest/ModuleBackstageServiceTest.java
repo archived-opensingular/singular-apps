@@ -32,6 +32,7 @@ import org.opensingular.requirement.module.rest.ModuleBackstageService;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -39,7 +40,7 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
+public class ModuleBackstageServiceTest extends SingularModuleBaseTest {
     
     @Inject
     private ModuleBackstageService moduleBackstageService;

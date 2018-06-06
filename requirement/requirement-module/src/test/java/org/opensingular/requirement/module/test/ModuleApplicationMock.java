@@ -28,7 +28,7 @@ import org.opensingular.requirement.module.wicket.box.BoxPage;
 import javax.inject.Named;
 
 @Named
-public class ServerApplicationMock extends SingularRequirementApplication {
+public class ModuleApplicationMock extends SingularRequirementApplication {
 
     @Override
     public void init() {

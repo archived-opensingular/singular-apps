@@ -25,7 +25,9 @@ import org.opensingular.form.persistence.dao.AttachmentContentDao;
 import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.requirement.module.test.SingularServerBaseTest;
+import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 
 
 import javax.inject.Inject;
@@ -34,7 +36,7 @@ import javax.transaction.Transactional;
 import java.sql.SQLException;
 import java.util.Calendar;
 
-public class AttachmentGCTest extends SingularServerBaseTest {
+public class AttachmentGCTest extends SingularModuleBaseTest {
     @Inject
     private AttachmentGCJob job;
 

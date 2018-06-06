@@ -24,17 +24,17 @@ import javax.servlet.ServletException;
 import org.opensingular.requirement.commons.config.SingularInitializer;
 
 import org.opensingular.requirement.commons.test.AbstractSingularContextLoader;
-import org.opensingular.requirement.module.test.ServerInitializerMock;
+import org.opensingular.requirement.module.test.ModuleInitializerMock;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-public class SingularServerContextLoader extends AbstractSingularContextLoader {
+public class SingularModuleContextLoader extends AbstractSingularContextLoader {
 
 
     @Override
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new SingularInitializer(new ServerInitializerMock(context)).onStartup(context.getServletContext());
+            new SingularInitializer(new ModuleInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

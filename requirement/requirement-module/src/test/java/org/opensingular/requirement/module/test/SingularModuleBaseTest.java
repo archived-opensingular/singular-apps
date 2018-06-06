@@ -20,14 +20,14 @@ package org.opensingular.requirement.module.test;
 
 
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.service.SingularServerContextLoader;
+import org.opensingular.requirement.module.service.SingularModuleContextLoader;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 
 
-@ContextConfiguration(classes = ServerConfigurationMock.class, loader = SingularServerContextLoader.class)
+@ContextConfiguration(classes = ModuleConfigurationMock.class, loader = SingularModuleContextLoader.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.BEFORE_CLASS)
-public abstract class SingularServerBaseTest extends SingularCommonsBaseTest {
+public abstract class SingularModuleBaseTest extends SingularCommonsBaseTest {
 
 
 }

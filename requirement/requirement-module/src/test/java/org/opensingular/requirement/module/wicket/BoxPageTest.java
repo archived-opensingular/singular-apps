@@ -30,7 +30,8 @@ import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.test.ContextUtil;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.test.ServerApplicationMock;
+import org.opensingular.requirement.module.test.ModuleApplicationMock;
+import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -39,7 +40,7 @@ import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class BoxPageTest extends SingularCommonsBaseTest {
+public class BoxPageTest extends SingularModuleBaseTest {
 
     public static final String SINGULAR = "/singular";
 
@@ -51,7 +52,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
     private SingularWicketTester tester;
 
     @Inject
-    private ServerApplicationMock singularApplication;
+    private ModuleApplicationMock singularApplication;
 
     @WithUserDetails("vinicius.nunes")
     @Test(expected = RestartResponseException.class)
