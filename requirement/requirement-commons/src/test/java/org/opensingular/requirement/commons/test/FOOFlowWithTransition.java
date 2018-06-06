@@ -38,7 +38,7 @@ public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {
         super(FlowInstance.class);
     }
 
-    @Nonnull
+
     @Override
     protected FlowMap createFlowMap() {
         FlowBuilder flow = new FlowBuilderImpl(this);
