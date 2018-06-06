@@ -45,9 +45,9 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
         try (PreparedStatement drop = connection.prepareStatement("DROP ALL OBJECTS");
              PreparedStatement ps = connection.prepareStatement(initScript)) {
             getLogger().warn("DROPPING EMBBEDED H2 DATABASE, SQL: DROP ALL OBJECTS");
-            drop.execute();
+            drop.execute();//NOSONAR
             getLogger().warn("REEXECUTING EMBBEDED H2 DATABASE INIT SCRIPTS");
-            ps.execute();
+            ps.execute();//NOSONAR
         }
     }
 }
