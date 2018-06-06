@@ -60,6 +60,6 @@ public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {
         flow.from(startbarDef).go(middlebarDef);
         flow.from(middlebarDef).go(endbarDef);
 
-        return flow.build();
+        return flow.build();//NOSONAR
     }
 }
