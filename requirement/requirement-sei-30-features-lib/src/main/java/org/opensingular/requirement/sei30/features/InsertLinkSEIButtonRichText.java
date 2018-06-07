@@ -48,11 +48,13 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
         optional.ifPresent(instance -> {
             SILinkSEI instanceLinkSei = (SILinkSEI) instance;
             String protocolo = instanceLinkSei.getProtocolo();
-            String idProtocolo = functionActionLink.apply(instanceLinkSei);
-            String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"
-                    + "<a id=lnkSei" + idProtocolo + " class=\"ancoraSei\" style=\"text-indent:0px;\">" + protocolo + "</a>"
-                    + "</span>";
-            richTextActionContext.setReturnValue(retornoFormatado);
+            if(protocolo != null) {
+                String idProtocolo = functionActionLink.apply(instanceLinkSei);
+                String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"
+                        + "<a id=lnkSei" + idProtocolo + " class=\"ancoraSei\" style=\"text-indent:0px;\">" + protocolo + "</a>"
+                        + "</span>";
+                richTextActionContext.setReturnValue(retornoFormatado);
+            }
         });
     }
 }
