@@ -57,7 +57,7 @@ public class LogPanel extends Panel implements Loggable {
             protected void populateItem(ListItem<URI> item) {
                 ResourceStreamResource lopZipStream = makeZipLogStream(item.getModel());
                 lopZipStream.setFileName("log.zip");
-                ResourceLink downloadLink = new ResourceLink("log", lopZipStream);
+                ResourceLink<?> downloadLink = new ResourceLink<>("log", lopZipStream);
                 downloadLink.add(new Label("label", Paths.get(item.getModelObject()).getFileName().toString()));
                 item.add(downloadLink);
             }
@@ -118,7 +118,7 @@ public class LogPanel extends Panel implements Loggable {
         uris.sort(new Comparator<URI>() {
             @Override
             public int compare(URI o1, URI o2) {
-                return ((Comparator<String>) Comparator.naturalOrder()).compare(o1.toString(), o2.toString());
+                return Comparator.<String> naturalOrder().compare(o1.toString(), o2.toString());
             }
         });
         return uris;
