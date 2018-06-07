@@ -132,7 +132,7 @@ public class Menu extends Panel implements Loggable {
         return Collections.emptyList();
     }
 
-    private void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
+    protected void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
                             ModuleEntity module, List<MenuItemConfig> subMenus) {
         MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, boxConfigurationMetadata.getLabel());
         menu.addItem(group);
@@ -156,7 +156,7 @@ public class Menu extends Panel implements Loggable {
 
     }
 
-    private List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ModuleEntity module) {
+    protected List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata, ModuleEntity module) {
 
         List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
                 .map(RequirementDefinitionDTO::getAbbreviation)
