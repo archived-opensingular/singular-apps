@@ -52,17 +52,6 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
         this.dirty = false;
     }
 
-
-    @Override
-    protected void addDefaultConfirmButton(BSModalBorder modal) {
-        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
-                "label.button.confirm",
-                newFlowConfirmButton(getTransition(),
-                        getFormPage().getFormInstance(),
-                        getFormPage().getViewMode(getFormPage().getConfig()),
-                        modal));
-    }
-
     @Override
     protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
         return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m){
