@@ -8,6 +8,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.view.richtext.RichTextAction;
 import org.opensingular.form.view.richtext.RichTextContentContext;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.ui.Icon;
 
 public class InsertModeloSEIButtonRichText implements RichTextAction<RichTextContentContext> {
 
@@ -23,9 +24,15 @@ public class InsertModeloSEIButtonRichText implements RichTextAction<RichTextCon
     }
 
     @Override
-    public String getIconUrl() {
+    public Icon getIcon() {
         //TODO ALTERAR ISSO, DEVERÁ SER COLOCADA NA LIB.
-        return "https://cdn1.iconfinder.com/data/icons/file-format-set/64/2342-256.png";
+        return new Icon() {
+            @Override
+            public String getCssClass() {
+                return "document-model-icon";
+            }
+        };
+//        return "https://cdn1.iconfinder.com/data/icons/file-format-set/64/2342-256.png";
     }
 
     @Override

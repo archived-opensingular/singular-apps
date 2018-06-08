@@ -8,6 +8,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.view.richtext.RichTextAction;
 import org.opensingular.form.view.richtext.RichTextInsertContext;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.ui.Icon;
 
 public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInsertContext> {
 
@@ -23,9 +24,15 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
     }
 
     @Override
-    public String getIconUrl() {
+    public Icon getIcon() {
         //TODO ALTERAR ISSO, DEVERÁ SER COLOCADA NA LIB.
-        return "http://treinamentosei3singular.antaq.gov.br/sei/editor/ck/plugins/linksei/images/sei.png?t=G2FW";
+        return new Icon() {
+            @Override
+            public String getCssClass() {
+                return "sei-icon";
+            }
+        };
+                //"http://treinamentosei3singular.antaq.gov.br/sei/editor/ck/plugins/linksei/images/sei.png?t=G2FW";
     }
 
     @Override
