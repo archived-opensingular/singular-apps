@@ -48,9 +48,9 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
         optional.ifPresent(instance -> {
             SILinkSEI instanceLinkSei = (SILinkSEI) instance;
             String protocolo = instanceLinkSei.getProtocolo();
-            if(protocolo != null) {
+            String idProtocolo = functionActionLink.apply(instanceLinkSei);
+            if(protocolo != null && idProtocolo != null) {
                 //This insert is exactly the same of used in the SEI service.
-                String idProtocolo = functionActionLink.apply(instanceLinkSei);
                 String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"
                         + "<a id=lnkSei" + idProtocolo + " class=\"ancoraSei\" style=\"text-indent:0px;\">" + protocolo + "</a>"
                         + "</span>";
