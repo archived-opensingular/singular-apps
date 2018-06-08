@@ -25,14 +25,7 @@ public class InsertModeloSEIButtonRichText implements RichTextAction<RichTextCon
 
     @Override
     public Icon getIcon() {
-        //TODO ALTERAR ISSO, DEVERÁ SER COLOCADA NA LIB.
-        return new Icon() {
-            @Override
-            public String getCssClass() {
-                return "document-model-icon";
-            }
-        };
-//        return "https://cdn1.iconfinder.com/data/icons/file-format-set/64/2342-256.png";
+        return (Icon) () -> "document-model-icon";
     }
 
     @Override
@@ -41,8 +34,8 @@ public class InsertModeloSEIButtonRichText implements RichTextAction<RichTextCon
     }
 
     @Override
-    public Boolean getLabelInline() {
-        return Boolean.FALSE;
+    public boolean getLabelInline() {
+        return false;
     }
 
     @Override

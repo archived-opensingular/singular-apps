@@ -9,6 +9,7 @@ import org.opensingular.lib.commons.lambda.IFunction;
 public class SViewSEIRichText extends SViewByRichTextNewTab {
 
     private SViewSEIRichText() {
+        //This class is responsible for compatibility with SEI
         getConfiguration().setDoubleClickDisabledForCssClasses("ancoraSei");
     }
 
@@ -19,7 +20,7 @@ public class SViewSEIRichText extends SViewByRichTextNewTab {
         return new ModeloSEIActionBuilder(view);
     }
 
-    void configureLinkSEIAction(IFunction<SILinkSEI, String> functionActionLink) {
+    private void configureLinkSEIAction(IFunction<SILinkSEI, String> functionActionLink) {
         this.addAction(new InsertLinkSEIButtonRichText(functionActionLink));
     }
 
