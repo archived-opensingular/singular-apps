@@ -13,20 +13,19 @@ public class SViewSEIRichText extends SViewByRichTextNewTab {
         getConfiguration().setDoubleClickDisabledForCssClasses("ancoraSei");
     }
 
-    public static ModeloSEIActionBuilder configLinkSEIAction(@Nonnull IFunction<SILinkSEI, String> functionActionLink) {
+    public static ModeloSEIActionBuilder configProtocoloToIdSEIAction(@Nonnull IFunction<SILinkSEI, String> functionActionLink) {
         Objects.requireNonNull(functionActionLink, "Action Link Function must not be null!");
         SViewSEIRichText view = new SViewSEIRichText();
-        view.configureLinkSEIAction(functionActionLink);
+        view.configureProtocoloToIdSEIAction(functionActionLink);
         return new ModeloSEIActionBuilder(view);
     }
 
-    private void configureLinkSEIAction(IFunction<SILinkSEI, String> functionActionLink) {
+    private void configureProtocoloToIdSEIAction(IFunction<SILinkSEI, String> functionActionLink) {
         this.addAction(new InsertLinkSEIButtonRichText(functionActionLink));
     }
 
 
     void configureModeloSeiAction(IFunction<SIModeloSEI, String> functionActionLink) {
         this.addAction(new InsertModeloSEIButtonRichText(functionActionLink));
-
     }
 }
