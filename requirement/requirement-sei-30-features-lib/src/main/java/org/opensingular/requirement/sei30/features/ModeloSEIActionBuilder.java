@@ -13,7 +13,7 @@ public class ModeloSEIActionBuilder {
         this.view = view;
     }
 
-    public SViewSEIRichText configureModeloSeiAction(@Nonnull IFunction<SIModeloSEI, String> functionActionLink) {
+    public SViewSEIRichText configureModeloSEIAction(@Nonnull IFunction<SIModeloSEI, String> functionActionLink) {
         Objects.requireNonNull(functionActionLink, "Action Link Function must not be null!");
         view.configureModeloSeiAction(functionActionLink);
         return view;

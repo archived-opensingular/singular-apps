@@ -8,6 +8,7 @@ import org.opensingular.form.SType;
 import org.opensingular.form.view.richtext.RichTextAction;
 import org.opensingular.form.view.richtext.RichTextInsertContext;
 import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.lib.commons.ui.Icon;
 
 public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInsertContext> {
 
@@ -23,9 +24,8 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
     }
 
     @Override
-    public String getIconUrl() {
-        //TODO ALTERAR ISSO, DEVERÁ SER COLOCADA NA LIB.
-        return "http://treinamentosei3singular.antaq.gov.br/sei/editor/ck/plugins/linksei/images/sei.png?t=G2FW";
+    public Icon getIcon() {
+        return (Icon) () -> "sei-icon";
     }
 
     @Override
@@ -34,8 +34,8 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
     }
 
     @Override
-    public Boolean getLabelInline() {
-        return Boolean.FALSE;
+    public boolean getLabelInline() {
+        return false;
     }
 
     @Override
@@ -49,10 +49,13 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
             SILinkSEI instanceLinkSei = (SILinkSEI) instance;
             String protocolo = instanceLinkSei.getProtocolo();
             String idProtocolo = functionActionLink.apply(instanceLinkSei);
-            String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"
-                    + "<a id=lnkSei" + idProtocolo + " class=\"ancoraSei\" style=\"text-indent:0px;\">" + protocolo + "</a>"
-                    + "</span>";
-            richTextActionContext.setReturnValue(retornoFormatado);
+            if(protocolo != null && idProtocolo != null) {
+                //This insert is exactly the same of used in the SEI service.
+                String retornoFormatado = "<span contenteditable=\"false\" style=\"text-indent:0px;\">"
+                        + "<a id=lnkSei" + idProtocolo + " class=\"ancoraSei\" style=\"text-indent:0px;\">" + protocolo + "</a>"
+                        + "</span>";
+                richTextActionContext.setReturnValue(retornoFormatado);
+            }
         });
     }
 }
