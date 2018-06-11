@@ -10,7 +10,7 @@ import org.opensingular.form.type.core.STypeString;
 @SInfoType(spackage = SEIFeaturePackage.class, label = "Propriedades do Modelo")
 public class STypeModeloSEI extends STypeComposite<SIModeloSEI> {
 
-    public STypeString modelo;
+    public STypeString protocoloModelo;
 
     public STypeModeloSEI() {
         super(SIModeloSEI.class);
@@ -18,8 +18,8 @@ public class STypeModeloSEI extends STypeComposite<SIModeloSEI> {
 
     @Override
     protected void onLoadType(@Nonnull TypeBuilder tb) {
-        modelo = this.addFieldString("modelo");
-        modelo.asAtr()
+        protocoloModelo = this.addFieldString("protocoloModelo");
+        protocoloModelo.asAtr()
                 .basicMask("9{1,7}")
                 .maxLength(7)
                 .required()

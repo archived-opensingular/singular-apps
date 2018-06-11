@@ -12,8 +12,8 @@ public class SIModeloSEI extends SIComposite {
         return (STypeModeloSEI) super.getType();
     }
 
-    public String getModelo() {
-        return getField(getType().modelo).getValue();
+    public String getProtocoloModelo() {
+        return getField(getType().protocoloModelo).getValue();
     }
 
 }
