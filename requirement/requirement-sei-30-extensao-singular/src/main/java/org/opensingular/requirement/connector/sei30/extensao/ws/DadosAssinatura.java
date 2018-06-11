@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,25 +26,25 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de DadosAssinatura complex type.
+ * <p>Java class for DadosAssinatura complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DadosAssinatura">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdOrgaoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="IdContextoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="DadosAssinatura"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdOrgaoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="IdContextoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -70,7 +69,7 @@ public class DadosAssinatura {
     protected ArrayOfIdDocumento idsDocumento;
 
     /**
-     * Obtém o valor da propriedade idOrgaoUsuario.
+     * Gets the value of the idOrgaoUsuario property.
      * 
      */
     public long getIdOrgaoUsuario() {
@@ -78,7 +77,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idOrgaoUsuario.
+     * Sets the value of the idOrgaoUsuario property.
      * 
      */
     public void setIdOrgaoUsuario(long value) {
@@ -86,7 +85,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade idContextoUsuario.
+     * Gets the value of the idContextoUsuario property.
      * 
      */
     public long getIdContextoUsuario() {
@@ -94,7 +93,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idContextoUsuario.
+     * Sets the value of the idContextoUsuario property.
      * 
      */
     public void setIdContextoUsuario(long value) {
@@ -102,7 +101,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade siglaUsuario.
+     * Gets the value of the siglaUsuario property.
      * 
      * @return
      *     possible object is
@@ -114,7 +113,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade siglaUsuario.
+     * Sets the value of the siglaUsuario property.
      * 
      * @param value
      *     allowed object is
@@ -126,7 +125,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade senhaUsuario.
+     * Gets the value of the senhaUsuario property.
      * 
      * @return
      *     possible object is
@@ -138,7 +137,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade senhaUsuario.
+     * Sets the value of the senhaUsuario property.
      * 
      * @param value
      *     allowed object is
@@ -150,7 +149,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade cargoFuncao.
+     * Gets the value of the cargoFuncao property.
      * 
      * @return
      *     possible object is
@@ -162,7 +161,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade cargoFuncao.
+     * Sets the value of the cargoFuncao property.
      * 
      * @param value
      *     allowed object is
@@ -174,7 +173,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Obtém o valor da propriedade idsDocumento.
+     * Gets the value of the idsDocumento property.
      * 
      * @return
      *     possible object is
@@ -186,7 +185,7 @@ public class DadosAssinatura {
     }
 
     /**
-     * Define o valor da propriedade idsDocumento.
+     * Sets the value of the idsDocumento property.
      * 
      * @param value
      *     allowed object is
