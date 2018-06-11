@@ -67,8 +67,15 @@ public class CrudListContent extends CrudShellContent {
     private   SingularFormPanel       filterPanel;
     protected FormStateUtil.FormState filterState;
 
+    private final CrudListConfig crudListConfig;
+
     public CrudListContent(CrudShellManager crudShellManager) {
+        this(crudShellManager, new CrudListConfig());
+    }
+
+    public CrudListContent(CrudShellManager crudShellManager, CrudListConfig crudListConfig) {
         super(crudShellManager);
+        this.crudListConfig = crudListConfig;
         addDefaultHeaderRightActions();
     }
 
@@ -92,9 +99,10 @@ public class CrudListContent extends CrudShellContent {
 
     private void addTable() {
         BSDataTableBuilder<SInstance, String, IColumn<SInstance, String>> tableBuilder = new BSDataTableBuilder<>(resolveProvider());
-        tableBuilder.setBorderedTable(false);
+
         StudioTableDefinition configuredStudioTable = getConfiguredStudioTable();
-        configuredStudioTable.getColumns()
+        configuredStudioTable
+                .getColumns()
                 .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), path, ins -> ins.getField(path).toStringDisplay()));
 
         tableBuilder.appendActionColumn("", (BSDataTableBuilder.BSActionColumnCallback<SInstance, String>)
@@ -103,6 +111,32 @@ public class CrudListContent extends CrudShellContent {
                     listAction.configure(config);
                     actionColumn.appendAction(config, (org.opensingular.lib.wicket.util.datatable.IBSAction<SInstance>) (target, model) -> listAction.onAction(target, model, getCrudShellManager()));
                 }));
+
+        tableBuilder.setBorderedTable(false);
+
+        if (crudListConfig.getRowsPerPage() != null) {
+            tableBuilder.setRowsPerPage(crudListConfig.getRowsPerPage());
+        }
+
+        if (crudListConfig.getAdvancedTable() != null) {
+            tableBuilder.setAdvancedTable(crudListConfig.getAdvancedTable());
+        }
+
+        if (crudListConfig.getBorderedTable() != null) {
+            tableBuilder.setBorderedTable(crudListConfig.getBorderedTable());
+        }
+
+        if (crudListConfig.getCondensedTable() != null) {
+            tableBuilder.setCondensedTable(crudListConfig.getCondensedTable());
+        }
+
+        if (crudListConfig.getHoverRows() != null) {
+            tableBuilder.setHoverRows(crudListConfig.getHoverRows());
+        }
+
+        if (crudListConfig.getStripedRows() != null) {
+            tableBuilder.setStripedRows(crudListConfig.getStripedRows());
+        }
 
         add(tableBuilder.build("table"));
     }
