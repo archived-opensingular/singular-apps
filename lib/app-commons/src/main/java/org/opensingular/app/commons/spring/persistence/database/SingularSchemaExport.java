@@ -1,4 +1,16 @@
-package org.opensingular.requirement.commons.test.db;
+package org.opensingular.app.commons.spring.persistence.database;
+
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Set;
+import java.util.logging.Logger;
+import java.util.stream.Collectors;
+import javax.persistence.Entity;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.io.IOUtils;
@@ -10,19 +22,6 @@ import org.hibernate.engine.jdbc.internal.Formatter;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.exception.ExportScriptGenerationException;
-import org.springframework.core.io.Resource;
-
-import javax.persistence.Entity;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 public class SingularSchemaExport implements Loggable {
 
@@ -35,7 +34,7 @@ public class SingularSchemaExport implements Loggable {
      * @param scriptsPath       O path dos scripts adicionais.
      * @return
      */
-    public static Resource generateScript(String[] packages, Class<? extends Dialect> dialect,
+    public static StringBuilder generateScript(String[] packages, Class<? extends Dialect> dialect,
                                           String directoryFileName, List<String> scriptsPath) {
 
         StringBuilder scriptsText = readScriptsContent(scriptsPath);
@@ -58,12 +57,15 @@ public class SingularSchemaExport implements Loggable {
             cfg.buildMappings();
 
             Thread.currentThread().getContextClassLoader().getResource("db/ddl/drops.sql");
-            try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(directoryFileName), StandardCharsets.UTF_8))) {//NOSONAR
-                Dialect  hibDialect = Dialect.getDialect(cfg.getProperties());
-                String[] strings    = cfg.generateSchemaCreationScript(hibDialect);
-                write(writer, strings, scriptsText);
+            Dialect hibDialect = Dialect.getDialect(cfg.getProperties());
+            String[] strings = cfg.generateSchemaCreationScript(hibDialect);
+            StringBuilder scripts = write(strings, scriptsText);
+            if(directoryFileName != null) {
+                try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(directoryFileName), StandardCharsets.UTF_8))) {//NOSONAR
+                    writer.write(scripts.toString());
+                }
             }
-            return null;
+            return scripts;
         } catch (Exception e) {
             throw new ExportScriptGenerationException(e.getMessage(), e);
         }
@@ -103,20 +105,23 @@ public class SingularSchemaExport implements Loggable {
         return script;
     }
 
-    private static void write(PrintWriter writer, String[] lines, StringBuilder scriptsAdicionais) {
+    private static StringBuilder write(String[] lines, StringBuilder scriptsAdicionais) {
         Formatter formatter = FormatStyle.DDL.getFormatter();
 
-        if (scriptsAdicionais != null) {
-            System.out.println(scriptsAdicionais);
-            writer.write(formatter.format(scriptsAdicionais.toString()));
-        }
+        StringBuilder stringSql = new StringBuilder();
 
         for (String string : lines) {
             String lineFormated = formatter.format(string) + "; \n";
-            System.out.println(lineFormated);
-            writer.write(lineFormated);
+            stringSql.append(lineFormated);
         }
+
+        if (scriptsAdicionais != null) {
+            stringSql.append(scriptsAdicionais);
+        }
+
+        return stringSql;
     }
+
 
 
 }

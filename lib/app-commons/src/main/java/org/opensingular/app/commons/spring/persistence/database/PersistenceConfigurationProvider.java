@@ -38,7 +38,7 @@ import java.util.Set;
 public class PersistenceConfigurationProvider implements Loggable {
 
 
-    protected boolean isCreateDrop() {
+    public boolean isCreateDrop() {
         return SqlUtil.isDropCreateDatabase();
     }
 
@@ -62,10 +62,18 @@ public class PersistenceConfigurationProvider implements Loggable {
         }
     }
 
-    public String[] getPackagesToScan() {
-        List<String> packagesToScan = Lists.newArrayList("org.opensingular", "com.opensingular");
-        persistenceConfiguration.configureHibernatePackagesToScan(packagesToScan);
-        return packagesToScan.toArray(new String[packagesToScan.size()]);
+    public String[] getPackagesToScan(boolean retrieveAll) {
+        ConfigurationPackagesToScan configurationPackagesToScan = new ConfigurationPackagesToScan();
+        configurationPackagesToScan.addPackageToScan("org.opensingular", true);
+        configurationPackagesToScan.addPackageToScan("com.opensingular", true);
+        persistenceConfiguration.configureHibernatePackagesToScan(configurationPackagesToScan);
+        Set<String> packages;
+        if(retrieveAll){
+            packages = configurationPackagesToScan.getAllPackagesToScan();
+        } else {
+            packages = configurationPackagesToScan.getPackagesToScan();
+        }
+        return packages.toArray(new String[packages.size()]);
     }
 
     public Properties getHibernateProperties() {
@@ -81,7 +89,6 @@ public class PersistenceConfigurationProvider implements Loggable {
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(",").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", isCreateDrop() ? "create" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         persistenceConfiguration.configureHibernateProperties(hibernateProperties);

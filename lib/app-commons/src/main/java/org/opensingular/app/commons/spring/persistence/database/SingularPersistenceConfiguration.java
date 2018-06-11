@@ -34,7 +34,7 @@ public interface SingularPersistenceConfiguration {
      *  A pre-populated list with singular default packages, cleaning or removing pre-populated data in this list
      *  would led to platform malfunction.
      */
-    void configureHibernatePackagesToScan(List<String> packagesToScan);
+    void configureHibernatePackagesToScan(ConfigurationPackagesToScan packagesToScan);
 
     void configureInitSQLScripts(List<String> scripts);
 
@@ -68,6 +68,10 @@ public interface SingularPersistenceConfiguration {
 
     default SingularDataBaseSuport getDatabaseSupport() {
         return SingularDataBaseEnum.getForDialect(getHibernateDialect());
+    }
+
+    default boolean disabledHibernatePackagesCreated(){
+        return false;
     }
 
 }

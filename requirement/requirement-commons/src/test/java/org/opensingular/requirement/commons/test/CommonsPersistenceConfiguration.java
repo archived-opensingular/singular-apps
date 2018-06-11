@@ -23,18 +23,22 @@ import java.util.UUID;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
+import org.opensingular.app.commons.spring.persistence.database.ConfigurationPackagesToScan;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
 
 public class CommonsPersistenceConfiguration implements SingularPersistenceConfiguration {
-    @Override
-    public void configureHibernatePackagesToScan(List<String> packagesToScan) {
 
+
+    @Override
+    public void configureHibernatePackagesToScan(ConfigurationPackagesToScan packagesToScan) {
     }
 
     @Override
     public void configureInitSQLScripts(List<String> scripts) {
+
     }
+
 
     @Override
     public DefaultH2DataSource getEmbeddedDataSource() {
