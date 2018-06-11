@@ -217,4 +217,23 @@ public interface ExtensaoPortType {
         @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
         String idProcedimento);
 
+    /**
+     * Retorna o id de um documento ou procedimento(processo) com base em seu número de protocolo.
+     * 
+     * @param protocolo
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @return
+     *     returns java.lang.String
+     */
+    @WebMethod(action = "extensaons/consultarIdProtocolo")
+    @WebResult(name = "IdProtocolo", partName = "IdProtocolo")
+    public String consultarIdProtocolo(
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+        String identificacaoServico,
+        @WebParam(name = "Protocolo", partName = "Protocolo")
+        String protocolo);
+
 }

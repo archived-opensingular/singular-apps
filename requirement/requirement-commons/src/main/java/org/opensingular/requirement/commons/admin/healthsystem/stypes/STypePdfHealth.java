@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem.stypes;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.STypeComposite;
 import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.core.STypeHTML;
 import org.opensingular.form.type.core.STypeString;
-import org.opensingular.form.view.SViewByRichText;
+import org.opensingular.form.view.richtext.SViewByRichText;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-
-import javax.annotation.Nonnull;
 
 @SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = "pdfhealth")
 public class STypePdfHealth extends STypeComposite<SIPdfHealth> {
