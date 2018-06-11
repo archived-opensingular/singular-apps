@@ -171,6 +171,7 @@
         <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
         <wsdl:part name="IdUnidade" type="xsd:string"/>
         <wsdl:part name="IdDocumento" type="xsd:string"/>
+        <wsdl:part name="ModeloDocumento" type="xsd:boolean" />
     </wsdl:message>
 
     <wsdl:message name="consultarConteudoDocumentoResponse">
@@ -185,6 +186,16 @@
 
      <wsdl:message name="listarAssuntosResponse">
         <wsdl:part name="retorno" type="tns:ArrayOfAssunto" />
+    </wsdl:message>
+
+    <wsdl:message name="consultarLinkExternoProcedimentoRequest">
+        <wsdl:part name="SiglaSistema" type="xsd:string"/>
+        <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+        <wsdl:part name="IdProcedimento" type="xsd:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="consultarLinkExternoProcedimentoResponse">
+        <wsdl:part name="linkExterno" type="xsd:string" />
     </wsdl:message>
 
     <wsdl:portType name="extensaoPortType">
@@ -229,6 +240,12 @@
             <wsdl:documentation>Listar Assuntos do SEI.</wsdl:documentation>
             <wsdl:input message="tns:listarAssuntosRequest"/>
             <wsdl:output message="tns:listarAssuntosResponse"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="consultarLinkExternoProcedimento">
+            <wsdl:documentation>Busca o link externo para a página do procedimento (processo).</wsdl:documentation>
+            <wsdl:input message="tns:consultarLinkExternoProcedimentoRequest"/>
+            <wsdl:output message="tns:consultarLinkExternoProcedimentoResponse"/>
         </wsdl:operation>
 
     </wsdl:portType>
@@ -306,11 +323,21 @@
             </wsdl:output>
         </wsdl:operation>
 
+        <wsdl:operation name="consultarLinkExternoProcedimento">
+            <soap:operation soapAction="extensaons/consultarLinkExternoProcedimento"/>
+            <wsdl:input>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+
     </wsdl:binding>
 
     <wsdl:service name="extensaoService">
         <wsdl:port name="extensaoPortService" binding="tns:extensaoBinding">
-            <soap:address location="http://treinamentosei3singular.antaq.gov.br/sei/modulos/singular/mod-extensao-ws/ws/ExtensaoWS.php"/>
+            <soap:address location="[servidor]/modulos/singular/mod-extensao-ws/ws/ExtensaoWS.php"/>
         </wsdl:port>
     </wsdl:service>
 

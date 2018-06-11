@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,28 +26,28 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de RetornoConsultaDocumento complex type.
+ * <p>Java class for RetornoConsultaDocumento complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="RetornoConsultaDocumento">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdProcedimento" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="ProcedimentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="DocumentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="LinkAcesso" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Serie" type="{extensaons}Serie"/>
- *         &lt;element name="Numero" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Data" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Campos" type="{extensaons}ArrayOfCampo"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="RetornoConsultaDocumento"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdProcedimento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="ProcedimentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="DocumentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="LinkAcesso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Serie" type="{extensaons}Serie"/&gt;
+ *         &lt;element name="Numero" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Data" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Campos" type="{extensaons}ArrayOfCampo"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -79,7 +78,7 @@ public class RetornoConsultaDocumento {
     protected ArrayOfCampo campos;
 
     /**
-     * Obtém o valor da propriedade idProcedimento.
+     * Gets the value of the idProcedimento property.
      * 
      * @return
      *     possible object is
@@ -91,7 +90,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade idProcedimento.
+     * Sets the value of the idProcedimento property.
      * 
      * @param value
      *     allowed object is
@@ -103,7 +102,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade procedimentoFormatado.
+     * Gets the value of the procedimentoFormatado property.
      * 
      * @return
      *     possible object is
@@ -115,7 +114,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade procedimentoFormatado.
+     * Sets the value of the procedimentoFormatado property.
      * 
      * @param value
      *     allowed object is
@@ -127,7 +126,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade idDocumento.
+     * Gets the value of the idDocumento property.
      * 
      * @return
      *     possible object is
@@ -139,7 +138,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade idDocumento.
+     * Sets the value of the idDocumento property.
      * 
      * @param value
      *     allowed object is
@@ -151,7 +150,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade documentoFormatado.
+     * Gets the value of the documentoFormatado property.
      * 
      * @return
      *     possible object is
@@ -163,7 +162,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade documentoFormatado.
+     * Sets the value of the documentoFormatado property.
      * 
      * @param value
      *     allowed object is
@@ -175,7 +174,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade linkAcesso.
+     * Gets the value of the linkAcesso property.
      * 
      * @return
      *     possible object is
@@ -187,7 +186,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade linkAcesso.
+     * Sets the value of the linkAcesso property.
      * 
      * @param value
      *     allowed object is
@@ -199,7 +198,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade serie.
+     * Gets the value of the serie property.
      * 
      * @return
      *     possible object is
@@ -211,7 +210,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade serie.
+     * Sets the value of the serie property.
      * 
      * @param value
      *     allowed object is
@@ -223,7 +222,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade numero.
+     * Gets the value of the numero property.
      * 
      * @return
      *     possible object is
@@ -235,7 +234,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade numero.
+     * Sets the value of the numero property.
      * 
      * @param value
      *     allowed object is
@@ -247,7 +246,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade data.
+     * Gets the value of the data property.
      * 
      * @return
      *     possible object is
@@ -259,7 +258,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade data.
+     * Sets the value of the data property.
      * 
      * @param value
      *     allowed object is
@@ -271,7 +270,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade campos.
+     * Gets the value of the campos property.
      * 
      * @return
      *     possible object is
@@ -283,7 +282,7 @@ public class RetornoConsultaDocumento {
     }
 
     /**
-     * Define o valor da propriedade campos.
+     * Sets the value of the campos property.
      * 
      * @param value
      *     allowed object is

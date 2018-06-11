@@ -33,7 +33,7 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
     private final String initScript;
 
     public H2DropAllObjectsPopulator(DataSource dataSource) {
-        if (dataSource instanceof DefaultH2DataSource) {//NOSONAR
+        if (dataSource instanceof DefaultH2DataSource) {
             this.initScript = ((DefaultH2DataSource) dataSource).getInitScript();
         } else {
             this.initScript = "";
@@ -45,9 +45,9 @@ public class H2DropAllObjectsPopulator implements DatabasePopulator, Loggable {
         try (PreparedStatement drop = connection.prepareStatement("DROP ALL OBJECTS");
              PreparedStatement ps = connection.prepareStatement(initScript)) {
             getLogger().warn("DROPPING EMBBEDED H2 DATABASE, SQL: DROP ALL OBJECTS");
-            drop.execute();//NOSONAR
+            drop.execute();
             getLogger().warn("REEXECUTING EMBBEDED H2 DATABASE INIT SCRIPTS");
-            ps.execute();//NOSONAR
+            ps.execute();
         }
     }
 }
