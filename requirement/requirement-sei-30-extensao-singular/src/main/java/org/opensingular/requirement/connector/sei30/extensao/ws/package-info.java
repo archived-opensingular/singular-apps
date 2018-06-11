@@ -1,4 +1,3 @@
-
 /*
  *
  *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
@@ -16,7 +15,6 @@
  *  * limitations under the License.
  *
  */
-
 
 @javax.xml.bind.annotation.XmlSchema(namespace = "extensaons")
 package org.opensingular.requirement.connector.sei30.extensao.ws;

@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,21 +26,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de RetornoConsultarConteudoDocumento complex type.
+ * <p>Java class for RetornoConsultarConteudoDocumento complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="RetornoConsultarConteudoDocumento">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Conteudo" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="RetornoConsultarConteudoDocumento"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Conteudo" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -58,7 +57,7 @@ public class RetornoConsultarConteudoDocumento {
     protected String conteudo;
 
     /**
-     * Obtém o valor da propriedade idDocumento.
+     * Gets the value of the idDocumento property.
      * 
      * @return
      *     possible object is
@@ -70,7 +69,7 @@ public class RetornoConsultarConteudoDocumento {
     }
 
     /**
-     * Define o valor da propriedade idDocumento.
+     * Sets the value of the idDocumento property.
      * 
      * @param value
      *     allowed object is
@@ -82,7 +81,7 @@ public class RetornoConsultarConteudoDocumento {
     }
 
     /**
-     * Obtém o valor da propriedade conteudo.
+     * Gets the value of the conteudo property.
      * 
      * @return
      *     possible object is
@@ -94,7 +93,7 @@ public class RetornoConsultarConteudoDocumento {
     }
 
     /**
-     * Define o valor da propriedade conteudo.
+     * Sets the value of the conteudo property.
      * 
      * @param value
      *     allowed object is
