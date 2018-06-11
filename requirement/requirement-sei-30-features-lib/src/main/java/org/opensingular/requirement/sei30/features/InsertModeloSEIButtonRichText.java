@@ -46,7 +46,7 @@ public class InsertModeloSEIButtonRichText implements RichTextAction<RichTextCon
     @Override
     public void onAction(RichTextContentContext richTextActionContext, Optional<SInstance> optional) {
         optional.ifPresent(instance -> {
-            SIModeloSEI instanceLinkSei = (SIModeloSEI) instance;
+            SIModeloSEI instanceLinkSei = (SIModeloSEI) instance;  //NOSONAR
             richTextActionContext.setReturnValue(functionActionModelo.apply(instanceLinkSei));
         });
     }

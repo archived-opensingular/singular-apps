@@ -46,7 +46,7 @@ public class InsertLinkSEIButtonRichText implements RichTextAction<RichTextInser
     @Override
     public void onAction(RichTextInsertContext richTextActionContext, Optional<SInstance> optional) {
         optional.ifPresent(instance -> {
-            SILinkSEI instanceLinkSei = (SILinkSEI) instance;
+            SILinkSEI instanceLinkSei = (SILinkSEI) instance; //NOSONAR
             String protocolo = instanceLinkSei.getProtocolo();
             String idProtocolo = functionActionLink.apply(instanceLinkSei);
             if(protocolo != null && idProtocolo != null) {
