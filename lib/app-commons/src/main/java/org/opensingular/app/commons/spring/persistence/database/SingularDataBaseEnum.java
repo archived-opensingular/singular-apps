@@ -27,6 +27,10 @@ import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.opensingular.lib.commons.base.SingularException;
 
+/**
+ * A Enum responsible to contain the insert's scripts to especific Dialect.
+ * Should have the function's creation script, and the actor table.
+ */
 public enum SingularDataBaseEnum implements SingularDataBaseSuport {
 
 
@@ -34,8 +38,8 @@ public enum SingularDataBaseEnum implements SingularDataBaseSuport {
     MSSQL(SQLServerDialect.class, "db/ddl/sqlserver/create-table-actor.sql", "db/ddl/sqlserver/create-function.sql"),
     H2(H2Dialect.class, "db/ddl/h2/create-table-actor.sql", "db/ddl/h2/create-function.sql");
 
-    private String                   actorScript;
-    private List<String>             scripts;
+    private String actorScript;
+    private List<String> scripts;
     private Class<? extends Dialect> dialect;
 
     SingularDataBaseEnum(Class<? extends Dialect> dialect, String defaultActorScript, String... scripts) {

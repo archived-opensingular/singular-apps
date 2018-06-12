@@ -20,6 +20,13 @@ public class SingularDataBasePopulator implements DatabasePopulator, Loggable {
         this.scripts = formattedScriptsToExecute(persistenceConfigurationProvider);
     }
 
+    /**
+     * Method to create a StringBuilder with all scripts to execute.
+     * The script contains the packages that have to create the entities, and set the replace schema or Catalog.
+     *
+     * @param persistenceConfigurationProvider The implementation of the interface that contains the packages to Scan, and some replaces that is necessary.
+     * @return StringBuilder containg all DML and DDL Scripts.
+     */
     private StringBuilder formattedScriptsToExecute(PersistenceConfigurationProvider persistenceConfigurationProvider) {
         StringBuilder scripts = SingularSchemaExport.generateScript(
                 persistenceConfigurationProvider.getPackagesToScan(false),

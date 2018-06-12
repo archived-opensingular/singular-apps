@@ -21,7 +21,6 @@ public class ConfigurationPackagesToScan {
         packagesToScan.put(packageToScan, Boolean.TRUE);
     }
 
-
     /**
      * This method return just the Packages that want to crete the entities. Just that have TRUE in the value of Map.
      * This use default scope (package private), because just the Singular Persinstence should see this.

@@ -18,8 +18,14 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
+import javax.sql.DataSource;
+
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
@@ -27,13 +33,6 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-
-import javax.sql.DataSource;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
 
 public class PersistenceConfigurationProvider implements Loggable {
 
@@ -48,6 +47,10 @@ public class PersistenceConfigurationProvider implements Loggable {
         this.persistenceConfiguration = configuration;
     }
 
+    /**
+     * This method will create the SingularPersistenceConfiguration using the implementation of the project.
+     * If find more than one, or none implementantion this method will return a error.
+     */
     public PersistenceConfigurationProvider() {
         try {
             Set<Class<? extends SingularPersistenceConfiguration>> configs = SingularClassPathScanner.get().findSubclassesOf(SingularPersistenceConfiguration.class);
@@ -62,13 +65,21 @@ public class PersistenceConfigurationProvider implements Loggable {
         }
     }
 
+    /**
+     * This method will return the packages to Scan witch is implements SingularPersistenceConfiguration.
+     * By default all the packages in the Singular will included in the packages to Scan.
+     *
+     * @param retrieveAll True for retrieveAll packages that will be used in HQL querys;
+     *                    False for just the packages that have to create the tables.
+     * @return String Array containing the packages to Scan.
+     */
     public String[] getPackagesToScan(boolean retrieveAll) {
         ConfigurationPackagesToScan configurationPackagesToScan = new ConfigurationPackagesToScan();
         configurationPackagesToScan.addPackageToScan("org.opensingular", true);
         configurationPackagesToScan.addPackageToScan("com.opensingular", true);
         persistenceConfiguration.configureHibernatePackagesToScan(configurationPackagesToScan);
         Set<String> packages;
-        if(retrieveAll){
+        if (retrieveAll) {
             packages = configurationPackagesToScan.getAllPackagesToScan();
         } else {
             packages = configurationPackagesToScan.getPackagesToScan();
@@ -111,7 +122,8 @@ public class PersistenceConfigurationProvider implements Loggable {
             scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
         }
         persistenceConfiguration.configureInitSQLScripts(scripts);
-        scripts.add(persistenceConfiguration.getActorTableScript());return scripts;
+        scripts.add(persistenceConfiguration.getActorTableScript());
+        return scripts;
     }
 
     public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
