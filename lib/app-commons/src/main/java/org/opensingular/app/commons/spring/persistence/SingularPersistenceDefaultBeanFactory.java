@@ -18,14 +18,12 @@
 
 package org.opensingular.app.commons.spring.persistence;
 
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Logger;
 import javax.sql.DataSource;
 
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.spring.persistence.database.H2DropAllObjectsPopulator;
 import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;
+import org.opensingular.app.commons.spring.persistence.database.SingularDataBasePopulator;
 import org.opensingular.app.commons.spring.persistence.database.SingularSchemaExport;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
@@ -59,37 +57,23 @@ public class SingularPersistenceDefaultBeanFactory implements Loggable {
 
     @Bean
     @DependsOn("dataSourceInitializer")
+    public DataSourceInitializer dataBasePopulator(DataSource dataSource) {
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDataSource(dataSource);
+        dataSourceInitializer.setDatabasePopulator(new SingularDataBasePopulator(getPersistenceConfiguration()));
+        dataSourceInitializer.setEnabled(getPersistenceConfiguration().isCreateDrop());
+        return dataSourceInitializer;
+    }
+
+    @Bean
+    @DependsOn("dataBasePopulator")
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(getPersistenceConfiguration().getHibernateProperties());
         sessionFactoryBean.setPackagesToScan(getPersistenceConfiguration().getPackagesToScan(true));
         sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor(getPersistenceConfiguration().getSchemaReplacements()));
-
-        executeTablesOnConnection(dataSource);
         return sessionFactoryBean;
-    }
-
-    private void executeTablesOnConnection(DataSource dataSource) {
-        if (getPersistenceConfiguration().isCreateDrop()) {
-            StringBuilder scripts = SingularSchemaExport.generateScript(
-                    persistenceConfigurationProvider.getPackagesToScan(false),
-                    persistenceConfigurationProvider.getDialect(),
-                    null,
-                    persistenceConfigurationProvider.getSQLScritps());
-            for (DatabaseObjectNameReplacement schemaReplacement : getPersistenceConfiguration().getSchemaReplacements()) {
-                scripts = new StringBuilder(SqlUtil.replaceSchemaName(scripts.toString(),
-                        schemaReplacement.getOriginalObjectName(),
-                        schemaReplacement.getObjectNameReplacement()));
-            }
-            try {
-                PreparedStatement ps = dataSource.getConnection().prepareStatement(scripts.toString());
-                Logger.getLogger(SingularSchemaExport.class.getName()).info(scripts.toString());
-                ps.execute();
-            } catch (SQLException sqle) {
-                getLogger().error("Error in the generation of schemas and tables!", sqle);
-            }
-        }
     }
 
     @Bean
