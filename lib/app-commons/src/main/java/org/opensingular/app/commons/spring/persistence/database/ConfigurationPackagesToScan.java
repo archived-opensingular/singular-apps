@@ -18,7 +18,7 @@ public class ConfigurationPackagesToScan {
     }
 
     public void addPackageToScan(String packageToScan) {
-        packagesToScan.put(packageToScan, true);
+        packagesToScan.put(packageToScan, Boolean.TRUE);
     }
 
 
