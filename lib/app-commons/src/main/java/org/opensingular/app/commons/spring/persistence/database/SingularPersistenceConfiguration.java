@@ -30,11 +30,11 @@ public interface SingularPersistenceConfiguration {
     /**
      * Configure hibernates packages to scan in addition to the singular platform packages, ie: singular entities packages
      * is already configured by the platform.
-     * @param packagesToScan
+     * @param configuratePackagesToScan A class that contains que List of packages to Scan
      *  A pre-populated list with singular default packages, cleaning or removing pre-populated data in this list
      *  would led to platform malfunction.
      */
-    void configureHibernatePackagesToScan(ConfigurationPackagesToScan packagesToScan);
+    void configureHibernatePackagesToScan(ConfigurationPackagesToScan configuratePackagesToScan);
 
     void configureInitSQLScripts(List<String> scripts);
 
