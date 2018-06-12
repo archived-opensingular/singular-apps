@@ -36,11 +36,6 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 public class PersistenceConfigurationProvider implements Loggable {
 
-
-    public boolean isCreateDrop() {
-        return SqlUtil.isDropCreateDatabase();
-    }
-
     protected SingularPersistenceConfiguration persistenceConfiguration;
 
     public PersistenceConfigurationProvider(SingularPersistenceConfiguration configuration) {
@@ -106,14 +101,6 @@ public class PersistenceConfigurationProvider implements Loggable {
         return hibernateProperties;
     }
 
-    public Class<? extends Dialect> getDialect() {
-        return persistenceConfiguration.getHibernateDialect();
-    }
-
-    public boolean isDropAllH2() {
-        return SqlUtil.useEmbeddedDatabase() && isCreateDrop();
-    }
-
     public List<String> getSQLScritps() {
         List<String> scripts = new ArrayList<>();
         if (SqlUtil.useEmbeddedDatabase()) {
@@ -142,5 +129,17 @@ public class PersistenceConfigurationProvider implements Loggable {
             dataSource = persistenceConfiguration.getNonEmbeddedDataSource();
         }
         return dataSource;
+    }
+
+    public Class<? extends Dialect> getDialect() {
+        return persistenceConfiguration.getHibernateDialect();
+    }
+
+    public boolean isDropAllH2() {
+        return SqlUtil.useEmbeddedDatabase() && isCreateDrop();
+    }
+
+    public boolean isCreateDrop() {
+        return SqlUtil.isDropCreateDatabase();
     }
 }

@@ -31,7 +31,7 @@ public class SingularSchemaExport implements Loggable {
      * @param dialect           O dialect do banco escolhido.
      * @param directoryFileName O diretorio na qual será gerado o script.
      * @param scriptsPath       O path dos scripts adicionais.
-     * @return
+     * @return Return all the scripts DML and DDL that will be executed by Hibernate.
      */
     public static StringBuilder generateScript(String[] packages, Class<? extends Dialect> dialect,
             String directoryFileName, List<String> scriptsPath) {
