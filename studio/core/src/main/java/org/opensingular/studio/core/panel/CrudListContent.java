@@ -18,6 +18,12 @@
 
 package org.opensingular.studio.core.panel;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -51,20 +57,14 @@ import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 public class CrudListContent extends CrudShellContent {
 
-    private IModel<Icon>            iconModel          = new Model<>();
-    private IModel<String>          titleModel         = new Model<>();
+    private IModel<Icon> iconModel = new Model<>();
+    private IModel<String> titleModel = new Model<>();
     private List<HeaderRightButton> headerRightButtons = new ArrayList<>();
 
-    private   BFModalWindow           modalFilter;
-    private   SingularFormPanel       filterPanel;
+    private BFModalWindow modalFilter;
+    private SingularFormPanel filterPanel;
     protected FormStateUtil.FormState filterState;
 
     private final CrudListConfig crudListConfig;
@@ -212,6 +212,17 @@ public class CrudListContent extends CrudShellContent {
                     modalFilter.show(target);
                 }
             });
+
+            AjaxButton limparButton = new AjaxButton("btnLimpar") {
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    filterPanel.getInstanceModel().getObject().clearInstance();
+                    form.clearInput();
+                    target.add(filterPanel);
+                }
+            };
+            limparButton.setDefaultFormProcessing(false);
+            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
 
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
