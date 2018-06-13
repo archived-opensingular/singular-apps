@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,22 +26,22 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Serie complex type.
+ * <p>Java class for Serie complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Serie">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdSerie" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Aplicabilidade" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Serie"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdSerie" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Aplicabilidade" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -61,7 +60,7 @@ public class Serie {
     protected String aplicabilidade;
 
     /**
-     * Obtém o valor da propriedade idSerie.
+     * Gets the value of the idSerie property.
      * 
      * @return
      *     possible object is
@@ -73,7 +72,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade idSerie.
+     * Sets the value of the idSerie property.
      * 
      * @param value
      *     allowed object is
@@ -85,7 +84,7 @@ public class Serie {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Gets the value of the nome property.
      * 
      * @return
      *     possible object is
@@ -97,7 +96,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade nome.
+     * Sets the value of the nome property.
      * 
      * @param value
      *     allowed object is
@@ -109,7 +108,7 @@ public class Serie {
     }
 
     /**
-     * Obtém o valor da propriedade aplicabilidade.
+     * Gets the value of the aplicabilidade property.
      * 
      * @return
      *     possible object is
@@ -121,7 +120,7 @@ public class Serie {
     }
 
     /**
-     * Define o valor da propriedade aplicabilidade.
+     * Sets the value of the aplicabilidade property.
      * 
      * @param value
      *     allowed object is

@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,23 +26,23 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de DadosUsuarioExterno complex type.
+ * <p>Java class for DadosUsuarioExterno complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DadosUsuarioExterno">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="NumIdUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="StrSigla" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="DadosUsuarioExterno"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="NumIdUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="Nome" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="StrSigla" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -64,7 +63,7 @@ public class DadosUsuarioExterno {
     protected String cpf;
 
     /**
-     * Obtém o valor da propriedade numIdUsuario.
+     * Gets the value of the numIdUsuario property.
      * 
      */
     public long getNumIdUsuario() {
@@ -72,7 +71,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Define o valor da propriedade numIdUsuario.
+     * Sets the value of the numIdUsuario property.
      * 
      */
     public void setNumIdUsuario(long value) {
@@ -80,7 +79,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Obtém o valor da propriedade nome.
+     * Gets the value of the nome property.
      * 
      * @return
      *     possible object is
@@ -92,7 +91,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Define o valor da propriedade nome.
+     * Sets the value of the nome property.
      * 
      * @param value
      *     allowed object is
@@ -104,7 +103,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Obtém o valor da propriedade strSigla.
+     * Gets the value of the strSigla property.
      * 
      * @return
      *     possible object is
@@ -116,7 +115,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Define o valor da propriedade strSigla.
+     * Sets the value of the strSigla property.
      * 
      * @param value
      *     allowed object is
@@ -128,7 +127,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Obtém o valor da propriedade cpf.
+     * Gets the value of the cpf property.
      * 
      * @return
      *     possible object is
@@ -140,7 +139,7 @@ public class DadosUsuarioExterno {
     }
 
     /**
-     * Define o valor da propriedade cpf.
+     * Sets the value of the cpf property.
      * 
      * @param value
      *     allowed object is
