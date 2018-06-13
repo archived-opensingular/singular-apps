@@ -69,15 +69,15 @@ public class PersistenceConfigurationProvider implements Loggable {
      * @return String Array containing the packages to Scan.
      */
     public String[] getPackagesToScan(boolean retrieveAll) {
-        ConfigurationPackagesToScan configurationPackagesToScan = new ConfigurationPackagesToScan();
-        configurationPackagesToScan.addPackageToScan("org.opensingular", true);
-        configurationPackagesToScan.addPackageToScan("com.opensingular", true);
-        persistenceConfiguration.configureHibernatePackagesToScan(configurationPackagesToScan);
+        PackageScanConfiguration packageScanConfiguration = new PackageScanConfiguration();
+        packageScanConfiguration.addPackageToScan("org.opensingular", true);
+        packageScanConfiguration.addPackageToScan("com.opensingular", true);
+        persistenceConfiguration.configureHibernatePackagesToScan(packageScanConfiguration);
         Set<String> packages;
         if (retrieveAll) {
-            packages = configurationPackagesToScan.getAllPackagesToScan();
+            packages = packageScanConfiguration.getAllPackagesToScan();
         } else {
-            packages = configurationPackagesToScan.getPackagesToScan();
+            packages = packageScanConfiguration.getPackagesToScan();
         }
         return packages.toArray(new String[packages.size()]);
     }

@@ -39,7 +39,7 @@ public interface SingularPersistenceConfiguration {
      * @param configuratePackagesToScan A configuration class that contains a pre-populated list with singular default packages,
      *                                  cleaning or removing pre-populated data in this list would led to platform malfunction.
      */
-    void configureHibernatePackagesToScan(ConfigurationPackagesToScan configuratePackagesToScan);
+    void configureHibernatePackagesToScan(PackageScanConfiguration configuratePackagesToScan);
 
     /**
      * Method responsible to configure the list of scripts files that will be execute after the creation of Entities by Hibernate.

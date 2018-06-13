@@ -23,14 +23,14 @@ import java.util.UUID;
 
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.Oracle10gDialect;
-import org.opensingular.app.commons.spring.persistence.database.ConfigurationPackagesToScan;
+import org.opensingular.app.commons.spring.persistence.database.PackageScanConfiguration;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
 
 public class TestPersistenceConfiguration implements SingularPersistenceConfiguration {
 
     @Override
-    public void configureHibernatePackagesToScan(ConfigurationPackagesToScan packagesToScan) {
+    public void configureHibernatePackagesToScan(PackageScanConfiguration packagesToScan) {
 
     }
 

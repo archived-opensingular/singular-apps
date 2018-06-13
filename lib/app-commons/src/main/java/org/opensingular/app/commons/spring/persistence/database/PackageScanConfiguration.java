@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class ConfigurationPackagesToScan {
+public class PackageScanConfiguration {
 
     /**
      * A map that contains key = Package to Scan
@@ -13,10 +13,22 @@ public class ConfigurationPackagesToScan {
      */
     private Map<String, Boolean> packagesToScan = new HashMap<>();
 
-    public void addPackageToScan(String packageToScan, boolean execute) {
-        packagesToScan.put(packageToScan, execute);
+    /**
+     * Configures the given {@param packagesToScan} as package to be scanned by the hibernate session factory in
+     * search of entities.
+     * It is possible to configure if the entities found in the given package must be used by the hibernate to
+     * database ddl generation using the param {@param ddlEnabled}
+     * @param packageToScan
+     * @param ddlEnabled
+     */
+    public void addPackageToScan(String packageToScan, boolean ddlEnabled) {
+        packagesToScan.put(packageToScan, ddlEnabled);
     }
 
+    /**
+     * The same as {@link #addPackageToScan(String, boolean)} but the ddl is enabled by default in this method
+     * @param packageToScan
+     */
     public void addPackageToScan(String packageToScan) {
         packagesToScan.put(packageToScan, Boolean.TRUE);
     }
