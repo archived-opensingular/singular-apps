@@ -16,18 +16,20 @@
 
 (function () {
     "use strict";
-    if(window.AbstractFormPage === undefined){
-        window.AbstractFormPage = function(){};
+    if (window.AbstractFormPage === undefined) {
+        window.AbstractFormPage = function () {};
 
         window.AbstractFormPage.saveCallBack;
-        window.AbstractFormPage.setup = function(params) {
+
+        window.AbstractFormPage.setup = function (params) {
             window.AbstractFormPage.saveCallBack = params.callbackUrl;
         };
 
-
-
-        window.AbstractFormPage.onSave = function() {
-            console.log(window.AbstractFormPage.saveCallBack);
+        /**
+         * A method to enable the callback of Form SaveButton in the JS.
+         * Used in the CKeditor.
+         */
+        window.AbstractFormPage.onSave = function () {
             Wicket.Ajax.post({
                 u: window.AbstractFormPage.saveCallBack
             });
