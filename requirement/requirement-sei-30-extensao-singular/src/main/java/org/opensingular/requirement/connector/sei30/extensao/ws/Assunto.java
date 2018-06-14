@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlAccessType;
@@ -27,21 +26,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de Assunto complex type.
+ * <p>Java class for Assunto complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Assunto">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="CodigoEstruturado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Descricao" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="Assunto"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="CodigoEstruturado" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Descricao" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 
@@ -58,7 +57,7 @@ public class Assunto {
     protected String descricao;
 
     /**
-     * Obtém o valor da propriedade codigoEstruturado.
+     * Gets the value of the codigoEstruturado property.
      * 
      * @return
      *     possible object is
@@ -70,7 +69,7 @@ public class Assunto {
     }
 
     /**
-     * Define o valor da propriedade codigoEstruturado.
+     * Sets the value of the codigoEstruturado property.
      * 
      * @param value
      *     allowed object is
@@ -82,7 +81,7 @@ public class Assunto {
     }
 
     /**
-     * Obtém o valor da propriedade descricao.
+     * Gets the value of the descricao property.
      * 
      * @return
      *     possible object is
@@ -94,7 +93,7 @@ public class Assunto {
     }
 
     /**
-     * Define o valor da propriedade descricao.
+     * Sets the value of the descricao property.
      * 
      * @param value
      *     allowed object is

@@ -52,7 +52,7 @@ public class ModuleConfigurationMock {
     @Primary
     @Bean
     public AuthorizationService authorizationService() {
-        return spy(AuthorizationService.class);
+        return spy(mock(AuthorizationService.class));
     }
 
     @Primary

@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import javax.xml.bind.annotation.XmlRegistry;
@@ -57,75 +56,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RetornoConsultaDocumento }
-     * 
-     */
-    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
-        return new RetornoConsultaDocumento();
-    }
-
-    /**
-     * Create an instance of {@link ArrayOfAssinante }
-     * 
-     */
-    public ArrayOfAssinante createArrayOfAssinante() {
-        return new ArrayOfAssinante();
-    }
-
-    /**
-     * Create an instance of {@link ArrayOfCampo }
-     * 
-     */
-    public ArrayOfCampo createArrayOfCampo() {
-        return new ArrayOfCampo();
-    }
-
-    /**
-     * Create an instance of {@link RetornoConsultarConteudoDocumento }
-     * 
-     */
-    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
-        return new RetornoConsultarConteudoDocumento();
-    }
-
-    /**
      * Create an instance of {@link DadosAssinatura }
      * 
      */
     public DadosAssinatura createDadosAssinatura() {
         return new DadosAssinatura();
-    }
-
-    /**
-     * Create an instance of {@link Assunto }
-     * 
-     */
-    public Assunto createAssunto() {
-        return new Assunto();
-    }
-
-    /**
-     * Create an instance of {@link ArrayOfRetornoConsultaDocumento }
-     * 
-     */
-    public ArrayOfRetornoConsultaDocumento createArrayOfRetornoConsultaDocumento() {
-        return new ArrayOfRetornoConsultaDocumento();
-    }
-
-    /**
-     * Create an instance of {@link Campo }
-     * 
-     */
-    public Campo createCampo() {
-        return new Campo();
-    }
-
-    /**
-     * Create an instance of {@link ArrayOfAssunto }
-     * 
-     */
-    public ArrayOfAssunto createArrayOfAssunto() {
-        return new ArrayOfAssunto();
     }
 
     /**
@@ -145,11 +80,75 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ArrayOfAssinante }
+     * 
+     */
+    public ArrayOfAssinante createArrayOfAssinante() {
+        return new ArrayOfAssinante();
+    }
+
+    /**
+     * Create an instance of {@link Campo }
+     * 
+     */
+    public Campo createCampo() {
+        return new Campo();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfCampo }
+     * 
+     */
+    public ArrayOfCampo createArrayOfCampo() {
+        return new ArrayOfCampo();
+    }
+
+    /**
      * Create an instance of {@link Serie }
      * 
      */
     public Serie createSerie() {
         return new Serie();
+    }
+
+    /**
+     * Create an instance of {@link RetornoConsultaDocumento }
+     * 
+     */
+    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
+        return new RetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfRetornoConsultaDocumento }
+     * 
+     */
+    public ArrayOfRetornoConsultaDocumento createArrayOfRetornoConsultaDocumento() {
+        return new ArrayOfRetornoConsultaDocumento();
+    }
+
+    /**
+     * Create an instance of {@link RetornoConsultarConteudoDocumento }
+     * 
+     */
+    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
+        return new RetornoConsultarConteudoDocumento();
+    }
+
+    /**
+     * Create an instance of {@link Assunto }
+     * 
+     */
+    public Assunto createAssunto() {
+        return new Assunto();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfAssunto }
+     * 
+     */
+    public ArrayOfAssunto createArrayOfAssunto() {
+        return new ArrayOfAssunto();
     }
 
 }
