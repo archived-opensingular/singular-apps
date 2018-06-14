@@ -83,6 +83,7 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
         modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, transitionButtonLabel, defaultButtonLabelWhenNull, button );
     }
 
+    //FIXME esse método talvez deva estar no SimpleMessageFlowConfirmModal
     protected void addDefaultCancelButton(final BSModalBorder modal) {
         modal.addButton(
                 BSModalBorder.ButtonStyle.CANCEL,
