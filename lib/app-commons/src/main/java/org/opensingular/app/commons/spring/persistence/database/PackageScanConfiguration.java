@@ -33,7 +33,7 @@ public class PackageScanConfiguration {
      * @param packageToScan
      */
     public void addPackageToScan(String packageToScan) {
-        this.addPackageToScan(packageToScan, Boolean.TRUE);
+        this.addPackageToScan(packageToScan, true);
     }
 
     /**
