@@ -218,7 +218,7 @@ public class CrudListContent extends CrudShellContent {
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
                     filterPanel.getInstanceModel().getObject().clearInstance();
                     form.clearInput();
-                    filterPanel.getInstanceModel().getObject().init();
+//                    filterPanel.getInstanceModel().getObject().init();
                     target.add(filterPanel);
                 }
             };
