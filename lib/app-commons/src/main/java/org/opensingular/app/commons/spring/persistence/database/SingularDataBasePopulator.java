@@ -1,23 +1,33 @@
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.util.logging.Logger;
-import javax.annotation.Nonnull;
-
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
-import org.opensingular.lib.support.persistence.util.SqlUtil;
-import org.springframework.jdbc.datasource.init.DatabasePopulator;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.datasource.init.ScriptException;
 
-public class SingularDataBasePopulator implements DatabasePopulator, Loggable {
+import javax.annotation.Nonnull;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-    private StringBuilder scripts;
+public class SingularDataBasePopulator extends ResourceDatabasePopulator implements Loggable {
+
+    private String                           sqlScriptEncoding;
+    private PersistenceConfigurationProvider persistenceConfigurationProvider;
 
     public SingularDataBasePopulator(@Nonnull PersistenceConfigurationProvider persistenceConfigurationProvider) {
-        this.scripts = formattedScriptsToExecute(persistenceConfigurationProvider);
+        this.persistenceConfigurationProvider = persistenceConfigurationProvider;
+        this.setSqlScriptEncoding(StandardCharsets.UTF_8.name());
+        this.setSeparator(";");
+    }
+
+    @Override
+    public void populate(Connection connection) throws ScriptException {
+        super.addScript(new ByteArrayResource(formattedScriptsToExecute(persistenceConfigurationProvider).toString().getBytes(Charset.forName(this.sqlScriptEncoding)),"Singular Schema Export Hibernate DDL + SQL Files"));
+        super.populate(connection);
     }
 
     /**
@@ -31,25 +41,24 @@ public class SingularDataBasePopulator implements DatabasePopulator, Loggable {
         StringBuilder scripts = SingularSchemaExport.generateScript(
                 persistenceConfigurationProvider.getPackagesToScan(false),
                 persistenceConfigurationProvider.getDialect(),
-                null,
-                persistenceConfigurationProvider.getSQLScritps());
+                persistenceConfigurationProvider.getSQLScritps()
+        );
         for (DatabaseObjectNameReplacement schemaReplacement : persistenceConfigurationProvider.getSchemaReplacements()) {
-            scripts = new StringBuilder(SqlUtil.replaceSchemaName(scripts.toString(),
-                    schemaReplacement.getOriginalObjectName(),
-                    schemaReplacement.getObjectNameReplacement()));
+            Pattern p     = Pattern.compile(Pattern.quote(schemaReplacement.getOriginalObjectName()));
+            Matcher m     = p.matcher(scripts);
+            int     start = 0;
+            while (m.find(start)) {
+                scripts.replace(m.start(), m.end(), schemaReplacement.getObjectNameReplacement());
+                start = m.start() + schemaReplacement.getObjectNameReplacement().length();
+            }
         }
         return scripts;
     }
 
-
     @Override
-    public void populate(Connection connection) throws SQLException, ScriptException {
-        try (PreparedStatement ps = connection.prepareStatement(scripts.toString())) {
-            ps.execute();
-            Logger.getLogger(SingularSchemaExport.class.getName()).info(scripts.toString());
-        }
-
+    public void setSqlScriptEncoding(String sqlScriptEncoding) {
+        this.sqlScriptEncoding = sqlScriptEncoding;
+        super.setSqlScriptEncoding(sqlScriptEncoding);
     }
-
 
 }

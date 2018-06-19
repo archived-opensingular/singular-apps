@@ -17,11 +17,11 @@ public abstract class SingularSchemaExportTest {
 
     protected void generateScript(String scriptFilePath) {
         PersistenceConfigurationProvider persistenceConfigurationProvider = getPersistenceConfiguration();
-        SingularSchemaExport.generateScript(
+        SingularSchemaExport.generateScriptToFile(
                 persistenceConfigurationProvider.getPackagesToScan(false),
                 persistenceConfigurationProvider.getDialect(),
-                scriptFilePath,
-                persistenceConfigurationProvider.getSQLScritps()
+                persistenceConfigurationProvider.getSQLScritps(),
+                scriptFilePath
         );
     }
 
