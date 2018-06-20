@@ -1,16 +1,5 @@
 package org.opensingular.app.commons.spring.persistence.database;
 
-import org.apache.commons.collections.CollectionUtils;
-import org.hibernate.cfg.Configuration;
-import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2Dialect;
-import org.hibernate.engine.jdbc.internal.FormatStyle;
-import org.hibernate.engine.jdbc.internal.Formatter;
-import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.lib.commons.util.Loggable;
-
-import javax.persistence.Entity;
 import java.io.BufferedReader;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -22,8 +11,24 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.persistence.Entity;
+
+import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.cfg.Configuration;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.H2Dialect;
+import org.hibernate.engine.jdbc.internal.FormatStyle;
+import org.hibernate.engine.jdbc.internal.Formatter;
+import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.commons.util.Loggable;
 
 public class SingularSchemaExport implements Loggable {
+
+
+    private SingularSchemaExport() {
+
+    }
 
     /**
      * Método com objeto de gerar o script de toda a base do singular, inclusive com os inserts.
@@ -75,10 +80,9 @@ public class SingularSchemaExport implements Loggable {
             cfg.buildMappings();
 
             Thread.currentThread().getContextClassLoader().getResource("db/ddl/drops.sql");
-            Dialect       hibDialect      = Dialect.getDialect(cfg.getProperties());
-            String[]      scriptsEntities = cfg.generateSchemaCreationScript(hibDialect);
-            StringBuilder scripts         = formatterScript(scriptsEntities, scriptsText);
-            return scripts;
+            Dialect hibDialect = Dialect.getDialect(cfg.getProperties());
+            String[] scriptsEntities = cfg.generateSchemaCreationScript(hibDialect);
+            return formatterScript(scriptsEntities, scriptsText);
         } catch (Exception e) {
             throw new ExportScriptGenerationException(e.getMessage(), e);
         }
@@ -100,19 +104,24 @@ public class SingularSchemaExport implements Loggable {
                 ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
                 for (String script : scriptsPath) {
                     script = removeStartingSlash(script);
-                    InputStream stream = classLoader.getResourceAsStream(script);
-                    try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
-                        String line = reader.readLine();
-                        while (line != null) {
-                            scriptsText.append(line).append("\n");
-                            line = reader.readLine();
-                        }
-                    }
+                    configureScriptTextByScriptPath(scriptsText, classLoader, script);
                 }
             }
             return scriptsText;
         } catch (IOException e) {
             throw SingularException.rethrow(e);
+        }
+    }
+
+    private static void configureScriptTextByScriptPath(StringBuilder scriptsText, ClassLoader classLoader,
+            String scriptPath) throws IOException {
+        InputStream stream = classLoader.getResourceAsStream(scriptPath);
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(stream, StandardCharsets.UTF_8))) {
+            String line = reader.readLine();
+            while (line != null) {
+                scriptsText.append(line).append('\n');
+                line = reader.readLine();
+            }
         }
     }
 
