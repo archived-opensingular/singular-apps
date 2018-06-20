@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.wicket.listener;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
@@ -41,8 +43,6 @@ import org.opensingular.requirement.commons.wicket.SingularRequirementApplicatio
 import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.Page410;
 import org.opensingular.requirement.commons.wicket.error.Page500;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Listener para impedir que páginas de um contexto do wicket sejam acessadas por uma sessão
@@ -85,11 +85,18 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
         if (singularException instanceof SingularServerException
                 && ((WebRequest) RequestCycle.get().getRequest()).isAjax()) {
             return new AjaxErrorRequestHandler(singularException);
-        } else if (ex instanceof PageExpiredException) {
+        } else if (ex instanceof PageExpiredException || causeIsPageExpiredException(ex)) {
             return new RenderPageRequestHandler(new PageProvider(new Page410()));
         } else {
             return new RenderPageRequestHandler(new PageProvider(new Page500(ex)));
         }
+    }
+
+    private boolean causeIsPageExpiredException(Throwable ex) {
+        if (ex instanceof PageExpiredException) {
+            return true;
+        }
+        return ex.getCause() != null && causeIsPageExpiredException(ex.getCause());
     }
 
     private SingularException getFirstSingularException(Exception ex) {
