@@ -60,6 +60,7 @@ public class RequirementSearchQueryFactory {
         appendSelect();
         appendWhere();
         appendOrder();
+        extenders.forEach(RequirementSearchExtender::extend);
         return query;
     }
 
