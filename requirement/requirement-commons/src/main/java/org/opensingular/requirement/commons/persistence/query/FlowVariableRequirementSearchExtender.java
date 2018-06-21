@@ -24,8 +24,6 @@ import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.requirement.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.requirement.commons.persistence.context.RequirementSearchContext;
-import org.opensingular.requirement.commons.persistence.filter.FilterToken;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 
 import javax.annotation.Nonnull;
 
@@ -36,55 +34,49 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
     public static final String TO_CHAR_TEMPLATE = "to_char({0})";
     public static final String TO_CHAR_DATE_TEMPLATE = "to_date(to_char({0}), 'dd/MM/yyyy')";
 
+    private final RequirementSearchContext ctx;
     private final String variableName;
     private final String queryAlias;
     private final String toCharTemplate;
+    private final QVariableInstanceEntity variableEntity;
 
-    public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
+    public FlowVariableRequirementSearchExtender(@Nonnull RequirementSearchContext ctx,
+                                                 @Nonnull String variableName,
                                                  @Nonnull String queryAlias) {
-        this(variableName, queryAlias, TO_CHAR_TEMPLATE);
+        this(ctx, variableName, queryAlias, TO_CHAR_TEMPLATE);
     }
 
-    public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
+    public FlowVariableRequirementSearchExtender(@Nonnull RequirementSearchContext ctx,
+                                                 @Nonnull String variableName,
                                                  @Nonnull String queryAlias,
                                                  @Nonnull String toCharTemplate) {
+        this.ctx = ctx;
         this.variableName = variableName;
         this.queryAlias = queryAlias;
         this.toCharTemplate = toCharTemplate;
+        this.variableEntity = new QVariableInstanceEntity(variableName);
     }
 
     @Override
-    public void extend(@Nonnull RequirementSearchContext context) {
-        QVariableInstanceEntity variableEntity = new QVariableInstanceEntity(variableName);
-        RequirementSearchQuery query = context.getQuery();
-        RequirementSearchAliases $ = context.getAliases();
-
-        createSelect(variableEntity, context);
-
+    public void extend() {
+        RequirementSearchQuery query = ctx.getQuery();
+        RequirementSearchAliases $ = ctx.getAliases();
+        createSelect(variableEntity);
         query.leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
-
-        QuickFilter quickFilter = context.getQuickFilter();
-        if (context.getQuickFilter().hasFilter()) {
-            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
-            for (FilterToken token : quickFilter.listFilterTokens()) {
-                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
-                for (String filter : token.getAllPossibleMatches()) {
-                    tokenBooleanBuilder.or(toChar(variableEntity).likeIgnoreCase(filter));
-                }
-                filterBooleanBuilder.and(tokenBooleanBuilder);
-            }
-            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
-        }
     }
 
-    protected void createSelect(QVariableInstanceEntity variableEntity, RequirementSearchContext context) {
-        context.getQuery()
-                .getSelect()
-                .add(toChar(variableEntity).as(queryAlias));
+    @Override
+    public void extendQuickFilterWhereClause(String token, BooleanBuilder tokenExpression) {
+        tokenExpression.or(toChar(variableEntity).likeIgnoreCase(token));
+    }
+
+    protected void createSelect(QVariableInstanceEntity variableEntity) {
+        ctx.getQuery().getSelect().add(toChar(variableEntity).as(queryAlias));
     }
 
     @Nonnull
     protected StringTemplate toChar(QVariableInstanceEntity var) {
         return Expressions.stringTemplate(toCharTemplate, var.value);
     }
+
 }

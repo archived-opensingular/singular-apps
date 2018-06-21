@@ -21,7 +21,7 @@ package org.opensingular.requirement.module.provider;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
@@ -43,7 +43,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private List<String> tasks;
 
-    private List<RequirementSearchExtender> extenders;
+    private List<ExtenderFactory> extenders;
 
     private List<IConsumer<List<Map<String, Serializable>>>> filters;
 
@@ -98,16 +98,16 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return ApplicationContextProvider.get().getBean(PermissionResolverService.class).searchPermissions(filter.getIdUsuarioLogado());
     }
 
-    public RequirementBoxItemDataProvider addExtender(@Nonnull RequirementSearchExtender extender) {
+    public RequirementBoxItemDataProvider addExtender(@Nonnull ExtenderFactory extenderFactory) {
         if (extenders == null) {
             extenders = new ArrayList<>();
         }
-        extenders.add(extender);
+        extenders.add(extenderFactory);
         return this;
     }
 
-    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<RequirementSearchExtender> extenders) {
-        extenders.forEach(this::addExtender);
+    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<ExtenderFactory> extenderFactories) {
+        extenderFactories.forEach(this::addExtender);
         return this;
     }
 

@@ -19,19 +19,9 @@
 package org.opensingular.requirement.commons.service;
 
 import org.apache.commons.collections.CollectionUtils;
-import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.flow.core.FlowInstance;
-import org.opensingular.flow.core.STask;
-import org.opensingular.flow.core.STransition;
-import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.core.TransitionCall;
+import org.opensingular.flow.core.*;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
-import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.flow.persistence.entity.*;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -52,14 +42,9 @@ import org.opensingular.requirement.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.commons.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
-import org.opensingular.requirement.commons.persistence.entity.form.ApplicantEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.FormRequirementEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.FormVersionHistoryEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementContentHistoryEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.commons.persistence.entity.form.*;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
@@ -72,20 +57,12 @@ import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Provider;
 import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static org.opensingular.flow.core.TaskInstance.*;
+import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
 public abstract class RequirementService<RE extends RequirementEntity, RI extends RequirementInstance> implements Loggable {
@@ -278,7 +255,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return countQuickSearch(filter, Collections.emptyList());
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public Long countQuickSearch(QuickFilter filter, List<ExtenderFactory> extenders) {
         return requirementDAO.countQuickSearch(filter, extenders);
     }
 
@@ -286,7 +263,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return quickSearchMap(filter, Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<ExtenderFactory> extenders) {
         return requirementDAO.quickSearchMap(filter, extenders);
     }
 
@@ -391,11 +368,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return countTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<ExtenderFactory> extenders) {
         return requirementDAO.quickSearchMap(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 
-    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<ExtenderFactory> extenders) {
         return requirementDAO.countQuickSearch(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 

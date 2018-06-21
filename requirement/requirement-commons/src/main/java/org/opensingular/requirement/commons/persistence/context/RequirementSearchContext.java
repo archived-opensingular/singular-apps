@@ -20,8 +20,8 @@ package org.opensingular.requirement.commons.persistence.context;
 
 
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
 import java.util.ArrayList;
@@ -36,8 +36,8 @@ public class RequirementSearchContext {
     private Boolean evaluatePermissions = Boolean.FALSE;
     private Boolean count               = Boolean.FALSE;
 
-    private RequirementSearchQuery          query;
-    private List<RequirementSearchExtender> extenders;
+    private RequirementSearchQuery query;
+    private List<ExtenderFactory> extenders;
 
     public RequirementSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
@@ -85,11 +85,11 @@ public class RequirementSearchContext {
         return query;
     }
 
-    public List<RequirementSearchExtender> getExtenders() {
+    public List<ExtenderFactory> getExtenders() {
         return extenders;
     }
 
-    public RequirementSearchContext setExtenders(List<RequirementSearchExtender> extenders) {
+    public RequirementSearchContext setExtenders(List<ExtenderFactory> extenders) {
         this.extenders = extenders;
         return this;
     }

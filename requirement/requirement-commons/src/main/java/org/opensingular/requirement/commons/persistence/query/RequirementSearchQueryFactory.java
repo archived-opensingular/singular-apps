@@ -35,6 +35,8 @@ import org.opensingular.requirement.commons.persistence.filter.FilterToken;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 
 import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class RequirementSearchQueryFactory {
 
@@ -46,16 +48,17 @@ public class RequirementSearchQueryFactory {
     private RequirementSearchQuery query;
     private QuickFilter quickFilter;
     private BooleanBuilder whereClause;
+    private List<RequirementSearchExtender> extenders;
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
     }
 
     public RequirementSearchQuery make(Session session) {
+        extenders = ctx.getExtenders().stream().map(i -> i.apply(ctx)).collect(Collectors.toList());
         configure(session);
         appendSelect();
         appendWhere();
-        applyExtenders();
         appendOrder();
         return query;
     }
@@ -178,11 +181,13 @@ public class RequirementSearchQueryFactory {
             for (FilterToken token : quickFilter.listFilterTokens()) {
                 BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
                 for (String filter : token.getAllPossibleMatches()) {
-                    tokenBooleanBuilder.or(buildQuickFilterBooleanExpression($, filter));
+                    BooleanBuilder tokenExpression = buildQuickFilterBooleanExpression($, filter);
+                    extenders.forEach(i -> i.extendQuickFilterWhereClause(filter, tokenExpression));
+                    tokenBooleanBuilder.or(tokenExpression);
                 }
                 filterBooleanBuilder.and(tokenBooleanBuilder);
             }
-            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
+            whereClause.and(filterBooleanBuilder);
         }
     }
 
@@ -201,12 +206,6 @@ public class RequirementSearchQueryFactory {
                 expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
             whereClause.and(expr);
-        }
-    }
-
-    private void applyExtenders() {
-        if (ctx.getExtenders() != null) {
-            ctx.getExtenders().forEach(extender -> extender.extend(ctx));
         }
     }
 
