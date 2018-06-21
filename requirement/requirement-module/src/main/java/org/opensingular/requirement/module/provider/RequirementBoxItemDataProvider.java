@@ -38,14 +38,11 @@ import java.util.Map;
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private final Boolean evalPermissions;
-
     private final ActionProvider actionProvider;
 
-    private List<String> tasks;
-
-    private List<ExtenderFactory> extenders;
-
-    private List<IConsumer<List<Map<String, Serializable>>>> filters;
+    private final List<String> tasks = new ArrayList<>();
+    private final List<ExtenderFactory> extenders = new ArrayList<>();
+    private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
         this.evalPermissions = evalPermissions;
@@ -61,9 +58,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         } else {
             requirements = lookupRequirementService().quickSearchMap(filter, extenders);
         }
-        if (filters != null) {
-            filters.forEach(x -> x.accept(requirements));
-        }
+        filters.forEach(x -> x.accept(requirements));
         return requirements;
     }
 
@@ -89,9 +84,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     protected void addEnabledTasksToFilter(QuickFilter filter) {
-        if (tasks != null) {
-            filter.forTasks(tasks.toArray(new String[0]));
-        }
+        filter.forTasks(tasks.toArray(new String[0]));
     }
 
     protected List<SingularPermission> searchPermissions(QuickFilter filter) {
@@ -99,9 +92,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     public RequirementBoxItemDataProvider addExtender(@Nonnull ExtenderFactory extenderFactory) {
-        if (extenders == null) {
-            extenders = new ArrayList<>();
-        }
         extenders.add(extenderFactory);
         return this;
     }
@@ -112,9 +102,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     public RequirementBoxItemDataProvider addFilter(@Nonnull IConsumer<List<Map<String, Serializable>>> filter) {
-        if (filters == null) {
-            filters = new ArrayList<>();
-        }
         filters.add(filter);
         return this;
     }
@@ -125,9 +112,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     public RequirementBoxItemDataProvider addTask(@Nonnull String filter) {
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-        }
         tasks.add(filter);
         return this;
     }
