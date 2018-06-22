@@ -828,7 +828,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             String transitionName,
             BSModalBorder confirmActionFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
-                "<button  type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
+                "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
