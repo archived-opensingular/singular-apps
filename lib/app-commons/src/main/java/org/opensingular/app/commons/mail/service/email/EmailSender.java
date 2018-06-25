@@ -50,26 +50,26 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
     @PostConstruct
     public void init() {
         SingularProperties properties = SingularProperties.get();
-        setHost(properties.getPropertyOpt("singular.mail.host").orElse(null));
+        setHost(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_HOST).orElse(null));
         if (getHost() != null) {
-            from = properties.getPropertyOpt("singular.mail.from").orElse(null);
-            setPort(properties.getPropertyOpt("singular.mail.port").orElse(null));
-            setUsername(properties.getPropertyOpt("singular.mail.username").orElse(null));
-            setPassword(properties.getPropertyOpt("singular.mail.password").orElse(null));
-            setProtocol(properties.getPropertyOpt("singular.mail.protocol").orElse(null));
+            from = properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_FROM).orElse(null);
+            setPort(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PORT).orElse(null));
+            setUsername(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_USERNAME).orElse(null));
+            setPassword(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PASSWORD).orElse(null));
+            setProtocol(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PROTOCOL).orElse(null));
 
             getJavaMailProperties().setProperty("mail.smtp.host", getHost());
             getJavaMailProperties().setProperty("mail.smtp.port", String.valueOf(getPort()));
             if (getUsername() != null) {
                 getJavaMailProperties().setProperty("mail.smtp.user", getUsername());
             }
-            properties.getPropertyOpt("singular.mail.auth").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_AUTH).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.auth", v));
 
-            properties.getPropertyOpt("singular.mail.smtp.starttls.enable").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SMTP_STARTTLS_ENABLE).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.starttls.enable", v));
 
-            properties.getPropertyOpt("singular.mail.smtp.ssl.trust").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SMTP_SSL_TRUST).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.ssl.trust", v));
 
             getLogger().info("SMTP mail sender Enabled.");
