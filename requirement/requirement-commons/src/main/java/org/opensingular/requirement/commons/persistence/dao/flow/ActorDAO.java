@@ -98,8 +98,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                             + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
-                    int returnVal = ps.executeUpdate();
-                    System.out.println(returnVal);
+                    ps.executeUpdate();
                 });
             } else {
                 getSession().doWork(connection -> {
