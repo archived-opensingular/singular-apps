@@ -55,7 +55,7 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
             from = properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_FROM).orElse(null);
             setPort(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PORT).orElse(null));
             setUsername(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_USERNAME).orElse(null));
-            setPassword(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PASSWORD).orElse(null));
+            setPassword(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SECURITY_WORD).orElse(null));
             setProtocol(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PROTOCOL).orElse(null));
 
             getJavaMailProperties().setProperty("mail.smtp.host", getHost());
