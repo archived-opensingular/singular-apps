@@ -18,9 +18,12 @@
 
 package org.opensingular.app.commons.spring.persistence;
 
+import javax.sql.DataSource;
+
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.spring.persistence.database.H2DropAllObjectsPopulator;
 import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;
+import org.opensingular.app.commons.spring.persistence.database.SingularDataBasePopulator;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.springframework.context.annotation.Bean;
@@ -29,8 +32,6 @@ import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
-
-import javax.sql.DataSource;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularPersistenceDefaultBeanFactory implements Loggable {
@@ -53,11 +54,21 @@ public class SingularPersistenceDefaultBeanFactory implements Loggable {
 
     @Bean
     @DependsOn("dataSourceInitializer")
+    public DataSourceInitializer dataBasePopulator(DataSource dataSource) {
+        DataSourceInitializer dataSourceInitializer = new DataSourceInitializer();
+        dataSourceInitializer.setDataSource(dataSource);
+        dataSourceInitializer.setDatabasePopulator(new SingularDataBasePopulator(getPersistenceConfiguration()));
+        dataSourceInitializer.setEnabled(getPersistenceConfiguration().isCreateDrop());
+        return dataSourceInitializer;
+    }
+
+    @Bean
+    @DependsOn("dataBasePopulator")
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
         sessionFactoryBean.setHibernateProperties(getPersistenceConfiguration().getHibernateProperties());
-        sessionFactoryBean.setPackagesToScan(getPersistenceConfiguration().getPackagesToScan());
+        sessionFactoryBean.setPackagesToScan(getPersistenceConfiguration().getPackagesToScan(true));
         sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor(getPersistenceConfiguration().getSchemaReplacements()));
         return sessionFactoryBean;
     }

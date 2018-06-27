@@ -23,6 +23,8 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
+import org.opensingular.form.document.SDocument;
+import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -50,17 +52,6 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
         this.formKey = formKey;
         this.transitionController = transitionController;
         this.dirty = false;
-    }
-
-
-    @Override
-    protected void addDefaultConfirmButton(BSModalBorder modal) {
-        modal.addButton(BSModalBorder.ButtonStyle.CONFIRM,
-                "label.button.confirm",
-                newFlowConfirmButton(getTransition(),
-                        getFormPage().getFormInstance(),
-                        getFormPage().getViewMode(getFormPage().getConfig()),
-                        modal));
     }
 
     @Override
@@ -97,20 +88,19 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
     private SInstance createInstance() {
         SInstance instance;
         if (formKey != null) {
-            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType);
+            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType, SDocumentConsumer.of(this::appendDirtyListener));
         } else {
-            instance = getFormPage().getFormRequirementService().createInstance(refType);
+            instance = getFormPage().getFormRequirementService().createInstance(refType, SDocumentConsumer.of(this::appendDirtyListener));
         }
         if (transitionController != null) {
             transitionController.onCreateInstance(getFormPage().getInstance(), instance);
         }
-        //deve ser adicionado apos o listener de criar a instancia
-        appendDirtyListener(instance);
         return instance;
     }
 
-    private void appendDirtyListener(SInstance instance) {
-        instance.getDocument().getInstanceListeners().add(SInstanceEventType.VALUE_CHANGED, evt -> setDirty(true));
+    //deve ser adicionado apos o listener de criar a instancia
+    private void appendDirtyListener(SDocument document) {
+        document.getInstanceListeners().add(SInstanceEventType.VALUE_CHANGED, evt -> setDirty(true));
     }
 
     @SuppressWarnings("unchecked")

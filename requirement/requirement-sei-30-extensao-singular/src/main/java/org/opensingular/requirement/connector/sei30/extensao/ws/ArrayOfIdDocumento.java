@@ -17,7 +17,6 @@
  *
  */
 
-
 package org.opensingular.requirement.connector.sei30.extensao.ws;
 
 import java.util.ArrayList;
@@ -29,20 +28,20 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Classe Java de ArrayOfIdDocumento complex type.
+ * <p>Java class for ArrayOfIdDocumento complex type.
  * 
- * <p>O seguinte fragmento do esquema especifica o conteúdo esperado contido dentro desta classe.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ArrayOfIdDocumento">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
- *       &lt;/sequence>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="ArrayOfIdDocumento"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;sequence&gt;
+ *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/&gt;
+ *       &lt;/sequence&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

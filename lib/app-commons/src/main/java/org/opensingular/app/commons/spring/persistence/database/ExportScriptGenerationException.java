@@ -16,9 +16,11 @@
  *
  */
 
-package org.opensingular.requirement.commons.exception;
+package org.opensingular.app.commons.spring.persistence.database;
 
-public class ExportScriptGenerationException extends SingularServerException {
+import org.opensingular.lib.commons.base.SingularException;
+
+public class ExportScriptGenerationException extends SingularException {
 
     public ExportScriptGenerationException(String message, Exception e) {
         super(message, e);
