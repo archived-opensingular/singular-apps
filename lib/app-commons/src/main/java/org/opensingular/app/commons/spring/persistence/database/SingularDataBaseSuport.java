@@ -22,8 +22,16 @@ import java.util.List;
 
 public interface SingularDataBaseSuport {
 
+    /**
+     * Some scripts files to execute after Singular DataBase be created.
+     * @return A list contain all Script files.
+     */
     List<String> getScripts();
 
+    /**
+     * Method that return the script file of Actor.
+     * @return The script file of Actor.
+     */
     String getDefaultActorScript();
 
 }

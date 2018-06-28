@@ -19,17 +19,20 @@
 package org.opensingular.requirement.commons.box.action;
 
 
+import java.util.ArrayList;
+
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.box.BoxItemData;
+import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSessionMap;
 import org.opensingular.requirement.commons.box.action.defaults.AnalyseAction;
 import org.opensingular.requirement.commons.box.action.defaults.AssignAction;
 import org.opensingular.requirement.commons.box.action.defaults.DeleteAction;
 import org.opensingular.requirement.commons.box.action.defaults.EditAction;
+import org.opensingular.requirement.commons.box.action.defaults.ExtratoAction;
 import org.opensingular.requirement.commons.box.action.defaults.HistoryAction;
 import org.opensingular.requirement.commons.box.action.defaults.RelocateAction;
 import org.opensingular.requirement.commons.box.action.defaults.ViewAction;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
-
-import java.util.ArrayList;
 
 public class BoxItemActionList extends ArrayList<BoxItemAction> {
 
@@ -73,6 +76,20 @@ public class BoxItemActionList extends ArrayList<BoxItemAction> {
 
     public BoxItemActionList addHistoryAction(BoxItemData line) {
         addAction(new HistoryAction(line));
+        return this;
+    }
+
+    /**
+     * Method responsible for create the extrato action. This will generate a UUID for the id of the requiriment,
+     * and will add a action for the read mode PDF of the requiriment form.
+     *
+     * @param line The item containg the requiriment id.
+     * @return <code>this</code>
+     */
+    public BoxItemActionList addExtratoAction(BoxItemData line) {
+        EnabledPrintsPerSessionMap enabledPrints = ApplicationContextProvider.get().getBean(EnabledPrintsPerSessionMap.class);
+        String uuidRequirement = enabledPrints.put((Long) line.getRequirementId());
+        addAction(new ExtratoAction(uuidRequirement));
         return this;
     }
 }

@@ -19,30 +19,32 @@
 package org.opensingular.requirement.commons.persistence.context;
 
 
+import com.querydsl.core.BooleanBuilder;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 
 public class RequirementSearchContext {
 
-    private final QuickFilter              quickFilter;
-    private final List<SingularPermission> permissions;
-    private final RequirementSearchAliases aliases;
+    private final QuickFilter quickFilter;
+
+    private final List<SingularPermission> permissions = new ArrayList<>();
+    private final RequirementSearchAliases aliases = new RequirementSearchAliases();
+    private final List<BiConsumer<String, BooleanBuilder>> quickFilterExtenders = new ArrayList<>();
 
     private Boolean evaluatePermissions = Boolean.FALSE;
-    private Boolean count               = Boolean.FALSE;
+    private Boolean count = Boolean.FALSE;
 
-    private RequirementSearchQuery          query;
+    private RequirementSearchQuery query;
     private List<RequirementSearchExtender> extenders;
 
     public RequirementSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
-        this.permissions = new ArrayList<>();
-        aliases = new RequirementSearchAliases();
     }
 
     public QuickFilter getQuickFilter() {
@@ -96,5 +98,14 @@ public class RequirementSearchContext {
 
     public RequirementSearchAliases getAliases() {
         return aliases;
+    }
+
+    public RequirementSearchContext extendQuickFilterWhereClause(BiConsumer<String, BooleanBuilder> extendFunction) {
+        quickFilterExtenders.add(extendFunction);
+        return this;
+    }
+
+    public List<BiConsumer<String, BooleanBuilder>> getQuickFilterExtenders() {
+        return quickFilterExtenders;
     }
 }
