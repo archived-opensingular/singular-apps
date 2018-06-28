@@ -51,12 +51,12 @@ public class RequirementSearchQueryFactory {
         this.ctx = ctx;
     }
 
-    public RequirementSearchQuery make(Session session) {
+    public RequirementSearchQuery build(Session session) {
         configure(session);
         appendSelect();
         appendWhere();
-        applyExtenders();
         appendOrder();
+        ctx.getExtenders().forEach(ext -> ext.extend(ctx));
         return query;
     }
 
@@ -178,11 +178,13 @@ public class RequirementSearchQueryFactory {
             for (FilterToken token : quickFilter.listFilterTokens()) {
                 BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
                 for (String filter : token.getAllPossibleMatches()) {
-                    tokenBooleanBuilder.or(buildQuickFilterBooleanExpression($, filter));
+                    BooleanBuilder tokenExpression = buildQuickFilterBooleanExpression($, filter);
+                    ctx.getQuickFilterExtenders().forEach(i -> i.accept(filter, tokenExpression));
+                    tokenBooleanBuilder.or(tokenExpression);
                 }
                 filterBooleanBuilder.and(tokenBooleanBuilder);
             }
-            query.getQuickFilterWhereClause().or(filterBooleanBuilder);
+            whereClause.and(filterBooleanBuilder);
         }
     }
 
@@ -201,12 +203,6 @@ public class RequirementSearchQueryFactory {
                 expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
             whereClause.and(expr);
-        }
-    }
-
-    private void applyExtenders() {
-        if (ctx.getExtenders() != null) {
-            ctx.getExtenders().forEach(extender -> extender.extend(ctx));
         }
     }
 

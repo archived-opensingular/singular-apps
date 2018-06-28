@@ -31,7 +31,7 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
 
     private SelectBuilder  select                 = new SelectBuilder();
     private BooleanBuilder whereClause            = new BooleanBuilder();
-    private BooleanBuilder quickFilterWhereClause = new BooleanBuilder();
+
     private BeanPath<?>    countPath              = null;
     // The default order will only be used if there isn't another
     // order specified
@@ -51,12 +51,8 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         } else {
             select(select.build());
         }
-        where(whereClause.and(quickFilterWhereClause));
+        where(whereClause);
         return createQuery();
-    }
-
-    public BooleanBuilder getQuickFilterWhereClause() {
-        return quickFilterWhereClause;
     }
 
     public SelectBuilder getSelect() {
