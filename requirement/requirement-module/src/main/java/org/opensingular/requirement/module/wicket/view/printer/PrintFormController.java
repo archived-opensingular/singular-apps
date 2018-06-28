@@ -1,0 +1,53 @@
+package org.opensingular.requirement.module.wicket.view.printer;
+
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
+
+import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSessionMap;
+import org.opensingular.requirement.commons.service.ExtratoGeneratorService;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.util.FileCopyUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+@Controller
+public class PrintFormController {
+
+
+    @Inject
+    private ExtratoGeneratorService extratoGeneratorService;
+
+    @Autowired
+    private ObjectFactory<EnabledPrintsPerSessionMap> enabledPrintsPerSessionMapObjectFactory;
+
+    @RequestMapping(value = {"/requirement/printmf/{uuid}", "/worklist/printmf/{uuid}"}, method = RequestMethod.GET)
+    public void printMainForm(HttpServletResponse response, @PathVariable String uuid) throws IOException {
+        Optional<Long> possibleRequirementCod = enabledPrintsPerSessionMapObjectFactory.getObject().pop(uuid);
+        if (!possibleRequirementCod.isPresent()) {
+            response.sendRedirect("/public/error/410");
+            return;
+        }
+
+        Optional<File> optPdf = extratoGeneratorService.generatePdfFile(possibleRequirementCod.get());
+        if (!optPdf.isPresent()) {
+            return;
+        }
+        File pdf = optPdf.get();
+
+        response.setContentType("application/pdf");
+        response.setHeader("Content-Disposition", "inline; filename=\"" + pdf.getName() + "\"");
+        response.setContentLength((int) pdf.length());
+
+        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(pdf))) {
+            FileCopyUtils.copy(bufferedInputStream, response.getOutputStream());
+        }
+    }
+}

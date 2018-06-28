@@ -7,17 +7,19 @@ import javax.inject.Inject;
 import org.opensingular.form.SIComposite;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
-import org.opensingular.requirement.commons.extrato.Generator;
+import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Transactional
+@Service
 public class ExtratoGeneratorService {
 
     @Inject
     private HtmlToPdfConverter htmlToPdfConverter;
 
     @Inject
-    private Generator extratoGenerator;
+    private ExtratoGenerator extratoGenerator;
 
     @Inject
     private RequirementService<?, ?> requirementService;
@@ -29,7 +31,6 @@ public class ExtratoGeneratorService {
 
     public String generateHtml(Long codRequirement){
         SIComposite siComposite = requirementService.getRequirement(codRequirement).getMainForm();
-
         return extratoGenerator.generate(siComposite);
     }
 

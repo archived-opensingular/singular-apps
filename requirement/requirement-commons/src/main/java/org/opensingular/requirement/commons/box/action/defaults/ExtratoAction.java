@@ -19,14 +19,14 @@
 package org.opensingular.requirement.commons.box.action.defaults;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.commons.box.BoxItemData;
-import org.opensingular.requirement.commons.box.action.AbstractExecuteItemAction;
-import org.opensingular.requirement.commons.flow.controllers.DefaultExtratoGeneratorController;
+import org.opensingular.requirement.commons.box.action.AbstractURLPopupBoxItemAction;
 
-public class ExtratorAction extends AbstractExecuteItemAction {
+public class ExtratoAction extends AbstractURLPopupBoxItemAction {
 
-
-    public ExtratorAction(BoxItemData line) {
-        super("extrato", "Extrato", DefaultIcons.FILE_PDF, DefaultExtratoGeneratorController.class, line);
+    public ExtratoAction(String uuidRequirement) {
+        super("extrato",
+                "Extrato",
+                DefaultIcons.FILE_PDF,
+                "/printmf/" + uuidRequirement);
     }
 }

@@ -85,8 +85,8 @@ public class ActionProviderBuilder implements ActionProvider {
         return this;
     }
 
-    public ActionProviderBuilder addExtratorAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addExtratorAction(line));
+    public ActionProviderBuilder addExtratoAction() {
+        actionConfigurers.add((boxInfo, line, filter, list) -> list.addExtratoAction(line));
         return this;
     }
 

@@ -14,8 +14,8 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
+import org.opensingular.requirement.commons.extrato.ExtratoExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
-import org.opensingular.requirement.commons.extrato.Generator;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.dto.STypeMock;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
@@ -26,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
-public class ExtratoGeneratorServiceTest {
+public class ExtratoGeneratorImplServiceTest {
 
     public static final String JOAQUIM = "Joaquim";
 
@@ -34,7 +34,7 @@ public class ExtratoGeneratorServiceTest {
     private ExtratoGeneratorService extratoGeneratorService = new ExtratoGeneratorService();
 
     @Spy
-    private Generator extratoGenerator = new ExtratoGenerator();
+    private ExtratoGenerator extratoGenerator = new ExtratoExtratoGeneratorImpl();
 
     @Mock
     private RequirementService<RequirementEntity, RequirementInstance> requirementService;

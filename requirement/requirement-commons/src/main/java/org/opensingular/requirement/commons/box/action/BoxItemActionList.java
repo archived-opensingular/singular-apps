@@ -21,12 +21,14 @@ package org.opensingular.requirement.commons.box.action;
 
 import java.util.ArrayList;
 
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.box.BoxItemData;
+import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSessionMap;
 import org.opensingular.requirement.commons.box.action.defaults.AnalyseAction;
 import org.opensingular.requirement.commons.box.action.defaults.AssignAction;
 import org.opensingular.requirement.commons.box.action.defaults.DeleteAction;
 import org.opensingular.requirement.commons.box.action.defaults.EditAction;
-import org.opensingular.requirement.commons.box.action.defaults.ExtratorAction;
+import org.opensingular.requirement.commons.box.action.defaults.ExtratoAction;
 import org.opensingular.requirement.commons.box.action.defaults.HistoryAction;
 import org.opensingular.requirement.commons.box.action.defaults.RelocateAction;
 import org.opensingular.requirement.commons.box.action.defaults.ViewAction;
@@ -77,8 +79,10 @@ public class BoxItemActionList extends ArrayList<BoxItemAction> {
         return this;
     }
 
-    public BoxItemActionList addExtratorAction(BoxItemData line) {
-        addAction(new ExtratorAction(line));
+    public BoxItemActionList addExtratoAction(BoxItemData line) {
+        EnabledPrintsPerSessionMap enabledPrints = ApplicationContextProvider.get().getBean(EnabledPrintsPerSessionMap.class);
+        String uuidRequirement = enabledPrints.put((Long) line.getRequirementId());
+        addAction(new ExtratoAction(uuidRequirement));
         return this;
     }
 }

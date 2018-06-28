@@ -53,8 +53,8 @@ import org.opensingular.requirement.commons.cache.SingularKeyGenerator;
 import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
 import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.connector.RESTModuleDriver;
+import org.opensingular.requirement.commons.extrato.ExtratoExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
-import org.opensingular.requirement.commons.extrato.Generator;
 import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
@@ -359,8 +359,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public Generator extratoGenerator() {
-        return new ExtratoGenerator();
+    public ExtratoGenerator extratoGenerator() {
+        return new ExtratoExtratoGeneratorImpl();
     }
 
 
