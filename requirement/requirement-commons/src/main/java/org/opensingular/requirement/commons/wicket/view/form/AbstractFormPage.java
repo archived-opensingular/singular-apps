@@ -130,13 +130,13 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     private IModel<RI> currentModel;
     private transient Optional<TaskInstance> currentTaskInstance;
 
-    private String callBackSaveUrl;
 
     @Inject
     private RequirementService<RE, RI> requirementService;
 
     @Inject
     private FormRequirementService<RE> formRequirementService;
+    private AbstractDefaultAjaxBehavior saveFormAjaxBehavior;
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -292,7 +292,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     private String generateInitJS() {
         return "\n $(function () { "
                 + "\n   window.AbstractFormPage.setup(" + new JSONObject()
-                .put("callbackUrl", callBackSaveUrl)
+                .put("callbackUrl", saveFormAjaxBehavior.getCallbackUrl().toString())
                 .toString(2) + "); "
                 + "\n });";
     }
@@ -828,7 +828,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             String transitionName,
             BSModalBorder confirmActionFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
-                "<button  type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
+                "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
@@ -966,15 +966,13 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private void addSaveCallBackUrl() {
-        AbstractDefaultAjaxBehavior abstractDefaultAjaxBehavior = new AbstractDefaultAjaxBehavior() {
+        saveFormAjaxBehavior = new AbstractDefaultAjaxBehavior() {
             @Override
             protected void respond(AjaxRequestTarget target) {
                 eventOnSaveAction(target);
             }
         };
-        add(abstractDefaultAjaxBehavior);
-        callBackSaveUrl = abstractDefaultAjaxBehavior.getCallbackUrl().toString();
-
+        add(saveFormAjaxBehavior);
     }
 
     @SuppressWarnings("rawtypes")
