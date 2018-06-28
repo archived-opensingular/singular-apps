@@ -89,7 +89,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
         RequirementSearchQueryFactory searchQueryFactory = new RequirementSearchQueryFactory(ctx);
-        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.make(getSession());
+        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.build(getSession());
         return requirementSearchQuery.toHibernateQuery(ctx.getCount());
     }
 

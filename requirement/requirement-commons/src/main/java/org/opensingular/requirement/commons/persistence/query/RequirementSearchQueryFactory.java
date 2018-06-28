@@ -51,7 +51,7 @@ public class RequirementSearchQueryFactory {
         this.ctx = ctx;
     }
 
-    public RequirementSearchQuery make(Session session) {
+    public RequirementSearchQuery build(Session session) {
         configure(session);
         appendSelect();
         appendWhere();
