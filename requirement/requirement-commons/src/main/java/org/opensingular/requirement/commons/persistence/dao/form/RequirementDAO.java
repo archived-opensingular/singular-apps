@@ -27,13 +27,7 @@ import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.form.persistence.entity.FormAttachmentEntity;
-import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.form.persistence.entity.FormVersionEntity;
-import org.opensingular.form.persistence.entity.QFormAttachmentEntity;
-import org.opensingular.form.persistence.entity.QFormEntity;
-import org.opensingular.form.persistence.entity.QFormTypeEntity;
-import org.opensingular.form.persistence.entity.QFormVersionEntity;
+import org.opensingular.form.persistence.entity.*;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.commons.exception.SingularServerException;
@@ -43,9 +37,9 @@ import org.opensingular.requirement.commons.persistence.entity.form.QFormRequire
 import org.opensingular.requirement.commons.persistence.entity.form.QRequirementEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchQueryFactory;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
@@ -95,7 +89,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
 
     private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
         RequirementSearchQueryFactory searchQueryFactory = new RequirementSearchQueryFactory(ctx);
-        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.make(getSession());
+        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.build(getSession());
         return requirementSearchQuery.toHibernateQuery(ctx.getCount());
     }
 
