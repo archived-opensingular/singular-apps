@@ -14,7 +14,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
-import org.opensingular.requirement.commons.extrato.ExtratoExtratoGeneratorImpl;
+import org.opensingular.requirement.commons.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.dto.STypeMock;
@@ -34,7 +34,7 @@ public class ExtratoGeneratorImplServiceTest {
     private ExtratoGeneratorService extratoGeneratorService = new ExtratoGeneratorService();
 
     @Spy
-    private ExtratoGenerator extratoGenerator = new ExtratoExtratoGeneratorImpl();
+    private ExtratoGenerator extratoGenerator = new ExtratoGeneratorImpl();
 
     @Mock
     private RequirementService<RequirementEntity, RequirementInstance> requirementService;

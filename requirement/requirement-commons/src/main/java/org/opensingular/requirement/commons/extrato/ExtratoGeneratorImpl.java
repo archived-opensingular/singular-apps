@@ -7,7 +7,7 @@ import org.opensingular.lib.commons.canvas.bootstrap.BootstrapHtmlCanvas;
 
 import static org.opensingular.form.flatview.FlatViewGenerator.ASPECT_FLAT_VIEW_GENERATOR;
 
-public class ExtratoExtratoGeneratorImpl implements ExtratoGenerator {
+public class ExtratoGeneratorImpl implements ExtratoGenerator {
 
     /**
      * This is a method default that used BootstrapHtmlCanvas to generate the html of the requirement.
