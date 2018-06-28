@@ -19,17 +19,18 @@
 package org.opensingular.requirement.commons.box.action;
 
 
+import java.util.ArrayList;
+
 import org.opensingular.requirement.commons.box.BoxItemData;
 import org.opensingular.requirement.commons.box.action.defaults.AnalyseAction;
 import org.opensingular.requirement.commons.box.action.defaults.AssignAction;
 import org.opensingular.requirement.commons.box.action.defaults.DeleteAction;
 import org.opensingular.requirement.commons.box.action.defaults.EditAction;
+import org.opensingular.requirement.commons.box.action.defaults.ExtratorAction;
 import org.opensingular.requirement.commons.box.action.defaults.HistoryAction;
 import org.opensingular.requirement.commons.box.action.defaults.RelocateAction;
 import org.opensingular.requirement.commons.box.action.defaults.ViewAction;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
-
-import java.util.ArrayList;
 
 public class BoxItemActionList extends ArrayList<BoxItemAction> {
 
@@ -73,6 +74,11 @@ public class BoxItemActionList extends ArrayList<BoxItemAction> {
 
     public BoxItemActionList addHistoryAction(BoxItemData line) {
         addAction(new HistoryAction(line));
+        return this;
+    }
+
+    public BoxItemActionList addExtratorAction(BoxItemData line) {
+        addAction(new ExtratorAction(line));
         return this;
     }
 }

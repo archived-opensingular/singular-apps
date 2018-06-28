@@ -51,7 +51,9 @@ public class DefaultOngoingbox implements BoxDefinition {
         return new RequirementBoxItemDataProvider(Boolean.FALSE,
                 new ActionProviderBuilder()
                         .addViewAction()
-                        .addHistoryAction());
+                        .addHistoryAction()
+                        //todo remover essa action.
+                        .addExtratorAction());
     }
 
     @Override
