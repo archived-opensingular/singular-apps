@@ -117,7 +117,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> RequirementDAO<T> peticaoDAO() {
+    public <T extends RequirementEntity> RequirementDAO<T> requirementDAO() {
         return new RequirementDAO<>();
     }
 
