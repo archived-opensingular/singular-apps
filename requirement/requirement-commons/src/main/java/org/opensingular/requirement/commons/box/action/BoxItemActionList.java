@@ -79,6 +79,13 @@ public class BoxItemActionList extends ArrayList<BoxItemAction> {
         return this;
     }
 
+    /**
+     * Method responsible for create the extrato action. This will generate a UUID for the id of the requiriment,
+     * and will add a action for the read mode PDF of the requiriment form.
+     *
+     * @param line The item containg the requiriment id.
+     * @return <code>this</code>
+     */
     public BoxItemActionList addExtratoAction(BoxItemData line) {
         EnabledPrintsPerSessionMap enabledPrints = ApplicationContextProvider.get().getBean(EnabledPrintsPerSessionMap.class);
         String uuidRequirement = enabledPrints.put((Long) line.getRequirementId());

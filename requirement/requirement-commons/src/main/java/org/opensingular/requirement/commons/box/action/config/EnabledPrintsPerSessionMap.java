@@ -20,6 +20,12 @@ public class EnabledPrintsPerSessionMap {
         return randomUUID;
     }
 
+    /**
+     * This method works like a POP, remove and return the element.
+     *
+     * @param uuid The key of the map.
+     * @return The value of the map.
+     */
     public Optional<Long> pop(String uuid) {
         return Optional.ofNullable(map.remove(uuid));
     }

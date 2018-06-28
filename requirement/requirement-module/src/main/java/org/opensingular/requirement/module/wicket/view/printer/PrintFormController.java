@@ -8,6 +8,7 @@ import java.util.Optional;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletResponse;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSessionMap;
 import org.opensingular.requirement.commons.service.ExtratoGeneratorService;
 import org.springframework.beans.factory.ObjectFactory;
@@ -19,8 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 @Controller
-public class PrintFormController {
-
+public class PrintFormController implements Loggable {
 
     @Inject
     private ExtratoGeneratorService extratoGeneratorService;
@@ -28,6 +28,15 @@ public class PrintFormController {
     @Autowired
     private ObjectFactory<EnabledPrintsPerSessionMap> enabledPrintsPerSessionMapObjectFactory;
 
+    /**
+     * Method responsible for find the requiriment by the UUID, and generate the PDF in a new tab, if the requiriment exists.
+     * <p>
+     * This method is called by ExtratoAction of the requiriment's box.
+     *
+     * @param response The httpServlet response, responsible for show the 410 error, if the UUID have already be used, or the file PDF.
+     * @param uuid     The uuid of the requiriment.
+     * @throws IOException
+     */
     @RequestMapping(value = {"/requirement/printmf/{uuid}", "/worklist/printmf/{uuid}"}, method = RequestMethod.GET)
     public void printMainForm(HttpServletResponse response, @PathVariable String uuid) throws IOException {
         Optional<Long> possibleRequirementCod = enabledPrintsPerSessionMapObjectFactory.getObject().pop(uuid);
@@ -37,17 +46,18 @@ public class PrintFormController {
         }
 
         Optional<File> optPdf = extratoGeneratorService.generatePdfFile(possibleRequirementCod.get());
-        if (!optPdf.isPresent()) {
-            return;
-        }
-        File pdf = optPdf.get();
 
-        response.setContentType("application/pdf");
-        response.setHeader("Content-Disposition", "inline; filename=\"" + pdf.getName() + "\"");
-        response.setContentLength((int) pdf.length());
+        optPdf.ifPresent(pdf -> {
+            response.setContentType("application/pdf");
+            response.setHeader("Content-Disposition", "inline; filename=\"" + pdf.getName() + "\"");
+            response.setContentLength((int) pdf.length());
 
-        try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(pdf))) {
-            FileCopyUtils.copy(bufferedInputStream, response.getOutputStream());
-        }
+            try (BufferedInputStream bufferedInputStream = new BufferedInputStream(new FileInputStream(pdf))) {
+                FileCopyUtils.copy(bufferedInputStream, response.getOutputStream());
+            } catch (IOException e) {
+                getLogger().error("Error obtaing the File", e);
+            }
+        });
+
     }
 }

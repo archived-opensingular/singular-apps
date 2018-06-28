@@ -24,12 +24,23 @@ public class ExtratoGeneratorService {
     @Inject
     private RequirementService<?, ?> requirementService;
 
-
-    public Optional<File> generatePdfFile(Long codRequirement){
+    /**
+     * Method responsible for generate the Pdf file of the requirement extrato.
+     *
+     * @param codRequirement The id of requirement.
+     * @return Optinal containing file if exists.
+     */
+    public Optional<File> generatePdfFile(Long codRequirement) {
         return htmlToPdfConverter.convert(new HtmlToPdfDTO(generateHtml(codRequirement)));
     }
 
-    public String generateHtml(Long codRequirement){
+    /**
+     * Method responsible for generate the HTML of the requirement extrato.
+     *
+     * @param codRequirement The id for requiriment.
+     * @return String with html content.
+     */
+    public String generateHtml(Long codRequirement) {
         SIComposite siComposite = requirementService.getRequirement(codRequirement).getMainForm();
         return extratoGenerator.generate(siComposite);
     }

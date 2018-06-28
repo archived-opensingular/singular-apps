@@ -9,6 +9,13 @@ import static org.opensingular.form.flatview.FlatViewGenerator.ASPECT_FLAT_VIEW_
 
 public class ExtratoExtratoGeneratorImpl implements ExtratoGenerator {
 
+    /**
+     * This is a method default that used BootstrapHtmlCanvas to generate the html of the requirement.
+     *
+     * @param root doc in the super class.
+     * @return doc in the super class.
+     */
+    @Override
     public String generate(SInstance root) {
         HtmlCanvas htmlCanvas = new BootstrapHtmlCanvas(true);
         root.getAspect(ASPECT_FLAT_VIEW_GENERATOR).ifPresent(i -> i.writeOnCanvas(htmlCanvas, new FlatViewContext(root)));
