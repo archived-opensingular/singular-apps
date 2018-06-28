@@ -37,7 +37,7 @@ import org.opensingular.requirement.commons.persistence.entity.form.QFormRequire
 import org.opensingular.requirement.commons.persistence.entity.form.QRequirementEntity;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.requirement.commons.spring.security.RequirementAuthMetadataDTO;
@@ -69,7 +69,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
 
     public Long countQuickSearch(QuickFilter filter,
                                  List<SingularPermission> permissions,
-                                 List<ExtenderFactory> extenders) {
+                                 List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
                 .setCount(Boolean.TRUE)
                 .setEvaluatePermissions(Boolean.TRUE)
@@ -77,7 +77,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .addPermissions(permissions));
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<ExtenderFactory> extenders) {
+    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.TRUE));
@@ -94,7 +94,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
-                                                          List<ExtenderFactory> extenders) {
+                                                          List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.FALSE));
@@ -102,7 +102,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
                                                           List<SingularPermission> permissions,
-                                                          List<ExtenderFactory> extenders) {
+                                                          List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
                 .setCount(Boolean.FALSE)
                 .setEvaluatePermissions(Boolean.TRUE)

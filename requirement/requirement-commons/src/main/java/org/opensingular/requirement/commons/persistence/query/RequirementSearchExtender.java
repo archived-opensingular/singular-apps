@@ -18,15 +18,8 @@
 
 package org.opensingular.requirement.commons.persistence.query;
 
-import com.querydsl.core.BooleanBuilder;
+import org.opensingular.requirement.commons.persistence.context.RequirementSearchContext;
 
 public interface RequirementSearchExtender {
-    void extend();
-
-    /**
-     * Permite extenders as regras da clausula do filtro rapido
-     */
-    default void extendQuickFilterWhereClause(String token, BooleanBuilder tokenExpression) {
-
-    }
+    void extend(RequirementSearchContext requirementSearchContext);
 }

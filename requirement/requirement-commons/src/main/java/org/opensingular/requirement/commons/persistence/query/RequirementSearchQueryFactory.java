@@ -35,8 +35,6 @@ import org.opensingular.requirement.commons.persistence.filter.FilterToken;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 
 import javax.annotation.Nonnull;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class RequirementSearchQueryFactory {
 
@@ -48,19 +46,17 @@ public class RequirementSearchQueryFactory {
     private RequirementSearchQuery query;
     private QuickFilter quickFilter;
     private BooleanBuilder whereClause;
-    private List<RequirementSearchExtender> extenders;
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
     }
 
     public RequirementSearchQuery make(Session session) {
-        extenders = ctx.getExtenders().stream().map(i -> i.apply(ctx)).collect(Collectors.toList());
         configure(session);
         appendSelect();
         appendWhere();
         appendOrder();
-        extenders.forEach(RequirementSearchExtender::extend);
+        ctx.getExtenders().forEach(ext -> ext.extend(ctx));
         return query;
     }
 
@@ -183,7 +179,7 @@ public class RequirementSearchQueryFactory {
                 BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
                 for (String filter : token.getAllPossibleMatches()) {
                     BooleanBuilder tokenExpression = buildQuickFilterBooleanExpression($, filter);
-                    extenders.forEach(i -> i.extendQuickFilterWhereClause(filter, tokenExpression));
+                    ctx.getQuickFilterExtenders().forEach(i -> i.accept(filter, tokenExpression));
                     tokenBooleanBuilder.or(tokenExpression);
                 }
                 filterBooleanBuilder.and(tokenBooleanBuilder);

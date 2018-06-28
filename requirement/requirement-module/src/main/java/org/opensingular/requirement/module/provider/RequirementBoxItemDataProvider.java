@@ -21,7 +21,7 @@ package org.opensingular.requirement.module.provider;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
@@ -41,7 +41,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final ActionProvider actionProvider;
 
     private final List<String> tasks = new ArrayList<>();
-    private final List<ExtenderFactory> extenders = new ArrayList<>();
+    private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
@@ -91,12 +91,12 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return ApplicationContextProvider.get().getBean(PermissionResolverService.class).searchPermissions(filter.getIdUsuarioLogado());
     }
 
-    public RequirementBoxItemDataProvider addExtender(@Nonnull ExtenderFactory extenderFactory) {
-        extenders.add(extenderFactory);
+    public RequirementBoxItemDataProvider addExtender(@Nonnull RequirementSearchExtender RequirementSearchExtender) {
+        extenders.add(RequirementSearchExtender);
         return this;
     }
 
-    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<ExtenderFactory> extenderFactories) {
+    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<RequirementSearchExtender> extenderFactories) {
         extenderFactories.forEach(this::addExtender);
         return this;
     }

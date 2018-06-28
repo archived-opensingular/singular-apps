@@ -44,7 +44,7 @@ import org.opensingular.requirement.commons.persistence.dto.RequirementHistoryDT
 import org.opensingular.requirement.commons.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.commons.persistence.entity.form.*;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.ExtenderFactory;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
@@ -255,7 +255,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return countQuickSearch(filter, Collections.emptyList());
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<ExtenderFactory> extenders) {
+    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
         return requirementDAO.countQuickSearch(filter, extenders);
     }
 
@@ -263,7 +263,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return quickSearchMap(filter, Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<ExtenderFactory> extenders) {
+    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<RequirementSearchExtender> extenders) {
         return requirementDAO.quickSearchMap(filter, extenders);
     }
 
@@ -368,11 +368,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return countTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<ExtenderFactory> extenders) {
+    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
         return requirementDAO.quickSearchMap(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 
-    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<ExtenderFactory> extenders) {
+    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
         return requirementDAO.countQuickSearch(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 

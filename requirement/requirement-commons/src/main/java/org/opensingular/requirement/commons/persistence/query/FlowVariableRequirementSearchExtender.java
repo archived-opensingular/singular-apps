@@ -18,7 +18,6 @@
 
 package org.opensingular.requirement.commons.persistence.query;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
@@ -34,23 +33,19 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
     public static final String TO_CHAR_TEMPLATE = "to_char({0})";
     public static final String TO_CHAR_DATE_TEMPLATE = "to_date(to_char({0}), 'dd/MM/yyyy')";
 
-    private final RequirementSearchContext ctx;
     private final String variableName;
     private final String queryAlias;
     private final String toCharTemplate;
     private final QVariableInstanceEntity variableEntity;
 
-    public FlowVariableRequirementSearchExtender(@Nonnull RequirementSearchContext ctx,
-                                                 @Nonnull String variableName,
+    public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
                                                  @Nonnull String queryAlias) {
-        this(ctx, variableName, queryAlias, TO_CHAR_TEMPLATE);
+        this( variableName, queryAlias, TO_CHAR_TEMPLATE);
     }
 
-    public FlowVariableRequirementSearchExtender(@Nonnull RequirementSearchContext ctx,
-                                                 @Nonnull String variableName,
+    public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
                                                  @Nonnull String queryAlias,
                                                  @Nonnull String toCharTemplate) {
-        this.ctx = ctx;
         this.variableName = variableName;
         this.queryAlias = queryAlias;
         this.toCharTemplate = toCharTemplate;
@@ -58,25 +53,20 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
     }
 
     @Override
-    public void extend() {
+    public void extend(RequirementSearchContext ctx) {
         RequirementSearchQuery query = ctx.getQuery();
         RequirementSearchAliases $ = ctx.getAliases();
-        createSelect(variableEntity);
+        createSelect(ctx, variableEntity);
         query.leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
+        ctx.extendQuickFilterWhereClause((token, tokenExpression) -> tokenExpression.or(toChar(variableEntity).likeIgnoreCase(token)));
     }
 
-    @Override
-    public void extendQuickFilterWhereClause(String token, BooleanBuilder tokenExpression) {
-        tokenExpression.or(toChar(variableEntity).likeIgnoreCase(token));
-    }
-
-    protected void createSelect(QVariableInstanceEntity variableEntity) {
-        ctx.getQuery().getSelect().add(toChar(variableEntity).as(queryAlias));
+    protected void createSelect(RequirementSearchContext ctx, QVariableInstanceEntity qVariableInstance) {
+        ctx.getQuery().getSelect().add(toChar(qVariableInstance).as(queryAlias));
     }
 
     @Nonnull
     protected StringTemplate toChar(QVariableInstanceEntity var) {
         return Expressions.stringTemplate(toCharTemplate, var.value);
     }
-
 }
