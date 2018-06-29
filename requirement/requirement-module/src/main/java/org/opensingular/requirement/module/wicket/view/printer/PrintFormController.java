@@ -13,13 +13,13 @@ import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSe
 import org.opensingular.requirement.commons.service.ExtratoGeneratorService;
 import org.springframework.beans.factory.ObjectFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.FileCopyUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
-@Controller
+@RestController
 public class PrintFormController implements Loggable {
 
     @Inject
@@ -37,9 +37,9 @@ public class PrintFormController implements Loggable {
      * @param uuid     The uuid of the requiriment.
      * @throws IOException
      */
-    @RequestMapping(value = {"/requirement/printmf/{uuid}", "/worklist/printmf/{uuid}"}, method = RequestMethod.GET)
+    @RequestMapping(value = {"**/printmf/{uuid}"}, method = RequestMethod.GET)
     public void printMainForm(HttpServletResponse response, @PathVariable String uuid) throws IOException {
-        Optional<Long> possibleRequirementCod = enabledPrintsPerSessionMapObjectFactory.getObject().pop(uuid);
+        Optional<Long> possibleRequirementCod = enabledPrintsPerSessionMapObjectFactory.getObject().get(uuid);
         if (!possibleRequirementCod.isPresent()) {
             response.sendRedirect("/public/error/410");
             return;

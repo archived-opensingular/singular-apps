@@ -15,18 +15,23 @@ public class EnabledPrintsPerSessionMap {
     private Map<String, Long> map = new HashMap<>();
 
     public String put(Long requirementCod) {
+
+        Optional<Map.Entry<String, Long>> entryKey = map.entrySet()
+                .parallelStream()
+                .filter(f -> f.getValue().equals(requirementCod))
+                .findFirst();
+
+        if (entryKey.isPresent()) {
+            return entryKey.get().getKey();
+        }
+
         String randomUUID = UUID.randomUUID().toString();
         map.put(randomUUID, requirementCod);
         return randomUUID;
     }
 
-    /**
-     * This method works like a POP, remove and return the element.
-     *
-     * @param uuid The key of the map.
-     * @return The value of the map.
-     */
-    public Optional<Long> pop(String uuid) {
-        return Optional.ofNullable(map.remove(uuid));
+    public Optional<Long> get(String uuid) {
+        return Optional.ofNullable(map.get(uuid));
     }
+
 }
