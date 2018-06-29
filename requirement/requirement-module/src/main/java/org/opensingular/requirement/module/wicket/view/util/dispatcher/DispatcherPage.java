@@ -32,7 +32,6 @@ import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.dispacher.PageAccessChecker;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.commons.flow.SingularWebRef;
@@ -40,6 +39,7 @@ import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
@@ -69,7 +69,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private SingularRequirementService singularRequirementService;
 
     @Inject
-    private PageAccessChecker pageAccessChecker;
+    private AuthorizationService authorizationService;
 
     public DispatcherPage() {
         buildPage();
@@ -208,7 +208,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void dispatch(ActionContext context) {
-        if (context != null && (!pageAccessChecker.hasAccess(context))) {
+        if (context != null && (!authorizationService.hasPermission(context))) {
             redirectForbidden();
         } else if (context != null) {
             dispatchForDestination(context, retrieveDestination(context));

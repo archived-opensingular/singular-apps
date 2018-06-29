@@ -21,11 +21,13 @@ package org.opensingular.requirement.commons.spring.security;
 import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.RequirementInstance;
@@ -34,11 +36,13 @@ import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
 import org.opensingular.requirement.commons.service.dto.FormDTO;
 import org.opensingular.requirement.commons.wicket.SingularSession;
+import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -250,4 +254,65 @@ public class AuthorizationService implements Loggable {
                 .orElse(null);
     }
 
+    public boolean hasPermission(ActionContext context) {
+
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
+
+        Long requirementId = context.getRequirementId().orElse(null);
+        boolean hasPermission = hasPermission(
+                requirementId,
+                context.getFormName().orElse(null),
+                String.valueOf(userDetails.getUserPermissionKey()),
+                context.getFormAction().map(FormAction::name).orElse(null)
+        );
+
+        if (requirementId != null && userDetails.isContext(PServerContext.REQUIREMENT)) {
+            hasPermission &= isOwner(userDetails, requirementId);
+        }
+
+        // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
+        // para os modos de visualização basta a permissão.
+        if (isViewModeEdit(context) || isAnnotationModeEdit(context)) {
+            return hasPermission && !isTaskAssignedToAnotherUser(context);
+        } else {
+            return hasPermission;
+        }
+    }
+
+    protected boolean isOwner(SingularRequirementUserDetails userDetails, Long requirementId) {
+        String applicantId = userDetails.getApplicantId();
+        RequirementInstance requirement = requirementService.getRequirement(requirementId);
+        boolean truth = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        if (!truth) {
+            getLogger()
+                    .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
+                            userDetails.getUsername(), applicantId, requirementId, requirement.getApplicant().getIdPessoa());
+        }
+        return truth;
+    }
+
+    private boolean isViewModeEdit(ActionContext context) {
+        return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
+    }
+
+    @SuppressWarnings("OptionalIsPresent")
+    private boolean isTaskAssignedToAnotherUser(ActionContext config) {
+        String username = SingularSession.get().getUsername();
+        Optional<Long> requirementIdOpt = config.getRequirementId();
+        if (requirementIdOpt.isPresent()) {
+            return requirementService.findCurrentTaskEntityByRequirementId(requirementIdOpt.get())
+                    .map(AbstractTaskInstanceEntity::getTaskHistory)
+                    .filter(histories -> !histories.isEmpty())
+                    .map(histories -> histories.get(histories.size() - 1))
+                    .map(history -> history.getAllocatedUser() != null
+                            && history.getAllocationEndDate() == null
+                            && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
+                    .orElse(Boolean.FALSE);
+        }
+        return false;
+    }
+
+    private boolean isAnnotationModeEdit(ActionContext context) {
+        return context.getFormAction().map(FormAction::isAnnotationModeEdit).orElse(Boolean.FALSE);
+    }
 }
