@@ -29,89 +29,107 @@ import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
-import org.opensingular.requirement.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.requirement.commons.persistence.context.RequirementSearchContext;
-import org.opensingular.requirement.commons.persistence.filter.FilterToken;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 
 import javax.annotation.Nonnull;
 
 public class RequirementSearchQueryFactory {
 
-    private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
-
     private final RequirementSearchContext ctx;
+    private final RequirementSearchAliases $;
 
-    private RequirementSearchAliases $;
     private RequirementSearchQuery query;
-    private QuickFilter quickFilter;
-    private BooleanBuilder whereClause;
+
+    private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
+        this.$ = ctx.getAliases();
     }
 
     public RequirementSearchQuery build(Session session) {
-        configure(session);
+        query = new RequirementSearchQuery(session);
+        ctx.setQuery(query);
         appendSelect();
         appendWhere();
-        appendOrder();
-        ctx.getExtenders().forEach(ext -> ext.extend(ctx));
+        applyDefaultOrderBy();
+        applyExtenders();
+        applySortPropertyOrderBy();
+        applyQuickFilter();
+        if (Boolean.FALSE.equals(ctx.getCount())) {
+            applyPagination();
+        }
         return query;
     }
 
-    private void configure(Session session) {
-        query = new RequirementSearchQuery(session);
-        $ = ctx.getAliases();
-        quickFilter = ctx.getQuickFilter();
-        whereClause = query.getWhereClause();
-        ctx.setQuery(query);
+    private void applyPagination() {
+        query.offset(ctx.getQuickFilter().getFirst())
+                .limit(ctx.getQuickFilter().getCount());
+    }
 
-        if (quickFilter.isRascunho()) {
-            query.setDefaultOrder(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
+    private void applyQuickFilter() {
+        QuickFilter quickFilter = ctx.getQuickFilter();
+        if (quickFilter != null && quickFilter.hasFilter()) {
+            query.applyQuickFilter(quickFilter.listFilterTokens());
+        }
+    }
+
+    private void applySortPropertyOrderBy() {
+        QuickFilter quickFilter = ctx.getQuickFilter();
+        if (quickFilter.getSortProperty() != null) {
+            query.getMetadata().clearOrderBy();
+            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
+            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
+        }
+    }
+
+    private void applyExtenders() {
+        ctx.getExtenders().forEach(i -> i.extend(ctx));
+    }
+
+    private void applyDefaultOrderBy() {
+        if (ctx.getQuickFilter().isRascunho()) {
+            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
         } else {
-            query.setDefaultOrder(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
+            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
         }
     }
 
     private void appendSelect() {
-        if (Boolean.TRUE.equals(ctx.getCount())) {
-            query.countBy($.requirement);
-        } else {
-            query.getSelect()
-                    .add($.requirement.cod.as("codRequirement"))
-                    .add($.requirement.description.as("description"))
-                    .add($.taskVersion.name.as("situation"))
-                    .add($.applicantEntity.name.as("solicitante"))
-                    .add($.taskVersion.name.as("taskName"))
-                    .add($.taskVersion.type.as("taskType"))
-                    .add($.flowDefinitionEntity.name.as("processName"))
-                    .addCase($case -> $case
-                            .when($.currentFormDraftVersionEntity.isNull())
-                            .then($.currentFormVersion.inclusionDate)
-                            .otherwise($.currentFormDraftVersionEntity.inclusionDate)
-                            .as("creationDate"))
-                    .addCase($case -> $case
-                            .when($.formType.abbreviation.isNull())
-                            .then($.formDraftType.abbreviation)
-                            .otherwise($.formType.abbreviation)
-                            .as("type"))
-                    .add($.flowDefinitionEntity.key.as("processType"))
-                    .add($.task.beginDate.as("situationBeginDate"))
-                    .add($.task.cod.as("taskInstanceId"))
-                    .add($.flowInstance.beginDate.as("processBeginDate"))
-                    .add($.currentDraftEntity.editionDate.as("editionDate"))
-                    .add($.flowInstance.cod.as("flowInstanceId"))
-                    .add($.requirement.rootRequirement.cod.as("rootRequirement"))
-                    .add($.requirement.parentRequirement.cod.as("parentRequirement"))
-                    .add($.taskDefinition.cod.as("taskId"))
-                    .add($.task.versionStamp.as("versionStamp"))
-                    .add($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
-                    .add($.allocatedUser.nome.as("nomeUsuarioAlocado"))
-                    .add($.module.cod.as("moduleCod"))
-                    .add($.module.connectionURL.as("moduleContext"))
-                    .add($.requirementDefinition.cod.as("requirementDefinitionId"));
-        }
+        query
+                .addToSelect($.requirement.cod.as("codRequirement"))
+                .addToSelect($.requirement.description.as("description"))
+                .addToSelect($.taskVersion.name.as("situation"))
+                .addToSelect($.applicantEntity.name.as("solicitante"))
+                .addToSelect($.taskVersion.name.as("taskName"))
+                .addToSelect($.taskVersion.type.as("taskType"))
+                .addToSelect($.flowDefinitionEntity.name.as("processName"))
+                .addCaseToSelect($case -> $case
+                        .when($.currentFormDraftVersionEntity.isNull())
+                        .then($.currentFormVersion.inclusionDate)
+                        .otherwise($.currentFormDraftVersionEntity.inclusionDate)
+                        .as("creationDate"))
+                .addCaseToSelect($case -> $case
+                        .when($.formType.abbreviation.isNull())
+                        .then($.formDraftType.abbreviation)
+                        .otherwise($.formType.abbreviation)
+                        .as("type"))
+                .addToSelect($.flowDefinitionEntity.key.as("processType"))
+                .addToSelect($.task.beginDate.as("situationBeginDate"))
+                .addToSelect($.task.cod.as("taskInstanceId"))
+                .addToSelect($.flowInstance.beginDate.as("processBeginDate"))
+                .addToSelect($.currentDraftEntity.editionDate.as("editionDate"))
+                .addToSelect($.flowInstance.cod.as("flowInstanceId"))
+                .addToSelect($.requirement.rootRequirement.cod.as("rootRequirement"))
+                .addToSelect($.requirement.parentRequirement.cod.as("parentRequirement"))
+                .addToSelect($.taskDefinition.cod.as("taskId"))
+                .addToSelect($.task.versionStamp.as("versionStamp"))
+                .addToSelect($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
+                .addToSelect($.allocatedUser.nome.as("nomeUsuarioAlocado"))
+                .addToSelect($.module.cod.as("moduleCod"))
+                .addToSelect($.module.connectionURL.as("moduleContext"))
+                .addToSelect($.requirementDefinition.cod.as("requirementDefinitionId"));
 
         query
                 .from($.requirement)
@@ -134,67 +152,52 @@ public class RequirementSearchQueryFactory {
                 .leftJoin($.requirementDefinition.module, $.module);
     }
 
-    @Nonnull
     private void appendWhere() {
         appendFilterByApplicant();
         appendFilterByFlowDefinitionAbbreviation();
-        appendFilterByQuickFilter();
         appendFilterByTasks();
-        if (quickFilter.isRascunho()) {
+        if (ctx.getQuickFilter().isRascunho()) {
             appendFilterByRequirementsWithoutFlowInstance();
         } else {
             appendFilterByRequirementsWithFlowInstance();
             appendFilterByCurrentTask();
         }
+        appendFilterByQickFilter();
     }
 
     private void appendFilterByCurrentTask() {
-        if (quickFilter.getEndedTasks() == null) {
-            whereClause.and($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
-        } else if (Boolean.TRUE.equals(quickFilter.getEndedTasks())) {
-            whereClause.and($.taskVersion.type.eq(TaskType.END));
+        if (ctx.getQuickFilter().getEndedTasks() == null) {
+            query.where($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
+        } else if (Boolean.TRUE.equals(ctx.getQuickFilter().getEndedTasks())) {
+            query.where($.taskVersion.type.eq(TaskType.END));
         } else {
-            whereClause.and($.task.endDate.isNull());
+            query.where($.task.endDate.isNull());
         }
     }
 
     private void appendFilterByRequirementsWithFlowInstance() {
-        whereClause.and($.requirement.flowInstanceEntity.isNotNull());
+        query.where($.requirement.flowInstanceEntity.isNotNull());
     }
 
     private void appendFilterByRequirementsWithoutFlowInstance() {
-        whereClause.and($.requirement.flowInstanceEntity.isNull());
+        query.where($.requirement.flowInstanceEntity.isNull());
     }
 
     private void appendFilterByTasks() {
-        if (!CollectionUtils.isEmpty(quickFilter.getTasks())) {
-            whereClause.and($.taskVersion.name.in(quickFilter.getTasks()));
-        }
-    }
-
-    private void appendFilterByQuickFilter() {
-        if (ctx.getQuickFilter().hasFilter()) {
-            BooleanBuilder filterBooleanBuilder = new BooleanBuilder();
-            for (FilterToken token : quickFilter.listFilterTokens()) {
-                BooleanBuilder tokenBooleanBuilder = new BooleanBuilder();
-                for (String filter : token.getAllPossibleMatches()) {
-                    BooleanBuilder tokenExpression = buildQuickFilterBooleanExpression($, filter);
-                    ctx.getQuickFilterExtenders().forEach(i -> i.accept(filter, tokenExpression));
-                    tokenBooleanBuilder.or(tokenExpression);
-                }
-                filterBooleanBuilder.and(tokenBooleanBuilder);
-            }
-            whereClause.and(filterBooleanBuilder);
+        if (!CollectionUtils.isEmpty(ctx.getQuickFilter().getTasks())) {
+            query.where($.taskVersion.name.in(ctx.getQuickFilter().getTasks()));
         }
     }
 
     private void appendFilterByApplicant() {
+        QuickFilter quickFilter = ctx.getQuickFilter();
         if (quickFilter.getIdPessoa() != null) {
-            whereClause.and($.applicantEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+            query.where($.applicantEntity.idPessoa.eq(quickFilter.getIdPessoa()));
         }
     }
 
     private void appendFilterByFlowDefinitionAbbreviation() {
+        QuickFilter quickFilter = ctx.getQuickFilter();
         if (!quickFilter.isRascunho()
                 && quickFilter.getProcessesAbbreviation() != null
                 && !quickFilter.getProcessesAbbreviation().isEmpty()) {
@@ -202,23 +205,12 @@ public class RequirementSearchQueryFactory {
             if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
                 expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
             }
-            whereClause.and(expr);
+            query.where(expr);
         }
     }
 
-    private void appendOrder() {
-        if (quickFilter.getSortProperty() != null) {
-            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
-            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
-        } else if (!Boolean.TRUE.equals(ctx.getCount())
-                && query.getMetadata().getOrderBy().isEmpty()
-                && query.getDefaultOrder() != null) {
-            query.orderBy(query.getDefaultOrder());
-        }
-    }
-
-    private BooleanBuilder buildQuickFilterBooleanExpression(RequirementSearchAliases $, String filter) {
-        return new BooleanBuilder()
+    private void appendFilterByQickFilter() {
+        query.addConditionToQuickFilter(filter -> new BooleanBuilder()
                 .or($.allocatedUser.nome.likeIgnoreCase(filter))
                 .or($.requirement.description.likeIgnoreCase(filter))
                 .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
@@ -228,7 +220,7 @@ public class RequirementSearchQueryFactory {
                 .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
                 .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
                 .or(toCharDate($.task.beginDate).like(filter))
-                .or(toCharDate($.flowInstance.beginDate).like(filter));
+                .or(toCharDate($.flowInstance.beginDate).like(filter)));
     }
 
     @Nonnull

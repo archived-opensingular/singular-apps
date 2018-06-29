@@ -54,8 +54,6 @@ import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
 import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.connector.RESTModuleDriver;
-import org.opensingular.requirement.commons.dispacher.IsOwnerPageAccessChecker;
-import org.opensingular.requirement.commons.dispacher.PageAccessChecker;
 import org.opensingular.requirement.commons.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
 import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
@@ -367,10 +365,4 @@ public class SingularDefaultBeanFactory {
     public ExtratoGenerator extratoGenerator() {
         return new ExtratoGeneratorImpl();
     }
-
-    @Bean
-    public PageAccessChecker pageAccessChecker(){
-        return new IsOwnerPageAccessChecker(Collections.singletonList(PServerContext.REQUIREMENT));
-    }
-
 }

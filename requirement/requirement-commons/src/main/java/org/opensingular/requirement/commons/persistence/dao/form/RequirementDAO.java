@@ -25,7 +25,6 @@ import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.*;
 import org.opensingular.lib.support.persistence.BaseDAO;
@@ -84,13 +83,11 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     private Long countQuickSearch(RequirementSearchContext query) {
-        return (Long) makeRequirementSearchQuery(query).uniqueResult();
+        return buildRequirementSearchQuery(query).fetchCount();
     }
 
-    private Query makeRequirementSearchQuery(RequirementSearchContext ctx) {
-        RequirementSearchQueryFactory searchQueryFactory = new RequirementSearchQueryFactory(ctx);
-        RequirementSearchQuery requirementSearchQuery = searchQueryFactory.build(getSession());
-        return requirementSearchQuery.toHibernateQuery(ctx.getCount());
+    private RequirementSearchQuery buildRequirementSearchQuery(RequirementSearchContext ctx) {
+        return new RequirementSearchQueryFactory(ctx).build(getSession());
     }
 
     public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
@@ -111,11 +108,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     private List<Map<String, Serializable>> quickSearchMap(RequirementSearchContext query) {
-        return makeRequirementSearchQuery(query)
-                .setFirstResult(query.getQuickFilter().getFirst())
-                .setMaxResults(query.getQuickFilter().getCount())
-                .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
-                .list();
+        return buildRequirementSearchQuery(query).fetchMap();
     }
 
     public T findByFlowCodOrException(Integer cod) {
