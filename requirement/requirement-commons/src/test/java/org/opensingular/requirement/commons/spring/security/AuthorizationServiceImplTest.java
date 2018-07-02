@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class AuthorizationServiceTest extends SingularCommonsBaseTest {
+public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
 
     @Inject
     private AuthorizationService authorizationService;
