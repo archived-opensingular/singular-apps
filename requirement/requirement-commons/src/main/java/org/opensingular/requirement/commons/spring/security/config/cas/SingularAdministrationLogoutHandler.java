@@ -43,7 +43,7 @@ public class SingularAdministrationLogoutHandler implements SingularLogoutHandle
             if (session != null) {
                 SecurityContextImpl sci = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
                 if(sci != null){
-                    sci.setAuthentication(null);
+                    sci.getAuthentication().setAuthenticated(false);
                 }
                 session.invalidate();
             }
