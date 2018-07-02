@@ -21,6 +21,7 @@ package org.opensingular.requirement.module.test;
 import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.commons.test.ValidatorOracleMock;
 import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.service.ServerMenuService;
@@ -52,7 +53,7 @@ public class ModuleConfigurationMock {
     @Primary
     @Bean
     public AuthorizationService authorizationService() {
-        return spy(mock(AuthorizationService.class));
+        return spy(mock(AuthorizationServiceImpl.class));
     }
 
     @Primary

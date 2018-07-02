@@ -53,8 +53,8 @@ import org.opensingular.requirement.commons.cache.SingularKeyGenerator;
 import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
 import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.connector.RESTModuleDriver;
-import org.opensingular.requirement.commons.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
+import org.opensingular.requirement.commons.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
@@ -78,6 +78,7 @@ import org.opensingular.requirement.commons.service.attachment.ServerAttachmentP
 import org.opensingular.requirement.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.requirement.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
 import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
@@ -245,7 +246,7 @@ public class SingularDefaultBeanFactory {
 
     @Bean
     public AuthorizationService getAuthorizationService() {
-        return new AuthorizationService();
+        return new AuthorizationServiceImpl();
     }
 
     @Bean
@@ -362,6 +363,5 @@ public class SingularDefaultBeanFactory {
     public ExtratoGenerator extratoGenerator() {
         return new ExtratoGeneratorImpl();
     }
-
 
 }

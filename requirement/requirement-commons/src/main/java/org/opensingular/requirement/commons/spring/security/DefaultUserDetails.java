@@ -55,11 +55,6 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
     }
 
     @Override
-    public Object getUserPermissionKey() {
-        return this.getUsername();
-    }
-
-    @Override
     public IServerContext getServerContext() {
         return serverContext;
     }
