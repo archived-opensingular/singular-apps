@@ -27,6 +27,7 @@ import org.mockito.Mock;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
@@ -51,7 +52,7 @@ public class BoxDefinitionDataServiceTest {
     @Mock
     private ApplicationContext          context;
     @Mock
-    private AuthorizationServiceImpl        authorizationService;
+    private AuthorizationService        authorizationService;
     @Mock
     private SingularModuleConfiguration singularModuleConfiguration;
     @InjectMocks
@@ -67,7 +68,7 @@ public class BoxDefinitionDataServiceTest {
 
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
-        when(context.getBean(AuthorizationServiceImpl.class)).thenReturn(authorizationService);
+        when(context.getBean(AuthorizationService.class)).thenReturn(authorizationService);
 
     }
 
