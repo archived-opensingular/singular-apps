@@ -27,12 +27,11 @@ import org.mockito.Mock;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.rest.ModuleBackstageService;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
 
@@ -43,8 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
@@ -53,7 +51,7 @@ public class BoxDefinitionDataServiceTest {
     @Mock
     private ApplicationContext          context;
     @Mock
-    private AuthorizationService        authorizationService;
+    private AuthorizationServiceImpl        authorizationService;
     @Mock
     private SingularModuleConfiguration singularModuleConfiguration;
     @InjectMocks
@@ -69,7 +67,7 @@ public class BoxDefinitionDataServiceTest {
 
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
         applicationContextProvider.setApplicationContext(context);
-        when(context.getBean(AuthorizationService.class)).thenReturn(authorizationService);
+        when(context.getBean(AuthorizationServiceImpl.class)).thenReturn(authorizationService);
 
     }
 
