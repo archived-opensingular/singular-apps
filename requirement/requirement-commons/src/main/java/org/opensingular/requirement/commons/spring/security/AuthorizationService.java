@@ -24,6 +24,7 @@ import org.opensingular.requirement.commons.box.action.BoxItemActionList;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 public interface AuthorizationService extends Loggable {
@@ -41,5 +42,5 @@ public interface AuthorizationService extends Loggable {
 
     boolean hasPermission(Long requirementId, String formType, String idUsuario, String action);
 
-    boolean hasPermission(ActionContext context);
+    boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, boolean readonly);
 }

@@ -25,9 +25,7 @@ import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
-import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.RequirementInstance;
@@ -36,7 +34,6 @@ import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.BoxItemAction;
 import org.opensingular.requirement.commons.service.dto.FormDTO;
 import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -73,7 +70,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
         for (Iterator<BoxConfigurationData> it = groupDTOs.iterator(); it.hasNext(); ) {
             BoxConfigurationData boxConfigurationMetadata = it.next();
-            String permissionNeeded = boxConfigurationMetadata.getId().toUpperCase();
+            String               permissionNeeded         = boxConfigurationMetadata.getId().toUpperCase();
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
                 it.remove();
             } else {
@@ -96,9 +93,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         }
         for (Iterator<BoxItemAction> it = actions.iterator(); it.hasNext(); ) {
-            BoxItemAction action = it.next();
-            String permissionsNeeded;
-            String typeAbbreviation = getFormSimpleName(formType);
+            BoxItemAction action           = it.next();
+            String        permissionsNeeded;
+            String        typeAbbreviation = getFormSimpleName(formType);
             if (action.getFormAction() != null) {
                 permissionsNeeded = buildPermissionKey(
                         requirementAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
@@ -129,9 +126,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private List<SingularPermission> searchPermissions(String userPermissionKey) {
         if (SingularSession.exists()) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-            if (userDetails != null && userPermissionKey.equals(userDetails.getUserPermissionKey())) {
+            if (userDetails != null && userPermissionKey.equals(userDetails.getApplicantId())) {
                 if (CollectionUtils.isEmpty(userDetails.getPermissions())) {
-                    userDetails.addPermissions(peticionamentoUserDetailService.searchPermissions((String) userDetails.getUserPermissionKey()));
+                    userDetails.addPermissions(peticionamentoUserDetailService.searchPermissions((String) userDetails.getApplicantId()));
                 }
                 return userDetails.getPermissions();
             }
@@ -142,8 +139,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     private void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
         for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
-            FormDTO form = it.next();
-            String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
+            FormDTO form             = it.next();
+            String  permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
             if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
                 it.remove();
             }
@@ -257,65 +254,52 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
     @Override
-    public boolean hasPermission(ActionContext context) {
+    public boolean hasPermission(Long requirementId, String formType, String userId, String applicantId, String action, boolean readonly) {
 
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-
-        Long requirementId = context.getRequirementId().orElse(null);
         boolean hasPermission = hasPermission(
                 requirementId,
-                context.getFormName().orElse(null),
-                String.valueOf(userDetails.getUserPermissionKey()),
-                context.getFormAction().map(FormAction::name).orElse(null)
+                formType,
+                userId,
+                action
         );
 
-        if (requirementId != null && userDetails.isContext(PServerContext.REQUIREMENT)) {
-            hasPermission &= isOwner(userDetails, requirementId);
+        boolean isOwner = true;
+        if (requirementId != null) {
+            isOwner &= isOwner(requirementId, userId, applicantId);
         }
 
         // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
         // para os modos de visualização basta a permissão.
-        if (isViewModeEdit(context) || isAnnotationModeEdit(context)) {
-            return hasPermission && !isTaskAssignedToAnotherUser(context);
-        } else {
-            return hasPermission;
-        }
+        boolean isAssignedToCurrentUser = readonly || !isTaskAssignedToAnotherUser(requirementId, userId);
+
+        return hasPermission && (isOwner || isAssignedToCurrentUser);
     }
 
-    protected boolean isOwner(SingularRequirementUserDetails userDetails, Long requirementId) {
-        String applicantId = userDetails.getApplicantId();
+    protected boolean isOwner(Long requirementId, String userId, String applicantId) {
         RequirementInstance requirement = requirementService.getRequirement(requirementId);
-        boolean truth = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()
                     .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
-                            userDetails.getUsername(), applicantId, requirementId, requirement.getApplicant().getIdPessoa());
+                            userId, applicantId, requirementId, requirement.getApplicant().getIdPessoa());
         }
         return truth;
     }
 
-    private boolean isViewModeEdit(ActionContext context) {
-        return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
-    }
 
     @SuppressWarnings("OptionalIsPresent")
-    private boolean isTaskAssignedToAnotherUser(ActionContext config) {
-        String username = SingularSession.get().getUsername();
-        Optional<Long> requirementIdOpt = config.getRequirementId();
-        if (requirementIdOpt.isPresent()) {
-            return requirementService.findCurrentTaskEntityByRequirementId(requirementIdOpt.get())
+    private boolean isTaskAssignedToAnotherUser(Long requirementId, String idUsuario) {
+        if (requirementId != null && idUsuario != null) {
+            return requirementService.findCurrentTaskEntityByRequirementId(requirementId)
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
                     .filter(histories -> !histories.isEmpty())
                     .map(histories -> histories.get(histories.size() - 1))
                     .map(history -> history.getAllocatedUser() != null
                             && history.getAllocationEndDate() == null
-                            && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
+                            && !idUsuario.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
                     .orElse(Boolean.FALSE);
         }
         return false;
     }
 
-    private boolean isAnnotationModeEdit(ActionContext context) {
-        return context.getFormAction().map(FormAction::isAnnotationModeEdit).orElse(Boolean.FALSE);
-    }
 }

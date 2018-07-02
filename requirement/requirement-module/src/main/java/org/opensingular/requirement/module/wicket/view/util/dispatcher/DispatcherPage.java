@@ -44,6 +44,7 @@ import org.opensingular.requirement.commons.persistence.entity.form.RequirementE
 import org.opensingular.requirement.commons.service.RequirementService;
 import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.wicket.SingularSession;
 import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
@@ -112,8 +113,8 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
-        Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<TaskInstance> ti   = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
+        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
 
             Optional<FormAction> formActionOpt = actionContext.getFormAction();
@@ -167,7 +168,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long formVersionPK;
+        Long    formVersionPK;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
@@ -211,13 +212,25 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void dispatch(ActionContext context) {
-        if (context != null && (!authorizationService.hasPermission(context))) {
-            redirectForbidden();
-        } else if (context != null) {
-            dispatchForDestination(context, retrieveDestination(context));
-        } else {
-            closeAndReloadParent();
+        Long    requirementId = context.getRequirementId().orElse(null);
+        String  formType      = context.getFormName().orElse(null);
+        String  action        = context.getFormAction().map(FormAction::name).orElse(null);
+        boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
+        String  idUsuario     = null;
+        String  idApplicant   = null;
+        if (SingularSession.exists()) {
+            idUsuario = SingularSession.get().getUserDetails().getUsername();
+            idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
+        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, readonly)) {
+            redirectForbidden();
+        } else {
+            dispatchForDestination(context, retrieveDestination(context));
+        }
+    }
+
+    private boolean isViewModeEdit(ActionContext context) {
+        return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
     }
 
     private void redirectForbidden() {
