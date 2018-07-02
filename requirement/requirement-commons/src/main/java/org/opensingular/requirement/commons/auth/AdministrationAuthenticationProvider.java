@@ -18,8 +18,11 @@
 
 package org.opensingular.requirement.commons.auth;
 
+import java.util.Collections;
+
 import org.opensingular.requirement.commons.config.IServerContext;
 import org.opensingular.requirement.commons.spring.security.DefaultUserDetails;
+import org.opensingular.requirement.commons.spring.security.SingularPermission;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
@@ -49,7 +52,9 @@ public class AdministrationAuthenticationProvider extends AbstractUserDetailsAut
                                        UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         if (credentialChecker.check(principal, authentication.getCredentials().toString())) {
-            return new DefaultUserDetails(principal, null, principal, serverContext);
+            return new DefaultUserDetails(principal,
+                    Collections.singletonList(new SingularPermission("ADMIN", null)),
+                    principal, serverContext);
         }
         throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
     }

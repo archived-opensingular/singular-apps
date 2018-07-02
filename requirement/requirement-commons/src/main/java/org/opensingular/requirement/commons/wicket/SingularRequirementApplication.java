@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.commons.wicket;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
@@ -36,18 +39,15 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.requirement.commons.wicket.error.Page403;
 import org.opensingular.requirement.commons.wicket.error.Page410;
 import org.opensingular.requirement.commons.wicket.listener.SingularServerContextListener;
 import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.commons.wicket.view.template.Footer;
 import org.opensingular.requirement.commons.wicket.view.template.Header;
 import org.springframework.context.ApplicationContext;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -67,7 +67,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
         Locale.setDefault(new Locale("pt", "BR"));//NOSONAR
 
-        getApplicationSettings().setAccessDeniedPage(Error403Page.class);
+        getApplicationSettings().setAccessDeniedPage(Page403.class);
         getApplicationSettings().setPageExpiredErrorPage(Page410.class);
 
         // Don't forget to check your Application server for this

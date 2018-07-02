@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.wicket.listener;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
@@ -30,7 +32,6 @@ import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.requirement.commons.config.IServerContext;
 import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.requirement.commons.exception.SingularServerException;
@@ -39,10 +40,9 @@ import org.opensingular.requirement.commons.spring.security.SecurityAuthPathsFac
 import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.commons.wicket.SingularSession;
+import org.opensingular.requirement.commons.wicket.error.Page403;
 import org.opensingular.requirement.commons.wicket.error.Page410;
 import org.opensingular.requirement.commons.wicket.error.Page500;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * Listener para impedir que páginas de um contexto do wicket sejam acessadas por uma sessão
@@ -76,7 +76,7 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
 
     private void redirect403(RequestCycle cycle) {
         cycle.getOriginalResponse().reset();
-        cycle.setResponsePage(new Error403Page());
+        cycle.setResponsePage(new Page403());
     }
 
     @Override

@@ -18,24 +18,22 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-
+import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.commons.wicket.error.Page403;
 import org.opensingular.requirement.commons.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
-import org.opensingular.requirement.commons.test.CommonsApplicationMock;
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
 
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.reset;
@@ -71,7 +69,7 @@ public class DispatcherPageTest extends SingularModuleBaseTest {
         pageParameters.add(FORM_NAME, "foooooo.StypeFoo");
         pageParameters.add(REQUIREMENT_DEFINITION_ID, requirementDefinitionEntity.getCod());
         tester.startPage(DispatcherPage.class, pageParameters);
-        tester.assertRenderedPage(AccessDeniedPage.class);
+        tester.assertRenderedPage(Page403.class);
     }
 
     @WithUserDetails("vinicius.nunes")

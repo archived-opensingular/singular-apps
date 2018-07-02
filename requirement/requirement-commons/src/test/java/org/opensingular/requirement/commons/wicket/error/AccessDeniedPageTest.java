@@ -18,19 +18,17 @@
 
 package org.opensingular.requirement.commons.wicket.error;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.apache.wicket.Page;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
-
-import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.commons.test.CommonsApplicationMock;
 import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AccessDeniedPageTest extends SingularCommonsBaseTest {
@@ -44,8 +42,8 @@ public class AccessDeniedPageTest extends SingularCommonsBaseTest {
     @Test
     public void testAccessDeniedPageRendering() {
         tester = new SingularWicketTester(singularApplication);
-        Page p = new AccessDeniedPage();
+        Page p = new Page403();
         tester.startPage(p);
-        tester.assertRenderedPage(AccessDeniedPage.class);
+        tester.assertRenderedPage(Page403.class);
     }
 }

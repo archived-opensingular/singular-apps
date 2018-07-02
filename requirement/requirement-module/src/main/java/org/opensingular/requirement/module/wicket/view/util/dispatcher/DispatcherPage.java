@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.module.wicket.view.util.dispatcher;
 
+import java.lang.reflect.Constructor;
+import java.util.Objects;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -49,7 +54,7 @@ import org.opensingular.requirement.commons.service.SingularRequirementService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.commons.wicket.error.Page403;
 import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage;
@@ -59,12 +64,8 @@ import org.opensingular.requirement.commons.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
-import javax.inject.Inject;
-import java.lang.reflect.Constructor;
-import java.util.Objects;
-import java.util.Optional;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 @SuppressWarnings("serial")
 public class DispatcherPage extends WebPage implements Loggable {
@@ -285,7 +286,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void redirectForbidden() {
-        setResponsePage(AccessDeniedPage.class);
+        setResponsePage(Page403.class);
     }
 
     private void dispatchForDestination(ActionContext context, WebPage destination) {

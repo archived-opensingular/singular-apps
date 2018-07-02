@@ -19,21 +19,23 @@
 package org.opensingular.requirement.commons.spring.security.config;
 
 
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.commons.auth.AdminCredentialChecker;
 import org.opensingular.requirement.commons.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.spring.security.config.cas.SingularCASSpringSecurityConfig;
 import org.opensingular.requirement.commons.config.PServerContext;
+import org.opensingular.requirement.commons.spring.security.config.cas.SingularAdministrationLogoutHandler;
+import org.opensingular.requirement.commons.spring.security.config.cas.SingularCASSpringSecurityConfig;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import javax.inject.Inject;
-import java.util.Optional;
 
 public class SecurityConfigs {
 
@@ -78,12 +80,18 @@ public class SecurityConfigs {
         @Inject
         private Optional<AdminCredentialChecker> credentialChecker;
 
+        @Bean
+        public SingularLogoutHandler singularLogoutHandler() {
+            return new SingularAdministrationLogoutHandler();
+        }
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .regexMatcher(PServerContext.ADMINISTRATION.getPathRegex())
                     .authorizeRequests()
-                    .anyRequest().authenticated()
+                    .antMatchers(PServerContext.ADMINISTRATION.getContextPath()).hasRole("ADMIN")
+                    .and()
+                    .exceptionHandling().accessDeniedPage("/public/error/403")
                     .and()
                     .csrf().disable()
                     .httpBasic();

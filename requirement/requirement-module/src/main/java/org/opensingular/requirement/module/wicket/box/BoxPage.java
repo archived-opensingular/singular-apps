@@ -18,6 +18,12 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.model.IModel;
@@ -30,19 +36,15 @@ import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.commons.wicket.error.Page403;
 import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
@@ -99,7 +101,7 @@ public class BoxPage extends ServerBoxTemplate {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
         }
         LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
-        throw new RestartResponseException(AccessDeniedPage.class);
+        throw new RestartResponseException(Page403.class);
     }
 
     private boolean isAccessWithoutParams(String moduleCod, String menu, String item) {
