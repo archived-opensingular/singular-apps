@@ -27,6 +27,9 @@ import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 import javax.annotation.Nullable;
 import java.util.List;
 
+/**
+ * Service responsible every authorization check in a Singular Requirement Application.
+ */
 public interface AuthorizationService extends Loggable {
     String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
     String SEPARATOR = "|$|";
@@ -42,5 +45,25 @@ public interface AuthorizationService extends Loggable {
 
     boolean hasPermission(Long requirementId, String formType, String idUsuario, String action);
 
+    /**
+     * Checks if the current user has the permission needed to do perform the given {@param action} and then perform the following checks:
+     * 1) If the user is the representative assigned to the the given requirement the access will be granted (external user scenario).
+     * 2) If the access is readonly ({@param readonly}), the access will be granted (external or internal scenario).
+     * 3) Otherwise it will be checked if the current user is the one assigned (allocated) to the given requirement (internal user scenario).
+     *      *
+     * @param requirementId
+     *  current requirement id
+     * @param formType
+     *  form type name
+     * @param userId
+     *  logged in user
+     * @param applicantId
+     *  representation selected by current user
+     * @param action
+     *  action whose access must be checked
+     * @param readonly
+     *  inform if the action is a readonly action
+     * @return
+     */
     boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, boolean readonly);
 }
