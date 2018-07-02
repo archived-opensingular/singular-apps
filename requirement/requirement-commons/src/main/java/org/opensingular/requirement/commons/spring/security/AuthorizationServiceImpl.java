@@ -275,6 +275,13 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return hasPermission && (isOwner || isAssignedToCurrentUser);
     }
 
+    /**
+     * Utility method used by {@link #hasPermission(Long, String, String, String, String, boolean)}
+     * @param requirementId
+     * @param userId
+     * @param applicantId
+     * @return
+     */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
         RequirementInstance requirement = requirementService.getRequirement(requirementId);
         boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
@@ -287,8 +294,14 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     }
 
 
+    /**
+     * Utility method used by {@link #hasPermission(Long, String, String, String, String, boolean)}
+     * @param requirementId
+     * @param idUsuario
+     * @return
+     */
     @SuppressWarnings("OptionalIsPresent")
-    private boolean isTaskAssignedToAnotherUser(Long requirementId, String idUsuario) {
+    protected boolean isTaskAssignedToAnotherUser(Long requirementId, String idUsuario) {
         if (requirementId != null && idUsuario != null) {
             return requirementService.findCurrentTaskEntityByRequirementId(requirementId)
                     .map(AbstractTaskInstanceEntity::getTaskHistory)
