@@ -18,22 +18,24 @@
 
 package org.opensingular.requirement.commons.box.action.defaults;
 
+import java.io.Serializable;
+
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.commons.box.action.AbstractURLPopupBoxItemAction;
-import org.opensingular.requirement.commons.box.action.config.EnabledPrintsPerSessionMap;
 
 public class ExtratoAction extends AbstractURLPopupBoxItemAction {
+
+    public static final String EXTRATO = "extrato";
 
     /**
      * Method respinble for add button for open the requirement extrato in other tab in PDF format.
      *
-     * @param uuidRequirement have to configure the uuid for requirement.
-     * @see EnabledPrintsPerSessionMap
+     * @param requirmentId    the id of requirement.
      */
-    public ExtratoAction(String uuidRequirement) {
-        super("extrato",
+    public ExtratoAction(Serializable requirmentId) {
+        super(EXTRATO,
                 "Extrato",
                 DefaultIcons.FILE_PDF,
-                "/printmf/" + uuidRequirement);
+                "/printmf/" + requirmentId);
     }
 }
