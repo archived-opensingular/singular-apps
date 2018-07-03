@@ -57,6 +57,7 @@ public class RequirementSearchQueryFactory {
         appendWhere();
         appendOrder();
         ctx.getExtenders().forEach(ext -> ext.extend(ctx));
+        appendFilterByQuickFilter();
         return query;
     }
 
@@ -138,7 +139,6 @@ public class RequirementSearchQueryFactory {
     private void appendWhere() {
         appendFilterByApplicant();
         appendFilterByFlowDefinitionAbbreviation();
-        appendFilterByQuickFilter();
         appendFilterByTasks();
         if (quickFilter.isRascunho()) {
             appendFilterByRequirementsWithoutFlowInstance();

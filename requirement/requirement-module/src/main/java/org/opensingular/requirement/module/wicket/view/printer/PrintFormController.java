@@ -1,15 +1,10 @@
 package org.opensingular.requirement.module.wicket.view.printer;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.box.action.defaults.ExtratoAction;
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.requirement.commons.service.ExtratoGeneratorService;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
 import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
@@ -19,6 +14,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Optional;
+
 @RestController
 public class PrintFormController implements Loggable {
 
@@ -27,6 +30,9 @@ public class PrintFormController implements Loggable {
 
     @Inject
     private AuthorizationService authorizationService;
+
+    @Inject
+    private SingularServerConfiguration singularServerConfiguration;
 
 
     /**
@@ -39,19 +45,18 @@ public class PrintFormController implements Loggable {
      * @throws IOException
      */
     @RequestMapping(value = {"**/printmf/{requirmentId}"}, method = RequestMethod.GET)
-    public void printMainForm(HttpServletResponse response, @PathVariable Long requirmentId) throws IOException {
+    public void printMainForm(HttpServletRequest request, HttpServletResponse response, @PathVariable Long requirmentId) throws IOException {
 
         if (requirmentId == null || !SingularSession.exists()) {
             response.sendRedirect("/public/error/410");
             return;
         }
 
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        String idUsuarioLogado = userDetails.getUsername();
-        String idApplicant = userDetails.getApplicantId();
+        SingularRequirementUserDetails userDetails     = SingularSession.get().getUserDetails();
+        String                         idUsuarioLogado = userDetails.getUsername();
+        String                         idApplicant     = userDetails.getApplicantId();
 
-
-        boolean hasPermission = authorizationService.hasPermission(requirmentId, null, idUsuarioLogado,idApplicant, ExtratoAction.EXTRATO, true);
+        boolean hasPermission = authorizationService.hasPermission(requirmentId, null, idUsuarioLogado, idApplicant, ExtratoAction.EXTRATO, IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts()), true);
 
         if (!hasPermission) {
             response.sendRedirect("/public/error/403");

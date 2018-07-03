@@ -25,6 +25,8 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
@@ -36,6 +38,8 @@ import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.SingularServerConfiguration;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.commons.flow.SingularWebRef;
@@ -74,6 +78,9 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     @Inject
     private AuthorizationService authorizationService;
+
+    @Inject
+    private SingularServerConfiguration singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();
@@ -222,7 +229,8 @@ public class DispatcherPage extends WebPage implements Loggable {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
-        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, readonly)) {
+        IServerContext serverContext = IServerContext.getContextFromRequest(RequestCycle.get().getRequest(), singularServerConfiguration.getContexts());
+        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
             redirectForbidden();
         } else {
             dispatchForDestination(context, retrieveDestination(context));

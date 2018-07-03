@@ -127,21 +127,6 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
 
     @Test
     @WithUserDetails("joao")
-    public void filterActorsTest() {
-
-        List<Actor> actors = new ArrayList<Actor>();
-        actors.add(new Actor(1, "01", "torquato neto", "tn@gmail.com"));
-        actors.add(new Actor(2, "02", "maria", "maria@gmail.com"));
-        Long   requirementId = 1L;
-        String actionName = new EditAction(new BoxItemDataImpl()).getName();
-
-        authorizationService.filterActors(actors, requirementId, actionName);
-        Assert.assertEquals(0, actors.size());
-    }
-
-
-    @Test
-    @WithUserDetails("joao")
     public void filterActionsTest() {
         String              idUsuario  = "joao";
         String              formType   = null;

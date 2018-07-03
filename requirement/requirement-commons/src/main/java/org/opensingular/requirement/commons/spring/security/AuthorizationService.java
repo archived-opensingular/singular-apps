@@ -18,11 +18,10 @@
 
 package org.opensingular.requirement.commons.spring.security;
 
-import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
+import org.opensingular.requirement.commons.config.IServerContext;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -32,14 +31,12 @@ import java.util.List;
  */
 public interface AuthorizationService extends Loggable {
     String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
-    String SEPARATOR = "|$|";
+    String SEPARATOR                    = "|$|";
 
 
     void filterBoxWithPermissions(List<BoxConfigurationData> groupDTOs, String idUsuario);
 
     void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario);
-
-    void filterActors(List<Actor> actors, Long requirementId, String actionName);
 
     List<SingularPermission> filterListTaskPermissions(List<SingularPermission> permissions);
 
@@ -50,20 +47,15 @@ public interface AuthorizationService extends Loggable {
      * 1) If the user is the representative assigned to the the given requirement the access will be granted (external user scenario).
      * 2) If the access is readonly ({@param readonly}), the access will be granted (external or internal scenario).
      * 3) Otherwise it will be checked if the current user is the one assigned (allocated) to the given requirement (internal user scenario).
-     *      *
-     * @param requirementId
-     *  current requirement id
-     * @param formType
-     *  form type name
-     * @param userId
-     *  logged in user
-     * @param applicantId
-     *  representation selected by current user
-     * @param action
-     *  action whose access must be checked
-     * @param readonly
-     *  inform if the action is a readonly action
+     * *
+     *
+     * @param requirementId current requirement id
+     * @param formType      form type name
+     * @param userId        logged in user
+     * @param applicantId   representation selected by current user
+     * @param action        action whose access must be checked
+     * @param readonly      inform if the action is a readonly action
      * @return
      */
-    boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, boolean readonly);
+    boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, IServerContext context, boolean readonly);
 }

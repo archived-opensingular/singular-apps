@@ -140,7 +140,7 @@ public class BoxPage extends ServerBoxTemplate {
     protected String getIdPessoa() {
         SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getUsername)
+                .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
     }
 

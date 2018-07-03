@@ -22,10 +22,11 @@ import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
-import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
+import org.opensingular.requirement.commons.config.IServerContext;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.form.FormAction;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.RequirementInstance;
@@ -37,6 +38,7 @@ import org.opensingular.requirement.commons.wicket.SingularSession;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.transaction.Transactional;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
@@ -107,14 +109,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             }
         }
 
-    }
-
-    @Override
-    public void filterActors(List<Actor> actors, Long requirementId, String actionName) {
-        RequirementAuthMetadataDTO requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
-        if (actors != null && !actors.isEmpty()) {
-            actors.removeIf(a -> !hasPermission(requirementAuthMetadataDTO, null, a.getCodUsuario(), actionName));
-        }
     }
 
     @Override
@@ -253,9 +247,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 .orElse(null);
     }
 
+    @Transactional
     @Override
-    public boolean hasPermission(Long requirementId, String formType, String userId, String applicantId, String action, boolean readonly) {
-
+    public boolean hasPermission(Long requirementId, String formType, String userId, String applicantId, String action, IServerContext context, boolean readonly) {
         boolean hasPermission = hasPermission(
                 requirementId,
                 formType,
@@ -263,20 +257,26 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 action
         );
 
-        boolean isOwner = true;
+        boolean isOwner       = false;
+        boolean isAllowedUser = false;
+
         if (requirementId != null) {
-            isOwner &= isOwner(requirementId, userId, applicantId);
+            if (PServerContext.REQUIREMENT.isSameContext(context)) {
+                isOwner = isOwner(requirementId, userId, applicantId);
+
+            } else {
+                // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
+                // para os modos de visualização basta a permissão.
+                isAllowedUser = readonly || !isTaskAssignedToAnotherUser(requirementId, userId);
+            }
         }
 
-        // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
-        // para os modos de visualização basta a permissão.
-        boolean isAssignedToCurrentUser = readonly || !isTaskAssignedToAnotherUser(requirementId, userId);
-
-        return hasPermission && (isOwner || isAssignedToCurrentUser);
+        return hasPermission && (isOwner || isAllowedUser);
     }
 
     /**
-     * Utility method used by {@link #hasPermission(Long, String, String, String, String, boolean)}
+     * Utility method used by {@link #hasPermission(Long, String, String, String, String, IServerContext, boolean)}
+     *
      * @param requirementId
      * @param userId
      * @param applicantId
@@ -295,7 +295,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
 
     /**
-     * Utility method used by {@link #hasPermission(Long, String, String, String, String, boolean)}
+     * Utility method used by {@link #hasPermission(Long, String, String, String, String, IServerContext, boolean)}
+     *
      * @param requirementId
      * @param idUsuario
      * @return

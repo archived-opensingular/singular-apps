@@ -97,7 +97,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
                     .withRascunho(box.isShowDraft())
                     .withEndedTasks(box.getEndedTasks())
                     .withIdUsuarioLogado(loggedUser)
-                    .withIdPessoa(SingularSession.get().getUserDetails().getUsername());
+                    .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
             qtd = new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);

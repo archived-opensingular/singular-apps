@@ -71,7 +71,7 @@ public class LocalModuleDriver implements ModuleDriver {
                 .withRascunho(box.isShowDraft())
                 .withEndedTasks(box.getEndedTasks())
                 .withIdUsuarioLogado(loggedUser)
-                .withIdPessoa(SingularSession.get().getUserDetails().getUsername());
+                .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
         return String.valueOf(moduleConnector.count(box.getId(), filter));
     }
 

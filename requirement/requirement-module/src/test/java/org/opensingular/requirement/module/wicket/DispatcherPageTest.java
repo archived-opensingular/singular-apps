@@ -71,7 +71,7 @@ public class DispatcherPageTest extends SingularModuleBaseTest {
     @WithUserDetails("vinicius.nunes")
     @Test
     public void accessGranted() {
-        when(authorizationService.hasPermission(any(), any(), any(), any(), any(), anyBoolean())).thenReturn(true);
+        when(authorizationService.hasPermission(any(), any(), any(), any(), any(), any(), anyBoolean())).thenReturn(true);
         tester = new SingularWicketTester(singularApplication);
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
