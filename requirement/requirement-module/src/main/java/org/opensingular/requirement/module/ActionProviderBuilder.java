@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.requirement.commons.box.BoxItemData;
 import org.opensingular.requirement.commons.box.action.BoxItemActionList;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 
 public class ActionProviderBuilder implements ActionProvider {
@@ -80,9 +80,13 @@ public class ActionProviderBuilder implements ActionProvider {
         return this;
     }
 
-
     public ActionProviderBuilder addHistoryAction() {
         actionConfigurers.add((boxInfo, line, filter, list) -> list.addHistoryAction(line));
+        return this;
+    }
+
+    public ActionProviderBuilder addExtratoAction() {
+        actionConfigurers.add((boxInfo, line, filter, list) -> list.addExtratoAction(line));
         return this;
     }
 

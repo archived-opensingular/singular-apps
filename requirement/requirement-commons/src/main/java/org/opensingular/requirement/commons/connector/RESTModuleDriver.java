@@ -81,7 +81,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         String                         url          = getConnectionURL(module) + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
         SingularRequirementUserDetails userDetails  = getUserDetails();
         if (userDetails != null) {
-            url += "&" + USER + "=" + userDetails.getUserPermissionKey();
+            url += "&" + USER + "=" + userDetails.getApplicantId();
         }
         return restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class);
     }
@@ -97,7 +97,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
                     .withRascunho(box.isShowDraft())
                     .withEndedTasks(box.getEndedTasks())
                     .withIdUsuarioLogado(loggedUser)
-                    .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
+                    .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
             qtd = new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);

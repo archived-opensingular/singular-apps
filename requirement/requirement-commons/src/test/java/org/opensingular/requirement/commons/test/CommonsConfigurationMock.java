@@ -21,7 +21,7 @@ package org.opensingular.requirement.commons.test;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.test.ValidatorOracleMock;
+import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.commons.wicket.view.template.MenuService;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -56,7 +56,7 @@ public class CommonsConfigurationMock {
     @Primary
     @Bean
     public AuthorizationService authorizationService() {
-        return spy(AuthorizationService.class);
+        return spy(AuthorizationServiceImpl.class);
     }
 
     @Primary
