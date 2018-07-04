@@ -64,8 +64,10 @@ public class RequirementSearchQueryFactory {
     }
 
     private void applyPagination() {
-        query.offset(ctx.getQuickFilter().getFirst())
-                .limit(ctx.getQuickFilter().getCount());
+        if (ctx.getQuickFilter().getCount() > 0) {
+            query.offset(ctx.getQuickFilter().getFirst())
+                    .limit(ctx.getQuickFilter().getCount());
+        }
     }
 
     private void applyQuickFilter() {
