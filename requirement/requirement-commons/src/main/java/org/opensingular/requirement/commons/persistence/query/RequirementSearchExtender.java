@@ -21,5 +21,5 @@ package org.opensingular.requirement.commons.persistence.query;
 import org.opensingular.requirement.commons.persistence.context.RequirementSearchContext;
 
 public interface RequirementSearchExtender {
-    void extend(RequirementSearchContext requirementSearchContext);
+    void extend(RequirementSearchContext ctx);
 }

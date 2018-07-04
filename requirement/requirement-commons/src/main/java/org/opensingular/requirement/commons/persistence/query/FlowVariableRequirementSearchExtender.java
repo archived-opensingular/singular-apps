@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.commons.persistence.query;
 
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
-import org.opensingular.requirement.commons.persistence.context.RequirementSearchAliases;
 import org.opensingular.requirement.commons.persistence.context.RequirementSearchContext;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
     public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
                                                  @Nonnull String queryAlias) {
-        this( variableName, queryAlias, TO_CHAR_TEMPLATE);
+        this(variableName, queryAlias, TO_CHAR_TEMPLATE);
     }
 
     public FlowVariableRequirementSearchExtender(@Nonnull String variableName,
@@ -54,19 +54,18 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
 
     @Override
     public void extend(RequirementSearchContext ctx) {
-        RequirementSearchQuery query = ctx.getQuery();
         RequirementSearchAliases $ = ctx.getAliases();
-        createSelect(ctx, variableEntity);
-        query.leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
-        ctx.extendQuickFilterWhereClause((token, tokenExpression) -> tokenExpression.or(toChar(variableEntity).likeIgnoreCase(token)));
-    }
-
-    protected void createSelect(RequirementSearchContext ctx, QVariableInstanceEntity qVariableInstance) {
-        ctx.getQuery().getSelect().add(toChar(qVariableInstance).as(queryAlias));
+        ctx.getQuery()
+                .addToSelect(toChar(variableEntity).as(queryAlias));
+        ctx.getQuery()
+                .leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
+        ctx.getQuery()
+                .addConditionToQuickFilter((token) -> new BooleanBuilder().or(toChar(variableEntity).likeIgnoreCase(token)));
     }
 
     @Nonnull
     protected StringTemplate toChar(QVariableInstanceEntity var) {
         return Expressions.stringTemplate(toCharTemplate, var.value);
     }
+
 }
