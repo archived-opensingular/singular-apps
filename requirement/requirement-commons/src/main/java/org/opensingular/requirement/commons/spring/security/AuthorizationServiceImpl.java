@@ -258,7 +258,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         );
 
         boolean isOwner       = false;
-        boolean isAllowedUser = false;
+        boolean isAllowedUser = requirementId == null;
 
         if (requirementId != null) {
             if (PServerContext.REQUIREMENT.isSameContext(context)) {
