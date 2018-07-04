@@ -8,6 +8,7 @@ import com.querydsl.core.types.dsl.CaseBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import org.hibernate.Session;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.requirement.commons.persistence.filter.FilterToken;
 
 import java.io.Serializable;
@@ -17,8 +18,8 @@ import java.util.Map;
 import java.util.function.Function;
 
 public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
-    private final List<Expression<?>> selects = new ArrayList<>();
-    private final List<Function<String, Predicate>> quickFilterConditions = new ArrayList<>();
+    private final List<Expression<?>>                selects               = new ArrayList<>();
+    private final List<IFunction<String, Predicate>> quickFilterConditions = new ArrayList<>();
 
     public RequirementSearchQuery(Session session) {
         super(session);
@@ -34,7 +35,7 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
         return this;
     }
 
-    public RequirementSearchQuery addConditionToQuickFilter(Function<String, Predicate> conditionProvider) {
+    public RequirementSearchQuery addConditionToQuickFilter(IFunction<String, Predicate> conditionProvider) {
         quickFilterConditions.add(conditionProvider);
         return this;
     }
