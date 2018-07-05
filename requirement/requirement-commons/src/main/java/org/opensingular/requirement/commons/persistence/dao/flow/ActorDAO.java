@@ -18,25 +18,26 @@
 
 package org.opensingular.requirement.commons.persistence.dao.flow;
 
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import org.hibernate.Query;
 import org.hibernate.SQLQuery;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.dialect.Dialect;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.requirement.commons.exception.SingularServerException;
 import org.opensingular.requirement.commons.persistence.transformer.FindActorByUserCodResultTransformer;
-
-import javax.annotation.Nonnull;
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class ActorDAO extends BaseDAO<Actor, Integer> {
@@ -68,8 +69,8 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
             return null;
         }
 
-        Integer cod        = sUser.getCod();
-        String  codUsuario = sUser.getCodUsuario();
+        Integer cod = sUser.getCod();
+        String codUsuario = sUser.getCodUsuario();
 
         return saveUserIfNeeded(cod, codUsuario).orElse(null);
     }
@@ -89,17 +90,19 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         }
 
         if (result == null && cod == null) {
-            if ("sequence".equals(SingularProperties.getOpt(SingularProperties.HIBERNATE_GENERATOR).orElse(null))) {
+            Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
+            if (!dialect.supportsIdentityColumns()) {
                 getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (" + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
-                    PreparedStatement ps  = connection.prepareStatement(sql);
+                    String sql = SqlUtil.replaceSingularSchemaName("insert into "
+                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES ("
+                            + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
+                    PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
-                    int returnVal = ps.executeUpdate();
-                    System.out.println(returnVal);
+                    ps.executeUpdate();
                 });
             } else {
                 getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
+                    String sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
                     ps.execute();
@@ -122,7 +125,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         sql.append("   a.CO_USUARIO            AS \"codUsuario\",");
         sql.append("   UPPER(a.NO_ATOR)        AS \"nome\",");
         sql.append("   a.DS_EMAIL              AS \"email\"");
-        sql.append(" FROM "+ Constants.SCHEMA +" .VW_ATOR a");
+        sql.append(" FROM " + Constants.SCHEMA + " .VW_ATOR a");
         sql.append(" ORDER BY UPPER(a.NO_ATOR)");
         SQLQuery query = getSession().createSQLQuery(sql.toString());
         query.addScalar("cod", StandardBasicTypes.INTEGER);

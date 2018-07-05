@@ -53,8 +53,9 @@ import org.opensingular.requirement.commons.cache.SingularKeyGenerator;
 import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
 import org.opensingular.requirement.commons.connector.ModuleDriver;
 import org.opensingular.requirement.commons.connector.RESTModuleDriver;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.commons.extrato.ExtratoGeneratorImpl;
+import org.opensingular.requirement.commons.extrato.ExtratoGenerator;
+import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.commons.persistence.dao.flow.TaskInstanceDAO;
@@ -64,7 +65,6 @@ import org.opensingular.requirement.commons.persistence.dao.form.FormRequirement
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementContentHistoryDAO;
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.commons.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
 import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.commons.service.DefaultRequirementSender;
 import org.opensingular.requirement.commons.service.DefaultRequirementService;
@@ -77,8 +77,11 @@ import org.opensingular.requirement.commons.service.attachment.IFormAttachmentSe
 import org.opensingular.requirement.commons.service.attachment.ServerAttachmentPersistenceHelper;
 import org.opensingular.requirement.commons.service.attachment.ServerAttachmentPersistenceService;
 import org.opensingular.requirement.commons.service.attachment.ServerTemporaryAttachmentPersistenceService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.commons.spring.security.DefaultUserDetailService;
 import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
+import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.commons.spring.security.SingularUserDetailsService;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
@@ -112,12 +115,12 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public SingularDiffService singularDiffService(){
+    public SingularDiffService singularDiffService() {
         return new SingularDiffService();
     }
 
     @Bean
-    public <T extends RequirementEntity> RequirementDAO<T> peticaoDAO() {
+    public <T extends RequirementEntity> RequirementDAO<T> requirementDAO() {
         return new RequirementDAO<>();
     }
 
@@ -243,7 +246,7 @@ public class SingularDefaultBeanFactory {
 
     @Bean
     public AuthorizationService getAuthorizationService() {
-        return new AuthorizationService();
+        return new AuthorizationServiceImpl();
     }
 
     @Bean
@@ -338,12 +341,12 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ModuleDriver moduleDriver(){
+    public ModuleDriver moduleDriver() {
         return new RESTModuleDriver();
     }
 
     @Bean
-    public SingularUserDetailsFactoryBean<? extends SingularRequirementUserDetails> singularUserDetails(){
+    public SingularUserDetailsFactoryBean<? extends SingularRequirementUserDetails> singularUserDetails() {
         return new SingularUserDetailsFactoryBean<>(SingularRequirementUserDetails.class);
     }
 
@@ -354,6 +357,11 @@ public class SingularDefaultBeanFactory {
         } else {
             return RestfulHtmlToPdfConverter.createUsingDefaultConfig();
         }
+    }
+
+    @Bean
+    public ExtratoGenerator extratoGenerator() {
+        return new ExtratoGeneratorImpl();
     }
 
 }

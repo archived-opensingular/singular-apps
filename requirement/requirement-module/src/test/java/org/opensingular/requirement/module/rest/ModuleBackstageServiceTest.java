@@ -18,23 +18,20 @@
 
 package org.opensingular.requirement.module.rest;
 
-import java.util.List;
-
-import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.box.BoxItemDataList;
+import org.opensingular.requirement.commons.config.PServerContext;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.rest.ModuleBackstageService;
 import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
+import java.util.List;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;

@@ -28,7 +28,7 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
 
     private String displayName;
 
-    private List<SingularPermission> permissions = new ArrayList<>();
+    private List<SingularPermission> permissions = new ArrayList<>(0);
 
     private IServerContext serverContext;
 
@@ -44,11 +44,6 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
     @Override
     public void addPermission(SingularPermission role) {
         permissions.add(role);
-    }
-
-    @Override
-    public Object getUserPermissionKey() {
-        return this.getUsername();
     }
 
     @Override

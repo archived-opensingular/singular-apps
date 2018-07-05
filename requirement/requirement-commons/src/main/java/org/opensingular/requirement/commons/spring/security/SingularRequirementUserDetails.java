@@ -31,7 +31,14 @@ public interface SingularRequirementUserDetails extends SingularUserDetails {
         return context.equals(getServerContext());
     }
 
-    Object getUserPermissionKey();
+    /**
+     * Representantion ID.
+     * The same as username by default.
+     * @return
+     */
+    default String getApplicantId(){
+        return getUsername();
+    }
 
     IServerContext getServerContext();
 
@@ -51,14 +58,7 @@ public interface SingularRequirementUserDetails extends SingularUserDetails {
         }
     }
 
-    default String getUserId() {
-        return null;
-    }
-
     default boolean keepLoginThroughContexts() {
         return false;
     }
-
-    String getApplicantId();
-
 }

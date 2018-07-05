@@ -20,8 +20,9 @@ package org.opensingular.requirement.commons.persistence.context;
 
 
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchAliases;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.commons.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.commons.spring.security.SingularPermission;
 
 import java.util.ArrayList;
@@ -29,20 +30,17 @@ import java.util.List;
 
 public class RequirementSearchContext {
 
-    private final QuickFilter              quickFilter;
-    private final List<SingularPermission> permissions;
-    private final RequirementSearchAliases aliases;
-
+    private List<SingularPermission> permissions = new ArrayList<>();
     private Boolean evaluatePermissions = Boolean.FALSE;
-    private Boolean count               = Boolean.FALSE;
+    private Boolean count = Boolean.FALSE;
+    private RequirementSearchAliases aliases = new RequirementSearchAliases();
+    private RequirementSearchQuery query;
 
-    private RequirementSearchQuery          query;
+    private QuickFilter quickFilter;
     private List<RequirementSearchExtender> extenders;
 
     public RequirementSearchContext(QuickFilter quickFilter) {
         this.quickFilter = quickFilter;
-        this.permissions = new ArrayList<>();
-        aliases = new RequirementSearchAliases();
     }
 
     public QuickFilter getQuickFilter() {
@@ -76,15 +74,6 @@ public class RequirementSearchContext {
         return this;
     }
 
-    public RequirementSearchContext setQuery(RequirementSearchQuery query) {
-        this.query = query;
-        return this;
-    }
-
-    public RequirementSearchQuery getQuery() {
-        return query;
-    }
-
     public List<RequirementSearchExtender> getExtenders() {
         return extenders;
     }
@@ -96,5 +85,14 @@ public class RequirementSearchContext {
 
     public RequirementSearchAliases getAliases() {
         return aliases;
+    }
+
+    public RequirementSearchContext setQuery(RequirementSearchQuery query) {
+        this.query = query;
+        return this;
+    }
+
+    public RequirementSearchQuery getQuery() {
+        return query;
     }
 }

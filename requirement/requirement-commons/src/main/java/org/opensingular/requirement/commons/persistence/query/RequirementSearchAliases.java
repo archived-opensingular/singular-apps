@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.requirement.commons.persistence.context;
+package org.opensingular.requirement.commons.persistence.query;
 
 import org.opensingular.flow.persistence.entity.QActor;
 import org.opensingular.flow.persistence.entity.QFlowDefinitionEntity;
@@ -35,17 +35,16 @@ import org.opensingular.requirement.commons.persistence.entity.form.QRequirement
 import org.opensingular.requirement.commons.persistence.entity.form.QRequirementEntity;
 
 public class RequirementSearchAliases {
-
-    public QRequirementEntity requirement = new QRequirementEntity("requirement");
-    public QApplicantEntity applicantEntity = new QApplicantEntity("applicantEntity");
-    public QFlowInstanceEntity flowInstance = new QFlowInstanceEntity("flowInstance");
-    public QFormRequirementEntity formRequirementEntity = new QFormRequirementEntity("formRequirementEntity");
+    public QRequirementEntity           requirement                   = new QRequirementEntity("requirement");
+    public QApplicantEntity             applicantEntity               = new QApplicantEntity("applicantEntity");
+    public QFlowInstanceEntity          flowInstance                  = new QFlowInstanceEntity("flowInstance");
+    public QFormRequirementEntity       formRequirementEntity         = new QFormRequirementEntity("formRequirementEntity");
     public QFormEntity                  formEntity                    = new QFormEntity("formEntity");
     public QDraftEntity                 currentDraftEntity            = new QDraftEntity("currentDraftEntity");
     public QFormEntity                  formDraftEntity               = new QFormEntity("formDraftEntity");
     public QFormVersionEntity           currentFormDraftVersionEntity = new QFormVersionEntity("currentFormDraftVersionEntity");
     public QFormVersionEntity           currentFormVersion            = new QFormVersionEntity("currentFormVersion");
-    public QFlowDefinitionEntity flowDefinitionEntity = new QFlowDefinitionEntity("flowDefinitionEntity");
+    public QFlowDefinitionEntity        flowDefinitionEntity          = new QFlowDefinitionEntity("flowDefinitionEntity");
     public QModuleEntity                module                        = new QModuleEntity("module");
     public QFormTypeEntity              formType                      = new QFormTypeEntity("formType");
     public QFormTypeEntity              formDraftType                 = new QFormTypeEntity("formDraftType");
@@ -54,5 +53,4 @@ public class RequirementSearchAliases {
     public QTaskVersionEntity           taskVersion                   = new QTaskVersionEntity("taskVersion");
     public QActor                       allocatedUser                 = new QActor("allocatedUser");
     public QRequirementDefinitionEntity requirementDefinition         = new QRequirementDefinitionEntity("requirementDefinitionEntity");
-
 }

@@ -43,7 +43,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class AuthorizationServiceTest extends SingularCommonsBaseTest {
+public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
 
     @Inject
     private AuthorizationService authorizationService;
@@ -124,21 +124,6 @@ public class AuthorizationServiceTest extends SingularCommonsBaseTest {
         Assert.assertFalse(hasPermission);
 
     }
-
-    @Test
-    @WithUserDetails("joao")
-    public void filterActorsTest() {
-
-        List<Actor> actors = new ArrayList<Actor>();
-        actors.add(new Actor(1, "01", "torquato neto", "tn@gmail.com"));
-        actors.add(new Actor(2, "02", "maria", "maria@gmail.com"));
-        Long   requirementId = 1L;
-        String actionName = new EditAction(new BoxItemDataImpl()).getName();
-
-        authorizationService.filterActors(actors, requirementId, actionName);
-        Assert.assertEquals(0, actors.size());
-    }
-
 
     @Test
     @WithUserDetails("joao")
