@@ -39,7 +39,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
-@SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = "dbhealth")
+@SInfoType(spackage = SSystemHealthPackage.class,  name = "dbhealth")
 public class SDbHealth extends STypeComposite<SIComposite> {
 
     public STypeList<STypeComposite<SIComposite>, SIComposite> tablesList;

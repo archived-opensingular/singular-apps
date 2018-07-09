@@ -30,7 +30,7 @@ import org.opensingular.requirement.commons.admin.healthsystem.validation.webche
 
 import java.util.Arrays;
 
-@SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = SWebHealth.TYPE_NAME, label = "Utilitário de rede")
+@SInfoType(spackage = SSystemHealthPackage.class,  name = SWebHealth.TYPE_NAME, label = "Utilitário de rede")
 public class SWebHealth extends STypeComposite<SIComposite> {
 	public static final String TYPE_NAME = "webhealth";
 	public static final String TYPE_FULL_NAME = SSystemHealthPackage.PACKAGE_NAME+"."+TYPE_NAME;

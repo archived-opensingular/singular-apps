@@ -150,7 +150,7 @@ public class ModuleBackstageService implements Loggable {
             if (sTypeOptional.isPresent()) {
                 SType<?> sType = sTypeOptional.get();
                 String label = sType.asAtr().getLabel();
-                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label, annotation.newable()));
+                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label));
             }
         }
     }

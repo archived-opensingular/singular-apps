@@ -28,7 +28,7 @@ import org.opensingular.form.type.core.STypeString;
 import org.opensingular.form.view.richtext.SViewByRichText;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
 
-@SInfoType(spackage = SSystemHealthPackage.class, newable = true, name = "pdfhealth")
+@SInfoType(spackage = SSystemHealthPackage.class,  name = "pdfhealth")
 public class STypePdfHealth extends STypeComposite<SIPdfHealth> {
 
     public STypeString endpoint;
