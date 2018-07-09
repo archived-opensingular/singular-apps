@@ -14,4 +14,4 @@
 # limitations under the License.
 #
 
-org.opensingular.requirement.commons.flow.renderer.SimpleFlowRendererProvider
+org.opensingular.requirement.module.flow.renderer.SimpleFlowRendererProvider

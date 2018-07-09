@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.requirement.commons.test;
+package org.opensingular.requirement.module.test;
 
 import org.junit.Test;
 import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;

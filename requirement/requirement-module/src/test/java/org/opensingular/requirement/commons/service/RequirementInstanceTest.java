@@ -47,7 +47,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         SInstance instance = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, requirementDefinitionEntity);
+        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, getRequirementDefinition());
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
         requirementService.saveOrUpdate(requirement, instance, true);

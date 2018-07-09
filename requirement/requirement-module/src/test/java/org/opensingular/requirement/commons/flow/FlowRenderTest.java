@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.SFlowUtil;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.test.AbstractFlowRenderTest;
 
 public class FlowRenderTest extends AbstractFlowRenderTest implements Loggable {
 

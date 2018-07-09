@@ -95,12 +95,6 @@
             <groupId>org.tinyjee.jgraphx</groupId>
             <artifactId>jgraphx</artifactId>
         </dependency>
-
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-wkhtmltopdf-client</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>org.jasig.cas.client</groupId>
             <artifactId>cas-client-core</artifactId>

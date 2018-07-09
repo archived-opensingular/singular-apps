@@ -44,7 +44,7 @@ public class SPackageFOO extends SPackage {
     @SInfoType(label = "Foo", name = STypeFOO.NAME, spackage = SPackageFOO.class)
     public static class STypeFOO extends STypeComposite<SIComposite> {
 
-        public static final String NAME = "StypeFoo";
+        public static final String NAME = "STypeFoo";
 
         public static final String FULL_NAME = SPackageFOO.NAME + "." + NAME;
         public static final String FIELD_NOME = "nome";

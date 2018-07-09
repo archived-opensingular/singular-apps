@@ -20,13 +20,13 @@ package org.opensingular.requirement.module.rest;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.config.PServerContext;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -37,8 +37,8 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class ModuleBackstageServiceTest extends SingularModuleBaseTest {
-    
+public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
+
     @Inject
     private ModuleBackstageService moduleBackstageService;
 

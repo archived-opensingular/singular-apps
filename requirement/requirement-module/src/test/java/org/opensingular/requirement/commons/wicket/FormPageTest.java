@@ -26,6 +26,7 @@ import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
 import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.persistence.FormKey;
@@ -35,20 +36,22 @@ import org.opensingular.form.util.transformer.Value;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
+import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.ajax.ActionAjaxLink;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
-
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
-
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.SPackageFOO;
 import org.opensingular.requirement.module.wicket.error.Page500;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
+import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -70,10 +73,12 @@ public class FormPageTest extends SingularCommonsBaseTest {
     @Inject
     RequirementService<?, ?> requirementService;
 
+
     @Inject
     SpringSDocumentFactory documentFactory;
 
     private SingularWicketTester tester;
+
 
     @WithUserDetails("vinicius.nunes")
     @Test
@@ -108,7 +113,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SPackageFOO.STypeFOO.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
+        context.setRequirementDefinitionId(getCodRequirementDefinition());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -117,6 +122,23 @@ public class FormPageTest extends SingularCommonsBaseTest {
         t.getModel().setObject(SUPER_TESTE_STRING);
         tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("save-btn").getTarget(), "click");
 
+        return p;
+    }
+
+
+
+    public FormPage sendRequirement(SingularWicketTester tester, String formName, IConsumer<Page> formFiller) {
+        ActionContext context = new ActionContext();
+        context.setFormName(formName);
+        context.setFormAction(FormAction.FORM_FILL);
+        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        FormPage p = new FormPage(context);
+        tester.startPage(p);
+        tester.assertRenderedPage(FormPage.class);
+
+        formFiller.accept(p);
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("send-btn").getTarget(), "click");
+        tester.executeAjaxEvent(new AssertionsWComponent(p).getSubComponentWithId("confirm-btn").getTarget(), "click");
         return p;
     }
 
@@ -196,7 +218,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         tester.executeAjaxEvent(confirmationButton, "click");
 
         RequirementInstance requirementFrom = getRequirementFrom(p2);
-        TaskInstance     currentTask = requirementFrom.getCurrentTaskOrException();
+        TaskInstance        currentTask     = requirementFrom.getCurrentTaskOrException();
         assertEquals("No more bar", currentTask.getName());
     }
 
@@ -219,7 +241,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SPackageFOO.STypeFOOModal.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL_WITH_ANALYSIS_FILL);
-        context.setRequirementDefinitionId(requirementDefinitionEntity.getCod());
+        context.setRequirementDefinitionId(getCodRequirementDefinition());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

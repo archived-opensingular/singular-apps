@@ -99,7 +99,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     @Nonnull
     private RequirementInstance createNewRequirementInstance(SInstance instance) {
         RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {
-        }, requirementDefinitionEntity);
+        }, getRequirementDefinition());
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
         requirementService.saveOrUpdate(requirement, instance, true);
