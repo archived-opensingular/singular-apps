@@ -18,8 +18,8 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.DatatableField;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.DatatableField;
 
 import java.io.Serializable;
 import java.util.List;

@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.test;
 
 
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
+import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.SingularModuleContextLoader;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;

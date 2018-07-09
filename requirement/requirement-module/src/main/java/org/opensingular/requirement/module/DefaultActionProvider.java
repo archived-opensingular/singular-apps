@@ -20,9 +20,9 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.box.BoxItemData;
-import org.opensingular.requirement.commons.box.action.BoxItemActionList;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.box.BoxItemData;
+import org.opensingular.requirement.module.box.action.BoxItemActionList;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 
 
 public class DefaultActionProvider implements ActionProvider, Loggable {

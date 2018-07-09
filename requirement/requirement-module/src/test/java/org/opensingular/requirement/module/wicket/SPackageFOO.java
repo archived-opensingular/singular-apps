@@ -22,8 +22,10 @@ import org.opensingular.form.SInfoPackage;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.SPackage;
 import org.opensingular.form.STypeComposite;
+import org.opensingular.form.STypeList;
 import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.core.STypeString;
+import org.opensingular.form.view.SViewListByMasterDetail;
 
 import javax.annotation.Nonnull;
 
@@ -52,6 +54,31 @@ public class SPackageFOO extends SPackage {
         @Override
         protected void onLoadType(@Nonnull TypeBuilder tb) {
             nome = this.addFieldString(FIELD_NOME);
+        }
+    }
+
+    @SInfoType(label = "FooModalWithAnnotations", name = STypeFOOModal.NAME, spackage = SPackageFOO.class)
+    public static class STypeFOOModal extends STypeComposite<SIComposite> {
+
+        public static final String NAME = "StypeFooModal";
+
+        public static final String FULL_NAME = SPackageFOO.NAME + "." + NAME;
+        public static final String FIELD_NOME = "nome";
+
+        public STypeList<STypeComposite<SIComposite>, SIComposite> pessoas;
+
+        @Override
+        protected void onLoadType(@Nonnull TypeBuilder tb) {
+            pessoas = this.addFieldListOfComposite("pessoas", "pessoa");
+
+            STypeComposite<SIComposite> pessoa = pessoas.getElementsType();
+            STypeString nome = pessoa.addFieldString("nome");
+
+            pessoas.withView(new SViewListByMasterDetail()
+                    .col(nome, "Nome")
+            );
+
+            nome.asAtrAnnotation().setAnnotated();
         }
     }
 }

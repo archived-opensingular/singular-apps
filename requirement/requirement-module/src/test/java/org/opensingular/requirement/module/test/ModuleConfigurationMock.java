@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.test;
 
-import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
-import org.opensingular.requirement.commons.service.SingularRequirementService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
-import org.opensingular.requirement.commons.test.ValidatorOracleMock;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.admin.healthsystem.validation.database.IValidatorDatabase;
+import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
+import org.opensingular.requirement.module.test.ValidatorOracleMock;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.service.ServerMenuService;
 import org.opensingular.requirement.module.service.SingularRequirementServiceImpl;
 import org.springframework.context.annotation.Bean;

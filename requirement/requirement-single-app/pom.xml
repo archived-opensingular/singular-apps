@@ -37,11 +37,6 @@
             <groupId>org.opensingular</groupId>
             <artifactId>singular-requirement-module</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-requirement-commons-test</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
 

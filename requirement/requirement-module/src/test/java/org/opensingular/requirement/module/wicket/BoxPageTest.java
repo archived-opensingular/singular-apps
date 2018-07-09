@@ -26,10 +26,10 @@ import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.test.ContextUtil;
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.test.ContextUtil;
+
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.test.ModuleApplicationMock;
 import org.opensingular.requirement.module.test.SingularModuleBaseTest;
 import org.opensingular.requirement.module.wicket.box.BoxPage;

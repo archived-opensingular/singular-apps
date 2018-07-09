@@ -15,3 +15,16 @@
 #
 
 org.opensingular.requirement.module.admin.extension.RequirementViewAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.CacheAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.JobsAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.PermissionAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.WebAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.LogAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.IndexFormsAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.XSDViewAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.DocsAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.ThreadsAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.MemoryAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.DiskAdminEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.HtmlToPdfAdminEntry

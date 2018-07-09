@@ -20,8 +20,8 @@ package org.opensingular.requirement.module.test;
 
 
 import org.apache.wicket.Page;
-import org.opensingular.requirement.commons.test.SingularTestRequestCycleListener;
-import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.test.SingularTestRequestCycleListener;
+import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
 
 
