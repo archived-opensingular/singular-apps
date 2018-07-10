@@ -144,7 +144,6 @@ public class ModuleBackstageService implements Loggable {
     @SuppressWarnings("unchecked")
     private void addForms(BoxConfigurationData boxConfigurationMetadata) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
-            SInfoType annotation = formClass.getAnnotation(SInfoType.class);
             String name = SFormUtil.getTypeName(formClass);
             Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {
