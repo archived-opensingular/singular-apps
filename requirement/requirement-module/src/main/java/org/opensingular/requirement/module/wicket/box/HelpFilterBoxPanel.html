@@ -17,11 +17,18 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
 
+    <style>
+        .scrollBar {
+            float:left;
+            overflow-y: auto;
+            height: 150px;
+        }
+    </style>
     <div class="row">
         <div class="container-fluid">
             <h3 style="font-weight: bold" wicket:id="title"></h3>
             <hr>
-            <div class="singular-form-action-preview-text" wicket:id="body">
+            <div class="singular-form-action-preview-text scrollBar" wicket:id="body">
             </div>
         </div>
     </div>
