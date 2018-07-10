@@ -46,8 +46,6 @@ public class Header extends Panel {
     protected void onInitialize() {
         super.onInitialize();
         add(new WebMarkupContainer("togglerButton").setVisible(withTogglerButton));
-
-//                .add($b.classAppender("hide", Model.of(!withTogglerButton))));
         add(new WebMarkupContainer("_TopAction")
                 .add($b.classAppender("hide")));
         add(configureTopMenu("_TopMenu"));
