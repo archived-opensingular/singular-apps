@@ -20,11 +20,11 @@ package org.opensingular.requirement.module;
 
 
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.commons.service.dto.ItemBox;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.annotation.PostConstruct;

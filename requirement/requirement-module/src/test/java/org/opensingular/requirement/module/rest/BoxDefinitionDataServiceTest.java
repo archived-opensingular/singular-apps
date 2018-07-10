@@ -26,13 +26,13 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.rest.ModuleBackstageService;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
 
@@ -43,8 +43,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.junit.Assert.assertThat;
-import static org.mockito.Matchers.any;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)

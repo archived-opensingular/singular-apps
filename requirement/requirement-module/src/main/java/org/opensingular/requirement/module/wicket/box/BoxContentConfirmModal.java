@@ -21,7 +21,7 @@ package org.opensingular.requirement.module.wicket.box;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.wicket.mapper.components.AbstractConfirmationModal;
-import org.opensingular.requirement.commons.service.dto.BoxItemAction;
+import org.opensingular.requirement.module.service.dto.BoxItemAction;
 
 import java.io.Serializable;
 

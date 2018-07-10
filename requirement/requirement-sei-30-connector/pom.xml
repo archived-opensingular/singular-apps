@@ -33,7 +33,7 @@
     <dependencies>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-requirement-commons</artifactId>
+            <artifactId>singular-requirement-module</artifactId>
         </dependency>
     </dependencies>
 

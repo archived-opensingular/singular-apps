@@ -20,10 +20,10 @@ package org.opensingular.requirement.module.service;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 

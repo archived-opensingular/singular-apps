@@ -25,43 +25,42 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
+import org.apache.wicket.request.Request;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskUserExecutable;
 import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
-import org.opensingular.requirement.commons.flow.SingularWebRef;
-import org.opensingular.requirement.commons.form.FormAction;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.commons.service.RequirementInstance;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.service.SingularRequirementService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
-import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
-import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
-import org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.commons.wicket.view.form.DiffFormPage;
-import org.opensingular.requirement.commons.wicket.view.form.FormPage;
-import org.opensingular.requirement.commons.wicket.view.form.ReadOnlyFormPage;
-import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
-import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
+import org.opensingular.requirement.module.flow.SingularWebRef;
+import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.view.SingularHeaderResponseDecorator;
+import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
+import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
+import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
+import org.opensingular.requirement.module.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
+import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
+import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
@@ -75,10 +74,13 @@ public class DispatcherPage extends WebPage implements Loggable {
     private RequirementService<?, ?> requirementService;
 
     @Inject
+    private SingularRequirementService singularRequirementService;
+
+    @Inject
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularRequirementService singularRequirementService;
+    private SingularServerConfiguration singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();
@@ -217,71 +219,26 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void dispatch(ActionContext context) {
-        if (context != null && (!hasAccess(context))) {
+        Long    requirementId = context.getRequirementId().orElse(null);
+        String  formType      = context.getFormName().orElse(null);
+        String  action        = context.getFormAction().map(FormAction::name).orElse(null);
+        boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
+        String  idUsuario     = null;
+        String  idApplicant   = null;
+        if (SingularSession.exists()) {
+            idUsuario = SingularSession.get().getUserDetails().getUsername();
+            idApplicant = SingularSession.get().getUserDetails().getApplicantId();
+        }
+        IServerContext serverContext = IServerContext.getContextFromRequest(RequestCycle.get().getRequest(), singularServerConfiguration.getContexts());
+        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
             redirectForbidden();
-        } else if (context != null) {
+        } else {
             dispatchForDestination(context, retrieveDestination(context));
-        } else {
-            closeAndReloadParent();
         }
-    }
-
-    private boolean hasAccess(ActionContext context) {
-
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-
-        Long requirementId = context.getRequirementId().orElse(null);
-        boolean hasPermission = authorizationService.hasPermission(
-                requirementId,
-                context.getFormName().orElse(null),
-                String.valueOf(userDetails.getUserPermissionKey()),
-                context.getFormAction().map(FormAction::name).orElse(null)
-        );
-
-        if (requirementId != null && userDetails.isContext(PServerContext.REQUIREMENT)) {
-            hasPermission &= isOwner(userDetails, requirementId);
-        }
-
-        // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
-        // para os modos de visualização basta a permissão.
-        if (isViewModeEdit(context) || isAnnotationModeEdit(context)) {
-            return hasPermission && !isTaskAssignedToAnotherUser(context);
-        } else {
-            return hasPermission;
-        }
-
-    }
-
-    protected boolean isOwner(SingularRequirementUserDetails userDetails, Long requirementId) {
-        String              applicantId = userDetails.getApplicantId();
-        RequirementInstance requirement = requirementService.getRequirement(requirementId);
-        boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
-        if (!truth) {
-            getLogger()
-                    .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",
-                            userDetails.getUsername(), applicantId, requirementId, requirement.getApplicant().getIdPessoa());
-        }
-        return truth;
     }
 
     private boolean isViewModeEdit(ActionContext context) {
         return context.getFormAction().map(FormAction::isViewModeEdit).orElse(Boolean.FALSE);
-    }
-
-    private boolean isTaskAssignedToAnotherUser(ActionContext config) {
-        String         username         = SingularSession.get().getUsername();
-        Optional<Long> requirementIdOpt = config.getRequirementId();
-        if (requirementIdOpt.isPresent()) {
-            return requirementService.findCurrentTaskEntityByRequirementId(requirementIdOpt.get())
-                    .map(AbstractTaskInstanceEntity::getTaskHistory)
-                    .filter(histories -> !histories.isEmpty())
-                    .map(histories -> histories.get(histories.size() - 1))
-                    .map(history -> history.getAllocatedUser() != null
-                            && history.getAllocationEndDate() == null
-                            && !username.equalsIgnoreCase(history.getAllocatedUser().getCodUsuario()))
-                    .orElse(Boolean.FALSE);
-        }
-        return false;
     }
 
     private void redirectForbidden() {

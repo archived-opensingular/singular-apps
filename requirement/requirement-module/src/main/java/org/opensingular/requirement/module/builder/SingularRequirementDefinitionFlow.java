@@ -18,7 +18,7 @@
 
 package org.opensingular.requirement.module.builder;
 
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirement;
 
 public class SingularRequirementDefinitionFlow {
 
