@@ -36,10 +36,11 @@ import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.wicket.SPackageFOO;
+import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
+import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -91,7 +92,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     private SInstance createInstanceToRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
         return instance;
     }

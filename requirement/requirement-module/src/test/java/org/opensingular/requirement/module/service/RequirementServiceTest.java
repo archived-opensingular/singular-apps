@@ -47,9 +47,6 @@ import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.requirement.commons.FOOFlow;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.requirement.module.service.RequirementSender;
-import org.opensingular.requirement.module.service.RequirementService;
 
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -57,7 +54,8 @@ import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
 
-import org.opensingular.requirement.module.wicket.SPackageFOO;
+import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
+import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 
 import static org.hamcrest.Matchers.greaterThanOrEqualTo;
@@ -112,7 +110,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void saveNewRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
 
@@ -125,7 +123,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void sendNewRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -138,7 +136,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testFindRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -149,7 +147,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testGetRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -161,7 +159,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testDeleteRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -173,7 +171,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testDeleteRequirementWithRequirementDTO() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -185,7 +183,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testListCurrentTaskTransitionsWithEmptyTransitions() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
@@ -264,7 +262,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     public RequirementInstance sendRequirement(String description) {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementInstance.setDescription(description);
@@ -312,7 +310,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void findLastFormInstanceByType() {
         RequirementInstance requirement                  = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-        Optional<SIComposite> lastFormInstanceByType = requirementService.findLastFormInstanceByType(requirement, SPackageFOO.STypeFOO.class);
+        Optional<SIComposite> lastFormInstanceByType = requirementService.findLastFormInstanceByType(requirement, STypeFoo.class);
 
         assertTrue(lastFormInstanceByType.isPresent());
     }
@@ -320,7 +318,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void findLastFormInstanceByTypes() {
         RequirementInstance requirement                  = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-        Optional<SIComposite> lastFormInstanceByType = requirementService.findLastFormInstanceByType(requirement, Collections.singletonList(SPackageFOO.STypeFOO.class));
+        Optional<SIComposite> lastFormInstanceByType = requirementService.findLastFormInstanceByType(requirement, Collections.singletonList(STypeFoo.class));
 
         assertTrue(lastFormInstanceByType.isPresent());
     }
@@ -328,19 +326,19 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void updateRequirement() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
-        ((SIComposite) instance).setValue(SPackageFOO.STypeFOO.FIELD_NOME, "Teste");
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        ((SIComposite) instance).setValue(STypeFoo.FIELD_NOME, "Teste");
         RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
 
         FormKey formKey = requirementService.saveOrUpdate(requirementInstance, instance, true);
 
-        SInstance firstVersion = formService.loadSInstance(formKey, RefType.of(SPackageFOO.STypeFOO.class), documentFactory);
+        SInstance firstVersion = formService.loadSInstance(formKey, RefType.of(STypeFoo.class), documentFactory);
         firstVersion.getDocument().setLastId(firstVersion.getDocument().getLastId() + 1000);
 
         FormKey secondFormKey = requirementService.saveOrUpdate(requirementInstance, firstVersion, true);
 
-        SInstance secondVersion = formService.loadSInstance(secondFormKey, RefType.of(SPackageFOO.STypeFOO.class), documentFactory);
+        SInstance secondVersion = formService.loadSInstance(secondFormKey, RefType.of(STypeFoo.class), documentFactory);
 
         assertThat("Segunda versão não pode ter o lastId menor que a primeira versão",
                 secondVersion.getDocument().getLastId(), greaterThanOrEqualTo(firstVersion.getDocument().getLastId()));

@@ -20,6 +20,7 @@ package org.opensingular.requirement.commons.service;
 
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
@@ -29,7 +30,8 @@ import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.requirement.module.wicket.SPackageFOO;
+import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
+import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 
 
 import javax.inject.Inject;
@@ -44,7 +46,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
     @Transactional
     public void testSomeFunctions(){
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(SPackageFOO.STypeFOO.class));
+        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
         RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, getRequirementDefinition());
@@ -54,7 +56,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(requirement.getMainForm());
 
-        Assert.assertTrue(requirement.getMainForm(SPackageFOO.STypeFOO.class).getType() instanceof SPackageFOO.STypeFOO);
+        Assert.assertTrue(requirement.getMainForm(STypeFoo.class).getType() instanceof STypeFoo);
 
         Assert.assertNotNull(requirement.getMainFormAndCast(SIComposite.class));
 
@@ -66,6 +68,6 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertNotNull(requirement.getMainFormCurrentFormVersion());
 
-        Assert.assertEquals(SPackageFOO.STypeFOO.FULL_NAME, requirement.getMainFormTypeName());
+        Assert.assertEquals(SFormUtil.getTypeName(STypeFoo.class), requirement.getMainFormTypeName());
     }
 }

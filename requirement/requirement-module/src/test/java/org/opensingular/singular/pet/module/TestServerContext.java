@@ -35,7 +35,7 @@ public class TestServerContext {
     /**
      * Contexto registrado no arquivo properties singular.properties para o petcionamento
      */
-    private static final String WORKLIST_CONTEXT = "/pettest";
+    private static final String WORKLIST_CONTEXT = "/worklist";
 
     private HttpServletRequest getRequest() {
         HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
