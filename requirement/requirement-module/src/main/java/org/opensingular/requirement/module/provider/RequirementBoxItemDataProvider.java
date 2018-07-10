@@ -20,11 +20,11 @@ package org.opensingular.requirement.module.provider;
 
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
-import org.opensingular.requirement.commons.spring.security.SingularPermission;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.spring.security.PermissionResolverService;
+import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.BoxItemDataProvider;
@@ -38,14 +38,11 @@ import java.util.Map;
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private final Boolean evalPermissions;
-
     private final ActionProvider actionProvider;
 
-    private List<String> tasks;
-
-    private List<RequirementSearchExtender> extenders;
-
-    private List<IConsumer<List<Map<String, Serializable>>>> filters;
+    private final List<String> tasks = new ArrayList<>();
+    private final List<RequirementSearchExtender> extenders = new ArrayList<>();
+    private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
         this.evalPermissions = evalPermissions;
@@ -61,9 +58,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         } else {
             requirements = lookupRequirementService().quickSearchMap(filter, extenders);
         }
-        if (filters != null) {
-            filters.forEach(x -> x.accept(requirements));
-        }
+        filters.forEach(x -> x.accept(requirements));
         return requirements;
     }
 
@@ -89,32 +84,24 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     protected void addEnabledTasksToFilter(QuickFilter filter) {
-        if (tasks != null) {
-            filter.forTasks(tasks.toArray(new String[0]));
-        }
+        filter.forTasks(tasks.toArray(new String[0]));
     }
 
     protected List<SingularPermission> searchPermissions(QuickFilter filter) {
         return ApplicationContextProvider.get().getBean(PermissionResolverService.class).searchPermissions(filter.getIdUsuarioLogado());
     }
 
-    public RequirementBoxItemDataProvider addExtender(@Nonnull RequirementSearchExtender extender) {
-        if (extenders == null) {
-            extenders = new ArrayList<>();
-        }
-        extenders.add(extender);
+    public RequirementBoxItemDataProvider addExtender(@Nonnull RequirementSearchExtender RequirementSearchExtender) {
+        extenders.add(RequirementSearchExtender);
         return this;
     }
 
-    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<RequirementSearchExtender> extenders) {
-        extenders.forEach(this::addExtender);
+    public RequirementBoxItemDataProvider addExtenders(@Nonnull List<RequirementSearchExtender> extenderFactories) {
+        extenderFactories.forEach(this::addExtender);
         return this;
     }
 
     public RequirementBoxItemDataProvider addFilter(@Nonnull IConsumer<List<Map<String, Serializable>>> filter) {
-        if (filters == null) {
-            filters = new ArrayList<>();
-        }
         filters.add(filter);
         return this;
     }
@@ -125,9 +112,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     public RequirementBoxItemDataProvider addTask(@Nonnull String filter) {
-        if (tasks == null) {
-            tasks = new ArrayList<>();
-        }
         tasks.add(filter);
         return this;
     }

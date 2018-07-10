@@ -21,18 +21,19 @@ package org.opensingular.singular.pet.module.foobar.stuff;
 import org.opensingular.requirement.module.RequirementConfiguration;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.WorkspaceConfiguration;
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.workspace.DefaultDonebox;
 import org.opensingular.requirement.module.workspace.DefaultInbox;
 
 public class FooSingularModule implements SingularModule {
 
+    public static final String GRUPO_TESTE = "GRUPO_TESTE";
     private FooRequirement fooRequirement = new FooRequirement();
 
     @Override
     public String abbreviation() {
-        return "GRUPO_TESTE";
+        return GRUPO_TESTE;
     }
 
     @Override

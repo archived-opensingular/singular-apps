@@ -21,7 +21,7 @@ package org.opensingular.requirement.single.page;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.requirement.core.wicket.box.BoxPage;
+import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
 
 public class SingleAppPage extends WebPage {

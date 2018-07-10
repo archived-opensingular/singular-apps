@@ -28,23 +28,23 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for DadosAssinatura complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DadosAssinatura">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdOrgaoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="IdContextoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/>
- *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="DadosAssinatura"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdOrgaoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="IdContextoUsuario" type="{http://www.w3.org/2001/XMLSchema}long"/&gt;
+ *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

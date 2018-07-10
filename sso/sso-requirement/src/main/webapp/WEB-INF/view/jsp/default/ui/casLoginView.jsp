@@ -42,7 +42,6 @@
             .addScript("/global/scripts/app.js")
             .addScript("/global/plugins/respond.min.js")
             .addScript("/global/plugins/excanvas.min.js")
-            .addScript("/global/plugins/jquery-migrate.min.js")
             .addScript("/global/plugins/bootstrap/js/bootstrap.min.js")
             .addScript("/global/plugins/jquery.blockui.min.js")
             .addScript("/global/plugins/uniform/jquery.uniform.min.js")

@@ -28,26 +28,26 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for RetornoConsultaDocumento complex type.
  * 
- * <p>The following schema fragment specifies the expected content contained within this class.
+ * <p>The following schema fragment specifies the expected         content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="RetornoConsultaDocumento">
- *   &lt;complexContent>
- *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;all>
- *         &lt;element name="IdProcedimento" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="ProcedimentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="DocumentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="LinkAcesso" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Serie" type="{extensaons}Serie"/>
- *         &lt;element name="Numero" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Data" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Campos" type="{extensaons}ArrayOfCampo"/>
- *       &lt;/all>
- *     &lt;/restriction>
- *   &lt;/complexContent>
- * &lt;/complexType>
+ * &lt;complexType name="RetornoConsultaDocumento"&gt;
+ *   &lt;complexContent&gt;
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
+ *       &lt;all&gt;
+ *         &lt;element name="IdProcedimento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="ProcedimentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="DocumentoFormatado" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="LinkAcesso" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Serie" type="{extensaons}Serie"/&gt;
+ *         &lt;element name="Numero" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Data" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="Campos" type="{extensaons}ArrayOfCampo"/&gt;
+ *       &lt;/all&gt;
+ *     &lt;/restriction&gt;
+ *   &lt;/complexContent&gt;
+ * &lt;/complexType&gt;
  * </pre>
  * 
  * 

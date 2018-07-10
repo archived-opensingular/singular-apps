@@ -20,10 +20,23 @@ package org.opensingular.app.commons.spring.persistence.database;
 
 import java.util.List;
 
+/**
+ * If this interface will be overriding for specific Dialect,the method  <code> supportsIdentityColumns()</code> should be used to declare if will use or not identity.
+ * If the method supportsIdentityColumns() return false, the Singular will use the sequence <code>DBSINGULAR.SQ_CO_ATOR</code> to increment the table TB_ACTOR
+ **/
 public interface SingularDataBaseSuport {
 
+    /**
+     * Some scripts files to execute after Singular DataBase be created.
+     *
+     * @return A list contain all Script files.
+     */
     List<String> getScripts();
 
+    /**
+     * Method that return the script file of Actor.
+     *
+     * @return The script file of Actor.
+     */
     String getDefaultActorScript();
-
 }

@@ -18,7 +18,6 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -27,8 +26,6 @@ import java.util.Set;
 import javax.sql.DataSource;
 
 import com.google.common.base.Joiner;
-import com.google.common.collect.Lists;
-import org.apache.commons.lang3.BooleanUtils;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
@@ -39,40 +36,16 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 
 public class PersistenceConfigurationProvider implements Loggable {
 
-    @Deprecated
-    private Boolean isSingularModule;
-
-    {
-        try {
-            Properties p   = new Properties();
-            URL        url = Thread.currentThread().getContextClassLoader().getResource("/_singular_core_server.properties");
-            if (url != null) {
-                p.load(url.openStream());
-            }
-            /*The default of isSingularModule is false when the project singular-requirement-core don't exists in the Maven dependencies.
-            This will be removed in the feature, just exists because of projects Module and Server.*/
-            isSingularModule = BooleanUtils.toBoolean(p.getProperty("singular.server", "false"));
-        } catch (Exception e) {
-            isSingularModule = Boolean.TRUE;
-            getLogger().trace(e.getMessage(), e);
-        }
-    }
-
-    /**
-     * @return
-     * @deprecated para ser removido tão logo seja eliminada a solução multi módulo em favor do single-app
-     */
-    @Deprecated
-    private boolean isCreateDrop() {
-        return isSingularModule && SqlUtil.isDropCreateDatabase();
-    }
-
-    private SingularPersistenceConfiguration persistenceConfiguration;
+    protected SingularPersistenceConfiguration persistenceConfiguration;
 
     public PersistenceConfigurationProvider(SingularPersistenceConfiguration configuration) {
         this.persistenceConfiguration = configuration;
     }
 
+    /**
+     * This method will create the SingularPersistenceConfiguration using the implementation of the project.
+     * If find more than one, or none implementantion this method will return a error.
+     */
     public PersistenceConfigurationProvider() {
         try {
             Set<Class<? extends SingularPersistenceConfiguration>> configs = SingularClassPathScanner.get().findSubclassesOf(SingularPersistenceConfiguration.class);
@@ -87,10 +60,26 @@ public class PersistenceConfigurationProvider implements Loggable {
         }
     }
 
-    public String[] getPackagesToScan() {
-        List<String> packagesToScan = Lists.newArrayList("org.opensingular", "com.opensingular");
-        persistenceConfiguration.configureHibernatePackagesToScan(packagesToScan);
-        return packagesToScan.toArray(new String[packagesToScan.size()]);
+    /**
+     * This method will return the packages to Scan witch is implements SingularPersistenceConfiguration.
+     * By default all the packages in the Singular will included in the packages to Scan.
+     *
+     * @param retrieveAll True for retrieveAll packages that will be used in HQL querys;
+     *                    False for just the packages that have to create the tables.
+     * @return String Array containing the packages to Scan.
+     */
+    public String[] getPackagesToScan(boolean retrieveAll) {
+        PackageScanConfiguration packageScanConfiguration = new PackageScanConfiguration();
+        packageScanConfiguration.addPackageToScan("org.opensingular", true);
+        packageScanConfiguration.addPackageToScan("com.opensingular", true);
+        persistenceConfiguration.configureHibernatePackagesToScan(packageScanConfiguration);
+        Set<String> packages;
+        if (retrieveAll) {
+            packages = packageScanConfiguration.getAllPackagesToScan();
+        } else {
+            packages = packageScanConfiguration.getPackagesToScan();
+        }
+        return packages.toArray(new String[packages.size()]);
     }
 
     public Properties getHibernateProperties() {
@@ -106,19 +95,10 @@ public class PersistenceConfigurationProvider implements Loggable {
         hibernateProperties.setProperty("hibernate.cache.use_query_cache", "true");
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files", Joiner.on(",").join(getSQLScritps()));
         hibernateProperties.setProperty("hibernate.hbm2ddl.import_files_sql_extractor", "org.hibernate.tool.hbm2ddl.MultipleLinesSqlCommandExtractor");
-        hibernateProperties.setProperty("hibernate.hbm2ddl.auto", isCreateDrop() ? "create" : "none");
         hibernateProperties.setProperty("net.sf.ehcache.configurationResourceName", "/default-singular-ehcache.xml");
         hibernateProperties.setProperty("hibernate.cache.region.factory_class", "org.hibernate.cache.ehcache.EhCacheRegionFactory");
         persistenceConfiguration.configureHibernateProperties(hibernateProperties);
         return hibernateProperties;
-    }
-
-    public Class<? extends Dialect> getDialect() {
-        return persistenceConfiguration.getHibernateDialect();
-    }
-
-    public boolean isDropAllH2() {
-        return SqlUtil.useEmbeddedDatabase() && isCreateDrop();
     }
 
     public List<String> getSQLScritps() {
@@ -129,7 +109,8 @@ public class PersistenceConfigurationProvider implements Loggable {
             scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
         }
         persistenceConfiguration.configureInitSQLScripts(scripts);
-        scripts.add(persistenceConfiguration.getActorTableScript());return scripts;
+        scripts.add(persistenceConfiguration.getActorTableScript());
+        return scripts;
     }
 
     public List<DatabaseObjectNameReplacement> getSchemaReplacements() {
@@ -148,5 +129,17 @@ public class PersistenceConfigurationProvider implements Loggable {
             dataSource = persistenceConfiguration.getNonEmbeddedDataSource();
         }
         return dataSource;
+    }
+
+    public Class<? extends Dialect> getDialect() {
+        return persistenceConfiguration.getHibernateDialect();
+    }
+
+    public boolean isDropAllH2() {
+        return SqlUtil.useEmbeddedDatabase() && isCreateDrop();
+    }
+
+    public boolean isCreateDrop() {
+        return SqlUtil.isDropCreateDatabase();
     }
 }

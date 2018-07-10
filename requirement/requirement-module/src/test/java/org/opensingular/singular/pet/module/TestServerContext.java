@@ -19,8 +19,8 @@
 package org.opensingular.singular.pet.module;
 
 
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.ServerContext;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
@@ -35,7 +35,7 @@ public class TestServerContext {
     /**
      * Contexto registrado no arquivo properties singular.properties para o petcionamento
      */
-    private static final String WORKLIST_CONTEXT = "/pettest";
+    private static final String WORKLIST_CONTEXT = "/worklist";
 
     private HttpServletRequest getRequest() {
         HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);

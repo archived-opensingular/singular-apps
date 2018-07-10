@@ -19,6 +19,7 @@
 package org.opensingular.studio.core.view;
 
 import org.opensingular.lib.commons.lambda.IBiFunction;
+import org.opensingular.lib.commons.lambda.IPredicate;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.studio.core.menu.ItemMenuEntry;
 import org.opensingular.studio.core.menu.MenuEntry;
@@ -28,9 +29,19 @@ public class StudioMenuEntry extends ItemMenuEntry {
     private final IBiFunction<String, MenuEntry, StudioContent> contentFactory;
     private final boolean                                       withMenu;
 
-    public StudioMenuEntry(Icon icon, String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory,
+    public StudioMenuEntry(Icon icon, String name,
+                           IBiFunction<String, MenuEntry, StudioContent> contentFactory,
+                           boolean withMenu,
+                           IPredicate<MenuEntry> visibilityFunction) {
+        super(icon, name, visibilityFunction);
+        this.contentFactory = contentFactory;
+        this.withMenu = withMenu;
+    }
+
+    public StudioMenuEntry(Icon icon, String name,
+                           IBiFunction<String, MenuEntry, StudioContent> contentFactory,
                            boolean withMenu) {
-        super(icon, name);
+        super(icon, name, null);
         this.contentFactory = contentFactory;
         this.withMenu = withMenu;
     }

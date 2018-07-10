@@ -25,14 +25,14 @@ import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 import org.opensingular.requirement.studio.wicket.RequirementStudioApplication;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.SingularSpringWebMVCConfig;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.commons.admin.AdministrationApplication;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.config.PSpringSecurityInitializer;
-import org.opensingular.requirement.commons.config.PWebInitializer;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.admin.AdministrationApplication;
+import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
+import org.opensingular.requirement.module.config.PWebInitializer;
 import org.opensingular.requirement.single.config.SingleAppInitializer;
 
 import javax.servlet.ServletContext;
@@ -51,9 +51,6 @@ public interface RequirementStudioAppInitializer extends SingleAppInitializer {
     @Override
     default PWebInitializer webConfiguration() {
         return new PWebInitializer() {
-            @Override
-            protected void configureCAS(ServletContext servletContext) {
-            }
 
             @Override
             public IServerContext[] serverContexts() {

@@ -23,11 +23,13 @@ import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.form.SingularServerSpringTypeLoader;
-import org.opensingular.requirement.commons.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
+import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirementRef;
@@ -35,6 +37,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.net.URL;
 
 @Named
 @Transactional
@@ -93,5 +96,24 @@ public class ModuleService implements Loggable {
     public ModuleEntity getModule() {
         SingularModule module = singularModuleConfiguration.getModule();
         return moduleDAO.findOrException(module.abbreviation());
+    }
+
+    public String getBaseUrl() {
+        return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
+    }
+
+
+    private String getModuleContext() {
+        final String groupConnectionURL = getModule().getConnectionURL();
+        try {
+            final String path    = new URL(groupConnectionURL).getPath();
+            if (path.endsWith("/")){
+                return path.substring(0, path.length() - 1);
+            } else {
+                return path;
+            }
+        } catch (Exception e) {
+            throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
+        }
     }
 }

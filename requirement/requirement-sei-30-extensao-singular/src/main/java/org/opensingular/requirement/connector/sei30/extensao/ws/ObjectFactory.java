@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.opensingular.requirement.connector.sei30.extensao.ws package.
+ * generated in the org.opensingular.requirement.connector.sei30.extensao.ws package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -56,27 +56,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RetornoConsultaDocumento }
+     * Create an instance of {@link DadosAssinatura }
      * 
      */
-    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
-        return new RetornoConsultaDocumento();
-    }
-
-    /**
-     * Create an instance of {@link LoginInterno }
-     * 
-     */
-    public LoginInterno createLoginInterno() {
-        return new LoginInterno();
-    }
-
-    /**
-     * Create an instance of {@link Campo }
-     * 
-     */
-    public Campo createCampo() {
-        return new Campo();
+    public DadosAssinatura createDadosAssinatura() {
+        return new DadosAssinatura();
     }
 
     /**
@@ -88,11 +72,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link Assinante }
+     * 
+     */
+    public Assinante createAssinante() {
+        return new Assinante();
+    }
+
+    /**
      * Create an instance of {@link ArrayOfAssinante }
      * 
      */
     public ArrayOfAssinante createArrayOfAssinante() {
         return new ArrayOfAssinante();
+    }
+
+    /**
+     * Create an instance of {@link Campo }
+     * 
+     */
+    public Campo createCampo() {
+        return new Campo();
     }
 
     /**
@@ -104,27 +104,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link RetornoConsultarConteudoDocumento }
+     * Create an instance of {@link Serie }
      * 
      */
-    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
-        return new RetornoConsultarConteudoDocumento();
+    public Serie createSerie() {
+        return new Serie();
     }
 
     /**
-     * Create an instance of {@link DadosAssinatura }
+     * Create an instance of {@link RetornoConsultaDocumento }
      * 
      */
-    public DadosAssinatura createDadosAssinatura() {
-        return new DadosAssinatura();
-    }
-
-    /**
-     * Create an instance of {@link Assinante }
-     * 
-     */
-    public Assinante createAssinante() {
-        return new Assinante();
+    public RetornoConsultaDocumento createRetornoConsultaDocumento() {
+        return new RetornoConsultaDocumento();
     }
 
     /**
@@ -136,11 +128,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link Serie }
+     * Create an instance of {@link RetornoConsultarConteudoDocumento }
      * 
      */
-    public Serie createSerie() {
-        return new Serie();
+    public RetornoConsultarConteudoDocumento createRetornoConsultarConteudoDocumento() {
+        return new RetornoConsultarConteudoDocumento();
+    }
+
+    /**
+     * Create an instance of {@link Assunto }
+     * 
+     */
+    public Assunto createAssunto() {
+        return new Assunto();
+    }
+
+    /**
+     * Create an instance of {@link ArrayOfAssunto }
+     * 
+     */
+    public ArrayOfAssunto createArrayOfAssunto() {
+        return new ArrayOfAssunto();
     }
 
 }

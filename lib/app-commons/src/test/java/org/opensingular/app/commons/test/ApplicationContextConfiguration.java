@@ -18,11 +18,6 @@
 
 package org.opensingular.app.commons.test;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration;
@@ -44,7 +39,13 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
+import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+
+import static org.opensingular.lib.commons.base.SingularProperties.*;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
@@ -102,7 +103,7 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         try {
             getLogger().warn("Usando datasource banco embarcado H2");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
-            dataSource.setJdbcUrl("jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
+            dataSource.setJdbcUrl("jdbc:h2:mem:maildb" + UUID.randomUUID().toString() + ";mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
             dataSource.setDriverClassName("org.h2.Driver");
