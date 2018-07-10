@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.commons.test.spring;
+package org.opensingular.requirement.commons.spring;
 
 
 import com.google.common.collect.Sets;
@@ -93,7 +93,7 @@ public class SingularServerSpringMockitoTestConfig implements Loggable {
         );
     }
 
-    private void registerAnnotated(ApplicationContextMock applicationContext, Class annotation) {
+    private void registerAnnotated(ApplicationContextMock applicationContext, Class<?> annotation) {
         testClasspathScanner.findClassesAnnotatedWith(annotation).forEach(f -> applicationContext.putOrReplaceBean(Mockito.mock(f)));
     }
 
