@@ -18,14 +18,19 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.commons.table.ColumnTypeProcessor;
 import org.opensingular.requirement.commons.box.BoxItemDataImpl;
 import org.opensingular.requirement.commons.box.BoxItemDataList;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
@@ -36,6 +41,7 @@ public class BoxController implements BoxInfo {
     private String                      id;
     private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
     private BoxDefinition boxDefinition;
+
 
     public BoxController(BoxDefinition boxDefinition, List<SingularRequirementRef> requirementRefs) {
         for (SingularRequirementRef ref : requirementRefs) {
@@ -76,6 +82,9 @@ public class BoxController implements BoxInfo {
 
     public BoxItemDataList searchItens(QuickFilter filter) {
         BoxItemDataProvider             provider       = boxDefinition.getDataProvider();
+        if(CollectionUtils.isEmpty(provider.getFilters())) {
+            provider.addDateFilters();
+        }
         List<Map<String, Serializable>> itens          = provider.search(filter, this);
         BoxItemDataList                 result         = new BoxItemDataList();
         ActionProvider                  actionProvider = addBuiltInDecorators(provider.getActionProvider());

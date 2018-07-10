@@ -18,7 +18,17 @@
 
 package org.opensingular.requirement.module.provider;
 
+import java.io.Serializable;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.commons.table.ColumnTypeProcessor;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
@@ -29,12 +39,6 @@ import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 
     private final Boolean evalPermissions;
@@ -43,6 +47,9 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
+
+    public static final String PROCESS_BEGIN_DATE = "processBeginDate";
+    public static final String SITUATION_BEGIN_DATE = "situationBeginDate";
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
         this.evalPermissions = evalPermissions;
@@ -119,6 +126,60 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> tasks) {
         tasks.forEach(this::addTask);
         return this;
+    }
+
+    @Override
+    public List<IConsumer<List<Map<String, Serializable>>>> getFilters() {
+        return filters;
+    }
+
+
+    /**
+     * Method for include a dateFormatter in the filters.
+     * This method should be used to change the formatter of the date.
+     *
+     * @param dateFormatter String with the date Formatter.
+     * @return <code>this</code>
+     */
+    public RequirementBoxItemDataProvider addDateFilters(String dateFormatter) {
+        filters.add(dateFormatters(dateFormatter));
+        return this;
+    }
+
+    /**
+     * Method for include a dateFormatter in the filters.
+     *
+     * @return <code>this</code>
+     */
+    @Override
+    public RequirementBoxItemDataProvider addDateFilters() {
+        return addDateFilters(null);
+    }
+
+    /**
+     * Default formmater of date filter.
+     *
+     * @return String containg the date format.
+     */
+    private String getDateFormat() {
+        return ((ColumnTypeProcessor.ColumnTypeProcessorTypeDateBased) ColumnTypeProcessor.DATE_HOUR_SHORT).getDateFormat();
+    }
+
+    /**
+     * Method that include date formatter for the filters.
+     *
+     * @param dateFormatter The formmater of date.
+     *                      If is null, it will use the method <code>getDateFormat()</code> to get the formmat.
+     * @return filters for date.
+     */
+    private IConsumer<List<Map<String, Serializable>>> dateFormatters(String dateFormatter) {
+        String dateFormat = Optional.ofNullable(dateFormatter).orElse(getDateFormat());
+        SimpleDateFormat fmt = new SimpleDateFormat(dateFormat);
+        return f ->
+                f.forEach(m -> {
+                    m.put(PROCESS_BEGIN_DATE, fmt.format((Date) m.get(PROCESS_BEGIN_DATE)));
+                    m.put(SITUATION_BEGIN_DATE, fmt.format((Date) m.get(SITUATION_BEGIN_DATE)));
+                });
     }
 
 }
