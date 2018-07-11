@@ -19,7 +19,6 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.requirement.commons.test.SingularPersistenceDefaultBeanFactoryMock;
 import org.opensingular.requirement.module.config.FlowInitializer;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.PSingularInitializer;
@@ -69,10 +68,16 @@ public class CommonsInitializerMock implements PSingularInitializer {
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return SingularPersistenceDefaultBeanFactoryMock.class;
+              return persistenceConfiguration();
             }
         };
     }
+
+
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+        return SingularPersistenceDefaultBeanFactory.class;
+    }
+
 
     @Override
     public FlowInitializer flowConfiguration() {
