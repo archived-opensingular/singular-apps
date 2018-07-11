@@ -19,12 +19,12 @@
 package org.opensingular.requirement.module.executor;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
-import org.opensingular.requirement.commons.config.SingularServerConfiguration;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.persistence.entity.form.BoxEntity;
-import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerStartExecutorBean;
+import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.BoxService;

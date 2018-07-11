@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-requirement</artifactId>
-        <version>1.8.0-RC2</version>
+        <version>1.8.0-SNAPSHOT</version>
     </parent>
     
     <artifactId>requirement-sip-30-connector</artifactId>
@@ -31,12 +31,7 @@
         </resources>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-requirement-commons</artifactId>
-        </dependency>
-    </dependencies>
+
 
 
 

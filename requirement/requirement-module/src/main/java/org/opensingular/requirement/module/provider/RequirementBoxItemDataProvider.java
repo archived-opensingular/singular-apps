@@ -20,11 +20,11 @@ package org.opensingular.requirement.module.provider;
 
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.persistence.query.RequirementSearchExtender;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
-import org.opensingular.requirement.commons.spring.security.SingularPermission;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.spring.security.PermissionResolverService;
+import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.BoxItemDataProvider;

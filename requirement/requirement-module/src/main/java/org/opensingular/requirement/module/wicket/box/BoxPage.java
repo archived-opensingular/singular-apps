@@ -31,20 +31,20 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.Page403;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.Page403;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
@@ -142,7 +142,7 @@ public class BoxPage extends ServerBoxTemplate {
     protected String getIdPessoa() {
         SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
         return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getUsername)
+                .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
     }
 

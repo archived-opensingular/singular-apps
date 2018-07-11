@@ -19,8 +19,8 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.form.SInstance;
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.exception.SingularRequirementException;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 
 import javax.annotation.Nonnull;
 import java.util.Arrays;

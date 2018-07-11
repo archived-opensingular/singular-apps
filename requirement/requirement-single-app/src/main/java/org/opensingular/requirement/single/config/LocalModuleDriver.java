@@ -22,19 +22,19 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.ModuleConnector;
-import org.opensingular.requirement.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.commons.box.BoxItemDataMap;
-import org.opensingular.requirement.commons.box.action.ActionRequest;
-import org.opensingular.requirement.commons.box.action.ActionResponse;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.connector.ModuleDriver;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.BoxItemAction;
-import org.opensingular.requirement.commons.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.commons.service.dto.ItemBox;
-import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.commons.wicket.SingularSession;
+import org.opensingular.requirement.module.ModuleConnector;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.box.BoxItemDataMap;
+import org.opensingular.requirement.module.box.action.ActionRequest;
+import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.BoxItemAction;
+import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.module.wicket.SingularSession;
 
 import javax.inject.Inject;
 import javax.inject.Provider;
@@ -71,7 +71,7 @@ public class LocalModuleDriver implements ModuleDriver {
                 .withRascunho(box.isShowDraft())
                 .withEndedTasks(box.getEndedTasks())
                 .withIdUsuarioLogado(loggedUser)
-                .withIdPessoa(SingularSession.get().getUserDetails().getUsername());
+                .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
         return String.valueOf(moduleConnector.count(box.getId(), filter));
     }
 

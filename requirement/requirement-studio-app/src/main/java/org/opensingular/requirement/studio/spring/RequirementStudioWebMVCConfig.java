@@ -18,7 +18,7 @@
 
 package org.opensingular.requirement.studio.spring;
 
-import org.opensingular.requirement.commons.config.SingularSpringWebMVCConfig;
+import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
