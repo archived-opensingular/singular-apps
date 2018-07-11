@@ -27,6 +27,7 @@ import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularAdministrationLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
 import org.springframework.context.annotation.Bean;
@@ -34,7 +35,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 public class SecurityConfigs {
@@ -75,7 +75,7 @@ public class SecurityConfigs {
     @Configuration
     @EnableWebMvc
     @Order(105)
-    public static class AdministrationSecurity extends WebSecurityConfigurerAdapter {
+    public static class AdministrationSecurity extends AbstractSingularSpringSecurityAdapter {
 
         @Inject
         private Optional<AdminCredentialChecker> credentialChecker;
@@ -88,6 +88,7 @@ public class SecurityConfigs {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
+                    .regexMatcher(getContext().getPathRegex())
                     .authorizeRequests()
                     .antMatchers(PServerContext.ADMINISTRATION.getContextPath()).hasRole("ADMIN")
                     .and()
@@ -103,6 +104,10 @@ public class SecurityConfigs {
                     auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, PServerContext.ADMINISTRATION)));
         }
 
+        @Override
+        protected IServerContext getContext() {
+            return PServerContext.ADMINISTRATION;
+        }
     }
 
 }

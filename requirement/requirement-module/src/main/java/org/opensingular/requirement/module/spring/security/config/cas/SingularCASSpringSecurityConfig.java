@@ -81,9 +81,10 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
         J2eePreAuthenticatedProcessingFilter j2eeFilter = new J2eePreAuthenticatedProcessingFilter();
         j2eeFilter.setAuthenticationManager(authenticationManager);
 
-        http.exceptionHandling().accessDeniedPage("/public/error/403")
-                .and()
+        http
                 .regexMatcher(getContext().getPathRegex())
+                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
+                .and()
                 .csrf().disable()
                 .headers().frameOptions().sameOrigin()
                 .and()
@@ -93,8 +94,8 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
                 .antMatchers(getContext().getContextPath()).authenticated();
 
 
-    }
 
+    }
 
     public abstract String getCASLogoutURL();
 }

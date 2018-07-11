@@ -19,6 +19,7 @@
 package org.opensingular.requirement.studio.spring;
 
 import java.util.Collections;
+import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
@@ -40,9 +41,11 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 public class RequirementStudioSpringSecurityInitializer extends PSpringSecurityInitializer {
 
+
     @Override
     protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
-        return (Class<T>) StudioSecurity.class;
+        Class<T> securityConfig = super.getSpringSecurityConfigClass(context);
+        return Optional.ofNullable(securityConfig).orElse(((Class<T>) StudioSecurity.class));
     }
 
     @AutoScanDisabled
@@ -94,6 +97,7 @@ public class RequirementStudioSpringSecurityInitializer extends PSpringSecurityI
         }
 
     }
+
 
 
 }
