@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.requirement.single.page;
+package org.opensingular.requirement.module.wicket;
 
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebPage;

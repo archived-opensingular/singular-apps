@@ -16,7 +16,7 @@
  *
  */
 
-package org.opensingular.requirement.single.config;
+package org.opensingular.requirement.module.connector;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
@@ -28,7 +28,6 @@ import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.connector.ModuleDriver;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;

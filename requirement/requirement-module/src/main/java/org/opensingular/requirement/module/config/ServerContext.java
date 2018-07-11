@@ -24,15 +24,18 @@ import org.opensingular.lib.commons.base.SingularProperties;
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public enum ServerContext implements IServerContext {
+public class ServerContext implements IServerContext {
 
+    public static final IServerContext REQUIREMENT = new ServerContext("REQUIREMENT", "/requirement/*", "singular.requirement");
+    public static final IServerContext WORKLIST = new ServerContext("WORKLIST", "/worklist/*", "singular.worklist");
+    public static final IServerContext ADMINISTRATION = new ServerContext("ADMINISTRATION", "/administration/*", "singular.administration");
 
-    WORKLIST("/worklist/*", "singular.worklist");
-
-    private final String propertiesBaseKey;
     private final String contextPath;
+    private final String propertiesBaseKey;
+    private final String name;
 
-    ServerContext(String defaultPath, String propertiesBaseKey) {
+    public ServerContext(String name, String defaultPath, String propertiesBaseKey) {
+        this.name = name;
         this.propertiesBaseKey = propertiesBaseKey;
         String key = propertiesBaseKey + ".context";
         String path = SingularProperties.getOpt(key).orElse(null);
@@ -58,7 +61,7 @@ public enum ServerContext implements IServerContext {
 
     @Override
     public String getName() {
-        return this.name();
+        return this.name;
     }
 
     /**
@@ -66,6 +69,7 @@ public enum ServerContext implements IServerContext {
      *
      * @return
      */
+
     @Override
     public String getContextPath() {
         return contextPath;
@@ -92,6 +96,5 @@ public enum ServerContext implements IServerContext {
         String path = getContextPath().replace("*", "").replace(".", "").trim();
         return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
     }
-
 
 }

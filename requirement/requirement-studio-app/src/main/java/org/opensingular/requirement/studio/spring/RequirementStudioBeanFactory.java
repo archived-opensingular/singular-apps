@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.studio.spring;
 
-import org.opensingular.requirement.single.config.SingleAppBeanFactory;
+import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.menu.StudioMenu;
 import org.springframework.context.annotation.Bean;
 
-public class RequirementStudioBeanFactory extends SingleAppBeanFactory {
+public class RequirementStudioBeanFactory extends SingularDefaultBeanFactory {
     private StudioConfig studioConfig;
 
     public RequirementStudioBeanFactory() {
