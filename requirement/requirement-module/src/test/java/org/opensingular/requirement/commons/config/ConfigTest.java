@@ -18,16 +18,14 @@
 
 package org.opensingular.requirement.commons.config;
 
+import javax.inject.Inject;
+import javax.servlet.ServletException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
-
-
-
-import javax.inject.Inject;
-import javax.servlet.ServletException;
 
 public class ConfigTest extends SingularCommonsBaseTest {
 

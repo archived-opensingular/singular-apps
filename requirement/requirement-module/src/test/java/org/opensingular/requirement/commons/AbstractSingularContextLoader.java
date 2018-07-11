@@ -33,6 +33,9 @@ package org.opensingular.requirement.commons;
  * limitations under the License.
  */
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensingular.lib.commons.base.SingularException;
@@ -58,9 +61,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 /**
  * Abstract, generic extension of {@link AbstractContextLoader} that loads a

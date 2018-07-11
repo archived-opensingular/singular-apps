@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.persistence.dao.flow;
 
+import java.util.List;
+
 import org.hibernate.Query;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
-import java.util.List;
 
 public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
 

@@ -5,6 +5,9 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
+import java.util.List;
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.html.form.ChoiceRenderer;
 import org.apache.wicket.markup.html.form.DropDownChoice;
 import org.apache.wicket.markup.html.form.Form;
@@ -16,9 +19,6 @@ import org.opensingular.lib.wicket.util.behavior.FormComponentAjaxUpdateBehavior
 import org.opensingular.lib.wicket.util.menu.AbstractMenuItem;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.wicket.SingularSession;
-
-import javax.inject.Inject;
-import java.util.List;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MODULE_PARAM_NAME;

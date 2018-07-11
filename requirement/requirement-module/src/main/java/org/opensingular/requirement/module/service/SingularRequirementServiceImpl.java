@@ -18,13 +18,12 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.service.SingularRequirementService;
-import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 @Named
 public class SingularRequirementServiceImpl implements SingularRequirementService {

@@ -18,6 +18,13 @@
 
 package org.opensingular.requirement.module.wicket.view;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -28,27 +35,20 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirementRef;
+import org.opensingular.requirement.module.SingularRequirementResolver;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.ModuleService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.ServerSendButton;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.SingularRequirementRef;
-import org.opensingular.requirement.module.SingularRequirementResolver;
-import org.opensingular.requirement.module.service.ModuleService;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 /**
  * For Singular Requirement Resolver use only.

@@ -21,19 +21,21 @@ package org.opensingular.requirement.module.config;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-
-import javax.servlet.*;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+import javax.servlet.ServletRegistration;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
+import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
-
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 
 /**
  * Configura os filtros, servlets e listeners default do singular pet server

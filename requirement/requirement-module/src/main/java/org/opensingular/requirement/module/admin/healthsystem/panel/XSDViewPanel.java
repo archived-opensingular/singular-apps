@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Modifier;
+import java.util.Iterator;
+import java.util.List;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -35,14 +43,6 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-
-import javax.inject.Inject;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.Modifier;
-import java.util.Iterator;
-import java.util.List;
-import java.util.stream.Collectors;
 
 @SuppressWarnings("serial")
 public class XSDViewPanel extends Panel {

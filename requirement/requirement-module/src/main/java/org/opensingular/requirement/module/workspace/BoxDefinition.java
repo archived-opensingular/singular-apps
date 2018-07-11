@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import java.util.List;
+
+import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-
-import java.util.List;
 
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers

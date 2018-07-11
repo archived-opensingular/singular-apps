@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.rest;
 
+import java.util.List;
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
@@ -30,11 +33,12 @@ import org.opensingular.requirement.module.test.SingularServletContextTestExecut
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import javax.inject.Inject;
-import java.util.List;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.reset;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {

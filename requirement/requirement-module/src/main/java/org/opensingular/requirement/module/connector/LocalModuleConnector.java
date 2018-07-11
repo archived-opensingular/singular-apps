@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.connector;
 
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.requirement.module.ModuleConnector;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
@@ -26,10 +30,6 @@ import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.rest.ModuleBackstageService;
-
-import javax.inject.Inject;
-import java.util.List;
-import java.util.Map;
 
 public class LocalModuleConnector implements ModuleConnector {
 

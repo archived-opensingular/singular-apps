@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -26,10 +34,6 @@ import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.*;
 
 @Named
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)

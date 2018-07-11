@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.connector;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -36,15 +44,10 @@ import org.opensingular.requirement.module.spring.security.SingularRequirementUs
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.springframework.web.client.RestTemplate;
 
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import static org.opensingular.requirement.module.RESTPaths.*;
+import static org.opensingular.requirement.module.RESTPaths.MENU_CONTEXT;
+import static org.opensingular.requirement.module.RESTPaths.PATH_BOX_SEARCH;
+import static org.opensingular.requirement.module.RESTPaths.USER;
+import static org.opensingular.requirement.module.RESTPaths.WORKSPACE_CONFIGURATION;
 
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 

@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-
 import java.io.Serializable;
 import java.util.List;
+
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 
 public class WorkspaceConfigurationMetadata implements Serializable {
 

@@ -18,18 +18,23 @@
 
 package org.opensingular.requirement.module.rest;
 
+import java.util.List;
+import java.util.Map;
+
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.connector.LocalModuleConnector;
 import org.opensingular.requirement.module.connector.ModuleDriver;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.connector.LocalModuleConnector;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.Map;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import static org.opensingular.requirement.module.RESTPaths.*;
 

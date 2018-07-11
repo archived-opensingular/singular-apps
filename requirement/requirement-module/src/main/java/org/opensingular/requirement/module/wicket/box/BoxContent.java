@@ -18,6 +18,15 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -44,6 +53,7 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleDriver;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -53,18 +63,9 @@ import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
-import org.opensingular.requirement.module.service.ModuleService;
 
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 

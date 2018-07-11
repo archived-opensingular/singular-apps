@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.test;
 
+import javax.servlet.ServletRequest;
+
 import net.vidageek.mirror.dsl.Mirror;
 import org.opensingular.requirement.module.config.ServerContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletRequest;
 
 public class ContextUtil {
 

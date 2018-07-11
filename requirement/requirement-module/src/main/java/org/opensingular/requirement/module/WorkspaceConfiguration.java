@@ -18,14 +18,13 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 
 /**

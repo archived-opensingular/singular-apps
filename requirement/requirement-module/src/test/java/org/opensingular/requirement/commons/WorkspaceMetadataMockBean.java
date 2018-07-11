@@ -18,6 +18,15 @@
 
 package org.opensingular.requirement.commons;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.base.SingularException;
@@ -29,18 +38,8 @@ import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
-import org.springframework.context.annotation.DependsOn;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Named
 public class WorkspaceMetadataMockBean {

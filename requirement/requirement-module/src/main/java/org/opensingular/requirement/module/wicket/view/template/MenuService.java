@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-
 import java.util.List;
 import java.util.Map;
+
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 
 public interface MenuService {
 

@@ -29,14 +29,19 @@ import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import static org.mockito.Mockito.*;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+import static org.mockito.Mockito.any;
+import static org.mockito.Mockito.anyBoolean;
+import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.when;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ACTION;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {

@@ -18,6 +18,16 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -50,17 +60,7 @@ import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.template.MenuService;
 
-import javax.inject.Inject;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 /**
  * Classe base para construição de caixas do servidor de petições

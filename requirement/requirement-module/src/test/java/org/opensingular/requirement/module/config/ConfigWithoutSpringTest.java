@@ -18,15 +18,17 @@
 
 package org.opensingular.requirement.module.config;
 
+import javax.servlet.ServletException;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.test.SingularServletContextMock;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import javax.servlet.ServletException;
-
-import static org.opensingular.requirement.module.config.SingularInitializer.*;
+import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION;
+import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION;
+import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION;
 
 public class ConfigWithoutSpringTest {
 

@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import java.io.File;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.SubmitLink;
@@ -38,10 +42,6 @@ import org.opensingular.requirement.module.admin.healthsystem.stypes.SIPdfHealth
 import org.opensingular.requirement.module.admin.healthsystem.stypes.STypePdfHealth;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-
-import javax.inject.Inject;
-import java.io.File;
-import java.util.Optional;
 
 
 public class HtmlToPdfPanel extends Panel implements Loggable {

@@ -18,26 +18,26 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.net.URL;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModule;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.SingularRequirementRef;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.net.URL;
 
 @Named
 @Transactional

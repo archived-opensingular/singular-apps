@@ -19,15 +19,13 @@
 package org.opensingular.requirement.module.test;
 
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.requirement.commons.MenuServiceMock;
 import org.opensingular.requirement.module.admin.healthsystem.validation.database.IValidatorDatabase;
+import org.opensingular.requirement.module.service.ServerMenuService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.service.SingularRequirementServiceImpl;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
-import org.opensingular.requirement.module.test.ValidatorOracleMock;
 import org.opensingular.requirement.module.wicket.view.template.MenuService;
-import org.opensingular.requirement.module.service.ServerMenuService;
-import org.opensingular.requirement.module.service.SingularRequirementServiceImpl;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,7 +37,7 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.spy;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @EnableCaching

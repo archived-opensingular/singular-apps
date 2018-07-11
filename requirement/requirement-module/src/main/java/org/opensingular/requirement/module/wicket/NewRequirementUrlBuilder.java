@@ -18,13 +18,14 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import java.util.Map;
+
 import org.apache.commons.collections4.MapUtils;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
-import java.util.Map;
-
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
 
 /**
  * Responsible for generating a redirect link to a new requirement page.

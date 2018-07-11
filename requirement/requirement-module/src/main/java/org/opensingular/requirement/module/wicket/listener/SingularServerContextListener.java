@@ -32,7 +32,6 @@ import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -41,6 +40,7 @@ import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFact
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.requirement.module.wicket.error.Page500;
 

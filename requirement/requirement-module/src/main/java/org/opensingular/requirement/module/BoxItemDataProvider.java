@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
+
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.DatatableField;
 
 /**
  * Provider responsavel por fornecer dados e metadados para exibição das tablesList no server

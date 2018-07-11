@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.connector;
 
+import java.util.List;
+import java.util.Map;
+
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
@@ -29,9 +32,6 @@ import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-
-import java.util.List;
-import java.util.Map;
 
 public interface ModuleDriver {
 

@@ -18,16 +18,25 @@
 
 package org.opensingular.requirement.module.rest;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.form.SFormUtil;
-import org.opensingular.form.SInfoType;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
@@ -44,17 +53,7 @@ import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
-import org.opensingular.requirement.module.BoxController;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class ModuleBackstageService implements Loggable {

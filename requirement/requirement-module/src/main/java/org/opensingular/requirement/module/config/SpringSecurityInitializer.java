@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.ServletContext;
+
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.slf4j.Logger;
@@ -25,10 +29,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContext;
-import java.util.EnumSet;
 
 public abstract class SpringSecurityInitializer {
 

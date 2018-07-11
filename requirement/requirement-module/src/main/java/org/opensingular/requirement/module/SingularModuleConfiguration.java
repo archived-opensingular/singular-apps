@@ -19,21 +19,20 @@
 package org.opensingular.requirement.module;
 
 
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
+
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 /**
  * Configuration bean from which the current module

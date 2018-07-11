@@ -19,6 +19,12 @@
 package org.opensingular.requirement.module.persistence.dao.form;
 
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
@@ -26,7 +32,13 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.form.persistence.entity.*;
+import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormAttachmentEntity;
+import org.opensingular.form.persistence.entity.QFormEntity;
+import org.opensingular.form.persistence.entity.QFormTypeEntity;
+import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -41,12 +53,6 @@ import org.opensingular.requirement.module.persistence.query.RequirementSearchQu
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long> {

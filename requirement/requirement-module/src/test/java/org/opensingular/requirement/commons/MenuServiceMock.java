@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.commons;
 
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.wicket.view.template.MenuService;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import javax.inject.Inject;
+
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 
 
 public class MenuServiceMock implements MenuService {

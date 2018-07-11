@@ -18,18 +18,20 @@
 
 package org.opensingular.requirement.commons.spring.security;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
-import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.box.action.defaults.AssignAction;
-import org.opensingular.requirement.module.box.action.defaults.EditAction;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
@@ -39,10 +41,6 @@ import org.opensingular.requirement.module.spring.security.PermissionResolverSer
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.List;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {

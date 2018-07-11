@@ -18,26 +18,19 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.Page;
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.config.FlowInitializer;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SchedulerInitializer;
-import org.opensingular.requirement.module.config.SpringHibernateInitializer;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
-import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.config.PServerContext;
-import org.opensingular.requirement.module.config.PSingularInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
+
+import org.apache.wicket.Page;
+import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
+import org.opensingular.lib.commons.lambda.IConsumer;
+import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.requirement.module.admin.AdministrationApplication;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
+import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 public abstract class ModuleInitializer implements PSingularInitializer {
 

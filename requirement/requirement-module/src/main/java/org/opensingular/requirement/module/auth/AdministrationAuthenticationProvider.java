@@ -20,11 +20,9 @@ package org.opensingular.requirement.module.auth;
 
 import java.util.Collections;
 
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.spring.security.DefaultUserDetails;
-import org.opensingular.requirement.commons.spring.security.SingularPermission;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
+import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;

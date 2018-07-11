@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
+import javax.annotation.Nullable;
+
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
-
-import javax.annotation.Nullable;
 
 public interface FormDocumentationColumnRenderer {
 

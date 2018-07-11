@@ -18,6 +18,16 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.servlet.http.HttpServletRequest;
+
 import org.assertj.core.util.VisibleForTesting;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
@@ -25,21 +35,10 @@ import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.connector.ModuleDriver;
-import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.springframework.context.annotation.Scope;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
 
 @Named
 @Scope("session")

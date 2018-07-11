@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.database;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+
 import org.opensingular.lib.support.persistence.SimpleDAO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.TableInfoDTO;
-
-import javax.inject.Named;
-import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
 
 @Named
 public abstract class AbstractValidator extends SimpleDAO implements IValidatorDatabase {

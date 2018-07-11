@@ -19,16 +19,16 @@
 package org.opensingular.singular.pet.module;
 
 
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 
 public class TestServerContext {
 

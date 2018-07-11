@@ -37,6 +37,8 @@ import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.wicket.error.Page403;
+import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.view.StudioFooter;

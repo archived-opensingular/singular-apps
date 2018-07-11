@@ -18,26 +18,26 @@
 
 package org.opensingular.requirement.studio.init;
 
+import java.util.function.Predicate;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.requirement.module.admin.AdministrationApplication;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
+import org.opensingular.requirement.module.config.PWebInitializer;
+import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.single.config.SingleAppInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 import org.opensingular.requirement.studio.wicket.RequirementStudioApplication;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.config.PServerContext;
-import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.opensingular.requirement.single.config.SingleAppInitializer;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.function.Predicate;
 
 public interface RequirementStudioAppInitializer extends SingleAppInitializer {
 

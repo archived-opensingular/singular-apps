@@ -19,7 +19,7 @@ package org.opensingular.requirement.module.wicket.error;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
+import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.wicketstuff.annotation.mount.MountPath;
 
 @MountPath("public/error/403")

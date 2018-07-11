@@ -16,13 +16,12 @@
 
 package org.opensingular.requirement.commons;
 
+import javax.servlet.ServletException;
+
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.requirement.module.config.SingularInitializer;
-
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import javax.servlet.ServletException;
 
 public class SingularCommonsContextLoader extends AbstractSingularContextLoader {
 

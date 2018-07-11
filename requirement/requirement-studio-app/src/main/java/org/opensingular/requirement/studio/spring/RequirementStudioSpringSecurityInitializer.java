@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.studio.spring;
 
+import java.util.Collections;
+
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -35,8 +37,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import java.util.Collections;
 
 public class RequirementStudioSpringSecurityInitializer extends PSpringSecurityInitializer {
 

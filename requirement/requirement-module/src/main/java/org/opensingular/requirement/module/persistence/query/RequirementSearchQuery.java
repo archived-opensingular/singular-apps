@@ -1,5 +1,11 @@
 package org.opensingular.requirement.module.persistence.query;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Expression;
 import com.querydsl.core.types.OrderSpecifier;
@@ -10,12 +16,6 @@ import org.hibernate.Session;
 import org.hibernate.transform.AliasToEntityMapResultTransformer;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.requirement.module.persistence.filter.FilterToken;
-
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.function.Function;
 
 public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
     private final List<Expression<?>>                selects               = new ArrayList<>();

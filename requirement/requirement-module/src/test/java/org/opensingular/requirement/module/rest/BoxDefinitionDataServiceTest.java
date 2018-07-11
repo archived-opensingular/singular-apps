@@ -18,6 +18,13 @@
 
 package org.opensingular.requirement.module.rest;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,25 +33,19 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertThat;
+import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class BoxDefinitionDataServiceTest {

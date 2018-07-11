@@ -26,9 +26,9 @@ import javax.inject.Named;
 
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
+import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.ProviderManager;

@@ -18,12 +18,9 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
-
 import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
-
 import javax.inject.Inject;
 
 import org.apache.commons.lang3.builder.CompareToBuilder;
@@ -43,6 +40,8 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocumentationTablePage;
+
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class DocsPanel extends Panel implements Loggable {
 

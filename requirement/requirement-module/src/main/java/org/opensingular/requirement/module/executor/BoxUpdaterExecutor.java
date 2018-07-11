@@ -18,22 +18,22 @@
 
 package org.opensingular.requirement.module.executor;
 
+import java.util.List;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.BoxController;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.ModuleService;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.List;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 
 /**
  * Classe para abrigar a lógica de carga inicial

@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.wicket.view.util;
 
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
-
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Optional;
 
 /**
  * Representa o contexto de execução de uma página de um módulo.

@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
@@ -34,8 +36,6 @@ import org.opensingular.requirement.module.test.SingularServletContextTestExecut
 import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)

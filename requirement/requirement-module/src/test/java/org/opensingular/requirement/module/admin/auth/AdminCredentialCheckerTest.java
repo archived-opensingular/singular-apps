@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.admin.auth;
 
+import java.util.Optional;
+
 import net.vidageek.mirror.dsl.Mirror;
 import org.junit.Assert;
 import org.junit.Before;
@@ -26,14 +28,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.opensingular.requirement.module.SingularModule;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
-import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.admin.auth.DatabaseAdminCredentialChecker;
-
-import java.util.Optional;
 
 import static org.mockito.Mockito.when;
 

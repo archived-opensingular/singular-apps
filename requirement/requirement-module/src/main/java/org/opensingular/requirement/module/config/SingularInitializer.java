@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.util.Optional;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.Optional;
 
 public class SingularInitializer implements WebApplicationInitializer {
 

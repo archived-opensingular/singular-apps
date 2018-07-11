@@ -18,22 +18,22 @@
 
 package org.opensingular.requirement.module.provider;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import javax.annotation.Nonnull;
+
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.module.ActionProvider;
+import org.opensingular.requirement.module.BoxInfo;
+import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-import org.opensingular.requirement.module.ActionProvider;
-import org.opensingular.requirement.module.BoxInfo;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
 

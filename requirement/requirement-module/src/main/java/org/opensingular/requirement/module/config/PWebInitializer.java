@@ -18,17 +18,17 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.util.EnumSet;
+import javax.servlet.DispatcherType;
+import javax.servlet.FilterRegistration;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import com.google.common.base.Joiner;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
-
-import javax.servlet.DispatcherType;
-import javax.servlet.FilterRegistration;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.EnumSet;
 
 import static org.opensingular.requirement.module.config.PServerContext.ADMINISTRATION;
 import static org.opensingular.requirement.module.config.PServerContext.REQUIREMENT;

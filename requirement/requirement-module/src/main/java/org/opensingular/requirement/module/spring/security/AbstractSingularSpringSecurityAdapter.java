@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.spring.security;
 
+import javax.inject.Inject;
+
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import javax.inject.Inject;
 
 public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityConfigurerAdapter {
 

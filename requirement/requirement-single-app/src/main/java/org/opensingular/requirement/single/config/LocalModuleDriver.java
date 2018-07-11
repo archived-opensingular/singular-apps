@@ -18,6 +18,12 @@
 
 package org.opensingular.requirement.single.config;
 
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.entity.Actor;
@@ -35,12 +41,6 @@ import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
-
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 public class LocalModuleDriver implements ModuleDriver {
 

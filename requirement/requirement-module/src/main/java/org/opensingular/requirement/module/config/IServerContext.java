@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.io.Serializable;
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.wicket.request.Request;
 import org.opensingular.requirement.module.exception.SingularServerException;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários

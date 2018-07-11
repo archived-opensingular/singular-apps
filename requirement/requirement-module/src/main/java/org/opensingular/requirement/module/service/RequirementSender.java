@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.form.SInstance;
-import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.opensingular.form.SInstance;
+import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
 
 /**
  * Implements the logic responsible to transform a draft requirement into a effective requirement that will follow the

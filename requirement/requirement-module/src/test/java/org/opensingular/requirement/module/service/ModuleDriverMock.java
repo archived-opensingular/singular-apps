@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.inject.Named;
+
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
@@ -32,14 +40,6 @@ import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.springframework.context.annotation.Primary;
-
-import javax.inject.Named;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 @Primary
 @Named

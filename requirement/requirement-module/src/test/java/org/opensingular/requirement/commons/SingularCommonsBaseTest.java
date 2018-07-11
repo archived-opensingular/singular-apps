@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons;
 
+import javax.inject.Inject;
+
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
@@ -38,8 +40,6 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

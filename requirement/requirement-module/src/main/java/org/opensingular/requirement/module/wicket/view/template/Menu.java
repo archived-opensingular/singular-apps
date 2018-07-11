@@ -16,6 +16,16 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
@@ -48,17 +58,9 @@ import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 
-import javax.inject.Inject;
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
 

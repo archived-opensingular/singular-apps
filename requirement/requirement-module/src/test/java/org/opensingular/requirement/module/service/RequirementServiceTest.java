@@ -47,14 +47,10 @@ import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.requirement.commons.FOOFlow;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 

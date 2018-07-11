@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.opensingular.requirement.commons.WorkspaceMetadataMockBean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 
 @Primary
 @Named

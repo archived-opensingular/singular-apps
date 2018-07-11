@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.webchecker;
 
+import java.net.Socket;
+import javax.net.ssl.SSLSocketFactory;
+
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.lib.commons.util.Loggable;
-
-import javax.net.ssl.SSLSocketFactory;
-import java.net.Socket;
 
 public class TcpChecker implements IProtocolChecker, Loggable {
 

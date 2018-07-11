@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module;
 
+import java.util.List;
+import java.util.Map;
+
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  * Module connector interface for server communication

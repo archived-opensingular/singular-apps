@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.spring;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.persistence.service.FlowRetrieveService;
 import org.opensingular.lib.commons.util.Loggable;
@@ -33,9 +36,6 @@ import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
 
 
 @EnableTransactionManagement(proxyTargetClass = true)

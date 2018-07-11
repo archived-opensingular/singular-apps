@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module;
 
+import java.util.Optional;
+
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-
-import java.util.Optional;
 
 /**
  * Singular requirement with  Single form and Single flow.

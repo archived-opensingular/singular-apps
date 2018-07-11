@@ -26,7 +26,6 @@ import org.opensingular.requirement.module.config.PSingularInitializer;
 import org.opensingular.requirement.module.config.PWebInitializer;
 import org.opensingular.requirement.module.config.SchedulerInitializer;
 import org.opensingular.requirement.module.config.SpringHibernateInitializer;
-
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
