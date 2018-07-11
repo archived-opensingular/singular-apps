@@ -13,14 +13,14 @@ import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskVersionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 
-public class AnaliseAnteriorDTO implements Serializable {
+public class EmbeddedHistoryDTO implements Serializable {
 
     private String                name;
     private String                actor;
     private Date                  date;
     private List<TypeFormVersion> typeFormVersions;
 
-    public AnaliseAnteriorDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
+    public EmbeddedHistoryDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
         final Optional<RequirementContentHistoryEntity> historyEntity = Optional.ofNullable(nullableHistoryEntity);
 
         name = historyEntity

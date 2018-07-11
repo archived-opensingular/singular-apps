@@ -10,33 +10,33 @@ import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.service.PreviousAnalyzesService;
-import org.opensingular.requirement.module.service.dto.AnaliseAnteriorDTO;
+import org.opensingular.requirement.module.service.EmbeddedHistoryService;
+import org.opensingular.requirement.module.service.dto.EmbeddedHistoryDTO;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 
-public class PreviousAnalyzesPanel extends Panel {
+public class EmbeddedHistoryPanel extends Panel {
 
     @Inject
-    private PreviousAnalyzesService analiseAnteriorService;
+    private EmbeddedHistoryService analiseAnteriorService;
 
-    public PreviousAnalyzesPanel(String id, Long requirementEntityPK) {
+    public EmbeddedHistoryPanel(String id, Long requirementEntityPK) {
         super(id);
-        construirTabela(analiseAnteriorService.buscarAnalisesAnteriores(requirementEntityPK));
+        buildTable(analiseAnteriorService.buscarAnalisesAnteriores(requirementEntityPK));
     }
 
-    private void construirTabela(List<AnaliseAnteriorDTO> analiseAnteriorDTOs) {
-        add(new ListView<AnaliseAnteriorDTO>("linhas", analiseAnteriorDTOs) {
+    private void buildTable(List<EmbeddedHistoryDTO> embeddedHistoryDTOS) {
+        add(new ListView<EmbeddedHistoryDTO>("linhas", embeddedHistoryDTOS) {
             @Override
-            protected void populateItem(ListItem<AnaliseAnteriorDTO> item) {
-                final AnaliseAnteriorDTO analiseAnteriorDTO = item.getModelObject();
-                item.add(new Label("nomeAnalise", Model.of(analiseAnteriorDTO.getName())));
-                item.add(new Label("responsavel", Model.of(analiseAnteriorDTO.getActor())));
-                item.add(new Label("data", Model.of(analiseAnteriorDTO.getDate())));
-                item.add(new ListView<AnaliseAnteriorDTO.TypeFormVersion>("botoes", analiseAnteriorDTO.getTypeFormVersions()) {
+            protected void populateItem(ListItem<EmbeddedHistoryDTO> item) {
+                final EmbeddedHistoryDTO embeddedHistoryDTO = item.getModelObject();
+                item.add(new Label("nomeAnalise", Model.of(embeddedHistoryDTO.getName())));
+                item.add(new Label("responsavel", Model.of(embeddedHistoryDTO.getActor())));
+                item.add(new Label("data", Model.of(embeddedHistoryDTO.getDate())));
+                item.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
                     @Override
-                    protected void populateItem(ListItem<AnaliseAnteriorDTO.TypeFormVersion> item) {
+                    protected void populateItem(ListItem<EmbeddedHistoryDTO.TypeFormVersion> item) {
                         item.add(appendViewFormButton("button", item.getModelObject().getFormVersionPK(), item.getModelObject().getLabel()));
                     }
                 });

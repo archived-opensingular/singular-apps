@@ -6,17 +6,17 @@ import javax.inject.Named;
 
 import org.hibernate.SessionFactory;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
-import org.opensingular.requirement.module.service.dto.AnaliseAnteriorDTO;
+import org.opensingular.requirement.module.service.dto.EmbeddedHistoryDTO;
 
 @Named
-public class PreviousAnalyzesService {
+public class EmbeddedHistoryService {
 
     @Inject
     private SessionFactory sessionFactory;
 
-    public List<AnaliseAnteriorDTO> buscarAnalisesAnteriores(Long requirementEntityPK) {
+    public List<EmbeddedHistoryDTO> buscarAnalisesAnteriores(Long requirementEntityPK) {
         String hql = "";
-        hql += " select new " + AnaliseAnteriorDTO.class.getName() + " (p) from ";
+        hql += " select new " + EmbeddedHistoryDTO.class.getName() + " (p) from ";
         hql += RequirementContentHistoryEntity.class.getName() + " p ";
         hql += " where p.requirementEntity.cod = :requirementEntityPK  ";
         hql += " and p.taskInstanceEntity is not null  ";
