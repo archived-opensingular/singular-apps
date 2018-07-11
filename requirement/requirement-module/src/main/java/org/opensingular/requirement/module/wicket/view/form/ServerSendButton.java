@@ -22,10 +22,15 @@ import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.wicket.component.SingularButton;
+import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 
-public class ServerSendButton extends SingularButton {
+/**
+ * This button will show modal for confirmation when success,
+ * and a toast if has error in validation.
+ * This button have already implemented the ValidationSuccess and ValidationError.
+ */
+public class ServerSendButton extends SingularSaveButton {
 
     private final BSModalBorder sendModal;
 
@@ -35,9 +40,13 @@ public class ServerSendButton extends SingularButton {
     }
 
     @Override
-    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-        super.onSubmit(target, form);
+    protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
         sendModal.show(target);
+    }
+
+    @Override
+    protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+        findParent(AbstractFormPage.class).addToastrErrorMessage("message.send.error");
     }
 
 }

@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.wicket.view.util.dispatcher;
 
+import java.lang.reflect.Constructor;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -25,7 +29,6 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
@@ -59,11 +62,8 @@ import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
-import javax.inject.Inject;
-import java.lang.reflect.Constructor;
-import java.util.Optional;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 @SuppressWarnings("serial")
 public class DispatcherPage extends WebPage implements Loggable {
@@ -195,7 +195,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations));
         }
 
-        throw new SingularServerException("Não foi possivel identificar qual é o formulario a ser exibido");
+        throw new SingularServerException("Não foi possivel identificar qual é o formulário a ser exibido");
     }
 
     private boolean isAnnotationModeReadOnly(ActionContext context) {

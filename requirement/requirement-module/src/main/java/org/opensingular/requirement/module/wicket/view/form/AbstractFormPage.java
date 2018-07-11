@@ -609,6 +609,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                     protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                         enviarModal.hide(target);
                         target.add(form);
+                        //TODO Não há necessidade desse método. [Avaliar a remoção do mesmo.] -> Validação é feita antes de chamar a modal.
                         addToastrErrorMessage("message.send.error");
                     }
 
