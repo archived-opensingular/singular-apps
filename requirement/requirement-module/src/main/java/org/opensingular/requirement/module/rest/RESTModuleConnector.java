@@ -19,19 +19,19 @@
 package org.opensingular.requirement.module.rest;
 
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.requirement.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.commons.box.BoxItemDataList;
-import org.opensingular.requirement.commons.box.action.ActionRequest;
-import org.opensingular.requirement.commons.box.action.ActionResponse;
-import org.opensingular.requirement.commons.connector.ModuleDriver;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.box.BoxItemDataList;
+import org.opensingular.requirement.module.box.action.ActionRequest;
+import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.connector.LocalModuleConnector;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.opensingular.requirement.commons.RESTPaths.*;
+import static org.opensingular.requirement.module.RESTPaths.*;
 
 @RestController
 @RequestMapping(ModuleDriver.REST_FLOW)

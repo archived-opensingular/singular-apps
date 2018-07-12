@@ -26,8 +26,8 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
-import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
-import org.opensingular.requirement.commons.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
+import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
 @DefinitionInfo("fooooooooFlow")
 public class FooFlow extends FlowDefinition<FlowInstance> {

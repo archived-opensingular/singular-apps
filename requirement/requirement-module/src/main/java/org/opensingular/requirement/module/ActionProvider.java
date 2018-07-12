@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.commons.box.BoxItemData;
-import org.opensingular.requirement.commons.box.action.BoxItemActionList;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.box.BoxItemData;
+import org.opensingular.requirement.module.box.action.BoxItemActionList;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 
 /**
  * Componente responsável por criar as ações em cada linha do resultado de dados do provider

@@ -18,8 +18,8 @@
 
 package org.opensingular.requirement.single.config;
 
-import org.opensingular.requirement.commons.connector.ModuleDriver;
-import org.opensingular.requirement.commons.spring.SingularDefaultBeanFactory;
+import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.springframework.context.annotation.Bean;
 
 public class SingleAppBeanFactory extends SingularDefaultBeanFactory {

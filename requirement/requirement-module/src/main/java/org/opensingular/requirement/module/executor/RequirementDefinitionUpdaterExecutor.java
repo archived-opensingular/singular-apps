@@ -22,8 +22,8 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.opensingular.requirement.commons.config.ServerStartExecutorBean;
-import org.opensingular.requirement.commons.exception.SingularServerException;
+import org.opensingular.requirement.module.config.ServerStartExecutorBean;
+import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.service.ModuleService;

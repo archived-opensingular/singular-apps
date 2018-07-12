@@ -22,9 +22,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.requirement.commons.box.BoxItemData;
-import org.opensingular.requirement.commons.box.action.BoxItemActionList;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.box.BoxItemData;
+import org.opensingular.requirement.module.box.action.BoxItemActionList;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 
 
 public class ActionProviderBuilder implements ActionProvider {

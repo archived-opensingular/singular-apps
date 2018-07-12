@@ -13,7 +13,7 @@
  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  * See the License for the specific language governing permissions and
  *  * limitations under the License.
- *  
+ *
  */
 
 package org.opensingular.requirement.module.wicket;
@@ -26,12 +26,11 @@ import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.test.ContextUtil;
-import org.opensingular.requirement.commons.test.SingularCommonsBaseTest;
-import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.commons.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.test.ContextUtil;
 import org.opensingular.requirement.module.test.ModuleApplicationMock;
-import org.opensingular.requirement.module.test.SingularModuleBaseTest;
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -40,7 +39,7 @@ import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class BoxPageTest extends SingularModuleBaseTest {
+public class BoxPageTest extends SingularCommonsBaseTest {
 
     public static final String SINGULAR = "/singular";
 

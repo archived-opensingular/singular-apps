@@ -20,8 +20,8 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.form.SingularFormException;
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 
 import java.util.LinkedHashSet;

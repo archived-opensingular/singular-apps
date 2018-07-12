@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.service.SingularRequirementService;
-import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 
 import javax.inject.Inject;
