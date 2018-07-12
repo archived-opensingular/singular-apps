@@ -28,19 +28,11 @@ import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.form.document.SDocument;
-import org.opensingular.form.persistence.dao.AttachmentContentDao;
-import org.opensingular.form.persistence.dao.AttachmentDao;
-import org.opensingular.form.persistence.dao.FormAnnotationDAO;
-import org.opensingular.form.persistence.dao.FormAnnotationVersionDAO;
-import org.opensingular.form.persistence.dao.FormAttachmentDAO;
-import org.opensingular.form.persistence.dao.FormCacheFieldDAO;
-import org.opensingular.form.persistence.dao.FormCacheValueDAO;
-import org.opensingular.form.persistence.dao.FormDAO;
-import org.opensingular.form.persistence.dao.FormTypeDAO;
-import org.opensingular.form.persistence.dao.FormVersionDAO;
+import org.opensingular.form.persistence.dao.*;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
+import org.opensingular.form.spring.SingularUserDetails;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
@@ -49,54 +41,39 @@ import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.requirement.module.ModuleConnector;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
-import org.opensingular.requirement.module.connector.LocalModuleConnector;
+import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.connector.LocalModuleDriver;
 import org.opensingular.requirement.module.connector.ModuleDriver;
-import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
+import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.TaskInstanceDAO;
-import org.opensingular.requirement.module.persistence.dao.form.ApplicantDAO;
-import org.opensingular.requirement.module.persistence.dao.form.DraftDAO;
-import org.opensingular.requirement.module.persistence.dao.form.FormRequirementDAO;
-import org.opensingular.requirement.module.persistence.dao.form.RequirementContentHistoryDAO;
-import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
-import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.requirement.module.persistence.dao.form.*;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.service.DefaultRequirementSender;
-import org.opensingular.requirement.module.service.DefaultRequirementService;
-import org.opensingular.requirement.module.service.FormRequirementService;
-import org.opensingular.requirement.module.service.ParameterService;
-import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.SingularDiffService;
-import org.opensingular.requirement.module.service.attachment.FormAttachmentService;
-import org.opensingular.requirement.module.service.attachment.IFormAttachmentService;
-import org.opensingular.requirement.module.service.attachment.ServerAttachmentPersistenceHelper;
-import org.opensingular.requirement.module.service.attachment.ServerAttachmentPersistenceService;
-import org.opensingular.requirement.module.service.attachment.ServerTemporaryAttachmentPersistenceService;
-import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
-import org.opensingular.requirement.module.spring.security.DefaultUserDetailService;
-import org.opensingular.requirement.module.spring.security.PermissionResolverService;
-import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
+import org.opensingular.requirement.module.rest.ModuleBackstageService;
+import org.opensingular.requirement.module.service.*;
+import org.opensingular.requirement.module.service.attachment.*;
+import org.opensingular.requirement.module.spring.security.*;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
 import org.springframework.cache.interceptor.KeyGenerator;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Lazy;
-import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.*;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @SuppressWarnings("rawtypes")
@@ -367,7 +344,14 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ModuleConnector moduleConnector() {
-        return new LocalModuleConnector();
+    @Scope(WebApplicationContext.SCOPE_REQUEST)
+    public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
+            SingularServerConfiguration singularServerConfiguration, ModuleBackstageService moduleBackstageService,
+            SingularUserDetails singularUserDetails) {
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest req = sra.getRequest();
+        IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
+        return moduleBackstageService.loadWorkspaceConfiguration(menuContext.getName(), singularUserDetails.getUsername());
     }
+
 }

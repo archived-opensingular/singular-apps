@@ -77,8 +77,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private Pair<String, SortOrder>   sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
 
-    public BoxContent(String id, String moduleCod, String menu, BoxDefinitionData itemBox) {
-        super(id, moduleCod, menu);
+    public BoxContent(String id, String menu, BoxDefinitionData itemBox) {
+        super(id, menu);
         this.definitionModel = new Model<>(itemBox);
     }
 
@@ -219,7 +219,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = moduleDriver.executeAction(getModule(), itemAction, params, actionRequest);
+        ActionResponse response = moduleDriver.executeAction(itemAction, params, actionRequest);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -241,7 +241,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction,
                                                                                       Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
-            return new BoxContentAllocateModal(itemAction, getDataModel(), $m.ofValue(getModule())) {
+            return new BoxContentAllocateModal(itemAction, getDataModel()) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
@@ -338,7 +338,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
-        return moduleDriver.searchFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleDriver.searchFiltered(getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -354,7 +354,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleDriver.countFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleDriver.countFiltered(getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

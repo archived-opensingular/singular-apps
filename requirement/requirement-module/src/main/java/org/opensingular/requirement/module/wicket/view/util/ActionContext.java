@@ -45,8 +45,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String INSTANCE_ID = "i";
 
-    public static final String MODULE_PARAM_NAME = "mod";
-
     public static final String MENU_PARAM_NAME = "m";
 
     public static final String ITEM_PARAM_NAME = "t";
@@ -134,15 +132,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public ActionContext setFlowInstanceId(Integer flowInstanceId) {
         this.params.put(INSTANCE_ID, String.valueOf(flowInstanceId));
-        return this;
-    }
-
-    public Optional<String> getModuleName() {
-        return Optional.ofNullable(this.params.get(MODULE_PARAM_NAME));
-    }
-
-    public ActionContext setModuleName(String moduleName) {
-        this.params.put(MODULE_PARAM_NAME, moduleName);
         return this;
     }
 

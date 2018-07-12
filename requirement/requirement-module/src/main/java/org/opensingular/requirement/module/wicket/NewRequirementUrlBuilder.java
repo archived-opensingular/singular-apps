@@ -47,7 +47,6 @@ public class NewRequirementUrlBuilder {
                 .baseURL(baseURL)
                 .formAction(FormAction.FORM_FILL.getId())
                 .requirementId(null)
-                .param(MODULE_PARAM_NAME, moduleCod)
                 .param(REQUIREMENT_DEFINITION_ID, requirementDefinitionId)
                 .params(params);
         return builder.build();

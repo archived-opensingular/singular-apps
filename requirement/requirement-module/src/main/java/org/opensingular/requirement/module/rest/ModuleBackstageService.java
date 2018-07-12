@@ -29,6 +29,7 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
@@ -86,7 +87,6 @@ public class ModuleBackstageService implements Loggable {
             getLogger().error(msg, e);//NOSONAR
             return new ActionResponse(msg, false);
         }
-
     }
 
     private IController getActionController(ActionRequest actionRequest) {
@@ -174,4 +174,9 @@ public class ModuleBackstageService implements Loggable {
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
         return requirementService.listAllowedUsers(selectedTask);
     }
+
+    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user) {
+        return new WorkspaceConfigurationMetadata(listMenu(context, user));
+    }
+
 }

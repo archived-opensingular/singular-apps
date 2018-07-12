@@ -46,22 +46,17 @@ import java.util.Map;
 public class ModuleDriverMock implements ModuleDriver {
 
     @Override
-    public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
+    public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
         return null;
     }
 
     @Override
-    public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
-        return null;
-    }
-
-    @Override
-    public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
+    public long countFiltered(ItemBox box, QuickFilter filter) {
         return 2L;
     }
 
     @Override
-    public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
+    public List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter) {
         List<BoxItemDataMap> result = new ArrayList<>();
         result.add(createItem("1", "Descrição", "Situação", "Processo",
                 "25/04/2017 08:49", "Form tipo", "Chave processo",
@@ -76,7 +71,7 @@ public class ModuleDriverMock implements ModuleDriver {
     }
 
     @Override
-    public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
+    public List<Actor> findEligibleUsers(BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
         Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
         return Collections.singletonList(actor);
     }
@@ -88,7 +83,7 @@ public class ModuleDriverMock implements ModuleDriver {
 
 
     @Override
-    public ActionResponse executeAction(ModuleEntity moduleEntity, BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
+    public ActionResponse executeAction(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
         ActionResponse response = new ActionResponse("Sucesso", true);
         return ActionResponse.class.cast(response);
     }

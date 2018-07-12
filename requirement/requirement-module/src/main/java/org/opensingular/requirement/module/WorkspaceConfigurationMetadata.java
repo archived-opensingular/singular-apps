@@ -22,6 +22,7 @@ import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Optional;
 
 public class WorkspaceConfigurationMetadata implements Serializable {
 
@@ -40,6 +41,12 @@ public class WorkspaceConfigurationMetadata implements Serializable {
 
     public void setBoxesConfiguration(List<BoxConfigurationData> boxesConfiguration) {
         this.boxesConfiguration = boxesConfiguration;
+    }
+
+    public Optional<BoxConfigurationData> getMenuByLabel(String menu) {
+        return getBoxesConfiguration()
+                .stream()
+                .filter(i -> i.getLabel().equalsIgnoreCase(menu)).findFirst();
     }
 
 }

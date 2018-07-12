@@ -21,22 +21,17 @@ package org.opensingular.requirement.module.connector;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.module.ModuleConnector;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.rest.ModuleBackstageService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -44,67 +39,49 @@ import java.util.stream.Collectors;
 public class LocalModuleDriver implements ModuleDriver {
 
     @Inject
-    private ModuleConnector moduleConnector;
-
-    @Inject
-    private Provider<SingularRequirementUserDetails> singularUserDetails;
-
-    private <T extends SingularRequirementUserDetails> T getUserDetails() {
-        return (T) singularUserDetails.get();
-    }
+    private ModuleBackstageService moduleBackstageService;
 
     @Override
-    public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        return moduleConnector.loadWorkspaceConfiguration(serverContext.getName(), getUserName());
-    }
-
-    private String getUserName() {
-        SingularRequirementUserDetails userDetails = getUserDetails();
-        return userDetails != null ? userDetails.getUsername() : null;
-    }
-
-    @Override
-    public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
+    public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
         QuickFilter filter = new QuickFilter()
                 .withProcessesAbbreviation(flowNames)
                 .withRascunho(box.isShowDraft())
                 .withEndedTasks(box.getEndedTasks())
                 .withIdUsuarioLogado(loggedUser)
                 .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
-        return String.valueOf(moduleConnector.count(box.getId(), filter));
+        return String.valueOf(moduleBackstageService.count(box.getId(), filter));
     }
 
     @Override
-    public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
-        return moduleConnector.count(box.getId(), filter);
+    public long countFiltered(ItemBox box, QuickFilter filter) {
+        return moduleBackstageService.count(box.getId(), filter);
     }
 
     @Override
-    public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
-        return moduleConnector.search(box.getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
+    public List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter) {
+        return moduleBackstageService.search(box.getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
     }
 
     @Override
-    public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
-        return moduleConnector.listUsers(rowItemData);
+    public List<Actor> findEligibleUsers(BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
+        return moduleBackstageService.listAllowedUsers(rowItemData);
 
     }
 
-    //TODO danilo.mesquita
     @Override
-    public ActionResponse executeAction(ModuleEntity module, BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest) {
+    public ActionResponse executeAction(BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest) {
         Url.QueryParameter idQueryParam = Url.parse(rowAction.getEndpoint()).getQueryParameter("id");
-        Long               action       = null;
+        Long action = null;
         if (idQueryParam != null) {
             action = Long.valueOf(idQueryParam.getValue());
         }
-        return moduleConnector.execute(action, actionRequest);
+        return moduleBackstageService.executar(action, actionRequest);
     }
 
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
-        final BoxItemAction action   = rowItemData.getActionByName(rowAction.getName());
-        final String        endpoint = StringUtils.trimToEmpty(action.getEndpoint());
+        final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
+        final String endpoint = StringUtils.trimToEmpty(action.getEndpoint());
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {
