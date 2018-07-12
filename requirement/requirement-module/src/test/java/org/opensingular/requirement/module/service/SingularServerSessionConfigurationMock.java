@@ -18,9 +18,7 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.module.service.SingularServerSessionConfiguration;
-
-import org.opensingular.requirement.commons.test.WorkspaceMetadataMockBean;
+import org.opensingular.requirement.commons.WorkspaceMetadataMockBean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;

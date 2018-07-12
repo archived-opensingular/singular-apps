@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.form.SType;
-import org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage;
+import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 
 public class SingularRequirementDefinitionForm {
 

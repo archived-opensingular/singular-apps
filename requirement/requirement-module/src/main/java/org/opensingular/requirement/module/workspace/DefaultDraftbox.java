@@ -22,10 +22,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.PServerContext;
-import org.opensingular.requirement.commons.service.dto.DatatableField;
-import org.opensingular.requirement.commons.service.dto.ItemBox;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;

@@ -18,8 +18,8 @@
 
 package org.opensingular.requirement.module.test;
 
-import org.opensingular.requirement.commons.config.SchedulerInitializer;
-import org.opensingular.requirement.commons.test.CommonsInitializerMock;
+import org.opensingular.requirement.commons.CommonsInitializerMock;
+import org.opensingular.requirement.module.config.SchedulerInitializer;
 import org.opensingular.requirement.module.config.AttachmentGCSchedulerInitializer;
 import org.opensingular.requirement.module.config.MailSenderSchedulerInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;

@@ -18,23 +18,47 @@
 
 package org.opensingular.requirement.module.test;
 
-import org.opensingular.requirement.commons.admin.healthsystem.validation.database.IValidatorDatabase;
-import org.opensingular.requirement.commons.service.SingularRequirementService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationServiceImpl;
-import org.opensingular.requirement.commons.test.ValidatorOracleMock;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.requirement.commons.MenuServiceMock;
+import org.opensingular.requirement.module.admin.healthsystem.validation.database.IValidatorDatabase;
+import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
+import org.opensingular.requirement.module.test.ValidatorOracleMock;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.service.ServerMenuService;
 import org.opensingular.requirement.module.service.SingularRequirementServiceImpl;
+import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import static org.mockito.Mockito.*;
 
+@EnableTransactionManagement(proxyTargetClass = true)
+@EnableCaching
+@EnableWebMvc
+@EnableWebSecurity
 @Configuration
+@ComponentScan(
+        basePackages = {"org.opensingular"},
+        excludeFilters = {
+                @ComponentScan.Filter(type = FilterType.ANNOTATION,
+                        value = AutoScanDisabled.class)
+        })
 public class ModuleConfigurationMock {
+
+    @Primary
+    @Bean
+    public AuthorizationService authorizationService() {
+        return spy(AuthorizationServiceImpl.class);
+    }
 
     @Primary
     @Bean
@@ -50,11 +74,6 @@ public class ModuleConfigurationMock {
         return new ServerMenuService();
     }
 
-    @Primary
-    @Bean
-    public AuthorizationService authorizationService() {
-        return spy(mock(AuthorizationServiceImpl.class));
-    }
 
     @Primary
     @Bean

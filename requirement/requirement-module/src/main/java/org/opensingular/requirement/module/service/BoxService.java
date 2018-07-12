@@ -22,10 +22,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.persistence.dao.BoxDAO;
-import org.opensingular.requirement.commons.persistence.entity.form.BoxEntity;
-import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.commons.service.dto.ItemBox;
+import org.opensingular.requirement.module.persistence.dao.BoxDAO;
+import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.springframework.transaction.annotation.Transactional;
 
 @Named

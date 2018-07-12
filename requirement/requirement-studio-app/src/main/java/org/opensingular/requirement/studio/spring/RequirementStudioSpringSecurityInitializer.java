@@ -20,8 +20,8 @@ package org.opensingular.requirement.studio.spring;
 
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.PSpringSecurityInitializer;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;

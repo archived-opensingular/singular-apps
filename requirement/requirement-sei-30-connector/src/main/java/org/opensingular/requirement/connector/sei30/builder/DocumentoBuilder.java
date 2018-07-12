@@ -29,7 +29,7 @@ import org.opensingular.requirement.connector.sei30.ws.Destinatario;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Interessado;
 import org.opensingular.requirement.connector.sei30.ws.Remetente;
-import org.opensingular.requirement.commons.exception.SingularServerException;
+import org.opensingular.requirement.module.exception.SingularServerException;
 
 import javax.activation.DataHandler;
 import java.io.File;

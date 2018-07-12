@@ -25,13 +25,13 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.commons.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -42,7 +42,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {

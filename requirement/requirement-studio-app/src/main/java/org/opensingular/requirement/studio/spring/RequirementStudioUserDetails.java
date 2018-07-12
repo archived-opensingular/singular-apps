@@ -20,10 +20,10 @@ package org.opensingular.requirement.studio.spring;
 
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.SingularServerConfiguration;
-import org.opensingular.requirement.commons.spring.security.DefaultUserDetails;
-import org.opensingular.requirement.commons.spring.security.SingularPermission;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
+import org.opensingular.requirement.module.spring.security.SingularPermission;
 
 import java.util.List;
 

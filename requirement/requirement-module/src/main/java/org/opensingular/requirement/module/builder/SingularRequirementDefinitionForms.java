@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.commons.service.RequirementSender;
+import org.opensingular.requirement.module.service.RequirementSender;
 
 public class SingularRequirementDefinitionForms {
 
