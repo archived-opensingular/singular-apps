@@ -36,7 +36,7 @@ import java.util.function.Predicate;
 
 public abstract class RequirementStudioAppInitializer extends AbstractSingularInitializer {
 
-    public IServerContext STUDIO = new ServerContext("STUDIO", "/*", "singular.studio");
+    public static IServerContext STUDIO = new ServerContext("STUDIO", "/*", "singular.studio");
 
     @Override
     protected Class<? extends RequirementStudioBeanFactory> beanFactory() {
