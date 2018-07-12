@@ -78,7 +78,7 @@ public class CommonsInitializerMock implements SingularInitializer {
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return persistenceConfiguration();
+              return CommonsInitializerMock.this.persistenceConfiguration();
             }
         };
     }
