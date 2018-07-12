@@ -19,18 +19,13 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.requirement.module.config.FlowInitializer;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.PSingularInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.opensingular.requirement.module.config.SchedulerInitializer;
-import org.opensingular.requirement.module.config.SpringHibernateInitializer;
+import org.opensingular.requirement.module.config.*;
 
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class CommonsInitializerMock implements PSingularInitializer {
+public class CommonsInitializerMock implements SingularInitializer {
     
     public static final String   TESTE                      = "GRUPO_TESTE";
     public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
@@ -44,13 +39,28 @@ public class CommonsInitializerMock implements PSingularInitializer {
     }
 
     @Override
-    public PWebInitializer webConfiguration() {
-        return new PWebInitializer() {
+    public WebInitializer webConfiguration() {
+        return new WebInitializer() {
             @Override
             protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
                 return CommonsApplicationMock.class;
             }
         };
+    }
+
+    @Override
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
+        return SingularSpringWebMVCConfig.class;
+    }
+
+    @Override
+    public FormInitializer formConfiguration() {
+        return new FormInitializer();
+    }
+
+    @Override
+    public SpringSecurityInitializer springSecurityConfiguration() {
+        return new SpringSecurityInitializer();
     }
 
     @Override

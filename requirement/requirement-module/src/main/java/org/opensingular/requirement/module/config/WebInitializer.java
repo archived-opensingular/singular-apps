@@ -26,14 +26,23 @@ import javax.servlet.*;
 import javax.servlet.http.HttpSessionEvent;
 import javax.servlet.http.HttpSessionListener;
 
+import com.google.common.base.Joiner;
 import org.apache.wicket.protocol.http.WicketFilter;
+import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
+import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+
+import static org.opensingular.requirement.module.config.ServerContext.ADMINISTRATION;
+import static org.opensingular.requirement.module.config.ServerContext.REQUIREMENT;
+import static org.opensingular.requirement.module.config.ServerContext.WORKLIST;
 
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
@@ -41,8 +50,8 @@ import org.opensingular.requirement.module.wicket.SingularRequirementApplication
  */
 public abstract class WebInitializer {
 
+    private static final String SINGULAR_SECURITY = "[SINGULAR][WEB] {} {}";
 
-    static final String SINGULAR_SECURITY = "[SINGULAR][WEB] {} {}";
     public static final Logger logger = LoggerFactory.getLogger(WebInitializer.class);
 
     public void init(ServletContext ctx) throws ServletException {
@@ -57,10 +66,11 @@ public abstract class WebInitializer {
             logger.info(SINGULAR_SECURITY, "Setting up web context:", context.getContextPath());
             addWicketFilter(ctx, context);
         }
+        configureCAS(ctx);
     }
 
     public IServerContext[] serverContexts() {
-        return ServerContext.values();
+        return new IServerContext[]{REQUIREMENT, WORKLIST, ADMINISTRATION};
     }
 
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
@@ -125,5 +135,39 @@ public abstract class WebInitializer {
         });
     }
 
+    protected void configureCAS(ServletContext servletContext){
+        if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
+            addCASFilter(servletContext, WORKLIST);
+            addCASFilter(servletContext, REQUIREMENT);
+            addSingleSignOutListener(servletContext);
+        }
+    }
+
+
+    protected void addCASFilter(ServletContext servletContext, IServerContext context) {
+        configureSSO(servletContext, "SSOFilter" + context.getName(), context);
+    }
+
+    protected void addSingleSignOutListener(ServletContext servletContext) {
+        servletContext.addListener(SingleSignOutHttpSessionListener.class);
+    }
+
+    protected void configureSSO(ServletContext servletContext, String filterName, IServerContext context) {
+        FilterRegistration.Dynamic ssoFilter = servletContext.addFilter(filterName, SSOFilter.class);
+        servletContext.setAttribute(filterName, context);
+        ssoFilter.setInitParameter(SSOConfigurableFilter.SINGULAR_CONTEXT_ATTRIBUTE, filterName);
+        ssoFilter.setInitParameter("logoutUrl", context.getUrlPath() + "/logout");
+        ssoFilter.setInitParameter("urlExcludePattern", getExcludeUrlRegex());
+        ssoFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getContextPath());
+    }
+
+    /**
+     * Transforma as expressões de urls públicas em regex simples
+     *
+     * @return
+     */
+    protected final String getExcludeUrlRegex() {
+        return Joiner.on(",").join(getDefaultPublicUrls()).replaceAll("\\*", ".*");
+    }
 
 }

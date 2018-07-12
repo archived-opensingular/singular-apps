@@ -26,7 +26,6 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 
 public class ModuleInitializerMock extends CommonsInitializerMock {
-
     public ModuleInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
         super(applicationContext);
     }
@@ -45,6 +44,4 @@ public class ModuleInitializerMock extends CommonsInitializerMock {
             }
         };
     }
-
-
 }
