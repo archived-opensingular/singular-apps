@@ -76,6 +76,7 @@
                         <configuration>
                             <excludes>
                                 <exclude>**/singular.properties</exclude>
+                                <exclude>**/FooSingularModule.*</exclude>
                             </excludes>
                         </configuration>
                     </execution>
