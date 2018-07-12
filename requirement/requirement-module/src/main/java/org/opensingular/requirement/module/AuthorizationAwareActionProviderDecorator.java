@@ -19,10 +19,10 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.box.BoxItemData;
-import org.opensingular.requirement.commons.box.action.BoxItemActionList;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.box.BoxItemData;
+import org.opensingular.requirement.module.box.action.BoxItemActionList;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
 
 public class AuthorizationAwareActionProviderDecorator implements ActionProvider {
 

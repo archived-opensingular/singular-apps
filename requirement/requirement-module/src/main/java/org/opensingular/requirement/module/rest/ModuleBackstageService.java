@@ -28,22 +28,22 @@ import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.commons.box.BoxItemDataList;
-import org.opensingular.requirement.commons.box.action.ActionRequest;
-import org.opensingular.requirement.commons.box.action.ActionResponse;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.SingularServerConfiguration;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.flow.controllers.IController;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.RequirementInstance;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.service.dto.FormDTO;
-import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.spring.security.PermissionResolverService;
+import org.opensingular.requirement.module.box.BoxItemDataList;
+import org.opensingular.requirement.module.box.action.ActionRequest;
+import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.controllers.IController;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.FormDTO;
+import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.springframework.stereotype.Service;
@@ -144,13 +144,12 @@ public class ModuleBackstageService implements Loggable {
     @SuppressWarnings("unchecked")
     private void addForms(BoxConfigurationData boxConfigurationMetadata) {
         for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
-            SInfoType annotation = formClass.getAnnotation(SInfoType.class);
             String name = SFormUtil.getTypeName(formClass);
             Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {
                 SType<?> sType = sTypeOptional.get();
                 String label = sType.asAtr().getLabel();
-                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label, annotation.newable()));
+                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label));
             }
         }
     }

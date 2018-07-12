@@ -31,12 +31,7 @@
         </resources>
     </build>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.opensingular</groupId>
-            <artifactId>singular-requirement-commons</artifactId>
-        </dependency>
-    </dependencies>
+
 
 
 

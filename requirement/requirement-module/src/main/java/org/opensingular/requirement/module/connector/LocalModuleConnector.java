@@ -19,12 +19,12 @@
 package org.opensingular.requirement.module.connector;
 
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.requirement.commons.ModuleConnector;
-import org.opensingular.requirement.commons.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.commons.box.BoxItemDataList;
-import org.opensingular.requirement.commons.box.action.ActionRequest;
-import org.opensingular.requirement.commons.box.action.ActionResponse;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.ModuleConnector;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.box.BoxItemDataList;
+import org.opensingular.requirement.module.box.action.ActionRequest;
+import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.rest.ModuleBackstageService;
 
 import javax.inject.Inject;
