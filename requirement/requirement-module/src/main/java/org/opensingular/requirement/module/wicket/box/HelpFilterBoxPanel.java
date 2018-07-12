@@ -6,7 +6,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 
 public class HelpFilterBoxPanel extends Panel {
 
-    private String title;
     private String body;
 
     public HelpFilterBoxPanel(String id) {
@@ -16,8 +15,6 @@ public class HelpFilterBoxPanel extends Panel {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-
-        add(new Label("title", title));
         add(new Label("body", body).setEscapeModelStrings(false));
     }
 
@@ -31,31 +28,22 @@ public class HelpFilterBoxPanel extends Panel {
         if (StringUtils.isNotEmpty(body)) {
             this.body = body;
         } else {
-            this.body = " <p><b>Busca exata:</b>\n"
-                    + "                    É necessário utilizar o termo entre aspas duplas para realizar uma busca exata.\n"
-                    + "                    <br><i>Exemplo: \"termo exato\"</i>\n"
-                    + "                </p>\n"
-                    + "                <p><b>Caracteres especiais:</b>\n"
-                    + "                    Ao utilizar caracteres especiais é criado um filtro extra sem a máscara.\n"
-                    + "                    <br><i>Exemplo: 000.000.000-00 vai criar um filtro extra com o valor 00000000000 </i>\n"
-                    + "                </p>";
+            this.body = " <p>"
+                    + "      A busca é feita apenas pelos campos presentes na tabela. <br>\n"
+                    + "       Caso o termo de busca seja separado por espaço, a consulta realizará a busca por cada termo separado por espaço.\n"
+                    + "       <br><i>Exemplo: João 10/10</i> Buscará todos os valores que tiverem João ou 10/10 \n"
+                    + "   </p>\n"
+                    + "   <p><b>Busca exata:</b>\n"
+                    + "       É necessário utilizar o termo entre aspas duplas para realizar uma busca exata.\n"
+                    + "       <br><i>Exemplo: \"termo exato\"</i>\n"
+                    + "   </p>\n"
+                    + "   <p style='margin-bottom:0px !important'>Obs:\n"
+                    + "         Ao utilizar valores com máscara, é realizado uma busca com o mesmo valor sem a máscara.\n"
+                    + "       <br><i>Exemplo: 000.000.000-00 </i>  Também buscará o valor 00000000000 \n"
+                    + "   </p>";
         }
         return this;
     }
 
-    /**
-     * Method to be used for configure the title of the help for filter.
-     *
-     * @param title The title text.
-     * @return <code>this</code>
-     */
-    HelpFilterBoxPanel configureTitle(String title) {
-        if (StringUtils.isNotEmpty(title)) {
-            this.title = title;
-        } else {
-            this.title = "Pesquisa Rápida";
-        }
-        return this;
-    }
 
 }

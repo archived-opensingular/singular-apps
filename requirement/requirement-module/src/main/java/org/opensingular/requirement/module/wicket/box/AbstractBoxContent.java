@@ -259,8 +259,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
 
         form.add(new HelpFilterBoxPanel("help")
-                .configureBody(configureSearchHelpBody())
-                .configureTitle(configureSearchHelpTitle()));
+                .configureBody(configureSearchHelpBody()));
 
         queue(buildBeforeTableContainer("beforeTableContainer"));
         queue(table);
@@ -276,16 +275,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
             }
         }
-    }
-
-
-    /**
-     * Method to be override for change the title of the help inside the input of the fast search.
-     *
-     * @return String for the title.
-     */
-    protected String configureSearchHelpTitle() {
-        return null;
     }
 
     /**
