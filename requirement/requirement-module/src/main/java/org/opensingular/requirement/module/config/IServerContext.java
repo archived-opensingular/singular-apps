@@ -18,8 +18,10 @@
 
 package org.opensingular.requirement.module.config;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
@@ -61,14 +63,12 @@ public interface IServerContext extends Serializable {
     /**
      * O contexto no formato aceito por servlets e filtros
      *
-     * @return
      */
     String getContextPath();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
      *
-     * @return
      */
     String getPathRegex();
 
@@ -76,17 +76,46 @@ public interface IServerContext extends Serializable {
      * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
      * sem a / ao final.
      *
-     * @return
      */
     String getUrlPath();
 
-    @Deprecated
-    String getPropertiesBaseKey();
-
+    /**
+     * Informa o nome teste contexto
+     */
     String getName();
 
-    default boolean isSameContext(IServerContext context) {
-        return context != null && this.getName().equals(context.getName());
+    /**
+     * Informa a aplicação wicket deste contexto
+     */
+    Class<? extends Application> getWicketApplicationClass();
+
+    /**
+     * Informa a configuração do spring security para este contexto
+     */
+    Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass();
+
+    /**
+     * Informa se os requerimentos que passarem por esse contexto deve ter seus owners checkados
+     * @deprecated API_REVIEW
+     */
+    @Deprecated
+    default boolean checkOwner(){
+        return false;
     }
+
+    /**
+     * Informa se o filtro do CAS deve ser aplicado para teste contexto
+     * @deprecated API_REVIEW
+     */
+    @Deprecated
+    default boolean applyCasFilter(){
+        return false;
+    }
+
+    /**
+     *
+     */
+    @Deprecated
+    String getPropertiesBaseKey();
 
 }

@@ -24,11 +24,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public class ServerContext implements IServerContext {
-
-    public static final IServerContext REQUIREMENT = new ServerContext("REQUIREMENT", "/requirement/*", "singular.requirement");
-    public static final IServerContext WORKLIST = new ServerContext("WORKLIST", "/worklist/*", "singular.worklist");
-    public static final IServerContext ADMINISTRATION = new ServerContext("ADMINISTRATION", "/administration/*", "singular.administration");
+public abstract class ServerContext implements IServerContext {
 
     private final String contextPath;
     private final String propertiesBaseKey;

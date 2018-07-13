@@ -26,18 +26,12 @@ import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 import org.opensingular.requirement.studio.wicket.RequirementStudioApplication;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.function.Predicate;
 
 public abstract class RequirementStudioAppInitializer extends AbstractSingularInitializer {
-
-    public IServerContext STUDIO = new ServerContext("STUDIO", "/*", "singular.studio");
-
     @Override
     protected Class<? extends RequirementStudioBeanFactory> beanFactory() {
         return RequirementStudioBeanFactory.class;
@@ -59,49 +53,12 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
                         (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
-
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext currentContext) {
-                return getWicketApplicationByContext(currentContext);
-            }
         };
     }
 
-    protected Class<? extends SingularRequirementApplication> getWicketApplicationByContext(IServerContext currentContext) {
-        Predicate<IServerContext> sameContextCheck = (i) -> i.isSameContext(currentContext);
-        if (sameContextCheck.test(ServerContext.WORKLIST)) {
-            return getWorklistWicketApplication();
-        }
-        if (sameContextCheck.test(ServerContext.REQUIREMENT)) {
-            return getRequirementWicketApplication();
-        }
-        if (sameContextCheck.test(ServerContext.ADMINISTRATION)) {
-            return getAdministrationWicketApplication();
-        }
-        if (sameContextCheck.test(STUDIO)) {
-            return getStudioWicketApplication();
-        }
-        throw new SingularServerException("Contexto inválido");
-    }
-
-    protected Class<? extends SingularRequirementApplication> getStudioWicketApplication() {
-        return RequirementStudioApplication.class;
-    }
-
-    protected Class<? extends SingularRequirementApplication> getAdministrationWicketApplication() {
-        return AdministrationApplication.class;
-    }
-
-    protected Class<? extends SingularRequirementApplication> getRequirementWicketApplication() {
-        return RequirementApplication.class;
-    }
-
-    protected Class<? extends SingularRequirementApplication> getWorklistWicketApplication() {
-        return AnalysisApplication.class;
-    }
-
     protected IServerContext[] getServerContexts() {
-        return new IServerContext[]{ServerContext.REQUIREMENT, ServerContext.WORKLIST, ServerContext.ADMINISTRATION, STUDIO};
+        return new IServerContext[]{new DefaultContexts.RequirementContext(), new DefaultContexts.WorklistContext(),
+                new DefaultContexts.AdministrationContext(), new StudioContext()};
     }
 
     @Override
@@ -112,5 +69,23 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
     @Override
     public SpringSecurityInitializer springSecurityConfiguration() {
         return new RequirementStudioSpringSecurityInitializer();
+    }
+
+    public static class StudioContext extends ServerContext {
+        public static final String NAME = "STUDIO";
+
+        public StudioContext() {
+            super(NAME, "/*", "singular.studio");
+        }
+
+        @Override
+        public Class<RequirementStudioApplication> getWicketApplicationClass() {
+            return RequirementStudioApplication.class;
+        }
+
+        @Override
+        public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass() {
+            return null;
+        }
     }
 }

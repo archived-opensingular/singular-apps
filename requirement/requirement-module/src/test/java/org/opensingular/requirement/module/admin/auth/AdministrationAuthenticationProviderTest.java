@@ -71,7 +71,7 @@ public class AdministrationAuthenticationProviderTest {
         Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_PASSHASHADMIN, "FooCategory")).thenReturn(Optional.of(passParameterEntity));
         new Mirror().on(credentialChecker).set().field("parameterService").withValue(parameterService);
 
-        administrationAuthenticationProvider = new AdministrationAuthenticationProvider(credentialChecker, ServerContext.WORKLIST);
+        administrationAuthenticationProvider = new AdministrationAuthenticationProvider(credentialChecker, null);
     }
 
     @Test

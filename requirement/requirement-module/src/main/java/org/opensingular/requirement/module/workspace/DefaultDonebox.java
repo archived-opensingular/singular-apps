@@ -18,23 +18,23 @@
 
 package org.opensingular.requirement.module.workspace;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.config.DefaultContexts;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DefaultDonebox implements BoxDefinition {
 
     @Override
     public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.isSameContext(context);
+        return DefaultContexts.WorklistContext.NAME.equals(context.getName());
     }
 
     @Override

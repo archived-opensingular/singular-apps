@@ -28,7 +28,7 @@ import javax.servlet.ServletRequest;
 public class ContextUtil {
 
     private static String contextPath = "/singular";
-    private static String pathInfo    = contextPath + ServerContext.WORKLIST.getUrlPath();
+    private static String pathInfo    = contextPath + "/worklist";
     private static Logger logger      = LoggerFactory.getLogger(ContextUtil.class);
 
     public static void prepareRequest(ServletRequest request) {

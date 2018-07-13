@@ -105,4 +105,8 @@ public class SingularServerConfiguration implements ServletContextAware {
         definitionsPackages = stream.map(c -> c.getPackage().getName()).collect(Collectors.toSet()).toArray(new String[0]);
     }
 
+    public IServerContext findContextByName(String name){
+        return Stream.of(contexts).filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    }
+
 }

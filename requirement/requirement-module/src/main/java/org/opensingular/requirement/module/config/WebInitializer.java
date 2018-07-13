@@ -18,14 +18,6 @@
 
 package org.opensingular.requirement.module.config;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
 import com.google.common.base.Joiner;
 import org.apache.wicket.protocol.http.WicketFilter;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
@@ -38,11 +30,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-
-import static org.opensingular.requirement.module.config.ServerContext.ADMINISTRATION;
-import static org.opensingular.requirement.module.config.ServerContext.REQUIREMENT;
-import static org.opensingular.requirement.module.config.ServerContext.WORKLIST;
+import javax.servlet.*;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
 
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
@@ -69,19 +62,15 @@ public abstract class WebInitializer {
         configureCAS(ctx);
     }
 
-    public IServerContext[] serverContexts() {
-        return new IServerContext[]{REQUIREMENT, WORKLIST, ADMINISTRATION};
-    }
+    public abstract IServerContext[] serverContexts();
 
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        wicketFilter.setInitParameter("applicationClassName", getWicketApplicationClass(context).getName());
+        wicketFilter.setInitParameter("applicationClassName", context.getWicketApplicationClass().getName());
         wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
         wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
 
     }
-
-    protected abstract Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context);
 
     private void addOpenSessionInView(ServletContext servletContext) {
         FilterRegistration.Dynamic opensessioninview = servletContext.addFilter("opensessioninview", OpenSessionInViewFilter.class);
@@ -109,7 +98,7 @@ public abstract class WebInitializer {
 
     /**
      * Configura o timeout da sessão web em minutos
-     *
+     * <p>
      * x@return
      */
     protected int getSessionTimeoutMinutes() {
@@ -135,10 +124,13 @@ public abstract class WebInitializer {
         });
     }
 
-    protected void configureCAS(ServletContext servletContext){
+    protected void configureCAS(ServletContext servletContext) {
         if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
-            addCASFilter(servletContext, WORKLIST);
-            addCASFilter(servletContext, REQUIREMENT);
+            for (IServerContext serverContext : serverContexts()) {
+                if (serverContext.applyCasFilter()) {
+                    addCASFilter(servletContext, serverContext);
+                }
+            }
             addSingleSignOutListener(servletContext);
         }
     }

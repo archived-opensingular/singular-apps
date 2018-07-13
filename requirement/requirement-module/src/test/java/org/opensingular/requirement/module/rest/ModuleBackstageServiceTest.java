@@ -22,7 +22,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataList;
-import org.opensingular.requirement.module.config.ServerContext;
+import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
@@ -54,7 +54,7 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
         doNothing().when(authorizationService).filterBoxWithPermissions(any(), any());
-        List<BoxConfigurationData> boxConfigurationData = moduleBackstageService.listMenu(ServerContext.REQUIREMENT.getName(), "vinicius.nunes");
+        List<BoxConfigurationData> boxConfigurationData = moduleBackstageService.listMenu(DefaultContexts.RequirementContext.NAME, "vinicius.nunes");
         assertFalse(boxConfigurationData.isEmpty());
     }
 

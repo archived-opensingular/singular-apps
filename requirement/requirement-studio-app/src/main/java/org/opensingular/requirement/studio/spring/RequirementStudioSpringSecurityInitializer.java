@@ -41,8 +41,8 @@ import java.util.Collections;
 public class RequirementStudioSpringSecurityInitializer extends SpringSecurityInitializer {
 
     @Override
-    protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
-        return (Class<T>) StudioSecurity.class;
+    protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
+        return StudioSecurity.class;
     }
 
     @AutoScanDisabled
@@ -69,7 +69,7 @@ public class RequirementStudioSpringSecurityInitializer extends SpringSecurityIn
                     .formLogin().permitAll().loginPage("/login")
                     .and()
                     .logout()
-                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*",  HttpMethod.GET.name()))
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
                     .logoutSuccessUrl("/");
 
 
@@ -94,6 +94,5 @@ public class RequirementStudioSpringSecurityInitializer extends SpringSecurityIn
         }
 
     }
-
 
 }

@@ -20,14 +20,13 @@ package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.module.config.*;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
 public class CommonsInitializerMock implements SingularInitializer {
-    
-    public static final String   TESTE                      = "GRUPO_TESTE";
-    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
+
+    public static final String TESTE = "GRUPO_TESTE";
+    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
@@ -41,8 +40,9 @@ public class CommonsInitializerMock implements SingularInitializer {
     public WebInitializer webConfiguration() {
         return new WebInitializer() {
             @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
-                return CommonsApplicationMock.class;
+            public IServerContext[] serverContexts() {
+                return new IServerContext[]{new DefaultContexts.RequirementContext(),
+                        new DefaultContexts.WorklistContext(), new DefaultContexts.AdministrationContext()};
             }
         };
     }
@@ -77,7 +77,7 @@ public class CommonsInitializerMock implements SingularInitializer {
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return CommonsInitializerMock.this.persistenceConfiguration();
+                return CommonsInitializerMock.this.persistenceConfiguration();
             }
         };
     }

@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.config;
 
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
-import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,7 +40,7 @@ public class SpringSecurityInitializer {
         addSpringSecurityFilter(ctx, applicationContext, springMVCServletMapping);
         for (IServerContext context : serverContexts) {
             logger.info(SINGULAR_SECURITY, "Securing (Spring Security) context:", context.getContextPath());
-            Class<WebSecurityConfigurerAdapter> config = getSpringSecurityConfigClass(context);
+            Class<?> config = getSpringSecurityConfigClass(context);
             if (config != null) {
                 applicationContext.register(config);
                 addLogoutFilter(ctx, applicationContext, springMVCServletMapping, context);
@@ -66,15 +65,8 @@ public class SpringSecurityInitializer {
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
-        if (context.equals(ServerContext.WORKLIST)) {
-            return (Class<T>) SecurityConfigs.CASAnalise.class;
-        } else if (context.equals(ServerContext.REQUIREMENT)) {
-            return (Class<T>) SecurityConfigs.CASPeticionamento.class;
-        } else if (context.equals(ServerContext.ADMINISTRATION)) {
-            return (Class<T>) SecurityConfigs.AdministrationSecurity.class;
-        }
-        return null;
+    protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
+        return context.getSpringSecurityConfigClass();
     }
 
 }

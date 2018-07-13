@@ -23,8 +23,6 @@ import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaul
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.wicket.SingleAppPage;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
@@ -67,7 +65,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     @Override
     public WebInitializer webConfiguration() {
         return new WebInitializer() {
-
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
                 String contextPath = servletContext.getContextPath();//NOSONAR
@@ -76,15 +73,8 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
             }
 
             @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (ServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return AnalysisApplication.class;
-                } else if (ServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return RequirementApplication.class;
-                } else if (ServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
+            public IServerContext[] serverContexts() {
+                return new IServerContext[]{new DefaultContexts.RequirementContext(), new DefaultContexts.WorklistContext(), new DefaultContexts.AdministrationContext()};
             }
         };
     }
