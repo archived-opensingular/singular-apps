@@ -19,16 +19,19 @@
 package org.opensingular.singular.pet.module;
 
 
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
 import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import static org.opensingular.requirement.module.config.ServerContext.REQUIREMENT;
+import static org.opensingular.requirement.module.config.ServerContext.WORKLIST;
 
 public class TestServerContext {
 
@@ -46,7 +49,8 @@ public class TestServerContext {
 
     @Test
     public void testContextFromRequest() {
-        Assert.assertEquals(ServerContext.WORKLIST, IServerContext.getContextFromRequest(getRequest(), ServerContext.values()));
+        Assert.assertEquals(ServerContext.WORKLIST, IServerContext.getContextFromRequest(getRequest(),
+                new IServerContext[]{REQUIREMENT, WORKLIST}));
     }
 
     @Test

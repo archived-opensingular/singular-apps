@@ -23,8 +23,8 @@ import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
-import org.opensingular.requirement.module.config.PServerContext;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -44,7 +44,7 @@ public class SecurityConfigs {
     public static class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.REQUIREMENT;
+            return ServerContext.REQUIREMENT;
         }
 
         @Override
@@ -60,7 +60,7 @@ public class SecurityConfigs {
     public static class CASAnalise extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.WORKLIST;
+            return ServerContext.WORKLIST;
         }
 
         @Override
@@ -81,7 +81,7 @@ public class SecurityConfigs {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .regexMatcher(PServerContext.ADMINISTRATION.getPathRegex())
+                    .regexMatcher(ServerContext.ADMINISTRATION.getPathRegex())
                     .authorizeRequests()
                     .anyRequest().authenticated()
                     .and()
@@ -92,7 +92,7 @@ public class SecurityConfigs {
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             credentialChecker.ifPresent(cc ->
-                    auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, PServerContext.ADMINISTRATION)));
+                    auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, ServerContext.ADMINISTRATION)));
         }
 
     }

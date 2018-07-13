@@ -35,8 +35,6 @@ import java.util.Map;
 
 public interface ModuleDriver {
 
-    public static final String REST_FLOW = "/rest/flow";
-
     /**
      * Retrieve the module workspace
      */

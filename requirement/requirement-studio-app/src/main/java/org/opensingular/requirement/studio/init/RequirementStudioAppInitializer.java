@@ -21,36 +21,31 @@ package org.opensingular.requirement.studio.init;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.requirement.module.config.*;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 import org.opensingular.requirement.studio.wicket.RequirementStudioApplication;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.config.PServerContext;
-import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.opensingular.requirement.single.config.SingleAppInitializer;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import java.util.function.Predicate;
 
-public interface RequirementStudioAppInitializer extends SingleAppInitializer {
+public abstract class RequirementStudioAppInitializer extends AbstractSingularInitializer {
 
-    PServerContext STUDIO = new PServerContext("STUDIO", "/*", "singular.studio");
+    public static IServerContext STUDIO = new ServerContext("STUDIO", "/*", "singular.studio");
 
     @Override
-    default Class<? extends RequirementStudioBeanFactory> beanFactory() {
+    protected Class<? extends RequirementStudioBeanFactory> beanFactory() {
         return RequirementStudioBeanFactory.class;
     }
 
     @Override
-    default PWebInitializer webConfiguration() {
-        return new PWebInitializer() {
+    public WebInitializer webConfiguration() {
+        return new WebInitializer() {
 
             @Override
             public IServerContext[] serverContexts() {
@@ -72,15 +67,15 @@ public interface RequirementStudioAppInitializer extends SingleAppInitializer {
         };
     }
 
-    default Class<? extends SingularRequirementApplication> getWicketApplicationByContext(IServerContext currentContext) {
+    protected Class<? extends SingularRequirementApplication> getWicketApplicationByContext(IServerContext currentContext) {
         Predicate<IServerContext> sameContextCheck = (i) -> i.isSameContext(currentContext);
-        if (sameContextCheck.test(PServerContext.WORKLIST)) {
+        if (sameContextCheck.test(ServerContext.WORKLIST)) {
             return getWorklistWicketApplication();
         }
-        if (sameContextCheck.test(PServerContext.REQUIREMENT)) {
+        if (sameContextCheck.test(ServerContext.REQUIREMENT)) {
             return getRequirementWicketApplication();
         }
-        if (sameContextCheck.test(PServerContext.ADMINISTRATION)) {
+        if (sameContextCheck.test(ServerContext.ADMINISTRATION)) {
             return getAdministrationWicketApplication();
         }
         if (sameContextCheck.test(STUDIO)) {
@@ -89,33 +84,33 @@ public interface RequirementStudioAppInitializer extends SingleAppInitializer {
         throw new SingularServerException("Contexto inválido");
     }
 
-    default Class<? extends SingularRequirementApplication> getStudioWicketApplication() {
+    protected Class<? extends SingularRequirementApplication> getStudioWicketApplication() {
         return RequirementStudioApplication.class;
     }
 
-    default Class<? extends SingularRequirementApplication> getAdministrationWicketApplication() {
+    protected Class<? extends SingularRequirementApplication> getAdministrationWicketApplication() {
         return AdministrationApplication.class;
     }
 
-    default Class<? extends SingularRequirementApplication> getRequirementWicketApplication() {
+    protected Class<? extends SingularRequirementApplication> getRequirementWicketApplication() {
         return RequirementApplication.class;
     }
 
-    default Class<? extends SingularRequirementApplication> getWorklistWicketApplication() {
+    protected Class<? extends SingularRequirementApplication> getWorklistWicketApplication() {
         return AnalysisApplication.class;
     }
 
-    default IServerContext[] getServerContexts() {
-        return new IServerContext[]{PServerContext.REQUIREMENT, PServerContext.WORKLIST, PServerContext.ADMINISTRATION, STUDIO};
+    protected IServerContext[] getServerContexts() {
+        return new IServerContext[]{ServerContext.REQUIREMENT, ServerContext.WORKLIST, ServerContext.ADMINISTRATION, STUDIO};
     }
 
     @Override
-    default Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
         return RequirementStudioWebMVCConfig.class;
     }
 
     @Override
-    default PSpringSecurityInitializer springSecurityConfiguration() {
+    public SpringSecurityInitializer springSecurityConfiguration() {
         return new RequirementStudioSpringSecurityInitializer();
     }
 }

@@ -26,7 +26,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 
 import javax.servlet.ServletException;
 
-import static org.opensingular.requirement.module.config.SingularInitializer.*;
+import static org.opensingular.requirement.module.config.SingularWebApplicationInitializer.*;
 
 public class ConfigWithoutSpringTest {
 
@@ -37,7 +37,7 @@ public class ConfigWithoutSpringTest {
 
     @Test
     public void checkServletParams() throws ServletException {
-        new SingularInitializer(initializer).onStartup(mockServletContext);
+        new SingularWebApplicationInitializer(initializer).onStartup(mockServletContext);
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION));
