@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.BoundedFlowResolver;
 import org.opensingular.requirement.module.DynamicFormFlowSingularRequirement;
 
@@ -37,7 +37,7 @@ public class SingularRequirementDefinitionFlows {
         return new SingularRequirementDefinitionFlowResolver(builderContext.addFlowClass(flowClass));
     }
 
-    public SingularRequirement build() {
+    public RequirementDefinition build() {
         Set<Class<? extends FlowDefinition>> flowClasses = builderContext.getFlowClasses();
         return new DynamicFormFlowSingularRequirement(
                 builderContext.getName(),

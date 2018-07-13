@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
@@ -65,7 +64,7 @@ public class WorkspaceConfiguration {
 
     }
 
-    public WorkspaceConfiguration newFor(SingularRequirement... requirement) {
+    public WorkspaceConfiguration newFor(RequirementDefinition... requirement) {
         Arrays
                 .stream(requirement)
                 .map(requirementConfiguration::getRequirementRef)
@@ -78,6 +77,6 @@ public class WorkspaceConfiguration {
         return itemBoxes.get(itemBoxes.size() - 1);
     }
 
-    public static interface RequirementProvider extends IFunction<SingularRequirementBuilder, SingularRequirement> {
+    public static interface RequirementProvider extends IFunction<SingularRequirementBuilder, RequirementDefinition> {
     }
 }

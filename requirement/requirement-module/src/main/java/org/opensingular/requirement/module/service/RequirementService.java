@@ -42,6 +42,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -425,7 +426,33 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     @Nonnull
     public RI createNewRequirementWithoutSave(@Nullable Class<? extends FlowDefinition> classFlowDefinition, @Nullable RI parentRequirement,
-                                              @Deprecated @Nullable Consumer<RI> creationListener, RequirementDefinitionEntity requirementDefinitionEntity) {
+                                              @Deprecated @Nullable Consumer<RI> creationListener, RequirementDefinition requirementDefinition) {
+
+        final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
+
+        if (classFlowDefinition != null) {
+            requirementEntity.setFlowDefinitionEntity((FlowDefinitionEntity) Flow.getFlowDefinition(classFlowDefinition).getEntityFlowDefinition());
+        }
+        if (parentRequirement != null) {
+            RequirementEntity parentRequirementEntity = parentRequirement.getEntity();
+            requirementEntity.setParentRequirement(parentRequirementEntity);
+            if (parentRequirementEntity.getRootRequirement() != null) {
+                requirementEntity.setRootRequirement(parentRequirementEntity.getRootRequirement());
+            } else {
+                requirementEntity.setRootRequirement(parentRequirementEntity);
+            }
+        }
+
+        RI requirement = newRequirementInstance(requirementEntity);
+        configureApplicant(requirement);
+        if (creationListener != null) {
+            creationListener.accept(requirement);
+        }
+        return requirement;
+    }
+
+    @Nonnull
+    public RI createNewRequirementWithoutSave(RequirementDefinition requirementDefinition, RequirementInstance instance,  @Nullable RI parentRequirement) {
 
         final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
 

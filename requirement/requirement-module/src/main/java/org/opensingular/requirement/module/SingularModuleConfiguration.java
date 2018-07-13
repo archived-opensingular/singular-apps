@@ -22,7 +22,6 @@ package org.opensingular.requirement.module;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
@@ -83,7 +82,7 @@ public class SingularModuleConfiguration {
         return module;
     }
 
-    public SingularRequirement getRequirementById(Long id) {
+    public RequirementDefinition getRequirementById(Long id) {
         return requirements.stream().filter(r -> Objects.equals(r.getId(), id)).map(SingularRequirementRef::getRequirement).findFirst().orElse(null);
     }
 

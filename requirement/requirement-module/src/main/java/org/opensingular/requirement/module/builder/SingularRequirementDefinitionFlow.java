@@ -18,17 +18,17 @@
 
 package org.opensingular.requirement.module.builder;
 
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 
 public class SingularRequirementDefinitionFlow {
 
-    private SingularRequirement requirement;
+    private RequirementDefinition requirement;
 
-    SingularRequirementDefinitionFlow(SingularRequirement requirement) {
+    SingularRequirementDefinitionFlow(RequirementDefinition requirement) {
         this.requirement = requirement;
     }
 
-    public SingularRequirement build(){
+    public RequirementDefinition build(){
         return requirement;
     }
 

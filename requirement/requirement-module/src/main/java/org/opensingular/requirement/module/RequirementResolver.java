@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.form.SInstance;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 
 import javax.annotation.Nonnull;
@@ -35,19 +34,19 @@ import java.util.Optional;
  */
 public abstract class RequirementResolver<SI extends SInstance> {
 
-    private List<SingularRequirement> requirements;
+    private List<RequirementDefinition> requirements;
 
 
 
-    public RequirementResolver(SingularRequirement... requirements) {
+    public RequirementResolver(RequirementDefinition... requirements) {
         this.requirements = Collections.unmodifiableList(Arrays.asList(requirements));
     }
 
 
-    SingularRequirement resolve(SI instance) {
-        SingularRequirement requirement = resolve(instance, requirements);
+    RequirementDefinition resolve(SI instance) {
+        RequirementDefinition requirement = resolve(instance, requirements);
         if (!requirements.contains(requirement)) {
-            throw new SingularRequirementException("The resolved requirement: \"" + Optional.ofNullable(requirement).map(SingularRequirement::getName).orElse(null) + "\" is not available in the given requirement list.");
+            throw new SingularRequirementException("The resolved requirement: \"" + Optional.ofNullable(requirement).map(RequirementDefinition::getName).orElse(null) + "\" is not available in the given requirement list.");
         }
         return requirement;
     }
@@ -61,7 +60,7 @@ public abstract class RequirementResolver<SI extends SInstance> {
      * @return
      */
     @Nonnull
-    protected abstract SingularRequirement resolve(SI instance, List<SingularRequirement> availableRequirements);
+    protected abstract RequirementDefinition resolve(SI instance, List<RequirementDefinition> availableRequirements);
 
 
 }

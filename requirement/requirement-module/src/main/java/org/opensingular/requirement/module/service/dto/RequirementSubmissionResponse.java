@@ -19,29 +19,12 @@
 package org.opensingular.requirement.module.service.dto;
 
 
-import org.opensingular.requirement.module.service.RequirementInstance;
-
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
 
-public class RequirementSenderFeedback implements Serializable {
+/**
+ * Metadadata resulting from requirement submission
+ */
+public class RequirementSubmissionResponse implements Serializable {
 
-    private RequirementInstance requirement;
-    private List<RequirementInstance> forkedRequirements;
 
-    public RequirementSenderFeedback(RequirementInstance requirement) {
-        this.requirement = requirement;
-    }
-
-    public List<RequirementInstance> getForkedRequirements() {
-        if (forkedRequirements == null) {
-            forkedRequirements = new ArrayList<>();
-        }
-        return forkedRequirements;
-    }
-
-    public RequirementInstance getRequirement() {
-        return requirement;
-    }
 }

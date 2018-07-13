@@ -21,7 +21,6 @@ package org.opensingular.requirement.module;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 
 import java.util.LinkedHashSet;
@@ -30,39 +29,39 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
- * Configuration object for module {@link SingularRequirement} registration.
+ * Configuration object for module {@link RequirementDefinition} registration.
  */
 public class RequirementConfiguration {
 
     private Set<SingularRequirementRef> requirements = new LinkedHashSet<>();
 
     /**
-     * Register a  {@link SingularRequirement}
+     * Register a  {@link RequirementDefinition}
      *
-     * @param requirement the {@link SingularRequirement} instance.
+     * @param requirement the {@link RequirementDefinition} instance.
      * @return
      */
-    public RequirementConfiguration addRequirement(SingularRequirement requirement) {
+    public RequirementConfiguration addRequirement(RequirementDefinition requirement) {
         requirements.add(new SingularRequirementRef(requirement));
         return this;
     }
 
     /**
-     * Register a  {@link SingularRequirement}
+     * Register a  {@link RequirementDefinition}
      *
-     * @param requirementProvider a {@link IFunction<SingularRequirementBuilder, SingularRequirement> } lambda to build the requirement definition
+     * @param requirementProvider a {@link IFunction<SingularRequirementBuilder,  RequirementDefinition > } lambda to build the requirement definition
      *                            through an fluent interface builder.
      * @return
      */
-    public RequirementConfiguration addRequirement(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
+    public RequirementConfiguration addRequirement(IFunction<SingularRequirementBuilder, RequirementDefinition> requirementProvider) {
         if (!requirements.add(new SingularRequirementRef(requirementProvider))) {
-            throw new SingularServerException("O mesmo " + SingularRequirement.class.getName() + " não pode ser configurado duas vezes no módulo");
+            throw new SingularServerException("O mesmo " + RequirementDefinition.class.getName() + " não pode ser configurado duas vezes no módulo");
         }
         return this;
     }
 
 
-    public SingularRequirementRef getRequirementRef(SingularRequirement requirement) {
+    public SingularRequirementRef getRequirementRef(RequirementDefinition requirement) {
         return requirements
                 .stream()
                 .filter(ref -> ref.equals(new SingularRequirementRef(requirement)))
@@ -70,7 +69,7 @@ public class RequirementConfiguration {
                 .orElseThrow(() -> new SingularFormException("Não foi possível encontrar referência registrada para o requerimento informado"));
     }
 
-    public SingularRequirementRef getRequirementRef(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
+    public SingularRequirementRef getRequirementRef(IFunction<SingularRequirementBuilder, RequirementDefinition> requirementProvider) {
         return requirements
                 .stream()
                 .filter(ref -> ref.equals(new SingularRequirementRef(requirementProvider)))

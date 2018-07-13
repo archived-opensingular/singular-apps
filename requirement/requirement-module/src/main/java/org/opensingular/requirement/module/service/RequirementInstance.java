@@ -29,22 +29,34 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
+import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 /**
  * @author Daniel C. Bordin on 07/03/2017.
  */
-public class RequirementInstance implements Serializable {
+public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD extends RequirementDefinition<SELF>> implements Serializable {
+
+    @Inject
+    private RequirementService<RequirementEntity, RequirementInstance> requirementService;
+
+    @Inject
+    private FormRequirementService<RequirementEntity> formRequirementService;
 
     private RequirementEntity requirementEntity;
 
@@ -184,16 +196,34 @@ public class RequirementInstance implements Serializable {
         return getMainFormCurrentFormVersion().getCod();
     }
 
+    @Deprecated
     public String getMainFormTypeName() {
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
 
+    @Deprecated
     public String getRequirementDefinitionName() {
         return getEntity().getRequirementDefinitionEntity().getName();
     }
 
+    @Deprecated
     public String getApplicantName() {
         return Optional.of(getApplicant()).map(ApplicantEntity::getName).orElse(null);
+    }
+
+    //TODO reqdef salvar/criar o form por meio da instance
+
+    public RequirementSubmissionResponse send(@Nullable String codSubmitterActor) {
+        final List<FormEntity>  consolidatedDrafts = formRequirementService.consolidateDrafts(this);
+        final FlowDefinition<?> flowDefinition     = RequirementUtil.getFlowDefinition(getEntity());
+
+        requirementService.onBeforeStartFlow(this, instance, codSubmitterActor);
+        FlowInstance flowInstance = requirementService.startNewFlow(this, flowDefinition, codSubmitterActor);
+        requirementService.onAfterStartFlow(this, instance, codSubmitterActor, flowInstance);
+
+        requirementService.saveRequirementHistory(this, consolidatedDrafts);
+
+        return new RequirementSubmissionResponse();
     }
 
 

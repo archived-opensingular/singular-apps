@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.service;
 
 import org.opensingular.form.SInstance;
-import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -33,6 +33,6 @@ import javax.annotation.Nullable;
 public interface RequirementSender {
 
     @Nonnull
-    RequirementSenderFeedback send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor);
+    RequirementSubmissionResponse send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor);
 
 }

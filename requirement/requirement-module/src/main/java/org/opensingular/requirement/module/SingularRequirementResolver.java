@@ -22,12 +22,11 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.flow.FlowResolver;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementSender;
-import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
 import org.opensingular.requirement.module.wicket.view.RequirementResolverPage;
 
@@ -44,20 +43,23 @@ import java.util.Optional;
  * It is possible to pass aditional parameters (URL parameters) to the target requirement using custom {@link RequirementResolverPage}
  * and overriding the {@link RequirementResolverPage#redirectToResolvedRequirement(Long, Map)}
  */
-public class SingularRequirementResolver implements SingularRequirement {
+public class SingularRequirementResolver implements RequirementDefinition {
 
-    private       String                 name;
+    private final String key;
+    private String name;
     private final Class<? extends SType> preRequirementSelectionForm;
     private Class<? extends RequirementResolverPage> requirementResolverPage = RequirementResolverPage.class;
     private RequirementResolver requirementResolver;
 
-    public SingularRequirementResolver(String name, Class<? extends SType> requirementResolverForm, RequirementResolver requirementResolver) {
+    public SingularRequirementResolver(String key, String name, Class<? extends SType> requirementResolverForm, RequirementResolver requirementResolver) {
+        this.key = key;
         this.name = name;
         this.preRequirementSelectionForm = requirementResolverForm;
         this.requirementResolver = requirementResolver;
     }
 
-    public SingularRequirementResolver(String name, Class<? extends SType> preRequirementSelectionForm, Class<? extends RequirementResolverPage> requirementResolverPage, RequirementResolver requirementResolver) {
+    public SingularRequirementResolver(String key, String name, Class<? extends SType> preRequirementSelectionForm, Class<? extends RequirementResolverPage> requirementResolverPage, RequirementResolver requirementResolver) {
+        this.key = key;
         this.name = name;
         this.preRequirementSelectionForm = preRequirementSelectionForm;
         this.requirementResolverPage = requirementResolverPage;
@@ -65,8 +67,13 @@ public class SingularRequirementResolver implements SingularRequirement {
     }
 
 
-    public SingularRequirement resolve(SIComposite instance) {
+    public RequirementDefinition resolve(SIComposite instance) {
         return requirementResolver.resolve(instance);
+    }
+
+    @Override
+    public String getKey() {
+        return key;
     }
 
     @Override
@@ -90,9 +97,15 @@ public class SingularRequirementResolver implements SingularRequirement {
     }
 
     @Override
-    public final Class<? extends RequirementSender> getRequirementSenderBeanClass() {
-        return SendNotAllowedRequirementSender.class;
+    public RequirementInstance newRequirementInstance() {
+        return null;//TODO reqdef
     }
+
+    @Override
+    public RequirementInstance loadRequirementInstance(Long requirementId) {
+        return null;//TODO reqdef
+    }
+
 
     public static class ResolveNotAllowedFlowResolver extends BoundedFlowResolver {
 
@@ -109,7 +122,7 @@ public class SingularRequirementResolver implements SingularRequirement {
     public static class SendNotAllowedRequirementSender implements RequirementSender {
         @Nonnull
         @Override
-        public RequirementSenderFeedback send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor) {
+        public RequirementSubmissionResponse send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor) {
             throw new SingularRequirementException("There is no RequirementSender definition for a " + SingularRequirementResolver.class.getSimpleName() + " definition ");
         }
     }

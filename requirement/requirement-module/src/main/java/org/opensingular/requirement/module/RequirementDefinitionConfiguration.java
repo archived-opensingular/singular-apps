@@ -18,28 +18,7 @@
 
 package org.opensingular.requirement.module;
 
-/**
- * Basic singular requirement adapter.
- */
-public abstract class SingularRequirementAdapter implements RequirementDefinition {
-
-    private String              name;
-    private BoundedFlowResolver flowResolver;
-
-    public SingularRequirementAdapter(String name, BoundedFlowResolver flowResolver) {
-        this.name = name;
-        this.flowResolver = flowResolver;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public BoundedFlowResolver getFlowResolver() {
-        return flowResolver;
-    }
+public class RequirementDefinitionConfiguration {
 
 
 }

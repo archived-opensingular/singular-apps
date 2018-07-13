@@ -19,6 +19,7 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.form.SType;
+import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 
@@ -44,6 +45,11 @@ public class DynamicFormFlowSingularRequirement extends SingularRequirementAdapt
     }
 
     @Override
+    public String getKey() {
+        return null;//TODO reqdef
+    }
+
+    @Override
     public final Class<? extends SType> getMainForm() {
         return form;
     }
@@ -57,12 +63,15 @@ public class DynamicFormFlowSingularRequirement extends SingularRequirementAdapt
         }
     }
 
-    public Class<? extends RequirementSender> getRequirementSenderBeanClass() {
-        if(requirementSenderBeanClass != null) {
-            return requirementSenderBeanClass;
-        } else {
-            return super.getRequirementSenderBeanClass();
-        }
+    @Override
+    public RequirementInstance newRequirementInstance() {
+        return null;//TODO reqdef
     }
+
+    @Override
+    public RequirementInstance loadRequirementInstance(Long requirementId) {
+        return null;//TODO reqdef
+    }
+
 
 }

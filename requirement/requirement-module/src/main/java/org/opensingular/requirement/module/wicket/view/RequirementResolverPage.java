@@ -28,7 +28,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
@@ -76,7 +76,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
     @Override
     protected void send(IModel<? extends SInstance> mi, AjaxRequestTarget ajxrt, BSModalBorder sm) {
         SingularRequirementResolver requirementResolver = (SingularRequirementResolver) getSingularRequirement(getConfig().copyOfInnerActionContext()).orElseThrow(() -> new SingularRequirementException("No requirement definition found!"));
-        SingularRequirement         requirement         = requirementResolver.resolve((SIComposite) mi.getObject());
+        RequirementDefinition       requirement         = requirementResolver.resolve((SIComposite) mi.getObject());
         Long idRequirementDefinition = singularModuleConfiguration
                 .getRequirements()
                 .stream().filter(r -> r.getRequirement().equals(requirement))

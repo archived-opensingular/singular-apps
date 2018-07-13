@@ -28,7 +28,7 @@ import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
@@ -74,7 +74,7 @@ public class ModuleService implements Loggable {
         ref.setRequirementDefinitionEntity(requirementDefinitionEntity);
     }
 
-    private RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType) {
+    private RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition requirementDefinition, FormTypeEntity formType) {
         ModuleEntity                module                      = getModule();
         RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
 
@@ -82,7 +82,7 @@ public class ModuleService implements Loggable {
             requirementDefinitionEntity = new RequirementDefinitionEntity();
             requirementDefinitionEntity.setFormType(formType);
             requirementDefinitionEntity.setModule(module);
-            requirementDefinitionEntity.setName(singularRequirement.getName());
+            requirementDefinitionEntity.setName(requirementDefinition.getName());
         }
 
         return requirementDefinitionEntity;

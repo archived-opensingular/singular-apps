@@ -80,7 +80,7 @@ import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.module.flow.FlowResolver;
@@ -95,7 +95,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
 import org.opensingular.requirement.module.service.ServerSInstanceFlowAwareService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
-import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.builder.HTMLParameters;
 import org.opensingular.requirement.module.wicket.builder.MarkupCreator;
@@ -149,7 +149,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             throw new RedirectToUrlException(path);
         }
 
-        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), getTypeName(formType), getFlowResolver(context), getRequirementSender(context));
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), getTypeName(formType), getFlowResolver(context));
         this.formKeyModel = $m.ofValue();
         this.parentRequirementFormKeyModel = $m.ofValue();
         this.inheritParentFormData = $m.ofValue();
@@ -191,14 +191,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private FlowResolver getFlowResolver(@Nullable ActionContext context) {
-        return getSingularRequirement(context).map(SingularRequirement::getFlowResolver).orElse(null);
+        return getSingularRequirement(context).map(RequirementDefinition::getFlowResolver).orElse(null);
     }
 
-    private Class<? extends RequirementSender> getRequirementSender(@Nullable ActionContext context) {
-        return getSingularRequirement(context).map(SingularRequirement::getRequirementSenderBeanClass).orElse(null);
-    }
-
-    protected Optional<SingularRequirement> getSingularRequirement(@Nullable ActionContext context) {
+    protected Optional<RequirementDefinition> getSingularRequirement(@Nullable ActionContext context) {
         SingularRequirementService requirementService = SingularRequirementService.get();
         return Optional.ofNullable(requirementService.getSingularRequirement(context));
     }
@@ -673,15 +669,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             //tenha dados que sofreram rollback
             try {
                 //executa o envio, iniciando o fluxo informado
-                Class<? extends RequirementSender> senderClass = config.getRequirementSender();
-                RequirementSender sender = ApplicationContextProvider.get().getBean(senderClass);
-                if (sender != null) {
-                    RequirementSenderFeedback sendedFeedback = sender.send(requirement, instance, username);
+                    RequirementSubmissionResponse sendedFeedback = requirement.send(instance, username);
                     //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
                     onAfterSend(ajxrt, sm, sendedFeedback);
-                } else {
-                    throw new SingularServerException("O RequirementSender não foi configurado corretamente");
-                }
             } catch (Exception ex) {
                 //recarrega a petição novamente
                 getRequirementModel().setObject(requirementService.getRequirement(requirement.getCod()));
@@ -697,7 +687,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                 .orElseThrow(() -> new SingularServerException("Não foi possível determinar o fluxo a ser inicicado.")));
     }
 
-    protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal, RequirementSenderFeedback sendedFeedback) {
+    protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal, RequirementSubmissionResponse sendedFeedback) {
         if (feedbackAposEnvioPanel != null) {
             enviarModal.hide(target);
             atualizarContentWorklist(target);

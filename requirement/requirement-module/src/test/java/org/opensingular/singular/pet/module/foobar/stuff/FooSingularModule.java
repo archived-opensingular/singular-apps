@@ -21,7 +21,7 @@ package org.opensingular.singular.pet.module.foobar.stuff;
 import org.opensingular.requirement.module.RequirementConfiguration;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.WorkspaceConfiguration;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.workspace.DefaultDonebox;
 import org.opensingular.requirement.module.workspace.DefaultInbox;
@@ -56,7 +56,7 @@ public class FooSingularModule implements SingularModule {
     }
 
 
-    public SingularRequirement barRequirement(SingularRequirementBuilder builder) {
+    public RequirementDefinition barRequirement(SingularRequirementBuilder builder) {
         return builder
                 .name("Bar Requirement")
                 .mainForm(STypeFoo.class)

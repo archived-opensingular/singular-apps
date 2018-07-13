@@ -19,12 +19,12 @@
 package org.opensingular.requirement.module.service;
 
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 public interface SingularRequirementService {
 
-    SingularRequirement getSingularRequirement(ActionContext context);
+    RequirementDefinition getSingularRequirement(ActionContext context);
 
     static SingularRequirementService get() {
         return ApplicationContextProvider.get().getBean(SingularRequirementService.class);

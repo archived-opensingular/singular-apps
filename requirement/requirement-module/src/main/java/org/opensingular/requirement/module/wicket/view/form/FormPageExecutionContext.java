@@ -32,16 +32,14 @@ public class FormPageExecutionContext implements Serializable {
     private String formType;
     private FlowResolver resolver;
     private boolean mainForm = true;
-    private Class<? extends RequirementSender> requirementSender;
 
-    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver, Class<? extends RequirementSender> requirementSender) {
+    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver) {
         this(context);
         this.resolver = resolver;
         if (formName != null) {
             this.mainForm = false;
             this.formType = formName;
         }
-        this.requirementSender = requirementSender;
     }
 
     public FormPageExecutionContext(ActionContext context) {
@@ -83,10 +81,6 @@ public class FormPageExecutionContext implements Serializable {
 
     public ActionContext copyOfInnerActionContext() {
         return new ActionContext(actionContext);
-    }
-
-    public Class<? extends RequirementSender> getRequirementSender() {
-        return requirementSender;
     }
 
     public Optional<Long> getRequirementDefinitionId() {

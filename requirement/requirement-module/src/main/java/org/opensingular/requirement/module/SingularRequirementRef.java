@@ -21,7 +21,6 @@ package org.opensingular.requirement.module;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 
 /**
@@ -30,20 +29,20 @@ import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
  */
 public class SingularRequirementRef {
 
-    private SingularRequirement                                        requirement;
-    private IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider;
-    private RequirementDefinitionEntity                                requirementDefinitionEntity;
+    private RequirementDefinition                                        requirement;
+    private IFunction<SingularRequirementBuilder, RequirementDefinition> requirementProvider;
+    private RequirementDefinitionEntity                                  requirementDefinitionEntity;
 
-    SingularRequirementRef(SingularRequirement requirement) {
+    SingularRequirementRef(RequirementDefinition requirement) {
         this.requirement = requirement;
     }
 
-    SingularRequirementRef(IFunction<SingularRequirementBuilder, SingularRequirement> requirementProvider) {
+    SingularRequirementRef(IFunction<SingularRequirementBuilder, RequirementDefinition> requirementProvider) {
         this.requirementProvider = requirementProvider;
 
     }
 
-    public SingularRequirement getRequirement() {
+    public RequirementDefinition getRequirement() {
         if (requirement == null) {
             this.requirement = requirementProvider.apply(new SingularRequirementBuilder());
         }

@@ -18,8 +18,7 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 
@@ -33,7 +32,7 @@ public class SingularRequirementServiceImpl implements SingularRequirementServic
     private SingularModuleConfiguration moduleConfiguration;
 
     @Override
-    public SingularRequirement getSingularRequirement(ActionContext context) {
+    public RequirementDefinition getSingularRequirement(ActionContext context) {
         return moduleConfiguration.getRequirementById(context.getRequirementDefinitionId().orElse(null));
     }
 

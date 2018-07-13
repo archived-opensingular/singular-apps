@@ -68,7 +68,6 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementConte
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.ParameterService;
@@ -330,11 +329,6 @@ public class SingularDefaultBeanFactory {
     @Bean
     public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
-    }
-
-    @Bean
-    public DefaultRequirementSender defaultRequirementSender() {
-        return new DefaultRequirementSender();
     }
 
     @Bean
