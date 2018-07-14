@@ -24,17 +24,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
-import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
 
 public class NewRequirementLink extends Panel {
 
@@ -103,7 +100,7 @@ public class NewRequirementLink extends Panel {
     }
 
     protected String buildURL(RequirementData requirement) {
-        return new NewRequirementUrlBuilder(url, moduleCod, requirement.getId()).getURL();
+        return new NewRequirementUrlBuilder(url, requirement.getId()).getURL();
     }
 
     @Override

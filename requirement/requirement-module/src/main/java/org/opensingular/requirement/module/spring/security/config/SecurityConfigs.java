@@ -37,9 +37,6 @@ public interface SecurityConfigs {
 
     @Order(103)
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
-        @Inject
-        private SingularServerConfiguration singularServerConfiguration;
-
         @Override
         protected IServerContext getContext() {
             return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
@@ -53,9 +50,6 @@ public interface SecurityConfigs {
 
     @Order(104)
     class CASAnalise extends SingularCASSpringSecurityConfig {
-        @Inject
-        private SingularServerConfiguration singularServerConfiguration;
-
         @Override
         protected IServerContext getContext() {
             return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
@@ -70,6 +64,7 @@ public interface SecurityConfigs {
     @Order(105)
     class AdministrationSecurity extends WebSecurityConfigurerAdapter {
         @Inject
+        @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<AdminCredentialChecker> credentialChecker;
 
         @Inject

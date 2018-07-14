@@ -103,7 +103,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
      * @param additionalParameters
      */
     protected void redirectToResolvedRequirement(Long idRequirementDefinition, Map<String, String> additionalParameters) {
-        throw new RedirectToUrlException(new NewRequirementUrlBuilder(moduleService.getBaseUrl(), moduleService.getModule().getCod(), idRequirementDefinition).getURL(additionalParameters));
+        throw new RedirectToUrlException(new NewRequirementUrlBuilder(moduleService.getBaseUrl(), idRequirementDefinition).getURL(additionalParameters));
     }
 
     @Nonnull
