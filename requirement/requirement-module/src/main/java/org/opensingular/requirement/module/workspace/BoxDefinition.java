@@ -37,7 +37,10 @@ public interface BoxDefinition {
      *  the current {@link IServerContext}
      * @return
      *  true if this factory can be used under the give {@param context}, false otherwise
+     *
+     * @deprecated Sera removido em proximas versões, as caixas seram fixas por workspace
      */
+    @Deprecated
     boolean appliesTo(IServerContext context);
 
     /**

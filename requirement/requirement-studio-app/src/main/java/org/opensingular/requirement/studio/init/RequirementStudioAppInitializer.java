@@ -79,7 +79,7 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
         }
 
         @Override
-        public Class<RequirementStudioApplication> getWicketApplicationClass() {
+        public Class<? extends RequirementStudioApplication> getWicketApplicationClass() {
             return RequirementStudioApplication.class;
         }
 

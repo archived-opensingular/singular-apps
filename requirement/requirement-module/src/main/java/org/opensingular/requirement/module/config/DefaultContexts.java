@@ -14,7 +14,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<AbstractSingularInitializer.AnalysisApplication> getWicketApplicationClass() {
+        public Class<? extends AbstractSingularInitializer.AnalysisApplication> getWicketApplicationClass() {
             return AbstractSingularInitializer.AnalysisApplication.class;
         }
 
@@ -37,7 +37,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<AbstractSingularInitializer.RequirementApplication> getWicketApplicationClass() {
+        public Class<? extends AbstractSingularInitializer.RequirementApplication> getWicketApplicationClass() {
             return AbstractSingularInitializer.RequirementApplication.class;
         }
 
@@ -65,7 +65,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<AdministrationApplication> getWicketApplicationClass() {
+        public Class<? extends AdministrationApplication> getWicketApplicationClass() {
             return AdministrationApplication.class;
         }
 
