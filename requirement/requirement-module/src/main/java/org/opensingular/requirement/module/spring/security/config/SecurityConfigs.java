@@ -19,16 +19,17 @@
 package org.opensingular.requirement.module.spring.security.config;
 
 
+import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.inject.Inject;
 import java.util.Optional;
@@ -36,6 +37,8 @@ import java.util.Optional;
 public interface SecurityConfigs {
 
     @Order(103)
+    @Configuration
+    @AutoScanDisabled
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
@@ -49,6 +52,8 @@ public interface SecurityConfigs {
     }
 
     @Order(104)
+    @Configuration
+    @AutoScanDisabled
     class CASAnalise extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
@@ -62,13 +67,12 @@ public interface SecurityConfigs {
     }
 
     @Order(105)
-    class AdministrationSecurity extends WebSecurityConfigurerAdapter {
+    @Configuration
+    @AutoScanDisabled
+    class AdministrationSecurity extends AbstractSingularSpringSecurityAdapter {
         @Inject
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<AdminCredentialChecker> credentialChecker;
-
-        @Inject
-        private SingularServerConfiguration singularServerConfiguration;
 
         protected IServerContext getContext() {
             return singularServerConfiguration.findContextByName(DefaultContexts.AdministrationContext.NAME);

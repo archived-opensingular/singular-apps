@@ -22,6 +22,7 @@ import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.requirement.module.config.*;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
@@ -42,11 +43,6 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
         return new WebInitializer() {
 
             @Override
-            public IServerContext[] serverContexts() {
-                return getServerContexts();
-            }
-
-            @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
                 String contextPath = servletContext.getContextPath();//NOSONAR
                 servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM,
@@ -54,11 +50,6 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
                 super.onStartup(servletContext);
             }
         };
-    }
-
-    protected IServerContext[] getServerContexts() {
-        return new IServerContext[]{new DefaultContexts.RequirementContext(), new DefaultContexts.WorklistContext(),
-                new DefaultContexts.AdministrationContext(), new StudioContext()};
     }
 
     @Override
@@ -84,7 +75,7 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
         }
 
         @Override
-        public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass() {
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return null;
         }
     }

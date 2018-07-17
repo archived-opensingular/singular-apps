@@ -41,11 +41,11 @@ import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.connector.LocalModuleDriver;
 import org.opensingular.requirement.module.connector.ModuleDriver;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
@@ -346,7 +346,7 @@ public class SingularDefaultBeanFactory {
     @Bean
     @Scope(WebApplicationContext.SCOPE_REQUEST)
     public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
-            SingularServerConfiguration singularServerConfiguration, ModuleBackstageService moduleBackstageService,
+            SingularModuleConfigurationBean singularServerConfiguration, ModuleBackstageService moduleBackstageService,
             SingularUserDetails singularUserDetails) {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = sra.getRequest();

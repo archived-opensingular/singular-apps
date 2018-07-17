@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.BoxItemDataProvider;
 
 import java.util.List;
 
@@ -31,26 +31,12 @@ import java.util.List;
 public interface BoxDefinition {
 
     /**
-     * Checks is this {@link BoxDefinition} can be used under the given {@link IServerContext}
-     * this method can be called multiple times.
-     * @param context
-     *  the current {@link IServerContext}
-     * @return
-     *  true if this factory can be used under the give {@param context}, false otherwise
-     *
-     * @deprecated Sera removido em proximas versões, as caixas seram fixas por workspace
-     */
-    @Deprecated
-    boolean appliesTo(IServerContext context);
-
-    /**
      * Builds an {@link ItemBox}. This method do not need to check if the {@param context} is supported, the current
      * {@link IServerContext} can be used to decide about minor changes in the {@param ItemBox} for each different
      * context
-     * @param context
-     *   the current {@link IServerContext}
-     * @return
-     *  An proper configured ItemBox
+     *
+     * @param context the current {@link IServerContext}
+     * @return An proper configured ItemBox
      */
     ItemBox build(IServerContext context);
 

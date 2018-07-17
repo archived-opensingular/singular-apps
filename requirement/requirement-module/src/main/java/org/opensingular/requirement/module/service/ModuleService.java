@@ -31,7 +31,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementDe
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirementRef;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +53,7 @@ public class ModuleService implements Loggable {
     private ModuleDAO moduleDAO;
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     @Inject
     private SingularServerSpringTypeLoader singularServerSpringTypeLoader;

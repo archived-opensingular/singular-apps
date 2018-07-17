@@ -21,10 +21,13 @@ package org.opensingular.requirement.module.config;
 import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
@@ -47,7 +50,7 @@ public interface IServerContext extends Serializable {
 
     static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
         String contextPath = request.getContextPath();
-        String context     = request.getPathInfo().replaceFirst(contextPath, "");
+        String context = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
             if (context.startsWith(ctx.getUrlPath())) {
                 return ctx;
@@ -62,20 +65,17 @@ public interface IServerContext extends Serializable {
 
     /**
      * O contexto no formato aceito por servlets e filtros
-     *
      */
     String getContextPath();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
-     *
      */
     String getPathRegex();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
      * sem a / ao final.
-     *
      */
     String getUrlPath();
 
@@ -92,23 +92,15 @@ public interface IServerContext extends Serializable {
     /**
      * Informa a configuração do spring security para este contexto
      */
-    Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass();
+    Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass();
 
     /**
      * Informa se os requerimentos que passarem por esse contexto deve ter seus owners checkados
+     *
      * @deprecated API_REVIEW
      */
     @Deprecated
-    default boolean checkOwner(){
-        return false;
-    }
-
-    /**
-     * Informa se o filtro do CAS deve ser aplicado para teste contexto
-     * @deprecated API_REVIEW
-     */
-    @Deprecated
-    default boolean applyCasFilter(){
+    default boolean checkOwner() {
         return false;
     }
 
@@ -117,5 +109,17 @@ public interface IServerContext extends Serializable {
      */
     @Deprecated
     String getPropertiesBaseKey();
+
+    /**
+     * Contexts public urls
+     *
+     * @return
+     */
+    default List<String> getPublicUrls() {
+        ArrayList<String> urls = new ArrayList<>();
+        urls.add(getUrlPath() + "/wicket/resource/*");
+        urls.add(getUrlPath() + "/public/*");
+        return urls;
+    }
 
 }

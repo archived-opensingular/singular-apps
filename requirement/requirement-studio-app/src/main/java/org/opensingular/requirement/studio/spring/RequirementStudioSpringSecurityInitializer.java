@@ -41,7 +41,7 @@ import java.util.Collections;
 public class RequirementStudioSpringSecurityInitializer extends SpringSecurityInitializer {
 
     @Override
-    protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
+    public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
         return StudioSecurity.class;
     }
 

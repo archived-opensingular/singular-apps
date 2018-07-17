@@ -33,11 +33,6 @@ import java.util.List;
 public class DefaultOngoingbox implements BoxDefinition {
 
     @Override
-    public boolean appliesTo(IServerContext context) {
-        return DefaultContexts.RequirementContext.NAME.equals(context.getName());
-    }
-
-    @Override
     public ItemBox build(IServerContext context) {
         final ItemBox acompanhamento = new ItemBox();
         acompanhamento.setName("Acompanhamento");

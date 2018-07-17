@@ -92,7 +92,7 @@ public class SpringHibernateInitializer {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 
-    protected String springMVCServletMapping() {
+    public String springMVCServletMapping() {
         return "/*";
     }
 

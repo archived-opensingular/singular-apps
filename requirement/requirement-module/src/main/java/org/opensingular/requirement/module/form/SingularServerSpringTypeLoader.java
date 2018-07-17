@@ -23,7 +23,7 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.service.RequirementUtil;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     private final Map<String, Supplier<SType<?>>> entries = new LinkedHashMap<>();
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     public SingularServerSpringTypeLoader() {
     }

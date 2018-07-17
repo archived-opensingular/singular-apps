@@ -18,14 +18,8 @@
 
 package org.opensingular.requirement.module.config;
 
-import com.google.common.base.Joiner;
-import org.apache.wicket.protocol.http.WicketFilter;
-import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
-import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
-import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
@@ -37,13 +31,12 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
 
+
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
  * e as configurações básicas do spring e spring-security
  */
 public abstract class WebInitializer {
-
-    private static final String SINGULAR_SECURITY = "[SINGULAR][WEB] {} {}";
 
     public static final Logger logger = LoggerFactory.getLogger(WebInitializer.class);
 
@@ -55,21 +48,6 @@ public abstract class WebInitializer {
         addSessionListener(ctx);
         addOpenSessionInView(ctx);
         addPublicUploadServlet(ctx);
-        for (IServerContext context : serverContexts()) {
-            logger.info(SINGULAR_SECURITY, "Setting up web context:", context.getContextPath());
-            addWicketFilter(ctx, context);
-        }
-        configureCAS(ctx);
-    }
-
-    public abstract IServerContext[] serverContexts();
-
-    protected void addWicketFilter(ServletContext ctx, IServerContext context) {
-        FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        wicketFilter.setInitParameter("applicationClassName", context.getWicketApplicationClass().getName());
-        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
-        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
-
     }
 
     private void addOpenSessionInView(ServletContext servletContext) {
@@ -82,19 +60,14 @@ public abstract class WebInitializer {
         uploadServlet.addMapping(SimplePostFilesStrategy.URL_PATTERN);
     }
 
-    protected String[] getDefaultPublicUrls() {
+    public String[] getDefaultPublicUrls() {
         List<String> urls = new ArrayList<>();
         urls.add("/rest/*");
         urls.add("/resources/*");
         urls.add("/public/*");
         urls.add("/index.html");
-        for (IServerContext ctx : serverContexts()) {
-            urls.add(ctx.getUrlPath() + "/wicket/resource/*");
-            urls.add(ctx.getUrlPath() + "/public/*");
-        }
-        return urls.toArray(new String[urls.size()]);
+        return urls.toArray(new String[0]);
     }
-
 
     /**
      * Configura o timeout da sessão web em minutos
@@ -124,42 +97,5 @@ public abstract class WebInitializer {
         });
     }
 
-    protected void configureCAS(ServletContext servletContext) {
-        if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
-            for (IServerContext serverContext : serverContexts()) {
-                if (serverContext.applyCasFilter()) {
-                    addCASFilter(servletContext, serverContext);
-                }
-            }
-            addSingleSignOutListener(servletContext);
-        }
-    }
-
-
-    protected void addCASFilter(ServletContext servletContext, IServerContext context) {
-        configureSSO(servletContext, "SSOFilter" + context.getName(), context);
-    }
-
-    protected void addSingleSignOutListener(ServletContext servletContext) {
-        servletContext.addListener(SingleSignOutHttpSessionListener.class);
-    }
-
-    protected void configureSSO(ServletContext servletContext, String filterName, IServerContext context) {
-        FilterRegistration.Dynamic ssoFilter = servletContext.addFilter(filterName, SSOFilter.class);
-        servletContext.setAttribute(filterName, context);
-        ssoFilter.setInitParameter(SSOConfigurableFilter.SINGULAR_CONTEXT_ATTRIBUTE, filterName);
-        ssoFilter.setInitParameter("logoutUrl", context.getUrlPath() + "/logout");
-        ssoFilter.setInitParameter("urlExcludePattern", getExcludeUrlRegex());
-        ssoFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getContextPath());
-    }
-
-    /**
-     * Transforma as expressões de urls públicas em regex simples
-     *
-     * @return
-     */
-    protected final String getExcludeUrlRegex() {
-        return Joiner.on(",").join(getDefaultPublicUrls()).replaceAll("\\*", ".*");
-    }
 
 }

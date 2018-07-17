@@ -33,11 +33,6 @@ import java.util.List;
 public class DefaultInbox implements BoxDefinition {
 
     @Override
-    public boolean appliesTo(IServerContext context) {
-        return DefaultContexts.WorklistContext.NAME.equals(context.getName());
-    }
-
-    @Override
     public ItemBox build(IServerContext context) {
         final ItemBox caixaEntrada = new ItemBox();
         caixaEntrada.setName("Caixa de Entrada");

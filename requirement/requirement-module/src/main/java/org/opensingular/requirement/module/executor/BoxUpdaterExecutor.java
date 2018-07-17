@@ -21,12 +21,11 @@ package org.opensingular.requirement.module.executor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.BoxController;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.ModuleService;
 
@@ -43,7 +42,7 @@ import java.util.List;
 public class BoxUpdaterExecutor {
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     @Inject
     private BoxService boxService;
@@ -55,7 +54,7 @@ public class BoxUpdaterExecutor {
     private ServerStartExecutorBean serverStartExecutorBean;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     @PostConstruct
     public void init() {

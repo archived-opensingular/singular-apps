@@ -1,6 +1,7 @@
 package org.opensingular.requirement.module.config;
 
 import org.opensingular.requirement.module.admin.AdministrationApplication;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
@@ -19,12 +20,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public boolean applyCasFilter() {
-            return true;
-        }
-
-        @Override
-        public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass() {
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.CASAnalise.class;
         }
     }
@@ -42,12 +38,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public boolean applyCasFilter() {
-            return true;
-        }
-
-        @Override
-        public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass() {
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.CASPeticionamento.class;
         }
 
@@ -70,7 +61,7 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass() {
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.AdministrationSecurity.class;
         }
     }

@@ -36,7 +36,7 @@ import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.ServerSendButton;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.SingularRequirementResolver;
 import org.opensingular.requirement.module.service.ModuleService;
@@ -62,7 +62,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
     private ModuleService moduleService;
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     public RequirementResolverPage(@Nullable ActionContext context) {
         super(context);

@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.requirement.module.config.DefaultContexts;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
+
 /**
  * Main definition of a requirement Module.
  * Every singular server module must define exactly one {@link SingularModule}.
@@ -25,35 +28,32 @@ package org.opensingular.requirement.module;
 public interface SingularModule {
 
     /**
-     * @return
-     * Textual key representing this module.
+     * @return Textual key representing this module.
      * Should be a valid java identifier
      */
     String abbreviation();
 
     /**
-     *
-     * @return
-     *  Textual descriptive name of this module.
+     * @return Textual descriptive name of this module.
      */
     String name();
 
     /**
-     *
-     * @param config
-     *  All requirements managed by this module and its corresponding
-     *  configuration must be declared in the {@link RequirementConfiguration} object
+     * @param config All requirements managed by this module and its corresponding
+     *               configuration must be declared in the {@link RequirementConfiguration} object
      */
     void requirements(RequirementConfiguration config);
 
+    /**
+     * TODO
+     */
+    void workspace(WorkspaceRegistry workspaceRegistry);
 
     /**
-     *
-     * @param config
-     *  All workspace definitions of the module like boxes, menus, listing, filters, custom actions and controllers
-     *  must be declared in the {@link WorkspaceConfiguration} object properly
+     * Add singular default workspaces, ex AdministrationContext
      */
-    void workspace(WorkspaceConfiguration config);
-
+    default void defaultWorkspace(WorkspaceRegistry workspaceRegistry) {
+        workspaceRegistry.add(DefaultContexts.AdministrationContext.class);
+    }
 
 }

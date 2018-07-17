@@ -28,11 +28,10 @@ import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.DefaultActionProvider;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
 
@@ -54,7 +53,7 @@ public class BoxDefinitionDataServiceTest {
     @Mock
     private AuthorizationService        authorizationService;
     @Mock
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
     @InjectMocks
     private ModuleBackstageService      moduleBackstageService;
 

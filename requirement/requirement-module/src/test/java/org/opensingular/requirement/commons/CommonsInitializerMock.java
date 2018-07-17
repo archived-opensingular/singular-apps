@@ -19,6 +19,7 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
+import org.opensingular.requirement.module.WorkspaceInitializer;
 import org.opensingular.requirement.module.config.*;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -39,11 +40,6 @@ public class CommonsInitializerMock implements SingularInitializer {
     @Override
     public WebInitializer webConfiguration() {
         return new WebInitializer() {
-            @Override
-            public IServerContext[] serverContexts() {
-                return new IServerContext[]{new DefaultContexts.RequirementContext(),
-                        new DefaultContexts.WorklistContext(), new DefaultContexts.AdministrationContext()};
-            }
         };
     }
 
@@ -71,7 +67,7 @@ public class CommonsInitializerMock implements SingularInitializer {
             }
 
             @Override
-            protected String springMVCServletMapping() {
+            public String springMVCServletMapping() {
                 return SPRING_MVC_SERVLET_MAPPING;
             }
 
@@ -80,6 +76,11 @@ public class CommonsInitializerMock implements SingularInitializer {
                 return CommonsInitializerMock.this.persistenceConfiguration();
             }
         };
+    }
+
+    @Override
+    public WorkspaceInitializer workspaceConfiguration() {
+        return new WorkspaceInitializer();
     }
 
 

@@ -23,6 +23,7 @@ import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaul
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.requirement.module.WorkspaceInitializer;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.wicket.SingleAppPage;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
@@ -71,11 +72,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
                 servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
             }
-
-            @Override
-            public IServerContext[] serverContexts() {
-                return new IServerContext[]{new DefaultContexts.RequirementContext(), new DefaultContexts.WorklistContext(), new DefaultContexts.AdministrationContext()};
-            }
         };
     }
 
@@ -116,6 +112,11 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
         return new SpringSecurityInitializer();
     }
 
+    @Override
+    public WorkspaceInitializer workspaceConfiguration() {
+        return new WorkspaceInitializer();
+    }
+
     protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
         return SingularDefaultBeanFactory.class;
     }
@@ -154,4 +155,5 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
             initSKin.accept(skinOptions);
         }
     }
+
 }

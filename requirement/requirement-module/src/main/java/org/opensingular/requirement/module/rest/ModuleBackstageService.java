@@ -28,13 +28,12 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -59,10 +58,7 @@ public class ModuleBackstageService implements Loggable {
     private RequirementService<RequirementEntity, RequirementInstance> requirementService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
-
-    @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -75,7 +71,7 @@ public class ModuleBackstageService implements Loggable {
     private SFormConfig<String> singularFormConfig;
 
     public List<BoxConfigurationData> listMenu(String context, String user) {
-        return listMenu(IServerContext.getContextFromName(context, singularServerConfiguration.getContexts()), user);
+        return listMenu(IServerContext.getContextFromName(context, singularModuleConfiguration.getContexts()), user);
     }
 
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
@@ -134,7 +130,7 @@ public class ModuleBackstageService implements Loggable {
 
     @SuppressWarnings("unchecked")
     private void addForms(BoxConfigurationData boxConfigurationMetadata) {
-        for (Class<? extends SType<?>> formClass : singularServerConfiguration.getFormTypes()) {
+        for (Class<? extends SType<?>> formClass : singularModuleConfiguration.getFormTypes()) {
             String name = SFormUtil.getTypeName(formClass);
             Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {

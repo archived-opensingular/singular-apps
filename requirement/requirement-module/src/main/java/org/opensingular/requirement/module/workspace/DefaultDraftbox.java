@@ -21,8 +21,6 @@ package org.opensingular.requirement.module.workspace;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.config.AbstractSingularInitializer;
-import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -32,11 +30,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DefaultDraftbox implements BoxDefinition {
-
-    @Override
-    public boolean appliesTo(IServerContext context) {
-        return DefaultContexts.RequirementContext.NAME.equals(context.getName());
-    }
 
     @Override
     public ItemBox build(IServerContext context) {
