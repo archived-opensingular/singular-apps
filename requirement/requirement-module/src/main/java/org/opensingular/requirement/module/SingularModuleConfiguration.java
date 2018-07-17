@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module;
 
 
-import org.opensingular.form.SPackage;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -72,9 +71,9 @@ public class SingularModuleConfiguration {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
         SingularModule module = null;
-        if (modules.stream().findFirst().isPresent()) {
-            Optional<Class<? extends SingularModule>> first = modules.stream().findFirst();
-            module = first.get().newInstance();
+        Optional<Class<? extends SingularModule>> firstModule = modules.stream().findFirst();
+        if (firstModule.isPresent()) {
+            module = firstModule.get().newInstance();
         }
         return module;
     }
