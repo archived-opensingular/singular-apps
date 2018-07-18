@@ -19,19 +19,16 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class DefaultOngoingbox implements BoxDefinition {
-
+public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
     @Override
     public ItemBox build(IServerContext context) {
         final ItemBox acompanhamento = new ItemBox();
@@ -42,11 +39,15 @@ public class DefaultOngoingbox implements BoxDefinition {
     }
 
     @Override
-    public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.FALSE,
-                new ActionProviderBuilder()
-                        .addViewAction()
-                        .addHistoryAction());
+    protected Boolean shouldEvalPermissions() {
+        return Boolean.FALSE;
+    }
+
+    @Override
+    protected ActionProvider actionProvider() {
+        return new ActionProviderBuilder()
+                .addViewAction()
+                .addHistoryAction();
     }
 
     @Override
@@ -59,5 +60,4 @@ public class DefaultOngoingbox implements BoxDefinition {
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         return fields;
     }
-
 }

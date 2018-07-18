@@ -19,9 +19,10 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,52 +33,50 @@ import java.util.List;
  * Configuration object for module {@link BoxDefinition} registrations.
  */
 public class WorkspaceConfiguration {
+    private final List<BoxInfo> boxInfos = new ArrayList<>();
+    private final RequirementConfiguration requirementConfiguration;
+    private final AnnotationConfigWebApplicationContext applicationContext;
 
-    private List<BoxController> itemBoxes = new ArrayList<>();
-    private RequirementConfiguration requirementConfiguration;
+    private BoxInfo latest;
 
-    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
+    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration, AnnotationConfigWebApplicationContext applicationContext) {
         this.requirementConfiguration = requirementConfiguration;
+        this.applicationContext = applicationContext;
+    }
+
+    public WorkspaceConfiguration addBox(Class<? extends BoxDefinition> itemBoxClass) {
+        applicationContext.register(itemBoxClass);
+        BoxInfo boxInfo = new DefaultBoxInfo(itemBoxClass);
+        boxInfos.add(boxInfo);
+        latest = boxInfo;
+        return this;
     }
 
     /**
-     * Register a single {@link BoxDefinition}
-     *
-     * @param itemBox the
-     * @return
+     * API_VIEW, acredito que o melhor lugar é dentro da definição da caixa?
      */
-    public WorkspaceConfiguration addBox(BoxDefinition itemBox) {
-        itemBoxes.add(new BoxController(itemBox));
-        return this;
-    }
-
-    List<BoxController> getItemBoxes() {
-        return itemBoxes;
-    }
-
-
+    @Deprecated
     public WorkspaceConfiguration newFor(RequirementProvider... requirementProvider) {
-        Arrays
-                .stream(requirementProvider)
-                .map(requirementConfiguration::getRequirementRef)
-                .forEach(r -> getCurrent().addRequirementRefs(r));
+        Arrays.stream(requirementProvider)
+                .map(requirementConfiguration::getRequirementRef).forEach(latest::addSingularRequirementRef);
         return this;
 
     }
 
+    /**
+     * API_VIEW, acredito que o melhor lugar é dentro da definição da caixa?
+     */
+    @Deprecated
     public WorkspaceConfiguration newFor(SingularRequirement... requirement) {
-        Arrays
-                .stream(requirement)
-                .map(requirementConfiguration::getRequirementRef)
-                .forEach(r -> getCurrent().addRequirementRefs(r));
+        Arrays.stream(requirement)
+                .map(requirementConfiguration::getRequirementRef).forEach(latest::addSingularRequirementRef);
         return this;
     }
 
-
-    private BoxController getCurrent() {
-        return itemBoxes.get(itemBoxes.size() - 1);
+    public interface RequirementProvider extends IFunction<SingularRequirementBuilder, SingularRequirement> {
     }
 
-    public static interface RequirementProvider extends IFunction<SingularRequirementBuilder, SingularRequirement> {
+    public List<BoxInfo> getBoxInfos() {
+        return boxInfos;
     }
 }

@@ -20,29 +20,38 @@ package org.opensingular.requirement.module.provider;
 
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.module.ActionProvider;
+import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-import org.opensingular.requirement.module.ActionProvider;
-import org.opensingular.requirement.module.BoxInfo;
-import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+@Named
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
-
-    private final Boolean evalPermissions;
-    private final ActionProvider actionProvider;
+    private Boolean evalPermissions;
+    private ActionProvider actionProvider;
 
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
+
+    private RequirementService<?, ?> requirementService;
+
+    public RequirementBoxItemDataProvider() {
+    }
 
     public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
         this.evalPermissions = evalPermissions;
@@ -50,25 +59,25 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     @Override
-    public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
+    public List<Map<String, Serializable>> search(QuickFilter filter) {
         addEnabledTasksToFilter(filter);
         List<Map<String, Serializable>> requirements;
         if (Boolean.TRUE.equals(evalPermissions)) {
-            requirements = lookupRequirementService().listTasks(filter, searchPermissions(filter), extenders);
+            requirements = requirementService.listTasks(filter, searchPermissions(filter), extenders);
         } else {
-            requirements = lookupRequirementService().quickSearchMap(filter, extenders);
+            requirements = requirementService.quickSearchMap(filter, extenders);
         }
         filters.forEach(x -> x.accept(requirements));
         return requirements;
     }
 
     @Override
-    public Long count(QuickFilter filter, BoxInfo boxInfo) {
+    public Long count(QuickFilter filter) {
         addEnabledTasksToFilter(filter);
         if (Boolean.TRUE.equals(evalPermissions)) {
-            return lookupRequirementService().countTasks(filter, searchPermissions(filter), extenders);
+            return requirementService.countTasks(filter, searchPermissions(filter), extenders);
         } else {
-            return lookupRequirementService().countQuickSearch(filter, extenders);
+            return requirementService.countQuickSearch(filter, extenders);
         }
     }
 
@@ -76,11 +85,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     @Override
     public ActionProvider getActionProvider() {
         return actionProvider;
-    }
-
-    @Nonnull
-    protected RequirementService<?, ?> lookupRequirementService() {
-        return ApplicationContextProvider.get().getBean(RequirementService.class);
     }
 
     protected void addEnabledTasksToFilter(QuickFilter filter) {
@@ -121,4 +125,16 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return this;
     }
 
+    public void setActionProvider(ActionProvider actionProvider) {
+        this.actionProvider = actionProvider;
+    }
+
+    public void setEvalPermissions(Boolean evalPermissions) {
+        this.evalPermissions = evalPermissions;
+    }
+
+    @Inject
+    public void setRequirementService(RequirementService requirementService) {
+        this.requirementService = requirementService;
+    }
 }
