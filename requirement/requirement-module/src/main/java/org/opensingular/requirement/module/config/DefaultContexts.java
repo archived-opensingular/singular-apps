@@ -3,7 +3,8 @@ package org.opensingular.requirement.module.config;
 import org.opensingular.requirement.module.admin.AdministrationApplication;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.opensingular.requirement.module.wicket.application.RequirementWicketApplication;
+import org.opensingular.requirement.module.wicket.application.WorklistWicketApplication;
 
 public interface DefaultContexts {
 
@@ -15,8 +16,8 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<? extends AbstractSingularInitializer.AnalysisApplication> getWicketApplicationClass() {
-            return AbstractSingularInitializer.AnalysisApplication.class;
+        public Class<? extends WorklistWicketApplication> getWicketApplicationClass() {
+            return WorklistWicketApplication.class;
         }
 
         @Override
@@ -33,8 +34,8 @@ public interface DefaultContexts {
         }
 
         @Override
-        public Class<? extends AbstractSingularInitializer.RequirementApplication> getWicketApplicationClass() {
-            return AbstractSingularInitializer.RequirementApplication.class;
+        public Class<? extends RequirementWicketApplication> getWicketApplicationClass() {
+            return RequirementWicketApplication.class;
         }
 
         @Override

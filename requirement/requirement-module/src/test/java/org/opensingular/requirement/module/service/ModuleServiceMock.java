@@ -16,50 +16,36 @@
  *
  */
 
-package org.opensingular.requirement.module.connector;
+package org.opensingular.requirement.module.service;
 
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.springframework.context.annotation.Primary;
 
+import javax.inject.Named;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-public interface ModuleDriver {
+@Primary
+@Named
+public class ModuleServiceMock extends DefaultModuleService {
 
-    /**
-     * Count all elements inside a box
-     */
-    String countAll(ItemBox box, List<String> flowNames, String loggedUser);
+    @Override
+    public List<Actor> findEligibleUsers(BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
+        Actor actor = new Actor(1, "USUARIO.TESTE", "Usuário de Teste", "usuarioteste@teste.com.br");
+        return Collections.singletonList(actor);
+    }
 
-    /**
-     * Count elements inside a box, applying the filter
-     */
-    long countFiltered(ItemBox box, QuickFilter filter);
 
-    /**
-     * Searchelements inside a box, applying the filter
-     */
-    List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter);
-
-    /**
-     * Find users that can execute the confirmAction
-     */
-    List<Actor> findEligibleUsers(BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction);
-
-    /**
-     * Execute a action
-     */
-    ActionResponse executeAction(BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest);
-
-    /**
-     * Build a static endpoint
-     */
-    String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI);
-
+    @Override
+    public ActionResponse executeAction(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
+        ActionResponse response = new ActionResponse("Sucesso", true);
+        return ActionResponse.class.cast(response);
+    }
 }
