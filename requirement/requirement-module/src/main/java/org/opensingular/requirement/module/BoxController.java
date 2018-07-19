@@ -21,43 +21,38 @@ package org.opensingular.requirement.module;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-@Named
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+/**
+ * @see BoxControllerFactory
+ */
 public class BoxController {
     /**
      *
      */
-    private BoxInfo boxInfo;
+    private final BoxInfo boxInfo;
 
     /**
      *
      */
-    private BoxItemDataProvider boxItemDataProvider;
+    private final BoxItemDataProvider boxItemDataProvider;
 
-    /**
-     *
-     */
-    private BeanFactory beanFactory;
+    public BoxController(BoxInfo boxInfo, BoxItemDataProvider boxItemDataProvider) {
+        this.boxInfo = boxInfo;
+        this.boxItemDataProvider = boxItemDataProvider;
+    }
 
     public Long countItens(QuickFilter filter) {
-        return boxItemDataProvider().count(filter);
+        return boxItemDataProvider.count(filter);
     }
 
     public BoxItemDataList searchItens(QuickFilter filter) {
-        List<Map<String, Serializable>> itens = boxItemDataProvider().search(filter);
+        List<Map<String, Serializable>> itens = boxItemDataProvider.search(filter);
         BoxItemDataList result = new BoxItemDataList();
-        ActionProvider actionProvider = addBuiltInDecorators(boxItemDataProvider().getActionProvider());
+        ActionProvider actionProvider = addBuiltInDecorators(boxItemDataProvider.getActionProvider());
 
         for (Map<String, Serializable> item : itens) {
             BoxItemDataImpl line = new BoxItemDataImpl();
@@ -70,21 +65,5 @@ public class BoxController {
 
     protected ActionProvider addBuiltInDecorators(ActionProvider actionProvider) {
         return new AuthorizationAwareActionProviderDecorator(actionProvider);
-    }
-
-    @Inject
-    public void setBeanFactory(BeanFactory beanFactory) {
-        this.beanFactory = beanFactory;
-    }
-
-    public void setBoxInfo(BoxInfo boxInfo) {
-        this.boxInfo = boxInfo;
-    }
-
-    public BoxItemDataProvider boxItemDataProvider() {
-        if(boxItemDataProvider == null){
-            boxItemDataProvider = beanFactory.getBean(boxInfo.getBoxDefinitionClass()).getDataProvider();
-        }
-        return boxItemDataProvider;
     }
 }

@@ -44,6 +44,9 @@ import static org.opensingular.requirement.module.SingularModuleConfiguration.SE
  */
 @Named
 public class SingularModuleConfigurationBean implements ServletContextAware {
+    private final BeanFactory beanFactory;
+    private final BoxControllerFactory boxControllerFactory;
+
     private SingularModuleConfiguration singularModuleConfiguration;
     private IServerContext[] contexts;
     private String springMVCServletMapping;
@@ -53,13 +56,16 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
     private String[] definitionsPackages;
     private String[] defaultPublicUrls;
 
-    @Inject
-    private BeanFactory beanFactory;
-
     /**
      * Cache for the already created controllers
      */
     private Map<String, BoxController> controllers = new HashMap<>();
+
+    @Inject
+    public SingularModuleConfigurationBean(BeanFactory beanFactory, BoxControllerFactory boxControllerFactory) {
+        this.beanFactory = beanFactory;
+        this.boxControllerFactory = boxControllerFactory;
+    }
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -168,13 +174,8 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
     }
 
     public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
-        if(!controllers.containsKey(boxId)) {
-            Optional<BoxInfo> boxInfo = getBoxByBoxId(boxId);
-            if (boxInfo.isPresent()) {
-                BoxController boxcontroller = beanFactory.getBean(BoxController.class);
-                boxcontroller.setBoxInfo(boxInfo.get());
-                controllers.put(boxId, boxcontroller);
-            }
+        if (!controllers.containsKey(boxId)) {
+            getBoxByBoxId(boxId).ifPresent(boxInfo1 -> controllers.put(boxId, boxControllerFactory.create(boxInfo1)));
         }
         return Optional.ofNullable(controllers.get(boxId));
     }

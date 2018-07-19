@@ -18,24 +18,23 @@
 
 package org.opensingular.requirement.module.rest;
 
-import org.apache.wicket.spring.test.ApplicationContextMock;
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.*;
+import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.DefaultActionProvider;
+import org.opensingular.requirement.module.DefaultBoxInfo;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.workspace.DefaultDraftbox;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.io.Serializable;
 import java.util.*;
@@ -47,13 +46,16 @@ import static org.mockito.Mockito.*;
 public class BoxDefinitionDataServiceTest {
 
     @Mock
-    private ApplicationContext          context;
+    private ApplicationContext context;
+
     @Mock
-    private AuthorizationService        authorizationService;
+    private AuthorizationService authorizationService;
+
     @Mock
     private SingularModuleConfigurationBean singularModuleConfiguration;
+
     @InjectMocks
-    private ModuleBackstageService      moduleBackstageService;
+    private ModuleBackstageService moduleBackstageService;
 
     private QuickFilter quickFilter;
 
@@ -84,16 +86,7 @@ public class BoxDefinitionDataServiceTest {
         when(boxItemDataProvider.search(eq(quickFilter))).thenReturn(searchResult);
         when(boxItemDataProvider.getActionProvider()).thenReturn(new DefaultActionProvider());
 
-        DefaultDraftbox defaultDraftbox = new DefaultDraftbox();
-        defaultDraftbox.setRequirementBoxItemDataProviderObjectFactory(() -> boxItemDataProvider);
-
-        BoxController boxController = new BoxController();
-
-        ApplicationContextMock applicationContextMock = new ApplicationContextMock();
-        applicationContextMock.putBean(defaultDraftbox);
-
-        boxController.setBeanFactory(applicationContextMock);
-        boxController.setBoxInfo(new DefaultBoxInfo(DefaultDraftbox.class));
+        BoxController boxController = new BoxController(new DefaultBoxInfo(DefaultDraftbox.class), boxItemDataProvider);
 
         when(singularModuleConfiguration.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
 

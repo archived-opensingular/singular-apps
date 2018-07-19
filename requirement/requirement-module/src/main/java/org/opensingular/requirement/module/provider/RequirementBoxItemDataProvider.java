@@ -27,35 +27,26 @@ import org.opensingular.requirement.module.persistence.query.RequirementSearchEx
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
-import org.springframework.context.annotation.Scope;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-@Named
-@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
-    private Boolean evalPermissions;
-    private ActionProvider actionProvider;
-
+    private final Boolean evalPermissions;
+    private final ActionProvider actionProvider;
+    private final RequirementService<?, ?> requirementService;
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
 
-    private RequirementService<?, ?> requirementService;
-
-    public RequirementBoxItemDataProvider() {
-    }
-
-    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
+    RequirementBoxItemDataProvider(Boolean evalPermissions, ActionProvider actionProvider,
+                                   RequirementService<?, ?> requirementService) {
         this.evalPermissions = evalPermissions;
         this.actionProvider = actionProvider;
+        this.requirementService = requirementService;
     }
 
     @Override
@@ -123,18 +114,5 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> tasks) {
         tasks.forEach(this::addTask);
         return this;
-    }
-
-    public void setActionProvider(ActionProvider actionProvider) {
-        this.actionProvider = actionProvider;
-    }
-
-    public void setEvalPermissions(Boolean evalPermissions) {
-        this.evalPermissions = evalPermissions;
-    }
-
-    @Inject
-    public void setRequirementService(RequirementService requirementService) {
-        this.requirementService = requirementService;
     }
 }
