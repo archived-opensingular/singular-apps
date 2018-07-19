@@ -24,7 +24,7 @@ import java.util.Optional;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.PSpringSecurityInitializer;
+import org.opensingular.requirement.module.config.SpringSecurityInitializer;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -39,8 +39,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
-public class RequirementStudioSpringSecurityInitializer extends PSpringSecurityInitializer {
-
+public class RequirementStudioSpringSecurityInitializer extends SpringSecurityInitializer {
 
     @Override
     protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
@@ -97,7 +96,6 @@ public class RequirementStudioSpringSecurityInitializer extends PSpringSecurityI
         }
 
     }
-
 
 
 }

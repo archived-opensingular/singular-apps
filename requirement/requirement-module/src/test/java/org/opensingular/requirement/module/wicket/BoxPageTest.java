@@ -29,7 +29,7 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.test.ContextUtil;
 import org.opensingular.requirement.module.test.ModuleApplicationMock;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
@@ -45,7 +45,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
 
     static {
         ContextUtil.setContextPath(SINGULAR);
-        ContextUtil.setPathInfo(SINGULAR + PServerContext.REQUIREMENT.getUrlPath());
+        ContextUtil.setPathInfo(SINGULAR + ServerContext.REQUIREMENT.getUrlPath());
     }
 
     private SingularWicketTester tester;

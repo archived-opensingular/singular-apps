@@ -22,7 +22,8 @@ package org.opensingular.requirement.module.service;
 import javax.servlet.ServletException;
 
 import org.opensingular.requirement.commons.AbstractSingularContextLoader;
-import org.opensingular.requirement.module.config.SingularInitializer;
+import org.opensingular.requirement.module.config.SingularWebApplicationInitializer;
+
 import org.opensingular.requirement.module.test.ModuleInitializerMock;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -33,7 +34,7 @@ public class SingularModuleContextLoader extends AbstractSingularContextLoader {
     @Override
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new SingularInitializer(new ModuleInitializerMock(context)).onStartup(context.getServletContext());
+            new SingularWebApplicationInitializer(new ModuleInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw new RuntimeException(e.getMessage(), e);
         }

@@ -26,6 +26,7 @@ import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.config.PServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularAdministrationLogoutHandler;
@@ -46,7 +47,7 @@ public class SecurityConfigs {
     public static class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.REQUIREMENT;
+            return ServerContext.REQUIREMENT;
         }
 
         @Override
@@ -62,7 +63,7 @@ public class SecurityConfigs {
     public static class CASAnalise extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return PServerContext.WORKLIST;
+            return ServerContext.WORKLIST;
         }
 
         @Override
@@ -90,7 +91,7 @@ public class SecurityConfigs {
             http
                     .regexMatcher(getContext().getPathRegex())
                     .authorizeRequests()
-                    .antMatchers(PServerContext.ADMINISTRATION.getContextPath()).hasRole("ADMIN")
+                    .antMatchers(ServerContext.ADMINISTRATION.getContextPath()).hasRole("ADMIN")
                     .and()
                     .exceptionHandling().accessDeniedPage("/public/error/403")
                     .and()
@@ -101,7 +102,7 @@ public class SecurityConfigs {
         @Override
         protected void configure(AuthenticationManagerBuilder auth) throws Exception {
             credentialChecker.ifPresent(cc ->
-                    auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, PServerContext.ADMINISTRATION)));
+                    auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, ServerContext.ADMINISTRATION)));
         }
 
         @Override

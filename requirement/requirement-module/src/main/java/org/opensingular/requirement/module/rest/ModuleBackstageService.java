@@ -18,14 +18,6 @@
 
 package org.opensingular.requirement.module.rest;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -55,6 +47,10 @@ import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.springframework.stereotype.Service;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.*;
+
 @Service
 public class ModuleBackstageService implements Loggable {
 
@@ -77,11 +73,9 @@ public class ModuleBackstageService implements Loggable {
     @Named("formConfigWithDatabase")
     private SFormConfig<String> singularFormConfig;
 
-
     public List<BoxConfigurationData> listMenu(String context, String user) {
         return listMenu(IServerContext.getContextFromName(context, singularServerConfiguration.getContexts()), user);
     }
-
 
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
@@ -103,14 +97,12 @@ public class ModuleBackstageService implements Loggable {
         }
     }
 
-
     private List<BoxConfigurationData> listMenu(IServerContext context, String user) {
         List<BoxConfigurationData> groups = listMenuGroups();
         filterAccessRight(groups, user);
         customizeMenu(groups, context, user);
         return groups;
     }
-
 
     private List<BoxConfigurationData> listMenuGroups() {
         final List<BoxConfigurationData> groups = new ArrayList<>();
@@ -168,7 +160,7 @@ public class ModuleBackstageService implements Loggable {
         if (boxController.isPresent()) {
             return boxController.get().countItens(filter);
         }
-        return 0l;
+        return 0L;
     }
 
     public BoxItemDataList search(String boxId, QuickFilter filter) {

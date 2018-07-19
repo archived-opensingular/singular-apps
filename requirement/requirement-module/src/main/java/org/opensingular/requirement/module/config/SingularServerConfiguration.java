@@ -86,10 +86,10 @@ public class SingularServerConfiguration implements ServletContextAware {
 
     @Override
     public void setServletContext(ServletContext servletContext) {
-        WebInitializer webInitializer = (WebInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION);
-        SpringHibernateInitializer springHibernateInitializer = (SpringHibernateInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION);
-        FormInitializer formInitializer = (FormInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION);
-        FlowInitializer flowInitializer = (FlowInitializer) servletContext.getAttribute(SingularInitializer.SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION);
+        WebInitializer webInitializer = (WebInitializer) servletContext.getAttribute(SingularWebApplicationInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION);
+        SpringHibernateInitializer springHibernateInitializer = (SpringHibernateInitializer) servletContext.getAttribute(SingularWebApplicationInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION);
+        FormInitializer formInitializer = (FormInitializer) servletContext.getAttribute(SingularWebApplicationInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION);
+        FlowInitializer flowInitializer = (FlowInitializer) servletContext.getAttribute(SingularWebApplicationInitializer.SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION);
         this.contexts = webInitializer.serverContexts();
         this.defaultPublicUrls = webInitializer.getDefaultPublicUrls();
         this.springMVCServletMapping = springHibernateInitializer.springMVCServletMapping();

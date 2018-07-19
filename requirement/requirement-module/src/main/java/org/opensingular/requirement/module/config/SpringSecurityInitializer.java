@@ -18,11 +18,8 @@
 
 package org.opensingular.requirement.module.config;
 
-import java.util.EnumSet;
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContext;
-
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
+import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +27,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.filter.DelegatingFilterProxy;
 
-public abstract class SpringSecurityInitializer {
+import javax.servlet.DispatcherType;
+import javax.servlet.ServletContext;
+import java.util.EnumSet;
+
+public class SpringSecurityInitializer {
 
     static final String SINGULAR_SECURITY = "[SINGULAR][SECURITY] {} {}";
     public static final Logger logger = LoggerFactory.getLogger(SpringSecurityInitializer.class);
@@ -64,6 +65,16 @@ public abstract class SpringSecurityInitializer {
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, springMVCServletMapping);
     }
 
-    protected abstract <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context);
+    @SuppressWarnings("unchecked")
+    protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
+        if (context.equals(ServerContext.WORKLIST)) {
+            return (Class<T>) SecurityConfigs.CASAnalise.class;
+        } else if (context.equals(ServerContext.REQUIREMENT)) {
+            return (Class<T>) SecurityConfigs.CASPeticionamento.class;
+        } else if (context.equals(ServerContext.ADMINISTRATION)) {
+            return (Class<T>) SecurityConfigs.AdministrationSecurity.class;
+        }
+        return null;
+    }
 
 }

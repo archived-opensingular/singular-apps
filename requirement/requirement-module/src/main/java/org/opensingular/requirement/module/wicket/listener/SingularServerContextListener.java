@@ -85,11 +85,18 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
         if (singularException instanceof SingularServerException
                 && ((WebRequest) RequestCycle.get().getRequest()).isAjax()) {
             return new AjaxErrorRequestHandler(singularException);
-        } else if (ex instanceof PageExpiredException) {
+        } else if (ex instanceof PageExpiredException || causeIsPageExpiredException(ex)) {
             return new RenderPageRequestHandler(new PageProvider(new Page410()));
         } else {
             return new RenderPageRequestHandler(new PageProvider(new Page500(ex)));
         }
+    }
+
+    private boolean causeIsPageExpiredException(Throwable ex) {
+        if (ex instanceof PageExpiredException) {
+            return true;
+        }
+        return ex.getCause() != null && causeIsPageExpiredException(ex.getCause());
     }
 
     private SingularException getFirstSingularException(Exception ex) {

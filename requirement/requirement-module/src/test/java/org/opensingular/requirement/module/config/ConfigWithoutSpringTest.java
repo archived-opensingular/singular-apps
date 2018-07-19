@@ -18,17 +18,15 @@
 
 package org.opensingular.requirement.module.config;
 
-import javax.servlet.ServletException;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.test.SingularServletContextMock;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION;
-import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION;
-import static org.opensingular.requirement.module.config.SingularInitializer.SERVLET_ATTRIBUTE_WEB_CONFIGURATION;
+import javax.servlet.ServletException;
+
+import static org.opensingular.requirement.module.config.SingularWebApplicationInitializer.*;
 
 public class ConfigWithoutSpringTest {
 
@@ -39,7 +37,7 @@ public class ConfigWithoutSpringTest {
 
     @Test
     public void checkServletParams() throws ServletException {
-        new SingularInitializer(initializer).onStartup(mockServletContext);
+        new SingularWebApplicationInitializer(initializer).onStartup(mockServletContext);
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION));
         Assert.assertNotNull(mockServletContext.getAttribute(SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION));

@@ -49,12 +49,14 @@ import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
+import org.opensingular.requirement.module.ModuleConnector;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
+import org.opensingular.requirement.module.connector.LocalModuleConnector;
+import org.opensingular.requirement.module.connector.LocalModuleDriver;
 import org.opensingular.requirement.module.connector.ModuleDriver;
-import org.opensingular.requirement.module.connector.RESTModuleDriver;
-import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
+import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -342,7 +344,7 @@ public class SingularDefaultBeanFactory {
 
     @Bean
     public ModuleDriver moduleDriver() {
-        return new RESTModuleDriver();
+        return new LocalModuleDriver();
     }
 
     @Bean
@@ -364,4 +366,8 @@ public class SingularDefaultBeanFactory {
         return new ExtratoGeneratorImpl();
     }
 
+    @Bean
+    public ModuleConnector moduleConnector() {
+        return new LocalModuleConnector();
+    }
 }
