@@ -27,7 +27,6 @@ import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerContext;
-import org.opensingular.requirement.module.config.PServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularAdministrationLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
@@ -107,7 +106,7 @@ public class SecurityConfigs {
 
         @Override
         protected IServerContext getContext() {
-            return PServerContext.ADMINISTRATION;
+            return ServerContext.ADMINISTRATION;
         }
     }
 
