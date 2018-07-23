@@ -16,22 +16,38 @@
 
 package org.opensingular.app.commons.mail.schedule;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensingular.flow.schedule.IScheduledJob;
 import org.opensingular.flow.schedule.quartz.QuartzScheduleService;
 import org.opensingular.lib.commons.util.Loggable;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
-import javax.inject.Inject;
+public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable {
 
-public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable{
+    private boolean contextRefreshed;
+    private List<IScheduledJob> toBeScheduled = new ArrayList<>();
 
-    @Inject
-    private PlatformTransactionManager transactionManager;
+    @EventListener(ContextRefreshedEvent.class)
+    public synchronized void init() {
+        contextRefreshed = true;
+        toBeScheduled.forEach(this::internalSchedule);
+        toBeScheduled.clear();
+    }
 
     @Override
-    public void schedule(IScheduledJob scheduledJob) {
-        super.schedule(new TransactionalScheduledJobProxy(scheduledJob, transactionManager));
-        
+    public synchronized void schedule(IScheduledJob scheduledJob) {
+        if (contextRefreshed) {
+            internalSchedule(scheduledJob);
+        } else {
+            toBeScheduled.add(scheduledJob);
+        }
+    }
+
+    private void internalSchedule(IScheduledJob scheduledJob) {
+        super.schedule(new TransactionalScheduledJobProxy(scheduledJob));
         getLogger().info("Job({}) scheduled.", scheduledJob);
     }
 }
