@@ -86,7 +86,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
 
         new SingularAnnotatedMountScanner().mountPages(this);
-        if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_WICKET_DEBUG_ENABLED)) {
             getDebugSettings().setComponentPathAttributeName("wicketdebug");
             WicketSerializationDebugUtil.configurePageSerializationDebug(this, this.getClass());
         }

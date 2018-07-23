@@ -127,9 +127,8 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
      * A property will be used for this configuration.
      */
     private void allowCSRF() {
-        String csrfEnabled = SingularProperties.get().getProperty(SingularProperties.SINGULAR_CSRF_ENABLED, "false");
         //IF CSRF Property is not present or is disabled, all request will be ALLOW.
-        if (StringUtils.isEmpty(csrfEnabled) || !Boolean.parseBoolean(csrfEnabled)) {
+        if (!SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED)) {
             setNoOriginAction(CsrfAction.ALLOW);
             setConflictingOriginAction(CsrfAction.ALLOW);
         }
