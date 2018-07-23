@@ -21,13 +21,13 @@ package org.opensingular.requirement.studio.init;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.config.*;
-import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
+import org.opensingular.requirement.module.config.AbstractSingularInitializer;
+import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
+import org.opensingular.requirement.module.config.SpringSecurityInitializer;
+import org.opensingular.requirement.module.config.WebInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
-import org.opensingular.requirement.studio.wicket.RequirementStudioApplication;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
@@ -60,23 +60,5 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
     @Override
     public SpringSecurityInitializer springSecurityConfiguration() {
         return new RequirementStudioSpringSecurityInitializer();
-    }
-
-    public static class StudioContext extends ServerContext {
-        public static final String NAME = "STUDIO";
-
-        public StudioContext() {
-            super(NAME, "/*", "singular.studio");
-        }
-
-        @Override
-        public Class<? extends RequirementStudioApplication> getWicketApplicationClass() {
-            return RequirementStudioApplication.class;
-        }
-
-        @Override
-        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
-            return null;
-        }
     }
 }

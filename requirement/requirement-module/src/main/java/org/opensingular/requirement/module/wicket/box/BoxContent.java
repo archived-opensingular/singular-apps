@@ -41,7 +41,7 @@ import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
@@ -53,7 +53,6 @@ import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
-import org.opensingular.requirement.module.service.ModuleService;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -67,9 +66,6 @@ import java.util.stream.Collectors;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
-
-    @Inject
-    private ModuleDriver moduleDriver;
 
     @Inject
     private ModuleService moduleService;
@@ -155,7 +151,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String             url  = moduleDriver.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
+            String             url  = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -219,7 +215,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = moduleDriver.executeAction(itemAction, params, actionRequest);
+        ActionResponse response = moduleService.executeAction(itemAction, params, actionRequest);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -338,7 +334,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
-        return moduleDriver.searchFiltered(getItemBoxModelObject(), filter);
+        return moduleService.searchFiltered(getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -354,7 +350,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleDriver.countFiltered(getItemBoxModelObject(), filter);
+        return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

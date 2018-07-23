@@ -39,7 +39,7 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
@@ -62,7 +62,7 @@ public class Menu extends Panel implements Loggable {
     private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     @Inject
-    private ModuleDriver moduleDriver;
+    private ModuleService moduleService;
 
     private Class<? extends WebPage> boxPageClass;
     private MetronicMenu menu;
@@ -143,7 +143,7 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> abbreviations) {
-        return () -> moduleDriver.countAll(itemBoxDTO, abbreviations, getIdCurrentUser());
+        return () -> moduleService.countAll(itemBoxDTO, abbreviations, getIdCurrentUser());
     }
 
     protected String getIdPessoa() {
