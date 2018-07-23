@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
@@ -45,9 +48,6 @@ import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavi
 import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
 import org.springframework.context.ApplicationContext;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
