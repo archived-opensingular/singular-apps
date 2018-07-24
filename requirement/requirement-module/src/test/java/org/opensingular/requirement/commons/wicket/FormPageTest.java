@@ -179,7 +179,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     }
 
     public RequirementInstance getRequirementFrom(FormPage p) {
-        return (RequirementInstance) new Mirror().on(p).invoke().method("getRequirement").withoutArgs();
+        return (RequirementInstance) new Mirror().on(p).invoke().method("getRequirementEntity").withoutArgs();
     }
 
     @WithUserDetails("vinicius.nunes")

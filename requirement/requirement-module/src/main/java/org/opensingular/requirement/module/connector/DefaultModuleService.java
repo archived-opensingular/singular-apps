@@ -186,7 +186,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
             IController controller = getActionController(actionRequest);
-            return controller.run(requirementService.getRequirement(id), actionRequest);
+            return controller.run(requirementService.getRequirementEntity(id), actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR

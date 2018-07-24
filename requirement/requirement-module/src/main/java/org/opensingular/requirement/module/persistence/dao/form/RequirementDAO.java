@@ -49,18 +49,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long> {
+public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
 
     public RequirementDAO() {
-        super((Class<T>) RequirementEntity.class);
+        super(RequirementEntity.class);
     }
 
-    public RequirementDAO(Class<T> entityClass) {
+    public RequirementDAO(Class<RequirementEntity> entityClass) {
         super(entityClass);
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> list(String type) {
+    public List<RequirementEntity> list(String type) {
         Criteria criteria = getSession().createCriteria(this.entityClass);
         criteria.add(Restrictions.eq("type", type));
         return criteria.list();
@@ -111,20 +111,20 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return buildRequirementSearchQuery(query).fetchMap();
     }
 
-    public T findByFlowCodOrException(Integer cod) {
+    public RequirementEntity findByFlowCodOrException(Integer cod) {
         return findByFlowCod(cod).orElseThrow(
                 () -> new SingularServerException("Não foi encontrado a petição com flowInstanceEntity.cod=" + cod));
     }
 
-    public Optional<T> findByFlowCod(Integer cod) {
+    public Optional<RequirementEntity> findByFlowCod(Integer cod) {
         Objects.requireNonNull(cod);
         return findUniqueResult(entityClass, getSession()
                 .createCriteria(entityClass)
                 .add(Restrictions.eq("flowInstanceEntity.cod", cod)));
     }
 
-    public T findByFormEntity(FormEntity formEntity) {
-        return (T) getSession()
+    public RequirementEntity findByFormEntity(FormEntity formEntity) {
+        return (RequirementEntity) getSession()
                 .createQuery(" select p from " + entityClass.getName() + " p inner join p.formRequirementEntities fpe where fpe.form = :form ")
                 .setParameter("form", formEntity)
                 .setMaxResults(1)
@@ -132,7 +132,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     @Override
-    public void delete(T requirement) {
+    public void delete(RequirementEntity requirement) {
         findFormAttachmentByCodRequirement(requirement.getCod()).forEach(getSession()::delete);
         requirement.getFormRequirementEntities().forEach(formRequirementEntity -> {
             FormEntity formEntity = formRequirementEntity.getForm();
@@ -221,7 +221,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .fetchCount() > 0;
     }
 
-    public T findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
+    public RequirementEntity findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
         QRequirementEntity requirement = new QRequirementEntity("requirement");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirement");
         QFormEntity form = new QFormEntity("form");

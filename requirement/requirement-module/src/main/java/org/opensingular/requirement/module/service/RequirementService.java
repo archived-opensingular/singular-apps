@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.module.service;
 
+import com.sun.istack.internal.NotNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -26,11 +27,8 @@ import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
-import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -42,7 +40,9 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -65,6 +65,7 @@ import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.springframework.core.ResolvableType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -83,19 +84,15 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.*;
 
 @Transactional
-public abstract class RequirementService<RE extends RequirementEntity, RI extends RequirementInstance> implements Loggable {
+public abstract class RequirementService implements Loggable {
 
     @Inject
-    protected RequirementDAO<RE> requirementDAO;
-
-    @Inject
-    protected ModuleDAO moduleDAO;
+    protected RequirementDAO requirementDAO;
 
     @Inject
     protected TaskInstanceDAO taskInstanceDAO;
@@ -113,7 +110,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private RequirementContentHistoryDAO requirementContentHistoryDAO;
 
     @Inject
-    private FormRequirementService<RE> formRequirementService;
+    private FormRequirementService<?> formRequirementService;
 
     @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
@@ -131,55 +128,53 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return singularUserDetails.get();
     }
 
-    /**
-     * Deve cria uma instância com base na entidade fornecida.
-     */
-    @Nonnull
-    protected abstract RI newRequirementInstance(@Nonnull RE requirementEntity);
+//    /**
+//     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
+//     */
+//    @Nonnull
+//    private  <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull RE requirementEntity) {
+//        Objects.requireNonNull(requirementEntity);
+//        return newRequirementInstance(requirementEntity);
+//    }
 
-    /**
-     * Deve cria uma nova entidade vazia de persistência.
-     *
-     * @param requirementDefinitionEntity
-     */
-    @Nonnull
-    protected abstract RE newRequirementEntityFor(RequirementDefinitionEntity requirementDefinitionEntity);
-
-    /**
-     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
-     */
-    @Nonnull
-    private RI getRequirementInstance(@Nonnull RE requirementEntity) {
-        Objects.requireNonNull(requirementEntity);
-        return newRequirementInstance(requirementEntity);
-    }
-
-    /**
-     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
-     */
-    @Nonnull
-    public RI getRequirementInstance(@Nonnull FlowInstance flowInstance) {
-        Objects.requireNonNull(flowInstance);
-        RI instance = getRequirementInstance(getRequirementByFlowCod(flowInstance.getEntityCod()));
-        instance.setFlowInstance(flowInstance);
-        return instance;
-    }
+//    /**
+//     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
+//     */
+//    @Nonnull
+//    public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull FlowInstance flowInstance) {
+//        Objects.requireNonNull(flowInstance);
+//        RI instance = getRequirementInstance(getRequirementByFlowCod(flowInstance.getEntityCod()));
+//        instance.setFlowInstance(flowInstance);
+//        return instance;
+//    }
 
 
-    /**
-     * Recupera a petição associada a task informada ou dispara exception senão encontrar.
-     */
-    @Nonnull
-    public RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
-        Objects.requireNonNull(taskInstance);
-        return getRequirementInstance(taskInstance.getFlowInstance());
+//    /**
+//     * Recupera a petição associada a task informada ou dispara exception senão encontrar.
+//     */
+//    @Nonnull
+//    public  <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
+//        Objects.requireNonNull(taskInstance);
+//        return getRequirementInstance(taskInstance.getFlowInstance());
+//    }
+
+    public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinitionForRequirementId(Long requirementId) {
+        String   key         = getRequirementDefinition(requirementId).getKey();
+        String[] definitions = ApplicationContextProvider.get().getBeanNamesForType(ResolvableType.forClass(RequirementDefinition.class));
+        for (String definitionName : definitions) {
+            RequirementDefinition<?> definition = (RequirementDefinition<?>) ApplicationContextProvider.get().getBean(definitionName);
+            if (definition.getKey().equals(key)) {
+                return (RD) definition;
+            }
+        }
+        throw new SingularRequirementException(String.format("Could not corresponding definition for requirement instance id: %s and definition key %s", requirementId, key));
     }
 
     /**
      * Retorna o serviço de formulários da petição.
      */
     @Nonnull
-    protected FormRequirementService<RE> getFormRequirementService() {
+    protected FormRequirementService<?> getFormRequirementService() {
         return Objects.requireNonNull(formRequirementService);
     }
 
@@ -188,7 +183,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      *
      * @param requirement
      */
-    protected void configureApplicant(RI requirement) {
+    protected <RI extends RequirementInstance> void configureApplicant(RI requirement) {
         UserDetails userDetails = singularUserDetails.get();
         if (userDetails instanceof SingularRequirementUserDetails) {
             ApplicantEntity p;
@@ -209,7 +204,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * Procura a petição com o código informado.
      */
     @Nonnull
-    private Optional<RE> findRequirementByCod(@Nonnull Long cod) {
+    private Optional<RequirementEntity> findRequirementByCod(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
         return requirementDAO.find(cod);
     }
@@ -218,9 +213,9 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * Procura a petição com o código informado.
      */
     @Nonnull
-    public Optional<RI> findRequirement(@Nonnull Long cod) {
+    public Optional<RequirementEntity> findRequirementEntity(@Nonnull Long cod) {
         Objects.requireNonNull(cod);
-        return requirementDAO.find(cod).map(this::newRequirementInstance);
+        return requirementDAO.find(cod);
     }
 
     /**
@@ -228,7 +223,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     @Deprecated
-    public RE getRequirementByCod(@Nonnull Long cod) {
+    public RequirementEntity getRequirementByCod(@Nonnull Long cod) {
         return findRequirementByCod(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
     }
@@ -237,8 +232,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * Recupera a petição com o código informado ou dispara Exception senão encontrar.
      */
     @Nonnull
-    public RI getRequirement(@Nonnull Long cod) {
-        return findRequirement(cod).orElseThrow(
+    public RequirementEntity getRequirementEntity(@Nonnull Long cod) {
+        return findRequirementEntity(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
     }
 
@@ -247,29 +242,29 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     @Deprecated
-    public RE getRequirementByFlowCod(@Nonnull Integer cod) {
+    public RequirementEntity getRequirementByFlowCod(@Nonnull Integer cod) {
         Objects.requireNonNull(cod);
         return requirementDAO.findByFlowCodOrException(cod);
     }
 
-    /**
-     * Recupera a petição associado ao fluxo informado.
-     */
-    @Nonnull
-    public RI getRequirement(@Nonnull FlowInstance flowInstance) {
-        Objects.requireNonNull(flowInstance);
-        RE requirement = getRequirementByFlowCod(flowInstance.getEntityCod());
-        return newRequirementInstance(requirement);
-    }
+//    /**
+//     * Recupera a petição associado ao fluxo informado.
+//     */
+//    @Nonnull
+//    public <RI extends RequirementInstance> RI getRequirementEntity(@Nonnull FlowInstance flowInstance) {
+//        Objects.requireNonNull(flowInstance);
+//        RE requirement = getRequirementByFlowCod(flowInstance.getEntityCod());
+//        return newRequirementInstance(requirement);
+//    }
 
-    /**
-     * Recupera a petição associada a tarefa informada.
-     */
-    @Nonnull
-    public RI getRequirement(@Nonnull TaskInstance taskInstance) {
-        Objects.requireNonNull(taskInstance);
-        return getRequirement(taskInstance.getFlowInstance());
-    }
+//    /**
+//     * Recupera a petição associada a tarefa informada.
+//     */
+//    @Nonnull
+//    public <RI extends RequirementInstance> RI getRequirementEntity(@Nonnull TaskInstance taskInstance) {
+//        Objects.requireNonNull(taskInstance);
+//        return getRequirementEntity(taskInstance.getFlowInstance());
+//    }
 
     public void deleteRequirement(@Nonnull Long idRequirement) {
         requirementDAO.find(idRequirement).ifPresent(re -> requirementDAO.delete(re));
@@ -293,11 +288,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
 
     @Nonnull
-    public FormKey saveOrUpdate(@Nonnull RI requirement, @Nonnull SInstance instance, boolean mainForm) {
+    public <RI extends RequirementInstance> FormKey saveOrUpdate(@Nonnull RI requirement, @Nonnull SInstance instance, boolean mainForm) {
         Objects.requireNonNull(requirement);
         Objects.requireNonNull(instance);
 
-        requirementDAO.saveOrUpdate((RE) requirement.getEntity());
+        requirementDAO.saveOrUpdate(requirement.getEntity());
 
         if (requirement.getApplicant() != null) {
             applicantDAO.saveOrUpdate(requirement.getApplicant());
@@ -305,13 +300,13 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return formRequirementService.saveFormRequirement(requirement, instance, mainForm);
     }
 
-    public void onAfterStartFlow(RI requirement, SInstance instance, String codSubmitterActor, FlowInstance flowInstance) {
+    public <RI extends RequirementInstance> void onAfterStartFlow(RI requirement, SInstance instance, String codSubmitterActor, FlowInstance flowInstance) {
     }
 
-    public void onBeforeStartFlow(RI requirement, SInstance instance, String codSubmitterActor) {
+    public <RI extends RequirementInstance> void onBeforeStartFlow(RI requirement, SInstance instance, String codSubmitterActor) {
     }
 
-    public void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
+    public <RI extends RequirementInstance> void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByRequirementId(requirement.getCod());
         FormEntity                   formEntity   = requirement.getEntity().getMainForm();
@@ -351,11 +346,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * Executa a transição informada, consolidando todos os rascunhos, este metodo não salva a petição
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public void executeTransition(String transitionName,
-                                  RI requirement,
-                                  BiConsumer<RI, String> transitionListener,
-                                  Map<String, String> processParameters,
-                                  Map<String, String> transitionParameters) {
+    public <RI extends RequirementInstance> void executeTransition(String transitionName,
+                                                                   RI requirement,
+                                                                   BiConsumer<RI, String> transitionListener,
+                                                                   Map<String, String> processParameters,
+                                                                   Map<String, String> transitionParameters) {
         try {
             if (transitionListener != null) {
                 transitionListener.accept(requirement, transitionName);
@@ -416,23 +411,10 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return Optional.of(taskInstances.get(0));
     }
 
-    public List<ModuleEntity> listAllModules() {
-        return moduleDAO.listAll();
-    }
-
-    public ModuleEntity findByModuleCod(String cod) {
-        return moduleDAO.get(cod).orElse(null);
-    }
 
     @Nonnull
-    public RI createNewRequirementWithoutSave(@Nullable Class<? extends FlowDefinition> classFlowDefinition, @Nullable RI parentRequirement,
-                                              @Deprecated @Nullable Consumer<RI> creationListener, RequirementDefinition requirementDefinition) {
-
-        final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
-
-        if (classFlowDefinition != null) {
-            requirementEntity.setFlowDefinitionEntity((FlowDefinitionEntity) Flow.getFlowDefinition(classFlowDefinition).getEntityFlowDefinition());
-        }
+    public void configureParentRequirement(@Nonnull RequirementInstance<?, ?> requirementInstance, @NotNull RequirementInstance<?, ?> parentRequirement) {
+        RequirementEntity requirementEntity = requirementInstance.getEntity();
         if (parentRequirement != null) {
             RequirementEntity parentRequirementEntity = parentRequirement.getEntity();
             requirementEntity.setParentRequirement(parentRequirementEntity);
@@ -442,41 +424,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
                 requirementEntity.setRootRequirement(parentRequirementEntity);
             }
         }
-
-        RI requirement = newRequirementInstance(requirementEntity);
-        configureApplicant(requirement);
-        if (creationListener != null) {
-            creationListener.accept(requirement);
-        }
-        return requirement;
     }
-
-    @Nonnull
-    public RI createNewRequirementWithoutSave(RequirementDefinition requirementDefinition, RequirementInstance instance,  @Nullable RI parentRequirement) {
-
-        final RE requirementEntity = newRequirementEntityFor(requirementDefinitionEntity);
-
-        if (classFlowDefinition != null) {
-            requirementEntity.setFlowDefinitionEntity((FlowDefinitionEntity) Flow.getFlowDefinition(classFlowDefinition).getEntityFlowDefinition());
-        }
-        if (parentRequirement != null) {
-            RequirementEntity parentRequirementEntity = parentRequirement.getEntity();
-            requirementEntity.setParentRequirement(parentRequirementEntity);
-            if (parentRequirementEntity.getRootRequirement() != null) {
-                requirementEntity.setRootRequirement(parentRequirementEntity.getRootRequirement());
-            } else {
-                requirementEntity.setRootRequirement(parentRequirementEntity);
-            }
-        }
-
-        RI requirement = newRequirementInstance(requirementEntity);
-        configureApplicant(requirement);
-        if (creationListener != null) {
-            creationListener.accept(requirement);
-        }
-        return requirement;
-    }
-
 
     /**
      * List history entries.
@@ -487,10 +435,9 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * @param codRequirement
      * @return
      */
-    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(long codRequirement, boolean showHidden) {
-        List<RequirementHistoryDTO> entries = requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(codRequirement);
+    public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(RequirementInstance<?, ?> requirementInstance, boolean showHidden) {
+        List<RequirementHistoryDTO> entries = requirementContentHistoryDAO.listRequirementContentHistoryByCodRequirement(requirementInstance.getCod());
         if (!showHidden) {
-            RequirementInstance requirementInstance = getRequirement(codRequirement);
             Set<String> hiddenEntriesAbbreviation = requirementInstance
                     .getFlowDefinition()
                     .getFlowMap()
@@ -623,7 +570,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<FormVersionEntity> findLastFormEntityByType(@Nonnull RequirementInstance requirement,
-                                                                        @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                @Nonnull Class<? extends SType<?>> typeClass) {
         Objects.requireNonNull(requirement);
         return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
                 .map(FormVersionHistoryEntity::getFormVersion);
@@ -663,7 +610,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
             });
         }
 
-        RE requirementEntity = (RE) requirement.getEntity();
+        RequirementEntity requirementEntity = requirement.getEntity();
         requirementEntity.setFlowInstanceEntity(flowEntity);
         requirementEntity.setFlowDefinitionEntity(flowEntity.getFlowVersion().getFlowDefinition());
         requirementDAO.saveOrUpdate(requirementEntity);
@@ -681,7 +628,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         return requirementDAO.containChildren(codRequirement);
     }
 
-    public void updateRequirementDescription(SInstance currentInstance, RI requirement) {
+    public <RI extends RequirementInstance> void updateRequirementDescription(SInstance currentInstance, RI requirement) {
         String description = currentInstance.toStringDisplay();
         if (description != null && description.length() > 200) {
             getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
@@ -690,11 +637,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         requirement.setDescription(description);
     }
 
-    public RequirementDefinitionEntity findRequirementDefinition(Long requirementId) {
+    public RequirementDefinitionEntity getRequirementDefinition(Long requirementId) {
         return requirementDefinitionDAO.findOrException(requirementId);
     }
 
-    public void logTaskVisualization(RI requirement) {
+    public <RI extends RequirementInstance> void logTaskVisualization(RI requirement) {
         TaskInstance taskInstance = requirement.getFlowInstance().getCurrentTaskOrException();
         taskInstance.log(TASK_VISUALIZATION, FormatUtil.dateToDefaultTimestampString(new Date()));
     }

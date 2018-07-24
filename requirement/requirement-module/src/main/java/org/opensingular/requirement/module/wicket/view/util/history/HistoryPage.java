@@ -73,7 +73,7 @@ public class HistoryPage extends ServerTemplate {
     private static final int QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE = 5;
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     private Long requirementPK;
 
@@ -105,7 +105,7 @@ public class HistoryPage extends ServerTemplate {
         WebComponent imageHistFlow;
         if (requirementPK != null) {
             String classCss = " col-md-12 ";
-            FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+            FlowInstance flowInstance = requirementService.getRequirementEntity(requirementPK).getFlowInstance();
             flowInstance.getTasksOlderFirst();
             if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
                 classCss = " col-md-6 col-md-offset-3 ";

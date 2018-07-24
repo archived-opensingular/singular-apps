@@ -18,29 +18,12 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
-import javax.annotation.Nonnull;
-
 /**
  * Implementação padrão de {@link RequirementService}. Não acrescenta nenhuma funcionaldiade ao serviço.
  *
  * @author Daniel C. Bordin on 08/03/2017.
  */
-public class DefaultRequirementService extends RequirementService<RequirementEntity, RequirementInstance> {
+public class DefaultRequirementService extends RequirementService {
 
-    @Override
-    @Nonnull
-    protected RequirementInstance newRequirementInstance(@Nonnull RequirementEntity requirementEntity) {
-        return new RequirementInstance(requirementEntity);
-    }
 
-    @Override
-    @Nonnull
-    protected RequirementEntity newRequirementEntityFor(RequirementDefinitionEntity requirementDefinitionEntity) {
-        RequirementEntity requirementEntity = new RequirementEntity();
-        requirementEntity.setRequirementDefinitionEntity(requirementDefinitionEntity);
-        return requirementEntity;
-    }
 }

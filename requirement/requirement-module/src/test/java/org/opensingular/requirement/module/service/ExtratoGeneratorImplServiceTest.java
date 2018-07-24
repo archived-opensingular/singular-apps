@@ -72,7 +72,7 @@ public class ExtratoGeneratorImplServiceTest {
         nome.ifPresent(field -> field.setValue(JOAQUIM));
 
         when(requirement.getMainForm()).thenReturn(siComposite);
-        when(requirementService.getRequirement(1L))
+        when(requirementService.getRequirementEntity(1L))
                 .thenReturn(requirement);
     }
 

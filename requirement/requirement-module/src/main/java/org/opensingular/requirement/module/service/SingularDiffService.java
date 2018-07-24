@@ -93,8 +93,8 @@ public class SingularDiffService {
      * @return
      */
     public DiffSummary diffRequirementsLastMainForms(@Nonnull Long currentRequirementId, @Nonnull Long otherRequirementId) {
-        RequirementInstance currentRequirement = requirementService.getRequirement(currentRequirementId);
-        RequirementInstance otherRequirement   = requirementService.getRequirement(otherRequirementId);
+        RequirementInstance currentRequirement = requirementService.getRequirementEntity(currentRequirementId);
+        RequirementInstance otherRequirement   = requirementService.getRequirementEntity(otherRequirementId);
         return diffFormVersions(currentRequirement.getMainFormCurrentFormVersion(), otherRequirement.getMainFormCurrentFormVersion());
     }
 
@@ -109,7 +109,7 @@ public class SingularDiffService {
         FormVersionEntity previousFormVersion = null;
         FormVersionEntity currentFormVersion;
 
-        RequirementInstance   requirement = requirementService.getRequirement(requirementId);
+        RequirementInstance   requirement = requirementService.getRequirementEntity(requirementId);
         String                typeName    = RequirementUtil.getTypeName(requirement);
         Optional<DraftEntity> draftEntity = requirement.getEntity().currentEntityDraftByType(typeName);
 

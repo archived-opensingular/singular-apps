@@ -53,7 +53,7 @@ import java.util.Optional;
 public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD extends RequirementDefinition<SELF>> implements Serializable {
 
     @Inject
-    private RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    private RequirementService requirementService;
 
     @Inject
     private FormRequirementService<RequirementEntity> formRequirementService;
@@ -86,7 +86,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     @Nonnull
     public SIComposite getMainForm() {
         if (mainForm == null) {
-            mainForm = getRequirementService().getMainFormAsInstance(getEntity());
+            mainForm = requirementService.getMainFormAsInstance(getEntity());
         }
         return mainForm;
     }
@@ -108,8 +108,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     @Nonnull
-    private RequirementService<?, ?> getRequirementService() {
-        return ApplicationContextProvider.get().getBean(RequirementService.class);
+    public void saveForm(@Nonnull SInstance instance, boolean mainForm) {
+        requirementService.saveOrUpdate(this, instance, mainForm);
     }
 
     public FlowDefinition<?> getFlowDefinition() {
@@ -139,8 +139,10 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     @Nonnull
     public Optional<RequirementInstance> getParentRequirement() {
-        return Optional.ofNullable(getEntity().getParentRequirement()).map(
-                parent -> ((RequirementService<RequirementEntity, ?>) getRequirementService()).newRequirementInstance(parent));
+        return Optional.ofNullable(this.getEntity())
+                .map(RequirementEntity::getParentRequirement)
+                .map(RequirementEntity::getCod)
+                .map(cod -> requirementService.lookupRequirementDefinitionForRequirementId(cod).loadRequirement(cod));
     }
 
     @Nonnull
@@ -165,11 +167,11 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     public FlowInstance startNewFlow(@Nonnull FlowDefinition flowDefinition) {
-        flowInstance = getRequirementService().startNewFlow(this, flowDefinition, null);
+        flowInstance = requirementService.startNewFlow(this, flowDefinition, null);
         return flowInstance;
     }
 
-    public RequirementEntity getEntity() {
+    RequirementEntity getEntity() {
         if (getCod() != null) {
             requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
         }
@@ -217,9 +219,9 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         final List<FormEntity>  consolidatedDrafts = formRequirementService.consolidateDrafts(this);
         final FlowDefinition<?> flowDefinition     = RequirementUtil.getFlowDefinition(getEntity());
 
-        requirementService.onBeforeStartFlow(this, instance, codSubmitterActor);
+        requirementService.onBeforeStartFlow(this, getMainForm(), codSubmitterActor);
         FlowInstance flowInstance = requirementService.startNewFlow(this, flowDefinition, codSubmitterActor);
-        requirementService.onAfterStartFlow(this, instance, codSubmitterActor, flowInstance);
+        requirementService.onAfterStartFlow(this, getMainForm(), codSubmitterActor, flowInstance);
 
         requirementService.saveRequirementHistory(this, consolidatedDrafts);
 

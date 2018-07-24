@@ -54,7 +54,6 @@ import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
 
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 
@@ -141,7 +140,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
 
-        Optional<RequirementInstance> requirement = requirementService.findRequirement(requirementInstance.getCod());
+        Optional<RequirementInstance> requirement = requirementService.findRequirementEntity(requirementInstance.getCod());
     }
 
     @Test
@@ -152,7 +151,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
         requirementService.saveOrUpdate(requirementInstance, instance, true);
 
-        RequirementInstance requirement = requirementService.getRequirement(requirementInstance.getCod());
+        RequirementInstance requirement = requirementService.getRequirementEntity(requirementInstance.getCod());
         Assert.assertEquals(requirementInstance.getEntity(), requirement.getEntity());
     }
 
@@ -165,7 +164,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         requirementService.saveOrUpdate(requirementInstance, instance, true);
 
         requirementService.deleteRequirement(requirementInstance.getCod());
-        Assert.assertFalse(requirementService.findRequirement(requirementInstance.getCod()).isPresent());
+        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
     }
 
     @Test
@@ -177,7 +176,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         requirementService.saveOrUpdate(requirementInstance, instance, true);
 
         requirementService.deleteRequirement(requirementInstance.getCod());
-        Assert.assertFalse(requirementService.findRequirement(requirementInstance.getCod()).isPresent());
+        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
     }
 
     @Test
@@ -197,7 +196,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test(expected = SingularException.class)
     @Rollback
     public void testGetRequirementException() {
-        requirementService.getRequirement((long) 0);
+        requirementService.getRequirementEntity((long) 0);
     }
 
     @Test
@@ -280,8 +279,8 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
         RequirementInstance p2 = requirementService.getRequirementInstance(flowInstance);
         RequirementInstance p3 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
-        RequirementInstance p4 = requirementService.getRequirement(flowInstance);
-        RequirementInstance p5 = requirementService.getRequirement(flowInstance.getCurrentTaskOrException());
+        RequirementInstance p4 = requirementService.getRequirementEntity(flowInstance);
+        RequirementInstance p5 = requirementService.getRequirementEntity(flowInstance.getCurrentTaskOrException());
 
         assertEquals(requirementInstance.getCod(), p2.getCod());
         assertEquals(requirementInstance.getCod(), p3.getCod());

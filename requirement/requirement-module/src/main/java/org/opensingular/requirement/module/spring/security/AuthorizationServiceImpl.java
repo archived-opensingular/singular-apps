@@ -26,7 +26,6 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
@@ -283,7 +282,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @return
      */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
-        RequirementInstance requirement = requirementService.getRequirement(requirementId);
+        RequirementInstance requirement = requirementService.getRequirementEntity(requirementId);
         boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()

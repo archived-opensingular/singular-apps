@@ -74,7 +74,6 @@ import org.opensingular.internal.lib.support.spring.injection.SingularSpringInje
 import org.opensingular.lib.commons.context.RefService;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
@@ -90,7 +89,6 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementDe
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
 import org.opensingular.requirement.module.service.ServerSInstanceFlowAwareService;
@@ -299,7 +297,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         final RI requirement = loadRequirement();
 
 
-        currentModel = $m.loadable(() -> requirement != null && requirement.getCod() != null ? requirementService.getRequirement(requirement.getCod()) : requirement);
+        currentModel = $m.loadable(() -> requirement != null && requirement.getCod() != null ? requirementService.getRequirementEntity(requirement.getCod()) : requirement);
         currentModel.setObject(requirement);
 
         fillTransitionControllerMap(transitionControllerMap);
@@ -339,7 +337,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         RI requirement;
         Optional<Long> requirementId = config.getRequirementId();
         if (requirementId.isPresent()) {
-            requirement = requirementService.getRequirement(requirementId.get());
+            requirement = requirementService.getRequirementEntity(requirementId.get());
             FormEntity formEntityDraftOrRequirement = getDraftOrFormEntity(requirement);
             requirement.getMainForm();
             if (formEntityDraftOrRequirement != null) {
@@ -349,7 +347,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             RI parentRequirement = null;
             Optional<Long> parentRequirementId = config.getParentRequirementId();
             if (parentRequirementId.isPresent()) {
-                parentRequirement = requirementService.getRequirement(parentRequirementId.get());
+                parentRequirement = requirementService.getRequirementEntity(parentRequirementId.get());
                 parentRequirementFormKeyModel.setObject(
                         formRequirementService.formKeyFromFormEntity(parentRequirement.getEntity().getMainForm()));
             }
@@ -361,7 +359,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
 
     protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
         return getConfig().getRequirementDefinitionId()
-                .map(requirementService::findRequirementDefinition).orElse(null);
+                .map(requirementService::getRequirementDefinition).orElse(null);
     }
 
     private FormEntity getDraftOrFormEntity(RI requirement) {
@@ -504,7 +502,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             int totalVersoes = 0;
 
             // Verifica se existe rascunho
-            RequirementInstance requirement = requirementService.getRequirement(requirementId);
+            RequirementInstance requirement = requirementService.getRequirementEntity(requirementId);
             String typeName = RequirementUtil.getTypeName(requirement);
             if (requirement.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
@@ -621,16 +619,17 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         onBeforeSave(currentInstance);
         SInstance instance = currentInstance.getObject();
         if (instance != null) {
-            RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
-            formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
-            onSave(requirement, transitionName);
+            getRequirement().saveForm(instance, true);
+//            RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
+//            formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
+            onSave(transitionName);
         }
     }
 
-    protected void onSave(RI requirement, String transitionName) {
+    protected void onSave(String transitionName) {
         transitionConfirmModalMap.forEach((k, v) -> {
             if (v.isDirty()) {
-                getRequirementService().saveOrUpdate(requirement, v.getInstanceModel().getObject(), false);
+                getRequirementService().saveOrUpdate(getRequirement(), v.getInstanceModel().getObject(), false);
                 v.setDirty(false);
             }
         });
@@ -674,7 +673,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                     onAfterSend(ajxrt, sm, sendedFeedback);
             } catch (Exception ex) {
                 //recarrega a petição novamente
-                getRequirementModel().setObject(requirementService.getRequirement(requirement.getCod()));
+                getRequirementModel().setObject(requirementService.getRequirementEntity(requirement.getCod()));
                 //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
                 throw SingularServerException.rethrow(ex.getMessage(), ex);
             }
@@ -762,7 +761,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             onTransitionExecuted(ajxrt, tn);
         } catch (Exception ex) {
             //recarrega a petição novamente
-            getRequirementModel().setObject(requirementService.getRequirement(requirement.getCod()));
+            getRequirementModel().setObject(requirementService.getRequirementEntity(requirement.getCod()));
             //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
             throw SingularServerException.rethrow(ex.getMessage(), ex);
         }

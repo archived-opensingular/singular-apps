@@ -91,7 +91,6 @@
             <groupId>net.sf.ehcache</groupId>
             <artifactId>ehcache</artifactId>
         </dependency>
-
         <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-flow-core</artifactId>
@@ -132,6 +131,10 @@
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
             <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-commons</artifactId>
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
