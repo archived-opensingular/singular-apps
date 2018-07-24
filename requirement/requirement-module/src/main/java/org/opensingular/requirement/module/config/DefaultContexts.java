@@ -28,6 +28,13 @@ public interface DefaultContexts {
         public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.CASAnalise.class;
         }
+
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultInbox.class)
+                    .addBox(DefaultDraftbox.class);
+        }
     }
 
     class RequirementContextWithCAS extends ServerContext {
@@ -50,6 +57,13 @@ public interface DefaultContexts {
         @Override
         public boolean checkOwner() {
             return true;
+        }
+
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultDraftbox.class)
+                    .addBox(DefaultOngoingbox.class);
         }
     }
 
