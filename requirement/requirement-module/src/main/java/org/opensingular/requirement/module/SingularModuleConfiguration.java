@@ -22,14 +22,16 @@ package org.opensingular.requirement.module;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
-import java.util.*;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -39,24 +41,24 @@ public class SingularModuleConfiguration {
 
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
-    private RequirementConfiguration requirementConfiguration;
+    private RequirementRegistry requirementRegistry;
 
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
-        resolveRequirements();
+        resolveRequirements(applicationContext);
         resolveWorkspace(applicationContext);
     }
 
     private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
-        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry(requirementConfiguration, applicationContext);
+        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry(applicationContext);
         module.workspace(workspaceRegistry);
         module.defaultWorkspace(workspaceRegistry);
         this.workspaceRegistry = workspaceRegistry;
     }
 
-    private void resolveRequirements() {
-        requirementConfiguration = new RequirementConfiguration();
-        module.requirements(requirementConfiguration);
+    private void resolveRequirements(AnnotationConfigWebApplicationContext applicationContext) {
+        requirementRegistry = new RequirementRegistry(applicationContext);
+        module.requirements(requirementRegistry);
     }
 
     private void resolveModule() throws IllegalAccessException, InstantiationException {
@@ -76,16 +78,15 @@ public class SingularModuleConfiguration {
     }
 
     public SingularRequirement getRequirementById(Long id) {
-        return requirementConfiguration.getRequirements()
+        return requirementRegistry.getRequirements()
                 .stream()
-                .filter(r -> Objects.equals(r.getId(), id))
-                .map(SingularRequirementRef::getRequirement)
+                .filter(r -> Objects.equals(r.getDefinitionCod(), id))
                 .findFirst()
                 .orElse(null);
     }
 
-    public List<BoxInfo> getBoxByContext(IServerContext context) {
-        return workspaceRegistry.get(context).map(WorkspaceConfiguration::getBoxInfos).orElse(Collections.emptyList());
+    public Set<BoxInfo> getBoxByContext(IServerContext context) {
+        return workspaceRegistry.get(context).map(WorkspaceConfiguration::getBoxInfos).orElse(Collections.emptySet());
     }
 
     public Optional<BoxInfo> getBoxByBoxId(String boxId) {
@@ -96,8 +97,8 @@ public class SingularModuleConfiguration {
                 .filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }
 
-    public List<SingularRequirementRef> getRequirements() {
-        return requirementConfiguration.getRequirements();
+    public List<SingularRequirement> getRequirements() {
+        return requirementRegistry.getRequirements();
     }
 
     public SingularModule getModule() {

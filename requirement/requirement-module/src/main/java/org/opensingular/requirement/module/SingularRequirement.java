@@ -20,6 +20,7 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.flow.FlowResolver;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
@@ -30,7 +31,6 @@ import org.opensingular.requirement.module.wicket.view.form.FormPage;
  * This class groups the main Singular components needed to orchestrate the requirement.
  */
 public interface SingularRequirement {
-
     /**
      * The requirement descriptive name
      * Must be unique across requirements in the same module
@@ -55,6 +55,15 @@ public interface SingularRequirement {
      */
     FlowResolver getFlowResolver();
 
+    /**
+     *
+     */
+    void setEntity(RequirementDefinitionEntity requirementDefinitionEntity);
+
+    /**
+     *
+     */
+    Long getDefinitionCod();
 
     /**
      * Returns a custom initial form page.
@@ -70,5 +79,4 @@ public interface SingularRequirement {
     default Class<? extends RequirementSender> getRequirementSenderBeanClass(){
         return DefaultRequirementSender.class;
     }
-
 }

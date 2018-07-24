@@ -18,29 +18,24 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
-import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 /**
  * Configuration object for module {@link BoxDefinition} registrations.
  */
 public class WorkspaceConfiguration {
-    private final List<BoxInfo> boxInfos = new ArrayList<>();
-    private final RequirementConfiguration requirementConfiguration;
+    private final Set<BoxInfo> boxInfos = new LinkedHashSet<>();
     private final AnnotationConfigWebApplicationContext applicationContext;
 
     private BoxInfo latest;
 
-    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration, AnnotationConfigWebApplicationContext applicationContext) {
-        this.requirementConfiguration = requirementConfiguration;
+    public WorkspaceConfiguration(AnnotationConfigWebApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
@@ -55,28 +50,14 @@ public class WorkspaceConfiguration {
     /**
      * API_VIEW, acredito que o melhor lugar é dentro da definição da caixa?
      */
+    @SafeVarargs
     @Deprecated
-    public WorkspaceConfiguration newFor(RequirementProvider... requirementProvider) {
-        Arrays.stream(requirementProvider)
-                .map(requirementConfiguration::getRequirementRef).forEach(latest::addSingularRequirementRef);
-        return this;
-
-    }
-
-    /**
-     * API_VIEW, acredito que o melhor lugar é dentro da definição da caixa?
-     */
-    @Deprecated
-    public WorkspaceConfiguration newFor(SingularRequirement... requirement) {
-        Arrays.stream(requirement)
-                .map(requirementConfiguration::getRequirementRef).forEach(latest::addSingularRequirementRef);
+    public final WorkspaceConfiguration newFor(Class<? extends SingularRequirement>... requirement) {
+        Arrays.stream(requirement).forEach(latest::addSingularRequirementRef);
         return this;
     }
 
-    public interface RequirementProvider extends IFunction<SingularRequirementBuilder, SingularRequirement> {
-    }
-
-    public List<BoxInfo> getBoxInfos() {
+    public Set<BoxInfo> getBoxInfos() {
         return boxInfos;
     }
 }

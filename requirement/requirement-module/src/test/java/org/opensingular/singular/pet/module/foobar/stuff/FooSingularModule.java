@@ -18,17 +18,18 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
-import org.opensingular.requirement.module.RequirementConfiguration;
+import org.opensingular.requirement.module.RequirementRegistry;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.config.DefaultContexts;
-import org.opensingular.requirement.module.workspace.*;
+import org.opensingular.requirement.module.workspace.DefaultDraftbox;
+import org.opensingular.requirement.module.workspace.DefaultInbox;
+import org.opensingular.requirement.module.workspace.DefaultOngoingbox;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 
 public class FooSingularModule implements SingularModule {
 
     public static final String GRUPO_TESTE = "GRUPO_TESTE";
-    private FooRequirement fooRequirement = new FooRequirement();
 
     @Override
     public String abbreviation() {
@@ -41,31 +42,35 @@ public class FooSingularModule implements SingularModule {
     }
 
     @Override
-    public void requirements(RequirementConfiguration config) {
-        config
-                .addRequirement(fooRequirement)
-                .addRequirement(this::barRequirement);
+    public void requirements(RequirementRegistry requirementRegistry) {
+        requirementRegistry
+                .add(FooRequirement.class);
     }
 
     @Override
     public void workspace(WorkspaceRegistry workspaceRegistry) {
         workspaceRegistry
-                .add(DefaultContexts.WorklistContext.class)
-                .addBox(DefaultInbox.class).newFor(this::barRequirement)
-                .addBox(DefaultDonebox.class).newFor(fooRequirement);
-
-        workspaceRegistry
-                .add(DefaultContexts.RequirementContext.class)
-                .addBox(DefaultDraftbox.class).newFor(this::barRequirement)
-                .addBox(DefaultOngoingbox.class).newFor(fooRequirement);
+                .add(FooWorklistContext.class)
+                .add(FooRequirementContext.class);
     }
 
 
-    public SingularRequirement barRequirement(SingularRequirementBuilder builder) {
-        return builder
-                .name("Bar Requirement")
-                .mainForm(STypeFoo.class)
-                .allowedFlow(FooFlow.class)
-                .build();
+    public static class FooWorklistContext extends DefaultContexts.WorklistContext {
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultInbox.class).newFor(FooRequirement.class)
+                    .addBox(DefaultDraftbox.class);
+        }
     }
+
+    public static class FooRequirementContext extends DefaultContexts.RequirementContext {
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultDraftbox.class).newFor(FooRequirement.class)
+                    .addBox(DefaultOngoingbox.class);
+        }
+    }
+
 }

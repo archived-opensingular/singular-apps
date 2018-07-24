@@ -98,7 +98,7 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
         return singularModuleConfiguration.getModule();
     }
 
-    public List<BoxInfo> getBoxByContext(IServerContext context) {
+    public Set<BoxInfo> getBoxByContext(IServerContext context) {
         return singularModuleConfiguration.getBoxByContext(context);
     }
 
@@ -122,10 +122,10 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
         ItemBox itemBox = factory.build(context);
         itemBox.setFieldsDatatable(factory.getDatatableFields());
         itemBox.setId(boxInfo.getBoxId());
-        return new BoxDefinitionData(itemBox, boxInfo.getRequirementsData());
+        return new BoxDefinitionData(itemBox, boxInfo.getRequirements());
     }
 
-    public List<SingularRequirementRef> getRequirements() {
+    public List<SingularRequirement> getRequirements() {
         return singularModuleConfiguration.getRequirements();
     }
 

@@ -39,10 +39,10 @@ public interface SingularModule {
     String name();
 
     /**
-     * @param config All requirements managed by this module and its corresponding
-     *               configuration must be declared in the {@link RequirementConfiguration} object
+     * @param requirementRegistry All requirements managed by this module and its corresponding
+     *               configuration must be declared in the {@link RequirementRegistry} object
      */
-    void requirements(RequirementConfiguration config);
+    void requirements(RequirementRegistry requirementRegistry);
 
     /**
      * TODO
