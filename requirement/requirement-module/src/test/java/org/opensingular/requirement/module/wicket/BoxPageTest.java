@@ -45,7 +45,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
 
     static {
         ContextUtil.setContextPath(SINGULAR);
-        ContextUtil.setPathInfo(SINGULAR + ServerContext.REQUIREMENT.getUrlPath());
+        ContextUtil.setPathInfo(SINGULAR + "/requirement");
     }
 
     private SingularWicketTester tester;

@@ -35,7 +35,7 @@ public class WorkspaceConfiguration {
     private List<BoxController> itemBoxes = new ArrayList<>();
     private RequirementConfiguration requirementConfiguration;
 
-    WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
+    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
         this.requirementConfiguration = requirementConfiguration;
     }
 

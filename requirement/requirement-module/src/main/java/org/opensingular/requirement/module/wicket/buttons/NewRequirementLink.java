@@ -18,10 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -31,8 +27,11 @@ import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
 public class NewRequirementLink extends Panel {
 
@@ -101,7 +100,7 @@ public class NewRequirementLink extends Panel {
     }
 
     protected String buildURL(RequirementData requirement) {
-        return new NewRequirementUrlBuilder(url, moduleCod, requirement.getId()).getURL();
+        return new NewRequirementUrlBuilder(url, requirement.getId()).getURL();
     }
 
     @Override

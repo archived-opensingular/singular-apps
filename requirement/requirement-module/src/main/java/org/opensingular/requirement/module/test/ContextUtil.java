@@ -21,20 +21,14 @@ package org.opensingular.requirement.module.test;
 import javax.servlet.ServletRequest;
 
 import net.vidageek.mirror.dsl.Mirror;
-import org.opensingular.requirement.module.config.ServerContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.requirement.module.config.DefaultContexts;
 
 public class ContextUtil {
-
     private static String contextPath = "/singular";
-    private static String pathInfo    = contextPath + ServerContext.WORKLIST.getUrlPath();
-    private static Logger logger      = LoggerFactory.getLogger(ContextUtil.class);
+    private static String pathInfo = contextPath + new DefaultContexts.WorklistContext().getUrlPath();
 
     public static void prepareRequest(ServletRequest request) {
-//        logger.info("Configurando Request Context Path: " + contextPath);
         new Mirror().on(request).invoke().setterFor("contextPath").withValue(contextPath);
-//        logger.info("Configurando Request Path Info: " + pathInfo);
         new Mirror().on(request).invoke().setterFor("pathInfo").withValue(pathInfo);
     }
 

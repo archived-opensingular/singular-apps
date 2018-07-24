@@ -18,50 +18,25 @@
 
 package org.opensingular.requirement.commons;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementData;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.support.TransactionTemplate;
+import org.opensingular.requirement.module.service.dto.*;
+import org.springframework.context.annotation.Primary;
 
-@Named
-public class WorkspaceMetadataMockBean {
+import javax.annotation.PostConstruct;
+import javax.inject.Named;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
-
-    private Map<ModuleEntity, WorkspaceConfigurationMetadata> map = new HashMap<>();
-
-    @Inject
-    private ModuleDAO moduleDAO;
-
-    @Inject
-    private PlatformTransactionManager transactionManager;
-
+@Primary
+@Named("workspaceConfigurationMetadata")
+public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
+    private WorkspaceConfigurationMetadata w;
 
     @PostConstruct
     public void init() {
-        configBoxesMock();
-    }
-
-
-    public WorkspaceConfigurationMetadata gimmeSomeMock() {
-        WorkspaceConfigurationMetadata w = new WorkspaceConfigurationMetadata();
+        w = new WorkspaceConfigurationMetadata();
         w.setBoxesConfiguration(new ArrayList<>());
         BoxConfigurationData box = new BoxConfigurationData();
         box.setId("id-teste-SingularServerSessionConfigurationMock");
@@ -71,15 +46,12 @@ public class WorkspaceMetadataMockBean {
         box.getProcesses().add(p);
         box.setBoxesDefinition(new ArrayList<>());
         BoxDefinitionData boxDefinitionData = new BoxDefinitionData();
-        final ItemBox     teste             = new ItemBox();
+        final ItemBox teste = new ItemBox();
         teste.setName("Rascunho");
         teste.setDescription("Petições de rascunho");
         teste.setIcone(DefaultIcons.DOCS);
         teste.setShowDraft(true);
         teste.setId("1");
-//        teste.addAction(DefaultActions.EDIT)
-//                .addAction(DefaultActions.VIEW)
-//                .addAction(DefaultActions.DELETE);
         teste.setFieldsDatatable(getDatatableFields());
         boxDefinitionData.setRequirements(new ArrayList<>());
         RequirementData req = new RequirementData();
@@ -89,7 +61,6 @@ public class WorkspaceMetadataMockBean {
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);
         w.getBoxesConfiguration().add(box);
-        return w;
     }
 
     private List<DatatableField> getDatatableFields() {
@@ -100,24 +71,18 @@ public class WorkspaceMetadataMockBean {
         return fields;
     }
 
-
-    private void configBoxesMock() {
-        try {
-            ModuleEntity moduleEntity = new ModuleEntity();
-            new TransactionTemplate(transactionManager).execute((transactionStatus) -> {
-                moduleEntity.setName("Grupo Processo Teste");
-                moduleEntity.setCod("GRUPO_TESTE");
-                moduleEntity.setConnectionURL("http://localhost:8080/rest/nada");
-                moduleDAO.saveOrUpdate(moduleEntity);
-                return null;
-            });
-            map.put(moduleEntity, gimmeSomeMock());
-        } catch (Exception e) {
-            throw SingularException.rethrow(e);
-        }
+    @Override
+    public List<BoxConfigurationData> getBoxesConfiguration() {
+        return w.getBoxesConfiguration();
     }
 
-    public Map<ModuleEntity, WorkspaceConfigurationMetadata> getMap() {
-        return new LinkedHashMap<>(map);
+    @Override
+    public void setBoxesConfiguration(List<BoxConfigurationData> boxesConfiguration) {
+        w.setBoxesConfiguration(boxesConfiguration);
+    }
+
+    @Override
+    public Optional<BoxConfigurationData> getMenuByLabel(String menu) {
+        return w.getMenuByLabel(menu);
     }
 }

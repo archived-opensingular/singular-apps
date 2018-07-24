@@ -18,13 +18,6 @@
 
 package org.opensingular.requirement.module.rest;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
 import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,11 +29,20 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.DefaultActionProvider;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.eq;
@@ -55,15 +57,18 @@ public class BoxDefinitionDataServiceTest {
     @Mock
     private AuthorizationService        authorizationService;
     @Mock
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
+
     @InjectMocks
-    private ModuleBackstageService      moduleBackstageService;
+    private DefaultModuleService moduleService;
 
     private QuickFilter quickFilter;
 
     private Long countSize = 1L;
 
     private String boxId = "123456";
+
+    private  ItemBox box;
 
     public void setUpApplicationContextMock() {
 
@@ -94,18 +99,20 @@ public class BoxDefinitionDataServiceTest {
 
         when(singularModuleConfiguration.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
 
-
         setUpApplicationContextMock();
+
+        box = new ItemBox();
+        box.setId(boxId);
     }
 
     @Test
-    public void testCount() throws Exception {
-        assertThat(moduleBackstageService.count(boxId, quickFilter), Matchers.is(countSize));
+    public void testCount() {
+        assertThat(moduleService.countFiltered(box, quickFilter), Matchers.is(countSize));
     }
 
     @Test
-    public void testSearch() throws Exception {
-        assertThat(moduleBackstageService.search(boxId, quickFilter).getBoxItemDataList().size(), Matchers.is(countSize.intValue()));
+    public void testSearch() {
+        assertThat(moduleService.searchFiltered(box, quickFilter).size(), Matchers.is(countSize.intValue()));
     }
 
 }

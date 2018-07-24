@@ -36,7 +36,7 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public void configureInitSQLScripts(List<String> scripts) {
-
+        scripts.add("dml/insert-mock-module.sql");
     }
 
 

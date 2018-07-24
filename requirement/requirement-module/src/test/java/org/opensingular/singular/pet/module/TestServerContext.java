@@ -23,15 +23,14 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
+import org.opensingular.requirement.module.config.AbstractSingularInitializer;
+import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.opensingular.requirement.module.config.ServerContext.REQUIREMENT;
-import static org.opensingular.requirement.module.config.ServerContext.WORKLIST;
 
 public class TestServerContext {
 
@@ -40,6 +39,9 @@ public class TestServerContext {
      */
     private static final String WORKLIST_CONTEXT = "/worklist";
 
+    IServerContext worklist = new DefaultContexts.WorklistContext();
+    IServerContext requirement = new DefaultContexts.RequirementContext();
+    
     private HttpServletRequest getRequest() {
         HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
         Mockito.when(mockedRequest.getContextPath()).thenReturn("/singular");
@@ -49,20 +51,21 @@ public class TestServerContext {
 
     @Test
     public void testContextFromRequest() {
-        Assert.assertEquals(ServerContext.WORKLIST, IServerContext.getContextFromRequest(getRequest(),
-                new IServerContext[]{REQUIREMENT, WORKLIST}));
+     
+        Assert.assertEquals(worklist, IServerContext.getContextFromRequest(getRequest(),
+                new IServerContext[]{requirement, worklist}));
     }
 
     @Test
     public void testRegexFromContextPath() {
-        Assert.assertEquals(WORKLIST_CONTEXT + "/*", ServerContext.WORKLIST.getContextPath());
+        Assert.assertEquals(WORKLIST_CONTEXT + "/*", worklist.getContextPath());
 
-        Pattern p = Pattern.compile(ServerContext.WORKLIST.getPathRegex());
-        Matcher m = p.matcher(ServerContext.WORKLIST.getContextPath());
+        Pattern p = Pattern.compile(worklist.getPathRegex());
+        Matcher m = p.matcher(worklist.getContextPath());
 
         Assert.assertTrue(m.find());
         Assert.assertEquals(0, m.groupCount());
-        Assert.assertEquals(ServerContext.WORKLIST.getContextPath(), m.group());
+        Assert.assertEquals(worklist.getContextPath(), m.group());
     }
 
 
@@ -70,12 +73,12 @@ public class TestServerContext {
     public void testUrlPath() {
         UrlValidator validator = new UrlValidator();
 
-        String path = ServerContext.WORKLIST.getUrlPath() + "/pagina/testeurl";
+        String path = worklist.getUrlPath() + "/pagina/testeurl";
         String url = "http://127.0.0.1:8080" + path;
 
         Assert.assertTrue(validator.isValid(url));
 
-        Pattern p = Pattern.compile(ServerContext.WORKLIST.getPathRegex());
+        Pattern p = Pattern.compile(worklist.getPathRegex());
         Matcher m = p.matcher(url);
 
         Assert.assertTrue(m.find());

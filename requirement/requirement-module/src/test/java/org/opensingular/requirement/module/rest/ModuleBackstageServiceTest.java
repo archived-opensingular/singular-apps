@@ -18,20 +18,22 @@
 
 package org.opensingular.requirement.module.rest;
 
-import java.util.List;
-import javax.inject.Inject;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.box.BoxItemDataList;
-import org.opensingular.requirement.module.config.ServerContext;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.box.BoxItemDataMap;
+import org.opensingular.requirement.module.config.DefaultContexts;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -44,7 +46,7 @@ import static org.mockito.Mockito.reset;
 public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
 
     @Inject
-    private ModuleBackstageService moduleBackstageService;
+    private ModuleService moduleService;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -58,20 +60,25 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
         doNothing().when(authorizationService).filterBoxWithPermissions(any(), any());
-        List<BoxConfigurationData> boxConfigurationData = moduleBackstageService.listMenu(ServerContext.REQUIREMENT.getName(), "vinicius.nunes");
-        assertFalse(boxConfigurationData.isEmpty());
+        WorkspaceConfigurationMetadata workspaceConfigurationMetadata = moduleService
+                .loadWorkspaceConfiguration(DefaultContexts.RequirementContext.NAME, "vinicius.nunes");
+        assertFalse(workspaceConfigurationMetadata.getBoxesConfiguration().isEmpty());
     }
 
     @Test
     public void count() {
-        Long count = moduleBackstageService.count("", new QuickFilter());
+        ItemBox box = new ItemBox();
+        box.setId("");
+        Long count = moduleService.countFiltered(box, new QuickFilter());
         assertEquals(Long.valueOf(0), count);
     }
 
     @Test
     public void search() {
-        BoxItemDataList search = moduleBackstageService.search("", new QuickFilter());
-        assertTrue(search.getBoxItemDataList().isEmpty());
+        ItemBox box = new ItemBox();
+        box.setId("");
+        List<BoxItemDataMap> result = moduleService.searchFiltered(box, new QuickFilter());
+        assertTrue(result.isEmpty());
     }
 
 }

@@ -18,56 +18,87 @@
 
 package org.opensingular.requirement.module.connector;
 
-import java.util.List;
-import java.util.Map;
-
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
-public interface ModuleDriver {
+import java.util.List;
+import java.util.Map;
 
-    /**
-     * Retrieve the module workspace
-     */
-    WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext);
+public interface ModuleService {
 
     /**
      * Count all elements inside a box
      */
-    String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser);
+    String countAll(ItemBox box, List<String> flowNames, String loggedUser);
 
     /**
      * Count elements inside a box, applying the filter
      */
-    long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter);
+    long countFiltered(ItemBox box, QuickFilter filter);
 
     /**
      * Searchelements inside a box, applying the filter
      */
-    List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter);
+    List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter);
 
     /**
      * Find users that can execute the confirmAction
      */
-    List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction);
+    List<Actor> findEligibleUsers(BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction);
 
     /**
      * Execute a action
      */
-    ActionResponse executeAction(ModuleEntity module, BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest);
+    ActionResponse executeAction(BoxItemAction rowAction, Map<String, String> params, ActionRequest actionRequest);
 
     /**
      * Build a static endpoint
      */
     String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI);
+
+    /**
+     * Load the workspace metadata
+     */
+    WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
+
+    /**
+     *
+     */
+    RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType);
+
+    /**
+     *
+     */
+    ModuleEntity getModule();
+
+    /**
+     *
+     */
+    String getBaseUrl();
+
+    /**
+     *
+     */
+    String getModuleContext();
+
+    /**
+     * Persiste se necessário o RequirementDefinitionEntity
+     * e atualiza no ref o valor que está em banco.
+     *
+     * @param ref - o ref a partir do qual o {@link RequirementDefinitionEntity} será criado
+     */
+    void save(SingularRequirementRef ref);
 
 }

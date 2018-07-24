@@ -40,9 +40,9 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.module.flow.SingularWebRef;
@@ -80,7 +80,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();

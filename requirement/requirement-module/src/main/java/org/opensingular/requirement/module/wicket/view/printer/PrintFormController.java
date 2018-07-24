@@ -10,9 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.box.action.defaults.ExtratoAction;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.service.ExtratoGeneratorService;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
@@ -32,7 +32,7 @@ public class PrintFormController implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
 
     /**

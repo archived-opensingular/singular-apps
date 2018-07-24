@@ -53,7 +53,7 @@ public class FormInitializer {
     }
 
     @SuppressWarnings("unchecked")
-    protected synchronized List<Class<? extends SType<?>>> getTypes() {
+    public synchronized List<Class<? extends SType<?>>> getTypes() {
         if (types == null){
             types = new ArrayList<>();
             SingularClassPathScanner.get()

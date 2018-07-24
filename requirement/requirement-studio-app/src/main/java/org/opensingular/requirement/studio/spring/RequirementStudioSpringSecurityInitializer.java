@@ -42,9 +42,9 @@ import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 public class RequirementStudioSpringSecurityInitializer extends SpringSecurityInitializer {
 
     @Override
-    protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
-        Class<T> securityConfig = super.getSpringSecurityConfigClass(context);
-        return Optional.ofNullable(securityConfig).orElse(((Class<T>) StudioSecurity.class));
+    public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
+        Class<? extends WebSecurityConfigurerAdapter> securityConfig = super.getSpringSecurityConfigClass(context);
+        return Optional.ofNullable(securityConfig).orElse(StudioSecurity.class);
     }
 
     @AutoScanDisabled
@@ -71,7 +71,7 @@ public class RequirementStudioSpringSecurityInitializer extends SpringSecurityIn
                     .formLogin().permitAll().loginPage("/login")
                     .and()
                     .logout()
-                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*",  HttpMethod.GET.name()))
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
                     .logoutSuccessUrl("/");
 
 
@@ -96,6 +96,5 @@ public class RequirementStudioSpringSecurityInitializer extends SpringSecurityIn
         }
 
     }
-
 
 }
