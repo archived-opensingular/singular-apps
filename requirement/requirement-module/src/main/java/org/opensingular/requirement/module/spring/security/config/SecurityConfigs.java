@@ -19,6 +19,7 @@
 package org.opensingular.requirement.module.spring.security.config;
 
 
+import net.vidageek.mirror.dsl.Mirror;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
@@ -28,6 +29,7 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -39,7 +41,10 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Optional;
@@ -79,7 +84,7 @@ public interface SecurityConfigs {
     @Order(105)
     @Configuration
     @AutoScanDisabled
-    class AdministrationSecurity extends AbstractSingularSpringSecurityAdapter {
+    class AdministrationSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
         @Inject
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<AdminCredentialChecker> credentialChecker;
@@ -132,7 +137,7 @@ public interface SecurityConfigs {
         }
     }
 
-    abstract class AllowAllSecurity extends AbstractSingularSpringSecurityAdapter {
+    abstract class AllowAllSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.regexMatcher(getContext().getPathRegex())
@@ -174,7 +179,29 @@ public interface SecurityConfigs {
                 }
             });
         }
+    }
 
+    /**
+     * Adapter que configura o logincontroller
+     */
+    abstract class AbstractSingularSpringSecurityWithFormAdapter extends AbstractSingularSpringSecurityAdapter {
+
+        @Inject
+        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+        private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+        @PostConstruct
+        public void setup() {
+            requestMappingHandlerMapping
+                    .registerMapping(RequestMappingInfo.paths(getContext().getUrlPath() + "/login").build(),
+                            loginController(), new Mirror().on(LoginController.class)
+                                    .reflect().method("getLoginView").withAnyArgs());
+        }
+
+        @Bean
+        public LoginController loginController() {
+            return new LoginController();
+        }
     }
 
 }
