@@ -19,8 +19,8 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.DatatableField;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 
 import java.io.Serializable;

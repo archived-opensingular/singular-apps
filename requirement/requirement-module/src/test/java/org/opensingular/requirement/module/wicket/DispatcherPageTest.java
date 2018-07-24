@@ -22,13 +22,13 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-import org.opensingular.requirement.commons.form.FormAction;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.test.CommonsApplicationMock;
-import org.opensingular.requirement.commons.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
-import org.opensingular.requirement.commons.wicket.view.form.FormPage;
-import org.opensingular.requirement.module.test.SingularModuleBaseTest;
+import org.opensingular.requirement.commons.CommonsApplicationMock;
+import org.opensingular.requirement.commons.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
+import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.wicket.view.util.dispatcher.DispatcherPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -36,10 +36,10 @@ import org.springframework.test.context.TestExecutionListeners;
 import javax.inject.Inject;
 
 import static org.mockito.Mockito.*;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
-public class DispatcherPageTest extends SingularModuleBaseTest {
+public class DispatcherPageTest extends SingularCommonsBaseTest {
 
 
     @Inject
@@ -62,8 +62,8 @@ public class DispatcherPageTest extends SingularModuleBaseTest {
         tester = new SingularWicketTester(singularApplication);
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
-        pageParameters.add(FORM_NAME, "foooooo.StypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, requirementDefinitionEntity.getCod());
+        pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, getRequirementDefinition().getCod());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(AccessDeniedPage.class);
     }
@@ -75,8 +75,8 @@ public class DispatcherPageTest extends SingularModuleBaseTest {
         tester = new SingularWicketTester(singularApplication);
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
-        pageParameters.add(FORM_NAME, "foooooo.StypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, requirementDefinitionEntity.getCod());
+        pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, getRequirementDefinition().getCod());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(FormPage.class);
     }

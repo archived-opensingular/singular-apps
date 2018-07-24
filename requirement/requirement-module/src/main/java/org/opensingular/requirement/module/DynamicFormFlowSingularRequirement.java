@@ -19,8 +19,8 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.form.SType;
-import org.opensingular.requirement.commons.service.RequirementSender;
-import org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage;
+import org.opensingular.requirement.module.service.RequirementSender;
+import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 
 /**
  * Singular requirement implementation capable of dynamically resolve

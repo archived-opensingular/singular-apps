@@ -25,7 +25,6 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
@@ -37,27 +36,27 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.commons.config.IServerContext;
-import org.opensingular.requirement.commons.config.SingularServerConfiguration;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.flow.SingularRequirementTaskPageStrategy;
-import org.opensingular.requirement.commons.flow.SingularWebRef;
-import org.opensingular.requirement.commons.form.FormAction;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.service.SingularRequirementService;
-import org.opensingular.requirement.commons.spring.security.AuthorizationService;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.error.AccessDeniedPage;
-import org.opensingular.requirement.commons.wicket.view.SingularHeaderResponseDecorator;
-import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
-import org.opensingular.requirement.commons.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.commons.wicket.view.form.DiffFormPage;
-import org.opensingular.requirement.commons.wicket.view.form.FormPage;
-import org.opensingular.requirement.commons.wicket.view.form.ReadOnlyFormPage;
-import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
-import org.opensingular.requirement.commons.wicket.view.util.ActionContext;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
+import org.opensingular.requirement.module.flow.SingularWebRef;
+import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.spring.security.AuthorizationService;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.view.SingularHeaderResponseDecorator;
+import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
+import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
+import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
+import org.opensingular.requirement.module.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
+import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
+import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
 import java.lang.reflect.Constructor;
@@ -80,7 +79,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();

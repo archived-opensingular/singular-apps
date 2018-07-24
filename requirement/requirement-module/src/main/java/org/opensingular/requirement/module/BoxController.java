@@ -24,6 +24,10 @@ import org.opensingular.requirement.commons.box.BoxItemDataImpl;
 import org.opensingular.requirement.commons.box.BoxItemDataList;
 import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
 import org.opensingular.requirement.commons.service.dto.RequirementData;
+import org.opensingular.requirement.module.box.BoxItemDataImpl;
+import org.opensingular.requirement.module.box.BoxItemDataList;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.util.CollectionUtils;
 

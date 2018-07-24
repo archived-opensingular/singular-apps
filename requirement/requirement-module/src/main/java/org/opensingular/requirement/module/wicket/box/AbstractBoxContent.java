@@ -33,7 +33,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -41,26 +40,21 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.commons.form.FormAction;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.commons.service.dto.FormDTO;
-import org.opensingular.requirement.commons.service.dto.RequirementDefinitionDTO;
-import org.opensingular.requirement.commons.wicket.view.behavior.SingularJSBehavior;
-import org.opensingular.requirement.commons.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.FormDTO;
+import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 /**
  * Classe base para construição de caixas do servidor de petições
@@ -76,7 +70,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     @Inject
     @SpringBean(required = false)
-    protected MenuService menuService;
+    protected WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     /**
      * Tabela de registros
@@ -86,7 +80,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
      * Confirmation Form
      */
 
-    private   String                         moduleCod;
     private   String                         menu;
     private   List<RequirementDefinitionDTO> processes;
     private   List<FormDTO>                  forms;
@@ -113,26 +106,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private WebMarkupContainer confirmModalWrapper = new WebMarkupContainer("confirmModalWrapper");
 
-    private ModuleEntity module;
-
-    public AbstractBoxContent(String id, String moduleCod, String menu) {
+    public AbstractBoxContent(String id, String menu) {
         super(id);
-        this.moduleCod = moduleCod;
         this.menu = menu;
     }
 
     public IModel<T> getDataModel() {
         return dataModel;
-    }
-
-
-
-    protected String getModuleCod() {
-        return moduleCod;
-    }
-
-    public ModuleEntity getModule() {
-        return module;
     }
 
     protected Component buildNewRequirementButton(String id) {
@@ -250,7 +230,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        module = requirementService.findByModuleCod(getModuleCod());
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
@@ -263,18 +242,16 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
-            if (menuService != null) {
-                BoxConfigurationData boxConfigurationMetadata = menuService.getMenuByLabel(getMenu());
-                setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
-                setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
+            if (workspaceConfigurationMetadata != null) {
+                Optional<BoxConfigurationData> boxConfig = workspaceConfigurationMetadata.getMenuByLabel(getMenu());
+                setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
+                setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
             }
             if (CollectionUtils.isEmpty(getProcesses())) {
                 getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
             }
         }
     }
-
-
 
     protected BaseDataProvider<T, String> createDataProvider() {
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {

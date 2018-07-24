@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.commons.SingularRequirement;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
@@ -36,7 +36,7 @@ public class WorkspaceConfiguration {
     private List<BoxController> itemBoxes = new ArrayList<>();
     private RequirementConfiguration requirementConfiguration;
 
-    WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
+    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
         this.requirementConfiguration = requirementConfiguration;
     }
 
