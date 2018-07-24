@@ -26,6 +26,7 @@ import org.springframework.context.annotation.Primary;
 import javax.annotation.PostConstruct;
 import javax.inject.Named;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,11 +54,8 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
         teste.setShowDraft(true);
         teste.setId("1");
         teste.setFieldsDatatable(getDatatableFields());
-        boxDefinitionData.setRequirements(new ArrayList<>());
-        RequirementData req = new RequirementData();
-        req.setLabel("Super req");
-        req.setId(2L);
-        boxDefinitionData.getRequirements().add(req);
+        boxDefinitionData.setRequirements(new LinkedHashSet<>());
+        boxDefinitionData.getRequirements().add(null);
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);
         w.getBoxesConfiguration().add(box);

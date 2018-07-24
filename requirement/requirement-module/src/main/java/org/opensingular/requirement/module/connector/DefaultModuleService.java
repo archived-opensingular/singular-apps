@@ -37,7 +37,6 @@ import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
@@ -270,14 +269,14 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     @Override
-    public void save(SingularRequirementRef ref) {
-        Class<? extends SType> mainForm = ref.getRequirement().getMainForm();
+    public void save(SingularRequirement requirement) {
+        Class<? extends SType> mainForm = requirement.getMainForm();
         SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
         FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
 
-        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(ref.getRequirement(), formType);
+        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirement, formType);
         requirementDefinitionDAO.save(requirementDefinitionEntity);
-        ref.setRequirementDefinitionEntity(requirementDefinitionEntity);
+        requirement.setEntity(requirementDefinitionEntity);
     }
 
     @Override

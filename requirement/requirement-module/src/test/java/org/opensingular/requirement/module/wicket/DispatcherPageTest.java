@@ -63,7 +63,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, getRequirementDefinition().getCod());
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, getCodRequirementDefinition());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(AccessDeniedPage.class);
     }
@@ -76,7 +76,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, getRequirementDefinition().getCod());
+        pageParameters.add(REQUIREMENT_DEFINITION_ID, getCodRequirementDefinition());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(FormPage.class);
     }
