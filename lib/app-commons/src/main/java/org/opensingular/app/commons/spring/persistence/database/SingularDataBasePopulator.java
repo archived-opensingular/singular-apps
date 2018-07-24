@@ -1,21 +1,23 @@
 package org.opensingular.app.commons.spring.persistence.database;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.sql.Connection;
+import java.sql.SQLException;
+import java.sql.Savepoint;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import javax.annotation.Nonnull;
+
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.springframework.core.io.ByteArrayResource;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
 import org.springframework.jdbc.datasource.init.ScriptException;
 
-import javax.annotation.Nonnull;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import java.sql.Connection;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 public class SingularDataBasePopulator extends ResourceDatabasePopulator implements Loggable {
 
-    private String                           sqlScriptEncoding;
+    private String sqlScriptEncoding;
     private PersistenceConfigurationProvider persistenceConfigurationProvider;
 
     public SingularDataBasePopulator(@Nonnull PersistenceConfigurationProvider persistenceConfigurationProvider) {
@@ -26,8 +28,22 @@ public class SingularDataBasePopulator extends ResourceDatabasePopulator impleme
 
     @Override
     public void populate(Connection connection) throws ScriptException {
-        super.addScript(new ByteArrayResource(formattedScriptsToExecute(persistenceConfigurationProvider).toString().getBytes(Charset.forName(this.sqlScriptEncoding)),"Singular Schema Export Hibernate DDL + SQL Files"));
-        super.populate(connection);
+
+        try {
+            connection.setAutoCommit(false);
+            Savepoint savepoint = connection.setSavepoint();
+            try {
+                super.addScript(new ByteArrayResource(formattedScriptsToExecute(persistenceConfigurationProvider).toString().getBytes(Charset.forName(this.sqlScriptEncoding)), "Singular Schema Export Hibernate DDL + SQL Files"));
+                super.populate(connection);
+                connection.commit();
+                connection.setAutoCommit(true);
+            } catch (Exception e) {
+                connection.rollback(savepoint);
+                getLogger().error("Error running the Database populator >>> " + e);
+            }
+        } catch (SQLException e) {
+            getLogger().error("Error trying to set autocommit false >>> " + e);
+        }
     }
 
     /**
@@ -44,9 +60,9 @@ public class SingularDataBasePopulator extends ResourceDatabasePopulator impleme
                 persistenceConfigurationProvider.getSQLScritps()
         );
         for (DatabaseObjectNameReplacement schemaReplacement : persistenceConfigurationProvider.getSchemaReplacements()) {
-            Pattern p     = Pattern.compile(Pattern.quote(schemaReplacement.getOriginalObjectName()));
-            Matcher m     = p.matcher(scripts);
-            int     start = 0;
+            Pattern p = Pattern.compile(Pattern.quote(schemaReplacement.getOriginalObjectName()));
+            Matcher m = p.matcher(scripts);
+            int start = 0;
             while (m.find(start)) {
                 scripts.replace(m.start(), m.end(), schemaReplacement.getObjectNameReplacement());
                 start = m.start() + schemaReplacement.getObjectNameReplacement().length();

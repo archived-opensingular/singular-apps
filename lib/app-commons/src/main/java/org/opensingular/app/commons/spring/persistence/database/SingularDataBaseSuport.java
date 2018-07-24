@@ -39,4 +39,17 @@ public interface SingularDataBaseSuport {
      * @return The script file of Actor.
      */
     String getDefaultActorScript();
+
+
+    /**
+     * Method that return the script file of Quartz.
+     * <p>
+     * If the project don't use Quartz database, this script could be empty.
+     * Property:<code>singular.quartz.jobstore.enabled</code>
+     * <p>
+     * We do not recommend using Quartz in memory for Cluster applications.
+     *
+     * @return The script file of Quartz.
+     */
+    String getQuartzScript();
 }
