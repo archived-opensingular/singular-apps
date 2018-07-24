@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module.config;
 
+import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
-import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
-import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -33,48 +33,33 @@ import java.util.EnumSet;
 
 public class SpringSecurityInitializer {
 
-    static final String SINGULAR_SECURITY = "[SINGULAR][SECURITY] {} {}";
     public static final Logger logger = LoggerFactory.getLogger(SpringSecurityInitializer.class);
 
-    public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping, IServerContext[] serverContexts) {
+    public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping) {
         addRestSecurity(applicationContext);
-        addSpringSecurityFilter(ctx, applicationContext, springMVCServletMapping);
-        for (IServerContext context : serverContexts) {
-            logger.info(SINGULAR_SECURITY, "Securing (Spring Security) context:", context.getContextPath());
-            Class<WebSecurityConfigurerAdapter> config = getSpringSecurityConfigClass(context);
-            if (config != null) {
-                applicationContext.register(config);
-                addLogoutFilter(ctx, applicationContext, springMVCServletMapping, context);
-            }
-        }
+        addSpringSecurityFilter(ctx, springMVCServletMapping);
+        addSingleSignOutListener(ctx);
     }
 
     protected void addRestSecurity(AnnotationConfigWebApplicationContext applicationContext) {
         applicationContext.register(DefaultRestSecurity.class);
     }
 
-    protected void addLogoutFilter(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping, IServerContext context) {
-        ctx
-                .addFilter("singularLogoutFilter" + System.identityHashCode(context), SingularLogoutFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getUrlPath() + "/logout");
-    }
-
-    protected void addSpringSecurityFilter(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext, String springMVCServletMapping) {
+    protected void addSpringSecurityFilter(ServletContext ctx, String springMVCServletMapping) {
         ctx
                 .addFilter("springSecurityFilterChain", DelegatingFilterProxy.class)
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, springMVCServletMapping);
     }
 
     @SuppressWarnings("unchecked")
-    protected <T extends WebSecurityConfigurerAdapter> Class<T> getSpringSecurityConfigClass(IServerContext context) {
-        if (context.equals(ServerContext.WORKLIST)) {
-            return (Class<T>) SecurityConfigs.CASAnalise.class;
-        } else if (context.equals(ServerContext.REQUIREMENT)) {
-            return (Class<T>) SecurityConfigs.CASPeticionamento.class;
-        } else if (context.equals(ServerContext.ADMINISTRATION)) {
-            return (Class<T>) SecurityConfigs.AdministrationSecurity.class;
+    public Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClass(IServerContext context) {
+        return context.getSpringSecurityConfigClass();
+    }
+
+    protected void addSingleSignOutListener(ServletContext servletContext) {
+        if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
+            servletContext.addListener(SingleSignOutHttpSessionListener.class);
         }
-        return null;
     }
 
 }

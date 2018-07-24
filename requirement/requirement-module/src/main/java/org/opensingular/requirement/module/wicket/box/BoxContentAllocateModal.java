@@ -29,10 +29,9 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
-import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 
 import javax.inject.Inject;
@@ -41,17 +40,14 @@ import java.util.List;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<BoxItemDataMap> {
-    private final IModel<ModuleEntity> moduleEntity;
 
     @Inject
-    private ModuleDriver moduleDriver;
+    private ModuleService moduleService;
 
     protected DropDownChoice<Actor> usersDropDownChoice;
 
-    public BoxContentAllocateModal(BoxItemAction itemAction, IModel<BoxItemDataMap> dataModel,
-                                   IModel<ModuleEntity> moduleEntity) {
+    public BoxContentAllocateModal(BoxItemAction itemAction, IModel<BoxItemDataMap> dataModel) {
         super(itemAction, dataModel);
-        this.moduleEntity = moduleEntity;
     }
 
     protected abstract void onDeallocate(AjaxRequestTarget target);
@@ -71,8 +67,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     }
 
     private void addUsersDropDownChoice() {
-        IModel<List<Actor>> actorsModel = $m.get(() -> moduleDriver.findEligibleUsers(moduleEntity.getObject(),
-                dataModel.getObject(), itemAction.getConfirmation()));
+        IModel<List<Actor>> actorsModel = $m.get(() -> moduleService.findEligibleUsers(dataModel.getObject(), itemAction.getConfirmation()));
         usersDropDownChoice = new DropDownChoice<>("usersDropDownChoice",
                 new Model<>(),
                 actorsModel,

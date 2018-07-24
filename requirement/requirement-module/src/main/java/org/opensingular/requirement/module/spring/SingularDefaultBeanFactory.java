@@ -41,6 +41,7 @@ import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
+import org.opensingular.form.spring.SingularUserDetails;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
@@ -49,14 +50,15 @@ import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.requirement.module.ModuleConnector;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
-import org.opensingular.requirement.module.connector.LocalModuleConnector;
-import org.opensingular.requirement.module.connector.LocalModuleDriver;
-import org.opensingular.requirement.module.connector.ModuleDriver;
-import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
+import org.opensingular.requirement.module.connector.DefaultModuleService;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
+import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -94,8 +96,14 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 
 @SuppressWarnings("rawtypes")
@@ -337,8 +345,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ModuleDriver moduleDriver() {
-        return new LocalModuleDriver();
+    public ModuleService moduleDriver() {
+        return new DefaultModuleService();
     }
 
     @Bean
@@ -361,7 +369,14 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public ModuleConnector moduleConnector() {
-        return new LocalModuleConnector();
+    @Scope(WebApplicationContext.SCOPE_REQUEST)
+    public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
+            SingularModuleConfigurationBean singularServerConfiguration, ModuleService moduleService,
+            SingularUserDetails singularUserDetails) {
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest req = sra.getRequest();
+        IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
+        return moduleService.loadWorkspaceConfiguration(menuContext.getName(), singularUserDetails.getUsername());
     }
+
 }

@@ -1,5 +1,7 @@
 package org.opensingular.requirement.module.config;
 
+import org.opensingular.requirement.module.WorkspaceInitializer;
+
 public interface SingularInitializer {
     FlowInitializer flowConfiguration();
 
@@ -14,4 +16,6 @@ public interface SingularInitializer {
     SpringSecurityInitializer springSecurityConfiguration();
 
     SpringHibernateInitializer springHibernateConfiguration();
+
+    WorkspaceInitializer workspaceConfiguration();
 }

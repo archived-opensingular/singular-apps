@@ -27,14 +27,15 @@ import org.opensingular.flow.persistence.util.HibernateSingularFlowConfiguration
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
 public class SingularServerFlowConfigurationBean extends HibernateSingularFlowConfigurationBean implements Loggable {
 
     @Inject
-    protected SingularServerConfiguration singularServerConfiguration;
+    protected SingularModuleConfigurationBean singularServerConfiguration;
+
     @Inject
     protected PlatformTransactionManager transactionManager;
 

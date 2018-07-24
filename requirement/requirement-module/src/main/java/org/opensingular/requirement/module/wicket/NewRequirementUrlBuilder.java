@@ -32,12 +32,10 @@ import static org.opensingular.requirement.module.wicket.view.util.ActionContext
 public class NewRequirementUrlBuilder {
 
     private final String baseURL;
-    private final String moduleCod;
     private final Long   requirementDefinitionId;
 
-    public NewRequirementUrlBuilder(String baseURL, String moduleCod, Long requirementDefinitionId) {
+    public NewRequirementUrlBuilder(String baseURL, Long requirementDefinitionId) {
         this.baseURL = baseURL;
-        this.moduleCod = moduleCod;
         this.requirementDefinitionId = requirementDefinitionId;
     }
 
@@ -47,7 +45,6 @@ public class NewRequirementUrlBuilder {
                 .baseURL(baseURL)
                 .formAction(FormAction.FORM_FILL.getId())
                 .requirementId(null)
-                .param(MODULE_PARAM_NAME, moduleCod)
                 .param(REQUIREMENT_DEFINITION_ID, requirementDefinitionId)
                 .params(params);
         return builder.build();
