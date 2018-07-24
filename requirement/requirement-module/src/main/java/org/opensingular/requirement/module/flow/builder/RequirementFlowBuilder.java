@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.flow.builder;
 
+import javax.annotation.Nonnull;
+
 import org.apache.wicket.markup.html.WebPage;
 import org.opensingular.flow.core.BusinessRoleStrategy;
 import org.opensingular.flow.core.FlowInstance;
@@ -40,8 +42,6 @@ import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
-
-import javax.annotation.Nonnull;
 
 /**
  * Construtor de fluxo especializado em fluxo para requerimentos. Apresenta configurações adicionais às encontradas

@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.commons.util;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.xml.ws.BindingProvider;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.WSClientDefaultFactory;
-
-import javax.xml.ws.BindingProvider;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;

@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.commons.persistence.dao;
 
+import java.util.List;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.flow.core.SUser;
@@ -25,13 +30,6 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
-
-
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
 
 public class ActorDAOTest extends SingularCommonsBaseTest {
 

@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.persistence.query;
 
+import javax.annotation.Nonnull;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -31,8 +33,6 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-
-import javax.annotation.Nonnull;
 
 public class RequirementSearchQueryFactory {
 

@@ -18,10 +18,7 @@
 
 package org.opensingular.requirement.module.spring.security.config;
 
-import org.opensingular.lib.commons.util.Loggable;
-import org.springframework.beans.factory.NoSuchBeanDefinitionException;
-import org.springframework.web.context.support.WebApplicationContextUtils;
-
+import java.io.IOException;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,7 +27,10 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+
+import org.opensingular.lib.commons.util.Loggable;
+import org.springframework.beans.factory.NoSuchBeanDefinitionException;
+import org.springframework.web.context.support.WebApplicationContextUtils;
 
 public class SingularLogoutFilter implements Filter, Loggable {
 

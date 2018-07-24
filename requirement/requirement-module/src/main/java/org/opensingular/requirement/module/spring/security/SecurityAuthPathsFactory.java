@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.spring.security;
 
+import java.io.Serializable;
+import javax.servlet.ServletContext;
+
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.util.url.UrlToolkitBuilder;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.SingularSession;
-
-import javax.servlet.ServletContext;
-import java.io.Serializable;
 
 public class SecurityAuthPathsFactory implements Serializable {
 

@@ -39,9 +39,9 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.requirement.module.wicket.listener.SingularServerContextListener;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
@@ -67,7 +67,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
         Locale.setDefault(new Locale("pt", "BR"));//NOSONAR
 
-        getApplicationSettings().setAccessDeniedPage(Error403Page.class);
+        getApplicationSettings().setAccessDeniedPage(Page403.class);
         getApplicationSettings().setPageExpiredErrorPage(Page410.class);
 
         // Don't forget to check your Application server for this

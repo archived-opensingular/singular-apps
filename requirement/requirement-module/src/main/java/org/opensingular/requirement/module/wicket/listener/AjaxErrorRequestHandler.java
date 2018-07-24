@@ -18,14 +18,13 @@
 
 package org.opensingular.requirement.module.wicket.listener;
 
+import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.Application;
 import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.http.WebResponse;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.wicket.util.toastr.ToastrHelper;
-
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 
 public class AjaxErrorRequestHandler implements IRequestHandler {
 

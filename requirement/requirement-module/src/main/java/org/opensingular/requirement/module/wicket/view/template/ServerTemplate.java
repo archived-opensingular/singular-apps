@@ -16,6 +16,8 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
+import javax.annotation.Nonnull;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -29,8 +31,6 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
-
-import javax.annotation.Nonnull;
 
 public abstract class ServerTemplate extends SingularAdminTemplate {
 

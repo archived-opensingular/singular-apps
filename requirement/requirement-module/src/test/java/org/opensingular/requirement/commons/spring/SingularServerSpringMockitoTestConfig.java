@@ -17,6 +17,9 @@
 package org.opensingular.requirement.commons.test.spring;
 
 
+import java.util.Set;
+import javax.inject.Named;
+
 import com.google.common.collect.Sets;
 import net.vidageek.mirror.dsl.Mirror;
 import org.junit.runner.RunWith;
@@ -38,9 +41,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Named;
-import java.util.Set;
 
 public class SingularServerSpringMockitoTestConfig implements Loggable {
 

@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
+import java.util.Collection;
+import java.util.stream.Collectors;
+
 import com.google.common.base.Joiner;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
-
-import java.util.Collection;
-import java.util.stream.Collectors;
 
 public class DefaultValueConverter implements FormFieldValueConverter, Loggable {
 

@@ -19,12 +19,12 @@
 package org.opensingular.requirement.module.flow;
 
 
+import java.io.Serializable;
+import java.util.Optional;
+
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
-
-import java.io.Serializable;
-import java.util.Optional;
 
 /**
  * Programmatically resolves the {@link FlowDefinition} for a given input data.

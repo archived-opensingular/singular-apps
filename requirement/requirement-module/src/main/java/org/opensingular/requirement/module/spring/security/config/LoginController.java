@@ -16,28 +16,18 @@
  *
  */
 
-package org.opensingular.requirement.module.wicket.error;
+package org.opensingular.requirement.module.spring.security.config;
 
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
-import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
-import org.wicketstuff.annotation.mount.MountPath;
+import org.springframework.web.servlet.ModelAndView;
 
-@MountPath("access/denied")
-public class AccessDeniedPage extends ServerTemplate {
+import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
-    @Override
-    protected IModel<String> getContentTitle() {
-        return new Model<>();
-    }
-
-    @Override
-    protected IModel<String> getContentSubtitle() {
-        return null;
-    }
-
-    @Override
-    protected boolean isWithMenu() {
-        return false;
+public class LoginController {
+    public ModelAndView getLoginView(HttpServletRequest request) {
+        Map<String, String> model = new HashMap<>();
+        model.put("loginPath", request.getRequestURI());
+        return new ModelAndView("login", model);
     }
 }

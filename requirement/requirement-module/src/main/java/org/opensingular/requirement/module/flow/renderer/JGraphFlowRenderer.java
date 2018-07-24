@@ -16,6 +16,18 @@
 
 package org.opensingular.requirement.module.flow.renderer;
 
+import java.awt.*;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+
 import com.google.common.base.Throwables;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxEdgeLabelLayout;
@@ -33,18 +45,6 @@ import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.renderer.ExecutionHistoryForRendering;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 public class JGraphFlowRenderer implements IFlowRenderer {
 

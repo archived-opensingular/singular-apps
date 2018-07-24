@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem.docs;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.STypeComposite;
@@ -25,8 +27,6 @@ import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.basic.AtrDOC;
 import org.opensingular.form.type.core.STypeInteger;
 import org.opensingular.form.type.core.STypeString;
-
-import javax.annotation.Nonnull;
 
 @SInfoType(name = "STypeUtilsSample", spackage = SPackageDocSample.class, label = "Super SType Util Test")
 public class STypeUtilsSample extends STypeComposite<SIComposite> {

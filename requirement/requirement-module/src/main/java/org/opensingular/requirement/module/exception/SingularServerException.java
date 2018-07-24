@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.exception;
 
-import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.requirement.module.service.RequirementInstance;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.requirement.module.service.RequirementInstance;
 
 /**
  * Exceções do Singular server e seus módulos

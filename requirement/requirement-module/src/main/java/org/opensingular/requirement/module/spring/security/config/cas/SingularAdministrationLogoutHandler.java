@@ -18,8 +18,6 @@
 
 package org.opensingular.requirement.module.spring.security.config.cas;
 
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -28,31 +26,27 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
+import org.springframework.security.core.context.SecurityContextImpl;
 
-public class SingularCASLogoutHandler implements SingularLogoutHandler, Loggable {
+public class SingularAdministrationLogoutHandler implements SingularLogoutHandler, Loggable {
 
-    private String logoutURL;
 
-    public SingularCASLogoutHandler() {
+    public SingularAdministrationLogoutHandler() {
     }
 
-    public SingularCASLogoutHandler(String logoutURL) {
-        this.logoutURL = logoutURL;
-    }
 
     @Override
     public void handleLogout(HttpServletRequest req, HttpServletResponse resp) {
-        HttpServletRequest request = (HttpServletRequest) req;
-        HttpServletResponse response = (HttpServletResponse) resp;
         try {
-            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : {}. A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT", StringEscapeUtils.escapeJava(request.getRequestURI()));
-            HttpSession session = request.getSession(false);
+            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : {}. A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT", StringEscapeUtils.escapeJava(req.getRequestURI()));
+            HttpSession session = req.getSession(false);
             if (session != null) {
+                SecurityContextImpl sci = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");
+                if(sci != null){
+                    sci.getAuthentication().setAuthenticated(false);
+                }
                 session.invalidate();
             }
-            String redirect = logoutURL + "?service=" + URLEncoder.encode(extractServiceParam(request), StandardCharsets.UTF_8.name());
-            getLogger().warn(" REDIRECIONANDO PARA: {}", StringEscapeUtils.escapeJava(redirect));
-            response.sendRedirect(redirect);
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
             throw SingularException.rethrow(e);
@@ -60,14 +54,4 @@ public class SingularCASLogoutHandler implements SingularLogoutHandler, Loggable
 
     }
 
-    private String extractServiceParam(HttpServletRequest request) {
-        String service = request.getParameter("service");
-        if (service == null || service.length() < 1) {
-            String url = request.getRequestURL().toString();
-            int index = url.lastIndexOf(request.getContextPath());
-            service = url.substring(0, index) + request.getContextPath();
-        }
-        return service;
-
-    }
 }

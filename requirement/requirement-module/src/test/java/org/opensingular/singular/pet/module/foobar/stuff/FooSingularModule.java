@@ -21,6 +21,8 @@ package org.opensingular.singular.pet.module.foobar.stuff;
 import org.opensingular.requirement.module.RequirementRegistry;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.WorkspaceConfiguration;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.workspace.DefaultDraftbox;
 import org.opensingular.requirement.module.workspace.DefaultInbox;
