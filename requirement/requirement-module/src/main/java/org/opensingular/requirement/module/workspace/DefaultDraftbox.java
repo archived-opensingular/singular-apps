@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -41,13 +40,16 @@ public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
     }
 
     @Override
-    protected Boolean shouldEvalPermissions() {
+    protected Boolean mustEvalPermissions() {
         return Boolean.FALSE;
     }
 
     @Override
-    protected ActionProvider actionProvider() {
-        return new ActionProviderBuilder().addEditAction().addViewAction().addDeleteAction();
+    protected void addActions(ActionProviderBuilder builder) {
+        builder
+                .addEditAction()
+                .addViewAction()
+                .addDeleteAction();
     }
 
     @Override

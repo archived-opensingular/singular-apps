@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -39,13 +38,13 @@ public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
     }
 
     @Override
-    protected Boolean shouldEvalPermissions() {
+    protected Boolean mustEvalPermissions() {
         return Boolean.FALSE;
     }
 
     @Override
-    protected ActionProvider actionProvider() {
-        return new ActionProviderBuilder()
+    protected void addActions(ActionProviderBuilder builder) {
+        builder
                 .addViewAction()
                 .addHistoryAction();
     }
