@@ -1,10 +1,14 @@
 package org.opensingular.requirement.module.config;
 
+import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.admin.AdministrationApplication;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.SecurityConfigs;
 import org.opensingular.requirement.module.wicket.application.RequirementWicketApplication;
 import org.opensingular.requirement.module.wicket.application.WorklistWicketApplication;
+import org.opensingular.requirement.module.workspace.DefaultDraftbox;
+import org.opensingular.requirement.module.workspace.DefaultInbox;
+import org.opensingular.requirement.module.workspace.DefaultOngoingbox;
 
 public interface DefaultContexts {
 
@@ -23,6 +27,13 @@ public interface DefaultContexts {
         @Override
         public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.CASAnalise.class;
+        }
+
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultInbox.class)
+                    .addBox(DefaultDraftbox.class);
         }
     }
 
@@ -47,6 +58,13 @@ public interface DefaultContexts {
         public boolean checkOwner() {
             return true;
         }
+
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+            workspaceConfiguration
+                    .addBox(DefaultDraftbox.class)
+                    .addBox(DefaultOngoingbox.class);
+        }
     }
 
     class AdministrationContext extends ServerContext {
@@ -64,6 +82,11 @@ public interface DefaultContexts {
         @Override
         public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
             return SecurityConfigs.AdministrationSecurity.class;
+        }
+
+        @Override
+        public void setup(WorkspaceConfiguration workspaceConfiguration) {
+
         }
     }
 }

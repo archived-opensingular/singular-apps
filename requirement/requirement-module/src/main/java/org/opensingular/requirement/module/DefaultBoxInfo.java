@@ -1,14 +1,13 @@
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
-public class DefaultBoxInfo implements BoxInfo{
+public class DefaultBoxInfo implements BoxInfo {
     private final Class<? extends BoxDefinition> boxDefinitionClass;
-    private final List<SingularRequirementRef> requirementRefs = new ArrayList<>();
+    private final Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
     private String boxId;
 
     public DefaultBoxInfo(Class<? extends BoxDefinition> boxDefinitionClass) {
@@ -21,8 +20,8 @@ public class DefaultBoxInfo implements BoxInfo{
     }
 
     @Override
-    public void addSingularRequirementRef(SingularRequirementRef ref) {
-        requirementRefs.add(ref);
+    public void addSingularRequirementRef(Class<? extends SingularRequirement> requirement) {
+        requirements.add(requirement);
     }
 
     @Override
@@ -36,11 +35,7 @@ public class DefaultBoxInfo implements BoxInfo{
     }
 
     @Override
-    public List<RequirementData> getRequirementsData() {
-        List<RequirementData> result = new ArrayList<>();
-        for (SingularRequirementRef ref : requirementRefs) {
-            result.add(new RequirementData(ref.getId(), ref.getRequirementDescription()));
-        }
-        return result;
+    public Set<Class<? extends SingularRequirement>> getRequirements() {
+        return requirements;
     }
 }

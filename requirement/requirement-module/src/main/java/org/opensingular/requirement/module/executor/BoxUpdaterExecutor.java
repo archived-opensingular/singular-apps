@@ -33,6 +33,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Classe para abrigar a lógica de carga inicial
@@ -68,7 +69,7 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (IServerContext context : singularServerConfiguration.getContexts()) {
-            List<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
+            Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
             for (BoxInfo boxInfo : boxInfos) {
                 BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxInfo, context);
                 try {

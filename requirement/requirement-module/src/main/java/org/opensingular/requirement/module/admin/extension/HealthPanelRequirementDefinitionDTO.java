@@ -21,7 +21,6 @@ package org.opensingular.requirement.module.admin.extension;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.SingularRequirementRef;
 
 import java.io.Serializable;
 
@@ -31,9 +30,8 @@ public class HealthPanelRequirementDefinitionDTO implements Serializable {
     private final String                 name;
     private final Class<? extends SType> mainForm;
 
-    public HealthPanelRequirementDefinitionDTO(SingularRequirementRef singularRequirementRef) {
-        SingularRequirement requirement = singularRequirementRef.getRequirement();
-        id = singularRequirementRef.getId();
+    public HealthPanelRequirementDefinitionDTO(SingularRequirement requirement) {
+        id = requirement.getDefinitionCod();
         name = requirement.getName();
         mainForm = requirement.getMainForm();
     }

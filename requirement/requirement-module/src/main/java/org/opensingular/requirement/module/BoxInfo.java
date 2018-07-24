@@ -19,10 +19,9 @@
 package org.opensingular.requirement.module;
 
 import org.opensingular.requirement.module.executor.BoxUpdaterExecutor;
-import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * API_VIEW
@@ -44,16 +43,14 @@ public interface BoxInfo {
     Class<? extends BoxDefinition> getBoxDefinitionClass();
 
     /**
-     * @param ref requerimentos que pode ser criados apartir destá caixa, modo de compatibildiade com newFor do
-     * SingularModule
+     * TODO
      */
     @Deprecated
-    void addSingularRequirementRef(SingularRequirementRef ref);
+    void addSingularRequirementRef(Class<? extends SingularRequirement> requirement);
 
     /**
-     * @return Lista os requerimetnos de modo serializavel,
-     * @deprecated desnecessario com a adoção de modulo unico
+     * TODO
      */
     @Deprecated
-    List<RequirementData> getRequirementsData();
+    Set<Class<? extends SingularRequirement>> getRequirements();
 }
