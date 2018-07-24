@@ -18,12 +18,6 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.commons.table.ColumnTypeProcessor;
-import org.opensingular.requirement.commons.box.BoxItemDataImpl;
-import org.opensingular.requirement.commons.box.BoxItemDataList;
-import org.opensingular.requirement.commons.persistence.filter.QuickFilter;
-import org.opensingular.requirement.commons.service.dto.RequirementData;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
@@ -32,9 +26,7 @@ import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
