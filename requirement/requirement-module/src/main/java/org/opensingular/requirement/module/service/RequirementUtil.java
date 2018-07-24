@@ -122,7 +122,7 @@ public final class RequirementUtil {
 
 
     @Nonnull
-    public static RequirementService<?,?> getRequirementService() {
+    public static RequirementService getRequirementService() {
         return ApplicationContextProvider.get().getBean(RequirementService.class);
     }
 

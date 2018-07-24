@@ -28,7 +28,6 @@ import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.SType;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.service.FormService;
@@ -70,7 +69,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     FormService formService;
 
     @Inject
-    RequirementService<?, ?> requirementService;
+    RequirementService requirementService;
 
 
     @Inject
@@ -112,7 +111,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SFormUtil.getTypeName(STypeFoo.class));
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionId(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -130,7 +129,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(formName);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionId(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -240,7 +239,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SPackageFoo.STypeFOOModal.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL_WITH_ANALYSIS_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionId(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

@@ -25,7 +25,7 @@ import org.junit.runner.RunWith;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
-import org.opensingular.requirement.module.SingularRequirementRef;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.service.SingularModuleContextLoader;
@@ -71,26 +71,26 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         session = sessionFactory.getCurrentSession();
     }
 
-    protected RequirementDefinitionEntity getRequirementDefinition() {
+    protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return requirementDefinitionDAO.findByKey(singularModuleConfiguration.getModuleCod(), getRequirementDefinitionKey());
+    }
+
+
+    protected String getRequirementDefinitionKey() {
+        return getRequirementDefinition().getKey();
+    }
+
+    protected RequirementDefinition getRequirementDefinition() {
         return singularModuleConfiguration.getRequirements()
                 .stream()
                 .filter(s -> {
-                            String name  = s.getRequirement().getMainForm().getSimpleName();
+                            String name  = s.getMainForm().getSimpleName();
                             String name2 = SFormUtil.getTypeSimpleName(STypeFoo.class).get();
                             return name.equals(name2);
                         }
                 )
                 .findFirst()
-                .map(SingularRequirementRef::getRequirementDefinitionEntity)
                 .orElse(null);
 
     }
-
-    protected Long getCodRequirementDefinition() {
-        return getRequirementDefinition().getCod();
-    }
-
-
-
-
 }

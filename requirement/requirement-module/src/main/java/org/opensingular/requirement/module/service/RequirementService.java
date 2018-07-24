@@ -18,7 +18,6 @@
 
 package org.opensingular.requirement.module.service;
 
-import com.sun.istack.internal.NotNull;
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -29,6 +28,7 @@ import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
@@ -36,15 +36,19 @@ import org.opensingular.form.SType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
+import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.TaskInstanceDAO;
 import org.opensingular.requirement.module.persistence.dao.form.ApplicantDAO;
@@ -110,13 +114,22 @@ public abstract class RequirementService implements Loggable {
     private RequirementContentHistoryDAO requirementContentHistoryDAO;
 
     @Inject
-    private FormRequirementService<?> formRequirementService;
+    private FormRequirementService formRequirementService;
 
     @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
     private Provider<SingularRequirementUserDetails> singularUserDetails;
+
+    @Inject
+    private FormTypeService formTypeService;
+
+    @Inject
+    private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
+
+    @Inject
+    private ModuleService moduleService;
 
     /**
      * FOR INTERNAL USE ONLY,
@@ -170,11 +183,26 @@ public abstract class RequirementService implements Loggable {
         throw new SingularRequirementException(String.format("Could not corresponding definition for requirement instance id: %s and definition key %s", requirementId, key));
     }
 
+    public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinition(String  requirementDefinitionKey) {
+        String[] definitions = ApplicationContextProvider.get().getBeanNamesForType(ResolvableType.forClass(RequirementDefinition.class));
+        for (String definitionName : definitions) {
+            RequirementDefinition<?> definition = (RequirementDefinition<?>) ApplicationContextProvider.get().getBean(definitionName);
+            if (definition.getKey().equals(requirementDefinitionKey)) {
+                return (RD) definition;
+            }
+        }
+        throw new SingularRequirementException(String.format("Could not corresponding definition for definition key %s", requirementDefinitionKey));
+    }
+
+    public <RI extends RequirementInstance> RI loadRequirementInstance(Long requirementId){
+        return (RI)lookupRequirementDefinitionForRequirementId(requirementId).loadRequirement(requirementId);
+    }
+
     /**
      * Retorna o serviço de formulários da petição.
      */
     @Nonnull
-    protected FormRequirementService<?> getFormRequirementService() {
+    protected FormRequirementService getFormRequirementService() {
         return Objects.requireNonNull(formRequirementService);
     }
 
@@ -235,6 +263,20 @@ public abstract class RequirementService implements Loggable {
     public RequirementEntity getRequirementEntity(@Nonnull Long cod) {
         return findRequirementEntity(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
+    }
+
+    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition requirementDefintion, FormTypeEntity formType, ModuleEntity module) {
+        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
+
+        if (requirementDefinitionEntity == null) {
+            requirementDefinitionEntity = new RequirementDefinitionEntity();
+            requirementDefinitionEntity.setKey(requirementDefintion.getKey());
+            requirementDefinitionEntity.setFormType(formType);
+            requirementDefinitionEntity.setModule(module);
+            requirementDefinitionEntity.setName(requirementDefintion.getName());
+        }
+
+        return requirementDefinitionEntity;
     }
 
     /**
@@ -300,11 +342,6 @@ public abstract class RequirementService implements Loggable {
         return formRequirementService.saveFormRequirement(requirement, instance, mainForm);
     }
 
-    public <RI extends RequirementInstance> void onAfterStartFlow(RI requirement, SInstance instance, String codSubmitterActor, FlowInstance flowInstance) {
-    }
-
-    public <RI extends RequirementInstance> void onBeforeStartFlow(RI requirement, SInstance instance, String codSubmitterActor) {
-    }
 
     public <RI extends RequirementInstance> void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
@@ -413,7 +450,7 @@ public abstract class RequirementService implements Loggable {
 
 
     @Nonnull
-    public void configureParentRequirement(@Nonnull RequirementInstance<?, ?> requirementInstance, @NotNull RequirementInstance<?, ?> parentRequirement) {
+    public void configureParentRequirement(@Nonnull RequirementInstance<?, ?> requirementInstance, @Nonnull RequirementInstance<?, ?> parentRequirement) {
         RequirementEntity requirementEntity = requirementInstance.getEntity();
         if (parentRequirement != null) {
             RequirementEntity parentRequirementEntity = parentRequirement.getEntity();
@@ -432,7 +469,7 @@ public abstract class RequirementService implements Loggable {
      * An entry is considered hidden if the metadata {@link RequirementFlowDefinition#HIDE_FROM_HISTORY}
      * is set on the corresponding flow task.
      *
-     * @param codRequirement
+     * @param
      * @return
      */
     public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(RequirementInstance<?, ?> requirementInstance, boolean showHidden) {
@@ -598,7 +635,7 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
+    public void startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(requirement.getDescription());
 
@@ -618,8 +655,6 @@ public abstract class RequirementService implements Loggable {
         newFlowInstance.start();
 
         requirement.setFlowInstance(newFlowInstance);
-
-        return newFlowInstance;
     }
 
     //TODO vinicius.nunes LENTO
@@ -641,9 +676,29 @@ public abstract class RequirementService implements Loggable {
         return requirementDefinitionDAO.findOrException(requirementId);
     }
 
+    public RequirementDefinitionEntity getRequirementDefinition(String requirementDefinitionKey) {
+        return requirementDefinitionDAO.findByKey(moduleService.getModule().getCod(), requirementDefinitionKey);
+    }
+
     public <RI extends RequirementInstance> void logTaskVisualization(RI requirement) {
         TaskInstance taskInstance = requirement.getFlowInstance().getCurrentTaskOrException();
         taskInstance.log(TASK_VISUALIZATION, FormatUtil.dateToDefaultTimestampString(new Date()));
     }
 
+
+
+    /**
+     * Persiste se necessário o RequirementDefinitionEntity
+     * e atualiza no ref o valor que está em banco.
+     *
+     * @param requirementDefinition - o requerimento do qual o {@link RequirementDefinitionEntity} será criado
+     */
+    public void saveOrUpdateRequirementDefinition(RequirementDefinition requirementDefinition) {
+        Class<? extends SType> mainForm = requirementDefinition.getMainForm();
+        SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
+        FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
+
+        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirementDefinition, formType, moduleService.getModule());
+        requirementDefinitionDAO.save(requirementDefinitionEntity);
+    }
 }

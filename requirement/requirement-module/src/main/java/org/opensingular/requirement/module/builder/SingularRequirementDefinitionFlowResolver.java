@@ -19,9 +19,6 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.module.flow.FlowResolver;
-import org.opensingular.requirement.module.BoundedFlowResolver;
-import org.opensingular.requirement.module.DynamicFormFlowSingularRequirement;
 
 public class SingularRequirementDefinitionFlowResolver {
 
@@ -31,18 +28,17 @@ public class SingularRequirementDefinitionFlowResolver {
         this.builderContext = builderContext;
     }
 
-    public SingularRequirementDefinitionFlowResolver allowedFlow(Class<? extends FlowDefinition> flowClass) {
-        builderContext.addFlowClass(flowClass);
-        return this;
+    public SingularRequirementDefinitionFlow flow(Class<? extends FlowDefinition> flowClass) {
+        //TODO reqdef
+//        builderContext.addFlowClass(flowClass);
+//        return new SingularRequirementDefinitionFlow(new DynamicFormFlowSingularRequirement(
+//                builderContext.getName(),
+//                builderContext.getMainForm(),
+//                new BoundedFlowResolver(resolver, builderContext.getFlowClasses()),
+//                builderContext.getDefaultExecutionPage(),
+//                builderContext.getRequirementSenderBeanClass()));;
+        return null;
     }
 
-    public SingularRequirementDefinitionFlow flowResolver(FlowResolver resolver) {
-        return new SingularRequirementDefinitionFlow(new DynamicFormFlowSingularRequirement(
-                builderContext.getName(),
-                builderContext.getMainForm(),
-                new BoundedFlowResolver(resolver, builderContext.getFlowClasses()),
-                builderContext.getDefaultExecutionPage(),
-                builderContext.getRequirementSenderBeanClass()));
-    }
 
 }

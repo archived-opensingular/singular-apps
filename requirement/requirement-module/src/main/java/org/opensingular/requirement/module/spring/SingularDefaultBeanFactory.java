@@ -129,8 +129,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> RequirementDAO<T> requirementDAO() {
-        return new RequirementDAO<>();
+    public RequirementDAO requirementDAO() {
+        return new RequirementDAO();
     }
 
     @Bean
@@ -149,7 +149,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public RequirementService<?, ?> workListRequirementServiceFactory() {
+    public RequirementService workListRequirementServiceFactory() {
         return new DefaultRequirementService();
     }
 
@@ -295,8 +295,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> FormRequirementService<T> formRequirementService() {
-        return new FormRequirementService<>();
+    public <T extends RequirementEntity> FormRequirementService formRequirementService() {
+        return new FormRequirementService();
     }
 
     @Bean

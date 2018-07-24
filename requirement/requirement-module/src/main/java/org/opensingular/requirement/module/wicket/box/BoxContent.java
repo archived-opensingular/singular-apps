@@ -37,6 +37,7 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -50,7 +51,6 @@ import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
 
@@ -91,9 +91,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<List<RequirementData>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
+        IModel<Set<Class<? extends RequirementDefinition>>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
         if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
-            return new NewRequirementLink(id, moduleService.getModule().getCod(), moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
+            return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewRequirementButton(id);
         }

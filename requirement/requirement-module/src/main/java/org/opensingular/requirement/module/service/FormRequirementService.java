@@ -75,7 +75,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 @Transactional
-public class FormRequirementService<P extends RequirementEntity> {
+public class FormRequirementService {
 
     @Inject
     protected IFormService formPersistenceService;

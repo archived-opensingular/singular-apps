@@ -18,7 +18,60 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.form.SType;
+import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
+import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
+
 public class RequirementDefinitionConfiguration {
 
 
+    private Class<? extends AbstractFormPage<?>> executionPage;
+    private Class<? extends SType>               mainForm;
+    private Class<? extends FlowDefinition>      flowDefition;
+    private String                               name;
+    private RequirementSendInterceptor requirementSendInterceptor = new EmptyRequirementSendInterceptor();
+
+
+    public Class<? extends SType> getMainForm() {
+        return mainForm;
+    }
+
+    public Class<? extends FlowDefinition> getFlowDefinition() {
+        return flowDefition;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public Class<? extends AbstractFormPage<?>> getExecutionPage() {
+        return executionPage;
+    }
+
+
+    void setExecutionPage(Class<? extends AbstractFormPage<?>> executionPage) {
+        this.executionPage = executionPage;
+    }
+
+    void setMainForm(Class<? extends SType> mainForm) {
+        this.mainForm = mainForm;
+    }
+
+    void setFlowDefition(Class<? extends FlowDefinition> flowDefition) {
+        this.flowDefition = flowDefition;
+    }
+
+    void setName(String name) {
+        this.name = name;
+    }
+
+    public <RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> RequirementSendInterceptor<RI, RSR> getRequirementSendInterceptor() {
+        return requirementSendInterceptor;
+    }
+
+    void setRequirementSendInterceptor(RequirementSendInterceptor<?, ?> requirementSendInterceptor) {
+        this.requirementSendInterceptor = requirementSendInterceptor;
+    }
 }

@@ -38,7 +38,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public class PermissionPanel extends Panel implements Loggable {
 
     @Inject
-    protected RequirementService<?,?> requirementService;
+    protected RequirementService requirementService;
 
     protected BSDataTable<SingularPermission, String> listTable;
 

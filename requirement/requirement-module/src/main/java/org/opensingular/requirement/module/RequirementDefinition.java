@@ -18,17 +18,26 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.form.SType;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.List;
 
 /**
  * Singular requirement specification.
@@ -36,13 +45,20 @@ import javax.inject.Inject;
  */
 public abstract class RequirementDefinition<RI extends RequirementInstance> implements Loggable {
 
-    private final String    key;
-    private final Class<RI> requirementInstanceClass;
+    private final String                             key;
+    private final Class<RI>                          requirementInstanceClass;
+    private       RequirementDefinitionEntity        requirementDefinitionEntityEntity;
+    private       RequirementDefinitionConfiguration requirementConfiguration;
 
     @Inject
-    private RequirementService                 requirementService;
+    private RequirementService requirementService;
 
-    private RequirementDefinitionConfiguration requirementConfiguration;
+    @Inject
+    private SpringServiceRegistry springServiceRegistry;
+
+    @Inject
+    private FormRequirementService formRequirementService;
+
 
     /**
      * @param key Unique immutable identifier for requirement
@@ -56,6 +72,13 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
         this.requirementInstanceClass = requirementInstanceClass;
     }
 
+    private RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        if (requirementDefinitionEntityEntity == null) {
+            requirementDefinitionEntityEntity = requirementService.getRequirementDefinition(key);
+        }
+        return requirementDefinitionEntityEntity;
+    }
+
     @PostConstruct
     private void init() {
         this.requirementConfiguration = configure(new RequirementConfigurationBuilder());
@@ -64,9 +87,13 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
     public abstract RequirementDefinitionConfiguration configure(RequirementConfigurationBuilder conf);
 
-    private RI newRequirementInstance(@Nonnull RequirementEntity requirementEntity) {
+    private RI newRequirementInstance(RequirementEntity requirementEntity) {
         try {
-            return this.requirementInstanceClass.getConstructor(RequirementEntity.class).newInstance(requirementEntity);
+            RI instance = this.requirementInstanceClass
+                    .getConstructor(RequirementEntity.class, RequirementDefinition.class)
+                    .newInstance(requirementEntity, this);
+            springServiceRegistry.lookupSingularInjector().inject(instance);
+            return instance;
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
             throw new SingularRequirementException(e.getMessage());
@@ -75,11 +102,13 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
 
     public RI newRequirement() {
-        return newRequirementInstance(new RequirementEntity());
+        RequirementEntity requirementEntity = new RequirementEntity();
+        requirementEntity.setRequirementDefinitionEntity(getRequirementDefinitionEntity());
+        return newRequirementInstance(requirementEntity);
     }
 
     public RI newRequirement(RequirementInstance parent) {
-        RI requirementInstance = newRequirementInstance(new RequirementEntity());
+        RI requirementInstance = newRequirement();
         requirementService.configureParentRequirement(requirementInstance, parent);
         return requirementInstance;
     }
@@ -89,19 +118,50 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     }
 
 
+    public Class<? extends SType> getMainForm() {
+        return requirementConfiguration.getMainForm();
+    }
+
+    //TODO reqdef salvar/criar o form por meio da instance
+
+    @Transactional
+    public <RSR extends RequirementSubmissionResponse> RSR send(@Nonnull RI requirementInstance, @Nullable String codSubmitterActor) {
+        RequirementSendInterceptor<RI, RSR> listener = requirementConfiguration.getRequirementSendInterceptor();
+        springServiceRegistry.lookupSingularInjector().inject(listener);
+        RSR response = listener.newInstanceSubmissionResponse();
+
+        listener.onBeforeSend(requirementInstance, codSubmitterActor, response);
+
+        final List<FormEntity> consolidatedDrafts = formRequirementService.consolidateDrafts(requirementInstance);
+
+        requirementInstance.setFlowDefinition(requirementConfiguration.getFlowDefinition());
+        listener.onBeforeStartFlow(requirementInstance, codSubmitterActor, response);
+        requirementService.startNewFlow(requirementInstance, requirementInstance.getFlowDefinition(), codSubmitterActor);
+        listener.onAfterStartFlow(requirementInstance, codSubmitterActor, response);
+
+        requirementService.saveRequirementHistory(requirementInstance, consolidatedDrafts);
+
+        listener.onAfterSend(requirementInstance, codSubmitterActor, response);
+
+        return response;
+    }
+
     /**
      * Returns a custom initial form page.
      * Defaults to {@link FormPage}
      *
      * @return
      */
-    public Class<? extends AbstractFormPage<?, ?>> getDefaultExecutionPage() {
-        return FormPage.class;
+    public Class<? extends AbstractFormPage<?>> getDefaultExecutionPage() {
+        return requirementConfiguration.getExecutionPage();
     }
 
     public String getKey() {
         return key;
     }
 
+    public String getName() {
+        return requirementConfiguration.getName();
+    }
 
 }

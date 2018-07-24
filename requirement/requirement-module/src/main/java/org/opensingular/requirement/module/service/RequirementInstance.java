@@ -56,7 +56,9 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     private RequirementService requirementService;
 
     @Inject
-    private FormRequirementService<RequirementEntity> formRequirementService;
+    private FormRequirementService formRequirementService;
+
+    private RD requirementDefinition;
 
     private RequirementEntity requirementEntity;
 
@@ -64,8 +66,13 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     private transient SIComposite mainForm;
 
-    public RequirementInstance(RequirementEntity requirementEntity) {
+    public RequirementInstance(RequirementEntity requirementEntity, RD requirementDefinition) {
         this.requirementEntity = Objects.requireNonNull(requirementEntity);
+        this.requirementDefinition = requirementDefinition;
+    }
+
+    public RD getRequirementDefinition() {
+        return requirementDefinition;
     }
 
     public FlowInstance getFlowInstance() {
@@ -142,7 +149,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return Optional.ofNullable(this.getEntity())
                 .map(RequirementEntity::getParentRequirement)
                 .map(RequirementEntity::getCod)
-                .map(cod -> requirementService.lookupRequirementDefinitionForRequirementId(cod).loadRequirement(cod));
+                .map(cod -> requirementService.loadRequirementInstance(cod));
     }
 
     @Nonnull
@@ -166,12 +173,9 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     }
 
-    public FlowInstance startNewFlow(@Nonnull FlowDefinition flowDefinition) {
-        flowInstance = requirementService.startNewFlow(this, flowDefinition, null);
-        return flowInstance;
-    }
-
-    RequirementEntity getEntity() {
+    //TODO reqdef
+    @Deprecated
+    public RequirementEntity getEntity() {
         if (getCod() != null) {
             requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
         }
@@ -216,16 +220,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     //TODO reqdef salvar/criar o form por meio da instance
 
     public RequirementSubmissionResponse send(@Nullable String codSubmitterActor) {
-        final List<FormEntity>  consolidatedDrafts = formRequirementService.consolidateDrafts(this);
-        final FlowDefinition<?> flowDefinition     = RequirementUtil.getFlowDefinition(getEntity());
-
-        requirementService.onBeforeStartFlow(this, getMainForm(), codSubmitterActor);
-        FlowInstance flowInstance = requirementService.startNewFlow(this, flowDefinition, codSubmitterActor);
-        requirementService.onAfterStartFlow(this, getMainForm(), codSubmitterActor, flowInstance);
-
-        requirementService.saveRequirementHistory(this, consolidatedDrafts);
-
-        return new RequirementSubmissionResponse();
+        return getRequirementDefinition().send((SELF) this, codSubmitterActor);
     }
 
 

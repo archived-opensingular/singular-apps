@@ -26,20 +26,14 @@ import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-
 import org.opensingular.requirement.commons.CommonsApplicationMock;
-import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.form.ApplicantDAO;
-import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
-
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -59,9 +53,6 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     @Inject
     private DefaultRequirementService requirementService;
-
-    @Inject
-    private DefaultRequirementSender sender;
 
     private SingularWicketTester tester;
 
@@ -99,15 +90,11 @@ public class DiffFormTest extends SingularCommonsBaseTest {
 
     @Nonnull
     private RequirementInstance createNewRequirementInstance(SInstance instance) {
-        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {
-        }, getRequirementDefinition());
-        requirement.setFlowDefinition(FOOFlowWithTransition.class);
-
-        requirementService.saveOrUpdate(requirement, instance, true);
-
-        sender.send(requirement, instance, "vinicius.nunes");
-        requirementService.executeTransition("Transition bar", requirement, this::onTransition, null, null);
-        return requirement;
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        requirementInstance.saveForm(instance, true);
+        requirementInstance.send("vinicius.nunes");
+        requirementService.executeTransition("Transition bar", requirementInstance, this::onTransition, null, null);
+        return requirementInstance;
     }
 
     private void executeTransition(RequirementInstance requirement) {

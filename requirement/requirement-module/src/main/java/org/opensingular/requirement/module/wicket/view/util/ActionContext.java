@@ -49,7 +49,7 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String ITEM_PARAM_NAME = "t";
 
-    public static final String REQUIREMENT_DEFINITION_ID = "r";
+    public static final String REQUIREMENT_DEFINITION_KEY = "r";
 
     public final static String FORM_VERSION_KEY = "v";
 
@@ -108,12 +108,12 @@ public class ActionContext implements Serializable, Loggable {
         return this;
     }
 
-    public Optional<Long> getRequirementDefinitionId() {
-        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_ID)).map(Long::valueOf);
+    public Optional<String> getRequirementDefinitionKey() {
+        return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_KEY)).map(String::valueOf);
     }
 
-    public void setRequirementDefinitionId(Long requirementId) {
-        this.params.put(REQUIREMENT_DEFINITION_ID, String.valueOf(requirementId));
+    public void setRequirementDefinitionId(String requirementDefinitionKey) {
+        this.params.put(REQUIREMENT_DEFINITION_KEY, String.valueOf(requirementDefinitionKey));
     }
 
     public Optional<String> getFormName() {
@@ -184,11 +184,11 @@ public class ActionContext implements Serializable, Loggable {
         return ParameterHttpSerializer.encode(params);
     }
 
-    public Optional<Class<? extends AbstractFormPage<?, ?>>> getFormPageClass() {
+    public Optional<Class<? extends AbstractFormPage<?>>> getFormPageClass() {
         String formPageClassName = params.get(FORM_PAGE_CLASS);
         if (formPageClassName != null) {
             try {
-                return Optional.ofNullable((Class<? extends AbstractFormPage<?, ?>>) Class.forName(formPageClassName));
+                return Optional.ofNullable((Class<? extends AbstractFormPage<?>>) Class.forName(formPageClassName));
             } catch (ClassNotFoundException e) {
                 getLogger().info("Nenhuma classe fornecida", e);
             }

@@ -30,9 +30,7 @@ import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
-
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -44,12 +42,12 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
     @Test
     @Transactional
-    public void testSomeFunctions(){
+    public void testSomeFunctions() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, getRequirementDefinition());
+        RequirementInstance requirement = getRequirementDefinition().newRequirement();
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
         requirementService.saveOrUpdate(requirement, instance, true);
@@ -70,4 +68,16 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertEquals(SFormUtil.getTypeName(STypeFoo.class), requirement.getMainFormTypeName());
     }
+
+
+    @Test
+    public void sendNewRequirement() {
+        RefSDocumentFactory documentFactoryRef  = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance           instance            = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        requirementInstance.saveForm(instance, true);
+        requirementInstance.send("vinicius.nunes");
+        requirementService.executeTransition("No more bar", requirementInstance, null, null, null);
+    }
+
 }

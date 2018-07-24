@@ -18,22 +18,13 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.requirement.module.exception.SingularRequirementException;
-import org.opensingular.requirement.module.flow.FlowResolver;
-import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.requirement.module.service.RequirementSender;
-import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
-import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.wicket.view.RequirementResolverPage;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * Defines an 'virtual' requirement that preform a pre-step to decide which requirement should be initialized
@@ -41,27 +32,22 @@ import java.util.Optional;
  * The target requirement is decided by the execution of the {@link RequirementResolver#resolve(SInstance)} method.
  * In this method the SIinstance is defined byt the {@link SType} class supplied through the avaiblable constructors.
  * It is possible to pass aditional parameters (URL parameters) to the target requirement using custom {@link RequirementResolverPage}
- * and overriding the {@link RequirementResolverPage#redirectToResolvedRequirement(Long, Map)}
+ * and overriding the {@link RequirementResolverPage#redirectToResolvedRequirement(String, Map)}
  */
-public class SingularRequirementResolver implements RequirementDefinition {
+public abstract class SingularRequirementResolver extends RequirementDefinition {
 
-    private final String key;
-    private String name;
-    private final Class<? extends SType> preRequirementSelectionForm;
     private Class<? extends RequirementResolverPage> requirementResolverPage = RequirementResolverPage.class;
     private RequirementResolver requirementResolver;
 
-    public SingularRequirementResolver(String key, String name, Class<? extends SType> requirementResolverForm, RequirementResolver requirementResolver) {
-        this.key = key;
-        this.name = name;
-        this.preRequirementSelectionForm = requirementResolverForm;
+    private RequirementDefinitionEntity requirementDefinitionEntity;
+
+    public SingularRequirementResolver(String key, RequirementResolver requirementResolver) {
+        super(key);
         this.requirementResolver = requirementResolver;
     }
 
-    public SingularRequirementResolver(String key, String name, Class<? extends SType> preRequirementSelectionForm, Class<? extends RequirementResolverPage> requirementResolverPage, RequirementResolver requirementResolver) {
-        this.key = key;
-        this.name = name;
-        this.preRequirementSelectionForm = preRequirementSelectionForm;
+    public SingularRequirementResolver(String key, Class<? extends RequirementResolverPage> requirementResolverPage, RequirementResolver requirementResolver) {
+        super(key);
         this.requirementResolverPage = requirementResolverPage;
         this.requirementResolver = requirementResolver;
     }
@@ -72,58 +58,8 @@ public class SingularRequirementResolver implements RequirementDefinition {
     }
 
     @Override
-    public String getKey() {
-        return key;
-    }
-
-    @Override
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public Class<? extends SType> getMainForm() {
-        return preRequirementSelectionForm;
-    }
-
-    @Override
-    public final BoundedFlowResolver getFlowResolver() {
-        return new ResolveNotAllowedFlowResolver();
-    }
-
-    @Override
     public Class<? extends RequirementResolverPage<?, ?>> getDefaultExecutionPage() {
         return (Class<? extends RequirementResolverPage<?, ?>>) requirementResolverPage;
     }
 
-    @Override
-    public RequirementInstance newRequirementInstance() {
-        return null;//TODO reqdef
-    }
-
-    @Override
-    public RequirementInstance loadRequirementInstance(Long requirementId) {
-        return null;//TODO reqdef
-    }
-
-
-    public static class ResolveNotAllowedFlowResolver extends BoundedFlowResolver {
-
-        public ResolveNotAllowedFlowResolver() {
-            super(new FlowResolver() {
-                @Override
-                public Optional<Class<? extends FlowDefinition>> resolve(FormPageExecutionContext cfg, SIComposite iRoot) {
-                    throw new SingularRequirementException("There is no FlowResolver definition for a " + SingularRequirementResolver.class.getSimpleName() + " definition ");
-                }
-            });
-        }
-    }
-
-    public static class SendNotAllowedRequirementSender implements RequirementSender {
-        @Nonnull
-        @Override
-        public RequirementSubmissionResponse send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor) {
-            throw new SingularRequirementException("There is no RequirementSender definition for a " + SingularRequirementResolver.class.getSimpleName() + " definition ");
-        }
-    }
 }

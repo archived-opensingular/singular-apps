@@ -33,7 +33,7 @@ public class SingularRequirementDefinitionForm {
         return new SingularRequirementDefinitionForms(builderContext.setMainForm(form));
     }
 
-    public SingularRequirementDefinitionForm defaultExecutionPage(Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage) {
+    public SingularRequirementDefinitionForm defaultExecutionPage(Class<? extends AbstractFormPage<?>> defaultExecutionPage) {
         builderContext.defaultExecutionPage(defaultExecutionPage);
         return this;
     }

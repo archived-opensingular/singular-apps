@@ -33,7 +33,7 @@ public class SingularRequirementServiceImpl implements SingularRequirementServic
 
     @Override
     public RequirementDefinition getSingularRequirement(ActionContext context) {
-        return moduleConfiguration.getRequirementById(context.getRequirementDefinitionId().orElse(null));
+        return moduleConfiguration.getRequirementByKey(context.getRequirementDefinitionKey().orElse(null));
     }
 
 }

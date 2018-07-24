@@ -20,7 +20,6 @@ package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
-import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 
 import java.util.LinkedHashSet;
@@ -28,11 +27,10 @@ import java.util.Set;
 
 public class SingularRequirementBuilderContext {
 
-    private String name;
+    private String                    name;
     private Class<? extends SType<?>> mainForm;
     private Set<Class<? extends FlowDefinition>> flowClasses = new LinkedHashSet<>();
-    private Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage;
-    private Class<? extends RequirementSender> requirementSenderBeanClass;
+    private Class<? extends AbstractFormPage<?>> defaultExecutionPage;
 
     public String getName() {
         return name;
@@ -61,21 +59,13 @@ public class SingularRequirementBuilderContext {
         return this;
     }
 
-    public Class<? extends AbstractFormPage<?, ?>> getDefaultExecutionPage() {
+    public Class<? extends AbstractFormPage<?>> getDefaultExecutionPage() {
         return defaultExecutionPage;
     }
 
-    public SingularRequirementBuilderContext defaultExecutionPage(Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage) {
+    public SingularRequirementBuilderContext defaultExecutionPage(Class<? extends AbstractFormPage<?>> defaultExecutionPage) {
         this.defaultExecutionPage = defaultExecutionPage;
         return this;
     }
 
-    public Class<? extends RequirementSender> getRequirementSenderBeanClass() {
-        return requirementSenderBeanClass;
-    }
-
-    public SingularRequirementBuilderContext setRequirementSenderBeanClass(Class<? extends RequirementSender> requirementSender) {
-        this.requirementSenderBeanClass = requirementSender;
-        return this;
-    }
 }

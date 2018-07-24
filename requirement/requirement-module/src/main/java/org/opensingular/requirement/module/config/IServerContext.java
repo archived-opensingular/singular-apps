@@ -20,6 +20,7 @@ package org.opensingular.requirement.module.config;
 
 import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
+import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -122,4 +123,8 @@ public interface IServerContext extends Serializable {
         return urls;
     }
 
+    /**
+     * Configura o workspace, adicionando caixas e outros itens
+     */
+    void setup(WorkspaceConfiguration workspaceConfiguration);
 }

@@ -24,9 +24,9 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementEn
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 
-public class SimpleMessageFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
+public class SimpleMessageFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
-    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RI> formPage) {
         super(id, transitionName, formPage);
     }
 

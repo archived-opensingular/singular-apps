@@ -102,4 +102,8 @@ public class RequirementDefinitionEntity extends BaseEntity<Long> {
     public String getKey() {
         return key;
     }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
 }

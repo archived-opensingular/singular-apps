@@ -54,7 +54,7 @@ public class ExtratoGeneratorImplServiceTest {
     private ExtratoGenerator extratoGenerator = new ExtratoGeneratorImpl();
 
     @Mock
-    private RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    private RequirementService requirementService;
 
     @Spy
     private HtmlToPdfConverter htmlToPdfConverter = new MockHtmlToPdfConverter();
@@ -72,7 +72,7 @@ public class ExtratoGeneratorImplServiceTest {
         nome.ifPresent(field -> field.setValue(JOAQUIM));
 
         when(requirement.getMainForm()).thenReturn(siComposite);
-        when(requirementService.getRequirementEntity(1L))
+        when(requirementService.loadRequirementInstance(1L))
                 .thenReturn(requirement);
     }
 

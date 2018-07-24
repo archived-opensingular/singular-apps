@@ -18,11 +18,39 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.requirement.module.executor.BoxUpdaterExecutor;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+
 import java.util.Set;
 
+/**
+ * API_VIEW
+ */
 public interface BoxInfo {
-
+    /**
+     * @return O ID unico desta box
+     */
     String getBoxId();
 
-    Set<SingularRequirementRef> getRequirementRefs();
+    /**
+     * @param boxId é o ID unico desta box, é configurado pelo {@link BoxUpdaterExecutor#saveAllBoxDefinitions()}
+     */
+    void setBoxId(String boxId);
+
+    /**
+     * Classe de Definição da caixa
+     */
+    Class<? extends BoxDefinition> getBoxDefinitionClass();
+
+    /**
+     * TODO
+     */
+    @Deprecated
+    void addSingularRequirementRef(Class<? extends RequirementDefinition> requirement);
+
+    /**
+     * TODO
+     */
+    @Deprecated
+    Set<Class<? extends RequirementDefinition>> getRequirements();
 }

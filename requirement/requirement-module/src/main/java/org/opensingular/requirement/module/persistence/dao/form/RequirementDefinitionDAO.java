@@ -47,4 +47,20 @@ public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> ext
             .setParameter("formType", formType)
             .uniqueResult();
     }
+
+
+    public RequirementDefinitionEntity findByKey(String codModulo, String key) {
+        StringBuilder hql = new StringBuilder();
+
+        hql.append(" FROM ");
+        hql.append(RequirementDefinitionEntity.class.getName());
+        hql.append(" as req ");
+        hql.append(" WHERE req.module.cod = :codModulo ");
+        hql.append("    AND req.key = :key ");
+
+        return (RequirementDefinitionEntity) getSession().createQuery(hql.toString())
+                .setParameter("codModulo", codModulo)
+                .setParameter("key", key)
+                .uniqueResult();
+    }
 }

@@ -18,28 +18,20 @@
 
 package org.opensingular.requirement.module;
 
-/**
- * Basic singular requirement adapter.
- */
-public abstract class SingularRequirementAdapter implements RequirementDefinition {
+import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
-    private String              name;
-    private BoundedFlowResolver flowResolver;
+public interface RequirementSendInterceptor<RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> {
 
-    public SingularRequirementAdapter(String name, BoundedFlowResolver flowResolver) {
-        this.name = name;
-        this.flowResolver = flowResolver;
-    }
+    RSR newInstanceSubmissionResponse();
 
-    @Override
-    public String getName() {
-        return name;
-    }
+    void onBeforeSend(RI requirement, String codSubmitterActor, RSR response);
 
-    @Override
-    public BoundedFlowResolver getFlowResolver() {
-        return flowResolver;
-    }
+    void onAfterStartFlow(RI requirement, String codSubmitterActor, RSR response);
 
+
+    void onBeforeStartFlow(RI requirement, String codSubmitterActor, RSR response);
+
+    void onAfterSend(RI requirement, String codSubmitterActor, RSR response);
 
 }

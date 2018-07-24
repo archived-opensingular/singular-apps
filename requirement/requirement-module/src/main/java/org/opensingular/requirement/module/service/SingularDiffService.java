@@ -41,13 +41,13 @@ import java.util.Optional;
 public class SingularDiffService {
 
     @Inject
-    protected FormRequirementService<?> formRequirementService;
+    protected FormRequirementService formRequirementService;
 
     @Inject
     protected FormVersionDAO formVersionDAO;
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     /**
      * * Diffs, any two form versions be it draft or not or same type or not or whatever
@@ -93,8 +93,8 @@ public class SingularDiffService {
      * @return
      */
     public DiffSummary diffRequirementsLastMainForms(@Nonnull Long currentRequirementId, @Nonnull Long otherRequirementId) {
-        RequirementInstance currentRequirement = requirementService.getRequirementEntity(currentRequirementId);
-        RequirementInstance otherRequirement   = requirementService.getRequirementEntity(otherRequirementId);
+        RequirementInstance currentRequirement = requirementService.loadRequirementInstance(currentRequirementId);
+        RequirementInstance otherRequirement   = requirementService.loadRequirementInstance(otherRequirementId);
         return diffFormVersions(currentRequirement.getMainFormCurrentFormVersion(), otherRequirement.getMainFormCurrentFormVersion());
     }
 
@@ -109,7 +109,7 @@ public class SingularDiffService {
         FormVersionEntity previousFormVersion = null;
         FormVersionEntity currentFormVersion;
 
-        RequirementInstance   requirement = requirementService.getRequirementEntity(requirementId);
+        RequirementInstance   requirement = requirementService.loadRequirementInstance(requirementId);
         String                typeName    = RequirementUtil.getTypeName(requirement);
         Optional<DraftEntity> draftEntity = requirement.getEntity().currentEntityDraftByType(typeName);
 

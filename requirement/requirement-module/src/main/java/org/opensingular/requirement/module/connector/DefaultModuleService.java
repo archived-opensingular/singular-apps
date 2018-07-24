@@ -29,15 +29,12 @@ import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
@@ -46,9 +43,6 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
-import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
-import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
@@ -78,7 +72,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private SingularModuleConfigurationBean singularModuleConfiguration;
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -91,16 +85,9 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private SFormConfig<String> singularFormConfig;
 
     @Inject
-    private FormTypeService formTypeService;
-
-    @Inject
-    private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
-
-    @Inject
     private ModuleDAO moduleDAO;
 
-    @Inject
-    private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
+
 
     @Override
     public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
@@ -186,7 +173,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
             IController controller = getActionController(actionRequest);
-            return controller.run(requirementService.getRequirementEntity(id), actionRequest);
+            return controller.run(requirementService.loadRequirementInstance(id), actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR
@@ -269,31 +256,6 @@ public class DefaultModuleService implements ModuleService, Loggable {
         return new WorkspaceConfigurationMetadata(listMenu(context, user));
     }
 
-    @Override
-    public void save(SingularRequirementRef ref) {
-        Class<? extends SType> mainForm = ref.getRequirement().getMainForm();
-        SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
-
-        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(ref.getRequirement(), formType);
-        requirementDefinitionDAO.save(requirementDefinitionEntity);
-        ref.setRequirementDefinitionEntity(requirementDefinitionEntity);
-    }
-
-    @Override
-    public RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType) {
-        ModuleEntity module = getModule();
-        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
-
-        if (requirementDefinitionEntity == null) {
-            requirementDefinitionEntity = new RequirementDefinitionEntity();
-            requirementDefinitionEntity.setFormType(formType);
-            requirementDefinitionEntity.setModule(module);
-            requirementDefinitionEntity.setName(singularRequirement.getName());
-        }
-
-        return requirementDefinitionEntity;
-    }
 
     /**
      * Retorna o módulo a que este código pertence.

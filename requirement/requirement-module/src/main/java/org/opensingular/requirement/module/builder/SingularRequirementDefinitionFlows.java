@@ -20,8 +20,6 @@ package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.requirement.module.RequirementDefinition;
-import org.opensingular.requirement.module.BoundedFlowResolver;
-import org.opensingular.requirement.module.DynamicFormFlowSingularRequirement;
 
 import java.util.Set;
 
@@ -39,12 +37,13 @@ public class SingularRequirementDefinitionFlows {
 
     public RequirementDefinition build() {
         Set<Class<? extends FlowDefinition>> flowClasses = builderContext.getFlowClasses();
-        return new DynamicFormFlowSingularRequirement(
-                builderContext.getName(),
-                builderContext.getMainForm(),
-                new BoundedFlowResolver((s, c) -> flowClasses.stream().findFirst(), flowClasses),
-                builderContext.getDefaultExecutionPage(),
-                builderContext.getRequirementSenderBeanClass());
+//        return new DynamicFormFlowSingularRequirement(
+//                builderContext.getName(),
+//                builderContext.getMainForm(),
+//                new BoundedFlowResolver((s, c) -> flowClasses.stream().findFirst(), flowClasses),
+//                builderContext.getDefaultExecutionPage(),
+//                builderContext.getRequirementSenderBeanClass());
+        return null;
     }
 
 }

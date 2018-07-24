@@ -18,65 +18,46 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
 
 /**
  * Configuration object for module {@link BoxDefinition} registrations.
  */
 public class WorkspaceConfiguration {
+    private final Set<BoxInfo> boxInfos = new LinkedHashSet<>();
+    private final AnnotationConfigWebApplicationContext applicationContext;
 
-    private List<BoxController> itemBoxes = new ArrayList<>();
-    private RequirementConfiguration requirementConfiguration;
+    private BoxInfo latest;
 
-    public WorkspaceConfiguration(RequirementConfiguration requirementConfiguration) {
-        this.requirementConfiguration = requirementConfiguration;
+    public WorkspaceConfiguration(AnnotationConfigWebApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
+
+    public WorkspaceConfiguration addBox(Class<? extends BoxDefinition> itemBoxClass) {
+        applicationContext.register(itemBoxClass);
+        BoxInfo boxInfo = new DefaultBoxInfo(itemBoxClass);
+        boxInfos.add(boxInfo);
+        latest = boxInfo;
+        return this;
     }
 
     /**
-     * Register a single {@link BoxDefinition}
-     *
-     * @param itemBox the
-     * @return
+     * API_VIEW, acredito que o melhor lugar é dentro da definição da caixa?
      */
-    public WorkspaceConfiguration addBox(BoxDefinition itemBox) {
-        itemBoxes.add(new BoxController(itemBox));
+    @SafeVarargs
+    @Deprecated
+    public final WorkspaceConfiguration newFor(Class<? extends RequirementDefinition>... requirement) {
+        Arrays.stream(requirement).forEach(latest::addSingularRequirementRef);
         return this;
     }
 
-    List<BoxController> getItemBoxes() {
-        return itemBoxes;
-    }
-
-
-    public WorkspaceConfiguration newFor(RequirementProvider... requirementProvider) {
-        Arrays
-                .stream(requirementProvider)
-                .map(requirementConfiguration::getRequirementRef)
-                .forEach(r -> getCurrent().addRequirementRefs(r));
-        return this;
-
-    }
-
-    public WorkspaceConfiguration newFor(RequirementDefinition... requirement) {
-        Arrays
-                .stream(requirement)
-                .map(requirementConfiguration::getRequirementRef)
-                .forEach(r -> getCurrent().addRequirementRefs(r));
-        return this;
-    }
-
-
-    private BoxController getCurrent() {
-        return itemBoxes.get(itemBoxes.size() - 1);
-    }
-
-    public static interface RequirementProvider extends IFunction<SingularRequirementBuilder, RequirementDefinition> {
+    public Set<BoxInfo> getBoxInfos() {
+        return boxInfos;
     }
 }

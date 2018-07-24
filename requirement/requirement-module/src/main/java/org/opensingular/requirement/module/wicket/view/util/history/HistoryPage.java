@@ -47,6 +47,7 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
@@ -105,7 +106,7 @@ public class HistoryPage extends ServerTemplate {
         WebComponent imageHistFlow;
         if (requirementPK != null) {
             String classCss = " col-md-12 ";
-            FlowInstance flowInstance = requirementService.getRequirementEntity(requirementPK).getFlowInstance();
+            FlowInstance flowInstance = getRequirementInstance().getFlowInstance();
             flowInstance.getTasksOlderFirst();
             if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
                 classCss = " col-md-6 col-md-offset-3 ";
@@ -252,7 +253,11 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private List<RequirementHistoryDTO> getHistoryTasks() {
-        return requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, showHiddenTasks());
+        return requirementService.listRequirementContentHistoryByCodRequirement(getRequirementInstance(), showHiddenTasks());
+    }
+
+    private RequirementInstance getRequirementInstance(){
+        return requirementService.loadRequirementInstance(requirementPK);
     }
 
     protected boolean showHiddenTasks() {

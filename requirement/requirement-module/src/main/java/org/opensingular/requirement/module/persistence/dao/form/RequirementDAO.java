@@ -26,7 +26,13 @@ import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
 import org.opensingular.flow.core.TaskType;
-import org.opensingular.form.persistence.entity.*;
+import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormAttachmentEntity;
+import org.opensingular.form.persistence.entity.QFormEntity;
+import org.opensingular.form.persistence.entity.QFormTypeEntity;
+import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -178,7 +184,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<RequirementEntity> findByRootRequirement(T rootRequirement) {
+    public List<RequirementEntity> findByRootRequirement(RequirementEntity rootRequirement) {
         String hql = "FROM " + RequirementEntity.class.getName() + " pe "
                 + " WHERE pe.rootRequirement = :rootRequirement ";
 
@@ -188,13 +194,13 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByCodRequirement(Long codRequirement) {
-        QRequirementEntity requirement = new QRequirementEntity("requirementEntity");
+        QRequirementEntity     requirement     = new QRequirementEntity("requirementEntity");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirementEntity");
-        QFormEntity form = new QFormEntity("formEntity");
-        QDraftEntity currentDraft = new QDraftEntity("draftEntity");
-        QFormEntity draftForm = new QFormEntity("draftFormEntity");
-        QFormVersionEntity formVersion = new QFormVersionEntity("formVersionEntity");
-        QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
+        QFormEntity            form            = new QFormEntity("formEntity");
+        QDraftEntity           currentDraft    = new QDraftEntity("draftEntity");
+        QFormEntity            draftForm       = new QFormEntity("draftFormEntity");
+        QFormVersionEntity     formVersion     = new QFormVersionEntity("formVersionEntity");
+        QFormAttachmentEntity  formAttachment  = new QFormAttachmentEntity("formAttachmentEntity");
 
         return new HibernateQueryFactory(getSession())
                 .selectDistinct(formAttachment)
@@ -222,10 +228,10 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
     }
 
     public RequirementEntity findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
-        QRequirementEntity requirement = new QRequirementEntity("requirement");
+        QRequirementEntity     requirement     = new QRequirementEntity("requirement");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirement");
-        QFormEntity form = new QFormEntity("form");
-        QFormTypeEntity formTypeEntity = new QFormTypeEntity("formType");
+        QFormEntity            form            = new QFormEntity("form");
+        QFormTypeEntity        formTypeEntity  = new QFormTypeEntity("formType");
 
         HibernateQuery<RequirementEntity> hibernateQuery = new HibernateQueryFactory(getSession())
                 .selectFrom(requirement)
@@ -237,7 +243,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
                         .and(formTypeEntity.abbreviation.eq(type)));
         hibernateQuery.getMetadata().setLimit(1L);
 
-        return (T) hibernateQuery.fetchOne();
+        return (RequirementEntity) hibernateQuery.fetchOne();
     }
 
 }

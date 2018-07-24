@@ -46,7 +46,7 @@ import java.util.stream.Collectors;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

@@ -66,7 +66,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
 
     @Inject
-    protected RequirementService<?, ?> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @SpringBean(required = false)

@@ -21,26 +21,41 @@ package org.opensingular.requirement.module;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
+
+//TODO reqdef fazer esse builder fluente
 public class RequirementConfigurationBuilder {
 
 
+    private RequirementDefinitionConfiguration requirementDefinitionConfiguration = new RequirementDefinitionConfiguration();
+
+
     public RequirementDefinitionConfiguration build() {
-        return null;
+        return requirementDefinitionConfiguration;
     }
 
-    public RequirementConfigurationBuilder mainForm(Class<? extends SType> sTypeSimpleClass) {
+    public RequirementConfigurationBuilder mainForm(Class<? extends SType> mainForm) {
+        requirementDefinitionConfiguration.setMainForm(mainForm);
+        return this;
     }
 
     public RequirementConfigurationBuilder flowDefintion(Class<? extends FlowDefinition> flowDefinitionClass) {
+        requirementDefinitionConfiguration.setFlowDefition(flowDefinitionClass);
+        return this;
     }
 
     public RequirementConfigurationBuilder name(String name) {
-        return null;
+        requirementDefinitionConfiguration.setName(name);
+        return this;
     }
 
-    public RequirementConfigurationBuilder executionPage(Class<? extends AbstractFormPage> formPageClass) {
-        return null;
+    public RequirementConfigurationBuilder executionPage(Class<? extends AbstractFormPage<?>> formPageClass) {
+        requirementDefinitionConfiguration.setExecutionPage(formPageClass);
+        return this;
+    }
+
+    public RequirementConfigurationBuilder setRequirementSendListener(RequirementSendInterceptor<?> requirementSendInterceptor) {
+        requirementDefinitionConfiguration.setRequirementSendInterceptor(requirementSendInterceptor);
+        return this;
     }
 }

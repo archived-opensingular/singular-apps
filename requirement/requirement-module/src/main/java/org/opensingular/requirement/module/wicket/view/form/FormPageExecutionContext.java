@@ -19,8 +19,6 @@ package org.opensingular.requirement.module.wicket.view.form;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.flow.FlowResolver;
-import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 import java.io.Serializable;
@@ -30,12 +28,10 @@ public class FormPageExecutionContext implements Serializable {
 
     private ActionContext actionContext;
     private String formType;
-    private FlowResolver resolver;
     private boolean mainForm = true;
 
-    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver) {
+    public FormPageExecutionContext(ActionContext context, String formName) {
         this(context);
-        this.resolver = resolver;
         if (formName != null) {
             this.mainForm = false;
             this.formType = formName;
@@ -75,15 +71,11 @@ public class FormPageExecutionContext implements Serializable {
         return mainForm;
     }
 
-    public FlowResolver getFlowResolver() {
-        return resolver;
-    }
-
     public ActionContext copyOfInnerActionContext() {
         return new ActionContext(actionContext);
     }
 
-    public Optional<Long> getRequirementDefinitionId() {
-        return actionContext.getRequirementDefinitionId();
+    public Optional<String> getRequirementDefinitionKey() {
+        return actionContext.getRequirementDefinitionKey();
     }
 }

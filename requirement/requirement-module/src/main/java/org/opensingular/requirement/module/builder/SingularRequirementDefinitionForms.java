@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.module.service.RequirementSender;
 
 public class SingularRequirementDefinitionForms {
 
@@ -33,8 +32,4 @@ public class SingularRequirementDefinitionForms {
         return new SingularRequirementDefinitionFlows(builderContext.addFlowClass(flowClass));
     }
 
-    public SingularRequirementDefinitionForms requirementSenderBeanClass(Class<? extends RequirementSender> requirementSender) {
-        builderContext.setRequirementSenderBeanClass(requirementSender);
-        return this;
-    }
 }

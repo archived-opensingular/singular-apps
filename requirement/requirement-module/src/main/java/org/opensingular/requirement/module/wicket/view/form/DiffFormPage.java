@@ -48,7 +48,7 @@ public class DiffFormPage extends ServerTemplate {
     public static final String PREVIOUS_REQUIREMENT_ID = "pr";
 
     @Inject
-    protected FormRequirementService<?> formRequirementService;
+    protected FormRequirementService formRequirementService;
 
     @Inject
     protected SingularDiffService singularDiffService;
