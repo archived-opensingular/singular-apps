@@ -36,7 +36,7 @@ public class FooRequirement extends RequirementDefinition<RequirementInstance> {
         return conf
                 .name("Foo requirement")
                 .mainForm(STypeFoo.class)
-                .flowDefintion(FooFlow.class)
+                .flowDefintion(FOOFlowWithTransition.class)
                 .build();
     }
 }

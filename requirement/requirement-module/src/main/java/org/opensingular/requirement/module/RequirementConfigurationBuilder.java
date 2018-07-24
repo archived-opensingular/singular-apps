@@ -54,7 +54,7 @@ public class RequirementConfigurationBuilder {
         return this;
     }
 
-    public RequirementConfigurationBuilder setRequirementSendListener(RequirementSendInterceptor<?> requirementSendInterceptor) {
+    public RequirementConfigurationBuilder setRequirementSendListener(RequirementSendInterceptor<?, ?> requirementSendInterceptor) {
         requirementDefinitionConfiguration.setRequirementSendInterceptor(requirementSendInterceptor);
         return this;
     }

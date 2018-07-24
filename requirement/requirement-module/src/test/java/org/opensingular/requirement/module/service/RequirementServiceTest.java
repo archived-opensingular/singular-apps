@@ -18,48 +18,29 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.io.Serializable;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.flow.core.FlowInstance;
-import org.opensingular.flow.core.STask;
-import org.opensingular.flow.core.TaskInstance;
-import org.opensingular.flow.core.TaskType;
-import org.opensingular.form.SIComposite;
-import org.opensingular.form.SInstance;
-import org.opensingular.form.document.RefSDocumentFactory;
-import org.opensingular.form.document.RefType;
-import org.opensingular.form.document.SDocumentFactory;
-import org.opensingular.form.helpers.AssertionsSInstance;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.requirement.commons.FOOFlow;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-
-import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 
-import static org.hamcrest.Matchers.greaterThanOrEqualTo;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.Assert.*;
 
 @Transactional
@@ -195,8 +176,8 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void quickSearchTests() {
 
-        long                 qtdEnviada       = 0;
-        long                 qtdRascunho      = 0;
+        long                    qtdEnviada          = 0;
+        long                    qtdRascunho         = 0;
         List<RequirementEntity> requirementEntities = requirementDAO.listAll();
 
         for (RequirementEntity requirementEntity : requirementEntities) {
@@ -289,7 +270,6 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 //
 //        assertNull(requirement.getCod());
 //    }
-
 
 
 }
