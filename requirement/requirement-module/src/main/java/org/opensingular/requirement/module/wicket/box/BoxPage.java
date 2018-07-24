@@ -18,12 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.model.IModel;
@@ -36,10 +30,8 @@ import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
-import org.opensingular.requirement.module.wicket.view.template.MenuService;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -50,9 +42,6 @@ import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MODULE_PARAM_NAME;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {

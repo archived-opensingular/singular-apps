@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
+import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.PageExpiredException;
@@ -33,7 +34,6 @@ import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -60,13 +60,13 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
     }
 
     @Override
-    protected void onAllowed(HttpServletRequest request, String origin, IRequestablePage page) {
-        super.onAllowed(request, origin, page);
+    public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
+        super.onRequestHandlerResolved(cycle, handler);
         SingularModuleConfigurationBean singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularModuleConfigurationBean.class);
-        if (SingularSession.get().isAuthtenticated() && isPageRequest(page)) {
+        if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
             if (!userDetails.keepLoginThroughContexts()) {
-                IServerContext newContext = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
+                IServerContext newContext = IServerContext.getContextFromRequest(cycle.getRequest(), singularServerConfiguration.getContexts());
                 IServerContext currentContext = SingularSession.get().getServerContext();
                 if (!currentContext.equals(newContext)) {
                     resetLogin(RequestCycle.get());
@@ -118,8 +118,8 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
         return null;
     }
 
-    private boolean isPageRequest(IRequestablePage handler) {
-        return handler instanceof IRequestablePage;
+    private boolean isPageRequest(IRequestHandler handler) {
+        return handler instanceof IPageClassRequestHandler;
     }
 
     /**

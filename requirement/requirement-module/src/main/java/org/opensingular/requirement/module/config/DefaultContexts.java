@@ -8,6 +8,47 @@ import org.opensingular.requirement.module.wicket.application.WorklistWicketAppl
 
 public interface DefaultContexts {
 
+    class WorklistContextWithCAS extends ServerContext {
+        public static final String NAME = "WORKLIST_WITH_CAS";
+
+        public WorklistContextWithCAS() {
+            super(NAME, "/worklist/*", "singular.worklist");
+        }
+
+        @Override
+        public Class<? extends WorklistWicketApplication> getWicketApplicationClass() {
+            return WorklistWicketApplication.class;
+        }
+
+        @Override
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
+            return SecurityConfigs.CASAnalise.class;
+        }
+    }
+
+    class RequirementContextWithCAS extends ServerContext {
+        public static final String NAME = "REQUIREMENT_WITH_CAS";
+
+        public RequirementContextWithCAS() {
+            super(NAME, "/requirement/*", "singular.requirement");
+        }
+
+        @Override
+        public Class<? extends RequirementWicketApplication> getWicketApplicationClass() {
+            return RequirementWicketApplication.class;
+        }
+
+        @Override
+        public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
+            return SecurityConfigs.CASPeticionamento.class;
+        }
+
+        @Override
+        public boolean checkOwner() {
+            return true;
+        }
+    }
+
     class WorklistContext extends ServerContext {
         public static final String NAME = "WORKLIST";
 
@@ -22,7 +63,7 @@ public interface DefaultContexts {
 
         @Override
         public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
-            return SecurityConfigs.CASAnalise.class;
+            return SecurityConfigs.WorklistSecurity.class;
         }
     }
 
@@ -40,7 +81,7 @@ public interface DefaultContexts {
 
         @Override
         public Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass() {
-            return SecurityConfigs.CASPeticionamento.class;
+            return SecurityConfigs.RequirementSecurity.class;
         }
 
         @Override

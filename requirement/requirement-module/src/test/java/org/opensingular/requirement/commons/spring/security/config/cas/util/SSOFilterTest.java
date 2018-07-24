@@ -26,7 +26,6 @@ import org.apache.wicket.protocol.http.mock.MockServletContext;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.internal.verification.Times;
-import org.opensingular.requirement.module.config.AbstractSingularInitializer;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
@@ -47,8 +46,8 @@ public class SSOFilterTest {
         MockApplication application = new MockApplication();
 
         MockServletContext context = new MockServletContext(application, "");
-        DefaultContexts.WorklistContext worklistContext = new DefaultContexts.WorklistContext();
-        context.setAttribute("nada", worklistContext);
+        DefaultContexts.WorklistContextWithCAS worklistContextWithCAS = new DefaultContexts.WorklistContextWithCAS();
+        context.setAttribute("nada", worklistContextWithCAS);
 
         filterConfig = new MockFilterConfig(context);
         filterConfig.addInitParameter(SSOFilter.URL_EXCLUDE_PATTERN_PARAM, "/rest");
@@ -58,7 +57,7 @@ public class SSOFilterTest {
         request = new MockHttpServletRequest(application, new MockHttpSession(context), context){
             @Override
             public String getContextPath() {
-                return worklistContext.getUrlPath();
+                return worklistContextWithCAS.getUrlPath();
             }
         };
 

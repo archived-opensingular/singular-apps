@@ -23,10 +23,8 @@ import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.requirement.module.config.AbstractSingularInitializer;
 import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
-import org.opensingular.requirement.module.config.SpringSecurityInitializer;
 import org.opensingular.requirement.module.config.WebInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
-import org.opensingular.requirement.studio.spring.RequirementStudioSpringSecurityInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 
 import javax.servlet.ServletContext;
@@ -55,10 +53,5 @@ public abstract class RequirementStudioAppInitializer extends AbstractSingularIn
     @Override
     public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
         return RequirementStudioWebMVCConfig.class;
-    }
-
-    @Override
-    public SpringSecurityInitializer springSecurityConfiguration() {
-        return new RequirementStudioSpringSecurityInitializer();
     }
 }

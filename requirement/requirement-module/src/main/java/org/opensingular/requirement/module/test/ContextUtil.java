@@ -25,7 +25,7 @@ import org.opensingular.requirement.module.config.DefaultContexts;
 
 public class ContextUtil {
     private static String contextPath = "/singular";
-    private static String pathInfo = contextPath + new DefaultContexts.WorklistContext().getUrlPath();
+    private static String pathInfo = contextPath + new DefaultContexts.WorklistContextWithCAS().getUrlPath();
 
     public static void prepareRequest(ServletRequest request) {
         new Mirror().on(request).invoke().setterFor("contextPath").withValue(contextPath);

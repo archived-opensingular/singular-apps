@@ -21,15 +21,19 @@ package org.opensingular.requirement.studio.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.HashMap;
+import java.util.Map;
 
 @Controller
 public class LoginController {
+    @RequestMapping(value = "**/login", method = RequestMethod.GET)
+    public ModelAndView getLoginView(HttpServletRequest request) {
+        Map<String, String> model = new HashMap<>();
+        model.put("loginPath", request.getRequestURI());
 
-    @RequestMapping(value = "/login", method = RequestMethod.GET)
-    public String getLoginView(HttpServletRequest request) {
-        return "login";
+        return new ModelAndView("login", model);
     }
-
 }
