@@ -20,7 +20,6 @@ package org.opensingular.requirement.module.wicket.listener;
 
 import javax.servlet.http.HttpServletRequest;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
@@ -31,9 +30,8 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
+import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -51,12 +49,7 @@ import org.opensingular.requirement.module.wicket.error.Page500;
  * <p>
  * Esse Listener também é responsável pela segurança CSRF.
  */
-public class SingularServerContextListener extends CsrfPreventionRequestCycleListener implements Loggable {
-
-    public SingularServerContextListener() {
-        allowCSRF();
-        configureAcceptOrigins();
-    }
+public class SingularServerContextListenerSingular extends SingularCsrfPreventionRequestCycleListener implements Loggable {
 
     @Override
     protected void onAllowed(HttpServletRequest request, String origin, IRequestablePage page) {
@@ -119,36 +112,6 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
 
     private boolean isPageRequest(IRequestablePage handler) {
         return handler instanceof IRequestablePage;
-    }
-
-    /**
-     * Method responsible for enabled or disabled the Crsf security.
-     * <p>
-     * A property will be used for this configuration.
-     */
-    private void allowCSRF() {
-        //IF CSRF Property is not present or is disabled, all request will be ALLOW.
-        if (!SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED)) {
-            setNoOriginAction(CsrfAction.ALLOW);
-            setConflictingOriginAction(CsrfAction.ALLOW);
-        }
-    }
-
-    /**
-     * Method responsible for include some accept origins.
-     * This will be used for allow some domains to send request for the server.
-     * <p>
-     * A property will be used for this configuration.
-     */
-    private void configureAcceptOrigins() {
-        SingularProperties.get().getPropertyOpt(SingularProperties.SINGULAR_CSRF_ACCEPT_ORIGINS)
-                .ifPresent(origins -> {
-                    for (String origin : origins.split(",")) {
-                        if(StringUtils.isNotBlank(origin)) {
-                            addAcceptedOrigin(origin.trim());
-                        }
-                    }
-                });
     }
 
 }
