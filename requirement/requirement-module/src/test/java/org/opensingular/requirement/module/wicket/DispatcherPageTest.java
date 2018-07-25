@@ -39,9 +39,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ACTION;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {

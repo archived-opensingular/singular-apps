@@ -24,7 +24,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+
 
 /**
  * Responsible for generating a redirect link to a new requirement page.

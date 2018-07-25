@@ -18,11 +18,6 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -34,7 +29,6 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
-import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
@@ -42,13 +36,12 @@ import org.opensingular.requirement.module.exception.SingularRequirementExceptio
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
