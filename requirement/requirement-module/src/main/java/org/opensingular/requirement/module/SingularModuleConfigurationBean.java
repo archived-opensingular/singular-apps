@@ -24,8 +24,12 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.*;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.beans.factory.BeanFactory;
 import org.springframework.web.context.ServletContextAware;
 
+import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.ServletContext;
 import java.util.*;
@@ -40,6 +44,9 @@ import static org.opensingular.requirement.module.SingularModuleConfiguration.SE
  */
 @Named
 public class SingularModuleConfigurationBean implements ServletContextAware {
+    private final BeanFactory beanFactory;
+    private final BoxControllerFactory boxControllerFactory;
+
     private SingularModuleConfiguration singularModuleConfiguration;
     private IServerContext[] contexts;
     private String springMVCServletMapping;
@@ -48,6 +55,17 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
     private String moduleCod;
     private String[] definitionsPackages;
     private String[] defaultPublicUrls;
+
+    /**
+     * Cache for the already created controllers
+     */
+    private Map<String, BoxController> controllers = new HashMap<>();
+
+    @Inject
+    public SingularModuleConfigurationBean(BeanFactory beanFactory, BoxControllerFactory boxControllerFactory) {
+        this.beanFactory = beanFactory;
+        this.boxControllerFactory = boxControllerFactory;
+    }
 
     @Override
     public void setServletContext(ServletContext servletContext) {
@@ -80,12 +98,12 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
         return singularModuleConfiguration.getModule();
     }
 
-    public List<BoxController> getBoxControllerByContext(IServerContext context) {
-        return singularModuleConfiguration.getBoxControllerByContext(context);
+    public Set<BoxInfo> getBoxByContext(IServerContext context) {
+        return singularModuleConfiguration.getBoxByContext(context);
     }
 
-    public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
-        return singularModuleConfiguration.getBoxControllerByBoxId(boxId);
+    public Optional<BoxInfo> getBoxByBoxId(String boxId) {
+        return singularModuleConfiguration.getBoxByBoxId(boxId);
     }
 
     public SingularRequirement getRequirementById(Long id) {
@@ -93,14 +111,21 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
     }
 
     public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
-        return singularModuleConfiguration.buildItemBoxes(context);
+        return getBoxByContext(context)
+                .stream()
+                .map(box -> buildBoxDefinitionData(box, context))
+                .collect(Collectors.toList());
     }
 
-    public BoxDefinitionData buildBoxDefinitionData(BoxController boxController, IServerContext context) {
-        return singularModuleConfiguration.buildBoxDefinitionData(boxController, context);
+    public BoxDefinitionData buildBoxDefinitionData(BoxInfo boxInfo, IServerContext context) {
+        BoxDefinition factory = beanFactory.getBean(boxInfo.getBoxDefinitionClass());
+        ItemBox itemBox = factory.build(context);
+        itemBox.setFieldsDatatable(factory.getDatatableFields());
+        itemBox.setId(boxInfo.getBoxId());
+        return new BoxDefinitionData(itemBox, boxInfo.getRequirements());
     }
 
-    public List<SingularRequirementRef> getRequirements() {
+    public List<SingularRequirement> getRequirements() {
         return singularModuleConfiguration.getRequirements();
     }
 
@@ -148,4 +173,10 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
         return Stream.of(contexts).filter(i -> i.getName().equals(name)).findFirst().orElse(null);
     }
 
+    public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
+        if (!controllers.containsKey(boxId)) {
+            getBoxByBoxId(boxId).ifPresent(boxInfo1 -> controllers.put(boxId, boxControllerFactory.create(boxInfo1)));
+        }
+        return Optional.ofNullable(controllers.get(boxId));
+    }
 }
