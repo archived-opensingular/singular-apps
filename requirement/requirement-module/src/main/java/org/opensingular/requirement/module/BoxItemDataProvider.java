@@ -34,20 +34,18 @@ public interface BoxItemDataProvider {
      * Pesquisa a lista de linhas a serem exibidas pelo servidor
      *
      * @param filter        o filtro do usuario
-     * @param boxInfo
      * @return lista de mapa, contando chaves do {@link DatatableField}
      * e valores.
      */
-    List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo);
+    List<Map<String, Serializable>> search(QuickFilter filter);
 
     /**
      * Conta todas as linhas a serem exibidas
      *
      * @param filter        o filtro do usuario
-     * @param boxInfo
      * @return total de linhas
      */
-    Long count(QuickFilter filter, BoxInfo boxInfo);
+    Long count(QuickFilter filter);
 
     /**
      * Configura as ações por linha

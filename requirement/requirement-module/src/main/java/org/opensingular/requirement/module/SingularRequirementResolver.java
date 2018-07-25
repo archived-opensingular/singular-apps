@@ -18,22 +18,23 @@
 
 package org.opensingular.requirement.module;
 
-import java.util.Map;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.flow.FlowResolver;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.service.dto.RequirementSenderFeedback;
 import org.opensingular.requirement.module.wicket.view.RequirementResolverPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.Map;
+import java.util.Optional;
 
 /**
  * Defines an 'virtual' requirement that preform a pre-step to decide which requirement should be initialized
@@ -44,11 +45,12 @@ import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionCon
  * and overriding the {@link RequirementResolverPage#redirectToResolvedRequirement(Long, Map)}
  */
 public class SingularRequirementResolver implements SingularRequirement {
-
     private       String                 name;
     private final Class<? extends SType> preRequirementSelectionForm;
     private Class<? extends RequirementResolverPage> requirementResolverPage = RequirementResolverPage.class;
     private RequirementResolver requirementResolver;
+
+    private RequirementDefinitionEntity requirementDefinitionEntity;
 
     public SingularRequirementResolver(String name, Class<? extends SType> requirementResolverForm, RequirementResolver requirementResolver) {
         this.name = name;
@@ -111,5 +113,15 @@ public class SingularRequirementResolver implements SingularRequirement {
         public RequirementSenderFeedback send(@Nonnull RequirementInstance requirement, SInstance instance, @Nullable String codSubmitterActor) {
             throw new SingularRequirementException("There is no RequirementSender definition for a " + SingularRequirementResolver.class.getSimpleName() + " definition ");
         }
+    }
+
+    @Override
+    public void setEntity(RequirementDefinitionEntity requirementDefinitionEntity) {
+        this.requirementDefinitionEntity = requirementDefinitionEntity;
+    }
+
+    @Override
+    public Long getDefinitionCod() {
+        return requirementDefinitionEntity.getCod();
     }
 }

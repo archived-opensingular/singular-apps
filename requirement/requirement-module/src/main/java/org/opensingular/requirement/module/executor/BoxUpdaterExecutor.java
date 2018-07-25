@@ -19,7 +19,7 @@
 package org.opensingular.requirement.module.executor;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
@@ -33,6 +33,7 @@ import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Classe para abrigar a lógica de carga inicial
@@ -68,12 +69,12 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (IServerContext context : singularServerConfiguration.getContexts()) {
-            List<BoxController> boxControllers = singularModuleConfiguration.getBoxControllerByContext(context);
-            for (BoxController boxController : boxControllers) {
-                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxController, context);
+            Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
+            for (BoxInfo boxInfo : boxInfos) {
+                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxInfo, context);
                 try {
                     BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
-                    boxController.setId(boxEntity.getCod().toString());
+                    boxInfo.setBoxId(boxEntity.getCod().toString());
                 } catch (Exception e) {
                     throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getItemBox().getName()), e);
                 }

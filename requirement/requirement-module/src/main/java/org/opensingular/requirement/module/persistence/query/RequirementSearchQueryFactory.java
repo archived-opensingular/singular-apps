@@ -20,20 +20,20 @@ package org.opensingular.requirement.module.persistence.query;
 
 import javax.annotation.Nonnull;
 
+import javax.annotation.Nonnull;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
-import com.querydsl.core.types.dsl.StringTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-
 public class RequirementSearchQueryFactory {
 
     private final RequirementSearchContext ctx;
@@ -42,6 +42,7 @@ public class RequirementSearchQueryFactory {
     private RequirementSearchQuery query;
 
     private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
+    private static final String TO_CHAR_DATE_SHORT = "TO_CHAR({0}, 'DD/MM/YY HH24:MI')";
 
     public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
         this.ctx = ctx;
@@ -218,16 +219,22 @@ public class RequirementSearchQueryFactory {
                 .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
                 .or($.taskVersion.name.likeIgnoreCase(filter))
                 .or($.requirement.cod.like(filter))
-                .or(toCharDate($.currentFormVersion.inclusionDate).like(filter))
-                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate).like(filter))
-                .or(toCharDate($.currentDraftEntity.editionDate).like(filter))
-                .or(toCharDate($.task.beginDate).like(filter))
-                .or(toCharDate($.flowInstance.beginDate).like(filter)));
+                .or(toCharDate($.currentFormVersion.inclusionDate, filter))
+                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate, filter))
+                .or(toCharDate($.currentDraftEntity.editionDate, filter))
+                .or(toCharDate($.task.beginDate, filter))
+                .or(toCharDate($.flowInstance.beginDate, filter)));
     }
 
     @Nonnull
-    private StringTemplate toCharDate(Path<?> path) {
-        return Expressions.stringTemplate(TO_CHAR_DATE, path);
+    private BooleanExpression toCharDate(Path<?> path, String filter) {
+        return Expressions.stringTemplate(TO_CHAR_DATE, path).like(filter)
+                .or(toCharDateShort(path, filter));
+    }
+
+    @Nonnull
+    private BooleanExpression toCharDateShort(Path<?> path, String filter) {
+        return Expressions.stringTemplate(TO_CHAR_DATE_SHORT, path).like(filter);
     }
 
 }

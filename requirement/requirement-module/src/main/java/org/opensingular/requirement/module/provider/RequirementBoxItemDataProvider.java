@@ -27,6 +27,8 @@ import javax.annotation.Nonnull;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
+import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
@@ -35,40 +37,47 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
-public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
+import javax.annotation.Nonnull;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
+public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final Boolean evalPermissions;
     private final ActionProvider actionProvider;
-
+    private final RequirementService<?, ?> requirementService;
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
 
-    public RequirementBoxItemDataProvider(@Nonnull Boolean evalPermissions, @Nonnull ActionProvider actionProvider) {
+    RequirementBoxItemDataProvider(Boolean evalPermissions, ActionProvider actionProvider,
+                                   RequirementService<?, ?> requirementService) {
         this.evalPermissions = evalPermissions;
         this.actionProvider = actionProvider;
+        this.requirementService = requirementService;
     }
 
     @Override
-    public List<Map<String, Serializable>> search(QuickFilter filter, BoxInfo boxInfo) {
+    public List<Map<String, Serializable>> search(QuickFilter filter) {
         addEnabledTasksToFilter(filter);
         List<Map<String, Serializable>> requirements;
         if (Boolean.TRUE.equals(evalPermissions)) {
-            requirements = lookupRequirementService().listTasks(filter, searchPermissions(filter), extenders);
+            requirements = requirementService.listTasks(filter, searchPermissions(filter), extenders);
         } else {
-            requirements = lookupRequirementService().quickSearchMap(filter, extenders);
+            requirements = requirementService.quickSearchMap(filter, extenders);
         }
         filters.forEach(x -> x.accept(requirements));
         return requirements;
     }
 
     @Override
-    public Long count(QuickFilter filter, BoxInfo boxInfo) {
+    public Long count(QuickFilter filter) {
         addEnabledTasksToFilter(filter);
         if (Boolean.TRUE.equals(evalPermissions)) {
-            return lookupRequirementService().countTasks(filter, searchPermissions(filter), extenders);
+            return requirementService.countTasks(filter, searchPermissions(filter), extenders);
         } else {
-            return lookupRequirementService().countQuickSearch(filter, extenders);
+            return requirementService.countQuickSearch(filter, extenders);
         }
     }
 
@@ -76,11 +85,6 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     @Override
     public ActionProvider getActionProvider() {
         return actionProvider;
-    }
-
-    @Nonnull
-    protected RequirementService<?, ?> lookupRequirementService() {
-        return ApplicationContextProvider.get().getBean(RequirementService.class);
     }
 
     protected void addEnabledTasksToFilter(QuickFilter filter) {
@@ -120,5 +124,4 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         tasks.forEach(this::addTask);
         return this;
     }
-
 }
