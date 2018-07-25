@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.config;
 
+import javax.servlet.ServletContext;
+
 import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.requirement.module.flow.SingularServerFlowConfigurationBean;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import javax.servlet.ServletContext;
 
 public abstract class FlowInitializer {
 

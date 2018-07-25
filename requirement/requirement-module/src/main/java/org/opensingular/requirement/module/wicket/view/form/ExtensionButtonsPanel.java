@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import java.util.List;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -31,8 +33,6 @@ import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.wicket.view.extension.RequirementButtonExtension;
-
-import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 

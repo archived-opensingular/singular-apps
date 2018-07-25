@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import javax.servlet.ServletContext;
+
 import org.opensingular.form.SType;
 import org.opensingular.form.spring.SpringSDocumentFactory;
 import org.opensingular.form.spring.SpringTypeLoader;
@@ -28,11 +33,6 @@ import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-
-import javax.servlet.ServletContext;
-import java.lang.reflect.Modifier;
-import java.util.ArrayList;
-import java.util.List;
 
 public class FormInitializer {
 

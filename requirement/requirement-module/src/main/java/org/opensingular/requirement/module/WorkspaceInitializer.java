@@ -20,7 +20,7 @@ public class WorkspaceInitializer implements Loggable {
     public void init(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
         SingularModuleConfiguration singularModuleConfiguration = new SingularModuleConfiguration();
         try {
-            singularModuleConfiguration.init();
+            singularModuleConfiguration.init(applicationContext);
         } catch (IllegalAccessException | InstantiationException ex) {
             getLogger().error(ex.getMessage(), ex);
         }

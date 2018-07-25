@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.spring.security;
 
+import java.util.List;
+import javax.annotation.Nullable;
+
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-
-import javax.annotation.Nullable;
-import java.util.List;
 
 /**
  * Service responsible every authorization check in a Singular Requirement Application.

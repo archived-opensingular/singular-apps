@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.webchecker;
 
+import java.net.URL;
+import java.net.URLConnection;
+
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.lib.commons.util.Loggable;
-
-import java.net.URL;
-import java.net.URLConnection;
 
 public class HttpChecker implements IProtocolChecker, Loggable {
 

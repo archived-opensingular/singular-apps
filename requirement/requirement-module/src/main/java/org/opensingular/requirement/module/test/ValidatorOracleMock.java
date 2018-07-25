@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.test;
 
-import org.opensingular.requirement.module.admin.healthsystem.validation.database.ValidatorOracle;
-import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
-import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+
+import org.opensingular.requirement.module.admin.healthsystem.validation.database.ValidatorOracle;
+import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
+import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
 
 public class ValidatorOracleMock extends ValidatorOracle {
 

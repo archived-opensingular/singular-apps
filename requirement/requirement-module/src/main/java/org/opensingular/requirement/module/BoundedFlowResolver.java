@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module;
 
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
+
 import com.google.common.collect.Sets;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SIComposite;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.FlowResolver;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
-
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
 
 /**
  * Responsible for resolve a {@link FlowDefinition} based {@link SIComposite}

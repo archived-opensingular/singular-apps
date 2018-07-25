@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -37,10 +39,9 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementEn
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.springframework.web.util.HtmlUtils;
 
-import java.util.Optional;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import static org.junit.Assert.assertTrue;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(org.mockito.junit.MockitoJUnitRunner.class)
 public class ExtratoGeneratorImplServiceTest {

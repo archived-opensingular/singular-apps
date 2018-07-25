@@ -19,14 +19,14 @@
 package org.opensingular.requirement.module.spring.security;
 
 
+import java.io.Serializable;
+import java.util.Optional;
+
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Url;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.requirement.module.util.url.UrlToolkit;
 import org.opensingular.requirement.module.util.url.UrlToolkitBuilder;
-
-import java.io.Serializable;
-import java.util.Optional;
 
 public class SecurityAuthPaths implements Serializable {
 

@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.persistence.dto;
 
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
-
 import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
+
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 
 public class RequirementHistoryDTO implements Serializable {
 

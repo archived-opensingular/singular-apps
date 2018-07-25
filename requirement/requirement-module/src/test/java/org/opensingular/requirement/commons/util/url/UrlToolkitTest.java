@@ -23,7 +23,7 @@ import org.junit.Test;
 import org.opensingular.requirement.module.util.url.UrlToolkit;
 import org.opensingular.requirement.module.util.url.UrlToolkitBuilder;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class UrlToolkitTest {
 

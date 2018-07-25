@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.service.dto;
 
+import java.io.Serializable;
+import java.util.List;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
-
-import java.io.Serializable;
-import java.util.List;
 
 public class ItemBox implements Serializable {
 

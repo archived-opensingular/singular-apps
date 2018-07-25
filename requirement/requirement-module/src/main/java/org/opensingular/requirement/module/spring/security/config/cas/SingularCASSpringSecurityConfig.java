@@ -19,6 +19,11 @@
 package org.opensingular.requirement.module.spring.security.config.cas;
 
 
+import java.util.Arrays;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import com.google.common.base.Joiner;
 import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.lib.commons.base.SingularProperties;
@@ -27,6 +32,7 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
+import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
@@ -38,7 +44,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.core.userdetails.UserDetailsByNameServiceWrapper;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.web.authentication.Http403ForbiddenEntryPoint;
 import org.springframework.security.web.authentication.preauth.PreAuthenticatedAuthenticationProvider;
 import org.springframework.security.web.authentication.preauth.j2ee.J2eePreAuthenticatedProcessingFilter;
 
@@ -99,7 +104,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
         http
                 .addFilterBefore(newSSOFilter(), J2eePreAuthenticatedProcessingFilter.class)
                 .regexMatcher(getContext().getPathRegex())
-                .httpBasic().authenticationEntryPoint(new Http403ForbiddenEntryPoint())
+                .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
                 .and()
                 .csrf().disable()
                 .headers().frameOptions().sameOrigin()
@@ -108,6 +113,8 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
                 .and()
                 .authorizeRequests()
                 .antMatchers(getContext().getContextPath()).authenticated();
+
+
 
     }
 

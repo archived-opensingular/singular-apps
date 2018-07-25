@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.box;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-
-import java.io.Serializable;
 
 @JsonSerialize(as = BoxItemDataImpl.class)
 @JsonDeserialize(as = BoxItemDataImpl.class)

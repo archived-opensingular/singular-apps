@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.persistence.dao;
 
+import java.util.Map;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.opensingular.lib.support.persistence.SimpleDAO;
-
-import javax.inject.Named;
-import javax.transaction.Transactional;
-import java.util.Map;
 
 @Named
 public class HealthSystemDAO extends SimpleDAO {

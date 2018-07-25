@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.flow.core.FlowInstance;
-
 import java.io.Serializable;
+
+import org.opensingular.flow.core.FlowInstance;
 
 /**
  * @author Daniel C. Bordin on 26/02/2017.

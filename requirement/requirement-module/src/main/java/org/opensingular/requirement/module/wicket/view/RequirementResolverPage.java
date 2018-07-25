@@ -30,7 +30,6 @@ import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.SingularRequirementResolver;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
@@ -78,13 +77,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
     protected void send(IModel<? extends SInstance> mi, AjaxRequestTarget ajxrt, BSModalBorder sm) {
         SingularRequirementResolver requirementResolver = (SingularRequirementResolver) getSingularRequirement(getConfig().copyOfInnerActionContext()).orElseThrow(() -> new SingularRequirementException("No requirement definition found!"));
         SingularRequirement requirement = requirementResolver.resolve((SIComposite) mi.getObject());
-        Long idRequirementDefinition = singularModuleConfiguration
-                .getRequirements()
-                .stream().filter(r -> r.getRequirement().equals(requirement))
-                .findFirst()
-                .map(SingularRequirementRef::getId)
-                .orElseThrow(() -> new SingularRequirementException(String.format("Requirement Definition form '%s' not found.", requirement.getName())));
-        redirectToResolvedRequirement(idRequirementDefinition, new HashMap<>(0));
+        redirectToResolvedRequirement(requirement.getDefinitionCod(), new HashMap<>(0));
     }
 
     @Override

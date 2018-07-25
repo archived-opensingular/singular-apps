@@ -18,20 +18,19 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.admin.healthsystem.validation.database.IValidatorDatabase;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.TableInfoDTO;
-
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.reset;

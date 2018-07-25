@@ -18,9 +18,6 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
-
-import javax.annotation.Nullable;
 import java.io.CharArrayReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,6 +26,9 @@ import java.net.URL;
 import java.nio.charset.Charset;
 import java.util.Properties;
 import java.util.regex.Pattern;
+import javax.annotation.Nullable;
+
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
 
 public class MessagesValueConverter extends DefaultValueConverter {
 
