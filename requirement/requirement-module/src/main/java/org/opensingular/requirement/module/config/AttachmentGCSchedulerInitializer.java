@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.opensingular.flow.schedule.IScheduleService;
-import org.opensingular.flow.schedule.ScheduleDataBuilder;
 import org.opensingular.requirement.module.service.AttachmentGCJob;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduleDataBuilder;
 import org.springframework.context.annotation.Bean;
 
 public class AttachmentGCSchedulerInitializer {

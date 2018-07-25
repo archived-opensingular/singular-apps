@@ -19,9 +19,9 @@ package org.opensingular.app.commons.mail.schedule;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.flow.schedule.IScheduledJob;
-import org.opensingular.flow.schedule.quartz.QuartzScheduleService;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.schedule.IScheduledJob;
+import org.opensingular.schedule.quartz.QuartzScheduleService;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 

@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.concurrent.Executor;
 import javax.sql.DataSource;
 
-import org.opensingular.flow.schedule.quartz.QuartzJobFactory;
-import org.opensingular.flow.schedule.quartz.SingularSchedulerAccessor;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.schedule.quartz.QuartzJobFactory;
+import org.opensingular.schedule.quartz.SingularSchedulerAccessor;
 import org.quartz.JobDetail;
 import org.quartz.JobKey;
 import org.quartz.Scheduler;

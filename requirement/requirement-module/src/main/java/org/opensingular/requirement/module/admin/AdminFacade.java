@@ -25,8 +25,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import net.sf.ehcache.CacheManager;
-import org.opensingular.flow.schedule.IScheduleService;
-import org.opensingular.flow.schedule.ScheduledJob;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduledJob;
 import org.quartz.JobKey;
 import org.quartz.SchedulerException;
 

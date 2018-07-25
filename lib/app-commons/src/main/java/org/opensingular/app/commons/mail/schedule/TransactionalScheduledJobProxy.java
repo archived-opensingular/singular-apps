@@ -20,9 +20,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
-import org.opensingular.flow.schedule.IScheduleData;
-import org.opensingular.flow.schedule.IScheduledJob;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.schedule.IScheduleData;
+import org.opensingular.schedule.IScheduledJob;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 

@@ -18,14 +18,34 @@
 
 package org.opensingular.app.commons.test;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+import javax.sql.DataSource;
+
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
-import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration;
+import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
+import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.dto.Email;
+import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.mail.service.email.EmailSender;
+import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
+import org.opensingular.app.commons.mail.service.email.IEmailService;
+import org.opensingular.form.persistence.dao.AttachmentContentDao;
+import org.opensingular.form.persistence.dao.AttachmentDao;
+import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduleDataBuilder;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -39,13 +59,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import javax.sql.DataSource;
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
-
-import static org.opensingular.lib.commons.base.SingularProperties.*;
+import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
@@ -55,7 +70,7 @@ import static org.opensingular.lib.commons.base.SingularProperties.*;
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)
         })
-public class ApplicationContextConfiguration extends DefaultEmailConfiguration implements Loggable {
+public class ApplicationContextConfiguration implements Loggable {
 
 
     @Bean
@@ -132,6 +147,89 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         initializer.setDatabasePopulator(databasePopulator());
         return initializer;
     }
+
+    @Bean
+    public AttachmentDao attachmentDao() {
+        return new AttachmentDao();
+    }
+
+    @Bean
+    public AttachmentContentDao attachmentContentDao() {
+        return new AttachmentContentDao<>();
+    }
+
+    @Bean
+    public AttachmentPersistenceService filePersistence() {
+        return new AttachmentPersistenceService();
+    }
+
+    @Bean
+    public EmailDao emailDao() {
+        return new EmailDao();
+    }
+
+    @Bean
+    public EmailAddresseeDao emailAddresseeDao() {
+        return new EmailAddresseeDao();
+    }
+
+    @Bean
+    public EmailSender emailSender() {
+        return new EmailSender();
+    }
+
+    @Bean
+    public IEmailService<Email> emailService() {
+        return new EmailPersistenceService();
+    }
+
+    @Bean
+    @DependsOn({"emailSender", "scheduleService", "emailService"})
+    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
+        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
+        scheduleService.schedule(emailSenderScheduledJob);
+        return emailSenderScheduledJob;
+    }
+
+    // ######### Beans for Quartz ##########
+
+    @Autowired
+    private DataSource dataSource;
+
+    @Bean
+    @DependsOn("schedulerFactoryBean")
+    public IScheduleService scheduleService() {
+        return new TransactionalQuartzScheduledService(schedulerFactoryBean());
+    }
+
+    /**
+     * Configure the SchedulerBean for Singular.
+     * This bean have to implents InitializingBean to work properly.
+     *
+     * @return SingularSchedulerBean instance.
+     */
+    @Bean
+    public SingularSchedulerBean schedulerFactoryBean() {
+        SingularSchedulerBean factory = new SingularSchedulerBean();
+        Properties quartzProperties = new Properties();
+        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
+        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
+        if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
+            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
+            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
+            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
+            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
+            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
+            factory.setQuartzProperties(quartzProperties);
+            factory.setDataSource(dataSource);
+            factory.setOverwriteExistingJobs(true);
+        } else {
+            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+        }
+
+        return factory;
+    }
+
 
 
 }

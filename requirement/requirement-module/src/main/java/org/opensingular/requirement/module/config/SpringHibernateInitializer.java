@@ -22,7 +22,6 @@ import java.util.Optional;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
 
-import org.opensingular.app.commons.mail.schedule.SingularQuartzBeanFactory;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
@@ -48,7 +47,6 @@ public class SpringHibernateInitializer {
         AnnotationConfigWebApplicationContext applicationContext = newApplicationContext();
         applicationContext.register(springConfigurationClass());
         applicationContext.register(beanFactory());
-        applicationContext.register(quartzBeanFactory());
         Optional.ofNullable(persistenceConfiguration()).ifPresent(applicationContext::register);
         addSpringContextListener(ctx, applicationContext);
         addSpringRequestContextListener(ctx, applicationContext);
@@ -88,10 +86,6 @@ public class SpringHibernateInitializer {
 
     protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
         return SingularDefaultBeanFactory.class;
-    }
-
-    protected Class<? extends SingularQuartzBeanFactory> quartzBeanFactory() {
-        return SingularQuartzBeanFactory.class;
     }
 
     protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {

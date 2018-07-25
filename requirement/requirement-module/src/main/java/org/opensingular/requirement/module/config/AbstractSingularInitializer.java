@@ -21,7 +21,6 @@ package org.opensingular.requirement.module.config;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 
-import org.opensingular.app.commons.mail.schedule.SingularQuartzBeanFactory;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
@@ -91,10 +90,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
             @Override
             protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
                 return AbstractSingularInitializer.this.beanFactory();
-            }
-
-            protected Class<? extends SingularQuartzBeanFactory> quartzBeanFactory() {
-                return SingularQuartzBeanFactory.class;
             }
         };
     }
