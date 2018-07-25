@@ -5,6 +5,7 @@ import javax.sql.DataSource;
 
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
@@ -14,7 +15,7 @@ import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUAR
 /**
  * Bean Factory just for the Quartz.
  */
-
+@AutoScanDisabled
 public class SingularQuartzBeanFactory {
 
     @Autowired
@@ -27,8 +28,10 @@ public class SingularQuartzBeanFactory {
     }
 
     /**
-     * Configure the SchedulerBean for Singular. This bean
-     * @return
+     * Configure the SchedulerBean for Singular.
+     * This bean have to implents InitializingBean to work properly.
+     *
+     * @return SingularSchedulerBean instance.
      */
     @Bean
     public SingularSchedulerBean schedulerFactoryBean() {

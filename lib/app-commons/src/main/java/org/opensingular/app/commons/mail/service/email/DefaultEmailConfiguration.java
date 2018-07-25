@@ -20,6 +20,7 @@ package org.opensingular.app.commons.mail.service.email;
 
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.SingularQuartzBeanFactory;
 import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
@@ -28,7 +29,9 @@ import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Import;
 
+@Import(SingularQuartzBeanFactory.class)
 public class DefaultEmailConfiguration {
 
     @Bean
