@@ -34,12 +34,12 @@ import org.springframework.jdbc.support.MetaDataAccessException;
 /**
  * Subclass of Quartz's JobStoreCMT class that delegates to a Spring-managed
  * DataSource instead of using a Quartz-managed connection pool. This JobStore
- * will be used if SingularSchedulerFactoryBean's "dataSource" property is set.
+ * will be used if SingularSchedulerBean's "dataSource" property is set.
  *
  * <p>Supports both transactional and non-transactional DataSource access.
  * With a non-XA DataSource and local Spring transactions, a single DataSource
  * argument is sufficient. In case of an XA DataSource and global JTA transactions,
- * SingularSchedulerFactoryBean's "nonTransactionalDataSource" property should be set,
+ * SingularSchedulerBean's "nonTransactionalDataSource" property should be set,
  * passing in a non-XA DataSource that will not participate in global transactions.
  *
  * <p>Operations performed by this JobStore will properly participate in any
@@ -50,8 +50,8 @@ import org.springframework.jdbc.support.MetaDataAccessException;
  * job store should usually be performed within active transactions,
  * as they assume to get proper locks etc.
  *
- * @see SingularSchedulerFactoryBean#setDataSource
- * @see SingularSchedulerFactoryBean#setNonTransactionalDataSource
+ * @see SingularSchedulerBean#setDataSource
+ * @see SingularSchedulerBean#setNonTransactionalDataSource
  * @see org.springframework.jdbc.datasource.DataSourceUtils#doGetConnection
  * @see org.springframework.jdbc.datasource.DataSourceUtils#releaseConnection
  */
@@ -62,7 +62,7 @@ public class SingularLocalDataSourceJobStore extends JobStoreCMT {
      * Name used for the transactional ConnectionProvider for Quartz.
      * This provider will delegate to the local Spring-managed DataSource.
      * @see org.quartz.utils.DBConnectionManager#addConnectionProvider
-     * @see SingularSchedulerFactoryBean#setDataSource
+     * @see SingularSchedulerBean#setDataSource
      */
     public static final String TX_DATA_SOURCE_PREFIX = "springTxDataSource.";
 
@@ -70,7 +70,7 @@ public class SingularLocalDataSourceJobStore extends JobStoreCMT {
      * Name used for the non-transactional ConnectionProvider for Quartz.
      * This provider will delegate to the local Spring-managed DataSource.
      * @see org.quartz.utils.DBConnectionManager#addConnectionProvider
-     * @see SingularSchedulerFactoryBean#setDataSource
+     * @see SingularSchedulerBean#setDataSource
      */
     public static final String NON_TX_DATA_SOURCE_PREFIX = "springNonTxDataSource.";
 
@@ -83,11 +83,11 @@ public class SingularLocalDataSourceJobStore extends JobStoreCMT {
             throws SchedulerConfigException {
 
         // Absolutely needs thread-bound DataSource to initialize.
-        this.dataSource = SingularSchedulerFactoryBean.getConfigTimeDataSource();
+        this.dataSource = SingularSchedulerBean.getConfigTimeDataSource();
         if (this.dataSource == null) {
             throw new SchedulerConfigException(
                     "No local DataSource found for configuration - " +
-                            "'dataSource' property must be set on SingularSchedulerFactoryBean");
+                            "'dataSource' property must be set on SingularSchedulerBean");
         }
 
         // Configure transactional connection settings for Quartz.
@@ -116,7 +116,7 @@ public class SingularLocalDataSourceJobStore extends JobStoreCMT {
 
         // Non-transactional DataSource is optional: fall back to default
         // DataSource if not explicitly specified.
-        DataSource nonTxDataSource = SingularSchedulerFactoryBean.getConfigTimeNonTransactionalDataSource();
+        DataSource nonTxDataSource = SingularSchedulerBean.getConfigTimeNonTransactionalDataSource();
         final DataSource nonTxDataSourceToUse = (nonTxDataSource != null ? nonTxDataSource : this.dataSource);
 
         // Configure non-transactional connection settings for Quartz.

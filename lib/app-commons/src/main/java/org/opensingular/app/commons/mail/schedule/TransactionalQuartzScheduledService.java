@@ -34,9 +34,9 @@ public class TransactionalQuartzScheduledService extends QuartzScheduleService i
     public TransactionalQuartzScheduledService() {
     }
 
-    public TransactionalQuartzScheduledService(SingularSchedulerFactoryBean singularSchedulerFactoryBean) {
+    public TransactionalQuartzScheduledService(SingularSchedulerBean singularSchedulerBean) {
         super(false);
-        setQuartzSchedulerFactory(singularSchedulerFactoryBean);
+        setQuartzSchedulerFactory(singularSchedulerBean);
     }
 
 

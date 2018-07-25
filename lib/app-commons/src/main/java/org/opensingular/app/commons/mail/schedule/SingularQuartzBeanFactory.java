@@ -7,14 +7,15 @@ import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.DependsOn;
 
 import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
 
-@Configuration
-public class SingularQuartzBeanConfiguration {
+/**
+ * Bean Factory just for the Quartz.
+ */
 
+public class SingularQuartzBeanFactory {
 
     @Autowired
     private DataSource dataSource;
@@ -25,10 +26,13 @@ public class SingularQuartzBeanConfiguration {
         return new TransactionalQuartzScheduledService(schedulerFactoryBean());
     }
 
+    /**
+     * Configure the SchedulerBean for Singular. This bean
+     * @return
+     */
     @Bean
-    public SingularSchedulerFactoryBean schedulerFactoryBean() {
-
-        SingularSchedulerFactoryBean factory = new SingularSchedulerFactoryBean();
+    public SingularSchedulerBean schedulerFactoryBean() {
+        SingularSchedulerBean factory = new SingularSchedulerBean();
         Properties quartzProperties = new Properties();
         quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
         quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");

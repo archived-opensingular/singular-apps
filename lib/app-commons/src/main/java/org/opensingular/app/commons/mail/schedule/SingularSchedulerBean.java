@@ -42,7 +42,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 
-public class SingularSchedulerFactoryBean extends SingularSchedulerAccessor implements FactoryBean<Scheduler>,
+public class SingularSchedulerBean extends SingularSchedulerAccessor implements FactoryBean<Scheduler>,
         BeanNameAware, ApplicationContextAware, InitializingBean, DisposableBean, SmartLifecycle {
     public static final String PROP_THREAD_COUNT = "org.quartz.threadPool.threadCount";
 
@@ -59,7 +59,7 @@ public class SingularSchedulerFactoryBean extends SingularSchedulerAccessor impl
             new ThreadLocal<DataSource>();
 
 
-    public SingularSchedulerFactoryBean() {
+    public SingularSchedulerBean() {
 
     }
 
