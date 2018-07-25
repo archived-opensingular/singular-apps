@@ -120,7 +120,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private List<SingularPermission> searchPermissions(String userPermissionKey) {
         if (SingularSession.exists()) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-            if (userDetails != null && userPermissionKey.equals(userDetails.getApplicantId())) {
+            if (userDetails != null && userPermissionKey != null && userPermissionKey.equals(userDetails.getApplicantId())) {
                 if (CollectionUtils.isEmpty(userDetails.getPermissions())) {
                     userDetails.addPermissions(peticionamentoUserDetailService.searchPermissions((String) userDetails.getApplicantId()));
                 }
