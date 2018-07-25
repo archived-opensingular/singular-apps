@@ -1,0 +1,1 @@
+INSERT INTO DBSINGULAR.TB_MODULO (CO_MODULO, NO_MODULO, URL_CONEXAO) VALUES ('GRUPO_TESTE', 'Grupo Processo Teste','http://localhost:8080/rest/nada');

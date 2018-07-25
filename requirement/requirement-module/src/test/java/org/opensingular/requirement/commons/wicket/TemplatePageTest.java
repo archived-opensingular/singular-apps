@@ -18,21 +18,19 @@
 
 package org.opensingular.requirement.commons.wicket;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.behavior.AbstractAjaxBehavior;
 import org.apache.wicket.behavior.Behavior;
 import org.junit.Test;
 import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
-
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class TemplatePageTest extends SingularCommonsBaseTest {

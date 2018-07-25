@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem.docs;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.STypeAttachmentList;
@@ -29,8 +31,6 @@ import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.type.country.brazil.STypeAddress;
 import org.opensingular.form.view.SViewByBlock;
 import org.opensingular.form.view.SViewListByMasterDetail;
-
-import javax.annotation.Nonnull;
 
 @SInfoType(name = "STypeDocSample", spackage = SPackageDocSample.class, label = "Super SType Test")
 public class STypeDocSample extends STypeComposite<SIComposite> {

@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.flow.builder;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.SingularFlowException;
 import org.opensingular.flow.core.property.MetaDataKey;
 import org.opensingular.flow.core.variable.VarDefinitionMap;
-
-import javax.annotation.Nonnull;
 
 /**
  * Representa uma definição de fluxo especializada em requerimentos. Apresenta comportamentos e configurações

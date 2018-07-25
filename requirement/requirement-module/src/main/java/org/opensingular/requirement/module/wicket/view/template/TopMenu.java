@@ -16,22 +16,22 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
-import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.request.cycle.RequestCycle;
-import org.apache.wicket.request.flow.RedirectToUrlException;
-import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
-import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
-import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.lib.wicket.util.template.SkinOptions.Skin;
+import java.util.Optional;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.link.StatelessLink;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
-
-import java.util.Optional;
+import org.apache.wicket.request.cycle.RequestCycle;
+import org.apache.wicket.request.flow.RedirectToUrlException;
+import org.opensingular.lib.wicket.util.template.SkinOptions;
+import org.opensingular.lib.wicket.util.template.SkinOptions.Skin;
+import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
+import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
+import org.opensingular.requirement.module.wicket.SingularSession;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;

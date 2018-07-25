@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.wicket.view.extension;
 
+import java.io.Serializable;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.commons.extension.SingularExtension;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.service.RequirementInstance;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.io.Serializable;
 
 /**
  * Permite incluir um botão a todas as páginas de requerimento. Deve possui todos os membros serializaveis. pôs

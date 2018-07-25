@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.test;
 
+import java.util.function.Consumer;
+import javax.annotation.Nonnull;
+
 import org.junit.Rule;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.SFlowUtil;
@@ -26,9 +29,6 @@ import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.junit.AbstractTestTempFileSupport;
 import org.opensingular.lib.commons.junit.MockInjectorRule;
 import org.opensingular.lib.commons.util.Loggable;
-
-import javax.annotation.Nonnull;
-import java.util.function.Consumer;
 
 /**
  * Support the implementation of tests that renders a image with a graph of the process represented by a flow

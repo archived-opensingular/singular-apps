@@ -19,16 +19,15 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
+import org.opensingular.requirement.module.WorkspaceInitializer;
 import org.opensingular.requirement.module.config.*;
-
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
 public class CommonsInitializerMock implements SingularInitializer {
-    
-    public static final String   TESTE                      = "GRUPO_TESTE";
-    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
+
+    public static final String TESTE = "GRUPO_TESTE";
+    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
@@ -41,10 +40,6 @@ public class CommonsInitializerMock implements SingularInitializer {
     @Override
     public WebInitializer webConfiguration() {
         return new WebInitializer() {
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
-                return CommonsApplicationMock.class;
-            }
         };
     }
 
@@ -72,15 +67,20 @@ public class CommonsInitializerMock implements SingularInitializer {
             }
 
             @Override
-            protected String springMVCServletMapping() {
+            public String springMVCServletMapping() {
                 return SPRING_MVC_SERVLET_MAPPING;
             }
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return CommonsInitializerMock.this.persistenceConfiguration();
+                return CommonsInitializerMock.this.persistenceConfiguration();
             }
         };
+    }
+
+    @Override
+    public WorkspaceInitializer workspaceConfiguration() {
+        return new WorkspaceInitializer();
     }
 
 

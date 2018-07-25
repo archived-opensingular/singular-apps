@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import java.io.IOException;
+import java.nio.file.FileStore;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -27,15 +35,7 @@ import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.lang.Bytes;
 import org.opensingular.lib.commons.util.Loggable;
 
-import java.io.IOException;
-import java.nio.file.FileStore;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 @SuppressWarnings("serial")
 public class DiskPanel extends Panel implements Loggable {

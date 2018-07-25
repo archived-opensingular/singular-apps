@@ -22,8 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
-
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 
 
 import javax.inject.Inject;
@@ -32,7 +31,7 @@ import javax.servlet.ServletException;
 public class ConfigTest extends SingularCommonsBaseTest {
 
     @Inject
-    public SingularServerConfiguration singularServerConfiguration;
+    public SingularModuleConfigurationBean singularServerConfiguration;
 
     @Test
     public void checkServletParams() throws ServletException {

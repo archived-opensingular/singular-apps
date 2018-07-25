@@ -19,11 +19,11 @@
 package org.opensingular.requirement.commons;
 
 
+import javax.inject.Named;
+
 import org.apache.wicket.Page;
 import org.opensingular.requirement.module.test.SingularTestRequestCycleListener;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-
-import javax.inject.Named;
 
 @Named
 public class CommonsApplicationMock extends SingularRequirementApplication {

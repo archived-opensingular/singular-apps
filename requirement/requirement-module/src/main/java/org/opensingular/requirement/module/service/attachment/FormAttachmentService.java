@@ -18,12 +18,16 @@
 
 package org.opensingular.requirement.module.service.attachment;
 
-import org.opensingular.form.persistence.dao.FormAttachmentDAO;
-import org.opensingular.form.persistence.entity.*;
-
+import java.util.List;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-import java.util.List;
+
+import org.opensingular.form.persistence.dao.FormAttachmentDAO;
+import org.opensingular.form.persistence.entity.AttachmentContentEntity;
+import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormAttachmentEntityId;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
 
 @Transactional
 public class FormAttachmentService extends AbstractFormAttachmentService<AttachmentEntity, AttachmentContentEntity, FormAttachmentEntity> {

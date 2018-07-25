@@ -18,18 +18,18 @@
 
 package org.opensingular.requirement.module.config;
 
+import java.util.Optional;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletRegistration;
+
+import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
-import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.module.spring.SingularServerSpringAppConfig;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.servlet.DispatcherServlet;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
-import java.util.Optional;
 
 public class SpringHibernateInitializer {
 
@@ -92,7 +92,7 @@ public class SpringHibernateInitializer {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 
-    protected String springMVCServletMapping() {
+    public String springMVCServletMapping() {
         return "/*";
     }
 

@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.module.flow.controllers;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.springframework.stereotype.Controller;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 
 @Controller

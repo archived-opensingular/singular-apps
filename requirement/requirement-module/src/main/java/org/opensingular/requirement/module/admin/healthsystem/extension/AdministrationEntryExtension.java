@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.extension;
 
+import java.io.Serializable;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.lib.commons.extension.SingularExtension;
-
-import java.io.Serializable;
 
 public interface AdministrationEntryExtension extends SingularExtension, Serializable {
 

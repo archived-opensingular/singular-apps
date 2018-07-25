@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.service.attachment;
 
+import java.util.Optional;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
@@ -34,8 +36,6 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
 import org.opensingular.requirement.module.service.attachment.FormAttachmentService;
 import org.opensingular.requirement.module.service.attachment.ServerAttachmentPersistenceService;
-
-import java.util.Optional;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;

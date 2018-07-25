@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
+import java.io.Writer;
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.table.ColumnType;
 import org.opensingular.lib.commons.table.TableOutput;
@@ -26,15 +31,10 @@ import org.opensingular.lib.commons.table.TablePopulator;
 import org.opensingular.lib.commons.table.TableTool;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.views.format.ViewOutputHtmlWriterWrap;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocumentationMetadataBuilder;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
-
-import java.io.Writer;
-import java.util.ArrayList;
-import java.util.LinkedHashSet;
-import java.util.List;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocumentationMetadataBuilder;
 
 public class DefaultFormDocumentationRenderer implements FormDocumentationRenderer, Loggable {
 

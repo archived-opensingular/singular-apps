@@ -19,11 +19,11 @@
 package org.opensingular.requirement.module.spring.security;
 
 
-import org.opensingular.form.spring.SingularUserDetails;
-import org.opensingular.requirement.module.config.IServerContext;
-
 import java.util.Arrays;
 import java.util.List;
+
+import org.opensingular.form.spring.SingularUserDetails;
+import org.opensingular.requirement.module.config.IServerContext;
 
 public interface SingularRequirementUserDetails extends SingularUserDetails {
 

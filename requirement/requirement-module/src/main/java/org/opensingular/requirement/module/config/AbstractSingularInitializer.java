@@ -18,16 +18,12 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.Page;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.WorkspaceInitializer;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
-import org.opensingular.requirement.module.wicket.SingleAppPage;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
@@ -67,24 +63,11 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     @Override
     public WebInitializer webConfiguration() {
         return new WebInitializer() {
-
             @Override
             public void onStartup(ServletContext servletContext) throws ServletException {
                 String contextPath = servletContext.getContextPath();//NOSONAR
                 servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
                 super.onStartup(servletContext);
-            }
-
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (ServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return AnalysisApplication.class;
-                } else if (ServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return RequirementApplication.class;
-                } else if (ServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
             }
         };
     }
@@ -126,6 +109,11 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
         return new SpringSecurityInitializer();
     }
 
+    @Override
+    public WorkspaceInitializer workspaceConfiguration() {
+        return new WorkspaceInitializer();
+    }
+
     protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
         return SingularDefaultBeanFactory.class;
     }
@@ -135,33 +123,5 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
 
     protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
         return SingularPersistenceDefaultBeanFactory.class;
-    }
-
-    public static class AnalysisApplication extends SingularRequirementApplication {
-        @Override
-        public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
-            initSKin.accept(skinOptions);
-        }
-    }
-
-    public static class RequirementApplication extends SingularRequirementApplication {
-        @Override
-        public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
-            initSKin.accept(skinOptions);
-        }
     }
 }

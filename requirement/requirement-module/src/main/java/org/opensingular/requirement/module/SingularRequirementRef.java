@@ -20,9 +20,8 @@ package org.opensingular.requirement.module;
 
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 
 /**
  * Requirement Reference to check equality against same requirements provided many times in configuration classes
