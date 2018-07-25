@@ -18,8 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.listener;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
@@ -27,7 +25,6 @@ import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.request.IRequestHandler;
-import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
@@ -55,7 +52,6 @@ import org.opensingular.requirement.module.wicket.error.Page500;
 public class SingularServerContextListener extends CsrfPreventionRequestCycleListener implements Loggable {
 
     public SingularServerContextListener() {
-        allowCSRF();
         configureAcceptOrigins();
     }
 
@@ -69,7 +65,7 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
                 IServerContext newContext = IServerContext.getContextFromRequest(cycle.getRequest(), singularServerConfiguration.getContexts());
                 IServerContext currentContext = SingularSession.get().getServerContext();
                 if (!currentContext.equals(newContext)) {
-                    resetLogin(RequestCycle.get());
+                    resetLogin(cycle);
                 }
             }
         }
@@ -122,18 +118,17 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
         return handler instanceof IPageClassRequestHandler;
     }
 
+
     /**
      * Method responsible for enabled or disabled the Crsf security.
      * <p>
      * A property will be used for this configuration.
      */
-    private void allowCSRF() {
-        //IF CSRF Property is not present or is disabled, all request will be ALLOW.
-        if (!SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED)) {
-            setNoOriginAction(CsrfAction.ALLOW);
-            setConflictingOriginAction(CsrfAction.ALLOW);
-        }
+    @Override
+    protected boolean isEnabled() {
+        return SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED);
     }
+
 
     /**
      * Method responsible for include some accept origins.
