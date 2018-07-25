@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.test;
 
+import javax.servlet.ServletContext;
+
 import org.opensingular.lib.commons.util.Loggable;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -30,8 +32,6 @@ import org.springframework.test.context.support.AbstractTestExecutionListener;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletWebRequest;
-
-import javax.servlet.ServletContext;
 
 public class SingularServletContextTestExecutionListener extends AbstractTestExecutionListener implements Loggable {
 

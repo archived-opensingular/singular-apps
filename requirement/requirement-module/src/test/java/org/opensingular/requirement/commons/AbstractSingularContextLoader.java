@@ -33,12 +33,15 @@ package org.opensingular.requirement.commons;
  * limitations under the License.
  */
 
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.requirement.commons.test.SingularServletContextMock;
-import org.opensingular.requirement.module.config.SingularInitializer;
+import org.opensingular.requirement.module.config.SingularWebApplicationInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -58,9 +61,6 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 import org.springframework.web.context.support.GenericWebApplicationContext;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 /**
  * Abstract, generic extension of {@link AbstractContextLoader} that loads a
@@ -282,7 +282,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
         try {
-            new SingularInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
+            new SingularWebApplicationInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
         } catch (ServletException e) {
             throw SingularException.rethrow(e);
         }

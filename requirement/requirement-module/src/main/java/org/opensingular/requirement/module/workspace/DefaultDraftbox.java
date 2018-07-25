@@ -18,24 +18,18 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.PServerContext;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
 public class DefaultDraftbox implements BoxDefinition {
-
-    @Override
-    public boolean appliesTo(IServerContext context) {
-        return PServerContext.REQUIREMENT.isSameContext(context);
-    }
 
     @Override
     public ItemBox build(IServerContext context) {

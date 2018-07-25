@@ -19,13 +19,11 @@
 package org.opensingular.requirement.module.test;
 
 
+import javax.inject.Named;
+
 import org.apache.wicket.Page;
-import org.opensingular.requirement.module.test.SingularTestRequestCycleListener;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
-
-
-import javax.inject.Named;
 
 @Named
 public class ModuleApplicationMock extends SingularRequirementApplication {

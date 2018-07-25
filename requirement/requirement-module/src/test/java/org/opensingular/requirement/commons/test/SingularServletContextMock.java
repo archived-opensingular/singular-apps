@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.commons.test;
 
-import org.mockito.Mockito;
-import org.opensingular.lib.commons.util.Loggable;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.mock.web.MockServletContext;
-
+import java.util.EventListener;
 import javax.servlet.Filter;
 import javax.servlet.FilterRegistration;
 import javax.servlet.Servlet;
 import javax.servlet.ServletRegistration;
-import java.util.EventListener;
+
+import org.mockito.Mockito;
+import org.opensingular.lib.commons.util.Loggable;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.mock.web.MockServletContext;
 
 public class SingularServletContextMock extends MockServletContext implements Loggable {
 

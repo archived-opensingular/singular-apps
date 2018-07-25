@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.spring;
 
+import java.util.Objects;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.Application;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.inject.Inject;
-import java.util.Objects;
-import java.util.Optional;
 
 @Transactional
 public class SingularDefaultUserService implements IUserService {

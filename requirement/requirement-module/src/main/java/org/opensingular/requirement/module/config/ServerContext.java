@@ -20,19 +20,20 @@ package org.opensingular.requirement.module.config;
 
 import org.opensingular.lib.commons.base.SingularProperties;
 
+import java.util.Objects;
+
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public enum ServerContext implements IServerContext {
+public abstract class ServerContext implements IServerContext {
 
-
-    WORKLIST("/worklist/*", "singular.worklist");
-
-    private final String propertiesBaseKey;
     private final String contextPath;
+    private final String propertiesBaseKey;
+    private final String name;
 
-    ServerContext(String defaultPath, String propertiesBaseKey) {
+    public ServerContext(String name, String defaultPath, String propertiesBaseKey) {
+        this.name = name;
         this.propertiesBaseKey = propertiesBaseKey;
         String key = propertiesBaseKey + ".context";
         String path = SingularProperties.getOpt(key).orElse(null);
@@ -58,7 +59,7 @@ public enum ServerContext implements IServerContext {
 
     @Override
     public String getName() {
-        return this.name();
+        return this.name;
     }
 
     /**
@@ -66,6 +67,7 @@ public enum ServerContext implements IServerContext {
      *
      * @return
      */
+
     @Override
     public String getContextPath() {
         return contextPath;
@@ -93,5 +95,17 @@ public enum ServerContext implements IServerContext {
         return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ServerContext that = (ServerContext) o;
+        return Objects.equals(contextPath, that.contextPath) &&
+                Objects.equals(name, that.name);
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(contextPath, name);
+    }
 }

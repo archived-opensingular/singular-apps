@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.service.dto;
 
 import java.io.Serializable;
-import java.util.List;
 
 public class RequirementDefinitionDTO implements Serializable {
 

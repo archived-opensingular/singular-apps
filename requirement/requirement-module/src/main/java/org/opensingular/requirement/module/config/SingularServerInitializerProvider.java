@@ -18,18 +18,18 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.opensingular.lib.commons.context.SingularContext;
-import org.opensingular.lib.commons.context.SingularSingletonStrategy;
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import org.opensingular.lib.commons.context.SingularContext;
+import org.opensingular.lib.commons.context.SingularSingletonStrategy;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+
 
 public class SingularServerInitializerProvider {
 
-    private PSingularInitializer singularInitializer;
+    private AbstractSingularInitializer singularInitializer;
 
     private SingularServerInitializerProvider() {
     }
@@ -38,16 +38,16 @@ public class SingularServerInitializerProvider {
         return ((SingularSingletonStrategy) SingularContext.get()).singletonize(SingularServerInitializerProvider.class, SingularServerInitializerProvider::new);
     }
 
-    public PSingularInitializer retrieve() {
+    public AbstractSingularInitializer retrieve() {
         if (singularInitializer == null) {
-            List<Class<? extends PSingularInitializer>> configs = findAllInstantiableConfigs();
+            List<Class<? extends AbstractSingularInitializer>> configs = findAllInstantiableConfigs();
             if (configs.isEmpty()) {
-                throw new SingularServerInitializerProviderException("É obrigatorio implementar a classe " + PSingularInitializer.class);
+                throw new SingularServerInitializerProviderException("É obrigatorio implementar a classe " + AbstractSingularInitializer.class);
             }
             if (configs.size() > 1) {
-                throw new SingularServerInitializerProviderException("Não é permitido possuir mais de uma implementação de " + PSingularInitializer.class);
+                throw new SingularServerInitializerProviderException("Não é permitido possuir mais de uma implementação de " + AbstractSingularInitializer.class);
             }
-            Class<? extends PSingularInitializer> configClass = configs.get(0);
+            Class<? extends AbstractSingularInitializer> configClass = configs.get(0);
             try {
                 singularInitializer = configClass.newInstance();
             } catch (InstantiationException | IllegalAccessException ex) {
@@ -57,9 +57,9 @@ public class SingularServerInitializerProvider {
         return singularInitializer;
     }
 
-    private List<Class<? extends PSingularInitializer>> findAllInstantiableConfigs() {
+    private List<Class<? extends AbstractSingularInitializer>> findAllInstantiableConfigs() {
         return SingularClassPathScanner.get()
-                        .findSubclassesOf(PSingularInitializer.class)
+                        .findSubclassesOf(AbstractSingularInitializer.class)
                         .stream()
                         .filter(config -> !(Modifier.isAbstract(config.getModifiers()) || config.isInterface() || config.isAnonymousClass()))
                         .collect(Collectors.toList());

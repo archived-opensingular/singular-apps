@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.persistence.entity;
 
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
-
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_FUNCIONALIDADE_REQUISICAO")

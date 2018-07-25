@@ -6,7 +6,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-apps</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
+        <version>1.8.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>singular-requirement</artifactId>
@@ -19,7 +19,6 @@
         <module>requirement-sei-30-connector</module>
         <module>requirement-sei-30-extensao-singular</module>
         <module>requirement-sei-30-features-lib</module>
-        <module>requirement-single-app</module>
         <module>requirement-studio-app</module>
     </modules>
 

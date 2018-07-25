@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.database;
 
+import java.math.BigDecimal;
+import java.util.List;
+import javax.inject.Named;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
-
-import javax.inject.Named;
-import java.math.BigDecimal;
-import java.util.List;
 
 @Named
 public class ValidatorOracle extends AbstractValidator {

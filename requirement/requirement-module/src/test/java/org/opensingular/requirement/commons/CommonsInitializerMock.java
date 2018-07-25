@@ -19,21 +19,15 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.requirement.module.config.FlowInitializer;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.PSingularInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.opensingular.requirement.module.config.SchedulerInitializer;
-import org.opensingular.requirement.module.config.SpringHibernateInitializer;
-
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.WorkspaceInitializer;
+import org.opensingular.requirement.module.config.*;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class CommonsInitializerMock implements PSingularInitializer {
-    
-    public static final String   TESTE                      = "GRUPO_TESTE";
-    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
+public class CommonsInitializerMock implements SingularInitializer {
+
+    public static final String TESTE = "GRUPO_TESTE";
+    public static final String SPRING_MVC_SERVLET_MAPPING = "/*";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
@@ -44,13 +38,24 @@ public class CommonsInitializerMock implements PSingularInitializer {
     }
 
     @Override
-    public PWebInitializer webConfiguration() {
-        return new PWebInitializer() {
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
-                return CommonsApplicationMock.class;
-            }
+    public WebInitializer webConfiguration() {
+        return new WebInitializer() {
         };
+    }
+
+    @Override
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
+        return SingularSpringWebMVCConfig.class;
+    }
+
+    @Override
+    public FormInitializer formConfiguration() {
+        return new FormInitializer();
+    }
+
+    @Override
+    public SpringSecurityInitializer springSecurityConfiguration() {
+        return new SpringSecurityInitializer();
     }
 
     @Override
@@ -62,15 +67,20 @@ public class CommonsInitializerMock implements PSingularInitializer {
             }
 
             @Override
-            protected String springMVCServletMapping() {
+            public String springMVCServletMapping() {
                 return SPRING_MVC_SERVLET_MAPPING;
             }
 
             @Override
             protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return CommonsInitializerMock.this.persistenceConfiguration();
+                return CommonsInitializerMock.this.persistenceConfiguration();
             }
         };
+    }
+
+    @Override
+    public WorkspaceInitializer workspaceConfiguration() {
+        return new WorkspaceInitializer();
     }
 
 

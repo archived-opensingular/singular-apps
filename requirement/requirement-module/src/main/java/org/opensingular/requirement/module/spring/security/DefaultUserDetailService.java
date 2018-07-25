@@ -19,17 +19,17 @@
 package org.opensingular.requirement.module.spring.security;
 
 
-import org.opensingular.flow.core.SUser;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
-import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-
-import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import javax.inject.Inject;
+
+import org.opensingular.flow.core.SUser;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class DefaultUserDetailService implements SingularUserDetailsService {
 
@@ -37,7 +37,7 @@ public class DefaultUserDetailService implements SingularUserDetailsService {
     private ActorDAO actorDAO;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     @Override
     public SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException {

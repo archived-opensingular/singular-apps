@@ -18,6 +18,12 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.stypes;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
 import org.opensingular.form.SInfoType;
@@ -32,12 +38,6 @@ import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.SViewListByTable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
-
-import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
 
 @SInfoType(spackage = SSystemHealthPackage.class,  name = "dbhealth")
 public class SDbHealth extends STypeComposite<SIComposite> {

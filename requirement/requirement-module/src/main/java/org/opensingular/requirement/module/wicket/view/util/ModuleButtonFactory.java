@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.wicket.view.util;
 
-import org.opensingular.requirement.module.wicket.buttons.DiffLink;
-import org.opensingular.requirement.module.wicket.buttons.ViewVersionLink;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.opensingular.requirement.module.wicket.buttons.DiffLink;
+import org.opensingular.requirement.module.wicket.buttons.ViewVersionLink;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 

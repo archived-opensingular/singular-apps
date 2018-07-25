@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.service.attachment;
 
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
@@ -28,11 +32,6 @@ import org.opensingular.form.type.core.attachment.AttachmentCopyContext;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.requirement.module.exception.SingularServerException;
-
-import java.util.Optional;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @Transactional
 public class ServerAttachmentPersistenceService<T extends AttachmentEntity, C extends AttachmentContentEntity> extends ServerAbstractAttachmentPersistenceService<T, C> {

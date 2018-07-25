@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.webchecker;
 
-import org.opensingular.form.type.core.SIString;
-import org.opensingular.form.validation.InstanceValidatable;
-import org.opensingular.lib.commons.util.Loggable;
-
-import javax.naming.Context;
-import javax.naming.directory.DirContext;
-import javax.naming.directory.InitialDirContext;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import javax.naming.Context;
+import javax.naming.directory.DirContext;
+import javax.naming.directory.InitialDirContext;
+
+import org.opensingular.form.type.core.SIString;
+import org.opensingular.form.validation.InstanceValidatable;
+import org.opensingular.lib.commons.util.Loggable;
 
 public class LdapChecker implements IProtocolChecker, Loggable {
 

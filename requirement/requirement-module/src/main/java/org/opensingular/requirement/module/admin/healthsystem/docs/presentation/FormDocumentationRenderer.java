@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
-import org.opensingular.form.SType;
-
 import java.io.Writer;
 import java.util.List;
+
+import org.opensingular.form.SType;
 
 public interface FormDocumentationRenderer {
 

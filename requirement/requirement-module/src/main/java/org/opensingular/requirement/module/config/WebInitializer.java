@@ -18,22 +18,19 @@
 
 package org.opensingular.requirement.module.config;
 
-import java.util.ArrayList;
-import java.util.EnumSet;
-import java.util.List;
-
-import javax.servlet.*;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
-
-import org.apache.wicket.protocol.http.WicketFilter;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import javax.servlet.*;
+import javax.servlet.http.HttpSessionEvent;
+import javax.servlet.http.HttpSessionListener;
+import java.util.ArrayList;
+import java.util.EnumSet;
+import java.util.List;
+
 
 /**
  * Configura os filtros, servlets e listeners default do singular pet server
@@ -41,8 +38,6 @@ import org.opensingular.requirement.module.wicket.SingularRequirementApplication
  */
 public abstract class WebInitializer {
 
-
-    static final String SINGULAR_SECURITY = "[SINGULAR][WEB] {} {}";
     public static final Logger logger = LoggerFactory.getLogger(WebInitializer.class);
 
     public void init(ServletContext ctx) throws ServletException {
@@ -53,25 +48,7 @@ public abstract class WebInitializer {
         addSessionListener(ctx);
         addOpenSessionInView(ctx);
         addPublicUploadServlet(ctx);
-        for (IServerContext context : serverContexts()) {
-            logger.info(SINGULAR_SECURITY, "Setting up web context:", context.getContextPath());
-            addWicketFilter(ctx, context);
-        }
     }
-
-    public IServerContext[] serverContexts() {
-        return ServerContext.values();
-    }
-
-    protected void addWicketFilter(ServletContext ctx, IServerContext context) {
-        FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        wicketFilter.setInitParameter("applicationClassName", getWicketApplicationClass(context).getName());
-        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
-        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
-
-    }
-
-    protected abstract Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context);
 
     private void addOpenSessionInView(ServletContext servletContext) {
         FilterRegistration.Dynamic opensessioninview = servletContext.addFilter("opensessioninview", OpenSessionInViewFilter.class);
@@ -83,23 +60,18 @@ public abstract class WebInitializer {
         uploadServlet.addMapping(SimplePostFilesStrategy.URL_PATTERN);
     }
 
-    protected String[] getDefaultPublicUrls() {
+    public String[] getDefaultPublicUrls() {
         List<String> urls = new ArrayList<>();
         urls.add("/rest/*");
         urls.add("/resources/*");
         urls.add("/public/*");
         urls.add("/index.html");
-        for (IServerContext ctx : serverContexts()) {
-            urls.add(ctx.getUrlPath() + "/wicket/resource/*");
-            urls.add(ctx.getUrlPath() + "/public/*");
-        }
-        return urls.toArray(new String[urls.size()]);
+        return urls.toArray(new String[0]);
     }
-
 
     /**
      * Configura o timeout da sessão web em minutos
-     *
+     * <p>
      * x@return
      */
     protected int getSessionTimeoutMinutes() {

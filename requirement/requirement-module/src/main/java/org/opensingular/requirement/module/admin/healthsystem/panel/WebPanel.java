@@ -26,8 +26,8 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
-import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 import org.opensingular.requirement.module.admin.healthsystem.stypes.SWebHealth;
+import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 
 @SuppressWarnings("serial")
 public class WebPanel extends Panel {
