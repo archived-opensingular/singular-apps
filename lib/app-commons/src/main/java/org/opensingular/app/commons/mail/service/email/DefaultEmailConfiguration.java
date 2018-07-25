@@ -20,7 +20,6 @@ package org.opensingular.app.commons.mail.service.email;
 
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
-import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.app.commons.mail.service.dto.Email;
 import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.flow.schedule.ScheduleDataBuilder;
@@ -60,12 +59,6 @@ public class DefaultEmailConfiguration {
     @Bean
     public EmailSender emailSender() {
         return new EmailSender();
-    }
-
-
-    @Bean
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService();
     }
 
     @Bean

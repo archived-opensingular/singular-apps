@@ -506,9 +506,6 @@ public class SingularSchedulerFactoryBean extends SingularSchedulerAccessor impl
     protected Scheduler createScheduler(SchedulerFactory schedulerFactory, String schedulerName)
             throws SchedulerException {
 
-        // Override thread context ClassLoader to work around naive Quartz ClassLoadHelper loading.
-        Thread currentThread = Thread.currentThread();
-        ClassLoader threadContextClassLoader = currentThread.getContextClassLoader();
         try {
             SchedulerRepository repository = SchedulerRepository.getInstance();
             synchronized (repository) {
@@ -693,7 +690,7 @@ public class SingularSchedulerFactoryBean extends SingularSchedulerAccessor impl
 
     @Override
     public boolean isSingleton() {
-        return false;
+        return true;
     }
 
     @Override

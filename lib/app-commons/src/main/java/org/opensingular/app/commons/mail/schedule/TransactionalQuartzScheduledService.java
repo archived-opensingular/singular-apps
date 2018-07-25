@@ -37,7 +37,6 @@ public class TransactionalQuartzScheduledService extends QuartzScheduleService i
     public TransactionalQuartzScheduledService(SingularSchedulerFactoryBean singularSchedulerFactoryBean) {
         super(false);
         setQuartzSchedulerFactory(singularSchedulerFactoryBean);
-        init();
     }
 
 
@@ -49,6 +48,7 @@ public class TransactionalQuartzScheduledService extends QuartzScheduleService i
         contextRefreshed = true;
         toBeScheduled.forEach(this::internalSchedule);
         toBeScheduled.clear();
+        init();
     }
 
     /**

@@ -18,19 +18,13 @@
 
 package org.opensingular.requirement.module.spring;
 
-import java.util.Properties;
-import javax.sql.DataSource;
-
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
-import org.opensingular.app.commons.mail.schedule.SingularSchedulerFactoryBean;
-import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
 import org.opensingular.form.persistence.dao.AttachmentDao;
@@ -91,7 +85,6 @@ import org.opensingular.requirement.module.spring.security.SingularRequirementUs
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -102,8 +95,6 @@ import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
-
-import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
 
 
 @SuppressWarnings("rawtypes")
@@ -279,37 +270,6 @@ public class SingularDefaultBeanFactory {
         return new EmailPersistenceService();
     }
 
-    @Bean
-    @DependsOn("schedulerFactoryBean")
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService(schedulerFactoryBean());
-    }
-
-    @Autowired
-    private DataSource dataSource;
-
-    @Bean
-    public SingularSchedulerFactoryBean schedulerFactoryBean() {
-
-        SingularSchedulerFactoryBean factory = new SingularSchedulerFactoryBean();
-        Properties quartzProperties = new Properties();
-        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
-        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
-        if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
-            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
-            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
-            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
-            factory.setQuartzProperties(quartzProperties);
-            factory.setDataSource(dataSource);
-            factory.setOverwriteExistingJobs(true);
-        } else {
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-        }
-
-        return factory;
-    }
 
     @Bean
     public ParameterDAO parameterDAO() {
@@ -349,7 +309,6 @@ public class SingularDefaultBeanFactory {
     public FormAttachmentDAO formAttachmentDAO() {
         return new FormAttachmentDAO();
     }
-
 
     @Bean
     public IFormAttachmentService formAttachmentService() {
