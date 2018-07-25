@@ -18,12 +18,6 @@
 
 package org.opensingular.app.commons.test;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
-import java.util.UUID;
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
@@ -45,7 +39,6 @@ import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -59,8 +52,13 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
-import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 @Configuration
@@ -192,14 +190,10 @@ public class ApplicationContextConfiguration implements Loggable {
     }
 
     // ######### Beans for Quartz ##########
-
-    @Autowired
-    private DataSource dataSource;
-
     @Bean
     @DependsOn("schedulerFactoryBean")
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService(schedulerFactoryBean());
+    public IScheduleService scheduleService(SingularSchedulerBean schedulerFactoryBean) {
+        return new TransactionalQuartzScheduledService(schedulerFactoryBean);
     }
 
     /**
@@ -209,25 +203,8 @@ public class ApplicationContextConfiguration implements Loggable {
      * @return SingularSchedulerBean instance.
      */
     @Bean
-    public SingularSchedulerBean schedulerFactoryBean() {
-        SingularSchedulerBean factory = new SingularSchedulerBean();
-        Properties quartzProperties = new Properties();
-        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
-        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
-        if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
-            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
-            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
-            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
-            factory.setQuartzProperties(quartzProperties);
-            factory.setDataSource(dataSource);
-            factory.setOverwriteExistingJobs(true);
-        } else {
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-        }
-
-        return factory;
+    public SingularSchedulerBean schedulerFactoryBean(DataSource dataSource) {
+        return new SingularSchedulerBean(dataSource);
     }
 
 

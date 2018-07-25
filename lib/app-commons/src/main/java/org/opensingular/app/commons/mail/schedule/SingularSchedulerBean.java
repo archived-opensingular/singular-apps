@@ -1,14 +1,7 @@
 package org.opensingular.app.commons.mail.schedule;
 
-import java.io.IOException;
-import java.util.Map;
-import java.util.Properties;
-import java.util.ResourceBundle;
-import java.util.Set;
-import java.util.concurrent.Executor;
-import javax.sql.DataSource;
-
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.schedule.quartz.QuartzJobFactory;
 import org.opensingular.schedule.quartz.SingularSchedulerAccessor;
 import org.quartz.JobDetail;
@@ -41,6 +34,16 @@ import org.springframework.scheduling.quartz.SpringBeanJobFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+import javax.sql.DataSource;
+import java.io.IOException;
+import java.util.Map;
+import java.util.Properties;
+import java.util.ResourceBundle;
+import java.util.Set;
+import java.util.concurrent.Executor;
+
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
+
 
 public class SingularSchedulerBean extends SingularSchedulerAccessor implements FactoryBean<Scheduler>,
         BeanNameAware, ApplicationContextAware, InitializingBean, DisposableBean, SmartLifecycle {
@@ -58,8 +61,22 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
     private static final ThreadLocal<DataSource> configTimeNonTransactionalDataSourceHolder =
             new ThreadLocal<DataSource>();
 
-
-    public SingularSchedulerBean() {
+    public SingularSchedulerBean(DataSource dataSource) {
+        Properties quartzProperties = new Properties();
+        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
+        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
+        if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
+            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
+            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
+            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
+            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
+            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
+            setQuartzProperties(quartzProperties);
+            setDataSource(dataSource);
+            setOverwriteExistingJobs(true);
+        } else {
+            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+        }
 
     }
 

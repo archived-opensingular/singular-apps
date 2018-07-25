@@ -18,10 +18,6 @@
 
 package org.opensingular.requirement.module.spring;
 
-import java.util.Properties;
-import javax.servlet.http.HttpServletRequest;
-import javax.sql.DataSource;
-
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
 import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
@@ -94,7 +90,6 @@ import org.opensingular.requirement.module.spring.security.SingularUserDetailsSe
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -110,7 +105,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
+import javax.servlet.http.HttpServletRequest;
+import javax.sql.DataSource;
 
 
 @SuppressWarnings("rawtypes")
@@ -387,14 +383,10 @@ public class SingularDefaultBeanFactory {
     }
 
     // ######### Beans for Quartz ##########
-
-    @Autowired
-    private DataSource dataSource;
-
     @Bean
     @DependsOn("schedulerFactoryBean")
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService(schedulerFactoryBean());
+    public IScheduleService scheduleService(SingularSchedulerBean schedulerFactoryBean) {
+        return new TransactionalQuartzScheduledService(schedulerFactoryBean);
     }
 
     /**
@@ -404,25 +396,8 @@ public class SingularDefaultBeanFactory {
      * @return SingularSchedulerBean instance.
      */
     @Bean
-    public SingularSchedulerBean schedulerFactoryBean() {
-        SingularSchedulerBean factory = new SingularSchedulerBean();
-        Properties quartzProperties = new Properties();
-        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
-        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
-        if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
-            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
-            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
-            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
-            factory.setQuartzProperties(quartzProperties);
-            factory.setDataSource(dataSource);
-            factory.setOverwriteExistingJobs(true);
-        } else {
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
-        }
-
-        return factory;
+    public SingularSchedulerBean schedulerFactoryBean(DataSource dataSource) {
+        return new SingularSchedulerBean(dataSource);
     }
 
 }
