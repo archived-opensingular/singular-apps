@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-flow-schedule</artifactId>
+            <artifactId>singular-schedule</artifactId>
         </dependency>
         <!-- JAVA MAIL -->
         <dependency>
