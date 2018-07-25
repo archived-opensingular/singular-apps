@@ -49,6 +49,7 @@ public interface SingularDataBaseSuport {
      * <p>
      * We do not recommend using Quartz in memory for Cluster applications.
      *
+     * For more information see the Quartz source code: <code>https://github.com/quartz-scheduler/quartz/releases/tag/quartz-2.2.3</code>
      * @return The script file of Quartz.
      */
     String getQuartzScript();

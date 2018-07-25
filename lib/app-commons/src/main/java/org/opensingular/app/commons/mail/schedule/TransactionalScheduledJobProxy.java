@@ -46,6 +46,12 @@ public class TransactionalScheduledJobProxy implements IScheduledJob {
                 .execute(status -> job.run());
     }
 
+    /**
+     * The writeObject is overriding for serialize the Injects of the beans.
+     *
+     * @param out
+     * @throws IOException
+     */
     private void writeObject(ObjectOutputStream out) throws IOException {
         String nameBean = ApplicationContextProvider.getBeanName(job);
         if (nameBean != null) {
@@ -55,6 +61,13 @@ public class TransactionalScheduledJobProxy implements IScheduledJob {
         }
     }
 
+    /**
+     * The readObject is overriding for deserializable the beans object.
+     *
+     * @param in
+     * @throws IOException
+     * @throws ClassNotFoundException
+     */
     private void readObject(ObjectInputStream in) throws IOException, ClassNotFoundException {
         Object value = in.readObject();
         if (value instanceof String) {

@@ -28,15 +28,34 @@ import org.springframework.context.event.EventListener;
 public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable {
 
     private boolean contextRefreshed;
-    private List<IScheduledJob> toBeScheduled = new ArrayList<>();
 
+    private List<IScheduledJob> toBeScheduled = new ArrayList<>(); //List containing all Scheduled that have to be executed after Spring initialize.
+
+    public TransactionalQuartzScheduledService() {
+    }
+
+    public TransactionalQuartzScheduledService(SingularSchedulerFactoryBean singularSchedulerFactoryBean) {
+        super(false);
+        setQuartzSchedulerFactory(singularSchedulerFactoryBean);
+        init();
+    }
+
+
+    /**
+     * Method responsible for executed all Schedule after Spring initialize.
+     */
     @EventListener(ContextRefreshedEvent.class)
-    public synchronized void init() {
+    public synchronized void initAfterBeans() {
         contextRefreshed = true;
         toBeScheduled.forEach(this::internalSchedule);
         toBeScheduled.clear();
     }
 
+    /**
+     * Method containg the logic for Schedule the Job's, or put in a list to be executed.
+     *
+     * @param scheduledJob The Job for be schedule.
+     */
     @Override
     public synchronized void schedule(IScheduledJob scheduledJob) {
         if (contextRefreshed) {
@@ -46,8 +65,14 @@ public class TransactionalQuartzScheduledService extends QuartzScheduleService i
         }
     }
 
+    /**
+     * This method will Schedule the JOB.
+     *
+     * @param scheduledJob The Job for be schedule.
+     */
     private void internalSchedule(IScheduledJob scheduledJob) {
         super.schedule(new TransactionalScheduledJobProxy(scheduledJob));
         getLogger().info("Job({}) scheduled.", scheduledJob);
     }
+
 }
