@@ -18,16 +18,15 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.form.SingularFormException;
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.commons.exception.SingularServerException;
-import org.opensingular.requirement.commons.SingularRequirement;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
-
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import org.opensingular.form.SingularFormException;
+import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
+import org.opensingular.requirement.module.exception.SingularServerException;
 
 /**
  * Configuration object for module {@link SingularRequirement} registration.

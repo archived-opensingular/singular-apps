@@ -18,8 +18,6 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.commons.SingularRequirement;
-
 /**
  * Basic singular requirement adapter.
  */

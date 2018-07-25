@@ -18,12 +18,12 @@
 package org.opensingular.requirement.module.wicket.box;
 
 
+import java.io.Serializable;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.wicket.mapper.components.AbstractConfirmationModal;
-import org.opensingular.requirement.commons.service.dto.BoxItemAction;
-
-import java.io.Serializable;
+import org.opensingular.requirement.module.service.dto.BoxItemAction;
 
 public abstract class BoxContentConfirmModal<T extends Serializable> extends AbstractConfirmationModal {
     protected final BoxItemAction itemAction;

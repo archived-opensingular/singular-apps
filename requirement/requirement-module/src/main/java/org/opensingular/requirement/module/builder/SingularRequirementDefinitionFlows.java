@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.builder;
 
+import java.util.Set;
+
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.commons.SingularRequirement;
 import org.opensingular.requirement.module.BoundedFlowResolver;
 import org.opensingular.requirement.module.DynamicFormFlowSingularRequirement;
-
-import java.util.Set;
+import org.opensingular.requirement.module.SingularRequirement;
 
 public class SingularRequirementDefinitionFlows {
 

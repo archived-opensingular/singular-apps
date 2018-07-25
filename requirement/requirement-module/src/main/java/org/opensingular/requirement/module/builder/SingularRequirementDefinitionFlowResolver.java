@@ -19,9 +19,9 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.commons.flow.FlowResolver;
 import org.opensingular.requirement.module.BoundedFlowResolver;
 import org.opensingular.requirement.module.DynamicFormFlowSingularRequirement;
+import org.opensingular.requirement.module.flow.FlowResolver;
 
 public class SingularRequirementDefinitionFlowResolver {
 

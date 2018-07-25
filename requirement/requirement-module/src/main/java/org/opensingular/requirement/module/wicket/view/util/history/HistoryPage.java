@@ -19,6 +19,14 @@
 package org.opensingular.requirement.module.wicket.view.util.history;
 
 
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -43,27 +51,19 @@ import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
-import org.opensingular.requirement.commons.form.FormAction;
-import org.opensingular.requirement.commons.persistence.dto.RequirementHistoryDTO;
-import org.opensingular.requirement.commons.persistence.entity.form.FormVersionHistoryEntity;
-import org.opensingular.requirement.commons.persistence.entity.form.RequirementContentHistoryEntity;
-import org.opensingular.requirement.commons.service.RequirementService;
-import org.opensingular.requirement.commons.wicket.SingularSession;
-import org.opensingular.requirement.commons.wicket.view.template.ServerTemplate;
-import org.opensingular.requirement.commons.wicket.view.util.DispatcherPageUtil;
+import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
+import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.service.RequirementService;
+import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
+import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
 
-import javax.inject.Inject;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.FORM_VERSION_KEY;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.REQUIREMENT_ID;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_ID;
 
 
 @MountPath("history")
