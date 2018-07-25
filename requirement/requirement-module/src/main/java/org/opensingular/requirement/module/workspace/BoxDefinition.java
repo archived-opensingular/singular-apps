@@ -41,8 +41,14 @@ public interface BoxDefinition {
     ItemBox build(IServerContext context);
 
 
+    /**
+     * @return the data provider responsible for populate the box data
+     */
     BoxItemDataProvider getDataProvider();
 
+    /**
+     * @return the fields that are expected to show in the box
+     */
     List<DatatableField> getDatatableFields();
 
 }

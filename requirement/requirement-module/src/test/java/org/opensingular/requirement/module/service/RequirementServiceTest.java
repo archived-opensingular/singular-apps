@@ -48,9 +48,13 @@ import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.requirement.commons.FOOFlow;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
+import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
+
+
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 
@@ -71,6 +75,9 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     @Inject
     protected FormService formService;
+
+    @Inject
+    private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
     SpringSDocumentFactory documentFactory;
