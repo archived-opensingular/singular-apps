@@ -19,6 +19,8 @@
 package org.opensingular.requirement.module.service.dto;
 
 
+import org.opensingular.requirement.module.service.RequirementInstance;
+
 import java.io.Serializable;
 
 /**

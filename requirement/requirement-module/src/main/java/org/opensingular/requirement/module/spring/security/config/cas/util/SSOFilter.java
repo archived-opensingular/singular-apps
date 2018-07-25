@@ -19,12 +19,9 @@
 package org.opensingular.requirement.module.spring.security.config.cas.util;
 
 
-import com.google.common.base.Strings;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -33,9 +30,12 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
+
+import com.google.common.base.Strings;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.jasig.cas.client.util.HttpServletRequestWrapperFilter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Filtro unificado para configuração do SSO

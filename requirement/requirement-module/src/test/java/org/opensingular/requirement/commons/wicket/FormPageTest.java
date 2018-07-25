@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.wicket;
 
+import javax.inject.Inject;
+
 import net.vidageek.mirror.dsl.Mirror;
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
@@ -45,17 +47,17 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.requirement.module.wicket.error.Page500;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
+import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import javax.inject.Inject;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class FormPageTest extends SingularCommonsBaseTest {

@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
-import org.opensingular.form.SType;
-
 import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import org.opensingular.form.SType;
 
 public class DocBlock implements Serializable {
 

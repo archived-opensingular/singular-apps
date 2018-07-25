@@ -18,6 +18,9 @@
 package org.opensingular.requirement.module.wicket.box;
 
 
+import java.util.List;
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.form.AjaxFormComponentUpdatingBehavior;
@@ -33,9 +36,6 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-
-import javax.inject.Inject;
-import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 

@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.module.service.attachment;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -28,13 +33,8 @@ import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.dto.AttachmentRef;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 
-import javax.inject.Inject;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-
 import static org.mockito.Matchers.eq;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
 public class ServerAbstractAttachmentPersistenceServiceTest {

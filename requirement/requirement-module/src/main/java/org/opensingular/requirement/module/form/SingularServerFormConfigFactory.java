@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.form;
 
+import javax.inject.Inject;
+
 import org.opensingular.form.spring.SpringFormConfig;
 import org.springframework.context.annotation.Bean;
-
-import javax.inject.Inject;
 
 
 public class SingularServerFormConfigFactory {

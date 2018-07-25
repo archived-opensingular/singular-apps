@@ -16,16 +16,16 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 

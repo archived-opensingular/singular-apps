@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.commons.service;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SFormUtil;

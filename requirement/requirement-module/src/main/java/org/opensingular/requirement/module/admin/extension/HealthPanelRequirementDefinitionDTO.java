@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.admin.extension;
 
+import java.io.Serializable;
+
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.RequirementDefinition;
-
-import java.io.Serializable;
 
 public class HealthPanelRequirementDefinitionDTO implements Serializable {
 

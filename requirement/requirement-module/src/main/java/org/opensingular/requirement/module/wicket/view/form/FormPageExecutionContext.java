@@ -16,13 +16,13 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import java.io.Serializable;
+import java.util.Optional;
+
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-
-import java.io.Serializable;
-import java.util.Optional;
 
 public class FormPageExecutionContext implements Serializable {
 

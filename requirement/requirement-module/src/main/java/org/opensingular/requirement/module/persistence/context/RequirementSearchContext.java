@@ -19,14 +19,14 @@
 package org.opensingular.requirement.module.persistence.context;
 
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchAliases;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RequirementSearchContext {
 

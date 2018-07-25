@@ -30,8 +30,6 @@ import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
-
-
 import org.springframework.test.annotation.Rollback;
 
 public class ParameterServiceTest extends SingularCommonsBaseTest {

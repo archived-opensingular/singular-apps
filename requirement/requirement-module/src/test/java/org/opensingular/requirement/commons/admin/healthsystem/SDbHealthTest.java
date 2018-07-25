@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
 import org.junit.Test;
@@ -25,18 +28,13 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
-
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry;
-
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import static org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 

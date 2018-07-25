@@ -19,6 +19,12 @@
 package org.opensingular.requirement.module.persistence.dao.form;
 
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
@@ -47,12 +53,6 @@ import org.opensingular.requirement.module.persistence.query.RequirementSearchQu
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
 
 
 public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {

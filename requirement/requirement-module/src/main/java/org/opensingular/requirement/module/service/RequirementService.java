@@ -18,6 +18,24 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
+
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -91,6 +109,7 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.*;
+import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
 public abstract class RequirementService implements Loggable {

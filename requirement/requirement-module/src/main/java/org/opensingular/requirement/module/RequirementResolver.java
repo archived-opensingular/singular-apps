@@ -26,6 +26,10 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import javax.annotation.Nonnull;
+
+import org.opensingular.form.SInstance;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 
 /**
  * Decide wich requirement should be presented based

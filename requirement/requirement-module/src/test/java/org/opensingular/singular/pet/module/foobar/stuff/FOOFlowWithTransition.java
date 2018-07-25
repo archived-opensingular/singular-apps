@@ -18,6 +18,8 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -28,8 +30,6 @@ import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
-
-import javax.annotation.Nonnull;
 
 @DefinitionInfo("fooFlowWithTransitionCommons")
 public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {

@@ -18,9 +18,9 @@
 
 package org.opensingular.requirement.module.util.url;
 
-import org.apache.wicket.request.Url;
-
 import java.io.Serializable;
+
+import org.apache.wicket.request.Url;
 
 public class UrlToolkitBuilder implements Serializable {
 

@@ -20,6 +20,7 @@ package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
 
+
 public class SingularRequirementDefinitionFlowResolver {
 
     private SingularRequirementBuilderContext builderContext;

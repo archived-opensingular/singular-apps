@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.box;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.service.dto.BoxItemAction;
-
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import org.opensingular.requirement.module.box.action.BoxItemActionList;
+import org.opensingular.requirement.module.service.dto.BoxItemAction;
 
 public class BoxItemDataImpl implements BoxItemData {
 

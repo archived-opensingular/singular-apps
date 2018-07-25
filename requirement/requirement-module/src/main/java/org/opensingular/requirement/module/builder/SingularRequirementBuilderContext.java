@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.builder;
 
+import java.util.LinkedHashSet;
+import java.util.Set;
+
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SType;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-
-import java.util.LinkedHashSet;
-import java.util.Set;
 
 public class SingularRequirementBuilderContext {
 

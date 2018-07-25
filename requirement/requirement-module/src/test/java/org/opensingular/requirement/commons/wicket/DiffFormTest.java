@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.commons.wicket;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.apache.wicket.Page;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
@@ -37,10 +41,6 @@ import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DiffFormTest extends SingularCommonsBaseTest {

@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem.docs;
 
+import java.util.LinkedHashSet;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SDictionary;
@@ -27,9 +29,7 @@ import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetad
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
 import org.opensingular.requirement.module.admin.healthsystem.docs.DocumentationMetadataBuilder;
 
-import java.util.LinkedHashSet;
-
-import static org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata.DocFieldValue.*;
+import static org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata.DocFieldValue.FIELD_NAME;
 public class DocBuilderTest {
 
     private DocumentationMetadataBuilder builderFor(Class<? extends SType<?>> clazz) {

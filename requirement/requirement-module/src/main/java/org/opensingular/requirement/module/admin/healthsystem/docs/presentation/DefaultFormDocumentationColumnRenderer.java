@@ -18,17 +18,17 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
-import com.google.common.base.Joiner;
-import org.apache.commons.lang3.StringUtils;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
 
 /**
  * Define a documentation column. One documentation column can display multiple metadata information

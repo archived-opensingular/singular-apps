@@ -17,6 +17,8 @@
 package org.opensingular.requirement.module.wicket.view.form;
 
 
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -26,8 +28,6 @@ import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
-
-import javax.inject.Inject;
 
 public class ReadOnlyFormPage extends ServerTemplate {
 

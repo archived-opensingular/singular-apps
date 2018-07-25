@@ -18,7 +18,10 @@
 
 package org.opensingular.requirement.module.builder;
 
+import java.util.Set;
+
 import org.opensingular.flow.core.FlowDefinition;
+
 import org.opensingular.requirement.module.RequirementDefinition;
 
 import java.util.Set;
