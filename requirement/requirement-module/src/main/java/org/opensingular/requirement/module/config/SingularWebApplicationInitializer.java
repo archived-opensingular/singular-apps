@@ -34,12 +34,12 @@ public class SingularWebApplicationInitializer implements WebApplicationInitiali
 
     private static Logger logger = LoggerFactory.getLogger(SingularWebApplicationInitializer.class);
 
-    public static String SINGULAR = "[SINGULAR] {}";
-    public static String SERVLET_ATTRIBUTE_WEB_CONFIGURATION = "Singular-webInitializer";
-    public static String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION = "Singular-springHibernateInitializer";
-    public static String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
-    public static String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
-    public static String SERVLET_ATTRIBUTE_SECURITY_CONFIGURATION_CONFIGURATION = "Singular-Security";
+    private static final String SINGULAR                                               = "[SINGULAR] {}";
+    public static final  String SERVLET_ATTRIBUTE_WEB_CONFIGURATION                    = "Singular-webInitializer";
+    public static final  String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION       = "Singular-springHibernateInitializer";
+    public static final  String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION     = "Singular-formInitializer";
+    public static final  String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION     = "Singular-flowInitializer";
+    public static final  String SERVLET_ATTRIBUTE_SECURITY_CONFIGURATION_CONFIGURATION = "Singular-Security";
 
     private SingularInitializer singularInitializer;
 
@@ -57,7 +57,7 @@ public class SingularWebApplicationInitializer implements WebApplicationInitiali
         logger.info(SINGULAR, " Initializing Singular.... ");
 
         logger.info(SINGULAR, " Initializing SpringHibernateConfiguration ");
-        SpringHibernateInitializer springHibernateInitializer = singularInitializer.springHibernateConfiguration();
+        SpringHibernateInitializer            springHibernateInitializer = singularInitializer.springHibernateConfiguration();
         AnnotationConfigWebApplicationContext applicationContext;
         if (springHibernateInitializer != null) {
             applicationContext = springHibernateInitializer.init(ctx);
