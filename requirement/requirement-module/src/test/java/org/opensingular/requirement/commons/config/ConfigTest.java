@@ -22,8 +22,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
-
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 
 import javax.inject.Inject;
 import javax.servlet.ServletException;
@@ -31,17 +30,14 @@ import javax.servlet.ServletException;
 public class ConfigTest extends SingularCommonsBaseTest {
 
     @Inject
-    public SingularModuleConfigurationBean singularServerConfiguration;
+    public SingularModuleConfiguration singularServerConfiguration;
 
     @Test
     public void checkServletParams() throws ServletException {
 
-        Assert.assertEquals(singularServerConfiguration.getContexts().length, 3);
+        Assert.assertEquals(singularServerConfiguration.getContexts().size(), 3);
         Assert.assertNotNull(singularServerConfiguration.getPublicUrls());
         Assert.assertNotNull(singularServerConfiguration.getFormTypes());
         Assert.assertEquals(singularServerConfiguration.getModuleCod(), CommonsInitializerMock.TESTE);
-        singularServerConfiguration.setAttribute("teste", "teste");
-        Assert.assertEquals(singularServerConfiguration.getAttribute("teste"), "teste");
-
     }
 }

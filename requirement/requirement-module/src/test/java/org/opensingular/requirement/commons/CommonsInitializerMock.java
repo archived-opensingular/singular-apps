@@ -35,7 +35,7 @@ public class CommonsInitializerMock extends AbstractSingularInitializer {
     }
 
     @Override
-    protected String[] springPackagesToScan() {
+    protected String[] getSpringPackagesToScan() {
         return new String[0];
     }
 
@@ -45,7 +45,7 @@ public class CommonsInitializerMock extends AbstractSingularInitializer {
     }
 
     @Override
-    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> getSingularPersistenceConfigurationBeanFactoryClass() {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 }

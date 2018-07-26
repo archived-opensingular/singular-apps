@@ -25,12 +25,12 @@ import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
 
 public abstract class RequirementStudioAppInitializer extends AbstractSingularInitializer {
     @Override
-    protected Class<? extends RequirementStudioBeanFactory> beanFactory() {
+    protected Class<? extends RequirementStudioBeanFactory> getSingularBeanFactoryClass() {
         return RequirementStudioBeanFactory.class;
     }
 
     @Override
-    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfigClass() {
         return RequirementStudioWebMVCConfig.class;
     }
 }

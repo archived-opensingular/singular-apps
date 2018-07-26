@@ -5,18 +5,19 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import java.util.List;
 
 /**
- * TODO
- *
- * @see SingularWebApplicationInitializer
+ * SingularInitializer responsavel por distribuir os elementos necessarios para a inicialização do singular
+ *  *
+ * @see SingularWebAppInitializer
  */
 public interface SingularInitializer {
     /**
-     * TODO
+     * Cria o AnnotationConfigWebApplicationContext inicial do Singular
      */
     AnnotationConfigWebApplicationContext createApplicationContext();
 
     /**
-     * TODO
+     * Lista as implementações de SingularWebAppInitializerListener que serão execeutadas pelo
+     * {@link SingularWebAppInitializer}
      */
-    List<? extends SingularWebInitializerListener> getSingularWebInitializerListener();
+    List<? extends SingularWebAppInitializerListener> getSingularWebInitializerListener();
 }

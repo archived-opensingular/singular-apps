@@ -1,45 +1,69 @@
 package org.opensingular.requirement.module.config;
 
-import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadServlet;
-import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
-import org.opensingular.lib.commons.base.SingularProperties;
-import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.WorkspaceInitializer;
+import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.spring.SingularServerSpringAppConfig;
-import org.springframework.orm.hibernate4.support.OpenSessionInViewFilter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.web.context.ContextLoaderListener;
-import org.springframework.web.context.request.RequestContextListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
-import org.springframework.web.filter.DelegatingFilterProxy;
-import org.springframework.web.servlet.DispatcherServlet;
 
-import javax.servlet.DispatcherType;
-import javax.servlet.ServletContext;
-import javax.servlet.ServletRegistration;
-import javax.servlet.http.HttpSessionEvent;
-import javax.servlet.http.HttpSessionListener;
 import java.util.ArrayList;
-import java.util.EnumSet;
 import java.util.List;
 
 /**
- * TODO
+ * Implementação do SingularInitializer que os valores defaults para iniciar o SingularRequerimentos
+ *
+ * @see SingularInitializer
+ * @see SingularInitializerProvider
+ * @see SingularWebAppInitializerListener
+ * @see SingularWebAppInitializer
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class AbstractSingularInitializer implements SingularInitializer {
-    protected abstract String[] springPackagesToScan();
+    /**
+     * Cria o {@link AnnotationConfigWebApplicationContext} raiz
+     */
+    @Override
+    public AnnotationConfigWebApplicationContext createApplicationContext() {
+        SingularAnnotationConfigWebApplicationContext applicationContext;
+        applicationContext = new SingularAnnotationConfigWebApplicationContext();
+        applicationContext.scan(getSpringPackagesToScan());
+        return applicationContext;
+    }
 
+    /**
+     * Pacotes a serem scaniados automaticamente pelo Spring
+     */
+    protected abstract String[] getSpringPackagesToScan();
+
+    /**
+     * Lista as classes de configuração que serão registradas no {@link AnnotationConfigWebApplicationContext#register(Class[])}
+     */
+    protected List<Class<?>> getSpringAnnotatedConfigurationClasses() {
+        List<Class<?>> annotatedClasses = new ArrayList<>();
+        annotatedClasses.add(getSingularSpringAppConfigClass());
+        annotatedClasses.add(getSingularBeanFactoryClass());
+        annotatedClasses.add(getSingularPersistenceConfigurationBeanFactoryClass());
+        annotatedClasses.add(getSingularSpringWebMVCConfigClass());
+        annotatedClasses.add(getSingularRestSecurityConfigClass());
+        return annotatedClasses;
+    }
+
+    /**
+     * Recupera o timeout da sessão web em minutos
+     */
+    protected int getSessionTimeoutMinutes() {
+        return 15;
+    }
+
+    /**
+     * TODO Remover
+     */
     @Deprecated
-    public SchedulerInitializer schedulerConfiguration() {
-        return new SchedulerInitializer() {
+    public SchedulerAppInitializerListener newSchedulerInitializerListener() {
+        return new SchedulerAppInitializerListener() {
             @Override
             public Class<?> mailConfiguration() {
                 return MailSenderSchedulerInitializer.class;
@@ -53,34 +77,24 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     }
 
     /**
-     * TODO
+     * Cria o {@link WorkspaceAppInitializerListener}
      */
-    public WorkspaceInitializer workspaceConfiguration() {
-        return new WorkspaceInitializer();
+    public WorkspaceAppInitializerListener newWorkspaceInitializerListener() {
+        return new WorkspaceAppInitializerListener();
     }
 
     /**
-     * TODO
+     * Cria o {@link SpringConfigRegisterSingularWebAppInitializerListener}
      */
-    @Override
-    public AnnotationConfigWebApplicationContext createApplicationContext() {
-        SingularAnnotationConfigWebApplicationContext applicationContext;
-        applicationContext = new SingularAnnotationConfigWebApplicationContext();
-        applicationContext.scan(springPackagesToScan());
-        return applicationContext;
+    private SpringConfigRegisterSingularWebAppInitializerListener newSpringConfigRegisterSingularWebInitializerListener() {
+        return new SpringConfigRegisterSingularWebAppInitializerListener(getSpringAnnotatedConfigurationClasses());
     }
 
     /**
-     * TODO
+     * Cria o {@link ServletContextSetupSingularWebAppInitializerListener}
      */
-    protected List<Class<?>> getSpringAnnotatedClasses() {
-        List<Class<?>> annotatedClasses = new ArrayList<>();
-        annotatedClasses.add(springConfigurationClass());
-        annotatedClasses.add(beanFactory());
-        annotatedClasses.add(persistenceConfiguration());
-        annotatedClasses.add(getSingularSpringWebMVCConfig());
-        annotatedClasses.add(getRestSecurityConfiguration());
-        return annotatedClasses;
+    private ServletContextSetupSingularWebAppInitializerListener newServletContextSetupSingularWebInitializerListener() {
+        return new ServletContextSetupSingularWebAppInitializerListener(getSessionTimeoutMinutes());
     }
 
     /**
@@ -93,131 +107,56 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
      * @return Uma classe concreta que herda de {@link SingularServerSpringAppConfig}
      * e anotada com {@link org.springframework.context.annotation.Configuration}
      */
-    protected Class<? extends SingularServerSpringAppConfig> springConfigurationClass() {
+    protected Class<? extends SingularServerSpringAppConfig> getSingularSpringAppConfigClass() {
         return SingularServerSpringAppConfig.class;
     }
 
     /**
-     * TODO
+     * Recupera a configuração de persistencia
+     *
+     * @see SingularPersistenceDefaultBeanFactory
      */
-    protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
-        return SingularDefaultBeanFactory.class;
-    }
-
-    /**
-     * TODO
-     */
-    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> getSingularPersistenceConfigurationBeanFactoryClass() {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 
     /**
-     * TODO
+     * Recupera a configuração dos beans
+     *
+     * @see SingularDefaultBeanFactory
      */
-    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
+    protected Class<? extends SingularDefaultBeanFactory> getSingularBeanFactoryClass() {
+        return SingularDefaultBeanFactory.class;
+    }
+
+    /**
+     * Recupera a configuração do SpringMVC
+     *
+     * @see SingularSpringWebMVCConfig
+     */
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfigClass() {
         return SingularSpringWebMVCConfig.class;
     }
 
     /**
-     * TODO
+     * Recupera a configuração de segurança dos serviços REST
+     *
+     * @see WebSecurityConfigurerAdapter
      */
-    public Class<? extends WebSecurityConfigurerAdapter> getRestSecurityConfiguration() {
+    public Class<? extends WebSecurityConfigurerAdapter> getSingularRestSecurityConfigClass() {
         return DefaultRestSecurity.class;
     }
 
     /**
-     * TODO
-     */
-    protected void setupServletContext(ServletContext servletContext,
-                                       AnnotationConfigWebApplicationContext applicationContext) {
-
-        ServletRegistration.Dynamic dispatcherServlet = servletContext
-                .addServlet("Spring MVC Dispatcher Servlet", new DispatcherServlet(applicationContext));
-        dispatcherServlet.setLoadOnStartup(1);
-        dispatcherServlet.addMapping(getDefaultFilterMapping());
-
-        servletContext
-                .addFilter("springSecurityFilterChain", new DelegatingFilterProxy(
-                        "springSecurityFilterChain", applicationContext))
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, getDefaultFilterMapping());
-
-        servletContext
-                .addFilter("opensessioninview", OpenSessionInViewFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, getDefaultFilterMapping());
-
-        servletContext
-                .addServlet(SimplePostFilesStrategy.class.getName(), FileUploadServlet.class)
-                .addMapping(SimplePostFilesStrategy.URL_PATTERN);
-
-        servletContext
-                .addListener(new HttpSessionListener() {
-                    @Override
-                    public void sessionCreated(HttpSessionEvent se) {
-                        se.getSession().setMaxInactiveInterval(60 * getSessionTimeoutMinutes());
-                    }
-
-                    @Override
-                    public void sessionDestroyed(HttpSessionEvent se) {
-                    }
-                });
-
-        servletContext
-                .addListener(new ContextLoaderListener(applicationContext));
-
-        servletContext
-                .addListener(RequestContextListener.class);
-
-        if (SingularProperties.get().isTrue(SingularProperties.DEFAULT_CAS_ENABLED)) {
-            servletContext.addListener(SingleSignOutHttpSessionListener.class);
-        }
-
-        String contextPath = servletContext.getContextPath();//NOSONAR
-        servletContext
-                .setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM,
-                        (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
-
-    }
-
-    /**
-     * TODO
-     */
-    private String getDefaultFilterMapping() {
-        return "/*";
-    }
-
-    /**
-     * TODO
-     */
-    protected void registerAnnotatedClasses(ServletContext servletContext,
-                                            AnnotationConfigWebApplicationContext applicationContext) {
-        getSpringAnnotatedClasses().forEach(applicationContext::register);
-    }
-
-    /**
-     * TODO
-     */
-    protected void initSkins(String contextPath, SkinOptions skinOptions) {
-    }
-
-    /**
-     * Configura o timeout da sessão web em minutos
-     * <p>
-     * x@return
-     */
-    protected int getSessionTimeoutMinutes() {
-        return 15;//15 minutos
-    }
-
-    /**
-     * TODO
+     * Lista os initializer que serão executados pelo {@link SingularWebAppInitializer}
      */
     @Override
-    public List<? extends SingularWebInitializerListener> getSingularWebInitializerListener() {
-        List<SingularWebInitializerListener> initializerListeners = new ArrayList<>();
-        initializerListeners.add(this::registerAnnotatedClasses);
-        initializerListeners.add(this::setupServletContext);
-        initializerListeners.add(schedulerConfiguration());
-        initializerListeners.add(workspaceConfiguration());
+    public List<? extends SingularWebAppInitializerListener> getSingularWebInitializerListener() {
+        List<SingularWebAppInitializerListener> initializerListeners = new ArrayList<>();
+        initializerListeners.add(newSpringConfigRegisterSingularWebInitializerListener());
+        initializerListeners.add(newSchedulerInitializerListener());
+        initializerListeners.add(newServletContextSetupSingularWebInitializerListener());
+        initializerListeners.add(newWorkspaceInitializerListener());
         return initializerListeners;
     }
 }

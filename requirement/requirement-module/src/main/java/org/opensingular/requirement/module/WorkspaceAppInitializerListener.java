@@ -5,7 +5,7 @@ import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularWebInitializerListener;
+import org.opensingular.requirement.module.config.SingularWebAppInitializerListener;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -23,15 +23,21 @@ import java.util.stream.Collectors;
 
 
 /**
- * TODO
+ * Inicializa o workspace, fazendo a configuração de:
+ * <p>
+ * - Contextos {@link IServerContext}
+ * - Boxs {@link org.opensingular.requirement.module.workspace.BoxDefinition}
+ * - Requerimentos {@link SingularRequirement}
  */
-public class WorkspaceInitializer implements SingularWebInitializerListener, Loggable {
+public class WorkspaceAppInitializerListener implements SingularWebAppInitializerListener, Loggable {
+
+    public static final String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
 
     /**
-     * TODO
+     * Inicializa os contextos, registrando um WicketApplication para cada contexto
      */
     @Override
-    public void initialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
+    public void onInitialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
         SingularModuleConfiguration singularModuleConfiguration = new SingularModuleConfiguration();
         try {
             singularModuleConfiguration.init(applicationContext);
@@ -54,11 +60,11 @@ public class WorkspaceInitializer implements SingularWebInitializerListener, Log
         }
         singularModuleConfiguration.initDefinitionsPackages(lookupRequirementFlowDefinition());
 
-        servletContext.setAttribute(SingularModuleConfiguration.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG, singularModuleConfiguration);
+        servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG, singularModuleConfiguration);
     }
 
     /**
-     * TODO
+     * Adiciona o Filtro Wicket para o contexto informado
      */
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
@@ -68,7 +74,7 @@ public class WorkspaceInitializer implements SingularWebInitializerListener, Log
     }
 
     /**
-     * TODO
+     * Adiciona o Logout filter
      */
     protected void addLogoutFilter(ServletContext ctx, IServerContext context) {
         ctx
@@ -77,14 +83,14 @@ public class WorkspaceInitializer implements SingularWebInitializerListener, Log
     }
 
     /**
-     * TODO
+     * Recupera a configuração de segurança por contexto, por padrão delega para o contexto atual
      */
     protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClassByContext(IServerContext context) {
         return context.getSpringSecurityConfigClass();
     }
 
     /**
-     * TODO
+     * Procura todos os STypes do ClassPath
      */
     protected List<Class<? extends SType<?>>> lookupFormTypes() {
         return SingularClassPathScanner.get()
@@ -96,7 +102,7 @@ public class WorkspaceInitializer implements SingularWebInitializerListener, Log
     }
 
     /**
-     * TODO
+     * Lista as UrlsPublicas padrões
      */
     protected String[] publicUrls() {
         List<String> urls = new ArrayList<>();
@@ -108,7 +114,8 @@ public class WorkspaceInitializer implements SingularWebInitializerListener, Log
     }
 
     /**
-     * TODO
+     * Procuta todas as definições de flow
+     * TODO Vinicius ainda precisamos disso?
      */
     protected Set<Class<? extends RequirementFlowDefinition>> lookupRequirementFlowDefinition() {
         return SingularClassPathScanner.get()

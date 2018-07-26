@@ -31,16 +31,15 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class SingularModuleConfiguration {
-
-    public static final String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
 
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
@@ -49,10 +48,19 @@ public class SingularModuleConfiguration {
     private String[] definitionsPackages;
     private List<String> publicUrls = new ArrayList<>();
 
+    /**
+     * Cache for the already created controllers
+     */
+    private Map<String, BoxController> controllers = new HashMap<>();
+
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
         resolveRequirements(applicationContext);
         resolveWorkspace(applicationContext);
+
+        for (IServerContext ctx : workspaceRegistry.listContexts()) {
+            this.publicUrls.addAll(ctx.getPublicUrls());
+        }
     }
 
     private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
@@ -111,11 +119,6 @@ public class SingularModuleConfiguration {
         return module;
     }
 
-    public Set<IServerContext> getContexts() {
-        return workspaceRegistry.listContexts();
-    }
-
-
     public void setFormTypes(List<Class<? extends SType<?>>> formTypes) {
         this.formTypes = formTypes;
     }
@@ -124,7 +127,7 @@ public class SingularModuleConfiguration {
         return publicUrls;
     }
 
-    public void addPublicUrl(String url){
+    public void addPublicUrl(String url) {
         publicUrls.add(url);
     }
 
@@ -132,11 +135,33 @@ public class SingularModuleConfiguration {
         definitionsPackages = definitions.stream().map(c -> c.getPackage().getName()).distinct().toArray(String[]::new);
     }
 
-    public List<Class<? extends SType<?>>> getFormTypes() {
-        return formTypes;
-    }
-
     public String[] getDefinitionsPackages() {
         return definitionsPackages;
+    }
+
+    public List<Class<? extends SType<?>>> getFormTypes() {
+        if (formTypes == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.unmodifiableList(formTypes);
+        }
+    }
+
+    public String getModuleCod() {
+        return getModule().abbreviation();
+    }
+
+    public IServerContext findContextByName(String name) {
+        return workspaceRegistry.listContexts()
+                .stream()
+                .filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public Map<String, BoxController> getControllers() {
+        return controllers;
+    }
+
+    public Set<IServerContext> getContexts() {
+        return workspaceRegistry.listContexts();
     }
 }

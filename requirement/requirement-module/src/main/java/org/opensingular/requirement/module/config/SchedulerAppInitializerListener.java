@@ -22,9 +22,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.ServletContext;
 
 @Deprecated
-public abstract class SchedulerInitializer implements SingularWebInitializerListener {
+public abstract class SchedulerAppInitializerListener implements SingularWebAppInitializerListener {
     @Override
-    public void initialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
+    public void onInitialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
         applicationContext.register(mailConfiguration());
         applicationContext.register(attachmentGCConfiguration());
     }
