@@ -10,10 +10,10 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-public class DateBoxItemDataFilter implements BoxItemDataFilter {
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_BEGIN_DATE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SITUATION_BEGIN_DATE;
 
-    public static final String PROCESS_BEGIN_DATE = "processBeginDate";
-    public static final String SITUATION_BEGIN_DATE = "situationBeginDate";
+public class DateBoxItemDataFilter implements BoxItemDataFilter {
 
     private String dateFormatter;
     private Set<String> alias = new HashSet<>();
