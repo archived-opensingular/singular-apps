@@ -18,6 +18,10 @@
 
 package org.opensingular.studio.core.wicket;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Page;
 import org.apache.wicket.RuntimeConfigurationType;
@@ -32,6 +36,7 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
+import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
@@ -41,10 +46,6 @@ import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.view.StudioFooter;
 import org.opensingular.studio.core.view.StudioHeader;
 import org.opensingular.studio.core.view.StudioPage;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Locale;
 
 public class StudioApplication extends WebApplication implements SingularAdminApp, SkinnableApplication {
     private final StudioConfig appConfig;
@@ -80,12 +81,13 @@ public class StudioApplication extends WebApplication implements SingularAdminAp
             boolean outputId = !component.getRenderBodyOnly();
             component.setOutputMarkupId(outputId).setOutputMarkupPlaceholderTag(outputId);
         });
+        getRequestCycleListeners().add(new SingularCsrfPreventionRequestCycleListener());
     }
 
     @Override
     public MarkupContainer buildPageHeader(String id,
-                                           boolean withMenu,
-                                           SingularAdminTemplate adminTemplate) {
+            boolean withMenu,
+            SingularAdminTemplate adminTemplate) {
         return new StudioHeader(id);
     }
 
