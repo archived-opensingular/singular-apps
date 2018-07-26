@@ -40,7 +40,7 @@ import java.util.stream.Collectors;
 
 public class SingularModuleConfiguration {
 
-    public static String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
+    public static final String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
 
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
