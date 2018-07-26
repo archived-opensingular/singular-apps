@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
-import org.opensingular.form.SType;
-import org.opensingular.lib.commons.util.Loggable;
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
+
+import org.opensingular.form.SType;
+import org.opensingular.lib.commons.util.Loggable;
 
 public class DocFieldMetadata implements Loggable {
 

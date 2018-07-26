@@ -23,7 +23,6 @@ import org.apache.commons.validator.routines.UrlValidator;
 import org.junit.Assert;
 import org.junit.Test;
 import org.mockito.Mockito;
-import org.opensingular.requirement.module.config.AbstractSingularInitializer;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
 

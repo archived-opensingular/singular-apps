@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.studio.wicket;
 
+import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Locale;
+
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.Page;
 import org.apache.wicket.Session;
@@ -33,16 +37,14 @@ import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.wicket.error.Page403;
+import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.view.StudioFooter;
 import org.opensingular.studio.core.view.StudioHeader;
 import org.opensingular.studio.core.view.StudioPage;
 import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
-
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Locale;
 
 public class RequirementStudioApplication extends SingularRequirementApplication {
     private final StudioConfig appConfig;
@@ -68,6 +70,10 @@ public class RequirementStudioApplication extends SingularRequirementApplication
         super.init();
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setStripComments(true);
+
+        getApplicationSettings().setAccessDeniedPage(Page403.class);
+        getApplicationSettings().setPageExpiredErrorPage(Page410.class);
+
         getMarkupSettings().setDefaultMarkupEncoding(StandardCharsets.UTF_8.name());
         setHeaderResponseDecorator(r -> new JavaScriptFilteredIntoFooterHeaderResponse(r, SingularTemplate.JAVASCRIPT_CONTAINER));
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));

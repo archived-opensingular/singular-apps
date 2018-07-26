@@ -19,9 +19,9 @@
 package org.opensingular.requirement.module.auth;
 
 
-import com.google.common.hash.Hashing;
-
 import java.nio.charset.StandardCharsets;
+
+import com.google.common.hash.Hashing;
 
 public interface AdminCredentialChecker {
 

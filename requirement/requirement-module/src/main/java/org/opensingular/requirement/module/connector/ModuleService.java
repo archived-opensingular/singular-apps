@@ -22,7 +22,6 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.SingularRequirementRef;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -97,8 +96,8 @@ public interface ModuleService {
      * Persiste se necessário o RequirementDefinitionEntity
      * e atualiza no ref o valor que está em banco.
      *
-     * @param ref - o ref a partir do qual o {@link RequirementDefinitionEntity} será criado
+     * @param singularRequirement - o requerimento do qual o {@link RequirementDefinitionEntity} será criado
      */
-    void save(SingularRequirementRef ref);
+    void save(SingularRequirement singularRequirement);
 
 }

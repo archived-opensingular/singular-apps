@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.admin.healthsystem;
 
+import java.util.List;
+import javax.annotation.Nonnull;
+
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
@@ -31,9 +34,6 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.admin.healthsystem.extension.AdministrationEntryExtension;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
-
-import javax.annotation.Nonnull;
-import java.util.List;
 
 
 public class HealthSystemPage extends ServerTemplate implements Loggable {

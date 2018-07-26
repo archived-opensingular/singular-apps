@@ -19,11 +19,11 @@
 package org.opensingular.requirement.module.service.dto;
 
 
-import org.opensingular.requirement.module.service.RequirementInstance;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.opensingular.requirement.module.service.RequirementInstance;
 
 public class RequirementSenderFeedback implements Serializable {
 

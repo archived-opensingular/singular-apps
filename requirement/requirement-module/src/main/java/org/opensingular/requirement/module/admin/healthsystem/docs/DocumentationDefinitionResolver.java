@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
+import java.io.Writer;
+
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.context.SingularContext;
 import org.opensingular.lib.commons.context.SingularSingletonStrategy;
@@ -25,8 +27,6 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
 import org.opensingular.requirement.module.admin.healthsystem.docs.presentation.DocumentationDefinition;
-
-import java.io.Writer;
 
 public class DocumentationDefinitionResolver implements Loggable {
 

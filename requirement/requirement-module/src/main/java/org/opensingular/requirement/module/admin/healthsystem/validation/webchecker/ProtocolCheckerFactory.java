@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.webchecker;
 
-import org.opensingular.requirement.module.exception.SingularServerException;
-
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.opensingular.requirement.module.exception.SingularServerException;
 
 public enum ProtocolCheckerFactory {
 

@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.wicket.error;
 
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+
 import com.google.common.base.Throwables;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -30,9 +33,6 @@ import org.opensingular.requirement.module.service.SendEmailToSupportService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.wicketstuff.annotation.mount.MountPath;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
 
 import static java.lang.String.format;
 

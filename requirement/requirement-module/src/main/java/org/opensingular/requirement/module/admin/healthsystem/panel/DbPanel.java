@@ -17,6 +17,8 @@
  */
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import javax.inject.Inject;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.form.Form;
@@ -30,8 +32,6 @@ import org.opensingular.requirement.module.admin.healthsystem.stypes.SDbHealth;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.HealthInfoDTO;
 import org.opensingular.requirement.module.service.HealthSystemDbService;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
-
-import javax.inject.Inject;
 
 public class DbPanel extends Panel {
 

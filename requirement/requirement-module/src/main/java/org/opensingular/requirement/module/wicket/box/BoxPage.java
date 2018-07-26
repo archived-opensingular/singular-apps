@@ -30,7 +30,7 @@ import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -92,7 +92,7 @@ public class BoxPage extends ServerBoxTemplate {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
         }
         LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
-        throw new RestartResponseException(AccessDeniedPage.class);
+        throw new RestartResponseException(Page403.class);
     }
 
     private boolean isAccessWithoutParams(String menu, String item) {

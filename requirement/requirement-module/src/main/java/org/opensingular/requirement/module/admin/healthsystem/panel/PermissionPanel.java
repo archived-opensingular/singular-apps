@@ -18,6 +18,12 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -26,12 +32,6 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 

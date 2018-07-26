@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem;
 
+import java.math.BigDecimal;
+import java.util.Arrays;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.TableInfoDTO;
-
-import java.math.BigDecimal;
-import java.util.Arrays;
 
 public class HealthSystemDTOTest {
 

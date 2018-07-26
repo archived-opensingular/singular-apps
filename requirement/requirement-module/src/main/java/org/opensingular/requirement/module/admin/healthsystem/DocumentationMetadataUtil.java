@@ -18,6 +18,13 @@
 
 package org.opensingular.requirement.module.admin.healthsystem;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeSet;
+import java.util.function.Supplier;
+
 import org.opensingular.form.AtrRef;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
@@ -26,13 +33,6 @@ import org.opensingular.form.type.basic.SPackageBasic;
 import org.opensingular.form.type.core.SPackageDocumentation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.TreeSet;
-import java.util.function.Supplier;
 
 public class DocumentationMetadataUtil {
 

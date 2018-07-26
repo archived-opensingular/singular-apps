@@ -18,27 +18,28 @@
 
 package org.opensingular.requirement.module.service.dto;
 
+import org.opensingular.requirement.module.SingularRequirement;
+
 import java.io.Serializable;
-import java.util.List;
+import java.util.Set;
 
 public class BoxDefinitionData implements Serializable {
-
-    private List<RequirementData> requirements;
+    private Set<Class<? extends SingularRequirement>> requirements;
     private ItemBox               itemBox;
 
     public BoxDefinitionData() {
     }
 
-    public BoxDefinitionData(ItemBox itemBox, List<RequirementData> requirementsMetadata) {
+    public BoxDefinitionData(ItemBox itemBox, Set<Class<? extends SingularRequirement>> requirementsMetadata) {
         this.itemBox = itemBox;
         this.requirements = requirementsMetadata;
     }
 
-    public List<RequirementData> getRequirements() {
+    public Set<Class<? extends SingularRequirement>> getRequirements() {
         return requirements;
     }
 
-    public void setRequirements(List<RequirementData> requirements) {
+    public void setRequirements(Set<Class<? extends SingularRequirement>> requirements) {
         this.requirements = requirements;
     }
 
@@ -49,6 +50,4 @@ public class BoxDefinitionData implements Serializable {
     public void setItemBox(ItemBox itemBox) {
         this.itemBox = itemBox;
     }
-
-
 }

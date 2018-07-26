@@ -19,10 +19,10 @@
 package org.opensingular.singular.pet.module.foobar.stuff;
 
 import org.opensingular.flow.core.DefinitionInfo;
-import org.opensingular.flow.core.FlowMap;
-import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.FlowMap;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;

@@ -17,6 +17,11 @@
  */
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import javax.inject.Inject;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -30,12 +35,7 @@ import org.opensingular.requirement.module.admin.AdminFacade;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 import org.quartz.SchedulerException;
 
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 @SuppressWarnings("serial")
 public class JobPanel extends Panel implements Loggable {

@@ -19,19 +19,34 @@
 package org.opensingular.requirement.module.spring.security.config;
 
 
+import net.vidageek.mirror.dsl.Mirror;
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
+import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.util.matcher.RegexRequestMatcher;
+import org.springframework.web.servlet.mvc.method.RequestMappingInfo;
+import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
 
+import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.util.Collections;
 import java.util.Optional;
 
 public interface SecurityConfigs {
@@ -42,7 +57,7 @@ public interface SecurityConfigs {
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
+            return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContextWithCAS.NAME);
         }
 
         @Override
@@ -57,7 +72,7 @@ public interface SecurityConfigs {
     class CASAnalise extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
+            return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContextWithCAS.NAME);
         }
 
         @Override
@@ -69,7 +84,7 @@ public interface SecurityConfigs {
     @Order(105)
     @Configuration
     @AutoScanDisabled
-    class AdministrationSecurity extends AbstractSingularSpringSecurityAdapter {
+    class AdministrationSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
         @Inject
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<AdminCredentialChecker> credentialChecker;
@@ -83,16 +98,109 @@ public interface SecurityConfigs {
             http
                     .regexMatcher(getContext().getPathRegex())
                     .authorizeRequests()
-                    .anyRequest().authenticated()
+                    .antMatchers(getContext().getContextPath()).hasRole("ADMIN")
+                    .and()
+                    .exceptionHandling().accessDeniedPage("/public/error/403")
                     .and()
                     .csrf().disable()
-                    .httpBasic();
+                    .formLogin().permitAll().loginPage(getContext().getUrlPath() + "/login")
+                    .and()
+                    .logout()
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
+                    .logoutSuccessUrl("/");
         }
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) {
             credentialChecker.ifPresent(cc ->
                     auth.authenticationProvider(new AdministrationAuthenticationProvider(cc, getContext())));
+        }
+    }
+
+    @Order(106)
+    @Configuration
+    @AutoScanDisabled
+    class RequirementSecurity extends AllowAllSecurity {
+        @Override
+        protected IServerContext getContext() {
+            return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
+        }
+    }
+
+    @Order(107)
+    @Configuration
+    @AutoScanDisabled
+    class WorklistSecurity extends AllowAllSecurity {
+        @Override
+        protected IServerContext getContext() {
+            return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
+        }
+    }
+
+    abstract class AllowAllSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.regexMatcher(getContext().getPathRegex())
+                    .requiresChannel()
+                    .anyRequest()
+                    .requiresSecure()
+                    .and()
+                    .headers()
+                    .frameOptions()
+                    .sameOrigin()
+                    .and()
+                    .csrf().disable()
+                    .authorizeRequests()
+                    .anyRequest()
+                    .authenticated()
+                    .and()
+                    .formLogin().permitAll().loginPage(getContext().getUrlPath() + "/login")
+                    .and()
+                    .logout()
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
+                    .logoutSuccessUrl("/");
+
+        }
+
+        @Override
+        protected void configure(AuthenticationManagerBuilder auth) {
+            auth.authenticationProvider(new AbstractUserDetailsAuthenticationProvider() {
+                @Override
+                protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+
+                }
+
+                @Override
+                protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
+                    if (StringUtils.isNotBlank(username)) {
+                        return new DefaultUserDetails(username, Collections.emptyList(), username, getContext());
+                    }
+                    throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
+                }
+            });
+        }
+    }
+
+    /**
+     * Adapter que configura o logincontroller
+     */
+    abstract class AbstractSingularSpringSecurityWithFormAdapter extends AbstractSingularSpringSecurityAdapter {
+
+        @Inject
+        @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+        private RequestMappingHandlerMapping requestMappingHandlerMapping;
+
+        @PostConstruct
+        public void setup() {
+            requestMappingHandlerMapping
+                    .registerMapping(RequestMappingInfo.paths(getContext().getUrlPath() + "/login").build(),
+                            loginController(), new Mirror().on(LoginController.class)
+                                    .reflect().method("getLoginView").withAnyArgs());
+        }
+
+        @Bean
+        public LoginController loginController() {
+            return new LoginController();
         }
     }
 

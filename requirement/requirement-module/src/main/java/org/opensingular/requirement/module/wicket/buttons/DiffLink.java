@@ -18,16 +18,19 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
+import java.util.Optional;
+
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
-import java.util.Optional;
-
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.*;
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_FORM_VERSION_ID;
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_REQUIREMENT_ID;
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_FORM_VERSION_ID;
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_REQUIREMENT_ID;
 
 public class DiffLink extends Panel {
 

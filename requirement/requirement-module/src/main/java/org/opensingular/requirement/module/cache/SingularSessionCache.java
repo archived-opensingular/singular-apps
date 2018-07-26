@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.cache;
 
-import org.springframework.cache.annotation.Cacheable;
-
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import org.springframework.cache.annotation.Cacheable;
 
 /**
  * Caches data  per wicket http session as long as the session is active.
