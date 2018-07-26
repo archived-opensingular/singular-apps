@@ -12,7 +12,5 @@ import java.util.Map;
  */
 @FunctionalInterface
 public interface BoxItemDataFilter {
-
-    void acceptFormatter(List<Map<String, Serializable>> map);
-
+    void doFilter(List<Map<String, Serializable>> map);
 }

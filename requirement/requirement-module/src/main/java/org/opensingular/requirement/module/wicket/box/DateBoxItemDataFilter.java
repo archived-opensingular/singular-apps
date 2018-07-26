@@ -27,7 +27,7 @@ public class DateBoxItemDataFilter implements BoxItemDataFilter {
     }
 
     @Override
-    public void acceptFormatter(List<Map<String, Serializable>> maps) {
+    public void doFilter(List<Map<String, Serializable>> maps) {
         addDateFormatters(maps);
     }
 

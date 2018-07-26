@@ -61,7 +61,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         } else {
             requirements = requirementService.quickSearchMap(filter, extenders);
         }
-        filters.forEach(f -> f.acceptFormatter(requirements));
+        filters.forEach(f -> f.doFilter(requirements));
         return requirements;
     }
 
