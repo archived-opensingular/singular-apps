@@ -42,7 +42,7 @@ public class SingularRequirementDefinitionFlows {
         Set<Class<? extends FlowDefinition>> flowClasses = builderContext.getFlowClasses();
 //        return new DynamicFormFlowSingularRequirement(
 //                builderContext.getName(),
-//                builderContext.getMainForm(),
+//                builderContext.getForm(),
 //                new BoundedFlowResolver((s, c) -> flowClasses.stream().findFirst(), flowClasses),
 //                builderContext.getDefaultExecutionPage(),
 //                builderContext.getRequirementSenderBeanClass());

@@ -41,7 +41,7 @@ public class ExtratoGeneratorService {
      * @return String with html content.
      */
     public String generateHtml(Long codRequirement) {
-        SIComposite siComposite = requirementService.loadRequirementInstance(codRequirement).getMainForm();
+        SIComposite siComposite = requirementService.loadRequirementInstance(codRequirement).getForm();
         return extratoGenerator.generate(siComposite);
     }
 

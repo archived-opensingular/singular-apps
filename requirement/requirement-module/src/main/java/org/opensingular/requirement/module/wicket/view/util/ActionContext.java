@@ -112,7 +112,7 @@ public class ActionContext implements Serializable, Loggable {
         return Optional.ofNullable(this.params.get(REQUIREMENT_DEFINITION_KEY)).map(String::valueOf);
     }
 
-    public void setRequirementDefinitionId(String requirementDefinitionKey) {
+    public void setRequirementDefinitionKey(String requirementDefinitionKey) {
         this.params.put(REQUIREMENT_DEFINITION_KEY, String.valueOf(requirementDefinitionKey));
     }
 

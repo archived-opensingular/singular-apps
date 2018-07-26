@@ -47,10 +47,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.document.RefType;
-import org.opensingular.form.document.SDocument;
-import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.FormKey;
-import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
@@ -60,8 +57,6 @@ import org.opensingular.form.wicket.panel.ModalEventListenerBehavior;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
-import org.opensingular.lib.commons.context.RefService;
-import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
@@ -71,13 +66,11 @@ import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
-import org.opensingular.requirement.module.persistence.entity.form.DraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
-import org.opensingular.requirement.module.service.ServerSInstanceFlowAwareService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -114,7 +107,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
     protected final BSModalBorder  closeModal     = construirCloseModal();
 
-    private final Map<String, TransitionController<?>>          transitionControllerMap   = new HashMap<>();
+    private final Map<String, TransitionController<?>>       transitionControllerMap   = new HashMap<>();
     private       Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
@@ -154,11 +147,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         }
     }
 
-    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends RequirementInstance> requirementModel) {
-        //É um método estático para garantir que nada inesperado vai ser serializado junto
-        return document -> document.bindLocalService("processService", ServerSInstanceFlowAwareService.class,
-                RefService.of((ServerSInstanceFlowAwareService) () -> requirementModel.getObject().getFlowInstance()));
-    }
 
     protected void fillTransitionControllerMap(Map<String, TransitionController<?>> transitionControllerMap) {
 
@@ -282,11 +270,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        final RI requirement = loadRequirement();
 
-
-        currentModel = $m.loadable(() -> requirement != null && requirement.getCod() != null ? requirementService.loadRequirementInstance(requirement.getCod()) : requirement);
-        currentModel.setObject(requirement);
+        currentModel = $m.loadable(this::loadRequirement);
 
         fillTransitionControllerMap(transitionControllerMap);
         SingularSpringInjector.get().injectAll(transitionControllerMap.values());
@@ -296,7 +281,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         modalContainer.add(new ModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
-        singularFormPanel.setInstanceCreator(() -> createInstance(formRequirementService.loadRefType(config.getFormName())));
+        singularFormPanel.setInstanceCreator(() -> currentModel.getObject().newForm(config.getFormName()));
         singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");
@@ -525,26 +510,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
 
-    @Nonnull
-    protected SInstance createInstance(@Nonnull RefType refType) {
-
-//        SDocumentConsumer extraSetup = SDocumentConsumer.of(getDocumentExtraSetuper(getRequirementModel()));
-//
-//        if (formKeyModel.getObject() == null) {
-//            /* clonagem do ultimo formulário da petição */
-//            if (parentRequirementFormKeyModel.getObject() != null
-//                    && inheritParentFormData.getObject() != null
-//                    && inheritParentFormData.getObject()) {
-//                return formRequirementService.newTransientSInstance(parentRequirementFormKeyModel.getObject(), refType, false, extraSetup);
-//            } else {
-//                return formRequirementService.createInstance(refType, extraSetup);
-//            }
-//        } else {
-//            return formRequirementService.getSInstance(formKeyModel.getObject(), refType, extraSetup);
-//        }
-        return null;
-    }
-
     protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
         final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
         buildFlowButton(buttonId, buttonContainer, transitionName, modal, transitionButtonEnabled);
@@ -586,37 +551,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return enviarModal;
     }
 
-    protected void saveForm(IModel<? extends SInstance> currentInstance) {
-        saveForm(currentInstance, null);
-    }
-
-    protected void saveForm(IModel<? extends SInstance> currentInstance, String transitionName) {
-        onBeforeSave(currentInstance);
-        SInstance instance = currentInstance.getObject();
-        if (instance != null) {
-            getRequirement().saveForm(instance, true);
-//            RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
-//            formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
-            onSave(transitionName);
-        }
-    }
-
-    protected void onSave(String transitionName) {
-        transitionConfirmModalMap.forEach((k, v) -> {
-            if (v.isDirty()) {
-                getRequirementService().saveOrUpdate(getRequirement(), v.getInstanceModel().getObject(), false);
-                v.setDirty(false);
-            }
-        });
-    }
-
-    protected boolean onBeforeSend(IModel<? extends SInstance> currentInstance) {
-        return true;
-    }
-
-    protected void onBeforeSave(IModel<? extends SInstance> currentInstance) {
-    }
-
     /**
      * Inicia o fluxo da petição, consolidando os formularios de rascunho e criando o historico
      *
@@ -625,33 +559,27 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
      * @param sm    modal que disparou a confirmação
      */
     protected void send(IModel<? extends SInstance> mi, AjaxRequestTarget ajxrt, BSModalBorder sm) {
-        //executa antes de enviar, chance para fazer validações, salvar o formulario e alterar dados na peticao
-        saveForm(mi);
-        if (onBeforeSend(mi)) {
-
-            //peticao atual, atualizações devem ser feitas em before send
-            RI requirement = getRequirement();
-
-            //instancia atual do formulario
-            SInstance instance = mi.getObject();
-
+        //executa em block try, caso exita rollback deve recarregar a peticao, para que a mesma não
+        //tenha dados que sofreram rollback
+        RI requirement = getRequirement();
+        try {
             //usuario para persistencia
             String username = SingularSession.get().getUsername();
 
-            //executa em block try, caso exita rollback deve recarregar a peticao, para que a mesma não
-            //tenha dados que sofreram rollback
-            try {
-                //executa o envio, iniciando o fluxo informado
-                RequirementSubmissionResponse sendedFeedback = requirement.send(username);
-                //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
-                onAfterSend(ajxrt, sm, sendedFeedback);
-            } catch (Exception ex) {
-                //recarrega a petição novamente
-                getRequirementModel().setObject(requirementService.loadRequirementInstance(requirement.getCod()));
-                //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
-                throw SingularServerException.rethrow(ex.getMessage(), ex);
-            }
+            //save do formulário em transação separada
+            requirement.saveForm(mi.getObject());
+
+            //executa o envio, iniciando o fluxo informado
+            RequirementSubmissionResponse sendedFeedback = requirement.send(username);
+            //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
+            onAfterSend(ajxrt, sm, sendedFeedback);
+        } catch (Exception ex) {
+            //recarrega a petição novamente
+            getRequirementModel().setObject(requirementService.loadRequirementInstance(requirement.getCod()));
+            //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
+            throw SingularServerException.rethrow(ex.getMessage(), ex);
         }
+
     }
 
     protected void onAfterSend(AjaxRequestTarget target, BSModalBorder enviarModal, RequirementSubmissionResponse sendedFeedback) {
@@ -682,12 +610,12 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             throws SingularServerFormValidationError {
         final STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
         if (flowConfirmModal == null) {
-            saveForm(currentInstance, transitionName);
+            getRequirement().saveForm(currentInstance.getObject());
         } else {
             boolean isFormOnModalValid = WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget,
                     flowConfirmModal.getInstanceModel(), true, true);
             if (isFormOnModalValid) {
-                saveForm(currentInstance, transitionName);
+                getRequirement().saveForm(currentInstance.getObject());
             } else {
                 throw new SingularServerFormValidationError();
             }
@@ -746,8 +674,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
      * @return Mapa de parametros
      */
     protected Map<String, String> getFlowParameters(String transition) {
-        Map<String, String>              params           = new HashMap<>();
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transition);
+        Map<String, String>           params           = new HashMap<>();
+        TransitionController<?>       controller       = getTransitionControllerMap().get(transition);
         STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transition);
         if (controller != null && flowConfirmModal != null) {
             Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
@@ -810,9 +738,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
-        TransitionController<?>          controller       = getTransitionControllerMap().get(transitionName);
+        TransitionController<?>       controller       = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean                          show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        boolean                       show             = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
         if (show) {
             modal.show(ajaxRequestTarget);
         }
@@ -918,7 +846,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void eventOnSaveAction(AjaxRequestTarget target) {
-        saveForm(getFormInstance());
+        getRequirement().saveForm(getFormInstance().getObject());
         atualizarContentWorklist(target);
     }
 

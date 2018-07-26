@@ -35,7 +35,6 @@ import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.requirement.commons.service.dto.STypeMock;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.springframework.web.util.HtmlUtils;
 
@@ -72,7 +71,7 @@ public class ExtratoGeneratorImplServiceTest {
                 siComposite.findField(STypeMock.class, i -> i.nome);
         nome.ifPresent(field -> field.setValue(JOAQUIM));
 
-        when(requirement.getMainForm()).thenReturn(siComposite);
+        when(requirement.getForm()).thenReturn(siComposite);
         when(requirementService.loadRequirementInstance(1L))
                 .thenReturn(requirement);
     }

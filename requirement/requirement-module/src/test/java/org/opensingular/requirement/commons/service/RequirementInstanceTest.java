@@ -35,9 +35,6 @@ import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
     @Inject
@@ -55,11 +52,10 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         requirementService.saveOrUpdate(requirement, instance, true);
 
-        Assert.assertNotNull(requirement.getMainForm());
+        Assert.assertNotNull(requirement.getForm());
 
-        Assert.assertTrue(requirement.getMainForm(STypeFoo.class).getType() instanceof STypeFoo);
+        Assert.assertTrue(requirement.getForm(STypeFoo.class).getType() instanceof STypeFoo);
 
-        Assert.assertNotNull(requirement.getMainFormAndCast(SIComposite.class));
 
         Assert.assertNotNull(requirement.getFlowDefinition());
 
@@ -78,7 +74,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         RefSDocumentFactory documentFactoryRef  = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance            = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
-        requirementInstance.saveForm(instance, true);
+        requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
         requirementService.executeTransition("No more bar", requirementInstance, null, null, null);
     }

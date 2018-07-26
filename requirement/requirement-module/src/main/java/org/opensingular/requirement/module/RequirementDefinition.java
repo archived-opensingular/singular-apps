@@ -118,11 +118,9 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     }
 
 
-    public Class<? extends SType> getMainForm() {
+    public Class<? extends SType<?>> getMainForm() {
         return requirementConfiguration.getMainForm();
     }
-
-    //TODO reqdef salvar/criar o form por meio da instance
 
     @Transactional
     public <RSR extends RequirementSubmissionResponse> RSR send(@Nonnull RI requirementInstance, @Nullable String codSubmitterActor) {

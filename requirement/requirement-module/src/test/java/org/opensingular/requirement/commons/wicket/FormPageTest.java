@@ -87,6 +87,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SFormUtil.getTypeName(STypeFoo.class));
         context.setFormAction(FormAction.FORM_FILL);
+        context.setRequirementDefinitionKey("FOO_REQ");
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -113,7 +114,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SFormUtil.getTypeName(STypeFoo.class));
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getRequirementDefinitionKey());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -131,7 +132,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(formName);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getRequirementDefinitionKey());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -241,7 +242,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SPackageFoo.STypeFOOModal.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL_WITH_ANALYSIS_FILL);
-        context.setRequirementDefinitionId(getRequirementDefinitionKey());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

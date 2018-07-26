@@ -91,7 +91,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
     @Nonnull
     private RequirementInstance createNewRequirementInstance(SInstance instance) {
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
-        requirementInstance.saveForm(instance, true);
+        requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
         requirementService.executeTransition("Transition bar", requirementInstance, this::onTransition, null, null);
         return requirementInstance;

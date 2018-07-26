@@ -34,7 +34,7 @@ public class RequirementConfigurationBuilder {
         return requirementDefinitionConfiguration;
     }
 
-    public RequirementConfigurationBuilder mainForm(Class<? extends SType> mainForm) {
+    public RequirementConfigurationBuilder mainForm(Class<? extends SType<?>> mainForm) {
         requirementDefinitionConfiguration.setMainForm(mainForm);
         return this;
     }

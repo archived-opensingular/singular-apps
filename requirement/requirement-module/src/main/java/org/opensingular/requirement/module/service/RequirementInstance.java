@@ -29,10 +29,13 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
+import org.opensingular.form.document.RefType;
+import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
+import org.opensingular.requirement.module.flow.ProcessServiceSetup;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -88,32 +91,36 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return getEntity().getFlowInstanceEntity() != null;
     }
 
+    /**
+     *
+     * @return
+     * returns requirement main form last version.
+     */
     @Nonnull
-    public SIComposite getMainForm() {
+    public SIComposite getForm() {
         if (mainForm == null) {
             mainForm = requirementService.getMainFormAsInstance(getEntity());
         }
         return mainForm;
     }
 
+    /**
+     * O expected type pode ser deduzido pela definição da instancia.
+     * @param expectedType
+     * @param <I>
+     * @param <K>
+     * @return
+     */
+    @Deprecated
     @Nonnull
-    public <I extends SInstance, K extends SType<? extends I>> I getMainForm(@Nonnull Class<K> expectedType) {
-        return FormRequirementService.checkIfExpectedType(getMainForm(), expectedType);
+    public <I extends SInstance, K extends SType<? extends I>> I getForm(@Nonnull Class<K> expectedType) {
+        return FormRequirementService.checkIfExpectedType(getForm(), expectedType);
     }
 
-    @Nonnull
-    public <I extends SInstance> I getMainFormAndCast(@Nonnull Class<I> expectedType) {
-        SIComposite i = getMainForm();
-        if (expectedType.isAssignableFrom(i.getClass())) {
-            return (I) i;
-        }
-        throw new SingularFormException(
-                "Era esperado a instância recuperada fosse do tipo " + expectedType.getName() +
-                        " mas ela é do tipo " + i.getClass(), i);
-    }
 
     @Nonnull
-    public void saveForm(@Nonnull SInstance instance, boolean mainForm) {
+    public void saveForm(@Nonnull SInstance instance) {
+        boolean mainForm = getRequirementDefinition().getMainForm().equals(instance.getType().getClass());//TODO reqdef idetificar isso de uma maneira melhor
         requirementService.saveOrUpdate(this, instance, mainForm);
     }
 
@@ -222,4 +229,23 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
 
+    public SInstance newForm() {
+        return newForm(getRequirementDefinition().getMainForm());
+    }
+
+    public SInstance newForm(Class<? extends SType<?>> form) {
+        return newForm(formRequirementService.loadRefType(form));
+    }
+
+    private SInstance newForm(RefType refType) {
+        return formRequirementService.createInstance(refType, localServicesBinder());
+    }
+
+    public SInstance newForm(String formName) {
+        return newForm(formRequirementService.loadRefType(formName));
+    }
+
+    private SDocumentConsumer localServicesBinder() {
+        return SDocumentConsumer.of(new ProcessServiceSetup(getCod()));
+    }
 }

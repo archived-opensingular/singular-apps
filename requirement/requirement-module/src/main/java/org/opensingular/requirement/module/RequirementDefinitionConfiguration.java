@@ -28,13 +28,13 @@ public class RequirementDefinitionConfiguration {
 
 
     private Class<? extends AbstractFormPage<?>> executionPage;
-    private Class<? extends SType>               mainForm;
+    private Class<? extends SType<?>>               mainForm;
     private Class<? extends FlowDefinition>      flowDefition;
     private String                               name;
     private RequirementSendInterceptor requirementSendInterceptor = new EmptyRequirementSendInterceptor();
 
 
-    public Class<? extends SType> getMainForm() {
+    public Class<? extends SType<?>> getMainForm() {
         return mainForm;
     }
 
@@ -55,7 +55,7 @@ public class RequirementDefinitionConfiguration {
         this.executionPage = executionPage;
     }
 
-    void setMainForm(Class<? extends SType> mainForm) {
+    void setMainForm(Class<? extends SType<?>> mainForm) {
         this.mainForm = mainForm;
     }
 
