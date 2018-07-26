@@ -48,7 +48,7 @@ import org.opensingular.requirement.module.wicket.error.Page500;
  * <p>
  * Esse Listener também é responsável pela segurança CSRF.
  */
-public class SingularServerContextListenerSingular extends SingularCsrfPreventionRequestCycleListener implements Loggable {
+public class SingularRequirementContextListener extends SingularCsrfPreventionRequestCycleListener implements Loggable {
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
