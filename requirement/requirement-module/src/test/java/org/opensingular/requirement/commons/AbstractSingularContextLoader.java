@@ -161,7 +161,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
     }
 
     private void mockRequest() {
-        MockHttpSession        session;
+        MockHttpSession session;
         MockHttpServletRequest request;
         session = new MockHttpSession();
         request = new MockHttpServletRequest();
@@ -281,11 +281,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      * @param webMergedConfig
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
-        try {
-            new SingularWebApplicationInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
-        } catch (ServletException e) {
-            throw SingularException.rethrow(e);
-        }
+        new SingularWebApplicationInitializer(new CommonsInitializerMock(context)).onStartup(context.getServletContext());
     }
 
     // --- ContextLoader -------------------------------------------------------

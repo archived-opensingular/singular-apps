@@ -13,17 +13,14 @@
  *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  *  * See the License for the specific language governing permissions and
  *  * limitations under the License.
- *  
+ *
  */
 
 package org.opensingular.requirement.module.service;
 
 
-import javax.servlet.ServletException;
-
 import org.opensingular.requirement.commons.AbstractSingularContextLoader;
 import org.opensingular.requirement.module.config.SingularWebApplicationInitializer;
-
 import org.opensingular.requirement.module.test.ModuleInitializerMock;
 import org.springframework.test.context.web.WebMergedContextConfiguration;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -33,10 +30,6 @@ public class SingularModuleContextLoader extends AbstractSingularContextLoader {
 
     @Override
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
-        try {
-            new SingularWebApplicationInitializer(new ModuleInitializerMock(context)).onStartup(context.getServletContext());
-        } catch (ServletException e) {
-            throw new RuntimeException(e.getMessage(), e);
-        }
+        new SingularWebApplicationInitializer(new ModuleInitializerMock(context)).onStartup(context.getServletContext());
     }
 }

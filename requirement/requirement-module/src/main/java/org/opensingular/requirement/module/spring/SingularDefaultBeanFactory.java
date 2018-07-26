@@ -24,9 +24,12 @@ import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledSe
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
+import org.opensingular.flow.core.FlowDefinitionCache;
+import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
+import org.opensingular.form.SType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
 import org.opensingular.form.persistence.dao.AttachmentDao;
@@ -42,12 +45,14 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SingularUserDetails;
+import org.opensingular.form.spring.SpringFormConfig;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
@@ -59,6 +64,10 @@ import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
+import org.opensingular.requirement.module.flow.SingularServerFlowConfigurationBean;
+import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
+import org.opensingular.requirement.module.form.SingularServerDocumentFactory;
+import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -105,6 +114,11 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Modifier;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("rawtypes")
@@ -383,6 +397,38 @@ public class SingularDefaultBeanFactory {
         HttpServletRequest req = sra.getRequest();
         IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
         return moduleService.loadWorkspaceConfiguration(menuContext.getName(), singularUserDetails.getUsername());
+    }
+
+    @Bean
+    public SingularModuleConfigurationBean singularModuleConfigurationBean() {
+        SingularModuleConfigurationBean singularModuleConfigurationBean = new SingularModuleConfigurationBean();
+
+        return singularModuleConfigurationBean;
+    }
+
+    @Bean
+    public SingularServerDocumentFactory documentFactory() {
+        return new SingularServerDocumentFactory();
+    }
+
+    @Bean
+    public SingularServerSpringTypeLoader typeLoader() {
+        return new SingularServerSpringTypeLoader();
+    }
+
+    @Bean
+    public SpringFormConfig<String> formConfigWithDatabase(SingularServerDocumentFactory singularServerDocumentFactory,
+                                                           SingularServerSpringTypeLoader serverSpringTypeLoader) {
+        SpringFormConfig<String> formConfigWithoutDatabase = new SpringFormConfig<>();
+        formConfigWithoutDatabase.setTypeLoader(serverSpringTypeLoader);
+        formConfigWithoutDatabase.setDocumentFactory(singularServerDocumentFactory);
+        return formConfigWithoutDatabase;
+    }
+
+    @Bean
+    public SingularFlowConfigurationBean singularFlowConfiguration() {
+        FlowDefinitionCache.invalidateAll();
+        return new SingularServerFlowConfigurationBean();
     }
 
 }

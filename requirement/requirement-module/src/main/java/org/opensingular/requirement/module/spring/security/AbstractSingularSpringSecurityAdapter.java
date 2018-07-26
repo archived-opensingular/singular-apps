@@ -37,6 +37,6 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
     protected abstract IServerContext getContext();
 
     public String[] getDefaultPublicUrls() {
-        return singularServerConfiguration.getDefaultPublicUrls();
+        return singularServerConfiguration.getPublicUrls().toArray(new String[]{});
     }
 }

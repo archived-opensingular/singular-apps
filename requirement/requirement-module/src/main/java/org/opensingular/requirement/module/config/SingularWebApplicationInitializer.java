@@ -19,108 +19,46 @@
 package org.opensingular.requirement.module.config;
 
 import org.opensingular.lib.commons.context.SingularContextSetup;
-import org.opensingular.requirement.module.WorkspaceInitializer;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.WebApplicationInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-import java.util.Optional;
 
+/**
+ * TODO
+ *
+ * @see SingularInitializer
+ * @see SingularServerInitializerProvider
+ * @see SingularWebInitializerListener
+ */
 public class SingularWebApplicationInitializer implements WebApplicationInitializer {
-
-    private static Logger logger = LoggerFactory.getLogger(SingularWebApplicationInitializer.class);
-
-    public static String SINGULAR = "[SINGULAR] {}";
-    public static String SERVLET_ATTRIBUTE_WEB_CONFIGURATION = "Singular-webInitializer";
-    public static String SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION = "Singular-springHibernateInitializer";
-    public static String SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION = "Singular-formInitializer";
-    public static String SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION = "Singular-flowInitializer";
-    public static String SERVLET_ATTRIBUTE_SECURITY_CONFIGURATION_CONFIGURATION = "Singular-Security";
-
+    /**
+     * TODO
+     */
     private SingularInitializer singularInitializer;
 
+    /**
+     * TODO
+     */
     public SingularWebApplicationInitializer() {
         this(SingularServerInitializerProvider.get().retrieve());
     }
 
+    /**
+     * TODO
+     */
     public SingularWebApplicationInitializer(SingularInitializer singularInitializer) {
         this.singularInitializer = singularInitializer;
     }
 
+    /**
+     * TODO
+     */
     @Override
-    public void onStartup(ServletContext ctx) throws ServletException {
+    public void onStartup(ServletContext ctx) {
         SingularContextSetup.reset();
-        logger.info(SINGULAR, " Initializing Singular.... ");
-
-        logger.info(SINGULAR, " Initializing SpringHibernateConfiguration ");
-        SpringHibernateInitializer springHibernateInitializer = singularInitializer.springHibernateConfiguration();
-        AnnotationConfigWebApplicationContext applicationContext;
-        if (springHibernateInitializer != null) {
-            applicationContext = springHibernateInitializer.init(ctx);
-            ctx.setAttribute(SERVLET_ATTRIBUTE_SPRING_HIBERNATE_CONFIGURATION, springHibernateInitializer);
-        } else {
-            throw new SingularServerException("Não foi possivel configurar o ApplicationContext");
-        }
-
-        applicationContext.register(singularInitializer.getSingularSpringWebMVCConfig());
-
-        logger.info(SINGULAR, " Initializing FormConfiguration ");
-        FormInitializer formInitializer = singularInitializer.formConfiguration();
-        if (formInitializer != null) {
-            formInitializer.init(ctx, applicationContext);
-            ctx.setAttribute(SERVLET_ATTRIBUTE_FORM_CONFIGURATION_CONFIGURATION, formInitializer);
-        } else {
-            logger.info(SINGULAR, " Null formInitializer, skipping Singular Form configuration");
-        }
-
-        logger.info(SINGULAR, " Initializing FlowConfiguration ");
-        FlowInitializer flowInitializer = singularInitializer.flowConfiguration();
-        if (flowInitializer != null) {
-            flowInitializer.init(ctx, applicationContext);
-            ctx.setAttribute(SERVLET_ATTRIBUTE_FLOW_CONFIGURATION_CONFIGURATION, flowInitializer);
-        } else {
-            logger.info(SINGULAR, " Null flowInitializer, skipping Singular Flow configuration");
-        }
-
-        logger.info(SINGULAR, " Initializing SchedulerConfiguration ");
-        SchedulerInitializer schedulerInitializer = singularInitializer.schedulerConfiguration();
-        if (schedulerInitializer != null) {
-            schedulerInitializer.init(ctx, applicationContext);
-        } else {
-            logger.info(SINGULAR, " Null SchedulerInitializer, skipping Singular Scheduler configuration");
-        }
-
-        logger.info(SINGULAR, " Initializing WebConfiguration ");
-        WebInitializer webInitializer = singularInitializer.webConfiguration();
-        if (webInitializer != null) {
-            webInitializer.init(ctx);
-            ctx.setAttribute(SERVLET_ATTRIBUTE_WEB_CONFIGURATION, webInitializer);
-        } else {
-            logger.info(SINGULAR, " Null webInitializer, skipping web configuration");
-        }
-
-        logger.info(SINGULAR, " Initializing SpringSecurity ");
-        SpringSecurityInitializer springSecurityInitializer = singularInitializer.springSecurityConfiguration();
-        if (springSecurityInitializer != null) {
-            springSecurityInitializer.init(ctx, applicationContext, Optional.of(springHibernateInitializer)
-                    .map(SpringHibernateInitializer::springMVCServletMapping)
-                    .orElse(null));
-            ctx.setAttribute(SERVLET_ATTRIBUTE_SECURITY_CONFIGURATION_CONFIGURATION, springSecurityInitializer);
-        } else {
-            logger.info(SINGULAR, " Null springSecurityInitializer, skipping Spring Security configuration");
-        }
-
-        logger.info(SINGULAR, " Initializing WorkspaceInitializer ");
-        WorkspaceInitializer workspaceInitializer = singularInitializer.workspaceConfiguration();
-        if (workspaceInitializer != null) {
-            workspaceInitializer.init(ctx, applicationContext);
-        } else {
-            logger.info(SINGULAR, " Null WorkspaceInitializer, skipping Spring Workspace configuration");
-        }
-
+        AnnotationConfigWebApplicationContext applicationContext = singularInitializer.createApplicationContext();
+        singularInitializer.getSingularWebInitializerListener()
+                .forEach(singularInitializer -> singularInitializer.initialize(ctx, applicationContext));
     }
 }

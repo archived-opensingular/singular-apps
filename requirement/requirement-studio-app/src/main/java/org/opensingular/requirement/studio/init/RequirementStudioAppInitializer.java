@@ -18,36 +18,15 @@
 
 package org.opensingular.requirement.studio.init;
 
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.requirement.module.config.AbstractSingularInitializer;
 import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
-import org.opensingular.requirement.module.config.WebInitializer;
 import org.opensingular.requirement.studio.spring.RequirementStudioBeanFactory;
 import org.opensingular.requirement.studio.spring.RequirementStudioWebMVCConfig;
-
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 public abstract class RequirementStudioAppInitializer extends AbstractSingularInitializer {
     @Override
     protected Class<? extends RequirementStudioBeanFactory> beanFactory() {
         return RequirementStudioBeanFactory.class;
-    }
-
-    @Override
-    public WebInitializer webConfiguration() {
-        return new WebInitializer() {
-
-            @Override
-            public void onStartup(ServletContext servletContext) throws ServletException {
-                String contextPath = servletContext.getContextPath();//NOSONAR
-                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM,
-                        (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
-                super.onStartup(servletContext);
-            }
-        };
     }
 
     @Override

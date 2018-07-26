@@ -19,13 +19,16 @@
 package org.opensingular.requirement.module;
 
 
+import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -42,6 +45,9 @@ public class SingularModuleConfiguration {
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
     private RequirementRegistry requirementRegistry;
+    private List<Class<? extends SType<?>>> formTypes;
+    private String[] definitionsPackages;
+    private List<String> publicUrls = new ArrayList<>();
 
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
@@ -107,5 +113,30 @@ public class SingularModuleConfiguration {
 
     public Set<IServerContext> getContexts() {
         return workspaceRegistry.listContexts();
+    }
+
+
+    public void setFormTypes(List<Class<? extends SType<?>>> formTypes) {
+        this.formTypes = formTypes;
+    }
+
+    public List<String> getPublicUrls() {
+        return publicUrls;
+    }
+
+    public void addPublicUrl(String url){
+        publicUrls.add(url);
+    }
+
+    public void initDefinitionsPackages(Set<Class<? extends RequirementFlowDefinition>> definitions) {
+        definitionsPackages = definitions.stream().map(c -> c.getPackage().getName()).distinct().toArray(String[]::new);
+    }
+
+    public List<Class<? extends SType<?>>> getFormTypes() {
+        return formTypes;
+    }
+
+    public String[] getDefinitionsPackages() {
+        return definitionsPackages;
     }
 }

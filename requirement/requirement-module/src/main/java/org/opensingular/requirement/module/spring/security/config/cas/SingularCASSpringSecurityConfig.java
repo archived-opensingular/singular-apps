@@ -19,20 +19,13 @@
 package org.opensingular.requirement.module.spring.security.config.cas;
 
 
-import java.util.Arrays;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.inject.Named;
-
 import com.google.common.base.Joiner;
-import org.jasig.cas.client.session.SingleSignOutHttpSessionListener;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
-import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOConfigurableFilter;
 import org.opensingular.requirement.module.spring.security.config.cas.util.SSOFilter;
@@ -52,7 +45,12 @@ import javax.inject.Named;
 import javax.servlet.FilterConfig;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 @Configuration
@@ -156,7 +154,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
     public abstract String getCASLogoutURL();
 
     protected final String getExcludeUrlRegex() {
-        return Joiner.on(",").join(singularServerConfiguration.getDefaultPublicUrls()).replaceAll("\\*", ".*");
+        return Joiner.on(",").join(singularServerConfiguration.getPublicUrls()).replaceAll("\\*", ".*");
     }
 
 }

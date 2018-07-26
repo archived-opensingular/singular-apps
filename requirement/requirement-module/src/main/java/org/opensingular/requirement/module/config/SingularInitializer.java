@@ -1,21 +1,22 @@
 package org.opensingular.requirement.module.config;
 
-import org.opensingular.requirement.module.WorkspaceInitializer;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
+import java.util.List;
+
+/**
+ * TODO
+ *
+ * @see SingularWebApplicationInitializer
+ */
 public interface SingularInitializer {
-    FlowInitializer flowConfiguration();
+    /**
+     * TODO
+     */
+    AnnotationConfigWebApplicationContext createApplicationContext();
 
-    SchedulerInitializer schedulerConfiguration();
-
-    WebInitializer webConfiguration();
-
-    Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig();
-
-    FormInitializer formConfiguration();
-
-    SpringSecurityInitializer springSecurityConfiguration();
-
-    SpringHibernateInitializer springHibernateConfiguration();
-
-    WorkspaceInitializer workspaceConfiguration();
+    /**
+     * TODO
+     */
+    List<? extends SingularWebInitializerListener> getSingularWebInitializerListener();
 }

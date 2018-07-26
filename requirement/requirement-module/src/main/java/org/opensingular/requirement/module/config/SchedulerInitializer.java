@@ -17,13 +17,14 @@
  */
 package org.opensingular.requirement.module.config;
 
-import javax.servlet.ServletContext;
-
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-public abstract class SchedulerInitializer {
+import javax.servlet.ServletContext;
 
-    public void init(ServletContext ctx, AnnotationConfigWebApplicationContext applicationContext) {
+@Deprecated
+public abstract class SchedulerInitializer implements SingularWebInitializerListener {
+    @Override
+    public void initialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
         applicationContext.register(mailConfiguration());
         applicationContext.register(attachmentGCConfiguration());
     }
@@ -31,11 +32,10 @@ public abstract class SchedulerInitializer {
     public abstract Class<?> mailConfiguration();
 
     /**
-     * @deprecated
-     * Deveria ter implementação padrão.
+     * @return
+     * @deprecated Deveria ter implementação padrão.
      * A implementação padrão deve vir para esse módulo ou o método deve ser removido
      * //TODO danilo.mesquita
-     * @return
      */
     @Deprecated
     public abstract Class<?> attachmentGCConfiguration();
