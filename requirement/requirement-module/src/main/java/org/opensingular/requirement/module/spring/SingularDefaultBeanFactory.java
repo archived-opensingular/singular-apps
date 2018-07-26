@@ -22,8 +22,12 @@ import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
 import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
 import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.email.DefaultMailSenderREST;
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.mail.service.email.EmailSender;
+import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
+import org.opensingular.app.commons.mail.service.email.IMailSenderREST;
 import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
@@ -70,6 +74,7 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementConte
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.AttachmentGCJob;
 import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
@@ -88,6 +93,7 @@ import org.opensingular.requirement.module.spring.security.PermissionResolverSer
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
 import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
 import org.springframework.cache.CacheManager;
@@ -398,6 +404,31 @@ public class SingularDefaultBeanFactory {
     @Bean
     public SingularSchedulerBean schedulerFactoryBean(DataSource dataSource) {
         return new SingularSchedulerBean(dataSource);
+    }
+
+    @Bean
+    public EmailSender emailSender() {
+        return new EmailSender();
+    }
+
+    @Bean
+    @DependsOn({"emailSender", "scheduleService", "emailService"})
+    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
+        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
+        scheduleService.schedule(emailSenderScheduledJob);
+        return emailSenderScheduledJob;
+    }
+
+    @Bean
+    public IMailSenderREST mailSenderREST() {
+        return new DefaultMailSenderREST();
+    }
+
+    @Bean
+    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService){
+        AttachmentGCJob attachmentGCJob = new AttachmentGCJob(ScheduleDataBuilder.buildDaily(1, 1));
+        scheduleService.schedule(attachmentGCJob);
+        return attachmentGCJob;
     }
 
 }

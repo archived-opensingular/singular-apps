@@ -20,7 +20,13 @@ package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.requirement.module.WorkspaceInitializer;
-import org.opensingular.requirement.module.config.*;
+import org.opensingular.requirement.module.config.FlowInitializer;
+import org.opensingular.requirement.module.config.FormInitializer;
+import org.opensingular.requirement.module.config.SingularInitializer;
+import org.opensingular.requirement.module.config.SingularSpringWebMVCConfig;
+import org.opensingular.requirement.module.config.SpringHibernateInitializer;
+import org.opensingular.requirement.module.config.SpringSecurityInitializer;
+import org.opensingular.requirement.module.config.WebInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
@@ -96,21 +102,6 @@ public class CommonsInitializerMock implements SingularInitializer {
             @Override
             public String moduleCod() {
                 return TESTE;
-            }
-        };
-    }
-
-    @Override
-    public SchedulerInitializer schedulerConfiguration() {
-        return new SchedulerInitializer() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return Object.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return Object.class;
             }
         };
     }

@@ -86,14 +86,6 @@ public class SingularWebApplicationInitializer implements WebApplicationInitiali
             logger.info(SINGULAR, " Null flowInitializer, skipping Singular Flow configuration");
         }
 
-        logger.info(SINGULAR, " Initializing SchedulerConfiguration ");
-        SchedulerInitializer schedulerInitializer = singularInitializer.schedulerConfiguration();
-        if (schedulerInitializer != null) {
-            schedulerInitializer.init(ctx, applicationContext);
-        } else {
-            logger.info(SINGULAR, " Null SchedulerInitializer, skipping Singular Scheduler configuration");
-        }
-
         logger.info(SINGULAR, " Initializing WebConfiguration ");
         WebInitializer webInitializer = singularInitializer.webConfiguration();
         if (webInitializer != null) {

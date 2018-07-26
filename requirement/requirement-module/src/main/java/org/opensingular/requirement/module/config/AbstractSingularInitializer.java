@@ -18,9 +18,6 @@
 
 package org.opensingular.requirement.module.config;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
-
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
@@ -28,6 +25,9 @@ import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.requirement.module.WorkspaceInitializer;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
+
+import javax.servlet.ServletContext;
+import javax.servlet.ServletException;
 
 public abstract class AbstractSingularInitializer implements SingularInitializer {
 
@@ -41,21 +41,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
             @Override
             public String moduleCod() {
                 return AbstractSingularInitializer.this.moduleCod();
-            }
-        };
-    }
-
-    @Override
-    public SchedulerInitializer schedulerConfiguration() {
-        return new SchedulerInitializer() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
             }
         };
     }

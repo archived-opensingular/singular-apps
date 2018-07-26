@@ -5,8 +5,6 @@ import org.opensingular.requirement.module.WorkspaceInitializer;
 public interface SingularInitializer {
     FlowInitializer flowConfiguration();
 
-    SchedulerInitializer schedulerConfiguration();
-
     WebInitializer webConfiguration();
 
     Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig();

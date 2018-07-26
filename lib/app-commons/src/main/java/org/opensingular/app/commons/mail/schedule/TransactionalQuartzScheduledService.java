@@ -16,20 +16,20 @@
 
 package org.opensingular.app.commons.mail.schedule;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.schedule.IScheduledJob;
 import org.opensingular.schedule.quartz.QuartzScheduleService;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable {
 
     private boolean contextRefreshed;
     private List<IScheduledJob> toBeScheduled = new ArrayList<>(); //List containing all Scheduled that have to be executed after Spring initialize.
-    
+
     public TransactionalQuartzScheduledService(SingularSchedulerBean singularSchedulerBean) {
         super(false);
         setQuartzSchedulerFactory(singularSchedulerBean);
