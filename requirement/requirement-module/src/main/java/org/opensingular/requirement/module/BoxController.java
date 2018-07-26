@@ -21,32 +21,11 @@ package org.opensingular.requirement.module;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.RequirementData;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
-import org.springframework.util.CollectionUtils;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-public class BoxController implements BoxInfo {
-
-    private String                      id;
-    private Set<SingularRequirementRef> requirementRefs = new LinkedHashSet<>();
-    private BoxDefinition boxDefinition;
-
-
-    public BoxController(BoxDefinition boxDefinition, List<SingularRequirementRef> requirementRefs) {
-        for (SingularRequirementRef ref : requirementRefs) {
-            this.requirementRefs.add(ref);
-        }
-        this.boxDefinition = boxDefinition;
-    }
-
-    public BoxController(BoxDefinition itemBox) {
-        this.boxDefinition = itemBox;
-    }
 
 /**
  * @see BoxControllerFactory
@@ -72,13 +51,9 @@ public class BoxController {
     }
 
     public BoxItemDataList searchItens(QuickFilter filter) {
-        BoxItemDataProvider             provider       = boxDefinition.getDataProvider();
-        if(CollectionUtils.isEmpty(provider.getFilters())) {
-            provider.addDateFilters();
-        }
-        List<Map<String, Serializable>> itens          = provider.search(filter, this);
-        BoxItemDataList                 result         = new BoxItemDataList();
-        ActionProvider                  actionProvider = addBuiltInDecorators(provider.getActionProvider());
+        List<Map<String, Serializable>> itens = boxItemDataProvider.search(filter);
+        BoxItemDataList result = new BoxItemDataList();
+        ActionProvider actionProvider = addBuiltInDecorators(boxItemDataProvider.getActionProvider());
 
         for (Map<String, Serializable> item : itens) {
             BoxItemDataImpl line = new BoxItemDataImpl();

@@ -18,15 +18,9 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import javax.annotation.Nonnull;
 
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -58,8 +52,5 @@ public interface BoxItemDataProvider {
      * @return a lista de ações que a linha deve conter
      */
     ActionProvider getActionProvider();
-
-    BoxItemDataProvider addDateFilters();
-    List<IConsumer<List<Map<String, Serializable>>>> getFilters();
 
 }
