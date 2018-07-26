@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.flow.controllers;
 
+import javax.annotation.Nonnull;
+import javax.inject.Inject;
+
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
-
-import javax.annotation.Nonnull;
-import javax.inject.Inject;
 
 public abstract class IController {
 

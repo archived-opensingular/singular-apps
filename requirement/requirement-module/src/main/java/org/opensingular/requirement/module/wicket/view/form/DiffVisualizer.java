@@ -16,8 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -39,6 +37,8 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BSTableTree;
 import org.opensingular.lib.wicket.util.datatable.column.BSFolder;
 import org.opensingular.lib.wicket.util.datatable.column.BSTreeColumn;
+
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class DiffVisualizer extends Panel {
 

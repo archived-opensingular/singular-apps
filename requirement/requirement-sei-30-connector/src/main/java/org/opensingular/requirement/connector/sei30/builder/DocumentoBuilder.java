@@ -18,6 +18,15 @@
 
 package org.opensingular.requirement.connector.sei30.builder;
 
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
+import javax.activation.DataHandler;
+
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.requirement.connector.sei30.model.NivelAcesso;
@@ -30,15 +39,6 @@ import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Interessado;
 import org.opensingular.requirement.connector.sei30.ws.Remetente;
 import org.opensingular.requirement.module.exception.SingularServerException;
-
-import javax.activation.DataHandler;
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
 
 /**
  * Classe DocumentoBuilder.

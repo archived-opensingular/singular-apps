@@ -18,11 +18,17 @@
 
 package org.opensingular.requirement.module.config;
 
+import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
+import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
@@ -45,7 +51,7 @@ public interface IServerContext extends Serializable {
 
     static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
         String contextPath = request.getContextPath();
-        String context     = request.getPathInfo().replaceFirst(contextPath, "");
+        String context = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
             if (context.startsWith(ctx.getUrlPath())) {
                 return ctx;
@@ -60,33 +66,65 @@ public interface IServerContext extends Serializable {
 
     /**
      * O contexto no formato aceito por servlets e filtros
-     *
-     * @return
      */
     String getContextPath();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
-     *
-     * @return
      */
     String getPathRegex();
 
     /**
      * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
      * sem a / ao final.
-     *
-     * @return
      */
     String getUrlPath();
 
+    /**
+     * Informa o nome teste contexto
+     */
+    String getName();
+
+    /**
+     * Informa a aplicação wicket deste contexto
+     */
+    Class<? extends Application> getWicketApplicationClass();
+
+    /**
+     * Informa a configuração do spring security para este contexto
+     */
+    Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass();
+
+    /**
+     * Informa se os requerimentos que passarem por esse contexto deve ter seus owners checkados
+     *
+     * @deprecated API_REVIEW
+     */
+    @Deprecated
+    default boolean checkOwner() {
+        return false;
+    }
+
+    /**
+     *
+     */
     @Deprecated
     String getPropertiesBaseKey();
 
-    String getName();
-
-    default boolean isSameContext(IServerContext context) {
-        return context != null && this.getName().equals(context.getName());
+    /**
+     * Contexts public urls
+     *
+     * @return
+     */
+    default List<String> getPublicUrls() {
+        ArrayList<String> urls = new ArrayList<>();
+        urls.add(getUrlPath() + "/wicket/resource/*");
+        urls.add(getUrlPath() + "/public/*");
+        return urls;
     }
 
+    /**
+     * Configura o workspace, adicionando caixas e outros itens
+     */
+    void setup(WorkspaceConfiguration workspaceConfiguration);
 }

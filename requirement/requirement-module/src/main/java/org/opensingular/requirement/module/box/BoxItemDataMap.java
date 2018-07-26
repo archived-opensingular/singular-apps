@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.box;
 
-import org.opensingular.requirement.module.service.dto.BoxItemAction;
-
 import java.io.Serializable;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.opensingular.requirement.module.service.dto.BoxItemAction;
 
 public class BoxItemDataMap extends LinkedHashMap<String, Object> implements Serializable {
 

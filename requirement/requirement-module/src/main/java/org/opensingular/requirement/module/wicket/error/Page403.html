@@ -17,41 +17,21 @@
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:extend>
     <style type="text/css">
-        .error-panel {
-            background-color: white;
-            padding: 2em;
+        .page-header-fixed .page-container {
+            margin-top: 5px;
         }
-
-        .error-disclaimer-title {
-            text-align: center;
-        }
-
-        .error-disclaimer-text {
-            font-size: 1.2em;
-        }
-
-        .error-code-container {
-            font-size: 2em;
-            text-align: center;
-        }
-
-        .error-code {
-            font-weight: bold;
-            font-size: 1.2em;
-        }
-
     </style>
     <div class="error-panel">
-
-        <h1 class="error-disclaimer-title">Acesso negado</h1>
-
-        <p class="error-disclaimer-text">
-            Você não tem acesso à página requisitada.
-        </p>
-        <p class="error-disclaimer-text">
-            Pedimos que você verifique suas permissões e tente novamente.
-        </p>
-
+        <div class="error-container">
+            <span class="error-image"></span>
+            <h1 class="error-title">    <wicket:message key="label.body.title"/> </h1>
+            <p class="error-text">
+                <wicket:message key="label.body.message.main"/>
+            </p>
+            <a class="btn" onclick="if (window.history.length > 1) window.history.back(); else window.close();">
+                <wicket:message key="label.body.message.more"/>
+            </a>
+        </div>
     </div>
 </wicket:extend>
 </html>

@@ -24,69 +24,73 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.service.dto.RequirementData;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
-import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
-import java.util.List;
+import javax.inject.Inject;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class NewRequirementLink extends Panel {
 
-    private final String                        moduleCod;
-    private final String                        url;
-    private final Map<String, String>           params;
-    private       IModel<List<RequirementData>> requirements;
+    private final String url;
+    private final Map<String, String> params;
+    private IModel<Set<Class<? extends SingularRequirement>>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
-    public NewRequirementLink(String id, String moduleCod, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
-        this(id, null, moduleCod, url, params, requirements);
+    @Inject
+    private SingularModuleConfigurationBean singularModuleConfigurationBean;
+
+    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<Set<Class<? extends SingularRequirement>>> requirements) {
+        this(id, null, url, params, requirements);
     }
 
-    public NewRequirementLink(String id, IModel<String> labelModel, String moduleCod, String url, Map<String, String> params, IModel<List<RequirementData>> requirements) {
+    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<Set<Class<? extends SingularRequirement>>> requirements) {
         super(id);
-        this.moduleCod = moduleCod;
         this.url = url;
-        this.params = params;
         this.labelModel = labelModel == null ? this.labelModel : labelModel;
+        this.params = params;
         this.requirements = requirements;
         buildButtons();
     }
 
     protected void buildButtons() {
-        addSingleButton(() -> Optional.ofNullable(requirements.getObject()).map(List::size).orElse(0) == 1);
-        addDropdownButton(() -> Optional.ofNullable(requirements.getObject()).map(List::size).orElse(0) > 1);
+        addSingleButton(() -> Optional.ofNullable(requirements.getObject()).map(Set::size).orElse(0) == 1);
+        addDropdownButton(() -> Optional.ofNullable(requirements.getObject()).map(Set::size).orElse(0) > 1);
     }
 
     protected void addSingleButton(ISupplier<Boolean> visibleSupplier) {
-        Optional<RequirementData> findFirst = requirements.getObject().stream().findFirst();
+        Optional<SingularRequirement> findFirst = getRequirementsStream().findFirst();
         if (findFirst.isPresent()) {
-            Link<String> newButton = buildLink("_botao", labelModel, findFirst.get());
+            Link<Void> newButton = buildLink("_botao", labelModel, findFirst.get());
             newButton.add($b.visibleIf(visibleSupplier));
             this.add(newButton);
         }
     }
 
-    private Link<String> buildLink(String id, IModel<String> labelModel, RequirementData requirement) {
-        Link botao = new Link(id) {
+    private Link<Void> buildLink(String id, IModel<String> labelModel, SingularRequirement requirement) {
+        String url = NewRequirementLink.this.buildURL(requirement);
+        return new Link<Void>(id) {
             @Override
             protected void onConfigure() {
                 super.onConfigure();
-                this.add($b.attr("href", NewRequirementLink.this.buildURL(requirement)));
+                this.add($b.attr("href", url));
                 this.add($b.attr("target", "_blank"));
                 this.setBody(labelModel);
             }
 
             @Override
             public void onClick() {
+                //DO NOTHING
             }
         };
-        return botao;
     }
 
     protected void addDropdownButton(ISupplier<Boolean> visibleSupplier) {
@@ -94,22 +98,26 @@ public class NewRequirementLink extends Panel {
         dropdownMenu.add($b.visibleIf(visibleSupplier));
         dropdownMenu.add($b.onConfigure(c -> {
             if (visibleSupplier.get()) {
-                for (RequirementData r : requirements.getObject()) {
-                    dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(r.getLabel()), r));
+                for (SingularRequirement r : getRequirementsStream().collect(Collectors.toList())) {
+                    String name = r.getName();
+                    dropdownMenu.adicionarMenu(id -> buildLink(id, $m.ofValue(name), r));
                 }
             }
         }));
         this.add(dropdownMenu);
     }
 
-    protected String buildURL(RequirementData requirement) {
-        return new NewRequirementUrlBuilder(url, moduleCod, requirement.getId()).getURL();
+    private Stream<SingularRequirement> getRequirementsStream() {
+        return singularModuleConfigurationBean.getRequirements().stream()
+                .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> req.getClass().isAssignableFrom(reqClass)));
+    }
+
+    protected String buildURL(SingularRequirement requirement) {
+        return new NewRequirementUrlBuilder(url, requirement.getDefinitionCod()).getURL(params);
     }
 
     @Override
     protected boolean getStatelessHint() {
         return true;
     }
-
-
 }

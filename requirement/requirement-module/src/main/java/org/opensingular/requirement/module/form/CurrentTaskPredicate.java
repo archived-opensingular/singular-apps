@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.form;
 
+import java.util.Optional;
+import java.util.function.Predicate;
+
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SInstance;
 import org.opensingular.requirement.module.service.RequirementUtil;
-
-import java.util.Optional;
-import java.util.function.Predicate;
 
 /**
  * Used to match Current Task, retrieved from ServerSInstanceProcessAwareService, and those

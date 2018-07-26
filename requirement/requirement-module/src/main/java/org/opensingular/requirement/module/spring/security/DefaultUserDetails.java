@@ -19,16 +19,21 @@
 package org.opensingular.requirement.module.spring.security;
 
 
-import org.opensingular.requirement.module.config.IServerContext;
-
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import org.opensingular.requirement.module.config.IServerContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 public class DefaultUserDetails implements SingularRequirementUserDetails {
 
+    public static final String ROLE_PREFIX = "ROLE_";
     private String displayName;
 
-    private List<SingularPermission> permissions = new ArrayList<>(0);
+    private List<SingularPermission> permissions;
 
     private IServerContext serverContext;
 
@@ -43,6 +48,9 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
 
     @Override
     public void addPermission(SingularPermission role) {
+        if(permissions == null){
+            permissions = new ArrayList<>();
+        }
         permissions.add(role);
     }
 
@@ -69,5 +77,16 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
     @Override
     public String getApplicantId() {
         return getUsername();
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return permissions != null
+                ? permissions
+                .parallelStream()
+                .map(SingularPermission::getSingularId)
+                .map(s -> new SimpleGrantedAuthority(ROLE_PREFIX + s))
+                .collect(Collectors.toList())
+                : new ArrayList<>();
     }
 }

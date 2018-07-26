@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
-import org.apache.commons.lang3.builder.EqualsBuilder;
-import org.apache.commons.lang3.builder.HashCodeBuilder;
-import org.opensingular.form.SType;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.LinkedHashSet;
 import java.util.List;
+
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
+import org.opensingular.form.SType;
 
 public class DocTable {
 

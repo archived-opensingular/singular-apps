@@ -26,8 +26,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.opensingular.requirement.commons.wicket.view.form.MockCustomConfirmLabelFlowConfirmModalPage;
-import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
 
 @RunWith(MockitoJUnitRunner.class)
 public class CustomConfirmLabelFlowConfirmModalTest extends WicketTestCase {

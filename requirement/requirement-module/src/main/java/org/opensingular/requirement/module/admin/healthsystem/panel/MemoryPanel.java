@@ -18,14 +18,6 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
-import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.markup.repeater.Item;
-import org.apache.wicket.markup.repeater.RefreshingView;
-import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.util.ListModel;
-import org.apache.wicket.util.lang.Bytes;
-
 import java.lang.management.GarbageCollectorMXBean;
 import java.lang.management.ManagementFactory;
 import java.lang.management.MemoryPoolMXBean;
@@ -34,7 +26,15 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import org.apache.wicket.markup.html.basic.Label;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.repeater.Item;
+import org.apache.wicket.markup.repeater.RefreshingView;
+import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.util.ListModel;
+import org.apache.wicket.util.lang.Bytes;
+
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 @SuppressWarnings("serial")
 public class MemoryPanel extends Panel {

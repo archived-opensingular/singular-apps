@@ -16,6 +16,8 @@
 
 package org.opensingular.requirement.commons;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.ITaskDefinition;
@@ -24,8 +26,6 @@ import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrat
 import org.opensingular.requirement.module.flow.builder.RequirementFlowBuilder;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
-
-import javax.annotation.Nonnull;
 
 
 @DefinitionInfo("fooFlowCommons")

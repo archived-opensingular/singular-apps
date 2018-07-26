@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.module.persistence.transformer;
 
-import org.hibernate.transform.ResultTransformer;
-import org.opensingular.flow.persistence.entity.Actor;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
+
+import org.hibernate.transform.ResultTransformer;
+import org.opensingular.flow.persistence.entity.Actor;
 
 public class FindActorByUserCodResultTransformer implements ResultTransformer {
 

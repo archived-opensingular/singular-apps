@@ -18,6 +18,12 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.sql.SQLException;
+import java.util.Calendar;
+import javax.inject.Inject;
+import javax.sql.rowset.serial.SerialBlob;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.flow.schedule.IScheduleData;
@@ -26,12 +32,6 @@ import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-
-import javax.inject.Inject;
-import javax.sql.rowset.serial.SerialBlob;
-import javax.transaction.Transactional;
-import java.sql.SQLException;
-import java.util.Calendar;
 
 public class AttachmentGCTest extends SingularCommonsBaseTest {
     @Inject

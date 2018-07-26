@@ -18,25 +18,16 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
-public class DefaultOngoingbox implements BoxDefinition {
-
-    @Override
-    public boolean appliesTo(IServerContext context) {
-        return ServerContext.REQUIREMENT.isSameContext(context);
-    }
-
+public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
     @Override
     public ItemBox build(IServerContext context) {
         final ItemBox acompanhamento = new ItemBox();
@@ -47,11 +38,15 @@ public class DefaultOngoingbox implements BoxDefinition {
     }
 
     @Override
-    public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.FALSE,
-                new ActionProviderBuilder()
-                        .addViewAction()
-                        .addHistoryAction());
+    protected Boolean mustEvalPermissions() {
+        return Boolean.FALSE;
+    }
+
+    @Override
+    protected void addActions(ActionProviderBuilder builder) {
+        builder
+                .addViewAction()
+                .addHistoryAction();
     }
 
     @Override
@@ -64,5 +59,4 @@ public class DefaultOngoingbox implements BoxDefinition {
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         return fields;
     }
-
 }

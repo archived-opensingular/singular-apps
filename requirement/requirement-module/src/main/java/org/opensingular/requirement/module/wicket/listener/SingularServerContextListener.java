@@ -20,47 +20,56 @@ package org.opensingular.requirement.module.wicket.listener;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.request.IRequestHandler;
-import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
+import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.requirement.module.wicket.error.Page500;
 
 /**
  * Listener para impedir que páginas de um contexto do wicket sejam acessadas por uma sessão
  * criada em outro contexto  wicket.
+ * <p>
+ * Esse Listener também é responsável pela segurança CSRF.
  */
-public class SingularServerContextListener extends AbstractRequestCycleListener implements Loggable {
+public class SingularServerContextListener extends CsrfPreventionRequestCycleListener implements Loggable {
+
+    public SingularServerContextListener() {
+        allowCSRF();
+        configureAcceptOrigins();
+    }
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
-        SingularServerConfiguration singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularServerConfiguration.class);
+        super.onRequestHandlerResolved(cycle, handler);
+        SingularModuleConfigurationBean singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularModuleConfigurationBean.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
             if (!userDetails.keepLoginThroughContexts()) {
-                HttpServletRequest request = (HttpServletRequest) cycle.getRequest().getContainerRequest();
-                IServerContext newContext = IServerContext.getContextFromRequest(request, singularServerConfiguration.getContexts());
+                IServerContext newContext = IServerContext.getContextFromRequest(cycle.getRequest(), singularServerConfiguration.getContexts());
                 IServerContext currentContext = SingularSession.get().getServerContext();
                 if (!currentContext.equals(newContext)) {
-                    resetLogin(cycle);
+                    resetLogin(RequestCycle.get());
                 }
             }
         }
@@ -76,7 +85,7 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
 
     private void redirect403(RequestCycle cycle) {
         cycle.getOriginalResponse().reset();
-        cycle.setResponsePage(new Error403Page());
+        cycle.setResponsePage(new Page403());
     }
 
     @Override
@@ -111,6 +120,36 @@ public class SingularServerContextListener extends AbstractRequestCycleListener 
 
     private boolean isPageRequest(IRequestHandler handler) {
         return handler instanceof IPageClassRequestHandler;
+    }
+
+    /**
+     * Method responsible for enabled or disabled the Crsf security.
+     * <p>
+     * A property will be used for this configuration.
+     */
+    private void allowCSRF() {
+        //IF CSRF Property is not present or is disabled, all request will be ALLOW.
+        if (!SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED)) {
+            setNoOriginAction(CsrfAction.ALLOW);
+            setConflictingOriginAction(CsrfAction.ALLOW);
+        }
+    }
+
+    /**
+     * Method responsible for include some accept origins.
+     * This will be used for allow some domains to send request for the server.
+     * <p>
+     * A property will be used for this configuration.
+     */
+    private void configureAcceptOrigins() {
+        SingularProperties.get().getPropertyOpt(SingularProperties.SINGULAR_CSRF_ACCEPT_ORIGINS)
+                .ifPresent(origins -> {
+                    for (String origin : origins.split(",")) {
+                        if(StringUtils.isNotBlank(origin)) {
+                            addAcceptedOrigin(origin.trim());
+                        }
+                    }
+                });
     }
 
 }

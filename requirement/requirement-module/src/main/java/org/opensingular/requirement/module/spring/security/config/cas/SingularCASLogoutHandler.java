@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.spring.security.config.cas;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutHandler;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 
 public class SingularCASLogoutHandler implements SingularLogoutHandler, Loggable {
 

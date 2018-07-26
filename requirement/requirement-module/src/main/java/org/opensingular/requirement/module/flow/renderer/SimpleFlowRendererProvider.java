@@ -16,10 +16,10 @@
 
 package org.opensingular.requirement.module.flow.renderer;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
-
-import javax.annotation.Nonnull;
 
 /**
  * It a provider of {@link IFlowRenderer} with very simple (ano not pretty) implementation.

@@ -19,21 +19,21 @@
 package org.opensingular.requirement.module.executor;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.requirement.module.BoxInfo;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.BoxController;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.BoxService;
-import org.opensingular.requirement.module.service.ModuleService;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Classe para abrigar a lógica de carga inicial
@@ -43,7 +43,7 @@ import java.util.List;
 public class BoxUpdaterExecutor {
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     @Inject
     private BoxService boxService;
@@ -55,7 +55,7 @@ public class BoxUpdaterExecutor {
     private ServerStartExecutorBean serverStartExecutorBean;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
     @PostConstruct
     public void init() {
@@ -69,12 +69,12 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (IServerContext context : singularServerConfiguration.getContexts()) {
-            List<BoxController> boxControllers = singularModuleConfiguration.getBoxControllerByContext(context);
-            for (BoxController boxController : boxControllers) {
-                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxController, context);
+            Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
+            for (BoxInfo boxInfo : boxInfos) {
+                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxInfo, context);
                 try {
                     BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
-                    boxController.setId(boxEntity.getCod().toString());
+                    boxInfo.setBoxId(boxEntity.getCod().toString());
                 } catch (Exception e) {
                     throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getItemBox().getName()), e);
                 }

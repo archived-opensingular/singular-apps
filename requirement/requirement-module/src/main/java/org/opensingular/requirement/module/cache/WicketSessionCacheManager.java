@@ -18,14 +18,14 @@
 
 package org.opensingular.requirement.module.cache;
 
+import java.util.Arrays;
+import java.util.Collection;
+import javax.inject.Inject;
+import javax.inject.Named;
+
 import org.apache.wicket.Session;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Arrays;
-import java.util.Collection;
 
 /**
  * Cache manager proxy para que o cache dure apenas a sessão http do usuário

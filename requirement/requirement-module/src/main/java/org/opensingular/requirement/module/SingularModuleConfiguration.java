@@ -22,109 +22,90 @@ package org.opensingular.requirement.module;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
+import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Named;
+import java.lang.reflect.Modifier;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * Configuration bean from which the current module
- * requirements configurations are made available.
- */
-@Named
+
 public class SingularModuleConfiguration {
 
-    private SingularModule               module;
-    private List<SingularRequirementRef> requirements;
-    private List<BoxController>          itemBoxes;
+    public static String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
 
-    @PostConstruct
-    private void init() throws IllegalAccessException, InstantiationException {
-        module = resolveModule();
-        RequirementConfiguration requirementConfiguration = resolveRequirements(module);
-        resolveWorkspace(module, requirementConfiguration);
+    private SingularModule module;
+    private WorkspaceRegistry workspaceRegistry;
+    private RequirementRegistry requirementRegistry;
+
+    public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
+        resolveModule();
+        resolveRequirements(applicationContext);
+        resolveWorkspace(applicationContext);
     }
 
-
-    private WorkspaceConfiguration resolveWorkspace(SingularModule module, RequirementConfiguration requirementConfiguration) {
-        WorkspaceConfiguration configuration = new WorkspaceConfiguration(requirementConfiguration);
-        module.workspace(configuration);
-        this.itemBoxes = configuration.getItemBoxes();
-        return configuration;
+    private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
+        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry(applicationContext);
+        module.workspace(workspaceRegistry);
+        module.defaultWorkspace(workspaceRegistry);
+        this.workspaceRegistry = workspaceRegistry;
     }
 
-    private RequirementConfiguration resolveRequirements(SingularModule module) {
-        RequirementConfiguration configuration = new RequirementConfiguration();
-        module.requirements(configuration);
-        this.requirements = configuration.getRequirements();
-        return configuration;
+    private void resolveRequirements(AnnotationConfigWebApplicationContext applicationContext) {
+        requirementRegistry = new RequirementRegistry(applicationContext);
+        module.requirements(requirementRegistry);
     }
 
-    private SingularModule resolveModule() throws IllegalAccessException, InstantiationException {
-        Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.get().findSubclassesOf(SingularModule.class);
-        if (modules.stream().count() != 1) {
+    private void resolveModule() throws IllegalAccessException, InstantiationException {
+        Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.get()
+                .findSubclassesOf(SingularModule.class)
+                .stream()
+                .filter(f -> !Modifier.isAbstract(f.getModifiers()) || !Modifier.isInterface(f.getModifiers()))
+                .collect(Collectors.toSet());
+
+        if ((long) modules.size() != 1) {
             throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
         }
-        SingularModule module = null;
-        if (modules.stream().findFirst().isPresent()) {
-            Optional<Class<? extends SingularModule>> first = modules.stream().findFirst();
-            if (first.isPresent()) {
-                module = first.get().newInstance();
-            }
+        Optional<Class<? extends SingularModule>> firstModule = modules.stream().findFirst();
+        if (firstModule.isPresent()) {
+            module = firstModule.get().newInstance();
         }
-        return module;
     }
 
     public SingularRequirement getRequirementById(Long id) {
-        return requirements.stream().filter(r -> Objects.equals(r.getId(), id)).map(SingularRequirementRef::getRequirement).findFirst().orElse(null);
-    }
-
-    /**
-     * runs
-     *
-     * @param context
-     * @return
-     */
-    public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
-        return getBoxControllerByContext(context)
+        return requirementRegistry.getRequirements()
                 .stream()
-                .map(boxController -> buildBoxDefinitionData(boxController, context))
-                .collect(Collectors.toList());
+                .filter(r -> Objects.equals(r.getDefinitionCod(), id))
+                .findFirst()
+                .orElse(null);
     }
 
-    public BoxDefinitionData buildBoxDefinitionData(BoxController boxController, IServerContext context) {
-        BoxDefinition factory = boxController.getBoxDefinition();
-        ItemBox itemBox = factory.build(context);
-        itemBox.setFieldsDatatable(factory.getDatatableFields());
-        itemBox.setId(boxController.getBoxId());
-        return new BoxDefinitionData(itemBox, boxController.getRequirementsData());
+    public Set<BoxInfo> getBoxByContext(IServerContext context) {
+        return workspaceRegistry.get(context).map(WorkspaceConfiguration::getBoxInfos).orElse(Collections.emptySet());
     }
 
-    public List<BoxController> getBoxControllerByContext(IServerContext context) {
-        return itemBoxes
+    public Optional<BoxInfo> getBoxByBoxId(String boxId) {
+        return workspaceRegistry.listConfigs()
                 .stream()
-                .filter(boxCofiguration -> boxCofiguration.getBoxDefinition().appliesTo(context))
-                .collect(Collectors.toList());
+                .map(WorkspaceConfiguration::getBoxInfos)
+                .flatMap(Collection::stream)
+                .filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }
 
-    public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
-        return itemBoxes.stream().filter(b -> b.getBoxId().equals(boxId)).findFirst();
-    }
-
-
-    public List<SingularRequirementRef> getRequirements() {
-        return requirements;
+    public List<SingularRequirement> getRequirements() {
+        return requirementRegistry.getRequirements();
     }
 
     public SingularModule getModule() {
         return module;
+    }
+
+    public Set<IServerContext> getContexts() {
+        return workspaceRegistry.listContexts();
     }
 }

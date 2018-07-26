@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.opensingular.lib.commons.context.SingularContext;
-import org.opensingular.lib.commons.context.SingularSingletonStrategy;
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
-
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import org.opensingular.lib.commons.context.SingularContext;
+import org.opensingular.lib.commons.context.SingularSingletonStrategy;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 
 
 public class SingularServerInitializerProvider {

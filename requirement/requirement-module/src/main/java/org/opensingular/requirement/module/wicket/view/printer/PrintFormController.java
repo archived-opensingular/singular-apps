@@ -1,10 +1,18 @@
 package org.opensingular.requirement.module.wicket.view.printer;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Optional;
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.box.action.defaults.ExtratoAction;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.service.ExtratoGeneratorService;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
@@ -13,14 +21,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.util.Optional;
 
 @RestController
 public class PrintFormController implements Loggable {
@@ -32,7 +32,7 @@ public class PrintFormController implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfigurationBean singularServerConfiguration;
 
 
     /**

@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.service;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
-import javax.annotation.Nonnull;
 
 /**
  * Implementação padrão de {@link RequirementService}. Não acrescenta nenhuma funcionaldiade ao serviço.
