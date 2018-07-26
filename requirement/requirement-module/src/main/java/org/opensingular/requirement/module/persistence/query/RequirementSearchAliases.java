@@ -35,6 +35,32 @@ import org.opensingular.requirement.module.persistence.entity.form.QRequirementD
 import org.opensingular.requirement.module.persistence.entity.form.QRequirementEntity;
 
 public class RequirementSearchAliases {
+
+    public static final String COD_REQUIREMENT = "codRequirement";
+    public static final String DESCRIPTION = "description";
+    public static final String SITUATION = "situation";
+    public static final String SOLICITANTE = "solicitante";
+    public static final String TASK_NAME = "taskName";
+    public static final String TASK_TYPE = "taskType";
+    public static final String PROCESS_NAME = "processName";
+    public static final String CREATION_DATE = "creationDate";
+    public static final String TYPE = "type";
+    public static final String PROCESS_TYPE = "processType";
+    public static final String SITUATION_BEGIN_DATE = "situationBeginDate";
+    public static final String TASK_INSTANCE_ID = "taskInstanceId";
+    public static final String PROCESS_BEGIN_DATE = "processBeginDate";
+    public static final String EDITION_DATE = "editionDate";
+    public static final String FLOW_INSTANCE_ID = "flowInstanceId";
+    public static final String ROOT_REQUIREMENT = "rootRequirement";
+    public static final String PARENT_REQUIREMENT = "parentRequirement";
+    public static final String VERSION_STAMP = "versionStamp";
+    public static final String COD_USUARIO_ALOCADO = "codUsuarioAlocado";
+    public static final String NOME_USUARIO_ALOCADO = "nomeUsuarioAlocado";
+    public static final String MODULE_COD = "moduleCod";
+    public static final String MODULE_CONTEXT = "moduleContext";
+    public static final String REQUIREMENT_DEFINITION_ID = "requirementDefinitionId";
+    public static final String TASK_ID = "taskId";
+
     public QRequirementEntity           requirement                   = new QRequirementEntity("requirement");
     public QApplicantEntity             applicantEntity               = new QApplicantEntity("applicantEntity");
     public QFlowInstanceEntity          flowInstance                  = new QFlowInstanceEntity("flowInstance");

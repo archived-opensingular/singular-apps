@@ -18,30 +18,24 @@
 
 package org.opensingular.requirement.module.provider;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import javax.annotation.Nonnull;
-
-import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.ActionProvider;
-import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.BoxItemDataProvider;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
+import org.opensingular.requirement.module.wicket.box.BoxItemDataFilter;
+import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final Boolean evalPermissions;
@@ -49,7 +43,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final RequirementService<?, ?> requirementService;
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
-    private final List<IConsumer<List<Map<String, Serializable>>>> filters = new ArrayList<>();
+    private final Set<BoxItemDataFilter> filters = new HashSet<>();
 
     RequirementBoxItemDataProvider(Boolean evalPermissions, ActionProvider actionProvider,
                                    RequirementService<?, ?> requirementService) {
@@ -67,7 +61,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         } else {
             requirements = requirementService.quickSearchMap(filter, extenders);
         }
-        filters.forEach(x -> x.accept(requirements));
+        filters.forEach(f -> f.doFilter(requirements));
         return requirements;
     }
 
@@ -105,12 +99,12 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return this;
     }
 
-    public RequirementBoxItemDataProvider addFilter(@Nonnull IConsumer<List<Map<String, Serializable>>> filter) {
+    public RequirementBoxItemDataProvider addFilter(@Nonnull BoxItemDataFilter filter) {
         filters.add(filter);
         return this;
     }
 
-    public RequirementBoxItemDataProvider addFilters(@Nonnull List<IConsumer<List<Map<String, Serializable>>>> filters) {
+    public RequirementBoxItemDataProvider addFilters(@Nonnull List<BoxItemDataFilter> filters) {
         filters.forEach(this::addFilter);
         return this;
     }
@@ -124,4 +118,18 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         tasks.forEach(this::addTask);
         return this;
     }
+
+    /**
+     * Method for include a dateFormatter in the filters.
+     * This method should be used to change the formatter of the date, or include more than one.
+     *
+     * @param dateFormatter String with the date Formatter.
+     * @param alias         The alias of the date columns that the formatter must changed.
+     * @return <code>this</code>
+     */
+    public RequirementBoxItemDataProvider addDateFilters(String dateFormatter, String... alias) {
+        filters.add(new DateBoxItemDataFilter(dateFormatter, alias));
+        return this;
+    }
+
 }
