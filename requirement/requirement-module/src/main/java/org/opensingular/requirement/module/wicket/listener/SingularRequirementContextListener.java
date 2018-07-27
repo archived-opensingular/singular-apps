@@ -18,22 +18,18 @@
 
 package org.opensingular.requirement.module.wicket.listener;
 
-import javax.servlet.http.HttpServletRequest;
-
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.wicket.core.request.handler.IPageClassRequestHandler;
 import org.apache.wicket.core.request.handler.PageProvider;
 import org.apache.wicket.core.request.handler.RenderPageRequestHandler;
 import org.apache.wicket.protocol.http.PageExpiredException;
 import org.apache.wicket.request.IRequestHandler;
-import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
 import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -52,12 +48,7 @@ import org.opensingular.requirement.module.wicket.error.Page500;
  * <p>
  * Esse Listener também é responsável pela segurança CSRF.
  */
-public class SingularServerContextListener extends CsrfPreventionRequestCycleListener implements Loggable {
-
-    public SingularServerContextListener() {
-        allowCSRF();
-        configureAcceptOrigins();
-    }
+public class SingularRequirementContextListener extends SingularCsrfPreventionRequestCycleListener implements Loggable {
 
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
@@ -69,7 +60,7 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
                 IServerContext newContext = IServerContext.getContextFromRequest(cycle.getRequest(), singularServerConfiguration.getContexts());
                 IServerContext currentContext = SingularSession.get().getServerContext();
                 if (!currentContext.equals(newContext)) {
-                    resetLogin(RequestCycle.get());
+                    resetLogin(cycle);
                 }
             }
         }
@@ -122,34 +113,5 @@ public class SingularServerContextListener extends CsrfPreventionRequestCycleLis
         return handler instanceof IPageClassRequestHandler;
     }
 
-    /**
-     * Method responsible for enabled or disabled the Crsf security.
-     * <p>
-     * A property will be used for this configuration.
-     */
-    private void allowCSRF() {
-        //IF CSRF Property is not present or is disabled, all request will be ALLOW.
-        if (!SingularProperties.get().isTrue(SingularProperties.SINGULAR_CSRF_ENABLED)) {
-            setNoOriginAction(CsrfAction.ALLOW);
-            setConflictingOriginAction(CsrfAction.ALLOW);
-        }
-    }
-
-    /**
-     * Method responsible for include some accept origins.
-     * This will be used for allow some domains to send request for the server.
-     * <p>
-     * A property will be used for this configuration.
-     */
-    private void configureAcceptOrigins() {
-        SingularProperties.get().getPropertyOpt(SingularProperties.SINGULAR_CSRF_ACCEPT_ORIGINS)
-                .ifPresent(origins -> {
-                    for (String origin : origins.split(",")) {
-                        if(StringUtils.isNotBlank(origin)) {
-                            addAcceptedOrigin(origin.trim());
-                        }
-                    }
-                });
-    }
 
 }
