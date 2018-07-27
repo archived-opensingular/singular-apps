@@ -18,23 +18,6 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -51,6 +34,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.persistence.FormKey;
+import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
@@ -90,7 +74,24 @@ import org.springframework.core.ResolvableType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
+
+import static org.opensingular.flow.core.TaskInstance.*;
 
 @Transactional
 public abstract class RequirementService implements Loggable {
@@ -131,6 +132,10 @@ public abstract class RequirementService implements Loggable {
     @Inject
     private ModuleService moduleService;
 
+
+    @Inject
+    private FormVersionDAO formVersionDAO;
+
     /**
      * FOR INTERNAL USE ONLY,
      * MUST NOT BE EXPOSED BY SUBCLASSES
@@ -141,6 +146,7 @@ public abstract class RequirementService implements Loggable {
         return singularUserDetails.get();
     }
 
+    //TODO reqdef
 //    /**
 //     * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
 //     */
@@ -172,11 +178,11 @@ public abstract class RequirementService implements Loggable {
 //    }
 
     public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinitionForRequirementId(Long requirementId) {
-        String   key         = getRequirementDefinitionByRequirementId(requirementId).getKey();
+        String key = getRequirementDefinitionByRequirementId(requirementId).getKey();
         return lookupRequirementDefinition(key);
     }
 
-    public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinition(String  requirementDefinitionKey) {
+    public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinition(String requirementDefinitionKey) {
         String[] definitions = ApplicationContextProvider.get().getBeanNamesForType(ResolvableType.forClass(RequirementDefinition.class));
         for (String definitionName : definitions) {
             RequirementDefinition<?> definition = (RequirementDefinition<?>) ApplicationContextProvider.get().getBean(definitionName);
@@ -187,8 +193,8 @@ public abstract class RequirementService implements Loggable {
         throw new SingularRequirementException(String.format("Could not corresponding definition for definition key %s", requirementDefinitionKey));
     }
 
-    public <RI extends RequirementInstance> RI loadRequirementInstance(Long requirementId){
-        return (RI)lookupRequirementDefinitionForRequirementId(requirementId).loadRequirement(requirementId);
+    public <RI extends RequirementInstance> RI loadRequirementInstance(Long requirementId) {
+        return (RI) lookupRequirementDefinitionForRequirementId(requirementId).loadRequirement(requirementId);
     }
 
     /**
@@ -588,9 +594,28 @@ public abstract class RequirementService implements Loggable {
     @Nonnull
     public Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
                                                             @Nonnull Class<? extends SType<?>> typeClass) {
+        return findLastFormInstanceByType(requirement, RequirementUtil.getTypeName(typeClass));
+    }
+
+
+    @Nonnull
+    public Optional<SIComposite> findCurrentDraftForType(RequirementInstance instance, String formName) {
+        return Optional
+                .ofNullable(formVersionDAO.findCurrentDraftFormVersionEntityForType(instance.getCod(), formName))
+                .map(getFormRequirementService()::getSInstance)
+                .map(i -> (SIComposite)i);
+    }
+
+
+    /**
+     * Procura na petição a versão mais recente do formulário do tipo informado.
+     */
+    @Nonnull
+    public Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
+                                                            @Nonnull String typeName) {
         //TODO Verificar se esse método não está redundante com FormRequirementService.findLastFormRequirementEntityByType
         Objects.requireNonNull(requirement);
-        return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
+        return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeName, requirement.getCod())
                 .map(FormVersionHistoryEntity::getFormVersion)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
@@ -608,7 +633,10 @@ public abstract class RequirementService implements Loggable {
 
     /**
      * Procura na petição o formulário mais recente dentre os tipos informados.
+     *
+     * @deprecated qual o sentido desse método? Me parece uma regra de negócio de algum sistema embutida na API
      */
+    @Deprecated
     @Nonnull
     protected Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
                                                                @Nonnull Collection<Class<? extends SType<?>>> typesClass) {
@@ -650,8 +678,7 @@ public abstract class RequirementService implements Loggable {
         requirement.setFlowInstance(newFlowInstance);
     }
 
-    //TODO vinicius.nunes LENTO
-    @Deprecated
+
     public boolean containChildren(Long codRequirement) {
         return requirementDAO.containChildren(codRequirement);
     }
@@ -679,7 +706,6 @@ public abstract class RequirementService implements Loggable {
     }
 
 
-
     /**
      * Persiste se necessário o RequirementDefinitionEntity
      * e atualiza no ref o valor que está em banco.
@@ -688,10 +714,11 @@ public abstract class RequirementService implements Loggable {
      */
     public void saveOrUpdateRequirementDefinition(RequirementDefinition requirementDefinition) {
         Class<? extends SType> mainForm = requirementDefinition.getMainForm();
-        SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
+        SType<?>               type     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
+        FormTypeEntity         formType = formTypeService.findFormTypeEntity(type);
 
         RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirementDefinition, formType, moduleService.getModule());
         requirementDefinitionDAO.save(requirementDefinitionEntity);
     }
+
 }

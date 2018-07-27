@@ -28,7 +28,6 @@ import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.form.SingularFormException;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -89,32 +88,6 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     public boolean isFlowInstanceCreated() {
         return getEntity().getFlowInstanceEntity() != null;
-    }
-
-    /**
-     *
-     * @return
-     * returns requirement main form last version.
-     */
-    @Nonnull
-    public SIComposite getForm() {
-        if (mainForm == null) {
-            mainForm = requirementService.getMainFormAsInstance(getEntity());
-        }
-        return mainForm;
-    }
-
-    /**
-     * O expected type pode ser deduzido pela definição da instancia.
-     * @param expectedType
-     * @param <I>
-     * @param <K>
-     * @return
-     */
-    @Deprecated
-    @Nonnull
-    public <I extends SInstance, K extends SType<? extends I>> I getForm(@Nonnull Class<K> expectedType) {
-        return FormRequirementService.checkIfExpectedType(getForm(), expectedType);
     }
 
 
@@ -228,13 +201,61 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return getRequirementDefinition().send((SELF) this, codSubmitterActor);
     }
 
+    /**
+     * @return returns requirement main form last version.
+     */
+    @Nonnull
+    public SIComposite getForm() {
+        if (mainForm == null) {
+            mainForm = requirementService.getMainFormAsInstance(getEntity());
+        }
+        return mainForm;
+    }
+
+    /**
+     * Return the given form type last version
+     *
+     * @param formName
+     * @return
+     */
+    public SIComposite getForm(@Nonnull String formName) {
+        return requirementService.findLastFormInstanceByType(this, formName)
+                .orElseThrow(() -> new SingularRequirementException(String.format("No form found for type '%s'", formName)));
+    }
+
+    /**
+     * Return the given form type last version
+     *
+     * @param form
+     * @return
+     */
+    public SIComposite getForm(@Nonnull Class<? extends SType<?>> form) {
+        return requirementService.findLastFormInstanceByType(this, form)
+                .orElseThrow(() -> new SingularRequirementException(String.format("No form found for type '%s'", form.getName())));
+    }
+
+
+    /**
+     * Returns the current open draft for the given type or creates a new transient one if there is no current draft.
+     *
+     * @param formName
+     * @return
+     */
+    public SIComposite getDraft(@Nonnull String formName) {
+        return requirementService.findCurrentDraftForType(this, formName)
+                .orElseThrow(() -> new SingularRequirementException(String.format("No form draft found for type '%s'", formName)));
+    }
+
+    public SIComposite getDraft(@Nonnull Class<? extends SType<?>> form) {
+        return getDraft(RequirementUtil.getTypeName(form));
+    }
 
     public SInstance newForm() {
         return newForm(getRequirementDefinition().getMainForm());
     }
 
     public SInstance newForm(Class<? extends SType<?>> form) {
-        return newForm(formRequirementService.loadRefType(form));
+        return newForm(RequirementUtil.getTypeName(form));
     }
 
     private SInstance newForm(RefType refType) {
