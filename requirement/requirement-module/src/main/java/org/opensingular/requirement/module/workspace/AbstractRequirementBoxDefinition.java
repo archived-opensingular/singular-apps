@@ -3,6 +3,7 @@ package org.opensingular.requirement.module.workspace;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
+import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
 
 import javax.inject.Inject;
 
@@ -15,12 +16,25 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
      */
     @Inject
     private RequirementBoxItemDataProviderFactory requirementBoxItemDataProviderFactory;
-    
+
     @Override
     public RequirementBoxItemDataProvider getDataProvider() {
         ActionProviderBuilder builder = new ActionProviderBuilder();
         addActions(builder);
-        return requirementBoxItemDataProviderFactory.create(mustEvalPermissions(), builder);
+        RequirementBoxItemDataProvider requirementBoxItemDataProvider = requirementBoxItemDataProviderFactory.create(mustEvalPermissions(), builder);
+        addDateFilters(requirementBoxItemDataProvider);
+        return requirementBoxItemDataProvider;
+    }
+
+    /**
+     * This method is use for include the default data formatter.
+     * <p>
+     * Note: This method could be overriding for change the date format or the date coluns.
+     *
+     * @param requirementBoxItemDataProvider The RequirementBoxItemDataProvider.
+     */
+    protected void addDateFilters(RequirementBoxItemDataProvider requirementBoxItemDataProvider) {
+        requirementBoxItemDataProvider.addFilter(new DateBoxItemDataFilter());
     }
 
     /**
@@ -31,6 +45,7 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
 
     /**
      * Add actions to the providerBuilder
+     *
      * @param builder to add actions
      */
     protected abstract void addActions(ActionProviderBuilder builder);
