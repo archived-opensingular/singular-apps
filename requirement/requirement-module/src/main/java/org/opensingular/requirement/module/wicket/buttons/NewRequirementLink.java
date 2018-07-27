@@ -109,7 +109,7 @@ public class NewRequirementLink extends Panel {
 
     private Stream<RequirementDefinition> getRequirementsStream() {
         return singularModuleConfigurationBean.getRequirements().stream()
-                .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> req.getClass().isAssignableFrom(reqClass)));
+                .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> reqClass.isAssignableFrom(req.getClass())));
     }
 
     protected String buildURL(RequirementDefinition requirement) {
