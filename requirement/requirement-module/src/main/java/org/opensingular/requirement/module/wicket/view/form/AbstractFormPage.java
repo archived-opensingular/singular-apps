@@ -64,6 +64,7 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
@@ -309,8 +310,13 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     private RI loadRequirement() {
         RI             requirement;
         Optional<Long> requirementId = config.getRequirementId();
+        Optional<String> requirementDefinitionKey = config.getRequirementDefinitionKey();
         if (requirementId.isPresent()) {
-            requirement = (RI) getRequirementDefinition().loadRequirement(config.getRequirementId().get());
+            if (requirementDefinitionKey.isPresent()) {
+                requirement = (RI) getRequirementDefinition().loadRequirement(config.getRequirementId().get());
+            }  else {
+                requirement = (RI) requirementService.loadRequirementInstance(requirementId.get());
+            }
         } else {
             RI             parentRequirement   = null;
             Optional<Long> parentRequirementId = config.getParentRequirementId();
@@ -325,7 +331,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected RequirementDefinition getRequirementDefinition() {
-        return requirementService.lookupRequirementDefinition(getConfig().getRequirementDefinitionKey().orElse(null));
+        return requirementService.lookupRequirementDefinition(getConfig()
+                .getRequirementDefinitionKey()
+                .orElseThrow(() -> new SingularRequirementException("Could not identify the RequirementDefinition, requirement definition key or requirement id must be provided.")));
     }
 
     private Optional<FormRequirementEntity> getFormRequirementEntity(RI requirement) {

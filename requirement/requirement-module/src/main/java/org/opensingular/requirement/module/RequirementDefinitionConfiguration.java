@@ -23,11 +23,12 @@ import org.opensingular.form.SType;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
+import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
 public class RequirementDefinitionConfiguration {
 
 
-    private Class<? extends AbstractFormPage<?>> executionPage;
+    private Class<? extends AbstractFormPage<?>> executionPage = FormPage.class;
     private Class<? extends SType<?>>               mainForm;
     private Class<? extends FlowDefinition>      flowDefition;
     private String                               name;

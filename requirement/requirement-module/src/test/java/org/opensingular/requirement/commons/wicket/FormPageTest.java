@@ -26,6 +26,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
 import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SFormUtil;
@@ -181,7 +182,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     }
 
     public RequirementInstance getRequirementFrom(FormPage p) {
-        return (RequirementInstance) new Mirror().on(p).invoke().method("getRequirementEntity").withoutArgs();
+        return (RequirementInstance) ((IModel) new Mirror().on(p).invoke().method("getRequirementModel").withoutArgs()).getObject();
     }
 
     @WithUserDetails("vinicius.nunes")

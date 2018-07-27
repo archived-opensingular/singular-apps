@@ -29,7 +29,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -91,24 +90,6 @@ import org.springframework.core.ResolvableType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import static org.opensingular.flow.core.TaskInstance.*;
 import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
@@ -191,15 +172,8 @@ public abstract class RequirementService implements Loggable {
 //    }
 
     public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinitionForRequirementId(Long requirementId) {
-        String   key         = getRequirementDefinition(requirementId).getKey();
-        String[] definitions = ApplicationContextProvider.get().getBeanNamesForType(ResolvableType.forClass(RequirementDefinition.class));
-        for (String definitionName : definitions) {
-            RequirementDefinition<?> definition = (RequirementDefinition<?>) ApplicationContextProvider.get().getBean(definitionName);
-            if (definition.getKey().equals(key)) {
-                return (RD) definition;
-            }
-        }
-        throw new SingularRequirementException(String.format("Could not corresponding definition for requirement instance id: %s and definition key %s", requirementId, key));
+        String   key         = getRequirementDefinitionByRequirementId(requirementId).getKey();
+        return lookupRequirementDefinition(key);
     }
 
     public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinition(String  requirementDefinitionKey) {
@@ -691,8 +665,8 @@ public abstract class RequirementService implements Loggable {
         requirement.setDescription(description);
     }
 
-    public RequirementDefinitionEntity getRequirementDefinition(Long requirementId) {
-        return requirementDefinitionDAO.findOrException(requirementId);
+    public RequirementDefinitionEntity getRequirementDefinitionByRequirementId(Long requirementId) {
+        return requirementDefinitionDAO.findRequirementDefinitionByRequrimentId(requirementId);
     }
 
     public RequirementDefinitionEntity getRequirementDefinition(String requirementDefinitionKey) {
