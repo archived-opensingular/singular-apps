@@ -23,13 +23,11 @@ import org.apache.wicket.request.Request;
 import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -120,8 +118,8 @@ public interface IServerContext extends Serializable {
      */
     default List<String> getPublicUrls() {
         ArrayList<String> urls = new ArrayList<>();
-        urls.add(getUrlPath() + "/wicket/resource/*");
-        urls.add(getUrlPath() + "/public/*");
+        urls.add("/wicket/resource/*");
+        urls.add("/public/*");
         return urls;
     }
 

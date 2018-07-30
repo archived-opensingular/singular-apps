@@ -154,7 +154,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
     public abstract String getCASLogoutURL();
 
     protected final String getExcludeUrlRegex() {
-        return Joiner.on(",").join(singularModuleConfiguration.getPublicUrls()).replaceAll("\\*", ".*");
+        return Joiner.on(",").join(getDefaultPublicUrls()).replaceAll("\\*", ".*");
     }
 
 }

@@ -26,10 +26,8 @@ import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -45,19 +43,10 @@ public class SingularModuleConfiguration {
      */
     private WorkspaceRegistry workspaceRegistry;
 
-    /**
-     * TODO, mover para algum lugar melhor...
-     */
-    private List<String> publicUrls = new ArrayList<>();
-
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
         resolveRequirements(applicationContext);
         resolveWorkspace(applicationContext);
-
-        for (IServerContext ctx : workspaceRegistry.listContexts()) {
-            this.publicUrls.addAll(ctx.getPublicUrls());
-        }
     }
 
     private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
@@ -105,17 +94,8 @@ public class SingularModuleConfiguration {
                 .filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }
 
-
     public SingularModule getModule() {
         return module;
-    }
-
-    public List<String> getPublicUrls() {
-        return publicUrls;
-    }
-
-    public void addPublicUrl(String url) {
-        publicUrls.add(url);
     }
 
     public String getModuleCod() {

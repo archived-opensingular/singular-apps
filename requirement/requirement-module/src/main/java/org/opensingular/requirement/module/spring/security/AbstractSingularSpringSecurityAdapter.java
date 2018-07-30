@@ -24,6 +24,7 @@ import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
 import javax.inject.Inject;
+import java.util.stream.Collectors;
 
 public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityConfigurerAdapter {
     @Inject
@@ -37,6 +38,9 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
     protected abstract IServerContext getContext();
 
     public String[] getDefaultPublicUrls() {
-        return singularModuleConfiguration.getPublicUrls().toArray(new String[]{});
+        return getContext().getPublicUrls()
+                .stream()
+                .map(publicPath -> getContext().getUrlPath() + publicPath)
+                .collect(Collectors.toList()).toArray(new String[]{});
     }
 }

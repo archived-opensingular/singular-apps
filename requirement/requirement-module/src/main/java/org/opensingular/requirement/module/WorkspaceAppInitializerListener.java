@@ -11,9 +11,7 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
 
 
 /**
@@ -48,9 +46,6 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
             }
         }
 
-        for (String url : publicUrls()) {
-            singularModuleConfiguration.addPublicUrl(url);
-        }
         servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG, singularModuleConfiguration);
     }
 
@@ -79,18 +74,4 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
     protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClassByContext(IServerContext context) {
         return context.getSpringSecurityConfigClass();
     }
-
-    /**
-     * Lista as UrlsPublicas padrões
-     */
-    protected String[] publicUrls() {
-        List<String> urls = new ArrayList<>();
-        urls.add("/rest/*");
-        urls.add("/resources/*");
-        urls.add("/public/*");
-        urls.add("/index.html");
-        return urls.toArray(new String[0]);
-    }
-
-
 }

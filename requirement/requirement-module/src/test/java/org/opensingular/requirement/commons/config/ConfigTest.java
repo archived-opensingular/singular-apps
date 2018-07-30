@@ -25,7 +25,6 @@ import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 
 import javax.inject.Inject;
-import javax.servlet.ServletException;
 
 public class ConfigTest extends SingularCommonsBaseTest {
 
@@ -35,7 +34,6 @@ public class ConfigTest extends SingularCommonsBaseTest {
     @Test
     public void checkServletParams() {
         Assert.assertEquals(singularServerConfiguration.getContexts().size(), 3);
-        Assert.assertNotNull(singularServerConfiguration.getPublicUrls());
         Assert.assertEquals(singularServerConfiguration.getModuleCod(), CommonsInitializerMock.TESTE);
     }
 }
