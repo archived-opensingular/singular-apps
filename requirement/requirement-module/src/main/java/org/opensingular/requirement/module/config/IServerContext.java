@@ -28,6 +28,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -36,11 +38,11 @@ import java.util.List;
  */
 public interface IServerContext extends Serializable {
 
-    static IServerContext getContextFromRequest(Request request, IServerContext[] contexts) {
+    static IServerContext getContextFromRequest(Request request, Collection<IServerContext> contexts) {
         return getContextFromRequest((HttpServletRequest) request.getContainerRequest(), contexts);
     }
 
-    static IServerContext getContextFromName(String name, IServerContext[] contexts) {
+    static IServerContext getContextFromName(String name, Collection<IServerContext> contexts) {
         for (IServerContext ctx : contexts) {
             if (name.equals(ctx.getName())) {
                 return ctx;
@@ -49,7 +51,7 @@ public interface IServerContext extends Serializable {
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
-    static IServerContext getContextFromRequest(HttpServletRequest request, IServerContext[] contexts) {
+    static IServerContext getContextFromRequest(HttpServletRequest request, Collection<IServerContext> contexts) {
         String contextPath = request.getContextPath();
         String context = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {

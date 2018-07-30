@@ -30,7 +30,7 @@ import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
@@ -53,7 +53,7 @@ public class SingularRequirementContextListener extends SingularCsrfPreventionRe
     @Override
     public void onRequestHandlerResolved(RequestCycle cycle, IRequestHandler handler) {
         super.onRequestHandlerResolved(cycle, handler);
-        SingularModuleConfigurationBean singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularModuleConfigurationBean.class);
+        SingularModuleConfiguration singularServerConfiguration = SingularRequirementApplication.get().getApplicationContext().getBean(SingularModuleConfiguration.class);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
             if (!userDetails.keepLoginThroughContexts()) {
