@@ -29,23 +29,22 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.DefaultBoxInfo;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.workspace.DefaultDraftbox;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
+import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.opensingular.requirement.module.workspace.DefaultDraftbox;
 import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.Assert.assertThat;
-import static org.mockito.Mockito.*;
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.mock;
@@ -61,7 +60,7 @@ public class BoxDefinitionDataServiceTest {
     private AuthorizationService authorizationService;
 
     @Mock
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private BoxService boxService;
 
     @InjectMocks
     private DefaultModuleService moduleService;
@@ -99,7 +98,7 @@ public class BoxDefinitionDataServiceTest {
 
         BoxController boxController = new BoxController(new DefaultBoxInfo(DefaultDraftbox.class), boxItemDataProvider);
 
-        when(singularModuleConfiguration.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
+        when(boxService.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
 
         setUpApplicationContextMock();
 

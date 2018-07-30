@@ -20,7 +20,7 @@ package org.opensingular.requirement.module.executor;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.requirement.module.BoxInfo;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.ModuleService;
@@ -32,7 +32,6 @@ import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -43,7 +42,7 @@ import java.util.Set;
 public class BoxUpdaterExecutor {
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
     private BoxService boxService;
@@ -53,9 +52,6 @@ public class BoxUpdaterExecutor {
 
     @Inject
     private ServerStartExecutorBean serverStartExecutorBean;
-
-    @Inject
-    private SingularModuleConfigurationBean singularServerConfiguration;
 
     @PostConstruct
     public void init() {
@@ -68,10 +64,10 @@ public class BoxUpdaterExecutor {
      */
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
-        for (IServerContext context : singularServerConfiguration.getContexts()) {
+        for (IServerContext context : singularModuleConfiguration.getContexts()) {
             Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
             for (BoxInfo boxInfo : boxInfos) {
-                BoxDefinitionData boxData = singularModuleConfiguration.buildBoxDefinitionData(boxInfo, context);
+                BoxDefinitionData boxData = boxService.buildBoxDefinitionData(boxInfo, context);
                 try {
                     BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
                     boxInfo.setBoxId(boxEntity.getCod().toString());
