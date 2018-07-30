@@ -29,6 +29,7 @@ import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
+import org.opensingular.form.SType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
 import org.opensingular.form.persistence.dao.AttachmentDao;
@@ -51,6 +52,7 @@ import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceH
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
+import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
@@ -64,6 +66,9 @@ import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
 import org.opensingular.requirement.module.flow.SingularServerFlowConfigurationBean;
+import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
+import org.opensingular.requirement.module.form.DefinitionsPackageProvider;
+import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.form.SingularServerDocumentFactory;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
@@ -116,6 +121,9 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
+import java.lang.reflect.Modifier;
+import java.util.List;
+import java.util.stream.Collectors;
 
 
 @SuppressWarnings("rawtypes")
@@ -421,6 +429,41 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
         return new SingularServerFlowConfigurationBean();
     }
 
+    @Bean
+    public DefinitionsPackageProvider definitionsPackageProvider(){
+        String[] packages = lookupFlowDefinitionackages();
+        return () -> packages;
+    }
+
+    /**
+     * Procuta todas as definições de flow
+     * TODO Vinicius ainda precisamos disso?
+     */
+    protected String[] lookupFlowDefinitionackages() {
+        return SingularClassPathScanner.get()
+                .findSubclassesOf(RequirementFlowDefinition.class)
+                .stream()
+                .map(c -> c.getPackage().getName())
+                .distinct().toArray(String[]::new);
+    }
+
+    @Bean
+    public FormTypesProvider formTypesProvider(){
+        List<Class<? extends SType<?>>> formTypes = lookupFormTypes();
+        return () -> formTypes;
+    }
+
+    /**
+     * Procura todos os STypes do ClassPath
+     */
+    protected List<Class<? extends SType<?>>> lookupFormTypes() {
+        return SingularClassPathScanner.get()
+                .findSubclassesOf(SType.class)
+                .stream()
+                .filter(f -> !Modifier.isAbstract(f.getModifiers()))
+                .map(i -> (Class<? extends SType<?>>) i)
+                .collect(Collectors.toList());
+    }
     /**
      * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
      * no {@link org.springframework.beans.factory.BeanFactory}
@@ -434,4 +477,5 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
                 .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
         configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
     }
+
 }

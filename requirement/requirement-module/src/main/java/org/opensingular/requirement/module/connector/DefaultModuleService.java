@@ -45,6 +45,7 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
+import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
@@ -104,6 +105,9 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Inject
     private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
+
+    @Inject
+    private FormTypesProvider formTypesProvider;
 
     @Override
     public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
@@ -242,7 +246,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @SuppressWarnings("unchecked")
     private void addForms(BoxConfigurationData boxConfigurationMetadata) {
-        for (Class<? extends SType<?>> formClass : singularModuleConfiguration.getFormTypes()) {
+        for (Class<? extends SType<?>> formClass : formTypesProvider.get()) {
             String name = SFormUtil.getTypeName(formClass);
             Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
             if (sTypeOptional.isPresent()) {

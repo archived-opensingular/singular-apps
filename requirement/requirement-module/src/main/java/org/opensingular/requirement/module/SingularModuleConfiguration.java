@@ -19,11 +19,9 @@
 package org.opensingular.requirement.module;
 
 
-import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -44,8 +42,6 @@ public class SingularModuleConfiguration {
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
     private RequirementRegistry requirementRegistry;
-    private List<Class<? extends SType<?>>> formTypes;
-    private String[] definitionsPackages;
     private List<String> publicUrls = new ArrayList<>();
 
     /**
@@ -83,7 +79,9 @@ public class SingularModuleConfiguration {
                 .collect(Collectors.toSet());
 
         if ((long) modules.size() != 1) {
-            throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules.stream().map(c -> c.getName()).collect(Collectors.toList()))));
+            throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s " +
+                    "é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules
+                    .stream().map(Class::getName).collect(Collectors.toList()))));
         }
         Optional<Class<? extends SingularModule>> firstModule = modules.stream().findFirst();
         if (firstModule.isPresent()) {
@@ -119,10 +117,6 @@ public class SingularModuleConfiguration {
         return module;
     }
 
-    public void setFormTypes(List<Class<? extends SType<?>>> formTypes) {
-        this.formTypes = formTypes;
-    }
-
     public List<String> getPublicUrls() {
         return publicUrls;
     }
@@ -131,21 +125,10 @@ public class SingularModuleConfiguration {
         publicUrls.add(url);
     }
 
-    public void initDefinitionsPackages(Set<Class<? extends RequirementFlowDefinition>> definitions) {
-        definitionsPackages = definitions.stream().map(c -> c.getPackage().getName()).distinct().toArray(String[]::new);
-    }
+//    public void initDefinitionsPackages(Set<Class<? extends RequirementFlowDefinition>> definitions) {
+//        definitionsPackages = definitions;
+//    }
 
-    public String[] getDefinitionsPackages() {
-        return definitionsPackages;
-    }
-
-    public List<Class<? extends SType<?>>> getFormTypes() {
-        if (formTypes == null) {
-            return Collections.emptyList();
-        } else {
-            return Collections.unmodifiableList(formTypes);
-        }
-    }
 
     public String getModuleCod() {
         return getModule().abbreviation();

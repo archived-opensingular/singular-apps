@@ -33,11 +33,9 @@ public class ConfigTest extends SingularCommonsBaseTest {
     public SingularModuleConfiguration singularServerConfiguration;
 
     @Test
-    public void checkServletParams() throws ServletException {
-
+    public void checkServletParams() {
         Assert.assertEquals(singularServerConfiguration.getContexts().size(), 3);
         Assert.assertNotNull(singularServerConfiguration.getPublicUrls());
-        Assert.assertNotNull(singularServerConfiguration.getFormTypes());
         Assert.assertEquals(singularServerConfiguration.getModuleCod(), CommonsInitializerMock.TESTE);
     }
 }

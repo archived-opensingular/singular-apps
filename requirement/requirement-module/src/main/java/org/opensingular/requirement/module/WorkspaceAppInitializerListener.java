@@ -1,12 +1,9 @@
 package org.opensingular.requirement.module;
 
 import org.apache.wicket.protocol.http.WicketFilter;
-import org.opensingular.form.SType;
-import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularWebAppInitializerListener;
-import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
@@ -14,12 +11,9 @@ import org.springframework.web.context.support.AnnotationConfigWebApplicationCon
 import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 /**
@@ -54,12 +48,9 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
             }
         }
 
-        singularModuleConfiguration.setFormTypes(lookupFormTypes());
         for (String url : publicUrls()) {
             singularModuleConfiguration.addPublicUrl(url);
         }
-        singularModuleConfiguration.initDefinitionsPackages(lookupRequirementFlowDefinition());
-
         servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG, singularModuleConfiguration);
     }
 
@@ -90,18 +81,6 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
     }
 
     /**
-     * Procura todos os STypes do ClassPath
-     */
-    protected List<Class<? extends SType<?>>> lookupFormTypes() {
-        return SingularClassPathScanner.get()
-                .findSubclassesOf(SType.class)
-                .stream()
-                .filter(f -> !Modifier.isAbstract(f.getModifiers()))
-                .map(i -> (Class<? extends SType<?>>) i)
-                .collect(Collectors.toList());
-    }
-
-    /**
      * Lista as UrlsPublicas padrões
      */
     protected String[] publicUrls() {
@@ -113,13 +92,5 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
         return urls.toArray(new String[0]);
     }
 
-    /**
-     * Procuta todas as definições de flow
-     * TODO Vinicius ainda precisamos disso?
-     */
-    protected Set<Class<? extends RequirementFlowDefinition>> lookupRequirementFlowDefinition() {
-        return SingularClassPathScanner.get()
-                .findSubclassesOf(RequirementFlowDefinition.class);
-    }
 
 }

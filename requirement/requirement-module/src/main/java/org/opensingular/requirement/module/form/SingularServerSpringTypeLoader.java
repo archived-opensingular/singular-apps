@@ -40,14 +40,14 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     private final Map<String, Supplier<SType<?>>> entries = new LinkedHashMap<>();
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private FormTypesProvider formTypesProvider;
 
     public SingularServerSpringTypeLoader() {
     }
 
     @PostConstruct
     private void init() {
-        singularServerConfiguration.getFormTypes().forEach(this::add);
+        formTypesProvider.get().forEach(this::add);
     }
 
     private void add(Class<? extends SType<?>> type) {
