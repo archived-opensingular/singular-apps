@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -29,17 +28,12 @@ import java.util.List;
  * Factory responsible for build one item box with its listings, custom actions and controllers
  */
 public interface BoxDefinition {
-
     /**
-     * Builds an {@link ItemBox}. This method do not need to check if the {@param context} is supported, the current
-     * {@link IServerContext} can be used to decide about minor changes in the {@param ItemBox} for each different
-     * context
+     * Builds an {@link ItemBox}. This method do not need to check if the {@param context} is supported.
      *
-     * @param context the current {@link IServerContext}
      * @return An proper configured ItemBox
      */
-    ItemBox build(IServerContext context);
-
+    ItemBox build();
 
     /**
      * @return the data provider responsible for populate the box data
@@ -50,5 +44,4 @@ public interface BoxDefinition {
      * @return the fields that are expected to show in the box
      */
     List<DatatableField> getDatatableFields();
-
 }

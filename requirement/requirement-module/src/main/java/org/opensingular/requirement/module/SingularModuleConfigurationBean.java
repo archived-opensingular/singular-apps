@@ -113,13 +113,13 @@ public class SingularModuleConfigurationBean implements ServletContextAware {
     public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
         return getBoxByContext(context)
                 .stream()
-                .map(box -> buildBoxDefinitionData(box, context))
+                .map(this::buildBoxDefinitionData)
                 .collect(Collectors.toList());
     }
 
-    public BoxDefinitionData buildBoxDefinitionData(BoxInfo boxInfo, IServerContext context) {
+    public BoxDefinitionData buildBoxDefinitionData(BoxInfo boxInfo) {
         BoxDefinition factory = beanFactory.getBean(boxInfo.getBoxDefinitionClass());
-        ItemBox itemBox = factory.build(context);
+        ItemBox itemBox = factory.build();
         itemBox.setFieldsDatatable(factory.getDatatableFields());
         itemBox.setId(boxInfo.getBoxId());
         return new BoxDefinitionData(itemBox, boxInfo.getRequirements());

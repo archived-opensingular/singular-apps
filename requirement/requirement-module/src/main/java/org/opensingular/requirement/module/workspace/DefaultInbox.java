@@ -20,7 +20,6 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
+    public ItemBox build() {
         final ItemBox caixaEntrada = new ItemBox();
         caixaEntrada.setName("Caixa de Entrada");
         caixaEntrada.setDescription("Requerimentos aguardando ação do usuário");

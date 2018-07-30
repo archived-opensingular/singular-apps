@@ -20,7 +20,6 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
+    public ItemBox build() {
         final ItemBox concluidas = new ItemBox();
         concluidas.setName("Concluídos");
         concluidas.setDescription("Requerimentos concluídos");

@@ -20,7 +20,6 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -29,7 +28,7 @@ import java.util.List;
 
 public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
+    public ItemBox build() {
         final ItemBox rascunho = new ItemBox();
         rascunho.setName("Rascunho");
         rascunho.setDescription("Requerimentos de rascunho");
