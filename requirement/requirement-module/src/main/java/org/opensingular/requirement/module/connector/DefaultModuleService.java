@@ -34,7 +34,7 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
@@ -44,6 +44,7 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
@@ -69,7 +70,10 @@ import java.util.stream.Collectors;
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
+
+    @Inject
+    private BoxService boxService;
 
     @Inject
     private RequirementService requirementService;
@@ -140,7 +144,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     public Long count(String boxId, QuickFilter filter) {
-        Optional<BoxController> boxController = singularModuleConfiguration.getBoxControllerByBoxId(boxId);
+        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
         if (boxController.isPresent()) {
             return boxController.get().countItens(filter);
         }
@@ -149,7 +153,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
 
     public BoxItemDataList search(String boxId, QuickFilter filter) {
-        Optional<BoxController> boxController = singularModuleConfiguration.getBoxControllerByBoxId(boxId);
+        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
         if (boxController.isPresent()) {
             return boxController.get().searchItens(filter);
         }
@@ -243,7 +247,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
         for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
-            boxConfigurationMetadata.setBoxesDefinition(singularModuleConfiguration.buildItemBoxes(menuContext));
+            boxConfigurationMetadata.setBoxesDefinition(boxService.buildItemBoxes(menuContext));
         }
     }
 

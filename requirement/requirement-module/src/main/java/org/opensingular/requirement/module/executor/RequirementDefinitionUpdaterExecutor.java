@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.executor;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 import org.opensingular.requirement.module.service.RequirementService;
 
 /**
@@ -39,7 +39,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 public class RequirementDefinitionUpdaterExecutor {
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
     private ServerStartExecutorBean serverStartExecutorBean;
@@ -57,7 +57,7 @@ public class RequirementDefinitionUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllRequirementDefinitions() {
-        for (RequirementDefinition singularRequirement: singularModuleConfiguration.getRequirements()) {
+        for (RequirementDefinition singularRequirement : singularModuleConfiguration.getRequirements()) {
             try {
                 requirementService.saveOrUpdateRequirementDefinition(singularRequirement);
             } catch (Exception e) {

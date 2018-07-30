@@ -63,10 +63,6 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     /**
      * @param key Unique immutable identifier for requirement
      */
-    public RequirementDefinition(String key) {
-        this(key, (Class<RI>) RequirementInstance.class);
-    }
-
     public RequirementDefinition(String key, Class<RI> requirementInstanceClass) {
         this.key = key;
         this.requirementInstanceClass = requirementInstanceClass;

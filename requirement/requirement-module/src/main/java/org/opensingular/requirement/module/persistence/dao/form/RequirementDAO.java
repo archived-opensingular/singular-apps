@@ -219,7 +219,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
                 .fetch();
     }
 
-    public boolean containChildren(Long codRequirement) {
+    public boolean hasAnyChildrenRequirement(Long codRequirement) {
         QRequirementEntity requirementEntity = QRequirementEntity.requirementEntity;
         return new HibernateQueryFactory(getSession())
                 .selectFrom(requirementEntity)

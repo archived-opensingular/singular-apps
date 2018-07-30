@@ -24,7 +24,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
@@ -46,7 +46,7 @@ public class NewRequirementLink extends Panel {
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfigurationBean;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     public NewRequirementLink(String id, String url, Map<String, String> params, IModel<Set<Class<? extends RequirementDefinition>>> requirements) {
         this(id, null, url, params, requirements);
@@ -108,7 +108,7 @@ public class NewRequirementLink extends Panel {
     }
 
     private Stream<RequirementDefinition> getRequirementsStream() {
-        return singularModuleConfigurationBean.getRequirements().stream()
+        return singularModuleConfiguration.getRequirements().stream()
                 .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> reqClass.isAssignableFrom(req.getClass())));
     }
 

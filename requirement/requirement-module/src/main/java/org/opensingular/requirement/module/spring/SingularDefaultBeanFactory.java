@@ -24,6 +24,8 @@ import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledSe
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
+import org.opensingular.flow.core.FlowDefinitionCache;
+import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.schedule.IScheduleService;
@@ -42,6 +44,7 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SingularUserDetails;
+import org.opensingular.form.spring.SpringFormConfig;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
@@ -50,7 +53,8 @@ import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -59,6 +63,9 @@ import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
+import org.opensingular.requirement.module.flow.SingularServerFlowConfigurationBean;
+import org.opensingular.requirement.module.form.SingularServerDocumentFactory;
+import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -88,6 +95,9 @@ import org.opensingular.requirement.module.spring.security.SingularRequirementUs
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
+import org.springframework.beans.BeansException;
+import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
+import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -103,12 +113,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 
 
 @SuppressWarnings("rawtypes")
 @Lazy(false)
-public class SingularDefaultBeanFactory {
+public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
 
     @Order(1)
     @Bean
@@ -371,7 +382,7 @@ public class SingularDefaultBeanFactory {
     @Bean
     @Scope(WebApplicationContext.SCOPE_REQUEST)
     public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
-            SingularModuleConfigurationBean singularServerConfiguration, ModuleService moduleService,
+            SingularModuleConfiguration singularServerConfiguration, ModuleService moduleService,
             SingularUserDetails singularUserDetails) {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = sra.getRequest();
@@ -379,4 +390,42 @@ public class SingularDefaultBeanFactory {
         return moduleService.loadWorkspaceConfiguration(menuContext.getName(), singularUserDetails.getUsername());
     }
 
+    @Bean
+    public SingularServerDocumentFactory documentFactory() {
+        return new SingularServerDocumentFactory();
+    }
+
+    @Bean
+    public SingularServerSpringTypeLoader typeLoader() {
+        return new SingularServerSpringTypeLoader();
+    }
+
+    @Bean
+    public SpringFormConfig<String> formConfigWithDatabase(SingularServerDocumentFactory singularServerDocumentFactory,
+                                                           SingularServerSpringTypeLoader serverSpringTypeLoader) {
+        SpringFormConfig<String> formConfigWithoutDatabase = new SpringFormConfig<>();
+        formConfigWithoutDatabase.setTypeLoader(serverSpringTypeLoader);
+        formConfigWithoutDatabase.setDocumentFactory(singularServerDocumentFactory);
+        return formConfigWithoutDatabase;
+    }
+
+    @Bean
+    public SingularFlowConfigurationBean singularFlowConfiguration() {
+        FlowDefinitionCache.invalidateAll();
+        return new SingularServerFlowConfigurationBean();
+    }
+
+    /**
+     * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
+     * no {@link org.springframework.beans.factory.BeanFactory}
+     *
+     * Similiar a {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext#postProcessBeanFactory(ConfigurableListableBeanFactory)}
+     */
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+        ServletContext servletContext = configurableListableBeanFactory.getBean(ServletContext.class);
+        SingularModuleConfiguration singularModuleConfiguration = (SingularModuleConfiguration) servletContext
+                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
+        configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
+    }
 }

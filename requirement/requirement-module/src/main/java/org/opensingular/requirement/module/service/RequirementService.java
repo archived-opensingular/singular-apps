@@ -679,8 +679,8 @@ public abstract class RequirementService implements Loggable {
     }
 
 
-    public boolean containChildren(Long codRequirement) {
-        return requirementDAO.containChildren(codRequirement);
+    public boolean hasAnyChildrenRequirement(Long codRequirement) {
+        return requirementDAO.hasAnyChildrenRequirement(codRequirement);
     }
 
     public <RI extends RequirementInstance> void updateRequirementDescription(SInstance currentInstance, RI requirement) {
