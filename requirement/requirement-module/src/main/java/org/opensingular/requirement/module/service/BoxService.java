@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.inject.Inject;
 import javax.inject.Named;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -92,10 +91,6 @@ public class BoxService {
     }
 
     public Optional<BoxController> getBoxControllerByBoxId(String boxId) {
-        Map<String, BoxController> controllers = singularModuleConfiguration.getControllers();
-        if (!controllers.containsKey(boxId)) {
-            singularModuleConfiguration.getBoxByBoxId(boxId).ifPresent(boxInfo1 -> controllers.put(boxId, boxControllerFactory.create(boxInfo1)));
-        }
-        return Optional.ofNullable(controllers.get(boxId));
+        return singularModuleConfiguration.getBoxByBoxId(boxId).map(boxControllerFactory::create);
     }
 }

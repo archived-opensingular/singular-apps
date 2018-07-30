@@ -1,13 +1,16 @@
 package org.opensingular.requirement.module.workspace;
 
-import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 
 public class WorkspaceRegistry implements Loggable {
     private final Map<IServerContext, WorkspaceConfiguration> workspaceConfigurationMap;

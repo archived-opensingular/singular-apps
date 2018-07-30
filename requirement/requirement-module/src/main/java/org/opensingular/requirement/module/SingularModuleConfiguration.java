@@ -29,25 +29,17 @@ import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SingularModuleConfiguration {
-
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
     private RequirementRegistry requirementRegistry;
     private List<String> publicUrls = new ArrayList<>();
-
-    /**
-     * Cache for the already created controllers
-     */
-    private Map<String, BoxController> controllers = new HashMap<>();
 
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
@@ -125,11 +117,6 @@ public class SingularModuleConfiguration {
         publicUrls.add(url);
     }
 
-//    public void initDefinitionsPackages(Set<Class<? extends RequirementFlowDefinition>> definitions) {
-//        definitionsPackages = definitions;
-//    }
-
-
     public String getModuleCod() {
         return getModule().abbreviation();
     }
@@ -138,10 +125,6 @@ public class SingularModuleConfiguration {
         return workspaceRegistry.listContexts()
                 .stream()
                 .filter(i -> i.getName().equals(name)).findFirst().orElse(null);
-    }
-
-    public Map<String, BoxController> getControllers() {
-        return controllers;
     }
 
     public Set<IServerContext> getContexts() {
