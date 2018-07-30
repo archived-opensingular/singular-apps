@@ -24,11 +24,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BoxConfigurationData implements Serializable {
-
-    private String                id;
-    private String                label;
+    private String id;
+    private String label;
     private List<BoxDefinitionData> itemBoxesMetadata;
-    private List<RequirementDefinitionDTO>        processes;
+    private List<FlowDefinitionDTO> processes;
 
     public BoxConfigurationData() {
     }
@@ -49,11 +48,11 @@ public class BoxConfigurationData implements Serializable {
         this.label = label;
     }
 
-    public List<RequirementDefinitionDTO> getProcesses() {
+    public List<FlowDefinitionDTO> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(List<RequirementDefinitionDTO> processes) {
+    public void setProcesses(List<FlowDefinitionDTO> processes) {
         this.processes = processes;
     }
 
@@ -73,7 +72,7 @@ public class BoxConfigurationData implements Serializable {
         return null;
     }
 
-    public RequirementDefinitionDTO getProcessByAbbreviation(String flowDefinitionAbbreviation) {
+    public FlowDefinitionDTO getProcessByAbbreviation(String flowDefinitionAbbreviation) {
         return getProcesses()
                 .stream()
                 .filter(p -> p.getAbbreviation().equalsIgnoreCase(flowDefinitionAbbreviation))

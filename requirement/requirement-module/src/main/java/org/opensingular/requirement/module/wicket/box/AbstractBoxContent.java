@@ -46,7 +46,7 @@ import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.FormDTO;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 
 import javax.inject.Inject;
@@ -87,7 +87,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
 
     private   String                         menu;
-    private   List<RequirementDefinitionDTO> processes;
+    private   List<FlowDefinitionDTO> processes;
     private   List<FormDTO>                  forms;
     /**
      * Form padrão
@@ -280,7 +280,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 if (getProcessesNames().isEmpty()) {
                     return 0;
                 }
-                return countQuickSearch(newFilter(), getProcessesNames(), getFormNames());
+                return countQuickSearch(newFilter(), getProcessesNames());
             }
 
             @Override
@@ -292,7 +292,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                         .withSortProperty(sortProperty)
                         .withAscending(ascending);
 
-                return quickSearch(quickFilter, getProcessesNames(), getFormNames()).iterator();
+                return quickSearch(quickFilter, getProcessesNames()).iterator();
             }
 
             private List<String> getProcessesNames() {
@@ -301,21 +301,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                 } else {
                     return getProcesses()
                             .stream()
-                            .map(RequirementDefinitionDTO::getAbbreviation)
+                            .map(FlowDefinitionDTO::getAbbreviation)
                             .collect(Collectors.toList());
                 }
             }
 
-            private List<String> getFormNames() {
-                if (getProcesses() == null) {
-                    return Collections.emptyList();
-                } else {
-                    return getProcesses()
-                            .stream()
-                            .map(RequirementDefinitionDTO::getFormName)
-                            .collect(Collectors.toList());
-                }
-            }
         };
         Pair<String, SortOrder> sort = getSortProperty();
         if (sort != null) {
@@ -330,15 +320,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     protected abstract QuickFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames);
+    protected abstract List<T> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation);
 
-    protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
+    protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames);
 
-    public List<RequirementDefinitionDTO> getProcesses() {
+    public List<FlowDefinitionDTO> getProcesses() {
         return processes;
     }
 
-    public void setProcesses(List<RequirementDefinitionDTO> processes) {
+    public void setProcesses(List<FlowDefinitionDTO> processes) {
         this.processes = processes;
     }
 

@@ -18,33 +18,31 @@
 
 package org.opensingular.requirement.module.service.dto;
 
+import org.opensingular.flow.core.FlowDefinition;
+
 import java.io.Serializable;
 
-public class RequirementDefinitionDTO implements Serializable {
+/**
+ * DTO que representa uma definição do {@link org.opensingular.flow.core.FlowDefinition}
+ */
+public class FlowDefinitionDTO implements Serializable {
+    /**
+     * Valor retornado pelo {@link FlowDefinition#getKey()} ()}
+     */
+    private final String abbreviation;
 
-    private String       name;
-    private String       formName;
-    private String       abbreviation;
+    /**
+     * Valor retornado pelo {@link FlowDefinition#getName()}
+     */
+    private final String name;
 
-    public RequirementDefinitionDTO() {
-    }
-
-    public RequirementDefinitionDTO(String abbreviation, String name, String formName) {
+    public FlowDefinitionDTO(String abbreviation, String name) {
         this.abbreviation = abbreviation;
         this.name = name;
-        this.formName = formName;
     }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getFormName() {
-        return formName;
     }
 
     public String getAbbreviation() {

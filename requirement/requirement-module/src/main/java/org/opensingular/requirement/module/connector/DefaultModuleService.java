@@ -57,7 +57,7 @@ import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -223,10 +223,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
             boxConfigurationMetadata.setId(permissionResolverService.buildCategoryPermission(category).getSingularId());
             boxConfigurationMetadata.setLabel(category);
             boxConfigurationMetadata.setProcesses(new ArrayList<>());
-            definitions.forEach(d -> {
-                boxConfigurationMetadata.getProcesses().add(
-                        new RequirementDefinitionDTO(d.getKey(), d.getName(), null));
-            });
+            definitions.forEach(d -> boxConfigurationMetadata.getProcesses().add(new FlowDefinitionDTO(d.getKey(), d.getName())));
             addForms(boxConfigurationMetadata);
             groups.add(boxConfigurationMetadata);
         });
@@ -318,6 +315,10 @@ public class DefaultModuleService implements ModuleService, Loggable {
         return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
     }
 
+    /**
+     * Evoluir para botão wicket
+     */
+    @Deprecated
     @Override
     public String getModuleContext() {
         final String groupConnectionURL = getModule().getConnectionURL();

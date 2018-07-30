@@ -42,7 +42,7 @@ import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 
@@ -128,7 +128,7 @@ public class Menu extends Panel implements Loggable {
     protected List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata) {
 
         List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
-                .map(RequirementDefinitionDTO::getAbbreviation)
+                .map(FlowDefinitionDTO::getAbbreviation)
                 .collect(Collectors.toList());
 
         List<MenuItemConfig> configs = new ArrayList<>();

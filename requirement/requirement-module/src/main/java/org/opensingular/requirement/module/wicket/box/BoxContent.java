@@ -51,7 +51,7 @@ import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
 
 import javax.inject.Inject;
@@ -316,7 +316,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         } else {
             return getProcesses()
                     .stream()
-                    .map(RequirementDefinitionDTO::getAbbreviation)
+                    .map(FlowDefinitionDTO::getAbbreviation)
                     .collect(Collectors.toList());
         }
     }
@@ -333,7 +333,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
+    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation) {
         return moduleService.searchFiltered(getItemBoxModelObject(), filter);
     }
 
@@ -349,7 +349,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
+    protected long countQuickSearch(QuickFilter filter, List<String> processesNames) {
         return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 
