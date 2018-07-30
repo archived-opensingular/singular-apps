@@ -86,6 +86,7 @@ import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.ParameterService;
+import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.SingularDiffService;
 import org.opensingular.requirement.module.service.attachment.FormAttachmentService;
@@ -464,6 +465,12 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
                 .map(i -> (Class<? extends SType<?>>) i)
                 .collect(Collectors.toList());
     }
+
+    @Bean
+    public RequirementDefinitionService requirementDefinitionService(){
+        return new RequirementDefinitionService();
+    }
+
     /**
      * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
      * no {@link org.springframework.beans.factory.BeanFactory}

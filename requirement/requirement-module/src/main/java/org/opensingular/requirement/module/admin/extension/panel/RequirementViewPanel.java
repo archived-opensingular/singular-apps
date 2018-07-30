@@ -24,9 +24,9 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.admin.extension.HealthPanelRequirementDefinitionDTO;
+import org.opensingular.requirement.module.service.RequirementDefinitionService;
 
 import javax.inject.Inject;
 import java.util.Iterator;
@@ -36,7 +36,7 @@ import java.util.stream.Collectors;
 public class RequirementViewPanel extends Panel {
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private RequirementDefinitionService requirementDefinitionService;
 
     public RequirementViewPanel(String id) {
         super(id);
@@ -48,7 +48,7 @@ public class RequirementViewPanel extends Panel {
     }
 
     private List<SingularRequirement> getRequirements() {
-        return singularModuleConfiguration.getRequirements();
+        return requirementDefinitionService.getRequirements();
     }
 
     private class RequirementTableBuilder extends BSDataTableBuilder<HealthPanelRequirementDefinitionDTO, String, IColumn<HealthPanelRequirementDefinitionDTO, String>> {

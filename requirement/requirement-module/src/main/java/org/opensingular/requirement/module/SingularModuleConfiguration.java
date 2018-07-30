@@ -30,15 +30,24 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 public class SingularModuleConfiguration {
+    /**
+     * O modulo singular
+     */
     private SingularModule module;
+
+    /**
+     * Os dados de workspace
+     */
     private WorkspaceRegistry workspaceRegistry;
-    private RequirementRegistry requirementRegistry;
+
+    /**
+     * TODO, mover para algum lugar melhor...
+     */
     private List<String> publicUrls = new ArrayList<>();
 
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
@@ -58,8 +67,11 @@ public class SingularModuleConfiguration {
         this.workspaceRegistry = workspaceRegistry;
     }
 
+    /**
+     * TODO, mover para {@link WorkspaceAppInitializerListener}
+     */
     private void resolveRequirements(AnnotationConfigWebApplicationContext applicationContext) {
-        requirementRegistry = new RequirementRegistry(applicationContext);
+        RequirementRegistry requirementRegistry = new RequirementRegistry(applicationContext);
         module.requirements(requirementRegistry);
     }
 
@@ -81,14 +93,6 @@ public class SingularModuleConfiguration {
         }
     }
 
-    public SingularRequirement getRequirementById(Long id) {
-        return requirementRegistry.getRequirements()
-                .stream()
-                .filter(r -> Objects.equals(r.getDefinitionCod(), id))
-                .findFirst()
-                .orElse(null);
-    }
-
     public Set<BoxInfo> getBoxByContext(IServerContext context) {
         return workspaceRegistry.get(context).map(WorkspaceConfiguration::getBoxInfos).orElse(Collections.emptySet());
     }
@@ -101,9 +105,6 @@ public class SingularModuleConfiguration {
                 .filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }
 
-    public List<SingularRequirement> getRequirements() {
-        return requirementRegistry.getRequirements();
-    }
 
     public SingularModule getModule() {
         return module;
