@@ -21,13 +21,13 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -83,13 +83,14 @@ public class SingularModuleConfiguration {
     }
 
     public Set<BoxInfo> getBoxByContext(IServerContext context) {
-        return workspaceRegistry.get(context).map(WorkspaceConfiguration::getBoxInfos).orElse(Collections.emptySet());
+        return context.getWorkspace().getBoxInfos();
     }
 
     public Optional<BoxInfo> getBoxByBoxId(String boxId) {
-        return workspaceRegistry.listConfigs()
+        return workspaceRegistry.listContexts()
                 .stream()
-                .map(WorkspaceConfiguration::getBoxInfos)
+                .map(IServerContext::getWorkspace)
+                .map(Workspace::getBoxInfos)
                 .flatMap(Collection::stream)
                 .filter(b -> b.getBoxId().equals(boxId)).findFirst();
     }

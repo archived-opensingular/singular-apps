@@ -45,8 +45,7 @@ public interface BoxInfo {
     /**
      * TODO
      */
-    @Deprecated
-    void addSingularRequirementRef(Class<? extends SingularRequirement> requirement);
+    BoxInfo newFor(Class<? extends SingularRequirement> requirement);
 
     /**
      * TODO

@@ -20,8 +20,9 @@ public class DefaultBoxInfo implements BoxInfo {
     }
 
     @Override
-    public void addSingularRequirementRef(Class<? extends SingularRequirement> requirement) {
+    public BoxInfo newFor(Class<? extends SingularRequirement> requirement) {
         requirements.add(requirement);
+        return this;
     }
 
     @Override
