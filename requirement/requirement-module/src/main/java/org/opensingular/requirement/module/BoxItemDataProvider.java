@@ -22,7 +22,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 
 /**
@@ -37,7 +37,7 @@ public interface BoxItemDataProvider {
      * @return lista de mapa, contando chaves do {@link DatatableField}
      * e valores.
      */
-    List<Map<String, Serializable>> search(QuickFilter filter);
+    List<Map<String, Serializable>> search(BoxFilter filter);
 
     /**
      * Conta todas as linhas a serem exibidas
@@ -45,7 +45,7 @@ public interface BoxItemDataProvider {
      * @param filter        o filtro do usuario
      * @return total de linhas
      */
-    Long count(QuickFilter filter);
+    Long count(BoxFilter filter);
 
     /**
      * Configura as ações por linha

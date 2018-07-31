@@ -21,7 +21,7 @@ package org.opensingular.requirement.module.provider;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
@@ -53,7 +53,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     @Override
-    public List<Map<String, Serializable>> search(QuickFilter filter) {
+    public List<Map<String, Serializable>> search(BoxFilter filter) {
         addEnabledTasksToFilter(filter);
         List<Map<String, Serializable>> requirements;
         if (Boolean.TRUE.equals(evalPermissions)) {
@@ -66,7 +66,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     @Override
-    public Long count(QuickFilter filter) {
+    public Long count(BoxFilter filter) {
         addEnabledTasksToFilter(filter);
         if (Boolean.TRUE.equals(evalPermissions)) {
             return requirementService.countTasks(filter, searchPermissions(filter), extenders);
@@ -81,11 +81,11 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return actionProvider;
     }
 
-    protected void addEnabledTasksToFilter(QuickFilter filter) {
+    protected void addEnabledTasksToFilter(BoxFilter filter) {
         filter.forTasks(tasks.toArray(new String[0]));
     }
 
-    protected List<SingularPermission> searchPermissions(QuickFilter filter) {
+    protected List<SingularPermission> searchPermissions(BoxFilter filter) {
         return ApplicationContextProvider.get().getBean(PermissionResolverService.class).searchPermissions(filter.getIdUsuarioLogado());
     }
 

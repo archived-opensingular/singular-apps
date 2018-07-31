@@ -44,7 +44,7 @@ import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -296,7 +296,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected QuickFilter newFilterBasic() {
+    protected BoxFilter newFilterBasic() {
         BoxPage boxPage = getBoxPage();
         return boxPage.createFilter()
                 .withFilter(getFiltroRapidoModelObject())
@@ -333,7 +333,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation) {
+    protected List<BoxItemDataMap> quickSearch(BoxFilter filter, List<String> flowDefinitionAbbreviation) {
         return moduleService.searchFiltered(getItemBoxModelObject(), filter);
     }
 
@@ -349,7 +349,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected long countQuickSearch(QuickFilter filter, List<String> processesNames) {
+    protected long countQuickSearch(BoxFilter filter, List<String> processesNames) {
         return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 

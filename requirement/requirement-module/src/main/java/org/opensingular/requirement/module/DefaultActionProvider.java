@@ -22,54 +22,54 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 
 public class DefaultActionProvider implements ActionProvider, Loggable {
 
-    protected void addViewAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addViewAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addViewAction(line);
     }
 
 
-    protected void addEditAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addEditAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addEditAction(line);
     }
 
 
-    protected void addDeleteAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addDeleteAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addDeleteAction(line);
     }
 
 
-    protected void addAssignAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addAssignAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (line.getAllocatedSUserId() == null && TaskType.HUMAN == line.getTaskType()) {
             list.addAssignAction(line);
         }
     }
 
-    protected void addRelocateAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addRelocateAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (TaskType.HUMAN == line.getTaskType()) {
             list.addRelocateAction(line);
         }
     }
 
-    protected void addHistoryAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addHistoryAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addHistoryAction(line);
     }
 
-    protected void addAnalyseAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addAnalyseAction(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (filter.getIdUsuarioLogado() != null && filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
             list.addAnalyseAction(line);
         }
     }
 
-    protected void addCustomActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addCustomActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list) {
 
     }
 
 
-    protected BoxItemActionList getDefaultActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+    protected BoxItemActionList getDefaultActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter) {
         BoxItemActionList list = new BoxItemActionList();
         addAssignAction(boxInfo, line, filter, list);
         addAnalyseAction(boxInfo, line, filter, list);
@@ -83,7 +83,7 @@ public class DefaultActionProvider implements ActionProvider, Loggable {
     }
 
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter) {
         return getDefaultActions(boxInfo, line, filter);
     }
 }

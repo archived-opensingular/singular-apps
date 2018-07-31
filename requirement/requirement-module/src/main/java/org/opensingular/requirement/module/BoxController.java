@@ -20,12 +20,11 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @see BoxControllerFactory
@@ -46,11 +45,11 @@ public class BoxController {
         this.boxItemDataProvider = boxItemDataProvider;
     }
 
-    public Long countItens(QuickFilter filter) {
+    public Long countItens(BoxFilter filter) {
         return boxItemDataProvider.count(filter);
     }
 
-    public BoxItemDataList searchItens(QuickFilter filter) {
+    public BoxItemDataList searchItens(BoxFilter filter) {
         List<Map<String, Serializable>> itens = boxItemDataProvider.search(filter);
         BoxItemDataList result = new BoxItemDataList();
         ActionProvider actionProvider = addBuiltInDecorators(boxItemDataProvider.getActionProvider());

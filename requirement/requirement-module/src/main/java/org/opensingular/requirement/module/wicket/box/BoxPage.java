@@ -26,7 +26,7 @@ import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
@@ -114,8 +114,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new HashMap<>();
     }
 
-    protected QuickFilter createFilter() {
-        return new QuickFilter()
+    protected BoxFilter createFilter() {
+        return new BoxFilter()
                 .withIdUsuarioLogado(getIdUsuario())
                 .withIdPessoa(getIdPessoa());
     }

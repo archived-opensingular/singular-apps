@@ -42,7 +42,7 @@ import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.FormDTO;
@@ -286,13 +286,13 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                     boolean ascending) {
-                QuickFilter quickFilter = newFilter()
+                BoxFilter boxFilter = newFilter()
                         .withFirst(first)
                         .withCount(count)
                         .withSortProperty(sortProperty)
                         .withAscending(ascending);
 
-                return quickSearch(quickFilter, getProcessesNames()).iterator();
+                return quickSearch(boxFilter, getProcessesNames()).iterator();
             }
 
             private List<String> getProcessesNames() {
@@ -314,15 +314,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return dataProvider;
     }
 
-    protected QuickFilter newFilter() {
+    protected BoxFilter newFilter() {
         return newFilterBasic();
     }
 
-    protected abstract QuickFilter newFilterBasic();
+    protected abstract BoxFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation);
+    protected abstract List<T> quickSearch(BoxFilter filter, List<String> flowDefinitionAbbreviation);
 
-    protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames);
+    protected abstract long countQuickSearch(BoxFilter filter, List<String> processesNames);
 
     public List<FlowDefinitionDTO> getProcesses() {
         return processes;

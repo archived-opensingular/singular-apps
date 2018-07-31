@@ -23,7 +23,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class QuickFilter implements Serializable {
+public class BoxFilter implements Serializable {
 
     private String filter;
     private boolean rascunho;
@@ -38,7 +38,7 @@ public class QuickFilter implements Serializable {
     private List<String> processesAbbreviation;
     private List<String> typesNames;
 
-    public QuickFilter withFilter(String filter) {
+    public BoxFilter withFilter(String filter) {
         this.filter = filter;
         return this;
     }
@@ -47,7 +47,7 @@ public class QuickFilter implements Serializable {
         return idUsuarioLogado;
     }
 
-    public QuickFilter withIdUsuarioLogado(String idUsuarioLogado) {
+    public BoxFilter withIdUsuarioLogado(String idUsuarioLogado) {
         this.idUsuarioLogado = idUsuarioLogado;
         return this;
     }
@@ -56,7 +56,7 @@ public class QuickFilter implements Serializable {
         return idPessoa;
     }
 
-    public QuickFilter withIdPessoa(String idPessoa) {
+    public BoxFilter withIdPessoa(String idPessoa) {
         this.idPessoa = idPessoa;
         return this;
     }
@@ -65,7 +65,7 @@ public class QuickFilter implements Serializable {
         return rascunho;
     }
 
-    public QuickFilter withRascunho(boolean rascunho) {
+    public BoxFilter withRascunho(boolean rascunho) {
         this.rascunho = rascunho;
         return this;
     }
@@ -74,7 +74,7 @@ public class QuickFilter implements Serializable {
         return first;
     }
 
-    public QuickFilter withFirst(int first) {
+    public BoxFilter withFirst(int first) {
         this.first = first;
         return this;
     }
@@ -83,7 +83,7 @@ public class QuickFilter implements Serializable {
         return count;
     }
 
-    public QuickFilter withCount(int count) {
+    public BoxFilter withCount(int count) {
         this.count = count;
         return this;
     }
@@ -92,7 +92,7 @@ public class QuickFilter implements Serializable {
         return sortProperty;
     }
 
-    public QuickFilter withSortProperty(String sortProperty) {
+    public BoxFilter withSortProperty(String sortProperty) {
         this.sortProperty = sortProperty;
         return this;
     }
@@ -101,17 +101,17 @@ public class QuickFilter implements Serializable {
         return ascending;
     }
 
-    public QuickFilter withAscending(boolean ascending) {
+    public BoxFilter withAscending(boolean ascending) {
         this.ascending = ascending;
         return this;
     }
 
-    public QuickFilter sortAscending() {
+    public BoxFilter sortAscending() {
         this.ascending = true;
         return this;
     }
 
-    public QuickFilter sortDescending() {
+    public BoxFilter sortDescending() {
         this.ascending = false;
         return this;
     }
@@ -121,7 +121,7 @@ public class QuickFilter implements Serializable {
                 && !filter.isEmpty();
     }
 
-    public QuickFilter forTasks(String... tasks) {
+    public BoxFilter forTasks(String... tasks) {
         this.tasks = Arrays.asList(tasks);
         return this;
     }
@@ -134,7 +134,7 @@ public class QuickFilter implements Serializable {
         return processesAbbreviation;
     }
 
-    public QuickFilter withProcessesAbbreviation(List<String> processesAbbreviation) {
+    public BoxFilter withProcessesAbbreviation(List<String> processesAbbreviation) {
         this.processesAbbreviation = processesAbbreviation;
         return this;
     }
@@ -143,7 +143,7 @@ public class QuickFilter implements Serializable {
         return typesNames;
     }
 
-    public QuickFilter withTypesNames(List<String> typesNames) {
+    public BoxFilter withTypesNames(List<String> typesNames) {
         this.typesNames = typesNames;
         return this;
     }
@@ -152,7 +152,7 @@ public class QuickFilter implements Serializable {
         return endedTasks;
     }
 
-    public QuickFilter withEndedTasks(Boolean endedTasks) {
+    public BoxFilter withEndedTasks(Boolean endedTasks) {
         this.endedTasks = endedTasks;
         return this;
     }

@@ -30,7 +30,7 @@ import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.DefaultBoxInfo;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -65,7 +65,7 @@ public class BoxDefinitionDataServiceTest {
     @InjectMocks
     private DefaultModuleService moduleService;
 
-    private QuickFilter quickFilter;
+    private BoxFilter boxFilter;
 
     private Long countSize = 1L;
 
@@ -90,10 +90,10 @@ public class BoxDefinitionDataServiceTest {
         searchResult.add(firstItemMap);
         firstItemMap.put("id", "123456");
 
-        quickFilter = new QuickFilter();
+        boxFilter = new BoxFilter();
 
-        when(boxItemDataProvider.count(eq(quickFilter))).thenReturn(countSize);
-        when(boxItemDataProvider.search(eq(quickFilter))).thenReturn(searchResult);
+        when(boxItemDataProvider.count(eq(boxFilter))).thenReturn(countSize);
+        when(boxItemDataProvider.search(eq(boxFilter))).thenReturn(searchResult);
         when(boxItemDataProvider.getActionProvider()).thenReturn(new DefaultActionProvider());
 
         BoxController boxController = new BoxController(new DefaultBoxInfo(DefaultDraftbox.class), boxItemDataProvider);
@@ -108,12 +108,12 @@ public class BoxDefinitionDataServiceTest {
 
     @Test
     public void testCount() {
-        assertThat(moduleService.countFiltered(box, quickFilter), Matchers.is(countSize));
+        assertThat(moduleService.countFiltered(box, boxFilter), Matchers.is(countSize));
     }
 
     @Test
     public void testSearch() {
-        assertThat(moduleService.searchFiltered(box, quickFilter).size(), Matchers.is(countSize.intValue()));
+        assertThat(moduleService.searchFiltered(box, boxFilter).size(), Matchers.is(countSize.intValue()));
     }
 
 }

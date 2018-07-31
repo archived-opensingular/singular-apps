@@ -24,7 +24,7 @@ import java.util.List;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 
 public class ActionProviderBuilder implements ActionProvider {
@@ -92,7 +92,7 @@ public class ActionProviderBuilder implements ActionProvider {
 
 
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter) {
         BoxItemActionList list = new BoxItemActionList();
         for (ActionConfigurer configurer : actionConfigurers) {
             configurer.configure(boxInfo, line, filter, list);
@@ -103,6 +103,6 @@ public class ActionProviderBuilder implements ActionProvider {
 
     @FunctionalInterface
     public interface ActionConfigurer {
-        void configure(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list);
+        void configure(BoxInfo boxInfo, BoxItemData line, BoxFilter filter, BoxItemActionList list);
     }
 }

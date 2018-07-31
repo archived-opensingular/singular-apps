@@ -20,7 +20,7 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 /**
  * Componente responsável por criar as ações em cada linha do resultado de dados do provider
@@ -34,5 +34,5 @@ public interface ActionProvider {
      * @param filter o filtro do usuario
      * @return a lista de ações que a linha deve conter
      */
-    BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter);
+    BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter);
 }

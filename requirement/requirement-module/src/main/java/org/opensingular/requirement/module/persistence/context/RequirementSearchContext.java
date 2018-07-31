@@ -22,7 +22,7 @@ package org.opensingular.requirement.module.persistence.context;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchAliases;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
@@ -36,15 +36,15 @@ public class RequirementSearchContext {
     private RequirementSearchAliases aliases = new RequirementSearchAliases();
     private RequirementSearchQuery query;
 
-    private QuickFilter quickFilter;
+    private BoxFilter boxFilter;
     private List<RequirementSearchExtender> extenders;
 
-    public RequirementSearchContext(QuickFilter quickFilter) {
-        this.quickFilter = quickFilter;
+    public RequirementSearchContext(BoxFilter boxFilter) {
+        this.boxFilter = boxFilter;
     }
 
-    public QuickFilter getQuickFilter() {
-        return quickFilter;
+    public BoxFilter getBoxFilter() {
+        return boxFilter;
     }
 
     public List<SingularPermission> getPermissions() {

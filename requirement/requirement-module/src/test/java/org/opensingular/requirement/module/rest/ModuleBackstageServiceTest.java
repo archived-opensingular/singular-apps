@@ -25,7 +25,7 @@ import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
@@ -69,7 +69,7 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     public void count() {
         ItemBox box = new ItemBox();
         box.setId("");
-        Long count = moduleService.countFiltered(box, new QuickFilter());
+        Long count = moduleService.countFiltered(box, new BoxFilter());
         assertEquals(Long.valueOf(0), count);
     }
 
@@ -77,7 +77,7 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     public void search() {
         ItemBox box = new ItemBox();
         box.setId("");
-        List<BoxItemDataMap> result = moduleService.searchFiltered(box, new QuickFilter());
+        List<BoxItemDataMap> result = moduleService.searchFiltered(box, new BoxFilter());
         assertTrue(result.isEmpty());
     }
 

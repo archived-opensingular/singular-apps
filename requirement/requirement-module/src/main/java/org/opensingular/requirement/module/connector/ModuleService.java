@@ -27,7 +27,7 @@ import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -45,12 +45,12 @@ public interface ModuleService {
     /**
      * Count elements inside a box, applying the filter
      */
-    long countFiltered(ItemBox box, QuickFilter filter);
+    long countFiltered(ItemBox box, BoxFilter filter);
 
     /**
      * Searchelements inside a box, applying the filter
      */
-    List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter);
+    List<BoxItemDataMap> searchFiltered(ItemBox box, BoxFilter filter);
 
     /**
      * Find users that can execute the confirmAction

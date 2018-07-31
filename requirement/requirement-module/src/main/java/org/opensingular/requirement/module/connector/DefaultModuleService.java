@@ -49,7 +49,7 @@ import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
@@ -111,7 +111,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
-        QuickFilter filter = new QuickFilter()
+        BoxFilter filter = new BoxFilter()
                 .withProcessesAbbreviation(flowNames)
                 .withRascunho(box.isShowDraft())
                 .withEndedTasks(box.getEndedTasks())
@@ -121,12 +121,12 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     @Override
-    public long countFiltered(ItemBox box, QuickFilter filter) {
+    public long countFiltered(ItemBox box, BoxFilter filter) {
         return count(box.getId(), filter);
     }
 
     @Override
-    public List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter) {
+    public List<BoxItemDataMap> searchFiltered(ItemBox box, BoxFilter filter) {
         return search(box.getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
     }
 
@@ -159,7 +159,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    public Long count(String boxId, QuickFilter filter) {
+    public Long count(String boxId, BoxFilter filter) {
         Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
         if (boxController.isPresent()) {
             return boxController.get().countItens(filter);
@@ -168,7 +168,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
 
-    public BoxItemDataList search(String boxId, QuickFilter filter) {
+    public BoxItemDataList search(String boxId, BoxFilter filter) {
         Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
         if (boxController.isPresent()) {
             return boxController.get().searchItens(filter);

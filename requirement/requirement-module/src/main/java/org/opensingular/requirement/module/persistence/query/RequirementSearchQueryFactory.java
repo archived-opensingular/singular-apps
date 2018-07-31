@@ -29,7 +29,7 @@ import org.hibernate.Session;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 import javax.annotation.Nonnull;
 
@@ -90,25 +90,25 @@ public class RequirementSearchQueryFactory {
     }
 
     private void applyPagination() {
-        if (ctx.getQuickFilter().getCount() > 0) {
-            query.offset(ctx.getQuickFilter().getFirst())
-                    .limit(ctx.getQuickFilter().getCount());
+        if (ctx.getBoxFilter().getCount() > 0) {
+            query.offset(ctx.getBoxFilter().getFirst())
+                    .limit(ctx.getBoxFilter().getCount());
         }
     }
 
     private void applyQuickFilter() {
-        QuickFilter quickFilter = ctx.getQuickFilter();
-        if (quickFilter != null && quickFilter.hasFilter()) {
-            query.applyQuickFilter(quickFilter.listFilterTokens());
+        BoxFilter boxFilter = ctx.getBoxFilter();
+        if (boxFilter != null && boxFilter.hasFilter()) {
+            query.applyQuickFilter(boxFilter.listFilterTokens());
         }
     }
 
     private void applySortPropertyOrderBy() {
-        QuickFilter quickFilter = ctx.getQuickFilter();
-        if (quickFilter.getSortProperty() != null) {
+        BoxFilter boxFilter = ctx.getBoxFilter();
+        if (boxFilter.getSortProperty() != null) {
             query.getMetadata().clearOrderBy();
-            Order order = quickFilter.isAscending() ? Order.ASC : Order.DESC;
-            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(quickFilter.getSortProperty())));
+            Order order = boxFilter.isAscending() ? Order.ASC : Order.DESC;
+            query.orderBy(new OrderSpecifier<>(order, Expressions.stringPath(boxFilter.getSortProperty())));
         }
     }
 
@@ -117,7 +117,7 @@ public class RequirementSearchQueryFactory {
     }
 
     private void applyDefaultOrderBy() {
-        if (ctx.getQuickFilter().isRascunho()) {
+        if (ctx.getBoxFilter().isRascunho()) {
             query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(CREATION_DATE)));
         } else {
             query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(PROCESS_BEGIN_DATE)));
@@ -184,7 +184,7 @@ public class RequirementSearchQueryFactory {
         appendFilterByApplicant();
         appendFilterByFlowDefinitionAbbreviation();
         appendFilterByTasks();
-        if (ctx.getQuickFilter().isRascunho()) {
+        if (ctx.getBoxFilter().isRascunho()) {
             appendFilterByRequirementsWithoutFlowInstance();
         } else {
             appendFilterByRequirementsWithFlowInstance();
@@ -194,9 +194,9 @@ public class RequirementSearchQueryFactory {
     }
 
     private void appendFilterByCurrentTask() {
-        if (ctx.getQuickFilter().getEndedTasks() == null) {
+        if (ctx.getBoxFilter().getEndedTasks() == null) {
             query.where($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
-        } else if (Boolean.TRUE.equals(ctx.getQuickFilter().getEndedTasks())) {
+        } else if (Boolean.TRUE.equals(ctx.getBoxFilter().getEndedTasks())) {
             query.where($.taskVersion.type.eq(TaskType.END));
         } else {
             query.where($.task.endDate.isNull());
@@ -212,26 +212,26 @@ public class RequirementSearchQueryFactory {
     }
 
     private void appendFilterByTasks() {
-        if (!CollectionUtils.isEmpty(ctx.getQuickFilter().getTasks())) {
-            query.where($.taskVersion.name.in(ctx.getQuickFilter().getTasks()));
+        if (!CollectionUtils.isEmpty(ctx.getBoxFilter().getTasks())) {
+            query.where($.taskVersion.name.in(ctx.getBoxFilter().getTasks()));
         }
     }
 
     private void appendFilterByApplicant() {
-        QuickFilter quickFilter = ctx.getQuickFilter();
-        if (quickFilter.getIdPessoa() != null) {
-            query.where($.applicantEntity.idPessoa.eq(quickFilter.getIdPessoa()));
+        BoxFilter boxFilter = ctx.getBoxFilter();
+        if (boxFilter.getIdPessoa() != null) {
+            query.where($.applicantEntity.idPessoa.eq(boxFilter.getIdPessoa()));
         }
     }
 
     private void appendFilterByFlowDefinitionAbbreviation() {
-        QuickFilter quickFilter = ctx.getQuickFilter();
-        if (!quickFilter.isRascunho()
-                && quickFilter.getProcessesAbbreviation() != null
-                && !quickFilter.getProcessesAbbreviation().isEmpty()) {
-            BooleanExpression expr = $.flowDefinitionEntity.key.in(quickFilter.getProcessesAbbreviation());
-            if (quickFilter.getTypesNames() != null && !quickFilter.getTypesNames().isEmpty()) {
-                expr = expr.or($.formType.abbreviation.in(quickFilter.getTypesNames()));
+        BoxFilter boxFilter = ctx.getBoxFilter();
+        if (!boxFilter.isRascunho()
+                && boxFilter.getProcessesAbbreviation() != null
+                && !boxFilter.getProcessesAbbreviation().isEmpty()) {
+            BooleanExpression expr = $.flowDefinitionEntity.key.in(boxFilter.getProcessesAbbreviation());
+            if (boxFilter.getTypesNames() != null && !boxFilter.getTypesNames().isEmpty()) {
+                expr = expr.or($.formType.abbreviation.in(boxFilter.getTypesNames()));
             }
             query.where(expr);
         }
