@@ -18,94 +18,61 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.opensingular.lib.commons.base.SingularProperties;
-
-import java.util.Objects;
+import org.opensingular.lib.commons.base.SingularUtil;
+import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceSettings;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
 public abstract class ServerContext implements IServerContext {
-
-    private final String contextPath;
-    private final String propertiesBaseKey;
     private final String name;
+    private WorkspaceSettings settings;
+    private Workspace workspace;
 
-    public ServerContext(String name, String defaultPath, String propertiesBaseKey) {
+    public ServerContext(String name) {
         this.name = name;
-        this.propertiesBaseKey = propertiesBaseKey;
-        String key = propertiesBaseKey + ".context";
-        String path = SingularProperties.getOpt(key).orElse(null);
-        if (path == null || path.length() <= 0) {
-            path = defaultPath;
-        }
-        if (!path.endsWith("/*")) {
-            if (path.endsWith("*")) {
-                path = path.substring(0, path.length() - 2) + "/*";
-            } else if (path.endsWith("/")) {
-                path += "*";
-            } else {
-                path += "/*";
-            }
-        }
-        this.contextPath = path;
     }
 
-    @Override
-    public String getPropertiesBaseKey() {
-        return propertiesBaseKey;
-    }
+    public abstract void configure(WorkspaceSettings settings);
+
+    public abstract void configure(Workspace workspace);
 
     @Override
     public String getName() {
         return this.name;
     }
 
-    /**
-     * O contexto no formato aceito por servlets e filtros
-     *
-     * @return
-     */
-
     @Override
-    public String getContextPath() {
-        return contextPath;
-    }
+    public WorkspaceSettings getSettings() {
+        if (settings != null) {
+            return settings;
+        }
 
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
-     *
-     * @return
-     */
-    @Override
-    public String getPathRegex() {
-        return getContextPath().replaceAll("\\*", ".*");
-    }
+        String nameJavaIdentity = SingularUtil.convertToJavaIdentity(name, true).toLowerCase();
 
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
-     * sem a / ao final.
-     *
-     * @return
-     */
-    @Override
-    public String getUrlPath() {
-        String path = getContextPath().replace("*", "").replace(".", "").trim();
-        return path.endsWith("/") ? path.substring(0, path.length() - 1) : path;
+        settings = new WorkspaceSettings();
+        settings
+                .contextPath("/" + nameJavaIdentity + "/*")
+                .propertiesBaseKey("singular." + nameJavaIdentity)
+                .addPublicUrl("/wicket/resource/*")
+                .addPublicUrl("/public/*");
+
+        configure(settings);
+
+        return settings;
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        ServerContext that = (ServerContext) o;
-        return Objects.equals(contextPath, that.contextPath) &&
-                Objects.equals(name, that.name);
-    }
+    public Workspace getWorkspace() {
+        if (workspace != null) {
+            return workspace;
+        }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(contextPath, name);
+        workspace = new Workspace();
+        configure(workspace);
+
+        return workspace;
     }
 }

@@ -96,14 +96,14 @@ public interface SecurityConfigs {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http
-                    .regexMatcher(getContext().getPathRegex())
+                    .regexMatcher(getContext().getSettings().getPathRegex())
                     .authorizeRequests()
-                    .antMatchers(getContext().getContextPath()).hasRole("ADMIN")
+                    .antMatchers(getContext().getSettings().getContextPath()).hasRole("ADMIN")
                     .and()
                     .exceptionHandling().accessDeniedPage("/public/error/403")
                     .and()
                     .csrf().disable()
-                    .formLogin().permitAll().loginPage(getContext().getUrlPath() + "/login")
+                    .formLogin().permitAll().loginPage(getContext().getSettings().getUrlPath() + "/login")
                     .and()
                     .logout()
                     .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
@@ -140,7 +140,7 @@ public interface SecurityConfigs {
     abstract class AllowAllSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
         @Override
         protected void configure(HttpSecurity http) throws Exception {
-            http.regexMatcher(getContext().getPathRegex())
+            http.regexMatcher(getContext().getSettings().getPathRegex())
                     .requiresChannel()
                     .anyRequest()
                     .requiresSecure()
@@ -154,7 +154,7 @@ public interface SecurityConfigs {
                     .anyRequest()
                     .authenticated()
                     .and()
-                    .formLogin().permitAll().loginPage(getContext().getUrlPath() + "/login")
+                    .formLogin().permitAll().loginPage(getContext().getSettings().getUrlPath() + "/login")
                     .and()
                     .logout()
                     .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
@@ -193,7 +193,7 @@ public interface SecurityConfigs {
         @PostConstruct
         public void setup() {
             requestMappingHandlerMapping
-                    .registerMapping(RequestMappingInfo.paths(getContext().getUrlPath() + "/login").build(),
+                    .registerMapping(RequestMappingInfo.paths(getContext().getSettings().getUrlPath() + "/login").build(),
                             loginController(), new Mirror().on(LoginController.class)
                                     .reflect().method("getLoginView").withAnyArgs());
         }

@@ -261,7 +261,7 @@ public class HistoryPage extends ServerTemplate {
 
 
     protected String getBaseUrl() {
-        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getSettings().getUrlPath();
     }
 
     @Override

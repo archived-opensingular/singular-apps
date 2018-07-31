@@ -54,9 +54,9 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
      */
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        wicketFilter.setInitParameter("applicationClassName", context.getWicketApplicationClass().getName());
-        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
-        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
+        wicketFilter.setInitParameter("applicationClassName", context.getSettings().getWicketApplicationClass().getName());
+        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getSettings().getContextPath());
+        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getSettings().getContextPath());
     }
 
     /**
@@ -65,13 +65,13 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
     protected void addLogoutFilter(ServletContext ctx, IServerContext context) {
         ctx
                 .addFilter("singularLogoutFilter" + System.identityHashCode(context), SingularLogoutFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getUrlPath() + "/logout");
+                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getSettings().getUrlPath() + "/logout");
     }
 
     /**
      * Recupera a configuração de segurança por contexto, por padrão delega para o contexto atual
      */
     protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClassByContext(IServerContext context) {
-        return context.getSpringSecurityConfigClass();
+        return context.getSettings().getSpringSecurityConfigClass();
     }
 }

@@ -101,7 +101,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
 
         http
                 .addFilterBefore(newSSOFilter(), J2eePreAuthenticatedProcessingFilter.class)
-                .regexMatcher(getContext().getPathRegex())
+                .regexMatcher(getContext().getSettings().getPathRegex())
                 .exceptionHandling().authenticationEntryPoint((request, response, authException) -> response.sendRedirect("/login"))
                 .and()
                 .csrf().disable()
@@ -110,7 +110,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
                 .jee().j2eePreAuthenticatedProcessingFilter(j2eeFilter)
                 .and()
                 .authorizeRequests()
-                .antMatchers(getContext().getContextPath()).authenticated();
+                .antMatchers(getContext().getSettings().getContextPath()).authenticated();
 
 
 
@@ -124,7 +124,7 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
 
         Map<String, String> map = new HashMap<>();
         map.put(SSOConfigurableFilter.SINGULAR_CONTEXT_ATTRIBUTE, filterName);
-        map.put("logoutUrl", context.getUrlPath() + "/logout");
+        map.put("logoutUrl", context.getSettings().getUrlPath() + "/logout");
         map.put("urlExcludePattern", getExcludeUrlRegex());
 
         ssoFilter.init(new FilterConfig() {

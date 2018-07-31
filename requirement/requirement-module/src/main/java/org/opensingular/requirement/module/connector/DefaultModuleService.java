@@ -312,7 +312,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public String getBaseUrl() {
-        return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
+        return getModuleContext() + SingularSession.get().getServerContext().getSettings().getUrlPath();
     }
 
     /**

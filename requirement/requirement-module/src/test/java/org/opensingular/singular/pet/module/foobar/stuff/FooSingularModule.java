@@ -20,17 +20,14 @@ package org.opensingular.singular.pet.module.foobar.stuff;
 
 import org.opensingular.requirement.module.RequirementRegistry;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.WorkspaceConfiguration;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.builder.SingularRequirementBuilder;
 import org.opensingular.requirement.module.config.DefaultContexts;
+import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.workspace.DefaultDraftbox;
 import org.opensingular.requirement.module.workspace.DefaultInbox;
 import org.opensingular.requirement.module.workspace.DefaultOngoingbox;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 
 public class FooSingularModule implements SingularModule {
-
     public static final String GRUPO_TESTE = "GRUPO_TESTE";
 
     @Override
@@ -59,8 +56,8 @@ public class FooSingularModule implements SingularModule {
 
     public static class FooWorklistContext extends DefaultContexts.WorklistContext {
         @Override
-        public void setup(WorkspaceConfiguration workspaceConfiguration) {
-            workspaceConfiguration
+        public void configure(Workspace workspace) {
+            workspace
                     .addBox(DefaultInbox.class).newFor(FooRequirement.class)
                     .addBox(DefaultDraftbox.class);
         }
@@ -68,11 +65,10 @@ public class FooSingularModule implements SingularModule {
 
     public static class FooRequirementContext extends DefaultContexts.RequirementContext {
         @Override
-        public void setup(WorkspaceConfiguration workspaceConfiguration) {
-            workspaceConfiguration
+        public void configure(Workspace workspace) {
+            workspace
                     .addBox(DefaultDraftbox.class).newFor(FooRequirement.class)
                     .addBox(DefaultOngoingbox.class);
         }
     }
-
 }

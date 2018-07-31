@@ -40,7 +40,7 @@ public class SecurityAuthPathsFactory implements Serializable {
 
         UrlToolkitBuilder urlToolkitBuilder = new UrlToolkitBuilder();
 
-        return new SecurityAuthPaths(servletContext.getContextPath(), serverContext.getUrlPath(), urlToolkitBuilder);
+        return new SecurityAuthPaths(servletContext.getContextPath(), serverContext.getSettings().getUrlPath(), urlToolkitBuilder);
     }
 
 }

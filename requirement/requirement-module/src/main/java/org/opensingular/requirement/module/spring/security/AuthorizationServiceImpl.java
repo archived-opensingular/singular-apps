@@ -261,7 +261,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         boolean isAllowedUser = requirementId == null;
 
         if (requirementId != null) {
-            if (context.checkOwner()) {
+            if (context.getSettings().isCheckOwner()) {
                 isOwner = isOwner(requirementId, userId, applicantId);
 
             } else {

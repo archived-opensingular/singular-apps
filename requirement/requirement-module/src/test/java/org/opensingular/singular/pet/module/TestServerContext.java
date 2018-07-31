@@ -57,14 +57,14 @@ public class TestServerContext {
 
     @Test
     public void testRegexFromContextPath() {
-        Assert.assertEquals(WORKLIST_CONTEXT + "/*", worklist.getContextPath());
+        Assert.assertEquals(WORKLIST_CONTEXT + "/*", worklist.getSettings().getContextPath());
 
-        Pattern p = Pattern.compile(worklist.getPathRegex());
-        Matcher m = p.matcher(worklist.getContextPath());
+        Pattern p = Pattern.compile( worklist.getSettings().getPathRegex());
+        Matcher m = p.matcher( worklist.getSettings().getContextPath());
 
         Assert.assertTrue(m.find());
         Assert.assertEquals(0, m.groupCount());
-        Assert.assertEquals(worklist.getContextPath(), m.group());
+        Assert.assertEquals( worklist.getSettings().getContextPath(), m.group());
     }
 
 
@@ -72,12 +72,12 @@ public class TestServerContext {
     public void testUrlPath() {
         UrlValidator validator = new UrlValidator();
 
-        String path = worklist.getUrlPath() + "/pagina/testeurl";
+        String path =  worklist.getSettings().getUrlPath() + "/pagina/testeurl";
         String url = "http://127.0.0.1:8080" + path;
 
         Assert.assertTrue(validator.isValid(url));
 
-        Pattern p = Pattern.compile(worklist.getPathRegex());
+        Pattern p = Pattern.compile( worklist.getSettings().getPathRegex());
         Matcher m = p.matcher(url);
 
         Assert.assertTrue(m.find());

@@ -18,17 +18,14 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.Application;
 import org.apache.wicket.request.Request;
-import org.opensingular.requirement.module.WorkspaceConfiguration;
+import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceSettings;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
@@ -36,10 +33,18 @@ import java.util.List;
  */
 public interface IServerContext extends Serializable {
 
+    /**
+     * API_VIEW
+     */
+    @Deprecated
     static IServerContext getContextFromRequest(Request request, Collection<IServerContext> contexts) {
         return getContextFromRequest((HttpServletRequest) request.getContainerRequest(), contexts);
     }
 
+    /**
+     * API_VIEW
+     */
+    @Deprecated
     static IServerContext getContextFromName(String name, Collection<IServerContext> contexts) {
         for (IServerContext ctx : contexts) {
             if (name.equals(ctx.getName())) {
@@ -49,82 +54,41 @@ public interface IServerContext extends Serializable {
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
+    /**
+     * API_VIEW
+     */
+    @Deprecated
     static IServerContext getContextFromRequest(HttpServletRequest request, Collection<IServerContext> contexts) {
         String contextPath = request.getContextPath();
         String context = request.getPathInfo().replaceFirst(contextPath, "");
         for (IServerContext ctx : contexts) {
-            if (context.startsWith(ctx.getUrlPath())) {
+            if (context.startsWith(ctx.getSettings().getUrlPath())) {
                 return ctx;
             }
         }
         throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
     }
 
+    /**
+     * API_VIEW
+     */
+    @Deprecated
     default String getServerPropertyKey(String basePropertyKey) {
-        return getPropertiesBaseKey() + "." + basePropertyKey;
+        return getSettings().getPropertiesBaseKey() + "." + basePropertyKey;
     }
 
     /**
-     * O contexto no formato aceito por servlets e filtros
-     */
-    String getContextPath();
-
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
-     */
-    String getPathRegex();
-
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
-     * sem a / ao final.
-     */
-    String getUrlPath();
-
-    /**
-     * Informa o nome teste contexto
+     * @return the name of the context
      */
     String getName();
 
     /**
-     * Informa a aplicação wicket deste contexto
+     * @return the workspace settings of the context
      */
-    Class<? extends Application> getWicketApplicationClass();
+    WorkspaceSettings getSettings();
 
     /**
-     * Informa a configuração do spring security para este contexto
+     * @return the workspace of the context
      */
-    Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass();
-
-    /**
-     * Informa se os requerimentos que passarem por esse contexto deve ter seus owners checkados
-     *
-     * @deprecated API_REVIEW
-     */
-    @Deprecated
-    default boolean checkOwner() {
-        return false;
-    }
-
-    /**
-     *
-     */
-    @Deprecated
-    String getPropertiesBaseKey();
-
-    /**
-     * Contexts public urls
-     *
-     * @return
-     */
-    default List<String> getPublicUrls() {
-        ArrayList<String> urls = new ArrayList<>();
-        urls.add("/wicket/resource/*");
-        urls.add("/public/*");
-        return urls;
-    }
-
-    /**
-     * Configura o workspace, adicionando caixas e outros itens
-     */
-    void setup(WorkspaceConfiguration workspaceConfiguration);
+    Workspace getWorkspace();
 }
