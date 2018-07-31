@@ -53,7 +53,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
 
@@ -110,7 +109,6 @@ public class Menu extends Panel implements Loggable {
 
         for (MenuItemConfig t : subMenus) {
             PageParameters pageParameters = new PageParameters();
-            pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
             pageParameters.add(ITEM_PARAM_NAME, t.name);
 
             MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);

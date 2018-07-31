@@ -24,6 +24,7 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
@@ -41,7 +42,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
@@ -54,30 +54,30 @@ public class BoxPage extends ServerBoxTemplate {
     @SpringBean(required = false)
     private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
+    @Inject
+    private SingularModuleConfiguration singularModuleConfiguration;
+
     public BoxPage(PageParameters parameters) {
         super(parameters);
         addBox();
     }
 
     public void addBox() {
-        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (isAccessWithoutParams(menu, item)) {
+        if (isAccessWithoutParams(item)) {
             for (BoxConfigurationData box : workspaceConfigurationMetadata.getBoxesConfiguration()) {
-                menu = box.getLabel();
                 PageParameters pageParameters = new PageParameters();
-
                 addItemParam(box, pageParameters);
-
-                pageParameters.add(MENU_PARAM_NAME, menu);
                 throw new RestartResponseException(getPageClass(), pageParameters);
             }
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
         if (workspaceConfigurationMetadata != null) {
-            boxConfigurationMetadata = workspaceConfigurationMetadata.getMenuByLabel(menu).orElse(null);
+            boxConfigurationMetadata = workspaceConfigurationMetadata
+                    .getMenuByLabel(singularModuleConfiguration.getModuleCod())
+                    .orElse(null);
         }
         if (boxConfigurationMetadata != null) {
             boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
@@ -95,10 +95,8 @@ public class BoxPage extends ServerBoxTemplate {
         throw new RestartResponseException(Page403.class);
     }
 
-    private boolean isAccessWithoutParams(String menu, String item) {
-        return menu == null
-                && item == null
-                && workspaceConfigurationMetadata != null;
+    private boolean isAccessWithoutParams(String item) {
+        return item == null && workspaceConfigurationMetadata != null;
     }
 
     private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
