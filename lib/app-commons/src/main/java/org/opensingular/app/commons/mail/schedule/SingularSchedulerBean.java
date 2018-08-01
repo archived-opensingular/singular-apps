@@ -335,9 +335,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
      * Set whether to automatically start the scheduler after initialization.
      * <p>Default is "true"; set this to "false" to allow for manual startup.
      */
-    public void setAutoStartup(boolean autoStartup) {
-        this.autoStartup = autoStartup;
-    }
+    public void setAutoStartup(boolean autoStartup) {}
 
     /**
      * Specify the phase in which this scheduler should be started and
