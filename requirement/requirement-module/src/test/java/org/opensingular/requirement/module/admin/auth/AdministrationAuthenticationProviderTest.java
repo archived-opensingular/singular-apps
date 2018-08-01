@@ -26,12 +26,12 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -46,7 +46,7 @@ public class AdministrationAuthenticationProviderTest {
     private AdministrationAuthenticationProvider administrationAuthenticationProvider;
 
     @Mock
-    SingularModuleConfigurationBean moduleConfiguration;
+    SingularModuleConfiguration moduleConfiguration;
 
     @Mock
     SingularModule module;

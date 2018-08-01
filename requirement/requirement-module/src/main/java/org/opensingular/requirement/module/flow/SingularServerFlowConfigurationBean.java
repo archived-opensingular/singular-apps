@@ -18,23 +18,23 @@
 
 package org.opensingular.requirement.module.flow;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.persistence.util.HibernateSingularFlowConfigurationBean;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.schedule.IScheduleService;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 public class SingularServerFlowConfigurationBean extends HibernateSingularFlowConfigurationBean implements Loggable {
 
     @Inject
-    protected SingularModuleConfigurationBean singularServerConfiguration;
+    protected SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
     protected PlatformTransactionManager transactionManager;
@@ -44,12 +44,12 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
 
     @PostConstruct
     protected void postConstruct() {
-        this.setModuleCod(singularServerConfiguration.getModuleCod());
-        this.setDefinitionsPackages(singularServerConfiguration.getDefinitionsPackages());
+        this.setModuleCod(singularModuleConfiguration.getModuleCod());
+        this.setDefinitionsPackages(singularModuleConfiguration.getDefinitionsPackages());
         Flow.setConf(this, true);
         initializeFlowDefinitionsDatabase();
     }
-    
+
     @Override
     protected IScheduleService getScheduleService() {
         return scheduleService;
@@ -62,7 +62,7 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
                 getLogger().info("INITIALIZING FLOW DEFINITIONS");
                 getDefinitions().forEach(d -> {
                     try {
-                        getLogger().info("INITIALIZING {}....",  d.getName());
+                        getLogger().info("INITIALIZING {}....", d.getName());
                         d.getEntityFlowVersion();
                     } catch (Exception e) {
                         getLogger().error(e.getMessage(), e);

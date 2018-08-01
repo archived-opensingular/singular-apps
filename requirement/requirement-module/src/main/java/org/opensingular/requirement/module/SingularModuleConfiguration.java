@@ -19,34 +19,48 @@
 package org.opensingular.requirement.module;
 
 
+import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-
 public class SingularModuleConfiguration {
-
-    public static String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
 
     private SingularModule module;
     private WorkspaceRegistry workspaceRegistry;
     private RequirementRegistry requirementRegistry;
+    private List<Class<? extends SType<?>>> formTypes;
+    private String[] definitionsPackages;
+    private List<String> publicUrls = new ArrayList<>();
+
+    /**
+     * Cache for the already created controllers
+     */
+    private Map<String, BoxController> controllers = new HashMap<>();
 
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
         resolveRequirements(applicationContext);
         resolveWorkspace(applicationContext);
+
+        for (IServerContext ctx : workspaceRegistry.listContexts()) {
+            this.publicUrls.addAll(ctx.getPublicUrls());
+        }
     }
 
     private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
@@ -103,6 +117,48 @@ public class SingularModuleConfiguration {
 
     public SingularModule getModule() {
         return module;
+    }
+
+    public void setFormTypes(List<Class<? extends SType<?>>> formTypes) {
+        this.formTypes = formTypes;
+    }
+
+    public List<String> getPublicUrls() {
+        return publicUrls;
+    }
+
+    public void addPublicUrl(String url) {
+        publicUrls.add(url);
+    }
+
+    public void initDefinitionsPackages(Set<Class<? extends RequirementFlowDefinition>> definitions) {
+        definitionsPackages = definitions.stream().map(c -> c.getPackage().getName()).distinct().toArray(String[]::new);
+    }
+
+    public String[] getDefinitionsPackages() {
+        return definitionsPackages;
+    }
+
+    public List<Class<? extends SType<?>>> getFormTypes() {
+        if (formTypes == null) {
+            return Collections.emptyList();
+        } else {
+            return Collections.unmodifiableList(formTypes);
+        }
+    }
+
+    public String getModuleCod() {
+        return getModule().abbreviation();
+    }
+
+    public IServerContext findContextByName(String name) {
+        return workspaceRegistry.listContexts()
+                .stream()
+                .filter(i -> i.getName().equals(name)).findFirst().orElse(null);
+    }
+
+    public Map<String, BoxController> getControllers() {
+        return controllers;
     }
 
     public Set<IServerContext> getContexts() {
