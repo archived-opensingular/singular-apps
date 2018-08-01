@@ -3,6 +3,7 @@ package org.opensingular.requirement.module.workspace;
 import org.opensingular.requirement.module.ActionProviderBuilder;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
 
 import javax.inject.Inject;
@@ -12,10 +13,25 @@ import javax.inject.Inject;
  */
 public abstract class AbstractRequirementBoxDefinition implements BoxDefinition {
     /**
+     * The ItenBox, will be created on first call to {@link BoxDefinition#getItemBox()}
+     */
+    private ItemBox itemBox;
+
+    /**
      * The factory responsible for create the {@link RequirementBoxItemDataProvider}
      */
     @Inject
     private RequirementBoxItemDataProviderFactory requirementBoxItemDataProviderFactory;
+
+    @Override
+    public ItemBox getItemBox() {
+        if(itemBox == null){
+            itemBox = new ItemBox();
+            itemBox.setBoxDefinitionClass(getClass());
+            configure(itemBox);
+        }
+        return itemBox;
+    }
 
     @Override
     public RequirementBoxItemDataProvider getDataProvider() {
@@ -49,4 +65,11 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
      * @param builder to add actions
      */
     protected abstract void addActions(ActionProviderBuilder builder);
+
+    /**
+     * Configure the ItemBox, settings things like name, description...
+     *
+     * @param itemBox the ItemBox that should be configured
+     */
+    protected abstract void configure(ItemBox itemBox);
 }

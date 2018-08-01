@@ -85,8 +85,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void configureQuickFilter() {
-        getFiltroRapido().setVisible(isShowQuickFilter());
-        getPesquisarButton().setVisible(isShowQuickFilter());
+        ItemBox itemBox = definitionModel.getObject().getItemBox();
+        getFiltroRapido().setVisible(itemBox.isShowQuickFilter());
+        getPesquisarButton().setVisible(itemBox.isShowQuickFilter());
     }
 
     @Override
@@ -301,9 +302,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return boxPage.createFilter()
                 .withFilter(getFiltroRapidoModelObject())
                 .withProcessesAbbreviation(getProcessesNames())
-                .withTypesNames(getFormNames())
-                .withRascunho(isWithRascunho())
-                .withEndedTasks(getItemBoxModelObject().getEndedTasks());
+                .withTypesNames(getFormNames());
     }
 
     private BoxPage getBoxPage() {
@@ -353,24 +352,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 
-    public boolean isShowQuickFilter() {
-        return getItemBoxModelObject().isQuickFilter();
-    }
-
     public List<DatatableField> getFieldsDatatable() {
         return getItemBoxModelObject().getFieldsDatatable();
-    }
-
-    public String getSearchEndpoint() {
-        return getItemBoxModelObject().getSearchEndpoint();
-    }
-
-    public String getCountEndpoint() {
-        return getItemBoxModelObject().getCountEndpoint();
-    }
-
-    public boolean isWithRascunho() {
-        return getItemBoxModelObject().isShowDraft();
     }
 
     private ItemBox getItemBoxModelObject() {

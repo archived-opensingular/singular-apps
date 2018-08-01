@@ -19,6 +19,7 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -29,11 +30,11 @@ import java.util.List;
  */
 public interface BoxDefinition {
     /**
-     * Builds an {@link ItemBox}. This method do not need to check if the {@param context} is supported.
+     * Get the ItemBox that represents this box definition
      *
-     * @return An proper configured ItemBox
+     * @return a configured ItemBox
      */
-    ItemBox build();
+    ItemBox getItemBox();
 
     /**
      * @return the data provider responsible for populate the box data
@@ -44,4 +45,13 @@ public interface BoxDefinition {
      * @return the fields that are expected to show in the box
      */
     List<DatatableField> getDatatableFields();
+
+    /**
+     * Create a BoxFilter, this method must always return a new instance
+     *
+     * @return a fresh BoxFilter
+     */
+    default BoxFilter createBoxFilter(){
+        return new BoxFilter();
+    }
 }

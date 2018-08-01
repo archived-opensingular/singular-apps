@@ -61,6 +61,8 @@ import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.beans.factory.BeanFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -109,15 +111,18 @@ public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
     private FormTypesProvider formTypesProvider;
 
+    @Inject
+    private BeanFactory beanFactory;
+
     @Override
     public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
-        BoxFilter filter = new BoxFilter()
+        BoxDefinition boxDefinition = beanFactory.getBean(box.getBoxDefinitionClass());
+        BoxFilter boxFilter = boxDefinition.createBoxFilter();
+        boxFilter
                 .withProcessesAbbreviation(flowNames)
-                .withRascunho(box.isShowDraft())
-                .withEndedTasks(box.getEndedTasks())
                 .withIdUsuarioLogado(loggedUser)
                 .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
-        return String.valueOf(count(box.getId(), filter));
+        return String.valueOf(count(box.getId(), boxFilter));
     }
 
     @Override

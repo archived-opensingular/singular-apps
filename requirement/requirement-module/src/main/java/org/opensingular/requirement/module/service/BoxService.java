@@ -77,7 +77,7 @@ public class BoxService {
 
     public BoxDefinitionData buildBoxDefinitionData(BoxInfo boxInfo, IServerContext context) {
         BoxDefinition factory = beanFactory.getBean(boxInfo.getBoxDefinitionClass());
-        ItemBox itemBox = factory.build();
+        ItemBox itemBox = factory.getItemBox();
         itemBox.setFieldsDatatable(factory.getDatatableFields());
         itemBox.setId(boxInfo.getBoxId());
         return new BoxDefinitionData(itemBox, boxInfo.getRequirements());

@@ -51,7 +51,6 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
         teste.setName("Rascunho");
         teste.setDescription("Petições de rascunho");
         teste.setIcone(DefaultIcons.DOCS);
-        teste.setShowDraft(true);
         teste.setId("1");
         teste.setFieldsDatatable(getDatatableFields());
         boxDefinitionData.setRequirements(new LinkedHashSet<>());

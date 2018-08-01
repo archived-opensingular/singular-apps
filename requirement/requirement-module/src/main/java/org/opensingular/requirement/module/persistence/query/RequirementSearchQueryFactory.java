@@ -117,7 +117,7 @@ public class RequirementSearchQueryFactory {
     }
 
     private void applyDefaultOrderBy() {
-        if (ctx.getBoxFilter().isRascunho()) {
+        if (ctx.getBoxFilter().isShowDraft()) {
             query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(CREATION_DATE)));
         } else {
             query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(PROCESS_BEGIN_DATE)));
@@ -184,7 +184,7 @@ public class RequirementSearchQueryFactory {
         appendFilterByApplicant();
         appendFilterByFlowDefinitionAbbreviation();
         appendFilterByTasks();
-        if (ctx.getBoxFilter().isRascunho()) {
+        if (ctx.getBoxFilter().isShowDraft()) {
             appendFilterByRequirementsWithoutFlowInstance();
         } else {
             appendFilterByRequirementsWithFlowInstance();
@@ -219,14 +219,16 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByApplicant() {
         BoxFilter boxFilter = ctx.getBoxFilter();
-        if (boxFilter.getIdPessoa() != null) {
-            query.where($.applicantEntity.idPessoa.eq(boxFilter.getIdPessoa()));
+        if (boxFilter.isCheckApplicant()) {
+            if (boxFilter.getIdPessoa() != null) {
+                query.where($.applicantEntity.idPessoa.eq(boxFilter.getIdPessoa()));
+            }
         }
     }
 
     private void appendFilterByFlowDefinitionAbbreviation() {
         BoxFilter boxFilter = ctx.getBoxFilter();
-        if (!boxFilter.isRascunho()
+        if (!boxFilter.isShowDraft()
                 && boxFilter.getProcessesAbbreviation() != null
                 && !boxFilter.getProcessesAbbreviation().isEmpty()) {
             BooleanExpression expr = $.flowDefinitionEntity.key.in(boxFilter.getProcessesAbbreviation());
@@ -261,5 +263,4 @@ public class RequirementSearchQueryFactory {
     private BooleanExpression toCharDateShort(Path<?> path, String filter) {
         return Expressions.stringTemplate(TO_CHAR_DATE_SHORT, path).like(filter);
     }
-
 }

@@ -18,40 +18,26 @@
 
 package org.opensingular.requirement.module.service.dto;
 
-import java.io.Serializable;
-import java.util.List;
-
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+
+import java.io.Serializable;
+import java.util.List;
 
 public class ItemBox implements Serializable {
-
-    private static final long serialVersionUID = 1L;
 
     private String id;
     private String name;
     private String description;
     private String helpText;
-    private boolean quickFilter       = true;
-    private boolean showDraft         = false;
-    private boolean showHistoryAction = true;
-    private Boolean              endedTasks;
-    private Icon                 icon;
+    private Icon icon;
     private List<DatatableField> fieldsDatatable;
-
-    public ItemBox() {
-    }
-
-    public boolean isShowHistoryAction() {
-        return showHistoryAction;
-    }
-
-    public void setShowHistoryAction(boolean showHistoryAction) {
-        this.showHistoryAction = showHistoryAction;
-    }
+    private boolean showQuickFilter = true;
+    private Class<? extends BoxDefinition> boxDefinitionClass;
 
     public String getName() {
         return name;
@@ -69,28 +55,12 @@ public class ItemBox implements Serializable {
         this.description = description;
     }
 
-    public boolean isQuickFilter() {
-        return quickFilter;
-    }
-
-    public void setQuickFilter(boolean quickFilter) {
-        this.quickFilter = quickFilter;
-    }
-
     public List<DatatableField> getFieldsDatatable() {
         return fieldsDatatable;
     }
 
     public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
         this.fieldsDatatable = fieldsDatatable;
-    }
-
-    public boolean isShowDraft() {
-        return showDraft;
-    }
-
-    public void setShowDraft(boolean showDraft) {
-        this.showDraft = showDraft;
     }
 
     @JsonSerialize(using = IconJsonSerializer.class)
@@ -103,15 +73,6 @@ public class ItemBox implements Serializable {
         this.icon = icon;
     }
 
-    public Boolean getEndedTasks() {
-        return endedTasks;
-    }
-
-    @Deprecated
-    public void setEndedTasks(Boolean endedTasks) {
-        this.endedTasks = endedTasks;
-    }
-
     public String getId() {
         return id;
     }
@@ -120,19 +81,32 @@ public class ItemBox implements Serializable {
         this.id = id;
     }
 
-    public String getSearchEndpoint() {
-        return "/search/" + id;
-    }
-
-    public String getCountEndpoint() {
-        return "/count/" + id;
-    }
-
     public String getHelpText() {
         return helpText;
     }
 
     public void setHelpText(String helpText) {
         this.helpText = helpText;
+    }
+
+    public Class<? extends BoxDefinition> getBoxDefinitionClass() {
+        return boxDefinitionClass;
+    }
+
+    public void setBoxDefinitionClass(Class<? extends BoxDefinition> boxDefinitionClass) {
+        this.boxDefinitionClass = boxDefinitionClass;
+    }
+
+    public boolean isShowQuickFilter() {
+        return showQuickFilter;
+    }
+
+    /**
+     * Indicates if the quick filter field should be displayed
+     *
+     * @param showQuickFilter the indicator
+     */
+    public void setShowQuickFilter(boolean showQuickFilter) {
+        this.showQuickFilter = showQuickFilter;
     }
 }

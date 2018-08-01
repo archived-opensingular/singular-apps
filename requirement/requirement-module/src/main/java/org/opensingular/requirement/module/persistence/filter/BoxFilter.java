@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.persistence.filter;
 
+import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
@@ -26,7 +29,7 @@ import java.util.List;
 public class BoxFilter implements Serializable {
 
     private String filter;
-    private boolean rascunho;
+    private boolean showDraft;
     private String idPessoa;
     private String idUsuarioLogado;
     private int first;
@@ -37,6 +40,7 @@ public class BoxFilter implements Serializable {
     private List<String> tasks;
     private List<String> processesAbbreviation;
     private List<String> typesNames;
+    private boolean checkApplicant = false;
 
     public BoxFilter withFilter(String filter) {
         this.filter = filter;
@@ -58,15 +62,6 @@ public class BoxFilter implements Serializable {
 
     public BoxFilter withIdPessoa(String idPessoa) {
         this.idPessoa = idPessoa;
-        return this;
-    }
-
-    public boolean isRascunho() {
-        return rascunho;
-    }
-
-    public BoxFilter withRascunho(boolean rascunho) {
-        this.rascunho = rascunho;
         return this;
     }
 
@@ -168,4 +163,42 @@ public class BoxFilter implements Serializable {
         return filter;
     }
 
+    /**
+     * Indicates if the requirement owner should be checked
+     *
+     * @param checkApplicant the indicator
+     * @return the BoxFilter
+     * @see RequirementEntity
+     * @see ApplicantEntity
+     */
+    public BoxFilter withCheckApplicant(boolean checkApplicant) {
+        this.checkApplicant = checkApplicant;
+        return this;
+    }
+
+    /**
+     * Indicates whether requirements that are not yet bound to a to flow instance should be displayed
+     *
+     * @param showDraft the indicator
+     * @return the BoxFilter
+     * @see RequirementEntity#flowInstanceEntity
+     */
+    public BoxFilter withShowDraft(boolean showDraft) {
+        this.showDraft = showDraft;
+        return this;
+    }
+
+    /**
+     * @return the checkApplicant value
+     */
+    public boolean isCheckApplicant() {
+        return checkApplicant;
+    }
+
+    /**
+     * @return the showDraft value
+     */
+    public boolean isShowDraft() {
+        return showDraft;
+    }
 }

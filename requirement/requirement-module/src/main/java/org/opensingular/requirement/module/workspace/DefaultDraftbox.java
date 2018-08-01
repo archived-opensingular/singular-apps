@@ -20,6 +20,7 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -28,14 +29,10 @@ import java.util.List;
 
 public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build() {
-        final ItemBox rascunho = new ItemBox();
-        rascunho.setName("Rascunho");
-        rascunho.setDescription("Requerimentos de rascunho");
-        rascunho.setIcone(DefaultIcons.DOCS);
-        rascunho.setShowHistoryAction(false);
-        rascunho.setShowDraft(true);
-        return rascunho;
+    public void configure(ItemBox itemBox) {
+        itemBox.setName("Rascunho");
+        itemBox.setDescription("Requerimentos de rascunho");
+        itemBox.setIcone(DefaultIcons.DOCS);
     }
 
     @Override
@@ -58,5 +55,12 @@ public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
         fields.add(DatatableField.of("Dt. Edição", "editionDate"));
         fields.add(DatatableField.of("Data de Entrada", "creationDate"));
         return fields;
+    }
+
+    @Override
+    public BoxFilter createBoxFilter() {
+        return super.createBoxFilter()
+                .withShowDraft(true)
+                .withCheckApplicant(true);
     }
 }

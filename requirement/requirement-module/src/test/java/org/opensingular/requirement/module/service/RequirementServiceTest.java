@@ -223,7 +223,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         assertEquals(qtdEnviada, maps1.size());
 
         BoxFilter f2 = new BoxFilter();
-        f2.withRascunho(true).withSortProperty("description");
+        f2.withShowDraft(true).withSortProperty("description");
         List<Map<String, Serializable>> maps2 = requirementService.quickSearchMap(f2);
         assertEquals(qtdRascunho, maps2.size());
 
