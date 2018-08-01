@@ -16,7 +16,9 @@ import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
@@ -36,7 +38,7 @@ import java.util.stream.Stream;
  *          Force Transition to disapproved.
  *          Requeriment A - disapproved
  */
-public class RequirementTransitionPanel extends Panel {
+public class RequirementTransitionPanel extends Panel implements Loggable {
 
 
     private static final String MASK_99_MILLION = "99999999";
@@ -88,10 +90,11 @@ public class RequirementTransitionPanel extends Panel {
                     try {
                         RequirementInstance requirement = requirementService.getRequirement(Long.valueOf(idRequirement.getObject()));
                         instance = requirement.getFlowInstance();
-                        requirementTask.setObject(instance.getCurrentTask().get().getName());
+                        requirementTask.setObject(instance.getCurrentTask().map(TaskInstance::getName).orElse(null));
                         dropDownChoice.setVisible(true);
                         target.add(form);
                     } catch (SingularServerException e) {
+                        getLogger().debug(e.getMessage(), e);
                         instance = null;
                         dropDownChoice.setVisible(false);
                         target.add(form);
