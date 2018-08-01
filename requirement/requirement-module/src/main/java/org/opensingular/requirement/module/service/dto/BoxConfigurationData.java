@@ -24,28 +24,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class BoxConfigurationData implements Serializable {
-    private String id;
-    private String label;
     private List<BoxDefinitionData> itemBoxesMetadata;
     private List<FlowDefinitionDTO> processes;
 
     public BoxConfigurationData() {
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getLabel() {
-        return label;
-    }
-
-    public void setLabel(String label) {
-        this.label = label;
     }
 
     public List<FlowDefinitionDTO> getProcesses() {
@@ -97,6 +79,4 @@ public class BoxConfigurationData implements Serializable {
     public List<FormDTO> getForms() {
         return new ArrayList<>(0);
     }
-
-
 }

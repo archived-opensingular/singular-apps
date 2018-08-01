@@ -36,10 +36,10 @@ import javax.inject.Inject;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -59,10 +59,10 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
-        doNothing().when(authorizationService).filterBoxWithPermissions(any(), any());
+        doReturn(true).when(authorizationService).hasPermission(any(), any(), any());
         WorkspaceConfigurationMetadata workspaceConfigurationMetadata = moduleService
                 .loadWorkspaceConfiguration(DefaultContexts.RequirementContext.NAME, "vinicius.nunes");
-        assertFalse(workspaceConfigurationMetadata.getBoxesConfiguration().isEmpty());
+        assertNotNull(workspaceConfigurationMetadata.getBoxConfiguration());
     }
 
     @Test

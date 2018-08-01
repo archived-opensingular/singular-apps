@@ -22,7 +22,6 @@ import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
 import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
@@ -54,10 +53,10 @@ import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -69,7 +68,6 @@ import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -191,7 +189,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
         return paramsValue.toString();
     }
 
-    public List<BoxConfigurationData> listMenu(String context, String user) {
+    public BoxConfigurationData listMenu(String context, String user) {
         return listMenu(IServerContext.getContextFromName(context, singularModuleConfiguration.getContexts()), user);
     }
 
@@ -214,37 +212,25 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    private List<BoxConfigurationData> listMenu(IServerContext context, String user) {
-        List<BoxConfigurationData> groups = listMenuGroups();
-        filterAccessRight(groups, user);
-        customizeMenu(groups, context, user);
-        return groups;
+    private BoxConfigurationData listMenu(IServerContext context, String user) {
+        BoxConfigurationData boxConfigurationData = listMenuGroups();
+        if (hasAccessRight(boxConfigurationData, user)) {
+            customizeMenu(boxConfigurationData, context, user);
+            return boxConfigurationData;
+        }
+        return null;
     }
 
-    private List<BoxConfigurationData> listMenuGroups() {
-        final List<BoxConfigurationData> groups = new ArrayList<>();
-        getDefinitionsMap().forEach((category, definitions) -> {
-            BoxConfigurationData boxConfigurationMetadata = new BoxConfigurationData();
-            boxConfigurationMetadata.setId(permissionResolverService.buildCategoryPermission(category).getSingularId());
-            boxConfigurationMetadata.setLabel(category);
-            boxConfigurationMetadata.setProcesses(new ArrayList<>());
-            definitions.forEach(d -> boxConfigurationMetadata.getProcesses().add(new FlowDefinitionDTO(d.getKey(), d.getName())));
+    private BoxConfigurationData listMenuGroups() {
+        BoxConfigurationData boxConfigurationMetadata = new BoxConfigurationData();
+        boxConfigurationMetadata.setProcesses(new ArrayList<>());
+        Flow.getDefinitions().forEach(flowDefinition -> {
+            boxConfigurationMetadata.getProcesses().add(new FlowDefinitionDTO(flowDefinition.getKey(), flowDefinition.getName()));
             addForms(boxConfigurationMetadata);
-            groups.add(boxConfigurationMetadata);
         });
-        return groups;
+        return boxConfigurationMetadata;
     }
 
-    private Map<String, List<FlowDefinition>> getDefinitionsMap() {
-        final Map<String, List<FlowDefinition>> definitionMap = new HashMap<>();
-        Flow.getDefinitions().forEach(d -> {
-            if (!definitionMap.containsKey(d.getCategory())) {
-                definitionMap.put(d.getCategory(), new ArrayList<>());
-            }
-            definitionMap.get(d.getCategory()).add(d);
-        });
-        return definitionMap;
-    }
 
     @SuppressWarnings("unchecked")
     private void addForms(BoxConfigurationData boxConfigurationMetadata) {
@@ -259,14 +245,13 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    private void filterAccessRight(List<BoxConfigurationData> groupDTOs, String user) {
-        authorizationService.filterBoxWithPermissions(groupDTOs, user);
+    private boolean hasAccessRight(BoxConfigurationData boxConfigurationData, String user) {
+        return authorizationService.hasPermission(boxConfigurationData, user, permissionResolverService
+                .buildCategoryPermission(singularModuleConfiguration.getModuleCod()).getSingularId());
     }
 
-    private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
-        for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
-            boxConfigurationMetadata.setBoxesDefinition(boxService.buildItemBoxes(menuContext));
-        }
+    private void customizeMenu(BoxConfigurationData boxConfigurationData, IServerContext menuContext, String user) {
+        boxConfigurationData.setBoxesDefinition(boxService.buildItemBoxes(menuContext));
     }
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
@@ -275,7 +260,9 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user) {
-        return new WorkspaceConfigurationMetadata(listMenu(context, user));
+        WorkspaceConfigurationMetadata workspaceConfigurationMetadata = new WorkspaceConfigurationMetadata();
+        workspaceConfigurationMetadata.setBoxConfiguration(listMenu(context, user));
+        return workspaceConfigurationMetadata;
     }
 
     @Override

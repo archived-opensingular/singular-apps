@@ -70,7 +70,8 @@ public class BoxPage extends ServerBoxTemplate {
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
         if (isAccessWithoutParams(item)) {
-            for (BoxConfigurationData box : workspaceConfigurationMetadata.getBoxesConfiguration()) {
+            BoxConfigurationData box = workspaceConfigurationMetadata.getBoxConfiguration();
+            if (box != null) {
                 PageParameters pageParameters = new PageParameters();
                 addItemParam(box, pageParameters);
                 throw new RestartResponseException(getPageClass(), pageParameters);
@@ -79,9 +80,7 @@ public class BoxPage extends ServerBoxTemplate {
 
         BoxConfigurationData boxConfigurationMetadata = null;
         if (workspaceConfigurationMetadata != null) {
-            boxConfigurationMetadata = workspaceConfigurationMetadata
-                    .getMenuByLabel(singularModuleConfiguration.getModuleCod())
-                    .orElse(null);
+            boxConfigurationMetadata = workspaceConfigurationMetadata.getBoxConfiguration();
         }
         if (boxConfigurationMetadata != null) {
             boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
@@ -111,7 +110,7 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected Component newBoxContent(String id, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, boxConfigurationMetadata.getLabel(), boxDefinitionData);
+        return new BoxContent(id, singularModuleConfiguration.getModuleCod(), boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

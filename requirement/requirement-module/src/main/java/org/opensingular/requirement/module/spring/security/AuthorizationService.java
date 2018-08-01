@@ -33,8 +33,7 @@ public interface AuthorizationService extends Loggable {
     String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
     String SEPARATOR                    = "|$|";
 
-
-    void filterBoxWithPermissions(List<BoxConfigurationData> groupDTOs, String idUsuario);
+    boolean hasPermission(BoxConfigurationData boxConfigurationData, String idUsuario, String permissionKey);
 
     void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario);
 

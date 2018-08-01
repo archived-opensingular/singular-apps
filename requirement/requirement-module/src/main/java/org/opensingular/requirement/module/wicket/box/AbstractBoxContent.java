@@ -253,7 +253,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
             if (workspaceConfigurationMetadata != null) {
-                Optional<BoxConfigurationData> boxConfig = workspaceConfigurationMetadata.getMenuByLabel(getMenu());
+                Optional<BoxConfigurationData> boxConfig = Optional.ofNullable(workspaceConfigurationMetadata.getBoxConfiguration());
                 setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
                 setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
             }

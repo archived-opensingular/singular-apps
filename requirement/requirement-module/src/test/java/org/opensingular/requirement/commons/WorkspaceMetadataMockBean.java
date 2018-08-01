@@ -20,7 +20,11 @@ package org.opensingular.requirement.commons;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.service.dto.*;
+import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.springframework.context.annotation.Primary;
 
 import javax.annotation.PostConstruct;
@@ -28,7 +32,6 @@ import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.Optional;
 
 @Primary
 @Named("workspaceConfigurationMetadata")
@@ -38,10 +41,7 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
     @PostConstruct
     public void init() {
         w = new WorkspaceConfigurationMetadata();
-        w.setBoxesConfiguration(new ArrayList<>());
         BoxConfigurationData box = new BoxConfigurationData();
-        box.setId("id-teste-SingularServerSessionConfigurationMock");
-        box.setLabel("super caixa");
         box.setProcesses(new ArrayList<>());
         FlowDefinitionDTO p = new FlowDefinitionDTO("ajaaja", "ajaaja");
         box.getProcesses().add(p);
@@ -57,7 +57,7 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
         boxDefinitionData.getRequirements().add(null);
         boxDefinitionData.setItemBox(teste);
         box.getBoxesDefinition().add(boxDefinitionData);
-        w.getBoxesConfiguration().add(box);
+        w.setBoxConfiguration(box);
     }
 
     private List<DatatableField> getDatatableFields() {
@@ -69,17 +69,12 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
     }
 
     @Override
-    public List<BoxConfigurationData> getBoxesConfiguration() {
-        return w.getBoxesConfiguration();
+    public BoxConfigurationData getBoxConfiguration() {
+        return w.getBoxConfiguration();
     }
 
     @Override
-    public void setBoxesConfiguration(List<BoxConfigurationData> boxesConfiguration) {
-        w.setBoxesConfiguration(boxesConfiguration);
-    }
-
-    @Override
-    public Optional<BoxConfigurationData> getMenuByLabel(String menu) {
-        return w.getMenuByLabel(menu);
+    public void setBoxConfiguration(BoxConfigurationData boxConfiguration) {
+        w.setBoxConfiguration(boxConfiguration);
     }
 }

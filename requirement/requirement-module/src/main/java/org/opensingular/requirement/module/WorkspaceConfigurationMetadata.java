@@ -18,35 +18,22 @@
 
 package org.opensingular.requirement.module;
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Optional;
-
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+
+import java.io.Serializable;
 
 public class WorkspaceConfigurationMetadata implements Serializable {
 
-    private List<BoxConfigurationData> boxesConfiguration;
+    private BoxConfigurationData boxConfiguration;
 
     public WorkspaceConfigurationMetadata() {
     }
 
-    public WorkspaceConfigurationMetadata(List<BoxConfigurationData> boxConfigurationMetadatas) {
-        this.boxesConfiguration = boxConfigurationMetadatas;
+    public BoxConfigurationData getBoxConfiguration() {
+        return boxConfiguration;
     }
 
-    public List<BoxConfigurationData> getBoxesConfiguration() {
-        return boxesConfiguration;
+    public void setBoxConfiguration(BoxConfigurationData boxConfiguration) {
+        this.boxConfiguration = boxConfiguration;
     }
-
-    public void setBoxesConfiguration(List<BoxConfigurationData> boxesConfiguration) {
-        this.boxesConfiguration = boxesConfiguration;
-    }
-
-    public Optional<BoxConfigurationData> getMenuByLabel(String menu) {
-        return getBoxesConfiguration()
-                .stream()
-                .filter(i -> i.getLabel().equalsIgnoreCase(menu)).findFirst();
-    }
-
 }

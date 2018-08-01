@@ -22,14 +22,12 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.box.action.defaults.AssignAction;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
@@ -39,7 +37,6 @@ import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import java.util.ArrayList;
-import java.util.List;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
@@ -59,64 +56,29 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("toim")
     public void basicTest() {
-        permissionResolverService = Mockito.mock(PermissionResolverService.class);
-
-//        List<SingularPermission> list = new ArrayList<SingularPermission>();
-//        list.add(new SingularPermission("BOX1","BOX1"));
-//        list.add(new SingularPermission("BOX2","BOX2"));
-//        Mockito.when(permissionResolverService.searchPermissions("toim")).thenReturn(list);
-//        ReflectionTestUtils.setField(authorizationService, "permissionResolverService", permissionResolverService);      
-
-
-        List<BoxConfigurationData> groupDTOs = new ArrayList<BoxConfigurationData>();
-
         BoxConfigurationData b = new BoxConfigurationData();
-        b.setId("BOX1");
-        b.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
+        b.setBoxesDefinition(new ArrayList<>());
         b.setProcesses(new ArrayList<>());
-        groupDTOs.add(b);
-
-        BoxConfigurationData b2 = new BoxConfigurationData();
-        b2.setId("BOX2");
-        b2.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b2.setProcesses(new ArrayList<>());
-        groupDTOs.add(b2);
-
         String idUsuario = "toim";
-        authorizationService.filterBoxWithPermissions(groupDTOs, idUsuario);
-        //Mockito.verify(permissionResolverService).searchPermissions("toim");
-        Assert.assertEquals(0, groupDTOs.size());
+        Assert.assertFalse(authorizationService.hasPermission(b, idUsuario, ""));
     }
 
     @Test
     @WithUserDetails("joao")
     public void withoutPermissionTest() {
-        List<BoxConfigurationData> groupDTOs = new ArrayList<BoxConfigurationData>();
-
         BoxConfigurationData b = new BoxConfigurationData();
-        b.setId("box1");
-        b.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
+        b.setBoxesDefinition(new ArrayList<>());
         b.setProcesses(new ArrayList<>());
-        groupDTOs.add(b);
-
-        BoxConfigurationData b2 = new BoxConfigurationData();
-        b2.setId("box2");
-        b2.setBoxesDefinition(new ArrayList<BoxDefinitionData>());
-        b2.setProcesses(new ArrayList<>());
-        groupDTOs.add(b2);
-
         String idUsuario = "joao";
-
-        authorizationService.filterBoxWithPermissions(groupDTOs, idUsuario);
-        Assert.assertEquals(0, groupDTOs.size());
+        Assert.assertFalse(authorizationService.hasPermission(b, idUsuario, ""));
     }
 
     @Test
     @WithUserDetails("joao")
     public void hasPermissionTest() {
-        String idUsuario  = "joao";
-        Long   requirementId = 1L;
-        String action     = new AssignAction(new BoxItemDataImpl()).getName();
+        String idUsuario = "joao";
+        Long requirementId = 1L;
+        String action = new AssignAction(new BoxItemDataImpl()).getName();
 
         boolean hasPermission = authorizationService.hasPermission(requirementId, null, idUsuario,
                 action);
@@ -127,9 +89,9 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("joao")
     public void filterActionsTest() {
-        String              idUsuario  = "joao";
-        String              formType   = null;
-        Long                requirementId = null;
+        String idUsuario = "joao";
+        String formType = null;
+        Long requirementId = null;
         BoxItemActionList actions = new BoxItemActionList();
         actions.add(new BoxItemAction());
         actions.add(new BoxItemAction());

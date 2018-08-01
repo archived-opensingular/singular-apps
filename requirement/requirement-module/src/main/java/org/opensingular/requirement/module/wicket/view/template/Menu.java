@@ -38,19 +38,22 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
@@ -62,6 +65,9 @@ public class Menu extends Panel implements Loggable {
 
     @Inject
     private ModuleService moduleService;
+
+    @Inject
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     private Class<? extends WebPage> boxPageClass;
     private MetronicMenu menu;
@@ -81,10 +87,8 @@ public class Menu extends Panel implements Loggable {
 
     protected void buildMenuGroup() {
         Optional.ofNullable(workspaceConfigurationMetadata)
-                .map(WorkspaceConfigurationMetadata::getBoxesConfiguration)
-                .map(Collection::stream)
-                .orElse(Stream.empty())
-                .forEach(boxConfigurationMetadata -> {
+                .map(WorkspaceConfigurationMetadata::getBoxConfiguration)
+                .ifPresent(boxConfigurationMetadata -> {
                     List<MenuItemConfig> subMenus;
                     if (boxConfigurationMetadata.getItemBoxes() == null) {
                         subMenus = buildDefaultSubMenus(boxConfigurationMetadata);
@@ -92,7 +96,7 @@ public class Menu extends Panel implements Loggable {
                         subMenus = buildSubMenus(boxConfigurationMetadata);
                     }
                     if (!subMenus.isEmpty()) {
-                        buildMenus(menu, boxConfigurationMetadata, subMenus);
+                        buildMenus(menu, subMenus);
                     }
                 });
     }
@@ -101,9 +105,8 @@ public class Menu extends Panel implements Loggable {
         return Collections.emptyList();
     }
 
-    protected void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
-                              List<MenuItemConfig> subMenus) {
-        MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, boxConfigurationMetadata.getLabel());
+    protected void buildMenus(MetronicMenu menu, List<MenuItemConfig> subMenus) {
+        MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, singularModuleConfiguration.getModuleCod());
         menu.addItem(group);
         final List<Pair<Component, ISupplier<String>>> itens = new ArrayList<>();
 
