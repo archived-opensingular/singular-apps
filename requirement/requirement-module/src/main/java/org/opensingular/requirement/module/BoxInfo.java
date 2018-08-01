@@ -21,12 +21,13 @@ package org.opensingular.requirement.module;
 import org.opensingular.requirement.module.executor.BoxUpdaterExecutor;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
+import java.io.Serializable;
 import java.util.Set;
 
 /**
  * API_VIEW
  */
-public interface BoxInfo {
+public interface BoxInfo extends Serializable {
     /**
      * @return O ID unico desta box
      */

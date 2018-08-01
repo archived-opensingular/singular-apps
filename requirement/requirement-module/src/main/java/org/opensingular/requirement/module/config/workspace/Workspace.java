@@ -4,11 +4,12 @@ import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.DefaultBoxInfo;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
-public class Workspace {
+public class Workspace implements Serializable {
     private final Set<BoxInfo> boxInfos = new LinkedHashSet<>();
 
     public Workspace addBox(Class<? extends BoxDefinition> boxDefitionClass) {

@@ -5,7 +5,8 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
-import org.opensingular.requirement.module.form.FormTypesProvider;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
@@ -33,12 +34,12 @@ public class BoxFilterFactory {
     private SFormConfig<String> singularFormConfig;
 
     @Inject
-    private FormTypesProvider formTypesProvider;
-
-    @Inject
     private AuthorizationService authorizationService;
 
-    private List<FormDTO> forms;
+    @Inject
+    private RequirementDefinitionService requirementDefinitionService;
+
+    private List<FormDTO> mainForms;
 
     public BoxFilter create(ItemBox itemBox) {
         BoxDefinition boxDefinition = beanFactory.getBean(itemBox.getBoxDefinitionClass());
@@ -50,7 +51,7 @@ public class BoxFilterFactory {
     }
 
     private List<String> getFormNames() {
-        return listFormsWithPermission().stream().map(FormDTO::getName).collect(Collectors.toList());
+        return listMainFormsWithPermission().stream().map(FormDTO::getName).collect(Collectors.toList());
     }
 
     private List<String> getProcessesNames() {
@@ -74,20 +75,21 @@ public class BoxFilterFactory {
                 .orElse(null);
     }
 
-    private List<FormDTO> listFormsWithPermission() {
-        if (forms == null) {
-            forms = new ArrayList<>();
-            for (Class<? extends SType<?>> formClass : formTypesProvider.get()) {
-                String name = SFormUtil.getTypeName(formClass);
+    private List<FormDTO> listMainFormsWithPermission() {
+        if (mainForms == null) {
+            mainForms = new ArrayList<>();
+            List<SingularRequirement> requirements = requirementDefinitionService.getRequirements();
+            for (SingularRequirement requirement : requirements) {
+                String name = SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
                 Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
                 if (sTypeOptional.isPresent()) {
                     SType<?> sType = sTypeOptional.get();
                     String label = sType.asAtr().getLabel();
-                    forms.add(new FormDTO(name, sType.getNameSimple(), label));
+                    mainForms.add(new FormDTO(name, sType.getNameSimple(), label));
                 }
             }
         }
-        return forms.stream()
+        return mainForms.stream()
                 .filter(formDTO -> authorizationService.hasPermissionToForm(formDTO.getAbbreviation(), getIdUsuario()))
                 .collect(Collectors.toList());
     }
