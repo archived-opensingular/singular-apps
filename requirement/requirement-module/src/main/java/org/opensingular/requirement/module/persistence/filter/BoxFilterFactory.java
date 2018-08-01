@@ -16,10 +16,10 @@ import org.springframework.beans.factory.BeanFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Cria o BoxFilter populando com os dados basicos
@@ -38,6 +38,8 @@ public class BoxFilterFactory {
     @Inject
     private AuthorizationService authorizationService;
 
+    private List<FormDTO> forms;
+
     public BoxFilter create(ItemBox itemBox) {
         BoxDefinition boxDefinition = beanFactory.getBean(itemBox.getBoxDefinitionClass());
         return boxDefinition.createBoxFilter()
@@ -48,7 +50,7 @@ public class BoxFilterFactory {
     }
 
     private List<String> getFormNames() {
-        return getForms().stream().map(FormDTO::getName).collect(Collectors.toList());
+        return listFormsWithPermission().stream().map(FormDTO::getName).collect(Collectors.toList());
     }
 
     private List<String> getProcessesNames() {
@@ -72,19 +74,20 @@ public class BoxFilterFactory {
                 .orElse(null);
     }
 
-    private List<FormDTO> getForms() {
-        Stream.Builder<FormDTO> formDTOs = Stream.builder();
-        for (Class<? extends SType<?>> formClass : formTypesProvider.get()) {
-            String name = SFormUtil.getTypeName(formClass);
-            Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
-            if (sTypeOptional.isPresent()) {
-                SType<?> sType = sTypeOptional.get();
-                String label = sType.asAtr().getLabel();
-                formDTOs.accept(new FormDTO(name, sType.getNameSimple(), label));
+    private List<FormDTO> listFormsWithPermission() {
+        if (forms == null) {
+            forms = new ArrayList<>();
+            for (Class<? extends SType<?>> formClass : formTypesProvider.get()) {
+                String name = SFormUtil.getTypeName(formClass);
+                Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
+                if (sTypeOptional.isPresent()) {
+                    SType<?> sType = sTypeOptional.get();
+                    String label = sType.asAtr().getLabel();
+                    forms.add(new FormDTO(name, sType.getNameSimple(), label));
+                }
             }
         }
-
-        return formDTOs.build()
+        return forms.stream()
                 .filter(formDTO -> authorizationService.hasPermissionToForm(formDTO.getAbbreviation(), getIdUsuario()))
                 .collect(Collectors.toList());
     }

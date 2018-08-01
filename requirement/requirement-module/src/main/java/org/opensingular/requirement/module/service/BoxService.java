@@ -23,10 +23,8 @@ import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.BoxControllerFactory;
 import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.beans.factory.BeanFactory;
@@ -34,9 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Named
 public class BoxService {
@@ -53,9 +49,7 @@ public class BoxService {
     private SingularModuleConfiguration singularModuleConfiguration;
 
     @Transactional
-    public BoxEntity saveBoxDefinition(ModuleEntity module, BoxDefinitionData boxData) {
-        ItemBox itemBox = boxData.getItemBox();
-
+    public BoxEntity saveBoxDefinition(ModuleEntity module, ItemBox itemBox) {
         BoxEntity boxEntity = findByModuleAndName(module, itemBox.getName());
 
         if (boxEntity == null) {
@@ -75,19 +69,13 @@ public class BoxService {
         return boxDAO.findByModuleAndName(moduleEntity, name);
     }
 
-    public BoxDefinitionData buildBoxDefinitionData(BoxInfo boxInfo, IServerContext context) {
+    public ItemBox loadItemBox(BoxInfo boxInfo) {
         BoxDefinition factory = beanFactory.getBean(boxInfo.getBoxDefinitionClass());
         ItemBox itemBox = factory.getItemBox();
         itemBox.setFieldsDatatable(factory.getDatatableFields());
         itemBox.setId(boxInfo.getBoxId());
-        return new BoxDefinitionData(itemBox, boxInfo.getRequirements());
-    }
-
-    public List<BoxDefinitionData> buildItemBoxes(IServerContext context) {
-        return singularModuleConfiguration.getBoxByContext(context)
-                .stream()
-                .map(box -> buildBoxDefinitionData(box, context))
-                .collect(Collectors.toList());
+        itemBox.setRequirements(boxInfo.getRequirements());
+        return itemBox;
     }
 
     public Optional<BoxController> getBoxControllerByBoxId(String boxId) {

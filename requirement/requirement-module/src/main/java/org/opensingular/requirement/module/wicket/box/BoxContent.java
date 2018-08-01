@@ -28,7 +28,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
@@ -45,7 +44,6 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
@@ -54,24 +52,26 @@ import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
 
 import javax.inject.Inject;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
-
     @Inject
     private ModuleService moduleService;
 
     private Pair<String, SortOrder> sortProperty;
-    private IModel<BoxDefinitionData> definitionModel;
 
-    public BoxContent(String id, BoxDefinitionData itemBox) {
+    private IModel<ItemBox> itemBox;
+
+    public BoxContent(String id, IModel<ItemBox> itemBox) {
         super(id);
-        this.definitionModel = new Model<>(itemBox);
+        this.itemBox = itemBox;
     }
 
     @Override
@@ -81,14 +81,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void configureQuickFilter() {
-        ItemBox itemBox = definitionModel.getObject().getItemBox();
-        getFiltroRapido().setVisible(itemBox.isShowQuickFilter());
-        getPesquisarButton().setVisible(itemBox.isShowQuickFilter());
+        getFiltroRapido().setVisible(getItemBoxObject().isShowQuickFilter());
+        getPesquisarButton().setVisible(getItemBoxObject().isShowQuickFilter());
     }
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<Set<Class<? extends SingularRequirement>>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
+        IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirementsModel = new Model<>(new LinkedHashSet<>(getItemBoxObject().getRequirements()));
         if (!requirementsModel.getObject().isEmpty()) {
             return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
@@ -144,7 +143,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
         builder.appendColumn(actionColumn);
     }
-
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
@@ -303,7 +301,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(BoxFilter filter) {
-        return moduleService.searchFiltered(getItemBoxModelObject(), filter);
+        return moduleService.searchFiltered(getItemBoxObject(), filter);
     }
 
     @Override
@@ -319,14 +317,15 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(BoxFilter filter) {
-        return moduleService.countFiltered(getItemBoxModelObject(), filter);
+        return moduleService.countFiltered(getItemBoxObject(), filter);
     }
 
     public List<DatatableField> getFieldsDatatable() {
-        return getItemBoxModelObject().getFieldsDatatable();
+        return getItemBoxObject().getFieldsDatatable();
     }
 
-    private ItemBox getItemBoxModelObject() {
-        return definitionModel.getObject().getItemBox();
+    private ItemBox getItemBoxObject() {
+        return itemBox.getObject();
     }
+
 }

@@ -18,12 +18,7 @@
 
 package org.opensingular.requirement.module.wicket.template;
 
-import javax.annotation.Nonnull;
-
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.requirement.module.wicket.box.BoxPage;
-import org.opensingular.requirement.module.wicket.view.template.Menu;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 
 public abstract class ServerBoxTemplate extends ServerTemplate {
@@ -33,12 +28,6 @@ public abstract class ServerBoxTemplate extends ServerTemplate {
 
     public ServerBoxTemplate(PageParameters parameters) {
         super(parameters);
-    }
-
-    @Override
-    protected @Nonnull
-    WebMarkupContainer buildPageMenu(String id) {
-        return new Menu(id, BoxPage.class);
     }
 
     @Override

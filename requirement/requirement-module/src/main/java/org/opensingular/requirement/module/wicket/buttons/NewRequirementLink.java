@@ -21,6 +21,7 @@ package org.opensingular.requirement.module.wicket.buttons;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
@@ -29,6 +30,7 @@ import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
 import javax.inject.Inject;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -42,17 +44,19 @@ public class NewRequirementLink extends Panel {
 
     private final String url;
     private final Map<String, String> params;
-    private IModel<Set<Class<? extends SingularRequirement>>> requirements;
+    private IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
     @Inject
     private RequirementDefinitionService requirementDefinitionService;
 
-    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<Set<Class<? extends SingularRequirement>>> requirements) {
+    public NewRequirementLink(String id, String url, Map<String, String> params,
+                              IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirements) {
         this(id, null, url, params, requirements);
     }
 
-    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<Set<Class<? extends SingularRequirement>>> requirements) {
+    public NewRequirementLink(String id, IModel<String> labelModel, String url,
+                              Map<String, String> params, IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirements) {
         super(id);
         this.url = url;
         this.labelModel = labelModel == null ? this.labelModel : labelModel;

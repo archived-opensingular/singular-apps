@@ -21,25 +21,19 @@ package org.opensingular.requirement.module.rest;
 import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
-import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.any;
-import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.reset;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -54,15 +48,6 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @Before
     public void setUp() {
         reset(authorizationService);
-    }
-
-    @Test
-    @WithUserDetails("vinicius.nunes")
-    public void listMenu() {
-        doReturn(true).when(authorizationService).hasPermission(any(),any());
-        WorkspaceConfigurationMetadata workspaceConfigurationMetadata = moduleService
-                .loadWorkspaceConfiguration(DefaultContexts.RequirementContext.NAME, "vinicius.nunes");
-        assertNotNull(workspaceConfigurationMetadata.getBoxConfiguration());
     }
 
     @Test

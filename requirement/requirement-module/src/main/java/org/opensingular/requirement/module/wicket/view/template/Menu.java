@@ -25,12 +25,12 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.model.IModel;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.commons.util.Loggable;
@@ -38,13 +38,13 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.wicket.SingularSession;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -52,27 +52,31 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
-
-    @Inject
-    @SpringBean(required = false)
-    private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
-
     @Inject
     private ModuleService moduleService;
 
     @Inject
     private SingularModuleConfiguration singularModuleConfiguration;
 
+    @Inject
+    private BoxService boxService;
+
+    private IModel<IServerContext> serverContext;
+
     private Class<? extends WebPage> boxPageClass;
+
     private MetronicMenu menu;
 
-    public Menu(String id, Class<? extends WebPage> boxPageClass) {
+    public Menu(String id, Class<? extends WebPage> boxPageClass, IModel<IServerContext> serverContext) {
         super(id);
         this.boxPageClass = boxPageClass;
+        this.serverContext = serverContext;
         add(buildMenu());
         buildMenuGroup();
     }
@@ -84,14 +88,15 @@ public class Menu extends Panel implements Loggable {
 
 
     protected void buildMenuGroup() {
-        Optional.ofNullable(workspaceConfigurationMetadata)
-                .map(WorkspaceConfigurationMetadata::getBoxConfiguration)
-                .ifPresent(boxConfigurationMetadata -> {
+        Optional.ofNullable(serverContext.getObject())
+                .map(IServerContext::getWorkspace)
+                .map(Workspace::getBoxInfos)
+                .ifPresent(boxInfos -> {
                     List<MenuItemConfig> subMenus;
-                    if (boxConfigurationMetadata.getItemBoxes() == null) {
-                        subMenus = buildDefaultSubMenus(boxConfigurationMetadata);
+                    if (boxInfos.isEmpty()) {
+                        subMenus = buildDefaultSubMenus();
                     } else {
-                        subMenus = buildSubMenus(boxConfigurationMetadata);
+                        subMenus = buildSubMenus(boxInfos);
                     }
                     if (!subMenus.isEmpty()) {
                         buildMenus(menu, subMenus);
@@ -99,7 +104,8 @@ public class Menu extends Panel implements Loggable {
                 });
     }
 
-    protected List<MenuItemConfig> buildDefaultSubMenus(BoxConfigurationData boxConfigurationMetadata) {
+
+    protected List<MenuItemConfig> buildDefaultSubMenus() {
         return Collections.emptyList();
     }
 
@@ -124,40 +130,17 @@ public class Menu extends Panel implements Loggable {
 
     }
 
-    protected List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata) {
+    protected List<MenuItemConfig> buildSubMenus(Set<BoxInfo> boxInfos) {
         List<MenuItemConfig> configs = new ArrayList<>();
-
-        for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
+        for (ItemBox itemBoxDTO : boxInfos.stream().map(boxService::loadItemBox).collect(Collectors.toList())) {
             final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO);
-            configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
-
+            configs.add(MenuItemConfig.of(boxPageClass, itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
         }
-
         return configs;
     }
 
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO) {
-        return () -> moduleService.countAll(itemBoxDTO, getIdCurrentUser());
-    }
-
-    protected String getIdPessoa() {
-        return getIdCurrentUser();
-    }
-
-    protected String getIdCurrentUser() {
-        SingularRequirementUserDetails singularUserDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(singularUserDetails)
-                .map(SingularRequirementUserDetails::getUsername)
-                .orElse(null);
-    }
-
-    //TODO buggy, should be refactored
-    public Class<? extends Page> getBoxPageClass() {
-        Class<? extends Page> homePage = WebApplication.get().getHomePage();
-        if (homePage != null) {
-            return homePage;
-        }
-        return boxPageClass;
+        return () -> moduleService.countAll(itemBoxDTO);
     }
 
     protected static class AddContadoresBehaviour extends AbstractDefaultAjaxBehavior {

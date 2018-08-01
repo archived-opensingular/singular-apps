@@ -22,7 +22,6 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
@@ -66,11 +65,6 @@ public interface ModuleService {
      * Build a static endpoint
      */
     String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI);
-
-    /**
-     * Load the workspace metadata
-     */
-    WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
 
     /**
      *

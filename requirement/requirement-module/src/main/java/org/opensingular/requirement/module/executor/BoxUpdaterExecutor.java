@@ -27,7 +27,7 @@ import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
 import org.opensingular.requirement.module.service.BoxService;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -67,12 +67,12 @@ public class BoxUpdaterExecutor {
         for (IServerContext context : singularModuleConfiguration.getContexts()) {
             Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
             for (BoxInfo boxInfo : boxInfos) {
-                BoxDefinitionData boxData = boxService.buildBoxDefinitionData(boxInfo, context);
+                ItemBox boxData = boxService.loadItemBox(boxInfo);
                 try {
                     BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
                     boxInfo.setBoxId(boxEntity.getCod().toString());
                 } catch (Exception e) {
-                    throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getItemBox().getName()), e);
+                    throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getName()), e);
                 }
             }
         }

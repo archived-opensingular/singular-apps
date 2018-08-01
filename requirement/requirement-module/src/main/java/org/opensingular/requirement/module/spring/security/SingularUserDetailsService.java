@@ -18,13 +18,6 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-
 import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
@@ -35,6 +28,12 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.transaction.Transactional;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 @Transactional
 public interface SingularUserDetailsService extends UserDetailsService, UserDetailsContextMapper {

@@ -31,7 +31,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -39,11 +38,9 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 
 import javax.inject.Inject;
@@ -52,7 +49,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -66,10 +62,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     @Inject
     protected RequirementService<?, ?> requirementService;
-
-    @Inject
-    @SpringBean(required = false)
-    protected WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     /**
      * Tabela de registros
@@ -239,10 +231,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(table);
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
-
-        if (workspaceConfigurationMetadata != null) {
-            Optional<BoxConfigurationData> boxConfig = Optional.ofNullable(workspaceConfigurationMetadata.getBoxConfiguration());
-        }
     }
 
     /**

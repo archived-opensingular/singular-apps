@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.test;
 
-import javax.servlet.ServletRequest;
-
 import net.vidageek.mirror.dsl.Mirror;
 import org.opensingular.requirement.module.config.DefaultContexts;
+
+import javax.servlet.ServletRequest;
 
 public class ContextUtil {
     private static String contextPath = "/singular";
@@ -30,13 +30,5 @@ public class ContextUtil {
     public static void prepareRequest(ServletRequest request) {
         new Mirror().on(request).invoke().setterFor("contextPath").withValue(contextPath);
         new Mirror().on(request).invoke().setterFor("pathInfo").withValue(pathInfo);
-    }
-
-    public static void setContextPath(String contextPath) {
-        ContextUtil.contextPath = contextPath;
-    }
-
-    public static void setPathInfo(String pathInfo) {
-        ContextUtil.pathInfo = pathInfo;
     }
 }

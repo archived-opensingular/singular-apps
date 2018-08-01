@@ -26,7 +26,6 @@ import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.box.action.defaults.AssignAction;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
@@ -34,7 +33,6 @@ import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
-import java.util.ArrayList;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
@@ -58,8 +56,6 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("joao")
     public void withoutPermissionTest() {
-        BoxConfigurationData b = new BoxConfigurationData();
-        b.setBoxesDefinition(new ArrayList<>());
         String idUsuario = "joao";
         Assert.assertFalse(authorizationService.hasPermission(idUsuario, ""));
     }

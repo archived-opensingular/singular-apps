@@ -20,22 +20,27 @@ package org.opensingular.requirement.module.wicket.box;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.BoxInfo;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.service.BoxService;
+import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
+import org.opensingular.requirement.module.wicket.view.template.Menu;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.util.HashMap;
 import java.util.Map;
@@ -48,65 +53,70 @@ public class BoxPage extends ServerBoxTemplate {
 
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
 
-    private BoxDefinitionData boxDefinitionData;
-
-    @Inject
-    @SpringBean(required = false)
-    private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
-
     @Inject
     private BoxFilterFactory boxFilterFactory;
 
+    @Inject
+    private SingularModuleConfiguration singularModuleConfiguration;
+
+    @Inject
+    private BoxService boxService;
+
+    protected IModel<ItemBox> itemBox;
+
+    protected IModel<IServerContext> serverContext;
+
     public BoxPage(PageParameters parameters) {
+        this(parameters, null);
+    }
+
+    public BoxPage(PageParameters parameters, IServerContext serverContext) {
         super(parameters);
+        if (serverContext != null) {
+            this.serverContext = new Model<>(serverContext);
+        } else {
+            this.serverContext = new Model<>(IServerContext.getContextFromRequest(getRequest(), singularModuleConfiguration.getContexts()));
+        }
         addBox();
     }
 
     public void addBox() {
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (isAccessWithoutParams(item)) {
-            BoxConfigurationData box = workspaceConfigurationMetadata.getBoxConfiguration();
-            if (box != null) {
-                PageParameters pageParameters = new PageParameters();
-                addItemParam(box, pageParameters);
-                throw new RestartResponseException(getPageClass(), pageParameters);
-            }
+        if (serverContext == null) {
+            LOGGER.error("Não foi possivel determinal o contexto atual");
+            throw new RestartResponseException(Page403.class);
         }
 
-        BoxConfigurationData boxConfigurationMetadata = null;
-        if (workspaceConfigurationMetadata != null) {
-            boxConfigurationMetadata = workspaceConfigurationMetadata.getBoxConfiguration();
-        }
-        if (boxConfigurationMetadata != null) {
-            boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
-            //itemBoxDTO pode ser nulo quando nenhum item está selecionado.
-            if (boxDefinitionData != null) {
-                add(newBoxContent("box", boxConfigurationMetadata, boxDefinitionData));
-                return;
-            }
+        Workspace workspace = serverContext.getObject().getWorkspace();
+
+        if (item == null) {
+            PageParameters pageParameters = new PageParameters();
+            addItemParam(workspace, pageParameters);
+            throw new RestartResponseException(getPageClass(), pageParameters);
         }
 
-        if (boxConfigurationMetadata == null) {
+        itemBox = workspace.getBoxInfos().stream()
+                .map(boxService::loadItemBox)
+                .filter(i -> i.getName().equals(item)).findFirst()
+                .map(Model::new)
+                .orElse(null);
+
+        if (itemBox != null) {
+            add(newBoxContent("box"));
+        } else {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
-        }
-        LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
-        throw new RestartResponseException(Page403.class);
-    }
-
-    private boolean isAccessWithoutParams(String item) {
-        return item == null && workspaceConfigurationMetadata != null;
-    }
-
-    private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
-        if (!mg.getBoxesDefinition().isEmpty()) {
-            String item = mg.getItemBoxes().get(0).getName();
-            pageParameters.add(ITEM_PARAM_NAME, item);
+            throw new RestartResponseException(Page403.class);
         }
     }
 
-    protected Component newBoxContent(String id, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, boxDefinitionData);
+    private void addItemParam(Workspace workspace, PageParameters pageParameters) {
+        Optional<BoxInfo> box = workspace.getBoxInfos().stream().findFirst();
+        box.ifPresent(boxInfo -> pageParameters.add(ITEM_PARAM_NAME, boxService.loadItemBox(boxInfo).getName()));
+    }
+
+    protected Component newBoxContent(String id) {
+        return new BoxContent(id, itemBox);
     }
 
     protected Map<String, String> createLinkParams() {
@@ -114,7 +124,11 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected BoxFilter createFilter() {
-        return boxFilterFactory.create(boxDefinitionData.getItemBox());
+        return boxFilterFactory.create(getItemBoxObject());
+    }
+
+    protected ItemBox getItemBoxObject() {
+        return itemBox.getObject();
     }
 
     @Override
@@ -122,8 +136,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getDescription();
+                if (getItemBoxObject() != null) {
+                    return getItemBoxObject().getDescription();
                 }
                 return null;
             }
@@ -135,8 +149,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getName();
+                if (getItemBoxObject() != null) {
+                    return getItemBoxObject().getName();
                 }
                 return null;
             }
@@ -148,8 +162,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getHelpText();
+                if (getItemBoxObject() != null) {
+                    return getItemBoxObject().getHelpText();
                 }
                 return null;
             }
@@ -169,6 +183,12 @@ public class BoxPage extends ServerBoxTemplate {
                 .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
 
+    }
+
+    @Override
+    protected @Nonnull
+    WebMarkupContainer buildPageMenu(String id) {
+        return new Menu(id, BoxPage.class, serverContext);
     }
 
 }

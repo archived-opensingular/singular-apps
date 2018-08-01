@@ -21,15 +21,16 @@ package org.opensingular.requirement.module.service.dto;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 public class ItemBox implements Serializable {
-
     private String id;
     private String name;
     private String description;
@@ -38,6 +39,7 @@ public class ItemBox implements Serializable {
     private List<DatatableField> fieldsDatatable;
     private boolean showQuickFilter = true;
     private Class<? extends BoxDefinition> boxDefinitionClass;
+    private Set<Class<? extends SingularRequirement>> requirements;
 
     public String getName() {
         return name;
@@ -108,5 +110,13 @@ public class ItemBox implements Serializable {
      */
     public void setShowQuickFilter(boolean showQuickFilter) {
         this.showQuickFilter = showQuickFilter;
+    }
+
+    public Set<Class<? extends SingularRequirement>> getRequirements() {
+        return requirements;
+    }
+
+    public void setRequirements(Set<Class<? extends SingularRequirement>> requirements) {
+        this.requirements = requirements;
     }
 }

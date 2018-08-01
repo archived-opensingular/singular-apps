@@ -33,12 +33,10 @@ import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
@@ -48,7 +46,6 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -167,10 +164,6 @@ public class DefaultModuleService implements ModuleService, Loggable {
         return paramsValue.toString();
     }
 
-    public BoxConfigurationData listMenu(String context, String user) {
-        return listMenu(IServerContext.getContextFromName(context, singularModuleConfiguration.getContexts()), user);
-    }
-
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
             IController controller = getActionController(actionRequest);
@@ -190,36 +183,13 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    private BoxConfigurationData listMenu(IServerContext context, String user) {
-        BoxConfigurationData boxConfigurationData = listMenuGroups();
-        if (hasAccessRight(user)) {
-            customizeMenu(boxConfigurationData, context, user);
-            return boxConfigurationData;
-        }
-        return null;
-    }
 
-    private BoxConfigurationData listMenuGroups() {
-        return new BoxConfigurationData();
-    }
-
-    private boolean hasAccessRight(String user) {
+    public boolean hasModuleAccess(String user) {
         return authorizationService.hasPermission(user, permissionResolverService.buildCategoryPermission(singularModuleConfiguration.getModuleCod()).getSingularId());
-    }
-
-    private void customizeMenu(BoxConfigurationData boxConfigurationData, IServerContext menuContext, String user) {
-        boxConfigurationData.setBoxesDefinition(boxService.buildItemBoxes(menuContext));
     }
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
         return requirementService.listAllowedUsers(selectedTask);
-    }
-
-    @Override
-    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user) {
-        WorkspaceConfigurationMetadata workspaceConfigurationMetadata = new WorkspaceConfigurationMetadata();
-        workspaceConfigurationMetadata.setBoxConfiguration(listMenu(context, user));
-        return workspaceConfigurationMetadata;
     }
 
     @Override
