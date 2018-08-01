@@ -86,7 +86,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
      */
 
 
-    private   String                         menu;
     private   List<FlowDefinitionDTO> processes;
     private   List<FormDTO>                  forms;
     /**
@@ -112,9 +111,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private WebMarkupContainer confirmModalWrapper = new WebMarkupContainer("confirmModalWrapper");
 
-    public AbstractBoxContent(String id, String menu) {
+    public AbstractBoxContent(String id) {
         super(id);
-        this.menu = menu;
     }
 
     public IModel<T> getDataModel() {
@@ -251,15 +249,11 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(table);
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
-        if (getMenu() != null) {
-            if (workspaceConfigurationMetadata != null) {
-                Optional<BoxConfigurationData> boxConfig = Optional.ofNullable(workspaceConfigurationMetadata.getBoxConfiguration());
-                setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
-                setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
-            }
-            if (CollectionUtils.isEmpty(getProcesses())) {
-                getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
-            }
+
+        if (workspaceConfigurationMetadata != null) {
+            Optional<BoxConfigurationData> boxConfig = Optional.ofNullable(workspaceConfigurationMetadata.getBoxConfiguration());
+            setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
+            setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
         }
     }
 
@@ -330,14 +324,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     public void setProcesses(List<FlowDefinitionDTO> processes) {
         this.processes = processes;
-    }
-
-    public String getMenu() {
-        return menu;
-    }
-
-    public void setMenu(String menu) {
-        this.menu = menu;
     }
 
     public List<FormDTO> getForms() {

@@ -25,7 +25,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
@@ -57,9 +56,6 @@ public class BoxPage extends ServerBoxTemplate {
     @Inject
     @SpringBean(required = false)
     private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
-
-    @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
 
     public BoxPage(PageParameters parameters) {
         super(parameters);
@@ -110,7 +106,7 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected Component newBoxContent(String id, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, singularModuleConfiguration.getModuleCod(), boxDefinitionData);
+        return new BoxContent(id, boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

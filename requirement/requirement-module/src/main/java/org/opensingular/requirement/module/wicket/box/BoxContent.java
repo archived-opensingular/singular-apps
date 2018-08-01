@@ -73,8 +73,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private Pair<String, SortOrder>   sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
 
-    public BoxContent(String id, String menu, BoxDefinitionData itemBox) {
-        super(id, menu);
+    public BoxContent(String id, BoxDefinitionData itemBox) {
+        super(id);
         this.definitionModel = new Model<>(itemBox);
     }
 
@@ -93,7 +93,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     public Component buildNewRequirementButton(String id) {
         IModel<Set<Class<? extends SingularRequirement>>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
-        if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
+        if (!requirementsModel.getObject().isEmpty()) {
             return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewRequirementButton(id);
