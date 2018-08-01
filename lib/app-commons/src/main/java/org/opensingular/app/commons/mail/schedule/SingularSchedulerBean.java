@@ -150,9 +150,6 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
 
     private boolean jobFactorySet = false;
 
-
-    private boolean autoStartup = true;
-
     private int startupDelay = 0;
 
     private int phase = Integer.MAX_VALUE;
@@ -587,9 +584,9 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
                 @Override
                 public void run() {
                     try {
-                        Thread.sleep(startupDelay * 1000);
+                        Thread.sleep(startupDelay * 1000L);
                     } catch (InterruptedException ex) {
-                        // simply proceed
+                        getLogger().trace(ex.getMessage(), ex);
                     }
                     if (logger.isInfoEnabled()) {
                         logger.info("Starting Quartz Scheduler now, after delay of " + startupDelay + " seconds");
@@ -666,6 +663,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
             try {
                 return !this.scheduler.isInStandbyMode();
             } catch (SchedulerException ex) {
+                getLogger().trace(ex.getMessage(), ex);
                 return false;
             }
         }
