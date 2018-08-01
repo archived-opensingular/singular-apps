@@ -97,7 +97,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private BoxFilterFactory boxFilterFactory;
 
     @Override
-    public String countAll(ItemBox box, String loggedUser) {
+    public String countAll(ItemBox box) {
         return String.valueOf(count(box.getId(), boxFilterFactory.create(box)));
     }
 
