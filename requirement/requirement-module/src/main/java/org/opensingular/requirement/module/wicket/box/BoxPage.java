@@ -24,10 +24,10 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.BoxService;
@@ -42,10 +42,12 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
 @MountPath("/box")
@@ -81,6 +83,7 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     public void addBox() {
+        String category = getPageParameters().get(CATEGORY_PARAM_NAME).toOptionalString();
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
         if (serverContext == null) {
@@ -90,13 +93,18 @@ public class BoxPage extends ServerBoxTemplate {
 
         Workspace workspace = serverContext.getObject().getWorkspace();
 
-        if (item == null) {
+        if (item == null || category == null) {
             PageParameters pageParameters = new PageParameters();
             addItemParam(workspace, pageParameters);
             throw new RestartResponseException(getPageClass(), pageParameters);
         }
 
-        itemBox = workspace.getBoxInfos().stream()
+        itemBox = workspace.menu()
+                .getCategories()
+                .stream()
+                .filter(i -> i.getName().equalsIgnoreCase(category))
+                .map(WorkspaceMenuCategory::getBoxInfos)
+                .flatMap(Collection::stream)
                 .map(boxService::loadItemBox)
                 .filter(i -> i.getName().equals(item)).findFirst()
                 .map(Model::new)
@@ -111,8 +119,15 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     private void addItemParam(Workspace workspace, PageParameters pageParameters) {
-        Optional<BoxInfo> box = workspace.getBoxInfos().stream().findFirst();
-        box.ifPresent(boxInfo -> pageParameters.add(ITEM_PARAM_NAME, boxService.loadItemBox(boxInfo).getName()));
+        Optional<WorkspaceMenuCategory> categoryOpt = workspace.menu().getCategories()
+                .stream()
+                .filter(i -> !i.getBoxInfos().isEmpty())
+                .findFirst();
+
+        categoryOpt.ifPresent(category -> {
+            pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
+            pageParameters.add(ITEM_PARAM_NAME, boxService.loadItemBox(category.getBoxInfos().stream().findFirst().orElse(null)).getName());
+        });
     }
 
     protected Component newBoxContent(String id) {

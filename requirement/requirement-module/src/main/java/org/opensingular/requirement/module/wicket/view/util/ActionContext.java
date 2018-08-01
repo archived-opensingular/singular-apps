@@ -47,6 +47,8 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String ITEM_PARAM_NAME = "t";
 
+    public static final String CATEGORY_PARAM_NAME = "c";
+
     public static final String REQUIREMENT_DEFINITION_ID = "r";
 
     public final static String FORM_VERSION_KEY = "v";

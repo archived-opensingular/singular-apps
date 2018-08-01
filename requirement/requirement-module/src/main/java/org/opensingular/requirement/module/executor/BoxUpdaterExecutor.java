@@ -32,7 +32,7 @@ import org.opensingular.requirement.module.service.dto.ItemBox;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.Set;
+import java.util.List;
 
 /**
  * Classe para abrigar a lógica de carga inicial
@@ -65,7 +65,7 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (IServerContext context : singularModuleConfiguration.getContexts()) {
-            Set<BoxInfo> boxInfos = singularModuleConfiguration.getBoxByContext(context);
+            List<BoxInfo> boxInfos = singularModuleConfiguration.listBoxByContext(context);
             for (BoxInfo boxInfo : boxInfos) {
                 ItemBox boxData = boxService.loadItemBox(boxInfo);
                 try {

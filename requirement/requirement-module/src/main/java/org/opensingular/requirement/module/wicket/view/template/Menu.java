@@ -18,7 +18,6 @@ package org.opensingular.requirement.module.wicket.view.template;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;
@@ -26,7 +25,6 @@ import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
@@ -37,11 +35,11 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.BoxInfo;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -49,20 +47,15 @@ import org.opensingular.requirement.module.service.dto.ItemBox;
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
     @Inject
     private ModuleService moduleService;
-
-    @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
     private BoxService boxService;
@@ -90,53 +83,42 @@ public class Menu extends Panel implements Loggable {
     protected void buildMenuGroup() {
         Optional.ofNullable(serverContext.getObject())
                 .map(IServerContext::getWorkspace)
-                .map(Workspace::getBoxInfos)
-                .ifPresent(boxInfos -> {
-                    List<MenuItemConfig> subMenus;
-                    if (boxInfos.isEmpty()) {
-                        subMenus = buildDefaultSubMenus();
-                    } else {
-                        subMenus = buildSubMenus(boxInfos);
-                    }
-                    if (!subMenus.isEmpty()) {
-                        buildMenus(menu, subMenus);
+                .map(Workspace::menu)
+                .ifPresent(menu -> {
+                    if (!menu.listAllBoxInfos().isEmpty()) {
+                        buildMenus(menu);
                     }
                 });
     }
 
 
-    protected List<MenuItemConfig> buildDefaultSubMenus() {
-        return Collections.emptyList();
-    }
-
-    protected void buildMenus(MetronicMenu menu, List<MenuItemConfig> subMenus) {
-        MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, singularModuleConfiguration.getModuleCod());
-        menu.addItem(group);
+    protected void buildMenus(WorkspaceMenu workspaceMenu) {
         final List<Pair<Component, ISupplier<String>>> itens = new ArrayList<>();
-
-        for (MenuItemConfig t : subMenus) {
-            PageParameters pageParameters = new PageParameters();
-            pageParameters.add(ITEM_PARAM_NAME, t.name);
-
-            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
-            group.addItem(i);
-            itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+        for (WorkspaceMenuCategory category : workspaceMenu.getCategories()) {
+            MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
+            menu.addItem(group);
+            for (BoxInfo boxInfo : category.getBoxInfos()) {
+                MenuItemConfig t = buildMenuItemConfig(boxInfo);
+                PageParameters pageParameters = new PageParameters();
+                pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
+                pageParameters.add(ITEM_PARAM_NAME, t.name);
+                MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
+                itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+                group.addItem(i);
+            }
         }
         menu.add(new AddContadoresBehaviour(itens));
-        onBuildModuleGroup(group, menu);
+        onBuildModuleGroup(menu);
     }
 
-    protected void onBuildModuleGroup(MetronicMenuGroup group, MetronicMenu menu) {
+    protected void onBuildModuleGroup(MetronicMenu menu) {
 
     }
 
-    protected List<MenuItemConfig> buildSubMenus(Set<BoxInfo> boxInfos) {
-        List<MenuItemConfig> configs = new ArrayList<>();
-        for (ItemBox itemBoxDTO : boxInfos.stream().map(boxService::loadItemBox).collect(Collectors.toList())) {
-            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO);
-            configs.add(MenuItemConfig.of(boxPageClass, itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
-        }
-        return configs;
+    protected MenuItemConfig buildMenuItemConfig(BoxInfo boxInfo) {
+        final ItemBox itemBoxDTO = boxService.loadItemBox(boxInfo);
+        final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO);
+        return MenuItemConfig.of(boxPageClass, itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier);
     }
 
     protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO) {

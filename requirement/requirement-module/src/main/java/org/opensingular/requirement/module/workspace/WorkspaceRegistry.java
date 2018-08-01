@@ -22,7 +22,11 @@ public class WorkspaceRegistry implements Loggable {
         try {
             IServerContext serverContext = serverContextClass.newInstance();
             Workspace workspace = serverContext.getWorkspace();
-            workspace.getBoxInfos().stream().map(BoxInfo::getBoxDefinitionClass).forEach(applicationContext::register);
+            workspace
+                    .menu()
+                    .listAllBoxInfos()
+                    .stream()
+                    .map(BoxInfo::getBoxDefinitionClass).forEach(applicationContext::register);
             contexts.add(serverContext);
         } catch (InstantiationException | IllegalAccessException ex) {
             getLogger().error(ex.getMessage(), ex);

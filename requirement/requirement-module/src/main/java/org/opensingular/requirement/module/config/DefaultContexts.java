@@ -31,8 +31,11 @@ public interface DefaultContexts {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultInbox.class)
-                    .addBox(DefaultDonebox.class);
+                    .menu()
+                    .addCategory("Worklist", category -> category
+                            .addBox(DefaultInbox.class)
+                            .addBox(DefaultDonebox.class));
+
         }
     }
 
@@ -56,8 +59,10 @@ public interface DefaultContexts {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultDraftbox.class)
-                    .addBox(DefaultOngoingbox.class);
+                    .menu()
+                    .addCategory("Requirement", category -> category
+                            .addBox(DefaultDraftbox.class)
+                            .addBox(DefaultOngoingbox.class));
         }
     }
 
@@ -80,8 +85,10 @@ public interface DefaultContexts {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultInbox.class)
-                    .addBox(DefaultDonebox.class);
+                    .menu()
+                    .addCategory("Worklist", category -> category
+                            .addBox(DefaultInbox.class)
+                            .addBox(DefaultDonebox.class));
         }
     }
 
@@ -105,8 +112,10 @@ public interface DefaultContexts {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultDraftbox.class)
-                    .addBox(DefaultOngoingbox.class);
+                    .menu()
+                    .addCategory("Requirement", category -> category
+                            .addBox(DefaultDraftbox.class)
+                            .addBox(DefaultOngoingbox.class));
         }
     }
 

@@ -58,8 +58,10 @@ public class FooSingularModule implements SingularModule {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultInbox.class, box -> box.newFor(FooRequirement.class))
-                    .addBox(DefaultDraftbox.class);
+                    .menu()
+                    .addCategory("", category -> category
+                            .addBox(DefaultInbox.class, box -> box.newFor(FooRequirement.class))
+                            .addBox(DefaultDraftbox.class));
         }
     }
 
@@ -67,8 +69,10 @@ public class FooSingularModule implements SingularModule {
         @Override
         public void configure(Workspace workspace) {
             workspace
-                    .addBox(DefaultDraftbox.class, box -> box.newFor(FooRequirement.class))
-                    .addBox(DefaultOngoingbox.class);
+                    .menu()
+                    .addCategory("", category -> category
+                            .addBox(DefaultDraftbox.class, box -> box.newFor(FooRequirement.class))
+                            .addBox(DefaultOngoingbox.class));
         }
     }
 }
