@@ -2,6 +2,7 @@ package org.opensingular.app.commons.mail.schedule;
 
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.schedule.quartz.QuartzJobFactory;
 import org.opensingular.schedule.quartz.SingularSchedulerAccessor;
 import org.quartz.JobDetail;
@@ -46,7 +47,7 @@ import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUAR
 
 
 public class SingularSchedulerBean extends SingularSchedulerAccessor implements FactoryBean<Scheduler>,
-        BeanNameAware, ApplicationContextAware, InitializingBean, DisposableBean, SmartLifecycle {
+        BeanNameAware, ApplicationContextAware, InitializingBean, DisposableBean, SmartLifecycle, Loggable {
     public static final String PROP_THREAD_COUNT = "org.quartz.threadPool.threadCount";
 
     public static final int DEFAULT_THREAD_COUNT = 10;
@@ -403,7 +404,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
     //---------------------------------------------------------------------
     // Implementation of InitializingBean interface
     //---------------------------------------------------------------------
-
+    @SuppressWarnings("squid:MethodCyclomaticComplexity")
     public void afterPropertiesSet() throws Exception {
         if (this.dataSource == null && this.nonTransactionalDataSource != null) {
             this.dataSource = this.nonTransactionalDataSource;
@@ -539,7 +540,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
                 return newScheduler;
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            getLogger().debug(e.getMessage(), e);
             throw new SchedulerException(e);
         }
     }

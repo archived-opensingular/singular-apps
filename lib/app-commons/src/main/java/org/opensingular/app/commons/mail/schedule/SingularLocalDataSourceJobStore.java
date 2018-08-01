@@ -20,6 +20,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.quartz.SchedulerConfigException;
 import org.quartz.impl.jdbcjobstore.JobStoreCMT;
 import org.quartz.impl.jdbcjobstore.SimpleSemaphore;
@@ -56,7 +57,7 @@ import org.springframework.jdbc.support.MetaDataAccessException;
  * @see org.springframework.jdbc.datasource.DataSourceUtils#releaseConnection
  */
 @SuppressWarnings("unchecked")  // due to a warning in Quartz 2.2's JobStoreCMT
-public class SingularLocalDataSourceJobStore extends JobStoreCMT {
+public class SingularLocalDataSourceJobStore extends JobStoreCMT implements Loggable {
 
     /**
      * Name used for the transactional ConnectionProvider for Quartz.
@@ -152,6 +153,7 @@ public class SingularLocalDataSourceJobStore extends JobStoreCMT {
             }
         }
         catch (MetaDataAccessException ex) {
+            getLogger().trace(ex.getMessage(), ex);
             logWarnIfNonZero(1, "Could not detect database type. Assuming locks can be taken.");
         }
 
