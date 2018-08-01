@@ -24,19 +24,16 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
@@ -56,6 +53,9 @@ public class BoxPage extends ServerBoxTemplate {
     @Inject
     @SpringBean(required = false)
     private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
+
+    @Inject
+    private BoxFilterFactory boxFilterFactory;
 
     public BoxPage(PageParameters parameters) {
         super(parameters);
@@ -114,25 +114,7 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected BoxFilter createFilter() {
-        ItemBox itemBox = boxDefinitionData.getItemBox();
-        BoxDefinition boxDefinition = getApplicationContext().getBean(itemBox.getBoxDefinitionClass());
-        return boxDefinition.createBoxFilter()
-                .withIdUsuarioLogado(getIdUsuario())
-                .withIdPessoa(getIdPessoa());
-    }
-
-    protected String getIdUsuario() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getUsername)
-                .orElse(null);
-    }
-
-    protected String getIdPessoa() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getApplicantId)
-                .orElse(null);
+        return boxFilterFactory.create(boxDefinitionData.getItemBox());
     }
 
     @Override
@@ -174,8 +156,19 @@ public class BoxPage extends ServerBoxTemplate {
         };
     }
 
-    protected ApplicationContext getApplicationContext() {
-        return ApplicationContextProvider.get();
+    protected String getIdUsuario() {
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
+        return Optional.ofNullable(userDetails)
+                .map(SingularRequirementUserDetails::getUsername)
+                .orElse(null);
+    }
+
+    protected String getIdPessoa() {
+        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
+        return Optional.ofNullable(userDetails)
+                .map(SingularRequirementUserDetails::getApplicantId)
+                .orElse(null);
+
     }
 
 }

@@ -42,7 +42,6 @@ import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -53,7 +52,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
@@ -127,15 +125,10 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata) {
-
-        List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
-                .map(FlowDefinitionDTO::getAbbreviation)
-                .collect(Collectors.toList());
-
         List<MenuItemConfig> configs = new ArrayList<>();
 
         for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
-            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, abbreviations);
+            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO);
             configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
 
         }
@@ -143,8 +136,8 @@ public class Menu extends Panel implements Loggable {
         return configs;
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> abbreviations) {
-        return () -> moduleService.countAll(itemBoxDTO, abbreviations, getIdCurrentUser());
+    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO) {
+        return () -> moduleService.countAll(itemBoxDTO, getIdCurrentUser());
     }
 
     protected String getIdPessoa() {

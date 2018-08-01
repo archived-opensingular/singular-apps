@@ -25,17 +25,8 @@ import java.util.stream.Collectors;
 
 public class BoxConfigurationData implements Serializable {
     private List<BoxDefinitionData> itemBoxesMetadata;
-    private List<FlowDefinitionDTO> processes;
 
     public BoxConfigurationData() {
-    }
-
-    public List<FlowDefinitionDTO> getProcesses() {
-        return processes;
-    }
-
-    public void setProcesses(List<FlowDefinitionDTO> processes) {
-        this.processes = processes;
     }
 
     public List<ItemBox> getItemBoxes() {
@@ -54,14 +45,6 @@ public class BoxConfigurationData implements Serializable {
         return null;
     }
 
-    public FlowDefinitionDTO getProcessByAbbreviation(String flowDefinitionAbbreviation) {
-        return getProcesses()
-                .stream()
-                .filter(p -> p.getAbbreviation().equalsIgnoreCase(flowDefinitionAbbreviation))
-                .findFirst()
-                .orElse(null);
-    }
-
     public List<BoxDefinitionData> getBoxesDefinition() {
         return itemBoxesMetadata;
     }
@@ -70,13 +53,4 @@ public class BoxConfigurationData implements Serializable {
         this.itemBoxesMetadata = itemBoxesMetadata;
     }
 
-    /**
-     * matar esse método em favor do uso do id do requerimento
-     *
-     * @return
-     */
-    @Deprecated
-    public List<FormDTO> getForms() {
-        return new ArrayList<>(0);
-    }
 }

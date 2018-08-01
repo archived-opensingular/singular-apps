@@ -59,7 +59,7 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("vinicius.nunes")
     public void listMenu() {
-        doReturn(true).when(authorizationService).hasPermission(any(), any(), any());
+        doReturn(true).when(authorizationService).hasPermission(any(),any());
         WorkspaceConfigurationMetadata workspaceConfigurationMetadata = moduleService
                 .loadWorkspaceConfiguration(DefaultContexts.RequirementContext.NAME, "vinicius.nunes");
         assertNotNull(workspaceConfigurationMetadata.getBoxConfiguration());

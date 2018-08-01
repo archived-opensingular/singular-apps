@@ -40,7 +40,7 @@ public interface ModuleService {
     /**
      * Count all elements inside a box
      */
-    String countAll(ItemBox box, List<String> flowNames, String loggedUser);
+    String countAll(ItemBox box, String loggedUser);
 
     /**
      * Count elements inside a box, applying the filter

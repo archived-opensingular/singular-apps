@@ -48,20 +48,16 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 
@@ -70,7 +66,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Inject
     private ModuleService moduleService;
 
-    private Pair<String, SortOrder>   sortProperty;
+    private Pair<String, SortOrder> sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
 
     public BoxContent(String id, BoxDefinitionData itemBox) {
@@ -152,7 +148,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String             url  = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
+            String url = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -273,7 +269,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
             BoxItemDataMap boxItemDataMap = model.getObject();
-            boolean        visible        = boxItemDataMap.hasAction(itemAction);
+            boolean visible = boxItemDataMap.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemDataMap.getCod());
             }
@@ -298,41 +294,15 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected BoxFilter newFilterBasic() {
-        BoxPage boxPage = getBoxPage();
-        return boxPage.createFilter()
-                .withFilter(getFiltroRapidoModelObject())
-                .withProcessesAbbreviation(getProcessesNames())
-                .withTypesNames(getFormNames());
+        return getBoxPage().createFilter().withFilter(getFiltroRapidoModelObject());
     }
 
     private BoxPage getBoxPage() {
         return (BoxPage) getPage();
     }
 
-    private List<String> getProcessesNames() {
-        if (getProcesses() == null) {
-            return Collections.emptyList();
-        } else {
-            return getProcesses()
-                    .stream()
-                    .map(FlowDefinitionDTO::getAbbreviation)
-                    .collect(Collectors.toList());
-        }
-    }
-
-    private List<String> getFormNames() {
-        if (getForms() == null) {
-            return Collections.emptyList();
-        } else {
-            return getForms()
-                    .stream()
-                    .map(FormDTO::getName)
-                    .collect(Collectors.toList());
-        }
-    }
-
     @Override
-    protected List<BoxItemDataMap> quickSearch(BoxFilter filter, List<String> flowDefinitionAbbreviation) {
+    protected List<BoxItemDataMap> quickSearch(BoxFilter filter) {
         return moduleService.searchFiltered(getItemBoxModelObject(), filter);
     }
 
@@ -348,7 +318,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected long countQuickSearch(BoxFilter filter, List<String> processesNames) {
+    protected long countQuickSearch(BoxFilter filter) {
         return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 

@@ -18,7 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -45,19 +44,15 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.FormDTO;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -68,7 +63,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     public static final int DEFAULT_ROWS_PER_PAGE = 15;
     private static final long serialVersionUID = -3611649597709058163L;
-
 
     @Inject
     protected RequirementService<?, ?> requirementService;
@@ -81,21 +75,17 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
      * Tabela de registros
      */
     protected BSDataTable<T, String> table;
-    /**
-     * Confirmation Form
-     */
 
-
-    private   List<FlowDefinitionDTO> processes;
-    private   List<FormDTO>                  forms;
     /**
      * Form padrão
      */
     private Form<?> form = new Form<>("form");
+
     /**
      * Filtro Rapido
      */
     private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
+
     /**
      * Botão de pesquisa do filtro rapido
      */
@@ -252,8 +242,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
         if (workspaceConfigurationMetadata != null) {
             Optional<BoxConfigurationData> boxConfig = Optional.ofNullable(workspaceConfigurationMetadata.getBoxConfiguration());
-            setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
-            setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
         }
     }
 
@@ -271,10 +259,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
             @Override
             public long size() {
-                if (getProcessesNames().isEmpty()) {
-                    return 0;
-                }
-                return countQuickSearch(newFilter(), getProcessesNames());
+                return countQuickSearch(newFilter());
             }
 
             @Override
@@ -286,18 +271,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
                         .withSortProperty(sortProperty)
                         .withAscending(ascending);
 
-                return quickSearch(boxFilter, getProcessesNames()).iterator();
-            }
-
-            private List<String> getProcessesNames() {
-                if (getProcesses() == null) {
-                    return Collections.emptyList();
-                } else {
-                    return getProcesses()
-                            .stream()
-                            .map(FlowDefinitionDTO::getAbbreviation)
-                            .collect(Collectors.toList());
-                }
+                return quickSearch(boxFilter).iterator();
             }
 
         };
@@ -314,25 +288,9 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     protected abstract BoxFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(BoxFilter filter, List<String> flowDefinitionAbbreviation);
+    protected abstract List<T> quickSearch(BoxFilter filter);
 
-    protected abstract long countQuickSearch(BoxFilter filter, List<String> processesNames);
-
-    public List<FlowDefinitionDTO> getProcesses() {
-        return processes;
-    }
-
-    public void setProcesses(List<FlowDefinitionDTO> processes) {
-        this.processes = processes;
-    }
-
-    public List<FormDTO> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<FormDTO> forms) {
-        this.forms = forms;
-    }
+    protected abstract long countQuickSearch(BoxFilter filter);
 
     protected StringResourceModel getMessage(String prop) {
         return new StringResourceModel(prop.trim(), this, null);

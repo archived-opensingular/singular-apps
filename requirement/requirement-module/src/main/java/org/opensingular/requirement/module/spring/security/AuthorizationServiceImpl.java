@@ -30,9 +30,7 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.wicket.SingularSession;
 
 import javax.inject.Inject;
@@ -65,16 +63,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Named("formConfigWithDatabase")
     private Optional<SFormConfig<String>> singularFormConfig;
 
-
     @Override
-    public boolean hasPermission(BoxConfigurationData boxConfigurationData, String idUsuario, String permissionKey) {
+    public boolean hasPermission(String idUsuario, String permissionKey) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
-        if (!hasPermission(idUsuario, permissionKey, permissions)) {
-            return false;
-        } else {
-            filterForms(boxConfigurationData, permissions, idUsuario);
-        }
-        return true;
+        return hasPermission(idUsuario, permissionKey, permissions);
     }
 
     @Override
@@ -125,15 +117,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return permissionResolverService.searchPermissions(userPermissionKey);
     }
 
-
-    private void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
-        for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
-            FormDTO form = it.next();
-            String permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
-            if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
-                it.remove();
-            }
-        }
+    @Override
+    public boolean hasPermissionToForm(String formName, String idUsuario) {
+        List<SingularPermission> permissions = searchPermissions(idUsuario);
+        String permissionNeeded = buildPermissionKey(null, formName, FormAction.FORM_FILL.name());
+        return hasPermission(idUsuario, permissionNeeded, permissions);
     }
 
     /**
@@ -197,11 +185,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             formSimpleName = getFormSimpleName(requirementAuthMetadataDTO.getFormTypeAbbreviation());
         }
         return hasPermission(idUsuario, buildPermissionKey(requirementAuthMetadataDTO, formSimpleName, action));
-    }
-
-    private boolean hasPermission(String idUsuario, String permissionNeeded) {
-        List<SingularPermission> permissions = searchPermissions(idUsuario);
-        return hasPermission(idUsuario, permissionNeeded, permissions);
     }
 
     private String removeTask(String permissionId) {

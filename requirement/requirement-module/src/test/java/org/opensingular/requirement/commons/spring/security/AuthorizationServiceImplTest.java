@@ -21,7 +21,6 @@ package org.opensingular.requirement.commons.spring.security;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
@@ -30,7 +29,6 @@ import org.opensingular.requirement.module.box.action.defaults.AssignAction;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
@@ -44,9 +42,6 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     @Inject
     private AuthorizationService authorizationService;
 
-    @Mock
-    private PermissionResolverService permissionResolverService;
-
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
@@ -56,11 +51,8 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     @Test
     @WithUserDetails("toim")
     public void basicTest() {
-        BoxConfigurationData b = new BoxConfigurationData();
-        b.setBoxesDefinition(new ArrayList<>());
-        b.setProcesses(new ArrayList<>());
         String idUsuario = "toim";
-        Assert.assertFalse(authorizationService.hasPermission(b, idUsuario, ""));
+        Assert.assertFalse(authorizationService.hasPermission(idUsuario, ""));
     }
 
     @Test
@@ -68,9 +60,8 @@ public class AuthorizationServiceImplTest extends SingularCommonsBaseTest {
     public void withoutPermissionTest() {
         BoxConfigurationData b = new BoxConfigurationData();
         b.setBoxesDefinition(new ArrayList<>());
-        b.setProcesses(new ArrayList<>());
         String idUsuario = "joao";
-        Assert.assertFalse(authorizationService.hasPermission(b, idUsuario, ""));
+        Assert.assertFalse(authorizationService.hasPermission(idUsuario, ""));
     }
 
     @Test

@@ -21,13 +21,10 @@ package org.opensingular.requirement.module.connector;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
-import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
@@ -44,30 +41,24 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
-import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
-import org.springframework.beans.factory.BeanFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -91,10 +82,6 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private PermissionResolverService permissionResolverService;
 
     @Inject
-    @Named("formConfigWithDatabase")
-    private SFormConfig<String> singularFormConfig;
-
-    @Inject
     private FormTypeService formTypeService;
 
     @Inject
@@ -107,20 +94,11 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
 
     @Inject
-    private FormTypesProvider formTypesProvider;
-
-    @Inject
-    private BeanFactory beanFactory;
+    private BoxFilterFactory boxFilterFactory;
 
     @Override
-    public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
-        BoxDefinition boxDefinition = beanFactory.getBean(box.getBoxDefinitionClass());
-        BoxFilter boxFilter = boxDefinition.createBoxFilter();
-        boxFilter
-                .withProcessesAbbreviation(flowNames)
-                .withIdUsuarioLogado(loggedUser)
-                .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
-        return String.valueOf(count(box.getId(), boxFilter));
+    public String countAll(ItemBox box, String loggedUser) {
+        return String.valueOf(count(box.getId(), boxFilterFactory.create(box)));
     }
 
     @Override
@@ -214,7 +192,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     private BoxConfigurationData listMenu(IServerContext context, String user) {
         BoxConfigurationData boxConfigurationData = listMenuGroups();
-        if (hasAccessRight(boxConfigurationData, user)) {
+        if (hasAccessRight(user)) {
             customizeMenu(boxConfigurationData, context, user);
             return boxConfigurationData;
         }
@@ -222,32 +200,11 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     private BoxConfigurationData listMenuGroups() {
-        BoxConfigurationData boxConfigurationMetadata = new BoxConfigurationData();
-        boxConfigurationMetadata.setProcesses(new ArrayList<>());
-        Flow.getDefinitions().forEach(flowDefinition -> {
-            boxConfigurationMetadata.getProcesses().add(new FlowDefinitionDTO(flowDefinition.getKey(), flowDefinition.getName()));
-            addForms(boxConfigurationMetadata);
-        });
-        return boxConfigurationMetadata;
+        return new BoxConfigurationData();
     }
 
-
-    @SuppressWarnings("unchecked")
-    private void addForms(BoxConfigurationData boxConfigurationMetadata) {
-        for (Class<? extends SType<?>> formClass : formTypesProvider.get()) {
-            String name = SFormUtil.getTypeName(formClass);
-            Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
-            if (sTypeOptional.isPresent()) {
-                SType<?> sType = sTypeOptional.get();
-                String label = sType.asAtr().getLabel();
-                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label));
-            }
-        }
-    }
-
-    private boolean hasAccessRight(BoxConfigurationData boxConfigurationData, String user) {
-        return authorizationService.hasPermission(boxConfigurationData, user, permissionResolverService
-                .buildCategoryPermission(singularModuleConfiguration.getModuleCod()).getSingularId());
+    private boolean hasAccessRight(String user) {
+        return authorizationService.hasPermission(user, permissionResolverService.buildCategoryPermission(singularModuleConfiguration.getModuleCod()).getSingularId());
     }
 
     private void customizeMenu(BoxConfigurationData boxConfigurationData, IServerContext menuContext, String user) {
@@ -325,5 +282,4 @@ public class DefaultModuleService implements ModuleService, Loggable {
             throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
         }
     }
-
 }

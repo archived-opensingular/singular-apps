@@ -23,7 +23,6 @@ import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.FlowDefinitionDTO;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.springframework.context.annotation.Primary;
 
@@ -42,9 +41,6 @@ public class WorkspaceMetadataMockBean extends WorkspaceConfigurationMetadata {
     public void init() {
         w = new WorkspaceConfigurationMetadata();
         BoxConfigurationData box = new BoxConfigurationData();
-        box.setProcesses(new ArrayList<>());
-        FlowDefinitionDTO p = new FlowDefinitionDTO("ajaaja", "ajaaja");
-        box.getProcesses().add(p);
         box.setBoxesDefinition(new ArrayList<>());
         BoxDefinitionData boxDefinitionData = new BoxDefinitionData();
         final ItemBox teste = new ItemBox();
