@@ -569,6 +569,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
      * @param startupDelay the number of seconds to wait before starting
      *                     the Scheduler asynchronously
      */
+    @SuppressWarnings("squid:S2142")
     protected void startScheduler(final Scheduler scheduler, final int startupDelay) throws SchedulerException {
         if (startupDelay <= 0) {
             logger.info("Starting Quartz Scheduler now");
