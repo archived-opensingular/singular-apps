@@ -33,7 +33,6 @@ import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
-import org.opensingular.flow.schedule.IScheduleService;
 import org.opensingular.form.SType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
@@ -123,10 +122,10 @@ import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
 import javax.servlet.ServletContext;
+import javax.sql.DataSource;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.sql.DataSource;
 
 
 @SuppressWarnings("rawtypes")
