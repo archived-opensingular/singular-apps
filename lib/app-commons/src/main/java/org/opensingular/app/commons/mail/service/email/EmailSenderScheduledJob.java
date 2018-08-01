@@ -17,12 +17,12 @@
  */
 package org.opensingular.app.commons.mail.service.email;
 
-import org.opensingular.app.commons.mail.service.dto.Email;
-import org.opensingular.flow.schedule.IScheduleData;
-import org.opensingular.flow.schedule.IScheduledJob;
-import org.opensingular.lib.commons.util.Loggable;
-
 import javax.inject.Inject;
+
+import org.opensingular.app.commons.mail.service.dto.Email;
+import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.schedule.IScheduleData;
+import org.opensingular.schedule.IScheduledJob;
 
 
 public class EmailSenderScheduledJob implements IScheduledJob, Loggable {

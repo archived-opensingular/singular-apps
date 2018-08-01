@@ -16,22 +16,58 @@
 
 package org.opensingular.app.commons.mail.schedule;
 
-import org.opensingular.flow.schedule.IScheduledJob;
-import org.opensingular.flow.schedule.quartz.QuartzScheduleService;
 import org.opensingular.lib.commons.util.Loggable;
-import org.springframework.transaction.PlatformTransactionManager;
+import org.opensingular.schedule.IScheduledJob;
+import org.opensingular.schedule.quartz.QuartzScheduleService;
+import org.springframework.context.event.ContextRefreshedEvent;
+import org.springframework.context.event.EventListener;
 
-import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.List;
 
-public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable{
+public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable {
 
-    @Inject
-    private PlatformTransactionManager transactionManager;
+    private boolean contextRefreshed;
+    private List<IScheduledJob> toBeScheduled = new ArrayList<>(); //List containing all Scheduled that have to be executed after Spring initialize.
 
+    public TransactionalQuartzScheduledService(SingularSchedulerBean singularSchedulerBean) {
+        super(false);
+        setQuartzSchedulerFactory(singularSchedulerBean);
+    }
+
+    /**
+     * Method responsible for executed all Schedule after Spring initialize.
+     */
+    @EventListener(ContextRefreshedEvent.class)
+    public synchronized void initAfterBeans() {
+        init();
+        contextRefreshed = true;
+        toBeScheduled.forEach(this::internalSchedule);
+        toBeScheduled.clear();
+    }
+
+    /**
+     * Method containg the logic for Schedule the Job's, or put in a list to be executed.
+     *
+     * @param scheduledJob The Job for be schedule.
+     */
     @Override
-    public void schedule(IScheduledJob scheduledJob) {
-        super.schedule(new TransactionalScheduledJobProxy(scheduledJob, transactionManager));
-        
+    public synchronized void schedule(IScheduledJob scheduledJob) {
+        if (contextRefreshed) {
+            internalSchedule(scheduledJob);
+        } else {
+            toBeScheduled.add(scheduledJob);
+        }
+    }
+
+    /**
+     * This method will Schedule the JOB.
+     *
+     * @param scheduledJob The Job for be schedule.
+     */
+    private void internalSchedule(IScheduledJob scheduledJob) {
+        super.schedule(new TransactionalScheduledJobProxy(scheduledJob));
         getLogger().info("Job({}) scheduled.", scheduledJob);
     }
+
 }

@@ -20,9 +20,14 @@ package org.opensingular.requirement.module.spring;
 
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
 import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.email.DefaultMailSenderREST;
 import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.mail.service.email.EmailSender;
+import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
+import org.opensingular.app.commons.mail.service.email.IMailSenderREST;
 import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
 import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
@@ -80,6 +85,7 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
+import org.opensingular.requirement.module.service.AttachmentGCJob;
 import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
@@ -98,6 +104,8 @@ import org.opensingular.requirement.module.spring.security.DefaultUserDetailServ
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
 import org.springframework.beans.BeansException;
@@ -118,11 +126,27 @@ import javax.servlet.ServletContext;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.sql.DataSource;
 
 
 @SuppressWarnings("rawtypes")
 @Lazy(false)
 public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
+
+    /**
+     * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
+     * no {@link org.springframework.beans.factory.BeanFactory}
+     * <p>
+     * Similiar a {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext#postProcessBeanFactory(ConfigurableListableBeanFactory)}
+     */
+    @Override
+    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
+        ServletContext servletContext = configurableListableBeanFactory.getBean(ServletContext.class);
+        SingularModuleConfiguration singularModuleConfiguration = (SingularModuleConfiguration) servletContext
+                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
+        configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
+    }
+
 
     @Order(1)
     @Bean
@@ -293,10 +317,6 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
         return new EmailPersistenceService();
     }
 
-    @Bean
-    public IScheduleService scheduleService() {
-        return new TransactionalQuartzScheduledService();
-    }
 
     @Bean
     public ParameterDAO parameterDAO() {
@@ -336,7 +356,6 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
     public FormAttachmentDAO formAttachmentDAO() {
         return new FormAttachmentDAO();
     }
-
 
     @Bean
     public IFormAttachmentService formAttachmentService() {
@@ -458,18 +477,46 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
         return new BoxFilterFactory();
     }
 
+    @Bean
+    @DependsOn("schedulerFactoryBean")
+    public IScheduleService scheduleService(SingularSchedulerBean schedulerFactoryBean) {
+        return new TransactionalQuartzScheduledService(schedulerFactoryBean);
+    }
+
     /**
-     * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
-     * no {@link org.springframework.beans.factory.BeanFactory}
-     * <p>
-     * Similiar a {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext#postProcessBeanFactory(ConfigurableListableBeanFactory)}
+     * Configure the SchedulerBean for Singular.
+     * This bean have to implents InitializingBean to work properly.
+     *
+     * @return SingularSchedulerBean instance.
      */
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        ServletContext servletContext = configurableListableBeanFactory.getBean(ServletContext.class);
-        SingularModuleConfiguration singularModuleConfiguration = (SingularModuleConfiguration) servletContext
-                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
-        configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
+    @Bean
+    public SingularSchedulerBean schedulerFactoryBean(DataSource dataSource) {
+        return new SingularSchedulerBean(dataSource);
+    }
+
+    @Bean
+    public EmailSender emailSender() {
+        return new EmailSender();
+    }
+
+    @Bean
+    @DependsOn({"emailSender", "scheduleService", "emailService"})
+    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
+        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
+        scheduleService.schedule(emailSenderScheduledJob);
+        return emailSenderScheduledJob;
+    }
+
+    @Bean
+    public IMailSenderREST mailSenderREST() {
+        return new DefaultMailSenderREST();
+    }
+
+    @Bean
+    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService){
+        AttachmentGCJob attachmentGCJob = new AttachmentGCJob(ScheduleDataBuilder.buildDaily(1, 1));
+        scheduleService.schedule(attachmentGCJob);
+        return attachmentGCJob;
     }
 
 }

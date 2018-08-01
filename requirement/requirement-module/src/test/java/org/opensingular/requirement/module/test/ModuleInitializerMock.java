@@ -19,29 +19,11 @@
 package org.opensingular.requirement.module.test;
 
 import org.opensingular.requirement.commons.CommonsInitializerMock;
-import org.opensingular.requirement.module.config.AttachmentGCSchedulerInitializer;
-import org.opensingular.requirement.module.config.MailSenderSchedulerInitializer;
-import org.opensingular.requirement.module.config.SchedulerAppInitializerListener;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
 public class ModuleInitializerMock extends CommonsInitializerMock {
     public ModuleInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
         super(applicationContext);
-    }
-
-    @Override
-    public SchedulerAppInitializerListener newSchedulerInitializerListener() {
-        return new SchedulerAppInitializerListener() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
-            }
-        };
     }
 }
