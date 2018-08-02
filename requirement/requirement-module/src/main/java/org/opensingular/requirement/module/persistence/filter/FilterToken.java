@@ -19,11 +19,11 @@
 package org.opensingular.requirement.module.persistence.filter;
 
 
-import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import javax.annotation.Nonnull;
 
 public class FilterToken {
 

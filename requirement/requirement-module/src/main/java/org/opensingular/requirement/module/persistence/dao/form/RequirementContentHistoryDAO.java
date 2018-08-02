@@ -18,6 +18,14 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+
 import org.hibernate.Query;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
@@ -26,14 +34,6 @@ import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.service.RequirementUtil;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHistoryEntity, Long> {
 

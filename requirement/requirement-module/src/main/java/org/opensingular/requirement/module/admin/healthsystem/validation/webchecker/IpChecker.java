@@ -18,11 +18,11 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.validation.webchecker;
 
+import java.net.InetAddress;
+
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.validation.InstanceValidatable;
 import org.opensingular.lib.commons.util.Loggable;
-
-import java.net.InetAddress;
 
 public class IpChecker implements IProtocolChecker, Loggable {
 

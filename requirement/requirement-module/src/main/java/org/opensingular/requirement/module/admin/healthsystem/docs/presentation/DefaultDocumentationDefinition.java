@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs.presentation;
 
-import org.apache.commons.lang3.StringUtils;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
-import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocBlock;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocFieldMetadata;
+import org.opensingular.requirement.module.admin.healthsystem.docs.DocTable;
 
 public class DefaultDocumentationDefinition implements DocumentationDefinition {
 

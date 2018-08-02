@@ -18,13 +18,13 @@
 
 package org.opensingular.requirement.module.persistence.query;
 
+import javax.annotation.Nonnull;
+
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
-
-import javax.annotation.Nonnull;
 
 /**
  * Adiciona uma variavel nomeada a consulta de requerimentos

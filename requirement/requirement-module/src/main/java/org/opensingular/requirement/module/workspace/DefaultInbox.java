@@ -18,25 +18,16 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
-public class DefaultInbox implements BoxDefinition {
-
-    @Override
-    public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.isSameContext(context);
-    }
-
+public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
     public ItemBox build(IServerContext context) {
         final ItemBox caixaEntrada = new ItemBox();
@@ -48,13 +39,18 @@ public class DefaultInbox implements BoxDefinition {
     }
 
     @Override
-    public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.TRUE, new ActionProviderBuilder()
+    protected Boolean mustEvalPermissions() {
+        return Boolean.TRUE;
+    }
+
+    @Override
+    protected void addActions(ActionProviderBuilder builder) {
+        builder
                 .addAssignAction()
                 .addAnalyseAction()
                 .addRelocateAction()
                 .addViewAction()
-                .addHistoryAction());
+                .addHistoryAction();
     }
 
     @Override
@@ -69,6 +65,4 @@ public class DefaultInbox implements BoxDefinition {
         fields.add(DatatableField.of("Alocado", "nomeUsuarioAlocado"));
         return fields;
     }
-
 }
-

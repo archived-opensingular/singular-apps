@@ -36,7 +36,6 @@ public class ActionContextTest {
         actionContext.setParam("nada", "outro");
         actionContext.setParentRequirementId(2l);
         actionContext.setRequirementId(3l);
-        actionContext.setModuleName("Tox");
         actionContext.setFlowInstanceId(4);
         actionContext.setSelectedMenuItem("menuzeira");
         return actionContext;
@@ -54,7 +53,6 @@ public class ActionContextTest {
         Assert.assertEquals(actionContext.getParam("nada").get(), "outro");
         Assert.assertEquals((long) actionContext.getParentRequirementId().get(), 2l);
         Assert.assertEquals((long) actionContext.getRequirementId().get(), 3l);
-        Assert.assertEquals(actionContext.getModuleName().get(), "Tox");
         Assert.assertEquals((int) actionContext.getFlowInstanceId().get(), 4);
         Assert.assertEquals(actionContext.getSelectedMenuItem().get(), "menuzeira");
     }

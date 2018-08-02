@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.exception;
 
-import org.opensingular.requirement.module.service.RequirementInstance;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+
+import org.opensingular.requirement.module.service.RequirementInstance;
 
 /**
  * Represents exceptions caused by a manipulation of Requirements.

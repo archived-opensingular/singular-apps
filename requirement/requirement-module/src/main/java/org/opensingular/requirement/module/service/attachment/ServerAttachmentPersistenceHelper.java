@@ -18,6 +18,13 @@
 
 package org.opensingular.requirement.module.service.attachment;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.opensingular.form.SInstances;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
@@ -26,14 +33,6 @@ import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.SIAttachment;
 import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersistenceHelper;
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Transactional
 public class ServerAttachmentPersistenceHelper extends DefaultAttachmentPersistenceHelper {

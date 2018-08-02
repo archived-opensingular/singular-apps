@@ -27,12 +27,11 @@ import org.apache.wicket.request.Response;
 import org.apache.wicket.resource.loader.ClassStringResourceLoader;
 import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.wicket.error.Page403;
+import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.studio.core.config.StudioConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.view.StudioFooter;
@@ -68,6 +67,10 @@ public class RequirementStudioApplication extends SingularRequirementApplication
         super.init();
         getMarkupSettings().setStripWicketTags(true);
         getMarkupSettings().setStripComments(true);
+
+        getApplicationSettings().setAccessDeniedPage(Page403.class);
+        getApplicationSettings().setPageExpiredErrorPage(Page410.class);
+
         getMarkupSettings().setDefaultMarkupEncoding(StandardCharsets.UTF_8.name());
         setHeaderResponseDecorator(r -> new JavaScriptFilteredIntoFooterHeaderResponse(r, SingularTemplate.JAVASCRIPT_CONTAINER));
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
@@ -90,14 +93,5 @@ public class RequirementStudioApplication extends SingularRequirementApplication
     @Override
     public MarkupContainer buildPageFooter(String id) {
         return new StudioFooter(id);
-    }
-
-    @Override
-    public void initSkins(SkinOptions skinOptions) {
-        IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this
-                .getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
-        if (initSKin != null) {
-            initSKin.accept(skinOptions);
-        }
     }
 }

@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
+
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
@@ -36,18 +39,15 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.page.error.Error403Page;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
-import org.opensingular.requirement.module.wicket.listener.SingularServerContextListener;
+import org.opensingular.requirement.module.wicket.listener.SingularRequirementContextListener;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
 import org.springframework.context.ApplicationContext;
-
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -63,11 +63,11 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
         super.init();
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
-        getRequestCycleListeners().add(new SingularServerContextListener());
+        getRequestCycleListeners().add(new SingularRequirementContextListener());
 
         Locale.setDefault(new Locale("pt", "BR"));//NOSONAR
 
-        getApplicationSettings().setAccessDeniedPage(Error403Page.class);
+        getApplicationSettings().setAccessDeniedPage(Page403.class);
         getApplicationSettings().setPageExpiredErrorPage(Page410.class);
 
         // Don't forget to check your Application server for this
@@ -86,7 +86,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
 
         new SingularAnnotatedMountScanner().mountPages(this);
-        if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_WICKET_DEBUG_ENABLED)) {
             getDebugSettings().setComponentPathAttributeName("wicketdebug");
             WicketSerializationDebugUtil.configurePageSerializationDebug(this, this.getClass());
         }

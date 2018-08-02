@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.module;
 
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 
 /**
  * Basic singular requirement adapter.
  */
 public abstract class SingularRequirementAdapter implements SingularRequirement {
-
     private String              name;
     private BoundedFlowResolver flowResolver;
+    private RequirementDefinitionEntity requirementDefinitionEntity;
 
     public SingularRequirementAdapter(String name, BoundedFlowResolver flowResolver) {
         this.name = name;
@@ -43,5 +43,13 @@ public abstract class SingularRequirementAdapter implements SingularRequirement 
         return flowResolver;
     }
 
+    @Override
+    public void setEntity(RequirementDefinitionEntity requirementDefinitionEntity) {
+        this.requirementDefinitionEntity = requirementDefinitionEntity;
+    }
 
+    @Override
+    public Long getDefinitionCod() {
+        return requirementDefinitionEntity.getCod();
+    }
 }

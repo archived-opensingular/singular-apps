@@ -18,8 +18,6 @@
 
 package org.opensingular.requirement.module.exception;
 
-import org.opensingular.requirement.module.exception.SingularRequirementException;
-
 public class ResourceDatabasePopularException extends SingularRequirementException {
 
     public ResourceDatabasePopularException(String msg) {

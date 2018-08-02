@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.util.Objects;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -39,10 +43,6 @@ import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.DraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
-import javax.annotation.Nonnull;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * Métodos utilitários para manipulação de requerimentos.

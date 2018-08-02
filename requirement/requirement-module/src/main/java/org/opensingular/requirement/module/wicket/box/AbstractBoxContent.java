@@ -33,7 +33,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -41,6 +40,7 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.RequirementService;
@@ -48,7 +48,6 @@ import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
-import org.opensingular.requirement.module.wicket.view.template.MenuService;
 
 import javax.inject.Inject;
 import java.io.Serializable;
@@ -60,15 +59,15 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 /**
  * Classe base para construição de caixas do servidor de petições
  */
 public abstract class AbstractBoxContent<T extends Serializable> extends Panel implements Loggable {
 
-    public static final  int  DEFAULT_ROWS_PER_PAGE = 15;
-    private static final long serialVersionUID      = -3611649597709058163L;
+    public static final int DEFAULT_ROWS_PER_PAGE = 15;
+    private static final long serialVersionUID = -3611649597709058163L;
 
 
     @Inject
@@ -76,32 +75,32 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     @Inject
     @SpringBean(required = false)
-    protected MenuService menuService;
+    protected WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     /**
      * Tabela de registros
      */
-    protected BSDataTable<T, String>         table;
+    protected BSDataTable<T, String> table;
     /**
      * Confirmation Form
      */
 
-    private   String                         moduleCod;
+
     private   String                         menu;
     private   List<RequirementDefinitionDTO> processes;
     private   List<FormDTO>                  forms;
     /**
      * Form padrão
      */
-    private Form<?>           form            = new Form<>("form");
+    private Form<?> form = new Form<>("form");
     /**
      * Filtro Rapido
      */
-    private TextField<String> filtroRapido    = new TextField<>("filtroRapido", new Model<>());
+    private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
     /**
      * Botão de pesquisa do filtro rapido
      */
-    private AjaxButton        pesquisarButton = new AjaxButton("pesquisar") {
+    private AjaxButton pesquisarButton = new AjaxButton("pesquisar") {
         @Override
         protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
             super.onSubmit(target, form);
@@ -113,11 +112,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private WebMarkupContainer confirmModalWrapper = new WebMarkupContainer("confirmModalWrapper");
 
-    private ModuleEntity module;
-
-    public AbstractBoxContent(String id, String moduleCod, String menu) {
+    public AbstractBoxContent(String id, String menu) {
         super(id);
-        this.moduleCod = moduleCod;
         this.menu = menu;
     }
 
@@ -125,22 +121,12 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return dataModel;
     }
 
-
-
-    protected String getModuleCod() {
-        return moduleCod;
-    }
-
-    public ModuleEntity getModule() {
-        return module;
-    }
-
     protected Component buildNewRequirementButton(String id) {
         return new WebMarkupContainer(id);
     }
 
     protected Component buildBeforeTableContainer(String id) {
-        Component c =  new WebMarkupContainer(id);
+        Component c = new WebMarkupContainer(id);
         c.setVisible(false);
         return c;
     }
@@ -250,7 +236,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        module = requirementService.findByModuleCod(getModuleCod());
 
         BSDataTableBuilder<T, String, IColumn<T, String>> builder = new BSDataTableBuilder<>(createDataProvider());
         builder.setStripedRows(false).setBorderedTable(false);
@@ -258,15 +243,19 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         table.add($b.classAppender("worklist"));
 
         queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
+
+        form.add(new HelpFilterBoxPanel("help")
+                .configureBody(configureSearchHelpBody()));
+
         queue(buildBeforeTableContainer("beforeTableContainer"));
         queue(table);
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
         if (getMenu() != null) {
-            if (menuService != null) {
-                BoxConfigurationData boxConfigurationMetadata = menuService.getMenuByLabel(getMenu());
-                setProcesses(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
-                setForms(Optional.ofNullable(boxConfigurationMetadata).map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
+            if (workspaceConfigurationMetadata != null) {
+                Optional<BoxConfigurationData> boxConfig = workspaceConfigurationMetadata.getMenuByLabel(getMenu());
+                setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
+                setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
             }
             if (CollectionUtils.isEmpty(getProcesses())) {
                 getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
@@ -274,7 +263,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         }
     }
 
-
+    /**
+     * Method to be override for change the body of the help inside the input of the fast search.
+     * This String can have html tags, the body is configurated to scape html false.
+     *
+     * @return String for the body.
+     */
+    protected String configureSearchHelpBody() {
+        return null;
+    }
 
     protected BaseDataProvider<T, String> createDataProvider() {
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
@@ -288,7 +285,7 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
-                                                  boolean ascending) {
+                    boolean ascending) {
                 QuickFilter quickFilter = newFilter()
                         .withFirst(first)
                         .withCount(count)

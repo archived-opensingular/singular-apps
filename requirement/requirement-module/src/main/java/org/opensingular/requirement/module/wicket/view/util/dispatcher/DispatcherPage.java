@@ -40,9 +40,9 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.module.flow.SingularWebRef;
@@ -52,7 +52,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
@@ -80,7 +80,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfiguration singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();
@@ -242,7 +242,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void redirectForbidden() {
-        setResponsePage(AccessDeniedPage.class);
+        setResponsePage(Page403.class);
     }
 
     private void dispatchForDestination(ActionContext context, WebPage destination) {

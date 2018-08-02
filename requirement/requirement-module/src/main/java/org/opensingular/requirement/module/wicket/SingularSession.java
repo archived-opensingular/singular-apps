@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
@@ -27,9 +30,6 @@ import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class SingularSession extends AuthenticatedWebSession {
 

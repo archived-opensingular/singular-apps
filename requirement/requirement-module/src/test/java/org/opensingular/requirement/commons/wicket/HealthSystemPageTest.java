@@ -29,16 +29,16 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
+import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.AdministrationEntryExtension;
 import org.opensingular.requirement.module.admin.healthsystem.extension.CacheAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.HtmlToPdfAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.JobsAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.PermissionAdminEntry;
+import org.opensingular.requirement.module.admin.healthsystem.extension.RequirementTransitionEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.WebAdminEntry;
-
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
@@ -106,6 +106,14 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @Test
     public void test7ClickHtmlToPdfButton() {
         clickButtonAndCheckPanel(new HtmlToPdfAdminEntry());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void test8ClickRequirementTransitionButton() {
+        //TODO VALIDAR COM VINICIUS.
+        clickButtonAndCheckPanel(new RequirementTransitionEntry());
     }
 
     private void clickButtonAndCheckPanel(AdministrationEntryExtension administrationEntryExtension) {

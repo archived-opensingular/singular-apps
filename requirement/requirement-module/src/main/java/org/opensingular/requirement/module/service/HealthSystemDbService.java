@@ -17,6 +17,13 @@
  */
 package org.opensingular.requirement.module.service;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.persister.entity.AbstractEntityPersister;
 import org.opensingular.lib.commons.util.Loggable;
@@ -28,13 +35,6 @@ import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnIn
 import org.opensingular.requirement.module.persistence.dto.healthsystem.HealthInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.TableInfoDTO;
 import org.springframework.stereotype.Service;
-
-import javax.inject.Inject;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 @Service
 public class HealthSystemDbService implements Loggable {

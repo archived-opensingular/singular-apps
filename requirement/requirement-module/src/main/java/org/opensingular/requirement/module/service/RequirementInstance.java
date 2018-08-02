@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.module.service;
 
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -35,11 +40,6 @@ import org.opensingular.requirement.module.exception.SingularRequirementExceptio
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
-import javax.annotation.Nonnull;
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.Optional;
 
 /**
  * @author Daniel C. Bordin on 07/03/2017.

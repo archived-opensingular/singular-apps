@@ -17,10 +17,10 @@
  */
 package org.opensingular.requirement.module.admin.healthsystem.validation.database;
 
+import java.util.List;
+
 import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.TableInfoDTO;
-
-import java.util.List;
 
 public interface IValidatorDatabase {
 	/**

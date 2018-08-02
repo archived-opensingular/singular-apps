@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
+import java.io.CharArrayWriter;
+import javax.inject.Inject;
+
 import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -25,9 +28,6 @@ import org.apache.wicket.markup.html.WebPage;
 import org.opensingular.form.STypeComposite;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
-
-import javax.inject.Inject;
-import java.io.CharArrayWriter;
 
 public class DocumentationTablePage extends WebPage {
 

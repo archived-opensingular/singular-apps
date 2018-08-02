@@ -18,15 +18,13 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem;
 
+import javax.inject.Inject;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.HealthInfoDTO;
 import org.opensingular.requirement.module.service.HealthSystemDbService;
-
-
-
-import javax.inject.Inject;
 
 public class HealthSystemDBService extends SingularCommonsBaseTest {
     @Inject

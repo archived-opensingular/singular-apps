@@ -18,16 +18,16 @@
 
 package org.opensingular.requirement.module.wicket.view.util;
 
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Optional;
+
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
-
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Optional;
 
 /**
  * Representa o contexto de execução de uma página de um módulo.
@@ -44,8 +44,6 @@ public class ActionContext implements Serializable, Loggable {
     public static final String FORM_NAME = "f";
 
     public static final String INSTANCE_ID = "i";
-
-    public static final String MODULE_PARAM_NAME = "mod";
 
     public static final String MENU_PARAM_NAME = "m";
 
@@ -134,15 +132,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public ActionContext setFlowInstanceId(Integer flowInstanceId) {
         this.params.put(INSTANCE_ID, String.valueOf(flowInstanceId));
-        return this;
-    }
-
-    public Optional<String> getModuleName() {
-        return Optional.ofNullable(this.params.get(MODULE_PARAM_NAME));
-    }
-
-    public ActionContext setModuleName(String moduleName) {
-        this.params.put(MODULE_PARAM_NAME, moduleName);
         return this;
     }
 

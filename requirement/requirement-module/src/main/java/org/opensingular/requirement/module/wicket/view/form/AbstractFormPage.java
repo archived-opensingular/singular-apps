@@ -16,17 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -105,6 +94,17 @@ import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.ModuleButtonFactory;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
@@ -720,9 +720,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void onBeforeExecuteTransition(AjaxRequestTarget ajaxRequestTarget,
-            Form<?> form,
-            String transitionName,
-            IModel<? extends SInstance> currentInstance)
+                                             Form<?> form,
+                                             String transitionName,
+                                             IModel<? extends SInstance> currentInstance)
             throws SingularServerFormValidationError {
         final STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
         if (flowConfirmModal == null) {
@@ -825,9 +825,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private void buildFlowButton(String buttonId,
-            BSContainer<?> buttonContainer,
-            String transitionName,
-            BSModalBorder confirmActionFlowModal, TransitionAccess access) {
+                                 BSContainer<?> buttonContainer,
+                                 String transitionName,
+                                 BSModalBorder confirmActionFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                 "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
@@ -884,7 +884,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     protected FlowConfirmPanel resolveFlowConfirmModal(String id, String transitionName) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         if (controller == null || controller.getType() == null) {
-            return new SimpleMessageFlowConfirmModal<>(id, transitionName, this);
+            return getSimpleMessageFLowConfirmModal(id, transitionName, this);
         }
         RefType refType = getFormRequirementService().loadRefType(controller.getType());
         FormKey formKey = loadFormKeyFromTypeAndTask(controller.getType(), false).orElse(null);
@@ -897,6 +897,21 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                 controller);
         transitionConfirmModalMap.put(transitionName, modal);
         return modal;
+    }
+
+    /**
+     * Method to create the Simple Message Flow.
+     * This modal is create when don't have a TransitionController for the flow.
+     * <p>
+     * Note: This should be overridden for customize the Modal.
+     *
+     * @param id             The id of modal.
+     * @param transitionName The name of the transition.
+     * @param formPage       The form of the page.
+     * @return Instance of the Modal.
+     */
+    protected SimpleMessageFlowConfirmModal getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+        return new SimpleMessageFlowConfirmModal<>(id, transitionName, formPage);
     }
 
     private boolean isMainForm() {

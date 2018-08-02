@@ -18,10 +18,6 @@
 
 package org.opensingular.requirement.module.wicket.view.util;
 
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.lang3.tuple.Pair;
-import org.opensingular.requirement.module.exception.SingularServerException;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -30,6 +26,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
+import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.tuple.Pair;
+import org.opensingular.requirement.module.exception.SingularServerException;
 
 public class ParameterHttpSerializer {
 

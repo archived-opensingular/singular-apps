@@ -18,25 +18,16 @@
 
 package org.opensingular.requirement.module.workspace;
 
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
+import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.service.dto.DatatableField;
+import org.opensingular.requirement.module.service.dto.ItemBox;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
-import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-
-public class DefaultDonebox implements BoxDefinition {
-
-    @Override
-    public boolean appliesTo(IServerContext context) {
-        return ServerContext.WORKLIST.isSameContext(context);
-    }
-
+public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
     public ItemBox build(IServerContext context) {
         final ItemBox concluidas = new ItemBox();
@@ -48,11 +39,15 @@ public class DefaultDonebox implements BoxDefinition {
     }
 
     @Override
-    public BoxItemDataProvider getDataProvider() {
-        return new RequirementBoxItemDataProvider(Boolean.TRUE,
-                new ActionProviderBuilder()
-                        .addViewAction()
-                        .addHistoryAction());
+    protected Boolean mustEvalPermissions() {
+        return Boolean.TRUE;
+    }
+
+    @Override
+    protected void addActions(ActionProviderBuilder builder) {
+        builder
+                .addViewAction()
+                .addHistoryAction();
     }
 
     @Override
@@ -66,5 +61,4 @@ public class DefaultDonebox implements BoxDefinition {
         fields.add(DatatableField.of("Situação", "taskName"));
         return fields;
     }
-
 }

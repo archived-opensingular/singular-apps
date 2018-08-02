@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-apps-lib</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
+        <version>1.8.1-SNAPSHOT</version>
     </parent>
 
     <artifactId>singular-app-commons</artifactId>
@@ -22,7 +22,7 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
-            <artifactId>singular-flow-schedule</artifactId>
+            <artifactId>singular-schedule</artifactId>
         </dependency>
         <!-- JAVA MAIL -->
         <dependency>

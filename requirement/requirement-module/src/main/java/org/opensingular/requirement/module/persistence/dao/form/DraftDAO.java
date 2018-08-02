@@ -18,8 +18,8 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import org.opensingular.requirement.module.persistence.entity.form.DraftEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.requirement.module.persistence.entity.form.DraftEntity;
 
 public class DraftDAO extends BaseDAO<DraftEntity, Long> {
 

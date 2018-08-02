@@ -18,17 +18,15 @@
 
 package org.opensingular.requirement.commons.persistence.dao;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.form.ApplicantDAO;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
-
-
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 public class ApplicantDAOTest extends SingularCommonsBaseTest {
 

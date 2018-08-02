@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
+import java.util.Optional;
+
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
@@ -26,8 +28,6 @@ import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-
-import java.util.Optional;
 
 public class ViewVersionLink extends Panel {
 

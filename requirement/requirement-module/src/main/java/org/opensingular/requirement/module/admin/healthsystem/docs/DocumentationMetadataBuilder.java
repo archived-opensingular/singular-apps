@@ -18,6 +18,16 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
 import org.apache.commons.collections4.CollectionUtils;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypes;
@@ -29,16 +39,6 @@ import org.opensingular.form.view.SViewTab;
 import org.opensingular.form.view.ViewResolver;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.requirement.module.admin.healthsystem.DocumentationMetadataUtil;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * Responsible for collect metadata for SType documentation
