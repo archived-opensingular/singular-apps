@@ -26,15 +26,33 @@ import org.opensingular.requirement.module.service.RequirementInstance;
 
 public class SimpleMessageFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
 
+    private String modalLabel = String.format("Tem certeza que deseja %s ?", getTransition());
+    private boolean validationEnabled = true;
+
     public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
         super(id, transitionName, formPage);
+    }
+
+
+    /**
+     * @param id                id for modal.
+     * @param transitionName    name of transition.
+     * @param formPage          form of the page.
+     * @param validationEnabled True for validate the form.
+     * @param modalLabel        The modal's label.
+     */
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage,
+                                         boolean validationEnabled, String modalLabel) {
+        this(id, transitionName, formPage);
+        this.modalLabel = modalLabel;
+        this.validationEnabled = validationEnabled;
     }
 
     @Override
     void addComponentsToModalBorder(BSModalBorder modalBorder) {
         addDefaultCancelButton(modalBorder);
-        addDefaultConfirmButton(modalBorder);
-        modalBorder.add(new Label("flow-msg", String.format("Tem certeza que deseja %s ?", getTransition())));
+        addDefaultConfirmButton(modalBorder, validationEnabled);
+        modalBorder.add(new Label("flow-msg", modalLabel));
     }
 
     @Override
