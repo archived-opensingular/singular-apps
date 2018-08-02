@@ -59,24 +59,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     }
 
     /**
-     * TODO Remover
-     */
-    @Deprecated
-    public SchedulerAppInitializerListener newSchedulerInitializerListener() {
-        return new SchedulerAppInitializerListener() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
-            }
-        };
-    }
-
-    /**
      * Cria o {@link WorkspaceAppInitializerListener}
      */
     public WorkspaceAppInitializerListener newWorkspaceInitializerListener() {
@@ -154,7 +136,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     public List<? extends SingularWebAppInitializerListener> getSingularWebInitializerListener() {
         List<SingularWebAppInitializerListener> initializerListeners = new ArrayList<>();
         initializerListeners.add(newSpringConfigRegisterSingularWebInitializerListener());
-        initializerListeners.add(newSchedulerInitializerListener());
         initializerListeners.add(newServletContextSetupSingularWebInitializerListener());
         initializerListeners.add(newWorkspaceInitializerListener());
         return initializerListeners;
