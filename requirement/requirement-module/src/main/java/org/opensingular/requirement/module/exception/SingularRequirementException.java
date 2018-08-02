@@ -18,10 +18,10 @@
 
 package org.opensingular.requirement.module.exception;
 
+import org.opensingular.requirement.module.service.RequirementInstance;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-
-import org.opensingular.requirement.module.service.RequirementInstance;
 
 /**
  * Represents exceptions caused by a manipulation of Requirements.
@@ -44,7 +44,7 @@ public class SingularRequirementException extends SingularServerException {
         super(cause);
     }
 
-    protected SingularRequirementException(String msg, Throwable cause) {
+    public SingularRequirementException(String msg, Throwable cause) {
         super(msg, cause);
     }
 }
