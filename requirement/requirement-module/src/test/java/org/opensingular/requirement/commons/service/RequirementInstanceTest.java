@@ -18,6 +18,9 @@
 
 package org.opensingular.requirement.commons.service;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SFormUtil;
@@ -30,12 +33,7 @@ import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
-
-
-import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 

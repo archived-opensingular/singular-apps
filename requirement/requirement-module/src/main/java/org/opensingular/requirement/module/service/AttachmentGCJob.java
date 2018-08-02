@@ -19,17 +19,16 @@
 package org.opensingular.requirement.module.service;
 
 import java.util.List;
-
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.opensingular.flow.schedule.IScheduleData;
-import org.opensingular.flow.schedule.IScheduledJob;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.schedule.IScheduleData;
+import org.opensingular.schedule.IScheduledJob;
 
 /**
  * Job responsável por fazer a coleta de lixo da tabela de anexos

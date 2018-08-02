@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
+import javax.inject.Inject;
+
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -25,8 +27,6 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.form.service.FormIndexService;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
-
-import javax.inject.Inject;
 
 @SuppressWarnings("serial")
 public class IndexPanel extends Panel {

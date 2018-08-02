@@ -16,9 +16,9 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-import org.opensingular.form.SType;
-
 import java.io.Serializable;
+
+import org.opensingular.form.SType;
 
 public class TransitionConfirmConfig<T extends SType<?>> implements Serializable {
 

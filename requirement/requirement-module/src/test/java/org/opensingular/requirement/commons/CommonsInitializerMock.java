@@ -19,21 +19,12 @@
 package org.opensingular.requirement.commons;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.requirement.module.config.FlowInitializer;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.PSingularInitializer;
-import org.opensingular.requirement.module.config.PWebInitializer;
-import org.opensingular.requirement.module.config.SchedulerInitializer;
-import org.opensingular.requirement.module.config.SpringHibernateInitializer;
-
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.config.AbstractSingularInitializer;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 
-public class CommonsInitializerMock implements PSingularInitializer {
-    
-    public static final String   TESTE                      = "GRUPO_TESTE";
-    public static final String   SPRING_MVC_SERVLET_MAPPING = "/*";
+public class CommonsInitializerMock extends AbstractSingularInitializer {
+    public static final String TESTE = "GRUPO_TESTE";
     private AnnotationConfigWebApplicationContext applicationContext;
 
     public CommonsInitializerMock(AnnotationConfigWebApplicationContext applicationContext) {
@@ -44,66 +35,17 @@ public class CommonsInitializerMock implements PSingularInitializer {
     }
 
     @Override
-    public PWebInitializer webConfiguration() {
-        return new PWebInitializer() {
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext context) {
-                return CommonsApplicationMock.class;
-            }
-        };
+    protected String[] getSpringPackagesToScan() {
+        return new String[0];
     }
 
     @Override
-    public SpringHibernateInitializer springHibernateConfiguration() {
-        return new SpringHibernateInitializer() {
-            @Override
-            protected AnnotationConfigWebApplicationContext newApplicationContext() {
-                return applicationContext;
-            }
-
-            @Override
-            protected String springMVCServletMapping() {
-                return SPRING_MVC_SERVLET_MAPPING;
-            }
-
-            @Override
-            protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-              return CommonsInitializerMock.this.persistenceConfiguration();
-            }
-        };
+    public AnnotationConfigWebApplicationContext createApplicationContext() {
+        return applicationContext;
     }
 
-
-    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+    @Override
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> getSingularPersistenceConfigurationBeanFactoryClass() {
         return SingularPersistenceDefaultBeanFactory.class;
     }
-
-
-    @Override
-    public FlowInitializer flowConfiguration() {
-        return new FlowInitializer() {
-
-            @Override
-            public String moduleCod() {
-                return TESTE;
-            }
-        };
-    }
-
-    @Override
-    public SchedulerInitializer schedulerConfiguration() {
-        return new SchedulerInitializer() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return Object.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return Object.class;
-            }
-        };
-    }
-
-
 }

@@ -18,6 +18,11 @@
 
 package org.opensingular.requirement.commons.service.attachment;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,11 +38,6 @@ import org.opensingular.form.type.core.attachment.SIAttachment;
 import org.opensingular.form.type.core.attachment.helper.DefaultAttachmentPersistenceHelper;
 import org.opensingular.requirement.module.service.attachment.IFormAttachmentService;
 import org.opensingular.requirement.module.service.attachment.ServerAttachmentPersistenceHelper;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.Mockito.eq;
 import static org.mockito.Mockito.verify;

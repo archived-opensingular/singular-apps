@@ -23,7 +23,7 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.RequirementUtil;
 
 import javax.annotation.Nonnull;
@@ -40,7 +40,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     private final Map<String, Supplier<SType<?>>> entries = new LinkedHashMap<>();
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfiguration singularServerConfiguration;
 
     public SingularServerSpringTypeLoader() {
     }
@@ -51,7 +51,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     }
 
     private void add(Class<? extends SType<?>> type) {
-        String typeName   = RequirementUtil.getTypeName(type);
+        String typeName = RequirementUtil.getTypeName(type);
         add(typeName, () -> {
             SDictionary d = SDictionary.create();
             d.loadPackage(SFormUtil.getTypePackage(type));

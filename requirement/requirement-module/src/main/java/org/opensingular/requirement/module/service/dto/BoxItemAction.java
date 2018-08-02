@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.service.dto;
 
+import java.io.Serializable;
+
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
@@ -27,8 +29,6 @@ import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
-
-import java.io.Serializable;
 
 public class BoxItemAction implements Serializable {
 

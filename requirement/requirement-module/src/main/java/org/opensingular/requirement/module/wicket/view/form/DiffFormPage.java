@@ -17,6 +17,11 @@
 package org.opensingular.requirement.module.wicket.view.form;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
+import javax.inject.Inject;
+
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -32,12 +37,7 @@ import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.ModuleButtonFactory;
 
-import javax.inject.Inject;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 public class DiffFormPage extends ServerTemplate {
 

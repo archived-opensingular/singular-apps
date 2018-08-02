@@ -18,18 +18,17 @@
 
 package org.opensingular.requirement.module.admin;
 
-import net.sf.ehcache.CacheManager;
-import org.opensingular.flow.schedule.IScheduleService;
-import org.opensingular.flow.schedule.ScheduledJob;
-import org.quartz.JobKey;
-import org.quartz.SchedulerException;
-import org.springframework.beans.factory.annotation.Autowired;
-
-import javax.inject.Inject;
-import javax.inject.Named;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import javax.inject.Inject;
+import javax.inject.Named;
+
+import net.sf.ehcache.CacheManager;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduledJob;
+import org.quartz.JobKey;
+import org.quartz.SchedulerException;
 
 @Named
 public class AdminFacade {

@@ -19,15 +19,13 @@
 package org.opensingular.requirement.module.service;
 
 import java.util.Optional;
-
 import javax.inject.Inject;
 
-import org.springframework.transaction.annotation.Transactional;
-
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.core.entity.IEntityModule;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 public class ParameterService implements Loggable {

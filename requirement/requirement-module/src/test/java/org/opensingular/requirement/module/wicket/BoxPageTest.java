@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module.wicket;
 
+import javax.inject.Inject;
+
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.RestartResponseException;
@@ -27,15 +29,13 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.config.PServerContext;
+import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.test.ContextUtil;
 import org.opensingular.requirement.module.test.ModuleApplicationMock;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
-
-import javax.inject.Inject;
 
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
@@ -45,7 +45,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
 
     static {
         ContextUtil.setContextPath(SINGULAR);
-        ContextUtil.setPathInfo(SINGULAR + PServerContext.REQUIREMENT.getUrlPath());
+        ContextUtil.setPathInfo(SINGULAR + "/requirement");
     }
 
     private SingularWicketTester tester;

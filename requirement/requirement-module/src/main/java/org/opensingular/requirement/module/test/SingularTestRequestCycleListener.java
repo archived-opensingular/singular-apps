@@ -18,6 +18,10 @@
 
 package org.opensingular.requirement.module.test;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import javax.servlet.http.HttpServletRequest;
+
 import net.sf.cglib.proxy.Enhancer;
 import net.sf.cglib.proxy.InvocationHandler;
 import net.sf.cglib.proxy.MethodInterceptor;
@@ -25,10 +29,6 @@ import net.sf.cglib.proxy.MethodProxy;
 import org.apache.wicket.protocol.http.servlet.ServletWebRequest;
 import org.apache.wicket.request.cycle.AbstractRequestCycleListener;
 import org.apache.wicket.request.cycle.RequestCycle;
-
-import javax.servlet.http.HttpServletRequest;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 
 public class SingularTestRequestCycleListener extends AbstractRequestCycleListener {
 

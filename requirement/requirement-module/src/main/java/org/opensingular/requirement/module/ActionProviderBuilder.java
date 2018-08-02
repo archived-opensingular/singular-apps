@@ -102,7 +102,7 @@ public class ActionProviderBuilder implements ActionProvider {
 
 
     @FunctionalInterface
-    public static interface ActionConfigurer {
-        public void configure(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list);
+    public interface ActionConfigurer {
+        void configure(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list);
     }
 }

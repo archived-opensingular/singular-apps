@@ -19,6 +19,15 @@
 package org.opensingular.requirement.module.service;
 
 
+import java.io.Serializable;
+import java.util.Date;
+import java.util.List;
+import java.util.Optional;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
 import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.persistence.entity.FormEntity;
@@ -27,15 +36,6 @@ import org.opensingular.form.util.diff.DocumentDiff;
 import org.opensingular.form.util.diff.DocumentDiffUtil;
 import org.opensingular.requirement.module.persistence.entity.form.DraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
 
 @Transactional
 public class SingularDiffService {

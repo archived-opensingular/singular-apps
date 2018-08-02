@@ -18,18 +18,18 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
-import org.apache.wicket.markup.html.form.Button;
-import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.request.IRequestCycle;
-import org.apache.wicket.request.IRequestHandler;
-import org.opensingular.lib.commons.base.SingularException;
-
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.Writer;
 import java.lang.management.ManagementFactory;
 import java.lang.management.ThreadInfo;
 import java.util.Date;
+import javax.servlet.http.HttpServletResponse;
+
+import org.apache.wicket.markup.html.form.Button;
+import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.request.IRequestCycle;
+import org.apache.wicket.request.IRequestHandler;
+import org.opensingular.lib.commons.base.SingularException;
 
 @SuppressWarnings("serial")
 public class ThreadPanel extends Panel {
