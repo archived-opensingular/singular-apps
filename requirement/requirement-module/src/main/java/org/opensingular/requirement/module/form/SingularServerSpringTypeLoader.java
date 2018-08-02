@@ -18,29 +18,29 @@
 
 package org.opensingular.requirement.module.form;
 
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.function.Supplier;
-import javax.annotation.Nonnull;
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.RequirementUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.Supplier;
 
 public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
 
     private final Map<String, Supplier<SType<?>>> entries = new LinkedHashMap<>();
 
     @Inject
-    private SingularModuleConfigurationBean singularServerConfiguration;
+    private SingularModuleConfiguration singularServerConfiguration;
 
     public SingularServerSpringTypeLoader() {
     }
@@ -51,7 +51,7 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     }
 
     private void add(Class<? extends SType<?>> type) {
-        String typeName   = RequirementUtil.getTypeName(type);
+        String typeName = RequirementUtil.getTypeName(type);
         add(typeName, () -> {
             SDictionary d = SDictionary.create();
             d.loadPackage(SFormUtil.getTypePackage(type));

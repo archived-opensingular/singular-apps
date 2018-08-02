@@ -38,7 +38,7 @@ public class SingularAdministrationLogoutHandler implements SingularLogoutHandle
     @Override
     public void handleLogout(HttpServletRequest req, HttpServletResponse resp) {
         try {
-            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : {}. A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT", StringEscapeUtils.escapeJava(req.getRequestURI()));
+            getLogger().warn(" CAPTURADA REQUEST DE LOGOUT EM : {}. A SESSAO DESSA APLICACAO SERA INVALIDADA E SERA FEITO O SINGLE SIGN OUT", StringEscapeUtils.escapeJava(req.getRequestURI()));//NOSONAR
             HttpSession session = req.getSession(false);
             if (session != null) {
                 SecurityContextImpl sci = (SecurityContextImpl) session.getAttribute("SPRING_SECURITY_CONTEXT");

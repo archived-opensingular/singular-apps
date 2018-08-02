@@ -43,7 +43,7 @@ import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
-import org.opensingular.requirement.module.wicket.listener.SingularServerContextListener;
+import org.opensingular.requirement.module.wicket.listener.SingularRequirementContextListener;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
@@ -63,7 +63,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
         super.init();
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
-        getRequestCycleListeners().add(new SingularServerContextListener());
+        getRequestCycleListeners().add(new SingularRequirementContextListener());
 
         Locale.setDefault(new Locale("pt", "BR"));//NOSONAR
 

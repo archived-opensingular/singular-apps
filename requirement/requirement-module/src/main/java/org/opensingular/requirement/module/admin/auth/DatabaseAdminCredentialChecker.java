@@ -20,10 +20,10 @@ package org.opensingular.requirement.module.admin.auth;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -39,7 +39,7 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     private ParameterService parameterService;
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Override
     public boolean check(String username, String password) {

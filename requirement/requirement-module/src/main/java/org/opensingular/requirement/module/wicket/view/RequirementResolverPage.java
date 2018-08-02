@@ -28,7 +28,6 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.SingularRequirementResolver;
 import org.opensingular.requirement.module.connector.ModuleService;
@@ -60,9 +59,6 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
 
     @Inject
     private ModuleService moduleService;
-
-    @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
 
     public RequirementResolverPage(@Nullable ActionContext context) {
         super(context);

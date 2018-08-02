@@ -17,13 +17,13 @@
  */
 package org.opensingular.app.commons.mail.service.email;
 
-import org.opensingular.flow.schedule.IScheduleService;
+import javax.inject.Inject;
+
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.schedule.IScheduleService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.inject.Inject;
 
 @AutoScanDisabled
 @RequestMapping(IMailSenderREST.PATH)

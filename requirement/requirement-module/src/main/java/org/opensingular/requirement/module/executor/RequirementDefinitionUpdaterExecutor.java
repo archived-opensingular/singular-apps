@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.module.executor;
 
-import javax.annotation.PostConstruct;
-import javax.inject.Inject;
-import javax.inject.Named;
-
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+
+import javax.annotation.PostConstruct;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 /**
  * Classe para abrigar a lógica de carga
@@ -37,7 +37,7 @@ import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 public class RequirementDefinitionUpdaterExecutor {
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     @Inject
     private ServerStartExecutorBean serverStartExecutorBean;
@@ -55,7 +55,7 @@ public class RequirementDefinitionUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllRequirementDefinitions() {
-        for (SingularRequirement singularRequirement: singularModuleConfiguration.getRequirements()) {
+        for (SingularRequirement singularRequirement : singularModuleConfiguration.getRequirements()) {
             try {
                 moduleService.save(singularRequirement);
             } catch (Exception e) {

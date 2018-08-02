@@ -18,10 +18,6 @@
 
 package org.opensingular.requirement.module.persistence.query;
 
-import javax.annotation.Nonnull;
-
-import javax.annotation.Nonnull;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
@@ -34,7 +30,36 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+
+import javax.annotation.Nonnull;
+
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_REQUIREMENT;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_USUARIO_ALOCADO;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.CREATION_DATE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.DESCRIPTION;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.EDITION_DATE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.FLOW_INSTANCE_ID;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.MODULE_COD;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.MODULE_CONTEXT;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.NOME_USUARIO_ALOCADO;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PARENT_REQUIREMENT;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_BEGIN_DATE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_NAME;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_TYPE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.ROOT_REQUIREMENT;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SITUATION;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SITUATION_BEGIN_DATE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SOLICITANTE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.TASK_ID;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.TASK_INSTANCE_ID;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.TASK_NAME;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.TASK_TYPE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.TYPE;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.VERSION_STAMP;
+
 public class RequirementSearchQueryFactory {
+
 
     private final RequirementSearchContext ctx;
     private final RequirementSearchAliases $;
@@ -93,46 +118,46 @@ public class RequirementSearchQueryFactory {
 
     private void applyDefaultOrderBy() {
         if (ctx.getQuickFilter().isRascunho()) {
-            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("creationDate")));
+            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(CREATION_DATE)));
         } else {
-            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath("processBeginDate")));
+            query.orderBy(new OrderSpecifier<>(Order.ASC, Expressions.stringPath(PROCESS_BEGIN_DATE)));
         }
     }
 
     private void appendSelect() {
         query
-                .addToSelect($.requirement.cod.as("codRequirement"))
-                .addToSelect($.requirement.description.as("description"))
-                .addToSelect($.taskVersion.name.as("situation"))
-                .addToSelect($.applicantEntity.name.as("solicitante"))
-                .addToSelect($.taskVersion.name.as("taskName"))
-                .addToSelect($.taskVersion.type.as("taskType"))
-                .addToSelect($.flowDefinitionEntity.name.as("processName"))
+                .addToSelect($.requirement.cod.as(COD_REQUIREMENT))
+                .addToSelect($.requirement.description.as(DESCRIPTION))
+                .addToSelect($.taskVersion.name.as(SITUATION))
+                .addToSelect($.applicantEntity.name.as(SOLICITANTE))
+                .addToSelect($.taskVersion.name.as(TASK_NAME))
+                .addToSelect($.taskVersion.type.as(TASK_TYPE))
+                .addToSelect($.flowDefinitionEntity.name.as(PROCESS_NAME))
                 .addCaseToSelect($case -> $case
                         .when($.currentFormDraftVersionEntity.isNull())
                         .then($.currentFormVersion.inclusionDate)
                         .otherwise($.currentFormDraftVersionEntity.inclusionDate)
-                        .as("creationDate"))
+                        .as(CREATION_DATE))
                 .addCaseToSelect($case -> $case
                         .when($.formType.abbreviation.isNull())
                         .then($.formDraftType.abbreviation)
                         .otherwise($.formType.abbreviation)
-                        .as("type"))
-                .addToSelect($.flowDefinitionEntity.key.as("processType"))
-                .addToSelect($.task.beginDate.as("situationBeginDate"))
-                .addToSelect($.task.cod.as("taskInstanceId"))
-                .addToSelect($.flowInstance.beginDate.as("processBeginDate"))
-                .addToSelect($.currentDraftEntity.editionDate.as("editionDate"))
-                .addToSelect($.flowInstance.cod.as("flowInstanceId"))
-                .addToSelect($.requirement.rootRequirement.cod.as("rootRequirement"))
-                .addToSelect($.requirement.parentRequirement.cod.as("parentRequirement"))
-                .addToSelect($.taskDefinition.cod.as("taskId"))
-                .addToSelect($.task.versionStamp.as("versionStamp"))
-                .addToSelect($.allocatedUser.codUsuario.as("codUsuarioAlocado"))
-                .addToSelect($.allocatedUser.nome.as("nomeUsuarioAlocado"))
-                .addToSelect($.module.cod.as("moduleCod"))
-                .addToSelect($.module.connectionURL.as("moduleContext"))
-                .addToSelect($.requirementDefinition.cod.as("requirementDefinitionId"));
+                        .as(TYPE))
+                .addToSelect($.flowDefinitionEntity.key.as(PROCESS_TYPE))
+                .addToSelect($.task.beginDate.as(SITUATION_BEGIN_DATE))
+                .addToSelect($.task.cod.as(TASK_INSTANCE_ID))
+                .addToSelect($.flowInstance.beginDate.as(PROCESS_BEGIN_DATE))
+                .addToSelect($.currentDraftEntity.editionDate.as(EDITION_DATE))
+                .addToSelect($.flowInstance.cod.as(FLOW_INSTANCE_ID))
+                .addToSelect($.requirement.rootRequirement.cod.as(ROOT_REQUIREMENT))
+                .addToSelect($.requirement.parentRequirement.cod.as(PARENT_REQUIREMENT))
+                .addToSelect($.taskDefinition.cod.as(TASK_ID))
+                .addToSelect($.task.versionStamp.as(VERSION_STAMP))
+                .addToSelect($.allocatedUser.codUsuario.as(COD_USUARIO_ALOCADO))
+                .addToSelect($.allocatedUser.nome.as(NOME_USUARIO_ALOCADO))
+                .addToSelect($.module.cod.as(MODULE_COD))
+                .addToSelect($.module.connectionURL.as(MODULE_CONTEXT))
+                .addToSelect($.requirementDefinition.cod.as(REQUIREMENT_DEFINITION_ID));
 
         query
                 .from($.requirement)
