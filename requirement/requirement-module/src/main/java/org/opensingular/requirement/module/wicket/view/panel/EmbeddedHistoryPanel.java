@@ -16,6 +16,10 @@ import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 
+/**
+ * This panel will show a history about the analysis of the requirement.
+ * This panel is a table containing some information of the requirement history.
+ */
 public class EmbeddedHistoryPanel extends Panel {
 
     @Inject
@@ -26,6 +30,11 @@ public class EmbeddedHistoryPanel extends Panel {
         buildTable(analiseAnteriorService.buscarAnalisesAnteriores(requirementEntityPK));
     }
 
+    /**
+     * Method responsible for create the table that contains some information about the requirement history.
+     *
+     * @param embeddedHistoryDTOS Dto that contains the information about the requiriment.
+     */
     private void buildTable(List<EmbeddedHistoryDTO> embeddedHistoryDTOS) {
         add(new ListView<EmbeddedHistoryDTO>("linhas", embeddedHistoryDTOS) {
             @Override
