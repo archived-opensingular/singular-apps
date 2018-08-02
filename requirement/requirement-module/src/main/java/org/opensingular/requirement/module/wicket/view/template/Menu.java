@@ -38,7 +38,9 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuBoxItem;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
@@ -93,13 +95,15 @@ public class Menu extends Panel implements Loggable {
         for (WorkspaceMenuCategory category : workspaceMenu.getCategories()) {
             MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
             menu.addItem(group);
-            for (BoxDefinition boxDefinition: category.getDefinitions()) {
-                MenuItemConfig t = buildMenuItemConfig(boxDefinition);
+            for (WorkspaceMenuItem workspaceMenuItem : category.getWorkspaceMenuItens()) {
+                MenuItemConfig t = buildMenuItemConfig(workspaceMenuItem);
                 PageParameters pageParameters = new PageParameters();
                 pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
                 pageParameters.add(ITEM_PARAM_NAME, t.name);
                 MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
-                itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+                if (t.counterSupplier != null) {
+                    itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+                }
                 group.addItem(i);
             }
         }
@@ -111,10 +115,12 @@ public class Menu extends Panel implements Loggable {
 
     }
 
-    protected MenuItemConfig buildMenuItemConfig(BoxDefinition boxDefinition) {
-        final ISupplier<String> countSupplier = createCountSupplier(boxDefinition);
-        ItemBox itemBox = boxDefinition.getItemBox();
-        return MenuItemConfig.of(boxPageClass, itemBox.getName(), itemBox.getHelpText(), itemBox.getIcone(), countSupplier);
+    protected MenuItemConfig buildMenuItemConfig(WorkspaceMenuItem workspaceMenuItem) {
+        ISupplier<String> countSupplier = null;
+        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem) {
+            countSupplier = createCountSupplier(((WorkspaceMenuBoxItem) workspaceMenuItem).getBoxDefinition());
+        }
+        return MenuItemConfig.of(boxPageClass, workspaceMenuItem.getName(), workspaceMenuItem.getHelpText(), workspaceMenuItem.getIcon(), countSupplier);
     }
 
     protected ISupplier<String> createCountSupplier(BoxDefinition boxDefinition) {

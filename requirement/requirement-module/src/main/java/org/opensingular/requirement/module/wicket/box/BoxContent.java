@@ -44,6 +44,7 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
@@ -64,6 +65,9 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
     @Inject
     private ModuleService moduleService;
+
+    @Inject
+    private BoxFilterFactory boxFilterFactory;
 
     private Pair<String, SortOrder> sortProperty;
 
@@ -292,7 +296,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected BoxFilter newFilterBasic() {
-        return getBoxPage().createFilter().withFilter(getFiltroRapidoModelObject());
+        return boxFilterFactory.create(getBoxDefinitionObject()).withFilter(getFiltroRapidoModelObject());
     }
 
     private BoxPage getBoxPage() {

@@ -28,8 +28,7 @@ import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
-import org.opensingular.requirement.module.persistence.filter.BoxFilter;
-import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -56,12 +55,9 @@ public class BoxPage extends ServerBoxTemplate {
     private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
 
     @Inject
-    private BoxFilterFactory boxFilterFactory;
-
-    @Inject
     private SingularModuleConfiguration singularModuleConfiguration;
 
-    protected IModel<BoxDefinition> boxDefinition;
+    protected IModel<WorkspaceMenuItem> workspaceMenuItem;
 
     protected IModel<IServerContext> serverContext;
 
@@ -96,17 +92,17 @@ public class BoxPage extends ServerBoxTemplate {
             throw new RestartResponseException(getPageClass(), pageParameters);
         }
 
-        boxDefinition= workspace.menu()
+        workspaceMenuItem = workspace.menu()
                 .getCategories()
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(category))
-                .map(WorkspaceMenuCategory::getDefinitions)
+                .map(WorkspaceMenuCategory::getWorkspaceMenuItens)
                 .flatMap(Collection::stream)
-                .filter(i -> i.getItemBox().getName().equals(item)).findFirst()
+                .filter(i -> i.getName().equals(item)).findFirst()
                 .map(Model::new)
                 .orElse(null);
 
-        if (boxDefinition!= null) {
+        if (workspaceMenuItem != null) {
             add(newBoxContent("box"));
         } else {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
@@ -127,23 +123,11 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected Component newBoxContent(String id) {
-        return new BoxContent(id, boxDefinition);
+        return workspaceMenuItem.getObject().newContent(id);
     }
 
     protected Map<String, String> createLinkParams() {
         return new HashMap<>();
-    }
-
-    protected BoxFilter createFilter() {
-        return boxFilterFactory.create(getBoxDefinitionObject());
-    }
-
-    protected BoxDefinition getBoxDefinitionObject() {
-        return boxDefinition.getObject();
-    }
-
-    protected ItemBox getItemBoxObject() {
-        return getBoxDefinitionObject().getItemBox();
     }
 
     @Override
@@ -151,8 +135,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (getItemBoxObject() != null) {
-                    return getItemBoxObject().getDescription();
+                if (workspaceMenuItem != null) {
+                    return workspaceMenuItem.getObject().getDescription();
                 }
                 return null;
             }
@@ -164,8 +148,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (getItemBoxObject() != null) {
-                    return getItemBoxObject().getName();
+                if (workspaceMenuItem != null) {
+                    return workspaceMenuItem.getObject().getName();
                 }
                 return null;
             }
@@ -177,8 +161,8 @@ public class BoxPage extends ServerBoxTemplate {
         return new Model<String>() {
             @Override
             public String getObject() {
-                if (getItemBoxObject() != null) {
-                    return getItemBoxObject().getHelpText();
+                if (workspaceMenuItem != null) {
+                    return workspaceMenuItem.getObject().getHelpText();
                 }
                 return null;
             }

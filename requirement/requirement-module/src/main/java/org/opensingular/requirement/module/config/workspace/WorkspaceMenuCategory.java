@@ -10,9 +10,10 @@ import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 public class WorkspaceMenuCategory implements Serializable {
-    private final Set<BoxDefinition> definitions = new LinkedHashSet<>();
+    private final Set<WorkspaceMenuItem> workspaceMenuItens = new LinkedHashSet<>();
     private final String name;
     private Icon icon;
 
@@ -22,14 +23,14 @@ public class WorkspaceMenuCategory implements Serializable {
 
     public WorkspaceMenuCategory addBox(Class<? extends BoxDefinition> boxDefitionClass) {
         BoxDefinition definition = internalAddBox(boxDefitionClass);
-        definitions.add(definition);
+        workspaceMenuItens.add(new WorkspaceMenuBoxItem(definition));
         return this;
     }
 
     public WorkspaceMenuCategory addBox(Class<? extends BoxDefinition> boxDefitionClass, Consumer<ItemBox> boxConfigurer) {
         BoxDefinition definition = internalAddBox(boxDefitionClass);
         boxConfigurer.accept(definition.getItemBox());
-        definitions.add(definition);
+        workspaceMenuItens.add(new WorkspaceMenuBoxItem(definition));
         return this;
     }
 
@@ -45,7 +46,15 @@ public class WorkspaceMenuCategory implements Serializable {
     }
 
     public Set<BoxDefinition> getDefinitions() {
-        return definitions;
+        return workspaceMenuItens.stream()
+                .filter(i -> i instanceof WorkspaceMenuBoxItem)
+                .map(i -> (WorkspaceMenuBoxItem) i)
+                .map(WorkspaceMenuBoxItem::getBoxDefinition)
+                .collect(Collectors.toSet());
+    }
+
+    public Set<WorkspaceMenuItem> getWorkspaceMenuItens() {
+        return workspaceMenuItens;
     }
 
     public String getName() {
