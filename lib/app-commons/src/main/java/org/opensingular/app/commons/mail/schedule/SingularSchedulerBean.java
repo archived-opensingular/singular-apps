@@ -459,6 +459,7 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
      *
      * @param schedulerFactory the SchedulerFactory to initialize
      */
+    @SuppressWarnings("squid:MethodCyclomaticComplexity")
     private void initSchedulerFactory(SchedulerFactory schedulerFactory) throws SchedulerException, IOException {
         if (!(schedulerFactory instanceof StdSchedulerFactory)) {
             if (this.configLocation != null || this.quartzProperties != null ||
