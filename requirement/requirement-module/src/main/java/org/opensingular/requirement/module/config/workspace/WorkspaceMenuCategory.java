@@ -21,6 +21,12 @@ public class WorkspaceMenuCategory implements Serializable {
         this.name = name;
     }
 
+    public WorkspaceMenuCategory add(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass){
+        WorkspaceMenuItem workspaceMenuItem = new Mirror().on(workspaceMenuItemClass).invoke().constructor().withoutArgs();
+        workspaceMenuItens.add(workspaceMenuItem);
+        return this;
+    }
+
     public WorkspaceMenuCategory addBox(Class<? extends BoxDefinition> boxDefitionClass) {
         BoxDefinition definition = internalAddBox(boxDefitionClass);
         workspaceMenuItens.add(new WorkspaceMenuBoxItem(definition));
