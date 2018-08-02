@@ -18,8 +18,6 @@
 
 package org.opensingular.requirement.module.flow.builder;
 
-import javax.annotation.Nonnull;
-
 import org.apache.wicket.markup.html.WebPage;
 import org.opensingular.flow.core.BusinessRoleStrategy;
 import org.opensingular.flow.core.FlowInstance;
@@ -37,11 +35,14 @@ import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
 import org.opensingular.flow.core.builder.BuilderJava;
 import org.opensingular.flow.core.builder.BuilderTask;
+import org.opensingular.flow.core.builder.BuilderTransitionPredicate;
 import org.opensingular.flow.core.builder.BuilderWait;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
+
+import javax.annotation.Nonnull;
 
 /**
  * Construtor de fluxo especializado em fluxo para requerimentos. Apresenta configurações adicionais às encontradas
@@ -51,7 +52,7 @@ import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrat
  * @see FlowBuilder
  */
 public class RequirementFlowBuilder extends
-        FlowBuilder<RequirementFlowDefinition<?>, FlowMapRequirement, RequirementFlowBuilder.BuilderTaskRequirement, RequirementFlowBuilder.BuilderJavaTaskRequirement, RequirementFlowBuilder.BuilderHumanTaskRequirement, RequirementFlowBuilder.BuilderWaitTaskRequirement, RequirementFlowBuilder.BuilderEndTaskRequirement, RequirementFlowBuilder.BuilderStartRequirement, RequirementFlowBuilder.BuilderTransitionRequirement, RequirementFlowBuilder.BuilderRoleRequirement, ITaskDefinition> {
+        FlowBuilder<RequirementFlowDefinition<?>, FlowMapRequirement, RequirementFlowBuilder.BuilderTaskRequirement, RequirementFlowBuilder.BuilderJavaTaskRequirement, RequirementFlowBuilder.BuilderHumanTaskRequirement, RequirementFlowBuilder.BuilderWaitTaskRequirement, RequirementFlowBuilder.BuilderEndTaskRequirement, RequirementFlowBuilder.BuilderStartRequirement, RequirementFlowBuilder.BuilderTransitionRequirement, RequirementFlowBuilder.BuilderTransitionRequirementPredicate, RequirementFlowBuilder.BuilderRoleRequirement, ITaskDefinition> {
 
     private RequirementFlowBuilder(RequirementFlowDefinition<?> flowDefinition) {
         super(flowDefinition);
@@ -100,6 +101,11 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
+    protected BuilderTransitionRequirementPredicate newAutomaticTransition(STransition transition) {
+        return new BuilderTransitionRequirementPredicate(this, transition);
+    }
+
+    @Override
     protected BuilderRoleRequirement newBusinessRole(SBusinessRole businessRole) {
         return new BuilderRoleRequirement(businessRole);
     }
@@ -112,8 +118,8 @@ public class RequirementFlowBuilder extends
 
     @Override
     public BuilderRoleRequirement addBusinessRole(String description,
-                                                 BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
-                                                 boolean automaticUserAllocation) {
+                                                  BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
+                                                  boolean automaticUserAllocation) {
         return addBusinessRole(description, SingularUtil.convertToJavaIdentity(description, true, false),
                 businessRoleStrategy, automaticUserAllocation);
     }
@@ -262,6 +268,27 @@ public class RequirementFlowBuilder extends
         public STransitionRequirement getTransition() {
             return (STransitionRequirement) super.getTransition();
         }
+
+    }
+
+    /**
+     * Builder (configurador) de {@link STransition} especializado em requerimentos.
+     * Apresenta comportamentos adicionais específicos de requerimentos.
+     * <p>Trabalha com {@link STransitionRequirement}.</p>
+     */
+    public static class BuilderTransitionRequirementPredicate
+            extends FlowBuilderImpl.ImplBuilderTransitionPredicate<BuilderTransitionRequirementPredicate> implements BuilderTransitionPredicate<BuilderTransitionRequirementPredicate> {
+
+        @SuppressWarnings("rawtypes")
+        BuilderTransitionRequirementPredicate(FlowBuilder fluxoBuilder, STransition transition) {
+            super(fluxoBuilder, transition);
+        }
+
+        @Override
+        public STransitionRequirement getTransition() {
+            return (STransitionRequirement) super.getTransition();
+        }
+
 
     }
 
