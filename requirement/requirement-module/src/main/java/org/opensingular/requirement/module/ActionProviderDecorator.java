@@ -31,10 +31,10 @@ public abstract class ActionProviderDecorator implements ActionProvider {
     }
 
 
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter) {
-        return decorate(delegate.getLineActions(boxInfo, line, filter), boxInfo, line, filter);
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
+        return decorate(delegate.getLineActions(line, filter), line, filter);
     }
 
 
-    public abstract BoxItemActionList decorate(BoxItemActionList boxItemActionList, BoxInfo boxInfo, BoxItemData line, BoxFilter filter);
+    public abstract BoxItemActionList decorate(BoxItemActionList boxItemActionList, BoxItemData line, BoxFilter filter);
 }

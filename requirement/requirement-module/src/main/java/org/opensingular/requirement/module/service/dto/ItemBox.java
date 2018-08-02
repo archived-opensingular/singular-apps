@@ -27,6 +27,7 @@ import org.opensingular.requirement.module.jackson.IconJsonSerializer;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -39,7 +40,7 @@ public class ItemBox implements Serializable {
     private List<DatatableField> fieldsDatatable;
     private boolean showQuickFilter = true;
     private Class<? extends BoxDefinition> boxDefinitionClass;
-    private Set<Class<? extends SingularRequirement>> requirements;
+    private Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
 
     public String getName() {
         return name;
@@ -116,7 +117,8 @@ public class ItemBox implements Serializable {
         return requirements;
     }
 
-    public void setRequirements(Set<Class<? extends SingularRequirement>> requirements) {
-        this.requirements = requirements;
+    public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
+        getRequirements().add(requirement);
+        return this;
     }
 }

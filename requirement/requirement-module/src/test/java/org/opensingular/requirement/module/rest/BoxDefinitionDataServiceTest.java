@@ -24,18 +24,18 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.DefaultActionProvider;
-import org.opensingular.requirement.module.DefaultBoxInfo;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
-import org.opensingular.requirement.module.workspace.DefaultDraftbox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.springframework.context.ApplicationContext;
 
 import java.io.Serializable;
@@ -64,6 +64,9 @@ public class BoxDefinitionDataServiceTest {
 
     @InjectMocks
     private DefaultModuleService moduleService;
+
+    @Mock
+    private BoxDefinition boxDefinition;
 
     private BoxFilter boxFilter;
 
@@ -96,7 +99,7 @@ public class BoxDefinitionDataServiceTest {
         when(boxItemDataProvider.search(eq(boxFilter))).thenReturn(searchResult);
         when(boxItemDataProvider.getActionProvider()).thenReturn(new DefaultActionProvider());
 
-        BoxController boxController = new BoxController(new DefaultBoxInfo(DefaultDraftbox.class), boxItemDataProvider);
+        BoxController boxController = new BoxController(boxItemDataProvider);
 
         when(boxService.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
 
@@ -104,16 +107,18 @@ public class BoxDefinitionDataServiceTest {
 
         box = new ItemBox();
         box.setId(boxId);
+
+        Mockito.when(boxDefinition.getItemBox()).thenReturn(box);
     }
 
     @Test
     public void testCount() {
-        assertThat(moduleService.countFiltered(box, boxFilter), Matchers.is(countSize));
+        assertThat(moduleService.countFiltered(boxDefinition, boxFilter), Matchers.is(countSize));
     }
 
     @Test
     public void testSearch() {
-        assertThat(moduleService.searchFiltered(box, boxFilter).size(), Matchers.is(countSize.intValue()));
+        assertThat(moduleService.searchFiltered(boxDefinition, boxFilter).size(), Matchers.is(countSize.intValue()));
     }
 
 }

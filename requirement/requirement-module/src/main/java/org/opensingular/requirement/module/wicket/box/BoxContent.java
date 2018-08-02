@@ -47,8 +47,8 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import java.util.HashSet;
@@ -67,11 +67,11 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     private Pair<String, SortOrder> sortProperty;
 
-    private IModel<ItemBox> itemBox;
+    private IModel<BoxDefinition> boxDefinition;
 
-    public BoxContent(String id, IModel<ItemBox> itemBox) {
+    public BoxContent(String id, IModel<BoxDefinition> boxDefinition) {
         super(id);
-        this.itemBox = itemBox;
+        this.boxDefinition = boxDefinition;
     }
 
     @Override
@@ -81,13 +81,13 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void configureQuickFilter() {
-        getFiltroRapido().setVisible(getItemBoxObject().isShowQuickFilter());
-        getPesquisarButton().setVisible(getItemBoxObject().isShowQuickFilter());
+        getFiltroRapido().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
+        getPesquisarButton().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
     }
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirementsModel = new Model<>(new LinkedHashSet<>(getItemBoxObject().getRequirements()));
+        IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirementsModel = new Model<>(new LinkedHashSet<>(getBoxDefinitionObject().getItemBox().getRequirements()));
         if (!requirementsModel.getObject().isEmpty()) {
             return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
@@ -301,7 +301,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(BoxFilter filter) {
-        return moduleService.searchFiltered(getItemBoxObject(), filter);
+        return moduleService.searchFiltered(getBoxDefinitionObject(), filter);
     }
 
     @Override
@@ -317,15 +317,15 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(BoxFilter filter) {
-        return moduleService.countFiltered(getItemBoxObject(), filter);
+        return moduleService.countFiltered(getBoxDefinitionObject(), filter);
     }
 
     public List<DatatableField> getFieldsDatatable() {
-        return getItemBoxObject().getFieldsDatatable();
+        return getBoxDefinitionObject().getDatatableFields();
     }
 
-    private ItemBox getItemBoxObject() {
-        return itemBox.getObject();
+    private BoxDefinition getBoxDefinitionObject() {
+        return boxDefinition.getObject();
     }
 
 }

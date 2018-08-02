@@ -34,5 +34,5 @@ public interface ActionProvider {
      * @param filter o filtro do usuario
      * @return a lista de ações que a linha deve conter
      */
-    BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter);
+    BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter);
 }

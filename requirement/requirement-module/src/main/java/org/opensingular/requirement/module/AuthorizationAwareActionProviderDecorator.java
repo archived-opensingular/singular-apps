@@ -33,8 +33,8 @@ public class AuthorizationAwareActionProviderDecorator implements ActionProvider
     }
 
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, BoxFilter filter) {
-        BoxItemActionList actionList = delegate.getLineActions(boxInfo, line, filter);
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
+        BoxItemActionList actionList = delegate.getLineActions(line, filter);
         filterAllowedActions(actionList, line, filter);
         return actionList;
     }

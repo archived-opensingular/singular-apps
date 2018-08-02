@@ -1,6 +1,6 @@
 package org.opensingular.requirement.module.config.workspace;
 
-import org.opensingular.requirement.module.BoxInfo;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -19,9 +19,9 @@ public class WorkspaceMenu implements Serializable {
         return this;
     }
 
-    public List<BoxInfo> listAllBoxInfos() {
+    public List<BoxDefinition> listAllBoxInfos() {
         return categories.stream()
-                .map(WorkspaceMenuCategory::getBoxInfos)
+                .map(WorkspaceMenuCategory::getDefinitions)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
     }

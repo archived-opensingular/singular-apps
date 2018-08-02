@@ -48,10 +48,10 @@ import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -94,18 +94,18 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private BoxFilterFactory boxFilterFactory;
 
     @Override
-    public String countAll(ItemBox box) {
-        return String.valueOf(count(box.getId(), boxFilterFactory.create(box)));
+    public String countAll(BoxDefinition box) {
+        return String.valueOf(count(box.getItemBox().getId(), boxFilterFactory.create(box)));
     }
 
     @Override
-    public long countFiltered(ItemBox box, BoxFilter filter) {
-        return count(box.getId(), filter);
+    public long countFiltered(BoxDefinition box, BoxFilter filter) {
+        return count(box.getItemBox().getId(), filter);
     }
 
     @Override
-    public List<BoxItemDataMap> searchFiltered(ItemBox box, BoxFilter filter) {
-        return search(box.getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
+    public List<BoxItemDataMap> searchFiltered(BoxDefinition box, BoxFilter filter) {
+        return search(box.getItemBox().getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
     }
 
     @Override

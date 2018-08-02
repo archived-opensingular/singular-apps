@@ -23,12 +23,13 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
  */
-public interface BoxDefinition {
+public interface BoxDefinition extends Serializable {
     /**
      * Get the ItemBox that represents this box definition
      *

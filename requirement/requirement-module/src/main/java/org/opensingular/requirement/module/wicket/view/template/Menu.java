@@ -35,14 +35,13 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
-import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
@@ -56,9 +55,6 @@ import static org.opensingular.requirement.module.wicket.view.util.ActionContext
 public class Menu extends Panel implements Loggable {
     @Inject
     private ModuleService moduleService;
-
-    @Inject
-    private BoxService boxService;
 
     private IModel<IServerContext> serverContext;
 
@@ -97,8 +93,8 @@ public class Menu extends Panel implements Loggable {
         for (WorkspaceMenuCategory category : workspaceMenu.getCategories()) {
             MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
             menu.addItem(group);
-            for (BoxInfo boxInfo : category.getBoxInfos()) {
-                MenuItemConfig t = buildMenuItemConfig(boxInfo);
+            for (BoxDefinition boxDefinition: category.getDefinitions()) {
+                MenuItemConfig t = buildMenuItemConfig(boxDefinition);
                 PageParameters pageParameters = new PageParameters();
                 pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
                 pageParameters.add(ITEM_PARAM_NAME, t.name);
@@ -115,14 +111,14 @@ public class Menu extends Panel implements Loggable {
 
     }
 
-    protected MenuItemConfig buildMenuItemConfig(BoxInfo boxInfo) {
-        final ItemBox itemBoxDTO = boxService.loadItemBox(boxInfo);
-        final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO);
-        return MenuItemConfig.of(boxPageClass, itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier);
+    protected MenuItemConfig buildMenuItemConfig(BoxDefinition boxDefinition) {
+        final ISupplier<String> countSupplier = createCountSupplier(boxDefinition);
+        ItemBox itemBox = boxDefinition.getItemBox();
+        return MenuItemConfig.of(boxPageClass, itemBox.getName(), itemBox.getHelpText(), itemBox.getIcone(), countSupplier);
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO) {
-        return () -> moduleService.countAll(itemBoxDTO);
+    protected ISupplier<String> createCountSupplier(BoxDefinition boxDefinition) {
+        return () -> moduleService.countAll(boxDefinition);
     }
 
     protected static class AddContadoresBehaviour extends AbstractDefaultAjaxBehavior {

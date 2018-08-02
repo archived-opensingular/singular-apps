@@ -19,7 +19,6 @@
 package org.opensingular.requirement.module.executor;
 
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.requirement.module.BoxInfo;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
@@ -28,6 +27,7 @@ import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.entity.form.BoxEntity;
 import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
@@ -65,12 +65,12 @@ public class BoxUpdaterExecutor {
     public void saveAllBoxDefinitions() {
         ModuleEntity module = moduleService.getModule();
         for (IServerContext context : singularModuleConfiguration.getContexts()) {
-            List<BoxInfo> boxInfos = singularModuleConfiguration.listBoxByContext(context);
-            for (BoxInfo boxInfo : boxInfos) {
-                ItemBox boxData = boxService.loadItemBox(boxInfo);
+            List<BoxDefinition> boxes = singularModuleConfiguration.listBoxByContext(context);
+            for (BoxDefinition box : boxes) {
+                ItemBox boxData = box.getItemBox();
                 try {
                     BoxEntity boxEntity = boxService.saveBoxDefinition(module, boxData);
-                    boxInfo.setBoxId(boxEntity.getCod().toString());
+                    boxData.setId(boxEntity.getCod().toString());
                 } catch (Exception e) {
                     throw SingularServerException.rethrow(String.format("Erro ao salvar a caixa %s", boxData.getName()), e);
                 }

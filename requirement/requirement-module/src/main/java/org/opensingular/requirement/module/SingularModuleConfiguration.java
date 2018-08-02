@@ -24,6 +24,7 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -48,11 +49,11 @@ public class SingularModuleConfiguration {
     public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
         resolveModule();
         resolveRequirements(applicationContext);
-        resolveWorkspace(applicationContext);
+        resolveWorkspace();
     }
 
-    private void resolveWorkspace(AnnotationConfigWebApplicationContext applicationContext) {
-        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry(applicationContext);
+    private void resolveWorkspace() {
+        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry();
         module.workspace(workspaceRegistry);
         module.defaultWorkspace(workspaceRegistry);
         this.workspaceRegistry = workspaceRegistry;
@@ -84,18 +85,18 @@ public class SingularModuleConfiguration {
         }
     }
 
-    public List<BoxInfo> listBoxByContext(IServerContext context) {
+    public List<BoxDefinition> listBoxByContext(IServerContext context) {
         return context.getWorkspace().menu().listAllBoxInfos();
     }
 
-    public Optional<BoxInfo> getBoxByBoxId(String boxId) {
+    public Optional<BoxDefinition> getBoxByBoxId(String boxId) {
         return workspaceRegistry.listContexts()
                 .stream()
                 .map(IServerContext::getWorkspace)
                 .map(Workspace::menu)
                 .map(WorkspaceMenu::listAllBoxInfos)
                 .flatMap(Collection::stream)
-                .filter(b -> b.getBoxId().equals(boxId)).findFirst();
+                .filter(b -> b.getItemBox().getId().equals(boxId)).findFirst();
     }
 
     public SingularModule getModule() {

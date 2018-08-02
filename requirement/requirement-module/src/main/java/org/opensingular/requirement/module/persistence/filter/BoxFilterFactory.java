@@ -8,12 +8,10 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.dto.FormDTO;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
-import org.springframework.beans.factory.BeanFactory;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,9 +25,6 @@ import java.util.stream.Collectors;
  */
 public class BoxFilterFactory {
     @Inject
-    private BeanFactory beanFactory;
-
-    @Inject
     @Named("formConfigWithDatabase")
     private SFormConfig<String> singularFormConfig;
 
@@ -41,9 +36,8 @@ public class BoxFilterFactory {
 
     private List<FormDTO> mainForms;
 
-    public BoxFilter create(ItemBox itemBox) {
-        BoxDefinition boxDefinition = beanFactory.getBean(itemBox.getBoxDefinitionClass());
-        return boxDefinition.createBoxFilter()
+    public BoxFilter create(BoxDefinition box) {
+        return box.createBoxFilter()
                 .withIdUsuarioLogado(getIdUsuario())
                 .withIdPessoa(getIdPessoa())
                 .withProcessesAbbreviation(getProcessesNames())

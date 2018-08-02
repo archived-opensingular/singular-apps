@@ -26,22 +26,13 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
-/**
- * @see BoxControllerFactory
- */
 public class BoxController {
-    /**
-     *
-     */
-    private final BoxInfo boxInfo;
-
     /**
      *
      */
     private final BoxItemDataProvider boxItemDataProvider;
 
-    public BoxController(BoxInfo boxInfo, BoxItemDataProvider boxItemDataProvider) {
-        this.boxInfo = boxInfo;
+    public BoxController(BoxItemDataProvider boxItemDataProvider) {
         this.boxItemDataProvider = boxItemDataProvider;
     }
 
@@ -57,7 +48,7 @@ public class BoxController {
         for (Map<String, Serializable> item : itens) {
             BoxItemDataImpl line = new BoxItemDataImpl();
             line.setRawMap(item);
-            line.setBoxItemActions(actionProvider.getLineActions(boxInfo, line, filter));
+            line.setBoxItemActions(actionProvider.getLineActions(line, filter));
             result.getBoxItemDataList().add(line);
         }
         return result;

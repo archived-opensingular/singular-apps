@@ -30,13 +30,13 @@ import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
-import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.opensingular.requirement.module.wicket.view.template.Menu;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
@@ -61,10 +61,7 @@ public class BoxPage extends ServerBoxTemplate {
     @Inject
     private SingularModuleConfiguration singularModuleConfiguration;
 
-    @Inject
-    private BoxService boxService;
-
-    protected IModel<ItemBox> itemBox;
+    protected IModel<BoxDefinition> boxDefinition;
 
     protected IModel<IServerContext> serverContext;
 
@@ -99,18 +96,17 @@ public class BoxPage extends ServerBoxTemplate {
             throw new RestartResponseException(getPageClass(), pageParameters);
         }
 
-        itemBox = workspace.menu()
+        boxDefinition= workspace.menu()
                 .getCategories()
                 .stream()
                 .filter(i -> i.getName().equalsIgnoreCase(category))
-                .map(WorkspaceMenuCategory::getBoxInfos)
+                .map(WorkspaceMenuCategory::getDefinitions)
                 .flatMap(Collection::stream)
-                .map(boxService::loadItemBox)
-                .filter(i -> i.getName().equals(item)).findFirst()
+                .filter(i -> i.getItemBox().getName().equals(item)).findFirst()
                 .map(Model::new)
                 .orElse(null);
 
-        if (itemBox != null) {
+        if (boxDefinition!= null) {
             add(newBoxContent("box"));
         } else {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
@@ -121,17 +117,17 @@ public class BoxPage extends ServerBoxTemplate {
     private void addItemParam(Workspace workspace, PageParameters pageParameters) {
         Optional<WorkspaceMenuCategory> categoryOpt = workspace.menu().getCategories()
                 .stream()
-                .filter(i -> !i.getBoxInfos().isEmpty())
+                .filter(i -> !i.getDefinitions().isEmpty())
                 .findFirst();
 
         categoryOpt.ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
-            pageParameters.add(ITEM_PARAM_NAME, boxService.loadItemBox(category.getBoxInfos().stream().findFirst().orElse(null)).getName());
+            pageParameters.add(ITEM_PARAM_NAME, category.getDefinitions().stream().map(BoxDefinition::getItemBox).map(ItemBox::getName).findFirst().orElse(null));
         });
     }
 
     protected Component newBoxContent(String id) {
-        return new BoxContent(id, itemBox);
+        return new BoxContent(id, boxDefinition);
     }
 
     protected Map<String, String> createLinkParams() {
@@ -139,11 +135,15 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     protected BoxFilter createFilter() {
-        return boxFilterFactory.create(getItemBoxObject());
+        return boxFilterFactory.create(getBoxDefinitionObject());
+    }
+
+    protected BoxDefinition getBoxDefinitionObject() {
+        return boxDefinition.getObject();
     }
 
     protected ItemBox getItemBoxObject() {
-        return itemBox.getObject();
+        return getBoxDefinitionObject().getItemBox();
     }
 
     @Override

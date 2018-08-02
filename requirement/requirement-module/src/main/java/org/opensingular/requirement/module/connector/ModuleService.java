@@ -29,7 +29,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementDe
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.util.List;
 import java.util.Map;
@@ -39,17 +39,17 @@ public interface ModuleService {
     /**
      * Count all elements inside a box
      */
-    String countAll(ItemBox box);
+    String countAll(BoxDefinition box);
 
     /**
      * Count elements inside a box, applying the filter
      */
-    long countFiltered(ItemBox box, BoxFilter filter);
+    long countFiltered(BoxDefinition box, BoxFilter filter);
 
     /**
      * Searchelements inside a box, applying the filter
      */
-    List<BoxItemDataMap> searchFiltered(ItemBox box, BoxFilter filter);
+    List<BoxItemDataMap> searchFiltered(BoxDefinition box, BoxFilter filter);
 
     /**
      * Find users that can execute the confirmAction

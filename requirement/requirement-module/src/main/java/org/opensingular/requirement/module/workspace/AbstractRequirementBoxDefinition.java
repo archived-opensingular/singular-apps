@@ -1,6 +1,7 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.ActionProviderBuilder;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -25,9 +26,10 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
 
     @Override
     public ItemBox getItemBox() {
-        if(itemBox == null){
+        if (itemBox == null) {
             itemBox = new ItemBox();
             itemBox.setBoxDefinitionClass(getClass());
+            itemBox.setFieldsDatatable(getDatatableFields());
             configure(itemBox);
         }
         return itemBox;
