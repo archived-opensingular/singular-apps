@@ -322,7 +322,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         form.setMultiPart(true);
         form.add(singularFormPanel);
 
-        this.containerBehindSingularPanel = buildPreFormPanelContent("container-panel");
+        this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");
         form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
@@ -339,7 +339,13 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
 
-    public Component buildBegindSingularPanelContent(String id){
+    /**
+     * Panel that will show behind the Singular panel.
+     *
+     * @param id The id of the panel.
+     * @return Returns the panel will be showing behind the Singular Panel.
+     */
+    public Component buildBehindSingularPanelContent(String id) {
         return new WebMarkupContainer(id).setVisible(false);
     }
 
@@ -636,7 +642,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         SInstance instance = currentInstance.getObject();
         if (instance != null) {
             RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
-                formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
+            formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
             onSave(requirement, transitionName);
         }
     }
