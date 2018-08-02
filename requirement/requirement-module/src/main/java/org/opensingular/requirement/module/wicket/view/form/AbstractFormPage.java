@@ -118,6 +118,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     protected final IModel<FormKey> formKeyModel;
     protected final FormPageExecutionContext config;
     protected final SingularFormPanel singularFormPanel;
+    protected Component containerBehindSingularPanel;
     protected final IModel<Boolean> inheritParentFormData;
     protected final IModel<FormKey> parentRequirementFormKeyModel;
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
@@ -320,6 +321,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
         form.add(singularFormPanel);
+
+        this.containerBehindSingularPanel = buildPreFormPanelContent("container-panel");
+        form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
@@ -333,6 +337,12 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         add(form);
         addSaveCallBackUrl();
     }
+
+
+    public Component buildBegindSingularPanelContent(String id){
+        return new WebMarkupContainer(id).setVisible(false);
+    }
+
 
     private Component buildExtensionButtons() {
         return new ExtensionButtonsPanel<>("extensions-buttons", currentModel, singularFormPanel.getInstanceModel())
@@ -626,7 +636,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         SInstance instance = currentInstance.getObject();
         if (instance != null) {
             RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
-            formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
+                formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
             onSave(requirement, transitionName);
         }
     }
