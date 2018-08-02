@@ -18,7 +18,7 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -27,7 +27,7 @@ import javax.inject.Inject;
 
 public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityConfigurerAdapter {
     @Inject
-    protected SingularModuleConfigurationBean singularServerConfiguration;
+    protected SingularModuleConfiguration singularModuleConfiguration;
 
     @Override
     public void configure(WebSecurity web) throws Exception {
@@ -37,6 +37,6 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
     protected abstract IServerContext getContext();
 
     public String[] getDefaultPublicUrls() {
-        return singularServerConfiguration.getDefaultPublicUrls();
+        return singularModuleConfiguration.getPublicUrls().toArray(new String[]{});
     }
 }

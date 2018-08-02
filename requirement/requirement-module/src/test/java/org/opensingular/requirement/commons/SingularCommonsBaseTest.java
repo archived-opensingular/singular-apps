@@ -26,7 +26,7 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
@@ -62,7 +62,7 @@ public abstract class SingularCommonsBaseTest implements Loggable {
 
 
     @Inject
-    private SingularModuleConfigurationBean singularModuleConfiguration;
+    private SingularModuleConfiguration singularModuleConfiguration;
 
     protected Session session;
 

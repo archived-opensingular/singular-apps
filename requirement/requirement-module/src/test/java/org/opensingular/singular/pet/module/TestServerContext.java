@@ -27,6 +27,7 @@ import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.config.IServerContext;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -40,7 +41,7 @@ public class TestServerContext {
 
     IServerContext worklist = new DefaultContexts.WorklistContext();
     IServerContext requirement = new DefaultContexts.RequirementContext();
-    
+
     private HttpServletRequest getRequest() {
         HttpServletRequest mockedRequest = Mockito.mock(HttpServletRequest.class);
         Mockito.when(mockedRequest.getContextPath()).thenReturn("/singular");
@@ -50,9 +51,8 @@ public class TestServerContext {
 
     @Test
     public void testContextFromRequest() {
-     
-        Assert.assertEquals(worklist, IServerContext.getContextFromRequest(getRequest(),
-                new IServerContext[]{requirement, worklist}));
+
+        Assert.assertEquals(worklist, IServerContext.getContextFromRequest(getRequest(), Arrays.asList(requirement, worklist)));
     }
 
     @Test
