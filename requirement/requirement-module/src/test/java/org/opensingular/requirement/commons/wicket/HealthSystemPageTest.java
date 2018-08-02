@@ -18,9 +18,6 @@
 
 package org.opensingular.requirement.commons.wicket;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.Page;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
@@ -39,10 +36,14 @@ import org.opensingular.requirement.module.admin.healthsystem.extension.Database
 import org.opensingular.requirement.module.admin.healthsystem.extension.HtmlToPdfAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.JobsAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.PermissionAdminEntry;
+import org.opensingular.requirement.module.admin.healthsystem.extension.RequirementTransitionEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.WebAdminEntry;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import static org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
@@ -105,6 +106,14 @@ public class HealthSystemPageTest extends SingularCommonsBaseTest {
     @Test
     public void test7ClickHtmlToPdfButton() {
         clickButtonAndCheckPanel(new HtmlToPdfAdminEntry());
+    }
+
+    @WithUserDetails("vinicius.nunes")
+    @Transactional
+    @Test
+    public void test8ClickRequirementTransitionButton() {
+        //TODO VALIDAR COM VINICIUS.
+        clickButtonAndCheckPanel(new RequirementTransitionEntry());
     }
 
     private void clickButtonAndCheckPanel(AdministrationEntryExtension administrationEntryExtension) {

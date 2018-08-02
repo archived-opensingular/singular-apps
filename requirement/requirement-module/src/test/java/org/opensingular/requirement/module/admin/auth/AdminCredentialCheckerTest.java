@@ -26,11 +26,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfigurationBean;
 
 import java.util.Optional;
 
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 public class AdminCredentialCheckerTest {
 
     @Mock
-    SingularModuleConfigurationBean moduleConfiguration;
+    SingularModuleConfiguration moduleConfiguration;
 
     @Mock
     SingularModule module;

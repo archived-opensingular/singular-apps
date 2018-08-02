@@ -26,12 +26,12 @@ import javax.transaction.Transactional;
 
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.flow.schedule.IScheduleData;
 import org.opensingular.form.persistence.dao.AttachmentContentDao;
 import org.opensingular.form.persistence.dao.AttachmentDao;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
+import org.opensingular.schedule.IScheduleData;
 
 public class AttachmentGCTest extends SingularCommonsBaseTest {
     @Inject

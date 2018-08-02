@@ -57,7 +57,7 @@ public interface SecurityConfigs {
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContextWithCAS.NAME);
+            return singularModuleConfiguration.findContextByName(DefaultContexts.RequirementContextWithCAS.NAME);
         }
 
         @Override
@@ -72,7 +72,7 @@ public interface SecurityConfigs {
     class CASAnalise extends SingularCASSpringSecurityConfig {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContextWithCAS.NAME);
+            return singularModuleConfiguration.findContextByName(DefaultContexts.WorklistContextWithCAS.NAME);
         }
 
         @Override
@@ -90,7 +90,7 @@ public interface SecurityConfigs {
         private Optional<AdminCredentialChecker> credentialChecker;
 
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.AdministrationContext.NAME);
+            return singularModuleConfiguration.findContextByName(DefaultContexts.AdministrationContext.NAME);
         }
 
         @Override
@@ -123,7 +123,7 @@ public interface SecurityConfigs {
     class RequirementSecurity extends AllowAllSecurity {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
+            return singularModuleConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
         }
     }
 
@@ -133,7 +133,7 @@ public interface SecurityConfigs {
     class WorklistSecurity extends AllowAllSecurity {
         @Override
         protected IServerContext getContext() {
-            return singularServerConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
+            return singularModuleConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
         }
     }
 

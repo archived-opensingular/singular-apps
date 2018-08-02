@@ -34,14 +34,12 @@ package org.opensingular.requirement.commons;
  */
 
 import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.requirement.commons.test.SingularServletContextMock;
-import org.opensingular.requirement.module.config.SingularWebApplicationInitializer;
+import org.opensingular.requirement.module.config.SingularWebAppInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigUtils;
@@ -161,7 +159,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
     }
 
     private void mockRequest() {
-        MockHttpSession        session;
+        MockHttpSession session;
         MockHttpServletRequest request;
         session = new MockHttpSession();
         request = new MockHttpServletRequest();
@@ -281,11 +279,7 @@ public class AbstractSingularContextLoader extends AbstractContextLoader {
      * @param webMergedConfig
      */
     protected void customizeContext(AnnotationConfigWebApplicationContext context, WebMergedContextConfiguration webMergedConfig) {
-        try {
-            new SingularWebApplicationInitializer( new CommonsInitializerMock(context)).onStartup(context.getServletContext());
-        } catch (ServletException e) {
-            throw SingularException.rethrow(e);
-        }
+        new SingularWebAppInitializer().setSingularInitializer(new CommonsInitializerMock(context)).onStartup(context.getServletContext());
     }
 
     // --- ContextLoader -------------------------------------------------------
