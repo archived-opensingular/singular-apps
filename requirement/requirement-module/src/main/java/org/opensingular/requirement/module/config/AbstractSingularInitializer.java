@@ -4,6 +4,7 @@ import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaul
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
+import org.opensingular.requirement.module.spring.SingularBeanPostProcessor;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.spring.SingularServerSpringAppConfig;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -48,8 +49,10 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
         annotatedClasses.add(getSingularPersistenceConfigurationBeanFactoryClass());
         annotatedClasses.add(getSingularSpringWebMVCConfigClass());
         annotatedClasses.add(getSingularRestSecurityConfigClass());
+        annotatedClasses.add(getSingularBeanPostProcessorConfigClass());
         return annotatedClasses;
     }
+
 
     /**
      * Recupera o timeout da sessão web em minutos
@@ -127,6 +130,16 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
      */
     public Class<? extends WebSecurityConfigurerAdapter> getSingularRestSecurityConfigClass() {
         return DefaultRestSecurity.class;
+    }
+
+
+    /**
+     * Recupera a configuração de pos processamento dos beans
+     *
+     * @see org.springframework.beans.factory.config.BeanPostProcessor
+     */
+    private Class<SingularBeanPostProcessor> getSingularBeanPostProcessorConfigClass() {
+        return SingularBeanPostProcessor.class;
     }
 
     /**
