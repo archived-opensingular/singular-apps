@@ -1143,4 +1143,31 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
 
     }
+
+
+    /**
+     * This button will show modal for confirmation when success,
+     * and a toast if has error in validation.
+     * This button have already implemented the ValidationSuccess and ValidationError.
+     */
+    protected static class ServerSendButton extends SingularSaveButton {
+
+        private final BSModalBorder sendModal;
+
+        public ServerSendButton(String id, IModel<? extends SInstance> currentInstance, BSModalBorder sendModal) {
+            super(id, currentInstance);
+            this.sendModal = sendModal;
+        }
+
+        @Override
+        protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            sendModal.show(target);
+        }
+
+        @Override
+        protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            findParent(AbstractFormPage.class).addToastrErrorMessage("message.send.error");
+        }
+
+    }
 }

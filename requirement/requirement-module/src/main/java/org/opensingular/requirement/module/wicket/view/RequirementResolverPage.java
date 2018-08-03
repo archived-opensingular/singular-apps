@@ -36,7 +36,6 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementEn
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.module.wicket.view.form.ServerSendButton;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 import javax.annotation.Nonnull;
