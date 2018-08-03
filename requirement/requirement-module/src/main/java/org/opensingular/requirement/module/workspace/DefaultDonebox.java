@@ -62,7 +62,7 @@ public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
     public BoxFilter createBoxFilter() {
         return super.createBoxFilter()
-                .withEndedTasks(true)
+                .withEndedTasks(Boolean.TRUE)
                 .withCheckApplicant(false);
     }
 }

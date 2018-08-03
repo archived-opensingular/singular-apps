@@ -66,7 +66,7 @@ public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
     public BoxFilter createBoxFilter() {
         return super.createBoxFilter()
-                .withEndedTasks(false)
+                .withEndedTasks(Boolean.FALSE)
                 .withCheckApplicant(false);
     }
 }
