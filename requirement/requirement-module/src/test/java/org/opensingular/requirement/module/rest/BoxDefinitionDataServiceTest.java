@@ -27,12 +27,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.opensingular.lib.commons.context.SingularContextSetup;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.BoxController;
 import org.opensingular.requirement.module.DefaultActionProvider;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
-import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
@@ -43,7 +41,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.eq;
@@ -58,9 +55,6 @@ public class BoxDefinitionDataServiceTest {
 
     @Mock
     private AuthorizationService authorizationService;
-
-    @Mock
-    private BoxService boxService;
 
     @InjectMocks
     private DefaultModuleService moduleService;
@@ -99,14 +93,7 @@ public class BoxDefinitionDataServiceTest {
         when(boxItemDataProvider.search(eq(boxFilter))).thenReturn(searchResult);
         when(boxItemDataProvider.getActionProvider()).thenReturn(new DefaultActionProvider());
 
-        BoxController boxController = new BoxController(boxItemDataProvider);
-
-        when(boxService.getBoxControllerByBoxId(eq(boxId))).thenReturn(Optional.of(boxController));
-
         setUpApplicationContextMock();
-
-        box = new ItemBox();
-        box.setId(boxId);
 
         Mockito.when(boxDefinition.getItemBox()).thenReturn(box);
     }

@@ -72,7 +72,6 @@ import org.opensingular.requirement.module.form.DefinitionsPackageProvider;
 import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.form.SingularServerDocumentFactory;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
-import org.opensingular.requirement.module.persistence.dao.BoxDAO;
 import org.opensingular.requirement.module.persistence.dao.ParameterDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
 import org.opensingular.requirement.module.persistence.dao.flow.TaskInstanceDAO;
@@ -204,11 +203,6 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
     @Bean
     public ModuleDAO moduleDAO() {
         return new ModuleDAO();
-    }
-
-    @Bean
-    public BoxDAO boxDAO() {
-        return new BoxDAO();
     }
 
     @Bean(name = SDocument.FILE_PERSISTENCE_SERVICE)

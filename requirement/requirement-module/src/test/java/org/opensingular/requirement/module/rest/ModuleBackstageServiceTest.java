@@ -55,9 +55,6 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @Test
     public void count() {
         BoxDefinition boxDefinition = Mockito.mock(BoxDefinition.class);
-        ItemBox box = new ItemBox();
-        box.setId("");
-        Mockito.when(boxDefinition.getItemBox()).thenReturn(box);
         Long count = moduleService.countFiltered(boxDefinition, new BoxFilter());
         assertEquals(Long.valueOf(0), count);
     }
@@ -65,9 +62,6 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
     @Test
     public void search() {
         BoxDefinition boxDefinition = Mockito.mock(BoxDefinition.class);
-        ItemBox box = new ItemBox();
-        box.setId("");
-        Mockito.when(boxDefinition.getItemBox()).thenReturn(box);
         List<BoxItemDataMap> result = moduleService.searchFiltered(boxDefinition, new BoxFilter());
         assertTrue(result.isEmpty());
     }

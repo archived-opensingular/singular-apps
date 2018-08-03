@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.Set;
 
 public class ItemBox implements Serializable {
-    private String id;
     private String name;
     private String description;
     private String helpText;
@@ -74,14 +73,6 @@ public class ItemBox implements Serializable {
     @JsonDeserialize(using = IconJsonDeserializer.class)
     public void setIcone(Icon icon) {
         this.icon = icon;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getHelpText() {

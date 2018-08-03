@@ -29,10 +29,12 @@ import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.ActionProvider;
+import org.opensingular.requirement.module.AuthorizationAwareActionProviderDecorator;
 import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -44,7 +46,6 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDefin
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
-import org.opensingular.requirement.module.service.BoxService;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
@@ -55,19 +56,16 @@ import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.io.Serializable;
 import java.net.URL;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
     private SingularModuleConfiguration singularModuleConfiguration;
-
-    @Inject
-    private BoxService boxService;
 
     @Inject
     private RequirementService<?, ?> requirementService;
@@ -95,17 +93,17 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public String countAll(BoxDefinition box) {
-        return String.valueOf(count(box.getItemBox().getId(), boxFilterFactory.create(box)));
+        return String.valueOf(count(box, boxFilterFactory.create(box)));
     }
 
     @Override
     public long countFiltered(BoxDefinition box, BoxFilter filter) {
-        return count(box.getItemBox().getId(), filter);
+        return count(box, filter);
     }
 
     @Override
     public List<BoxItemDataMap> searchFiltered(BoxDefinition box, BoxFilter filter) {
-        return search(box.getItemBox().getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
+        return search(box, filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
     }
 
     @Override
@@ -137,21 +135,13 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    public Long count(String boxId, BoxFilter filter) {
-        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
-        if (boxController.isPresent()) {
-            return boxController.get().countItens(filter);
-        }
-        return 0L;
+    public Long count(BoxDefinition boxDefinition, BoxFilter filter) {
+        return boxDefinition.getDataProvider().count(filter);
     }
 
 
-    public BoxItemDataList search(String boxId, BoxFilter filter) {
-        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
-        if (boxController.isPresent()) {
-            return boxController.get().searchItens(filter);
-        }
-        return new BoxItemDataList();
+    public BoxItemDataList search(BoxDefinition boxDefinition, BoxFilter filter) {
+        return searchCheckingActionPermissions(boxDefinition, filter);
     }
 
     private String appendParameters(Map<String, String> additionalParams) {
@@ -251,5 +241,23 @@ public class DefaultModuleService implements ModuleService, Loggable {
         } catch (Exception e) {
             throw SingularServerException.rethrow(String.format("Erro ao tentar fazer o parse da URL: %s", groupConnectionURL), e);
         }
+    }
+
+    protected BoxItemDataList searchCheckingActionPermissions(BoxDefinition boxDefinition, BoxFilter filter) {
+        List<Map<String, Serializable>> itens = boxDefinition.getDataProvider().search(filter);
+        BoxItemDataList result = new BoxItemDataList();
+        ActionProvider actionProvider = addBuiltInDecorators(boxDefinition.getDataProvider().getActionProvider());
+
+        for (Map<String, Serializable> item : itens) {
+            BoxItemDataImpl line = new BoxItemDataImpl();
+            line.setRawMap(item);
+            line.setBoxItemActions(actionProvider.getLineActions(line, filter));
+            result.getBoxItemDataList().add(line);
+        }
+        return result;
+    }
+
+    protected ActionProvider addBuiltInDecorators(ActionProvider actionProvider) {
+        return new AuthorizationAwareActionProviderDecorator(actionProvider);
     }
 }

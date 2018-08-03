@@ -21,15 +21,12 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.workspace.Workspace;
-import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -83,20 +80,6 @@ public class SingularModuleConfiguration {
         if (firstModule.isPresent()) {
             module = firstModule.get().newInstance();
         }
-    }
-
-    public List<BoxDefinition> listBoxByContext(IServerContext context) {
-        return context.getWorkspace().menu().listAllBoxInfos();
-    }
-
-    public Optional<BoxDefinition> getBoxByBoxId(String boxId) {
-        return workspaceRegistry.listContexts()
-                .stream()
-                .map(IServerContext::getWorkspace)
-                .map(Workspace::menu)
-                .map(WorkspaceMenu::listAllBoxInfos)
-                .flatMap(Collection::stream)
-                .filter(b -> b.getItemBox().getId().equals(boxId)).findFirst();
     }
 
     public SingularModule getModule() {
