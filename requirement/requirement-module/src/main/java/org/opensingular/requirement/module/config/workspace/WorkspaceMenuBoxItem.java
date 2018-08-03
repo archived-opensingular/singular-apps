@@ -1,16 +1,19 @@
 package org.opensingular.requirement.module.config.workspace;
 
+import net.vidageek.mirror.dsl.Mirror;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
+import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.wicket.box.BoxContent;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 public class WorkspaceMenuBoxItem implements WorkspaceMenuItem {
-    private final BoxDefinition boxDefinition;
+    private final Class<? extends BoxDefinition> boxDefitionClass;
+    private BoxDefinition boxDefinition;
 
-    public WorkspaceMenuBoxItem(BoxDefinition boxDefinition) {
-        this.boxDefinition = boxDefinition;
+    public WorkspaceMenuBoxItem(Class<? extends BoxDefinition> boxDefitionClass) {
+        this.boxDefitionClass = boxDefitionClass;
     }
 
     @Override
@@ -38,7 +41,16 @@ public class WorkspaceMenuBoxItem implements WorkspaceMenuItem {
         return boxDefinition.getItemBox().getHelpText();
     }
 
-    public BoxDefinition getBoxDefinition() {
+    public final BoxDefinition getBoxDefinition() {
+        if (boxDefinition == null) {
+            boxDefinition = new Mirror().on(boxDefitionClass).invoke().constructor().withoutArgs();
+            SingularSpringInjector.get().inject(boxDefinition);
+        }
         return boxDefinition;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return boxDefinition.isVisible();
     }
 }

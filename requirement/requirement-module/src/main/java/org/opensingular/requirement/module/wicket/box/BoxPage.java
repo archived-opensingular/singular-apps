@@ -118,7 +118,7 @@ public class BoxPage extends ServerBoxTemplate {
 
         categoryOpt.ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
-            pageParameters.add(ITEM_PARAM_NAME, category.getDefinitions().stream().map(BoxDefinition::getItemBox).map(ItemBox::getName).findFirst().orElse(null));
+            pageParameters.add(ITEM_PARAM_NAME, category.getDefinitions().stream().findFirst().map(BoxDefinition::getItemBox).map(ItemBox::getName).orElse(null));
         });
     }
 

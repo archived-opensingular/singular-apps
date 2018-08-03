@@ -103,6 +103,7 @@ import org.opensingular.requirement.module.spring.security.DefaultUserDetailServ
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
+import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
@@ -512,10 +513,15 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
     }
 
     @Bean
-    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService){
+    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService) {
         AttachmentGCJob attachmentGCJob = new AttachmentGCJob(ScheduleDataBuilder.buildDaily(1, 1));
         scheduleService.schedule(attachmentGCJob);
         return attachmentGCJob;
+    }
+
+    @Bean
+    public UserDetailsProvider userDetailsProvider() {
+        return new UserDetailsProvider();
     }
 
 }

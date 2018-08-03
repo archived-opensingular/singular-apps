@@ -29,13 +29,19 @@ public interface WorkspaceMenuItem extends Serializable {
 
     /**
      *
-     * @return
      */
     String getDescription();
 
     /**
      *
-     * @return
      */
     String getHelpText();
+
+
+    /**
+     *
+     */
+    default boolean isVisible(){
+        return true;
+    }
 }

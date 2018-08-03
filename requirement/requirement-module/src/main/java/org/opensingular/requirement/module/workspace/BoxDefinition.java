@@ -55,4 +55,12 @@ public interface BoxDefinition extends Serializable {
     default BoxFilter createBoxFilter(){
         return new BoxFilter();
     }
+
+    /**
+     * Eval if the box is visible, usually is used in conjunction
+     * with {@link org.springframework.security.core.userdetails.UserDetails}
+     */
+    default boolean isVisible(){
+        return true;
+    }
 }

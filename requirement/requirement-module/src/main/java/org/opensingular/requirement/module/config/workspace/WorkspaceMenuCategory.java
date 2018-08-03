@@ -21,29 +21,23 @@ public class WorkspaceMenuCategory implements Serializable {
         this.name = name;
     }
 
-    public WorkspaceMenuCategory add(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass){
+    public WorkspaceMenuCategory add(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass) {
         WorkspaceMenuItem workspaceMenuItem = new Mirror().on(workspaceMenuItemClass).invoke().constructor().withoutArgs();
+        SingularSpringInjector.get().inject(workspaceMenuItem);
         workspaceMenuItens.add(workspaceMenuItem);
         return this;
     }
 
-    public WorkspaceMenuCategory addBox(Class<? extends BoxDefinition> boxDefitionClass) {
-        BoxDefinition definition = internalAddBox(boxDefitionClass);
-        workspaceMenuItens.add(new WorkspaceMenuBoxItem(definition));
+    public <T extends BoxDefinition> WorkspaceMenuCategory addBox(Class<T> boxDefitionClass) {
+        workspaceMenuItens.add(new WorkspaceMenuBoxItem(boxDefitionClass));
         return this;
     }
 
     public WorkspaceMenuCategory addBox(Class<? extends BoxDefinition> boxDefitionClass, Consumer<ItemBox> boxConfigurer) {
-        BoxDefinition definition = internalAddBox(boxDefitionClass);
-        boxConfigurer.accept(definition.getItemBox());
-        workspaceMenuItens.add(new WorkspaceMenuBoxItem(definition));
+        WorkspaceMenuBoxItem workspaceMenuBoxItem = new WorkspaceMenuBoxItem(boxDefitionClass);
+        boxConfigurer.accept(workspaceMenuBoxItem.getBoxDefinition().getItemBox());
+        workspaceMenuItens.add(workspaceMenuBoxItem);
         return this;
-    }
-
-    private BoxDefinition internalAddBox(Class<? extends BoxDefinition> boxDefitionClass) {
-        BoxDefinition definition = new Mirror().on(boxDefitionClass).invoke().constructor().withoutArgs();
-        SingularSpringInjector.get().inject(definition);
-        return definition;
     }
 
     public WorkspaceMenuCategory icon(Icon icon) {
@@ -56,7 +50,7 @@ public class WorkspaceMenuCategory implements Serializable {
                 .filter(i -> i instanceof WorkspaceMenuBoxItem)
                 .map(i -> (WorkspaceMenuBoxItem) i)
                 .map(WorkspaceMenuBoxItem::getBoxDefinition)
-                .collect(Collectors.toSet());
+                .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     public Set<WorkspaceMenuItem> getWorkspaceMenuItens() {

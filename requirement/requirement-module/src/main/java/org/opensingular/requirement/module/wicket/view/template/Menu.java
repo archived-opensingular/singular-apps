@@ -96,6 +96,9 @@ public class Menu extends Panel implements Loggable {
             MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
             menu.addItem(group);
             for (WorkspaceMenuItem workspaceMenuItem : category.getWorkspaceMenuItens()) {
+                if(!workspaceMenuItem.isVisible()){
+                    continue;
+                }
                 MenuItemConfig t = buildMenuItemConfig(workspaceMenuItem);
                 PageParameters pageParameters = new PageParameters();
                 pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
