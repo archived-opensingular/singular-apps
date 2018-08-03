@@ -53,20 +53,12 @@ public interface SecurityConfigs {
     @Configuration
     @AutoScanDisabled
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
-        @Override
-        public String getCASLogoutURL() {
-            return "";
-        }
     }
 
     @Order(104)
     @Configuration
     @AutoScanDisabled
     class CASAnalise extends SingularCASSpringSecurityConfig {
-        @Override
-        public String getCASLogoutURL() {
-            return "";
-        }
     }
 
     @Order(105)
