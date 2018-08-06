@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.commons.test.spring;
+package org.opensingular.requirement.commons.spring;
 
 
 import java.util.Set;

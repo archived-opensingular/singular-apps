@@ -190,7 +190,7 @@ public class FormRequirementService<P extends RequirementEntity> {
     /** Procura na petição a versão mais recente do formulário do tipo informado. */
     @Nonnull
     public Optional<SInstance> findFormRequirementInstanceByTypeAndTask(@Nonnull RequirementInstance requirement,
-            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull TaskInstance task) {
+            @Nonnull Class<? extends SType<? extends SInstance>> typeClass, @Nonnull TaskInstance task) {
         return findFormRequirementEntityByTypeAndTask(requirement, RequirementUtil.getTypeName(typeClass), task)
                 .map(e -> getSInstance(e, typeClass));
     }

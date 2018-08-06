@@ -926,7 +926,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * @param formPage       The form of the page.
      * @return Instance of the Modal.
      */
-    protected SimpleMessageFlowConfirmModal getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+    protected SimpleMessageFlowConfirmModal<RE, RI> getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
         return new SimpleMessageFlowConfirmModal<>(id, transitionName, formPage);
     }
 
