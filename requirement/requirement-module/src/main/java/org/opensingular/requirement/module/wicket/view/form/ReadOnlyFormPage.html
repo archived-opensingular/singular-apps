@@ -19,7 +19,8 @@
     <form wicket:id="form">
         <div wicket:id="singularFormPanel"></div>
         <div class="form-actions">
-            <button type="button" class="btn cancel-btn" onclick="window.close();" title="Fechar">Fechar</button>
+            <a type="button" class="btn cancel-btn" onclick="window.close();" title="Fechar">Fechar</a>
+            <a wicket:id="viewDiff" target="_blank" class="btn">Comparar com versão anterior</a>
         </div>
     </form>
 </wicket:extend>
