@@ -38,6 +38,7 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         setAutoServer(true);
         setCacheSize(4096);
         setMultiThreaded(true);
+        setMode("ORACLE");
         setLockTimeout(15000);
     }
 
