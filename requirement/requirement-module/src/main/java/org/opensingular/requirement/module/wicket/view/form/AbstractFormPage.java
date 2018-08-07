@@ -129,7 +129,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
     private IModel<RI> currentModel;
-    private transient Optional<TaskInstance> currentTaskInstance;
+    private TaskInstance currentTaskInstance;
 
 
     @Inject
@@ -163,6 +163,15 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
+
+        currentTaskInstance = loadCurrentTask();
+    }
+
+    private TaskInstance loadCurrentTask() {
+        return config
+                .getRequirementId()
+                .flatMap(id -> requirementService.findCurrentTaskInstanceByRequirementId(id))
+                .orElse(null);
     }
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends RequirementInstance> requirementModel) {
@@ -176,12 +185,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        if (currentTaskInstance == null) {//NOSONAR
-            currentTaskInstance = Optional.empty();
-            config.getRequirementId().ifPresent(si -> currentTaskInstance = requirementService
-                    .findCurrentTaskInstanceByRequirementId(config.getRequirementId().get()));
+        if (currentTaskInstance == null) {
+            return Optional.empty();
         }
-        return currentTaskInstance;
+        return Optional.of(currentTaskInstance);
     }
 
     private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
@@ -639,12 +646,20 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void saveForm(IModel<? extends SInstance> currentInstance, String transitionName) {
+        assertSameTask();
         onBeforeSave(currentInstance);
         SInstance instance = currentInstance.getObject();
         if (instance != null) {
             RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
             formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
             onSave(requirement, transitionName);
+        }
+    }
+
+    protected void assertSameTask() {
+        if (currentTaskInstance != null && !currentTaskInstance.getEntityTaskInstance()
+                .equals(loadCurrentTask().getEntityTaskInstance())) {
+            throw new SingularServerException(getString("message.save.concurrent_error"));
         }
     }
 
