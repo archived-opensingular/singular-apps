@@ -58,8 +58,6 @@ import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
@@ -107,9 +105,6 @@ import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -121,7 +116,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
 
-import javax.servlet.ServletContext;
 import javax.sql.DataSource;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -130,22 +124,7 @@ import java.util.stream.Collectors;
 
 @SuppressWarnings("rawtypes")
 @Lazy(false)
-public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
-
-    /**
-     * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
-     * no {@link org.springframework.beans.factory.BeanFactory}
-     * <p>
-     * Similiar a {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext#postProcessBeanFactory(ConfigurableListableBeanFactory)}
-     */
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        ServletContext servletContext = configurableListableBeanFactory.getBean(ServletContext.class);
-        SingularModuleConfiguration singularModuleConfiguration = (SingularModuleConfiguration) servletContext
-                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
-        configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
-    }
-
+public class SingularDefaultBeanFactory {
 
     @Order(1)
     @Bean

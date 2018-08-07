@@ -30,17 +30,28 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
     @Inject
     protected SingularModuleConfiguration singularModuleConfiguration;
 
+    private IServerContext context;
+
     @Override
     public void configure(WebSecurity web) throws Exception {
         web.ignoring().antMatchers(getDefaultPublicUrls());
     }
-
-    protected abstract IServerContext getContext();
 
     public String[] getDefaultPublicUrls() {
         return getContext().getSettings().getPublicUrls()
                 .stream()
                 .map(publicPath -> getContext().getSettings().getUrlPath() + publicPath)
                 .collect(Collectors.toList()).toArray(new String[]{});
+    }
+
+    public final IServerContext getContext() {
+        return context;
+    }
+
+    /**
+     * Sets the contexts that this security represents
+     */
+    public void setContext(IServerContext context) {
+        this.context = context;
     }
 }

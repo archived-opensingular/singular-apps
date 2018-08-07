@@ -20,6 +20,7 @@ package org.opensingular.requirement.module.spring.security.config.cas;
 
 
 import com.google.common.base.Joiner;
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -113,7 +114,6 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
                 .antMatchers(getContext().getSettings().getContextPath()).authenticated();
 
 
-
     }
 
     protected SSOFilter newSSOFilter() throws ServletException {
@@ -151,10 +151,11 @@ public abstract class SingularCASSpringSecurityConfig extends AbstractSingularSp
         return ssoFilter;
     }
 
-    public abstract String getCASLogoutURL();
+    protected String getCASLogoutURL() {
+        return StringUtils.EMPTY;
+    }
 
     protected final String getExcludeUrlRegex() {
         return Joiner.on(",").join(getDefaultPublicUrls()).replaceAll("\\*", ".*");
     }
-
 }
