@@ -38,8 +38,8 @@ public class SingularBeanPostProcessor implements BeanPostProcessor, ServletCont
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (AbstractSingularSpringSecurityAdapter.class.isAssignableFrom(bean.getClass())) {
             for (IServerContext context : singularModuleConfiguration().getContexts()) {
-                if (context.getSpringSecurityConfigClass() != null &&
-                        context.getSpringSecurityConfigClass().isAssignableFrom(bean.getClass())) {
+                if (context.getSettings().getSpringSecurityConfigClass() != null &&
+                        context.getSettings().getSpringSecurityConfigClass().isAssignableFrom(bean.getClass())) {
                     ((AbstractSingularSpringSecurityAdapter) bean).setContext(context);
                 }
             }

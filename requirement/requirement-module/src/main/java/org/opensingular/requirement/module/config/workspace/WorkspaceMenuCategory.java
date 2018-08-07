@@ -5,6 +5,7 @@ import org.opensingular.internal.lib.support.spring.injection.SingularSpringInje
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.opensingular.studio.core.definition.StudioDefinition;
 
 import java.io.Serializable;
 import java.util.LinkedHashSet;
@@ -38,6 +39,22 @@ public class WorkspaceMenuCategory implements Serializable {
         boxConfigurer.accept(workspaceMenuBoxItem.getBoxDefinition().getItemBox());
         workspaceMenuItens.add(workspaceMenuBoxItem);
         return this;
+    }
+
+    public WorkspaceMenuCategory addCRUD(Class<? extends StudioDefinition> studioDefinitionClass,
+                                         Consumer<WorkspaceMenuStudioItem> crudConfigurer) {
+        StudioDefinition studioDefinition = new Mirror().on(studioDefinitionClass).invoke().constructor().withoutArgs();
+        SingularSpringInjector.get().inject(studioDefinition);
+        WorkspaceMenuStudioItem workspaceMenuStudioItem = new WorkspaceMenuStudioItem(studioDefinition);
+        if (crudConfigurer != null) {
+            crudConfigurer.accept(workspaceMenuStudioItem);
+        }
+        workspaceMenuItens.add(workspaceMenuStudioItem);
+        return this;
+    }
+
+    public WorkspaceMenuCategory addCRUD(Class<? extends StudioDefinition> studioDefinitionClass) {
+        return addCRUD(studioDefinitionClass, null);
     }
 
     public WorkspaceMenuCategory icon(Icon icon) {
