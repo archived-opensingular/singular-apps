@@ -267,13 +267,8 @@ public class CrudListContent extends CrudShellContent {
 
         @Override
         protected void populateItem(ListItem<HeaderRightButton> item) {
+            item.setRenderBodyOnly(true);
             item.add(new HeaderRightActionActionAjaxLink(item.getModelObject()));
-        }
-
-        @Override
-        protected void onInitialize() {
-            super.onInitialize();
-            setRenderBodyOnly(true);
         }
 
         private static class HeaderRightActionActionAjaxLink extends ActionAjaxLink<Void> {
