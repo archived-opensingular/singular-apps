@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
@@ -59,5 +60,9 @@ public abstract class FlowConfirmPanel extends Panel {
 
     public BSModalBorder getModalBorder() {
         return modalBorder;
+    }
+
+    protected void onShowUpdate(AjaxRequestTarget ajaxRequestTarget) {
+        getModalBorder().show(ajaxRequestTarget);
     }
 }

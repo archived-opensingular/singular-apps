@@ -1,22 +1,24 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.wicket.view.util;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Optional;
 
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
@@ -24,10 +26,6 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
-
-import java.io.Serializable;
-import java.util.LinkedHashMap;
-import java.util.Optional;
 
 /**
  * Representa o contexto de execução de uma página de um módulo.
@@ -44,8 +42,6 @@ public class ActionContext implements Serializable, Loggable {
     public static final String FORM_NAME = "f";
 
     public static final String INSTANCE_ID = "i";
-
-    public static final String MODULE_PARAM_NAME = "mod";
 
     public static final String MENU_PARAM_NAME = "m";
 
@@ -134,15 +130,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public ActionContext setFlowInstanceId(Integer flowInstanceId) {
         this.params.put(INSTANCE_ID, String.valueOf(flowInstanceId));
-        return this;
-    }
-
-    public Optional<String> getModuleName() {
-        return Optional.ofNullable(this.params.get(MODULE_PARAM_NAME));
-    }
-
-    public ActionContext setModuleName(String moduleName) {
-        this.params.put(MODULE_PARAM_NAME, moduleName);
         return this;
     }
 

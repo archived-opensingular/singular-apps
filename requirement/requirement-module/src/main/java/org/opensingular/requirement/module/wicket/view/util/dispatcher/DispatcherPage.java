@@ -1,22 +1,24 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.wicket.view.util.dispatcher;
+
+import java.lang.reflect.Constructor;
+import java.util.Optional;
+import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.behavior.Behavior;
@@ -25,7 +27,6 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.Request;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
@@ -37,9 +38,9 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.SingularServerConfiguration;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.module.flow.SingularWebRef;
@@ -49,7 +50,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
@@ -59,11 +60,8 @@ import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
-import javax.inject.Inject;
-import java.lang.reflect.Constructor;
-import java.util.Optional;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 @SuppressWarnings("serial")
 public class DispatcherPage extends WebPage implements Loggable {
@@ -80,7 +78,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularServerConfiguration singularServerConfiguration;
+    private SingularModuleConfiguration singularServerConfiguration;
 
     public DispatcherPage() {
         buildPage();
@@ -195,7 +193,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations));
         }
 
-        throw new SingularServerException("Não foi possivel identificar qual é o formulario a ser exibido");
+        throw new SingularServerException("Não foi possivel identificar qual é o formulário a ser exibido");
     }
 
     private boolean isAnnotationModeReadOnly(ActionContext context) {
@@ -242,7 +240,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void redirectForbidden() {
-        setResponsePage(AccessDeniedPage.class);
+        setResponsePage(Page403.class);
     }
 
     private void dispatchForDestination(ActionContext context, WebPage destination) {

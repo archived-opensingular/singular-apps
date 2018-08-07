@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.wicket.box;
@@ -24,25 +22,24 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.opensingular.requirement.module.wicket.error.AccessDeniedPage;
-import org.opensingular.requirement.module.wicket.view.template.MenuService;
+import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 
 @MountPath("/box")
 public class BoxPage extends ServerBoxTemplate {
@@ -53,7 +50,7 @@ public class BoxPage extends ServerBoxTemplate {
 
     @Inject
     @SpringBean(required = false)
-    private MenuService menuService;
+    private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     public BoxPage(PageParameters parameters) {
         super(parameters);
@@ -61,36 +58,30 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     public void addBox() {
-        String moduleCod = getPageParameters().get(MODULE_PARAM_NAME).toOptionalString();
-        String menu      = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
-        String item      = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
+        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
+        String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (isAccessWithoutParams(moduleCod, menu, item)) {
-            for (Map.Entry<ModuleEntity, List<BoxConfigurationData>> entry : menuService.getMap().entrySet()) {
-                if (!entry.getValue().isEmpty()) {
-                    moduleCod = entry.getKey().getCod();
-                    BoxConfigurationData mg = entry.getValue().get(0);
-                    menu = mg.getLabel();
-                    PageParameters pageParameters = new PageParameters();
+        if (isAccessWithoutParams(menu, item)) {
+            for (BoxConfigurationData box : workspaceConfigurationMetadata.getBoxesConfiguration()) {
+                menu = box.getLabel();
+                PageParameters pageParameters = new PageParameters();
 
-                    addItemParam(mg, pageParameters);
+                addItemParam(box, pageParameters);
 
-                    pageParameters.add(MODULE_PARAM_NAME, moduleCod);
-                    pageParameters.add(MENU_PARAM_NAME, menu);
-                    throw new RestartResponseException(getPageClass(), pageParameters);
-                }
+                pageParameters.add(MENU_PARAM_NAME, menu);
+                throw new RestartResponseException(getPageClass(), pageParameters);
             }
         }
 
         BoxConfigurationData boxConfigurationMetadata = null;
-        if (menuService != null) {
-            boxConfigurationMetadata = menuService.getMenuByLabel(menu);
+        if (workspaceConfigurationMetadata != null) {
+            boxConfigurationMetadata = workspaceConfigurationMetadata.getMenuByLabel(menu).orElse(null);
         }
         if (boxConfigurationMetadata != null) {
             boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
             //itemBoxDTO pode ser nulo quando nenhum item está selecionado.
             if (boxDefinitionData != null) {
-                add(newBoxContent("box", moduleCod, boxConfigurationMetadata, boxDefinitionData));
+                add(newBoxContent("box", boxConfigurationMetadata, boxDefinitionData));
                 return;
             }
         }
@@ -99,14 +90,13 @@ public class BoxPage extends ServerBoxTemplate {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
         }
         LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
-        throw new RestartResponseException(AccessDeniedPage.class);
+        throw new RestartResponseException(Page403.class);
     }
 
-    private boolean isAccessWithoutParams(String moduleCod, String menu, String item) {
-        return moduleCod == null
-                && menu == null
+    private boolean isAccessWithoutParams(String menu, String item) {
+        return menu == null
                 && item == null
-                && menuService != null;
+                && workspaceConfigurationMetadata != null;
     }
 
     private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
@@ -116,8 +106,8 @@ public class BoxPage extends ServerBoxTemplate {
         }
     }
 
-    protected Component newBoxContent(String id, String moduleCod, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, moduleCod, boxConfigurationMetadata.getLabel(), boxDefinitionData);
+    protected Component newBoxContent(String id, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
+        return new BoxContent(id, boxConfigurationMetadata.getLabel(), boxDefinitionData);
     }
 
     protected Map<String, String> createLinkParams() {

@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.wicket.box;
@@ -37,11 +35,12 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
+import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
-import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
@@ -50,10 +49,8 @@ import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
 import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementData;
 import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
-import org.opensingular.requirement.module.service.ModuleService;
 
 import javax.inject.Inject;
 import java.util.Collections;
@@ -69,16 +66,13 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
 public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
 
     @Inject
-    private ModuleDriver moduleDriver;
-
-    @Inject
     private ModuleService moduleService;
 
     private Pair<String, SortOrder>   sortProperty;
     private IModel<BoxDefinitionData> definitionModel;
 
-    public BoxContent(String id, String moduleCod, String menu, BoxDefinitionData itemBox) {
-        super(id, moduleCod, menu);
+    public BoxContent(String id, String menu, BoxDefinitionData itemBox) {
+        super(id, menu);
         this.definitionModel = new Model<>(itemBox);
     }
 
@@ -95,9 +89,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<List<RequirementData>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
+        IModel<Set<Class<? extends SingularRequirement>>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
         if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
-            return new NewRequirementLink(id, moduleService.getModule().getCod(), moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
+            return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewRequirementButton(id);
         }
@@ -155,7 +149,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String             url  = moduleDriver.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
+            String             url  = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -219,7 +213,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void callModule(BoxItemAction itemAction, Map<String, String> params, ActionRequest actionRequest) {
-        ActionResponse response = moduleDriver.executeAction(getModule(), itemAction, params, actionRequest);
+        ActionResponse response = moduleService.executeAction(itemAction, params, actionRequest);
         if (response.isSuccessful()) {
             ((BoxPage) getPage()).addToastrSuccessMessage(response.getResultMessage());
         } else {
@@ -241,7 +235,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction,
                                                                                       Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
-            return new BoxContentAllocateModal(itemAction, getDataModel(), $m.ofValue(getModule())) {
+            return new BoxContentAllocateModal(itemAction, getDataModel()) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
                     relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
@@ -338,7 +332,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
-        return moduleDriver.searchFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleService.searchFiltered(getItemBoxModelObject(), filter);
     }
 
     @Override
@@ -354,7 +348,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleDriver.countFiltered(getModule(), getItemBoxModelObject(), filter);
+        return moduleService.countFiltered(getItemBoxModelObject(), filter);
     }
 
     public boolean isShowQuickFilter() {

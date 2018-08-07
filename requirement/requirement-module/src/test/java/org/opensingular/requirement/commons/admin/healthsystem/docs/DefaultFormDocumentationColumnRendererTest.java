@@ -18,15 +18,15 @@
 
 package org.opensingular.requirement.commons.admin.healthsystem.docs;
 
-import org.junit.Assert;
-import org.junit.Test;
-import org.opensingular.form.SDictionary;
-import org.opensingular.requirement.module.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
-
 import java.io.CharArrayWriter;
 import java.nio.charset.Charset;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import org.junit.Assert;
+import org.junit.Test;
+import org.opensingular.form.SDictionary;
+import org.opensingular.requirement.module.admin.healthsystem.docs.presentation.DefaultDocumentationDefinition;
 
 public class DefaultFormDocumentationColumnRendererTest {
 

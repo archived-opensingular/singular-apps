@@ -1,23 +1,33 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.service;
 
+
+import java.util.Date;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Named;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.TaskInstance;
@@ -61,18 +71,6 @@ import org.opensingular.requirement.module.persistence.entity.form.FormVersionHi
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Named;
-import java.util.Date;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 @Transactional
 public class FormRequirementService<P extends RequirementEntity> {
@@ -190,7 +188,7 @@ public class FormRequirementService<P extends RequirementEntity> {
     /** Procura na petição a versão mais recente do formulário do tipo informado. */
     @Nonnull
     public Optional<SInstance> findFormRequirementInstanceByTypeAndTask(@Nonnull RequirementInstance requirement,
-            @Nonnull Class<? extends SType<?>> typeClass, @Nonnull TaskInstance task) {
+            @Nonnull Class<? extends SType<? extends SInstance>> typeClass, @Nonnull TaskInstance task) {
         return findFormRequirementEntityByTypeAndTask(requirement, RequirementUtil.getTypeName(typeClass), task)
                 .map(e -> getSInstance(e, typeClass));
     }
@@ -677,5 +675,10 @@ public class FormRequirementService<P extends RequirementEntity> {
     @Nonnull
     public RefType loadRefType(@Nonnull Class<? extends SType<?>> typeClass) {
         return loadRefType(RequirementUtil.getTypeName(Objects.requireNonNull(typeClass)));
+    }
+
+    @Nullable
+    public FormVersionEntity findPreviousVersion(Long formVersionCod){
+        return formRequirementDAO.findPreviousVersion(formVersionCod);
     }
 }

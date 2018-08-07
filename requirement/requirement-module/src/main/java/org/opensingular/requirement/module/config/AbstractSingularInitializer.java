@@ -1,167 +1,172 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.Page;
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
-import org.opensingular.lib.commons.lambda.IConsumer;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.requirement.module.admin.AdministrationApplication;
-import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
+import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
+import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
+import org.opensingular.requirement.module.spring.SingularBeanPostProcessor;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
-import org.opensingular.requirement.module.wicket.SingleAppPage;
-import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.spring.SingularServerSpringAppConfig;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import javax.servlet.ServletContext;
-import javax.servlet.ServletException;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Implementação do SingularInitializer que os valores defaults para iniciar o SingularRequerimentos
+ *
+ * @see SingularInitializer
+ * @see SingularInitializerProvider
+ * @see SingularWebAppInitializerListener
+ * @see SingularWebAppInitializer
+ */
+@SuppressWarnings("WeakerAccess")
 public abstract class AbstractSingularInitializer implements SingularInitializer {
-
-    protected abstract String moduleCod();
-
-    protected abstract String[] springPackagesToScan();
-
+    /**
+     * Cria o {@link AnnotationConfigWebApplicationContext} raiz
+     */
     @Override
-    public FlowInitializer flowConfiguration() {
-        return new FlowInitializer() {
-            @Override
-            public String moduleCod() {
-                return AbstractSingularInitializer.this.moduleCod();
-            }
-        };
+    public AnnotationConfigWebApplicationContext createApplicationContext() {
+        SingularAnnotationConfigWebApplicationContext applicationContext;
+        applicationContext = new SingularAnnotationConfigWebApplicationContext();
+        applicationContext.scan(getSpringPackagesToScan());
+        return applicationContext;
     }
 
-    @Override
-    public SchedulerInitializer schedulerConfiguration() {
-        return new SchedulerInitializer() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
-            }
+    /**
+     * Pacotes a serem scaniados automaticamente pelo Spring
+     */
+    protected abstract String[] getSpringPackagesToScan();
 
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
-            }
-        };
+    /**
+     * Lista as classes de configuração que serão registradas no {@link AnnotationConfigWebApplicationContext#register(Class[])}
+     */
+    protected List<Class<?>> getSpringAnnotatedConfigurationClasses() {
+        List<Class<?>> annotatedClasses = new ArrayList<>();
+        annotatedClasses.add(getSingularSpringAppConfigClass());
+        annotatedClasses.add(getSingularBeanFactoryClass());
+        annotatedClasses.add(getSingularPersistenceConfigurationBeanFactoryClass());
+        annotatedClasses.add(getSingularSpringWebMVCConfigClass());
+        annotatedClasses.add(getSingularRestSecurityConfigClass());
+        annotatedClasses.add(getSingularBeanPostProcessorConfigClass());
+        return annotatedClasses;
     }
 
-    @Override
-    public WebInitializer webConfiguration() {
-        return new WebInitializer() {
 
-            @Override
-            public void onStartup(ServletContext servletContext) throws ServletException {
-                String contextPath = servletContext.getContextPath();//NOSONAR
-                servletContext.setAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM, (IConsumer<SkinOptions>) skinOptions -> initSkins(contextPath, skinOptions));
-                super.onStartup(servletContext);
-            }
-
-            @Override
-            protected Class<? extends SingularRequirementApplication> getWicketApplicationClass(IServerContext iServerContext) {
-                if (ServerContext.WORKLIST.isSameContext(iServerContext)) {
-                    return AnalysisApplication.class;
-                } else if (ServerContext.REQUIREMENT.isSameContext(iServerContext)) {
-                    return RequirementApplication.class;
-                } else if (ServerContext.ADMINISTRATION.isSameContext(iServerContext)) {
-                    return AdministrationApplication.class;
-                }
-                throw new SingularServerException("Contexto inválido");
-            }
-        };
+    /**
+     * Recupera o timeout da sessão web em minutos
+     */
+    protected int getSessionTimeoutMinutes() {
+        return 15;
     }
 
-    @Override
-    public SpringHibernateInitializer springHibernateConfiguration() {
-        return new SpringHibernateInitializer() {
-            @Override
-            protected AnnotationConfigWebApplicationContext newApplicationContext() {
-                AnnotationConfigWebApplicationContext context = super.newApplicationContext();
-                context.scan(AbstractSingularInitializer.this.springPackagesToScan());
-                return context;
-            }
-
-            @Override
-            protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
-                return AbstractSingularInitializer.this.persistenceConfiguration();
-            }
-
-            @Override
-            protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
-                return AbstractSingularInitializer.this.beanFactory();
-            }
-        };
+    /**
+     * Cria o {@link WorkspaceAppInitializerListener}
+     */
+    public WorkspaceAppInitializerListener newWorkspaceInitializerListener() {
+        return new WorkspaceAppInitializerListener();
     }
 
-    @Override
-    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfig() {
-        return SingularSpringWebMVCConfig.class;
+    /**
+     * Cria o {@link SpringConfigRegisterSingularWebAppInitializerListener}
+     */
+    private SpringConfigRegisterSingularWebAppInitializerListener newSpringConfigRegisterSingularWebInitializerListener() {
+        return new SpringConfigRegisterSingularWebAppInitializerListener(getSpringAnnotatedConfigurationClasses());
     }
 
-    @Override
-    public FormInitializer formConfiguration() {
-        return new FormInitializer();
+    /**
+     * Cria o {@link ServletContextSetupSingularWebAppInitializerListener}
+     */
+    private ServletContextSetupSingularWebAppInitializerListener newServletContextSetupSingularWebInitializerListener() {
+        return new ServletContextSetupSingularWebAppInitializerListener(getSessionTimeoutMinutes());
     }
 
-    @Override
-    public SpringSecurityInitializer springSecurityConfiguration() {
-        return new SpringSecurityInitializer();
+    /**
+     * Fornece a classe que será utilizada como configuração java do Spring.
+     * A classe fornecida deve herdar de {@link SingularServerSpringAppConfig} e deve
+     * ser anotada com {@link org.springframework.context.annotation.Configuration}.
+     * As principais configurações do pet server são feitas pela superclasse bastando declarar
+     * na classe informada apenas as configurações e beans do spring específicos da aplicação
+     *
+     * @return Uma classe concreta que herda de {@link SingularServerSpringAppConfig}
+     * e anotada com {@link org.springframework.context.annotation.Configuration}
+     */
+    protected Class<? extends SingularServerSpringAppConfig> getSingularSpringAppConfigClass() {
+        return SingularServerSpringAppConfig.class;
     }
 
-    protected Class<? extends SingularDefaultBeanFactory> beanFactory() {
-        return SingularDefaultBeanFactory.class;
-    }
-
-    protected void initSkins(String contextPath, SkinOptions skinOptions) {
-    }
-
-    protected Class<? extends SingularPersistenceDefaultBeanFactory> persistenceConfiguration() {
+    /**
+     * Recupera a configuração de persistencia
+     *
+     * @see SingularPersistenceDefaultBeanFactory
+     */
+    protected Class<? extends SingularPersistenceDefaultBeanFactory> getSingularPersistenceConfigurationBeanFactoryClass() {
         return SingularPersistenceDefaultBeanFactory.class;
     }
 
-    public static class AnalysisApplication extends SingularRequirementApplication {
-        @Override
-        public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
-        }
-
-        @SuppressWarnings("unchecked")
-        @Override
-        public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
-            initSKin.accept(skinOptions);
-        }
+    /**
+     * Recupera a configuração dos beans
+     *
+     * @see SingularDefaultBeanFactory
+     */
+    protected Class<? extends SingularDefaultBeanFactory> getSingularBeanFactoryClass() {
+        return SingularDefaultBeanFactory.class;
     }
 
-    public static class RequirementApplication extends SingularRequirementApplication {
-        @Override
-        public Class<? extends Page> getHomePage() {
-            return SingleAppPage.class;
-        }
+    /**
+     * Recupera a configuração do SpringMVC
+     *
+     * @see SingularSpringWebMVCConfig
+     */
+    public Class<? extends SingularSpringWebMVCConfig> getSingularSpringWebMVCConfigClass() {
+        return SingularSpringWebMVCConfig.class;
+    }
 
-        @SuppressWarnings("unchecked")
-        @Override
-        public void initSkins(SkinOptions skinOptions) {
-            IConsumer<SkinOptions> initSKin = (IConsumer<SkinOptions>) this.getServletContext().getAttribute(SkinnableApplication.INITSKIN_CONSUMER_PARAM);
-            initSKin.accept(skinOptions);
-        }
+    /**
+     * Recupera a configuração de segurança dos serviços REST
+     *
+     * @see WebSecurityConfigurerAdapter
+     */
+    public Class<? extends WebSecurityConfigurerAdapter> getSingularRestSecurityConfigClass() {
+        return DefaultRestSecurity.class;
+    }
+
+
+    /**
+     * Recupera a configuração de pos processamento dos beans
+     *
+     * @see org.springframework.beans.factory.config.BeanPostProcessor
+     */
+    private Class<SingularBeanPostProcessor> getSingularBeanPostProcessorConfigClass() {
+        return SingularBeanPostProcessor.class;
+    }
+
+    /**
+     * Lista os initializer que serão executados pelo {@link SingularWebAppInitializer}
+     */
+    @Override
+    public List<? extends SingularWebAppInitializerListener> getSingularWebInitializerListener() {
+        List<SingularWebAppInitializerListener> initializerListeners = new ArrayList<>();
+        initializerListeners.add(newSpringConfigRegisterSingularWebInitializerListener());
+        initializerListeners.add(newServletContextSetupSingularWebInitializerListener());
+        initializerListeners.add(newWorkspaceInitializerListener());
+        return initializerListeners;
     }
 }

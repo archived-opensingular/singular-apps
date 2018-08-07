@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.flow.builder;
@@ -35,6 +33,7 @@ import org.opensingular.flow.core.builder.BuilderEnd;
 import org.opensingular.flow.core.builder.BuilderHuman;
 import org.opensingular.flow.core.builder.BuilderJava;
 import org.opensingular.flow.core.builder.BuilderTask;
+import org.opensingular.flow.core.builder.BuilderTransitionPredicate;
 import org.opensingular.flow.core.builder.BuilderWait;
 import org.opensingular.flow.core.builder.FlowBuilder;
 import org.opensingular.flow.core.builder.FlowBuilderImpl;
@@ -51,7 +50,7 @@ import javax.annotation.Nonnull;
  * @see FlowBuilder
  */
 public class RequirementFlowBuilder extends
-        FlowBuilder<RequirementFlowDefinition<?>, FlowMapRequirement, RequirementFlowBuilder.BuilderTaskRequirement, RequirementFlowBuilder.BuilderJavaTaskRequirement, RequirementFlowBuilder.BuilderHumanTaskRequirement, RequirementFlowBuilder.BuilderWaitTaskRequirement, RequirementFlowBuilder.BuilderEndTaskRequirement, RequirementFlowBuilder.BuilderStartRequirement, RequirementFlowBuilder.BuilderTransitionRequirement, RequirementFlowBuilder.BuilderRoleRequirement, ITaskDefinition> {
+        FlowBuilder<RequirementFlowDefinition<?>, FlowMapRequirement, RequirementFlowBuilder.BuilderTaskRequirement, RequirementFlowBuilder.BuilderJavaTaskRequirement, RequirementFlowBuilder.BuilderHumanTaskRequirement, RequirementFlowBuilder.BuilderWaitTaskRequirement, RequirementFlowBuilder.BuilderEndTaskRequirement, RequirementFlowBuilder.BuilderStartRequirement, RequirementFlowBuilder.BuilderTransitionRequirement, RequirementFlowBuilder.BuilderTransitionRequirementPredicate, RequirementFlowBuilder.BuilderRoleRequirement, ITaskDefinition> {
 
     private RequirementFlowBuilder(RequirementFlowDefinition<?> flowDefinition) {
         super(flowDefinition);
@@ -100,6 +99,11 @@ public class RequirementFlowBuilder extends
     }
 
     @Override
+    protected BuilderTransitionRequirementPredicate newAutomaticTransition(STransition transition) {
+        return new BuilderTransitionRequirementPredicate(this, transition);
+    }
+
+    @Override
     protected BuilderRoleRequirement newBusinessRole(SBusinessRole businessRole) {
         return new BuilderRoleRequirement(businessRole);
     }
@@ -112,8 +116,8 @@ public class RequirementFlowBuilder extends
 
     @Override
     public BuilderRoleRequirement addBusinessRole(String description,
-                                                 BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
-                                                 boolean automaticUserAllocation) {
+                                                  BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
+                                                  boolean automaticUserAllocation) {
         return addBusinessRole(description, SingularUtil.convertToJavaIdentity(description, true, false),
                 businessRoleStrategy, automaticUserAllocation);
     }
@@ -262,6 +266,27 @@ public class RequirementFlowBuilder extends
         public STransitionRequirement getTransition() {
             return (STransitionRequirement) super.getTransition();
         }
+
+    }
+
+    /**
+     * Builder (configurador) de {@link STransition} especializado em requerimentos.
+     * Apresenta comportamentos adicionais específicos de requerimentos.
+     * <p>Trabalha com {@link STransitionRequirement}.</p>
+     */
+    public static class BuilderTransitionRequirementPredicate
+            extends FlowBuilderImpl.ImplBuilderTransitionPredicate<BuilderTransitionRequirementPredicate> implements BuilderTransitionPredicate<BuilderTransitionRequirementPredicate> {
+
+        @SuppressWarnings("rawtypes")
+        BuilderTransitionRequirementPredicate(FlowBuilder fluxoBuilder, STransition transition) {
+            super(fluxoBuilder, transition);
+        }
+
+        @Override
+        public STransitionRequirement getTransition() {
+            return (STransitionRequirement) super.getTransition();
+        }
+
 
     }
 

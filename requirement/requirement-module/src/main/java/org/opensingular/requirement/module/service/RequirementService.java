@@ -1,22 +1,38 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.service;
+
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
@@ -67,25 +83,7 @@ import org.opensingular.requirement.module.spring.security.SingularRequirementUs
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-
-import static org.opensingular.flow.core.TaskInstance.*;
+import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
 public abstract class RequirementService<RE extends RequirementEntity, RI extends RequirementInstance> implements Loggable {
@@ -171,7 +169,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     @Nonnull
     public RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
-        return getRequirementInstance(taskInstance.getFlowInstance());
+        FlowInstance flowInstance = taskInstance.getFlowInstance();
+        return getRequirementInstance(flowInstance);
     }
 
     /**
@@ -561,7 +560,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<SInstance> findLastFormRequirementInstanceByType(@Nonnull RequirementInstance requirement,
-                                                                     @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                     @Nonnull Class<? extends SType<? extends SInstance>> typeClass) {
         return getFormRequirementService().findLastFormRequirementInstanceByType(requirement, typeClass);
     }
 
@@ -624,7 +623,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     }
 
     @Nonnull
-    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
+    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition<?> flowDefinition, @Nullable String codSubmitterActor) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(requirement.getDescription());
 

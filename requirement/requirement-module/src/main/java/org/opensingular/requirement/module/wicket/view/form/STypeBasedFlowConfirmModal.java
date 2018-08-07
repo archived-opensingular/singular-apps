@@ -25,6 +25,8 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
+import org.opensingular.form.event.ISInstanceListener;
+import org.opensingular.form.event.SInstanceEvent;
 import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -33,13 +35,16 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
+import java.io.Serializable;
+
 public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
 
-    private final RefType                 refType;
-    private final FormKey                 formKey;
+    private final RefType refType;
+    private final FormKey formKey;
     private final TransitionController<?> transitionController;
-    private       boolean                 dirty;
-    private       SingularFormPanel       singularFormPanel;
+    private boolean dirty;
+    private SingularFormPanel singularFormPanel;
+    private DirtyListener instanceListenerDirty = new DirtyListener();
 
     public STypeBasedFlowConfirmModal(String id,
                                       String transitionName,
@@ -56,7 +61,7 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
 
     @Override
     protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m){
+        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, transitionController.isValidatePageForm() && ViewMode.EDIT == vm, getFormPage(), m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
                 setDirty(true);
@@ -87,21 +92,24 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
 
     private SInstance createInstance() {
         SInstance instance;
+        instanceListenerDirty.setEnabled(false);
         if (formKey != null) {
-            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType, SDocumentConsumer.of(this::appendDirtyListener));
+            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType, SDocumentConsumer.of(d -> appendDirtyListener(d, instanceListenerDirty)));
         } else {
-            instance = getFormPage().getFormRequirementService().createInstance(refType, SDocumentConsumer.of(this::appendDirtyListener));
+            instance = getFormPage().getFormRequirementService().createInstance(refType, SDocumentConsumer.of(d -> appendDirtyListener(d, instanceListenerDirty)));
         }
         if (transitionController != null) {
             transitionController.onCreateInstance(getFormPage().getInstance(), instance);
         }
+
         return instance;
     }
 
     //deve ser adicionado apos o listener de criar a instancia
-    private void appendDirtyListener(SDocument document) {
-        document.getInstanceListeners().add(SInstanceEventType.VALUE_CHANGED, evt -> setDirty(true));
+    private void appendDirtyListener(SDocument document, ISInstanceListener instanceListenerDirty) {
+        document.getInstanceListeners().add(SInstanceEventType.VALUE_CHANGED, instanceListenerDirty);
     }
+
 
     @SuppressWarnings("unchecked")
     public IModel<? extends SInstance> getInstanceModel() {
@@ -129,6 +137,35 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
         addCloseButton(modalBorder);
         addDefaultConfirmButton(modalBorder);
         modalBorder.add(buildSingularFormPanel());
+    }
+
+    /**
+     * This method is responsible for update the container of the modal, and show.
+     * The update container will call the build of all Singular components for initializing with correct behavior.
+     *
+     * @param ajaxRequestTarget The target to show modal.
+     */
+    @Override
+    public void onShowUpdate(AjaxRequestTarget ajaxRequestTarget) {
+        singularFormPanel.updateContainer();
+        getModalBorder().show(ajaxRequestTarget);
+        instanceListenerDirty.setEnabled(true);
+    }
+
+    private class DirtyListener implements ISInstanceListener, Serializable {
+
+        boolean enabled = true;
+
+        @Override
+        public void onInstanceEvent(SInstanceEvent evt) {
+            if (enabled) {
+                STypeBasedFlowConfirmModal.this.setDirty(true);
+            }
+        }
+
+        public void setEnabled(boolean enabled) {
+            this.enabled = enabled;
+        }
     }
 
 }

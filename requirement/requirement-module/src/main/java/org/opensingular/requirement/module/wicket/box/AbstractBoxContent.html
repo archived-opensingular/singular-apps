@@ -16,18 +16,30 @@
 
 <html xmlns:wicket="http://wicket.apache.org">
 <wicket:panel>
+    <style>
+        .input-group .form-control {
+            position: unset;
+        }
+    </style>
     <div class="portlet light">
         <div class="portlet-body form">
             <div class="row">
                 <form wicket:id="form">
-                    <div wicket:id="newButtonArea" class="col-md-4">
 
-                    </div>
-                    <div class="form-group col-md-4 col-md-offset-4">
-                        <div class="input-group">
+                    <div wicket:id="newButtonArea" class="col-md-4 form-group"></div>
+
+                    <div class="form-group col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
+                        <div class="input-group input-icon left">
+
+                            <i class="icon-question" data-container="body"
+                               data-toggle="dropdown" aria-expanded="false" style="cursor: pointer"> </i>
+                            <div class="singular-form-action-preview dropdown-menu theme-panel hold-on-click dropdown-custom"
+                                 style="right: 0px; min-width: 100%; left: auto;">
+                                <div wicket:id="help"></div>
+                            </div>
+
                             <input type="text" wicket:id="filtroRapido" class="form-control"
                                    wicket:message="placeholder:label.filtro.rapido">
-
                             <div class="input-group-btn">
                                 <button class="btn" wicket:id="pesquisar">
                                     <span class="glyphicon glyphicon-search"/>

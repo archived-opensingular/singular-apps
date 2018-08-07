@@ -18,12 +18,12 @@
 
 package org.opensingular.requirement.commons.wicket.view.util;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.module.wicket.view.util.ParameterHttpSerializer;
-
-import java.util.LinkedHashMap;
-import java.util.Map;
 
 public class ParamterHttpSerializerTest {
 

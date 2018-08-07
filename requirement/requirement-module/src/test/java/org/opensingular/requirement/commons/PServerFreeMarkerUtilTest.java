@@ -18,16 +18,20 @@
 
 package org.opensingular.requirement.commons;
 
+import java.util.HashMap;
+import java.util.Map;
+import javax.annotation.Nonnull;
+
 import freemarker.cache.StringTemplateLoader;
 import org.junit.Before;
 import org.junit.Test;
-import org.opensingular.form.*;
+import org.opensingular.form.SDictionary;
+import org.opensingular.form.SIComposite;
+import org.opensingular.form.SIList;
+import org.opensingular.form.STypeComposite;
+import org.opensingular.form.STypeList;
 import org.opensingular.form.type.core.STypeString;
 import org.opensingular.requirement.module.PServerFreeMarkerUtil;
-
-import javax.annotation.Nonnull;
-import java.util.HashMap;
-import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 

@@ -1,22 +1,23 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.opensingular.requirement.module.wicket.box;
 
+
+import java.util.List;
+import javax.inject.Inject;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -29,29 +30,22 @@ import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
-import org.opensingular.requirement.module.connector.ModuleDriver;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-
-import javax.inject.Inject;
-import java.util.List;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<BoxItemDataMap> {
-    private final IModel<ModuleEntity> moduleEntity;
 
     @Inject
-    private ModuleDriver moduleDriver;
+    private ModuleService moduleService;
 
     protected DropDownChoice<Actor> usersDropDownChoice;
 
-    public BoxContentAllocateModal(BoxItemAction itemAction, IModel<BoxItemDataMap> dataModel,
-                                   IModel<ModuleEntity> moduleEntity) {
+    public BoxContentAllocateModal(BoxItemAction itemAction, IModel<BoxItemDataMap> dataModel) {
         super(itemAction, dataModel);
-        this.moduleEntity = moduleEntity;
     }
 
     protected abstract void onDeallocate(AjaxRequestTarget target);
@@ -71,8 +65,7 @@ public abstract class BoxContentAllocateModal extends BoxContentConfirmModal<Box
     }
 
     private void addUsersDropDownChoice() {
-        IModel<List<Actor>> actorsModel = $m.get(() -> moduleDriver.findEligibleUsers(moduleEntity.getObject(),
-                dataModel.getObject(), itemAction.getConfirmation()));
+        IModel<List<Actor>> actorsModel = $m.get(() -> moduleService.findEligibleUsers(dataModel.getObject(), itemAction.getConfirmation()));
         usersDropDownChoice = new DropDownChoice<>("usersDropDownChoice",
                 new Model<>(),
                 actorsModel,
