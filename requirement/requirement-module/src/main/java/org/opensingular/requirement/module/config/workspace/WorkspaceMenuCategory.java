@@ -22,7 +22,7 @@ public class WorkspaceMenuCategory implements Serializable {
         this.name = name;
     }
 
-    public WorkspaceMenuCategory add(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass) {
+    public WorkspaceMenuCategory addItem(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass) {
         WorkspaceMenuItem workspaceMenuItem = new Mirror().on(workspaceMenuItemClass).invoke().constructor().withoutArgs();
         SingularSpringInjector.get().inject(workspaceMenuItem);
         workspaceMenuItens.add(workspaceMenuItem);

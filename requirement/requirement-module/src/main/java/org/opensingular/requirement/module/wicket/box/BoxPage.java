@@ -101,7 +101,7 @@ public class BoxPage extends ServerBoxTemplate {
                 .orElse(null);
 
         if (workspaceMenuItem != null) {
-            add(newBoxContent("box"));
+            add(newBoxContent());
         } else {
             LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
             throw new RestartResponseException(Page403.class);
@@ -120,8 +120,8 @@ public class BoxPage extends ServerBoxTemplate {
         });
     }
 
-    protected Component newBoxContent(String id) {
-        return workspaceMenuItem.getObject().newContent(id);
+    protected Component newBoxContent() {
+        return workspaceMenuItem.getObject().newContent("box");
     }
 
     protected Map<String, String> createLinkParams() {
