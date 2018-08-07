@@ -16,12 +16,6 @@
 
 package org.opensingular.studio.core.panel;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Optional;
-
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
@@ -54,6 +48,12 @@ import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
+
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Optional;
 
 public class CrudListContent extends CrudShellContent {
 
@@ -375,7 +375,7 @@ public class CrudListContent extends CrudShellContent {
         public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
             this.crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
                 studioDefinition.getRepository().delete(FormKey.from(model.getObject()));
-                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluido com sucesso.");
+                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluído com sucesso.");
                 this.crudShellManager.update(ajaxRequestTarget);
             });
         }
