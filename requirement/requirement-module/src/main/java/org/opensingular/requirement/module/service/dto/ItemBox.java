@@ -38,6 +38,7 @@ public class ItemBox implements Serializable {
     private boolean showQuickFilter = true;
     private Class<? extends BoxDefinition> boxDefinitionClass;
     private Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
+    private boolean displayCounters = true;
 
     public String getName() {
         return name;
@@ -109,5 +110,14 @@ public class ItemBox implements Serializable {
     public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
         getRequirements().add(requirement);
         return this;
+    }
+
+    public ItemBox displayCounters(boolean displayCounters) {
+        this.displayCounters = displayCounters;
+        return this;
+    }
+
+    public boolean isDisplayCounters() {
+        return displayCounters;
     }
 }

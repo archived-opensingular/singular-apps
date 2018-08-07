@@ -120,8 +120,11 @@ public class Menu extends Panel implements Loggable {
 
     protected MenuItemConfig buildMenuItemConfig(WorkspaceMenuItem workspaceMenuItem) {
         ISupplier<String> countSupplier = null;
-        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem) {
-            countSupplier = createCountSupplier(((WorkspaceMenuBoxItem) workspaceMenuItem).getBoxDefinition());
+        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem ) {
+            BoxDefinition boxDefinition = ((WorkspaceMenuBoxItem) workspaceMenuItem).getBoxDefinition();
+            if(boxDefinition.getItemBox().isDisplayCounters()) {
+                countSupplier = createCountSupplier(boxDefinition);
+            }
         }
         return MenuItemConfig.of(boxPageClass, workspaceMenuItem.getName(), workspaceMenuItem.getHelpText(), workspaceMenuItem.getIcon(), countSupplier);
     }
