@@ -118,6 +118,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     protected final IModel<FormKey> formKeyModel;
     protected final FormPageExecutionContext config;
     protected final SingularFormPanel singularFormPanel;
+    protected Component containerBehindSingularPanel;
     protected final IModel<Boolean> inheritParentFormData;
     protected final IModel<FormKey> parentRequirementFormKeyModel;
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
@@ -320,6 +321,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
         form.add(singularFormPanel);
+
+        this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");
+        form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
@@ -333,6 +337,18 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         add(form);
         addSaveCallBackUrl();
     }
+
+
+    /**
+     * Panel that will show behind the Singular panel.
+     *
+     * @param id The id of the panel.
+     * @return Returns the panel will be showing behind the Singular Panel.
+     */
+    public Component buildBehindSingularPanelContent(String id) {
+        return new WebMarkupContainer(id).setVisible(false);
+    }
+
 
     private Component buildExtensionButtons() {
         return new ExtensionButtonsPanel<>("extensions-buttons", currentModel, singularFormPanel.getInstanceModel())
@@ -609,6 +625,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                     protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                         enviarModal.hide(target);
                         target.add(form);
+                        //TODO Não há necessidade desse método. [Avaliar a remoção do mesmo.] -> Validação é feita antes de chamar a modal.
                         addToastrErrorMessage("message.send.error");
                     }
 
@@ -909,7 +926,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * @param formPage       The form of the page.
      * @return Instance of the Modal.
      */
-    protected SimpleMessageFlowConfirmModal getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+    protected SimpleMessageFlowConfirmModal<RE, RI> getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
         return new SimpleMessageFlowConfirmModal<>(id, transitionName, formPage);
     }
 
@@ -1140,6 +1157,33 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
+
+    }
+
+
+    /**
+     * This button will show modal for confirmation when success,
+     * and a toast if has error in validation.
+     * This button have already implemented the ValidationSuccess and ValidationError.
+     */
+    protected static class ServerSendButton extends SingularSaveButton {
+
+        private final BSModalBorder sendModal;
+
+        public ServerSendButton(String id, IModel<? extends SInstance> currentInstance, BSModalBorder sendModal) {
+            super(id, currentInstance);
+            this.sendModal = sendModal;
+        }
+
+        @Override
+        protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            sendModal.show(target);
+        }
+
+        @Override
+        protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            findParent(AbstractFormPage.class).addToastrErrorMessage("message.send.error");
+        }
 
     }
 }

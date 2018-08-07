@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.spring.security.config;
@@ -24,8 +22,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
-import org.opensingular.requirement.module.config.DefaultContexts;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
@@ -55,30 +51,12 @@ public interface SecurityConfigs {
     @Configuration
     @AutoScanDisabled
     class CASPeticionamento extends SingularCASSpringSecurityConfig {
-        @Override
-        protected IServerContext getContext() {
-            return singularModuleConfiguration.findContextByName(DefaultContexts.RequirementContextWithCAS.NAME);
-        }
-
-        @Override
-        public String getCASLogoutURL() {
-            return "";
-        }
     }
 
     @Order(104)
     @Configuration
     @AutoScanDisabled
     class CASAnalise extends SingularCASSpringSecurityConfig {
-        @Override
-        protected IServerContext getContext() {
-            return singularModuleConfiguration.findContextByName(DefaultContexts.WorklistContextWithCAS.NAME);
-        }
-
-        @Override
-        public String getCASLogoutURL() {
-            return "";
-        }
     }
 
     @Order(105)
@@ -88,10 +66,6 @@ public interface SecurityConfigs {
         @Inject
         @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
         private Optional<AdminCredentialChecker> credentialChecker;
-
-        protected IServerContext getContext() {
-            return singularModuleConfiguration.findContextByName(DefaultContexts.AdministrationContext.NAME);
-        }
 
         @Override
         protected void configure(HttpSecurity http) throws Exception {
@@ -121,20 +95,12 @@ public interface SecurityConfigs {
     @Configuration
     @AutoScanDisabled
     class RequirementSecurity extends AllowAllSecurity {
-        @Override
-        protected IServerContext getContext() {
-            return singularModuleConfiguration.findContextByName(DefaultContexts.RequirementContext.NAME);
-        }
     }
 
     @Order(107)
     @Configuration
     @AutoScanDisabled
     class WorklistSecurity extends AllowAllSecurity {
-        @Override
-        protected IServerContext getContext() {
-            return singularModuleConfiguration.findContextByName(DefaultContexts.WorklistContext.NAME);
-        }
     }
 
     abstract class AllowAllSecurity extends AbstractSingularSpringSecurityWithFormAdapter {
