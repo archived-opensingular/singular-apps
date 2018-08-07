@@ -195,7 +195,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations));
         }
 
-        throw new SingularServerException("Não foi possivel identificar qual é o formulario a ser exibido");
+        throw new SingularServerException("Não foi possivel identificar qual é o formulário a ser exibido");
     }
 
     private boolean isAnnotationModeReadOnly(ActionContext context) {

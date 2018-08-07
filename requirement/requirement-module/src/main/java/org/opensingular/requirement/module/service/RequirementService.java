@@ -171,7 +171,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     @Nonnull
     public RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
-        return getRequirementInstance(taskInstance.getFlowInstance());
+        FlowInstance flowInstance = taskInstance.getFlowInstance();
+        return getRequirementInstance(flowInstance);
     }
 
     /**
@@ -561,7 +562,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<SInstance> findLastFormRequirementInstanceByType(@Nonnull RequirementInstance requirement,
-                                                                     @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                     @Nonnull Class<? extends SType<? extends SInstance>> typeClass) {
         return getFormRequirementService().findLastFormRequirementInstanceByType(requirement, typeClass);
     }
 
@@ -624,7 +625,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     }
 
     @Nonnull
-    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
+    public FlowInstance startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition<?> flowDefinition, @Nullable String codSubmitterActor) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(requirement.getDescription());
 

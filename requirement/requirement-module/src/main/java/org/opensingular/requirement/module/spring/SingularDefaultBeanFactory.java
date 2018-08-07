@@ -58,7 +58,6 @@ import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
 import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -103,9 +102,6 @@ import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.opensingular.ws.wkhtmltopdf.client.RestfulHtmlToPdfConverter;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.ehcache.EhCacheManagerFactoryBean;
@@ -121,14 +117,13 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 
 
 @SuppressWarnings("rawtypes")
 @Lazy(false)
-public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
+public class SingularDefaultBeanFactory {
 
     @Order(1)
     @Bean
@@ -424,21 +419,6 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
         return new SingularServerFlowConfigurationBean();
     }
 
-    /**
-     * Registra objetos singleton que foram criados durante a inicialização e devem estar disponiveis
-     * no {@link org.springframework.beans.factory.BeanFactory}
-     *
-     * Similiar a {@link org.springframework.web.context.support.AbstractRefreshableWebApplicationContext#postProcessBeanFactory(ConfigurableListableBeanFactory)}
-     */
-    @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory configurableListableBeanFactory) throws BeansException {
-        ServletContext servletContext = configurableListableBeanFactory.getBean(ServletContext.class);
-        SingularModuleConfiguration singularModuleConfiguration = (SingularModuleConfiguration) servletContext
-                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
-        configurableListableBeanFactory.registerSingleton("singularModuleConfiguration", singularModuleConfiguration);
-    }
-
-
     // ######### Beans for Quartz ##########
     @Bean
     @DependsOn("schedulerFactoryBean")
@@ -476,7 +456,7 @@ public class SingularDefaultBeanFactory implements BeanFactoryPostProcessor {
     }
 
     @Bean
-    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService){
+    public AttachmentGCJob scheduleAttachmentGCJob(IScheduleService scheduleService) {
         AttachmentGCJob attachmentGCJob = new AttachmentGCJob(ScheduleDataBuilder.buildDaily(1, 1));
         scheduleService.schedule(attachmentGCJob);
         return attachmentGCJob;
