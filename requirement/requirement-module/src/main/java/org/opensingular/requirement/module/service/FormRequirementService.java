@@ -676,4 +676,9 @@ public class FormRequirementService<P extends RequirementEntity> {
     public RefType loadRefType(@Nonnull Class<? extends SType<?>> typeClass) {
         return loadRefType(RequirementUtil.getTypeName(Objects.requireNonNull(typeClass)));
     }
+
+    @Nullable
+    public FormVersionEntity findPreviousVersion(Long formVersionCod){
+        return formRequirementDAO.findPreviousVersion(formVersionCod);
+    }
 }
