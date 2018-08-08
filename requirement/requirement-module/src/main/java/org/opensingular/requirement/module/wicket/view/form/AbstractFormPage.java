@@ -862,16 +862,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                 "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
-        final SingularValidationButton singularButton = new SingularValidationButton(buttonId, getFormInstance()) {
+        final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
-            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                showConfirmModal(transitionName, confirmActionFlowModal, target);
-            }
-
-            @Override
-            protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                super.onValidationError(target, form, instanceModel);
-                addToastrErrorMessage("message.validation.error");
+            protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
+                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget);
             }
 
             @Override
