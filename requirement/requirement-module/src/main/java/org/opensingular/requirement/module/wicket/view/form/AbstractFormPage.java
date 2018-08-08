@@ -862,10 +862,16 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                 "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
-        final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
+        final SingularValidationButton singularButton = new SingularValidationButton(buttonId, getFormInstance()) {
             @Override
-            protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget);
+            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                showConfirmModal(transitionName, confirmActionFlowModal, target);
+            }
+
+            @Override
+            protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                super.onValidationError(target, form, instanceModel);
+                addToastrErrorMessage("message.validation.error");
             }
 
             @Override
@@ -883,6 +889,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         singularButton.add(new Label("flowButtonLabel", transitionName).setRenderBodyOnly(true));
         tp.add(singularButton);
     }
+
 
     private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);

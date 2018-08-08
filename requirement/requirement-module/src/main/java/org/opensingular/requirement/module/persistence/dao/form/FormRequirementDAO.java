@@ -16,16 +16,20 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.jpa.JPAExpressions;
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
+
+import javax.annotation.Nonnull;
+import java.util.List;
+import java.util.Optional;
 
 public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
 
@@ -77,6 +81,27 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
                 .addOrder(Order.desc("inclusionDate"))
                 .setMaxResults(2)
                 .list();
+    }
+
+    public FormVersionEntity findPreviousVersion(@Nonnull Long formVersionCod) {
+        QFormVersionEntity qAllFormVersion = QFormVersionEntity.formVersionEntity;
+        QFormVersionEntity qCurrentFormVersion = QFormVersionEntity.formVersionEntity;
+        return new HibernateQueryFactory(getSession())
+                .from(qAllFormVersion)
+                .where(qAllFormVersion.formEntity
+                        .eq(JPAExpressions
+                                .select(qCurrentFormVersion.formEntity)
+                                .from(qCurrentFormVersion)
+                                .where(qCurrentFormVersion.cod.eq(formVersionCod)))
+                        .and(qAllFormVersion.cod.ne(formVersionCod))
+                        .and(qAllFormVersion.inclusionDate.before(JPAExpressions
+                                .select(qCurrentFormVersion.inclusionDate)
+                                .from(qCurrentFormVersion)
+                                .where(qCurrentFormVersion.cod.eq(formVersionCod))))
+                )
+                .select(qAllFormVersion)
+                .orderBy(new OrderSpecifier<>(com.querydsl.core.types.Order.DESC, qAllFormVersion.inclusionDate))
+                .fetchFirst();
     }
 
     @Nonnull
