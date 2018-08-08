@@ -20,12 +20,10 @@ package org.opensingular.requirement.module;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 import java.lang.reflect.Modifier;
-import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -41,28 +39,18 @@ public class SingularModuleConfiguration {
      */
     private WorkspaceRegistry workspaceRegistry;
 
-    public void init(AnnotationConfigWebApplicationContext applicationContext) throws IllegalAccessException, InstantiationException {
-        resolveModule();
-        resolveRequirements(applicationContext);
-        resolveWorkspace();
+    public void init(AnnotationConfigWebApplicationContext applicationContext)
+            throws IllegalAccessException, InstantiationException {
+        module = lookupModule();
+        workspaceRegistry = new WorkspaceRegistry();
+        if (module != null) {
+            module.requirements(new RequirementRegistry(applicationContext));
+            module.workspace(workspaceRegistry);
+            module.defaultWorkspace(workspaceRegistry);
+        }
     }
 
-    private void resolveWorkspace() {
-        WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry();
-        module.workspace(workspaceRegistry);
-        module.defaultWorkspace(workspaceRegistry);
-        this.workspaceRegistry = workspaceRegistry;
-    }
-
-    /**
-     * TODO, mover para {@link WorkspaceAppInitializerListener}
-     */
-    private void resolveRequirements(AnnotationConfigWebApplicationContext applicationContext) {
-        RequirementRegistry requirementRegistry = new RequirementRegistry(applicationContext);
-        module.requirements(requirementRegistry);
-    }
-
-    private void resolveModule() throws IllegalAccessException, InstantiationException {
+    private SingularModule lookupModule() throws IllegalAccessException, InstantiationException {
         Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.get()
                 .findSubclassesOf(SingularModule.class)
                 .stream()
@@ -76,8 +64,9 @@ public class SingularModuleConfiguration {
         }
         Optional<Class<? extends SingularModule>> firstModule = modules.stream().findFirst();
         if (firstModule.isPresent()) {
-            module = firstModule.get().newInstance();
+            return firstModule.get().newInstance();
         }
+        return null;
     }
 
     public SingularModule getModule() {
@@ -86,12 +75,6 @@ public class SingularModuleConfiguration {
 
     public String getModuleCod() {
         return getModule().abbreviation();
-    }
-
-    public IServerContext findContextByName(String name) {
-        return workspaceRegistry.listContexts()
-                .stream()
-                .filter(i -> i.getName().equals(name)).findFirst().orElse(null);
     }
 
     public Set<IServerContext> getContexts() {

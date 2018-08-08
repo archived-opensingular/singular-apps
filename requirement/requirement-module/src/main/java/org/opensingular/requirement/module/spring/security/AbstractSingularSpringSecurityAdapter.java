@@ -16,18 +16,13 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import javax.inject.Inject;
 import java.util.stream.Collectors;
 
 public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityConfigurerAdapter {
-    @Inject
-    protected SingularModuleConfiguration singularModuleConfiguration;
-
     private IServerContext context;
 
     @Override
