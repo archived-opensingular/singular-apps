@@ -78,7 +78,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private IServerContext serverContext;
 
     public DispatcherPage() {
         buildPage();
@@ -227,7 +227,6 @@ public class DispatcherPage extends WebPage implements Loggable {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
-        IServerContext serverContext = IServerContext.getContextFromRequest(RequestCycle.get().getRequest(), singularServerConfiguration.getContexts());
         if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
             redirectForbidden();
         } else {

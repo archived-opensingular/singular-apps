@@ -50,12 +50,6 @@ public class TestServerContext {
     }
 
     @Test
-    public void testContextFromRequest() {
-
-        Assert.assertEquals(worklist, IServerContext.getContextFromRequest(getRequest(), Arrays.asList(requirement, worklist)));
-    }
-
-    @Test
     public void testRegexFromContextPath() {
         Assert.assertEquals(WORKLIST_CONTEXT + "/*", worklist.getSettings().getContextPath());
 

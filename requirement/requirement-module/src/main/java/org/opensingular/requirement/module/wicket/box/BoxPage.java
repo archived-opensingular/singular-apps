@@ -19,22 +19,22 @@ package org.opensingular.requirement.module.wicket.box;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.opensingular.requirement.module.wicket.view.template.Menu;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
-import org.slf4j.LoggerFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.annotation.Nonnull;
@@ -42,34 +42,23 @@ import javax.inject.Inject;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
 
 @MountPath("/box")
-public class BoxPage extends ServerBoxTemplate {
-
-    private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
+public class BoxPage extends ServerBoxTemplate implements Loggable {
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private IServerContext serverContext;
 
-    protected IModel<WorkspaceMenuItem> workspaceMenuItem;
+    @Inject
+    private UserDetailsProvider userDetailsProvider;
 
-    protected IModel<IServerContext> serverContext;
+    private IModel<WorkspaceMenuItem> workspaceMenuItem;
 
     public BoxPage(PageParameters parameters) {
-        this(parameters, null);
-    }
-
-    public BoxPage(PageParameters parameters, IServerContext serverContext) {
         super(parameters);
-        if (serverContext != null) {
-            this.serverContext = new Model<>(serverContext);
-        } else {
-            this.serverContext = new Model<>(IServerContext.getContextFromRequest(getRequest(), singularModuleConfiguration.getContexts()));
-        }
         addBox();
     }
 
@@ -78,11 +67,11 @@ public class BoxPage extends ServerBoxTemplate {
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
         if (serverContext == null) {
-            LOGGER.error("Não foi possivel determinal o contexto atual");
+            getLogger().error("Não foi possivel determinal o contexto atual");
             throw new RestartResponseException(Page403.class);
         }
 
-        Workspace workspace = serverContext.getObject().getWorkspace();
+        Workspace workspace = serverContext.getWorkspace();
 
         if (item == null || category == null) {
             PageParameters pageParameters = new PageParameters();
@@ -100,27 +89,25 @@ public class BoxPage extends ServerBoxTemplate {
                 .map(Model::new)
                 .orElse(null);
 
-        if (workspaceMenuItem != null) {
+        if (workspaceMenuItem != null && workspaceMenuItem.getObject() != null) {
             add(newBoxContent());
         } else {
-            LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
+            getLogger().error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
             throw new RestartResponseException(Page403.class);
         }
     }
 
     private void addItemParam(Workspace workspace, PageParameters pageParameters) {
-        Optional<WorkspaceMenuCategory> categoryOpt = workspace.menu().getCategories()
+        workspace.menu().getCategories()
                 .stream()
                 .filter(i -> !i.getDefinitions().isEmpty())
-                .findFirst();
-
-        categoryOpt.ifPresent(category -> {
+                .findFirst().ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
             pageParameters.add(ITEM_PARAM_NAME, category.getDefinitions().stream().findFirst().map(BoxDefinition::getItemBox).map(ItemBox::getName).orElse(null));
         });
     }
 
-    protected Component newBoxContent() {
+    private Component newBoxContent() {
         return workspaceMenuItem.getObject().newContent("box");
     }
 
@@ -130,62 +117,49 @@ public class BoxPage extends ServerBoxTemplate {
 
     @Override
     protected IModel<String> getContentSubtitle() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (workspaceMenuItem != null) {
-                    return workspaceMenuItem.getObject().getDescription();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getDescription();
             }
         };
     }
 
     @Override
     protected IModel<String> getContentTitle() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (workspaceMenuItem != null) {
-                    return workspaceMenuItem.getObject().getName();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getName();
             }
         };
     }
 
     @Override
     public IModel<String> getHelpText() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (workspaceMenuItem != null) {
-                    return workspaceMenuItem.getObject().getHelpText();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getHelpText();
             }
         };
     }
 
     protected String getIdUsuario() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
+        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
                 .map(SingularRequirementUserDetails::getUsername)
                 .orElse(null);
     }
 
     protected String getIdPessoa() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
+        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
                 .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
-
     }
 
+    @Nonnull
     @Override
-    protected @Nonnull
-    WebMarkupContainer buildPageMenu(String id) {
-        return new Menu(id, BoxPage.class, serverContext);
+    protected WebMarkupContainer buildPageMenu(String id) {
+        return new Menu(id, getClass());
     }
-
 }

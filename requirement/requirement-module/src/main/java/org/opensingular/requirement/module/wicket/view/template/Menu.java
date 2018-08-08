@@ -24,7 +24,6 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.model.IModel;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
@@ -36,20 +35,16 @@ import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.workspace.Workspace;
-import org.opensingular.requirement.module.config.workspace.WorkspaceMenu;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuBoxItem;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
@@ -58,18 +53,18 @@ public class Menu extends Panel implements Loggable {
     @Inject
     private ModuleService moduleService;
 
-    private IModel<IServerContext> serverContext;
+    @Inject
+    private IServerContext serverContext;
 
     private Class<? extends WebPage> boxPageClass;
 
     private MetronicMenu menu;
 
-    public Menu(String id, Class<? extends WebPage> boxPageClass, IModel<IServerContext> serverContext) {
+    public Menu(String id, Class<? extends WebPage> boxPageClass) {
         super(id);
         this.boxPageClass = boxPageClass;
-        this.serverContext = serverContext;
         add(buildMenu());
-        buildMenuGroup();
+        appendMenuItens();
     }
 
     protected MetronicMenu buildMenu() {
@@ -77,26 +72,13 @@ public class Menu extends Panel implements Loggable {
         return this.menu;
     }
 
-
-    protected void buildMenuGroup() {
-        Optional.ofNullable(serverContext.getObject())
-                .map(IServerContext::getWorkspace)
-                .map(Workspace::menu)
-                .ifPresent(menu -> {
-                    if (!menu.listAllBoxInfos().isEmpty()) {
-                        buildMenus(menu);
-                    }
-                });
-    }
-
-
-    protected void buildMenus(WorkspaceMenu workspaceMenu) {
+    protected void appendMenuItens() {
         final List<Pair<Component, ISupplier<String>>> itens = new ArrayList<>();
-        for (WorkspaceMenuCategory category : workspaceMenu.getCategories()) {
+        for (WorkspaceMenuCategory category : serverContext.getWorkspace().menu().getCategories()) {
             MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
             menu.addItem(group);
             for (WorkspaceMenuItem workspaceMenuItem : category.getWorkspaceMenuItens()) {
-                if(!workspaceMenuItem.isVisible()){
+                if (!workspaceMenuItem.isVisible()) {
                     continue;
                 }
                 MenuItemConfig t = buildMenuItemConfig(workspaceMenuItem);
@@ -120,9 +102,9 @@ public class Menu extends Panel implements Loggable {
 
     protected MenuItemConfig buildMenuItemConfig(WorkspaceMenuItem workspaceMenuItem) {
         ISupplier<String> countSupplier = null;
-        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem ) {
+        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem) {
             BoxDefinition boxDefinition = ((WorkspaceMenuBoxItem) workspaceMenuItem).getBoxDefinition();
-            if(boxDefinition.getItemBox().isDisplayCounters()) {
+            if (boxDefinition.getItemBox().isDisplayCounters()) {
                 countSupplier = createCountSupplier(boxDefinition);
             }
         }

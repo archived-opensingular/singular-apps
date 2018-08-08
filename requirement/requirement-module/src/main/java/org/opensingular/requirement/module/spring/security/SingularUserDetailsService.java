@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.spring.security;
 
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
@@ -24,18 +25,13 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
 @Transactional
 public interface SingularUserDetailsService extends UserDetailsService, UserDetailsContextMapper {
-
 
     @Override
     default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations, String s, Collection<? extends GrantedAuthority> collection) {
@@ -48,14 +44,10 @@ public interface SingularUserDetailsService extends UserDetailsService, UserDeta
 
     @Override
     default SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return loadUserByUsername(username, IServerContext.getContextFromRequest(request, Arrays.asList(getContexts())));
+        return loadUserByUsername(username, ApplicationContextProvider.get().getBean(IServerContext.class));
     }
 
-
     SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException;
-
-    IServerContext[] getContexts();
 
     List<SingularPermission> searchPermissions(String idUsuarioLogado);
 

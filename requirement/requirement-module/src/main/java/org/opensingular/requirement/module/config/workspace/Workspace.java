@@ -1,8 +1,6 @@
 package org.opensingular.requirement.module.config.workspace;
 
-import java.io.Serializable;
-
-public class Workspace implements Serializable {
+public class Workspace {
     private final WorkspaceMenu workspaceMenu = new WorkspaceMenu();
 
     public WorkspaceMenu menu() {

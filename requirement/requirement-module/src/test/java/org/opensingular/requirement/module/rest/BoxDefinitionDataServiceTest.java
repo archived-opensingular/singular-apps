@@ -68,8 +68,6 @@ public class BoxDefinitionDataServiceTest {
 
     private String boxId = "123456";
 
-    private  ItemBox box;
-
     public void setUpApplicationContextMock() {
 
         ApplicationContextProvider applicationContextProvider = new ApplicationContextProvider();
@@ -93,9 +91,9 @@ public class BoxDefinitionDataServiceTest {
         when(boxItemDataProvider.search(eq(boxFilter))).thenReturn(searchResult);
         when(boxItemDataProvider.getActionProvider()).thenReturn(new DefaultActionProvider());
 
-        setUpApplicationContextMock();
+        when(boxDefinition.getDataProvider()).thenReturn(boxItemDataProvider);
 
-        Mockito.when(boxDefinition.getItemBox()).thenReturn(box);
+        setUpApplicationContextMock();
     }
 
     @Test

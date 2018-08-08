@@ -16,65 +16,14 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.request.Request;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceSettings;
-import org.opensingular.requirement.module.exception.SingularServerException;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.Collection;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public interface IServerContext extends Serializable {
-
-    /**
-     * API_VIEW
-     */
-    @Deprecated
-    static IServerContext getContextFromRequest(Request request, Collection<IServerContext> contexts) {
-        return getContextFromRequest((HttpServletRequest) request.getContainerRequest(), contexts);
-    }
-
-    /**
-     * API_VIEW
-     */
-    @Deprecated
-    static IServerContext getContextFromName(String name, Collection<IServerContext> contexts) {
-        for (IServerContext ctx : contexts) {
-            if (name.equals(ctx.getName())) {
-                return ctx;
-            }
-        }
-        throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
-    }
-
-    /**
-     * API_VIEW
-     */
-    @Deprecated
-    static IServerContext getContextFromRequest(HttpServletRequest request, Collection<IServerContext> contexts) {
-        String contextPath = request.getContextPath();
-        String context = request.getPathInfo().replaceFirst(contextPath, "");
-        for (IServerContext ctx : contexts) {
-            if (context.startsWith(ctx.getSettings().getUrlPath())) {
-                return ctx;
-            }
-        }
-        throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
-    }
-
-    /**
-     * API_VIEW
-     */
-    @Deprecated
-    default String getServerPropertyKey(String basePropertyKey) {
-        return getSettings().getPropertiesBaseKey() + "." + basePropertyKey;
-    }
-
+public interface IServerContext {
     /**
      * @return the name of the context
      */
@@ -89,4 +38,11 @@ public interface IServerContext extends Serializable {
      * @return the workspace of the context
      */
     Workspace getWorkspace();
+
+    /**
+     * @return the base key concatenated with the property
+     */
+    default String getServerPropertyKey(String basePropertyKey) {
+        return getSettings().getPropertiesBaseKey() + "." + basePropertyKey;
+    }
 }

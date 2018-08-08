@@ -56,7 +56,9 @@ import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
+import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
 import org.opensingular.requirement.module.connector.ModuleService;
@@ -111,9 +113,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.web.context.ConfigurableWebApplicationContext;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -493,6 +498,21 @@ public class SingularDefaultBeanFactory {
     @Bean
     public UserDetailsProvider userDetailsProvider() {
         return new UserDetailsProvider();
+    }
+
+    @Bean
+    @Scope(ConfigurableWebApplicationContext.SCOPE_REQUEST)
+    public IServerContext serverContext(HttpServletRequest httpServletRequest, SingularModuleConfiguration singularModuleConfiguration) {
+        if (httpServletRequest != null) {
+            String contextPath = httpServletRequest.getContextPath();
+            String context = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
+            for (IServerContext ctx : singularModuleConfiguration.getContexts()) {
+                if (context.startsWith(ctx.getSettings().getUrlPath())) {
+                    return ctx;
+                }
+            }
+        }
+        return null;
     }
 
 }

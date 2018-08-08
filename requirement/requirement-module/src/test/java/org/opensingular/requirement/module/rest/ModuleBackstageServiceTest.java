@@ -20,15 +20,14 @@ package org.opensingular.requirement.module.rest;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
+import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.opensingular.requirement.module.workspace.DefaultDraftbox;
 import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
@@ -54,15 +53,17 @@ public class ModuleBackstageServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void count() {
-        BoxDefinition boxDefinition = Mockito.mock(BoxDefinition.class);
-        Long count = moduleService.countFiltered(boxDefinition, new BoxFilter());
+        DefaultDraftbox defaultDraftbox = new DefaultDraftbox();
+        SingularSpringInjector.get().inject(defaultDraftbox);
+        Long count = moduleService.countFiltered(defaultDraftbox, new BoxFilter());
         assertEquals(Long.valueOf(0), count);
     }
 
     @Test
     public void search() {
-        BoxDefinition boxDefinition = Mockito.mock(BoxDefinition.class);
-        List<BoxItemDataMap> result = moduleService.searchFiltered(boxDefinition, new BoxFilter());
+        DefaultDraftbox defaultDraftbox = new DefaultDraftbox();
+        SingularSpringInjector.get().inject(defaultDraftbox);
+        List<BoxItemDataMap> result = moduleService.searchFiltered(defaultDraftbox, new BoxFilter());
         assertTrue(result.isEmpty());
     }
 

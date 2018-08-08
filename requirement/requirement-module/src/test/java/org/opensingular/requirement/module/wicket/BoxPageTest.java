@@ -27,7 +27,6 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.internal.lib.wicket.test.SingularFormTester;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.config.DefaultContexts;
 import org.opensingular.requirement.module.test.ModuleApplicationMock;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.box.BoxPage;
@@ -48,7 +47,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
     @Test(expected = RestartResponseException.class)
     public void renderTestPageWithMenu() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage(null, new DefaultContexts.WorklistContext());
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
         tester.assertNoErrorMessage();
@@ -58,7 +57,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
     @Test(expected = RestartResponseException.class)
     public void deleteItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage(null, new DefaultContexts.WorklistContext());
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
         tester.assertNoErrorMessage();
@@ -85,7 +84,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
     @Test(expected = RestartResponseException.class)
     public void cancelDeleteItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage(null, new DefaultContexts.WorklistContext());
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
 
@@ -110,7 +109,7 @@ public class BoxPageTest extends SingularCommonsBaseTest {
     @Test(expected = RestartResponseException.class)
     public void relocateItem() {
         tester = new SingularWicketTester(singularApplication);
-        BoxPage boxPage = new BoxPage(null, new DefaultContexts.WorklistContext());
+        BoxPage boxPage = new BoxPage(null);
         tester.startPage(boxPage);
         tester.assertRenderedPage(BoxPage.class);
 
