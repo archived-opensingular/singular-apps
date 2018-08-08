@@ -349,14 +349,18 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         );
     }
 
+    /**
+     * This method is responsible for get the user of the Requerimento.
+     * First will try to get the authenticated user, if doesn't have the user will be the same of the allocated.
+     *
+     * @param taskInstance The task instance.
+     * @return Return the Actor.
+     */
     private Actor getActorOfRequeriment(TaskInstanceEntity taskInstance) {
-        Actor actor;
-        if (Application.exists() && SingularSession.exists()) {
-            actor = Optional.ofNullable(actorDAO.retrieveByUserCod(SingularSession.get().getUsername())).orElse(taskInstance.getAllocatedUser());
-        } else {
-            actor = taskInstance.getAllocatedUser();
-        }
-        return actor;
+        return Application.exists() && SingularSession.exists()
+                ? Optional.ofNullable(actorDAO.retrieveByUserCod(SingularSession.get().getUsername()))
+                .orElse(taskInstance.getAllocatedUser())
+                : taskInstance.getAllocatedUser();
     }
 
 
