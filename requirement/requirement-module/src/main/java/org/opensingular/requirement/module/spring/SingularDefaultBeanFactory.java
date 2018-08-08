@@ -56,7 +56,6 @@ import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
@@ -101,6 +100,7 @@ import org.opensingular.requirement.module.spring.security.PermissionResolverSer
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
 import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
@@ -502,11 +502,11 @@ public class SingularDefaultBeanFactory {
 
     @Bean
     @Scope(ConfigurableWebApplicationContext.SCOPE_REQUEST)
-    public IServerContext serverContext(HttpServletRequest httpServletRequest, SingularModuleConfiguration singularModuleConfiguration) {
+    public IServerContext serverContext(HttpServletRequest httpServletRequest, WorkspaceRegistry workspaceRegistry) {
         if (httpServletRequest != null) {
             String contextPath = httpServletRequest.getContextPath();
             String context = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
-            for (IServerContext ctx : singularModuleConfiguration.getContexts()) {
+            for (IServerContext ctx : workspaceRegistry.getContexts()) {
                 if (context.startsWith(ctx.getSettings().getUrlPath())) {
                     return ctx;
                 }

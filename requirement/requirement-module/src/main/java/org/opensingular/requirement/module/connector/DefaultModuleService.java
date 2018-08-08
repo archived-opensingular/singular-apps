@@ -30,7 +30,6 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.AuthorizationAwareActionProviderDecorator;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
@@ -63,7 +62,7 @@ import java.util.stream.Collectors;
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModule singularModule;
 
     @Inject
     private RequirementService<?, ?> requirementService;
@@ -173,7 +172,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
 
     public boolean hasModuleAccess(String user) {
-        return authorizationService.hasPermission(user, permissionResolverService.buildCategoryPermission(singularModuleConfiguration.getModuleCod()).getSingularId());
+        return authorizationService.hasPermission(user, permissionResolverService.buildCategoryPermission(singularModule.abbreviation()).getSingularId());
     }
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
@@ -213,8 +212,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
      */
     @Override
     public ModuleEntity getModule() {
-        SingularModule module = singularModuleConfiguration.getModule();
-        return moduleDAO.findOrException(module.abbreviation());
+        return moduleDAO.findOrException(singularModule.abbreviation());
     }
 
     @Override

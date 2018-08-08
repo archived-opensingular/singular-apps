@@ -36,7 +36,7 @@ public class WorkspaceRegistry implements Loggable {
         return this;
     }
 
-    public Set<IServerContext> listContexts() {
+    public Set<IServerContext> getContexts() {
         return contexts;
     }
 }

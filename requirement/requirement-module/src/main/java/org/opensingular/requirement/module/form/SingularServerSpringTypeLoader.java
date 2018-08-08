@@ -21,7 +21,6 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
 import org.opensingular.form.spring.SpringTypeLoader;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.RequirementUtil;
 
 import javax.annotation.Nonnull;

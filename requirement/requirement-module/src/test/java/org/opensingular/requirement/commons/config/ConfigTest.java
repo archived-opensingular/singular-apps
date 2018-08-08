@@ -22,18 +22,24 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.commons.CommonsInitializerMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModule;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 
 import javax.inject.Inject;
 
 public class ConfigTest extends SingularCommonsBaseTest {
 
     @Inject
-    public SingularModuleConfiguration singularServerConfiguration;
+    public SingularModule singularModule;
+
+    @Inject
+    public WorkspaceRegistry workspaceRegistry;
 
     @Test
     public void checkServletParams() {
-        Assert.assertEquals(singularServerConfiguration.getContexts().size(), 3);
-        Assert.assertEquals(singularServerConfiguration.getModuleCod(), CommonsInitializerMock.TESTE);
+        Assert.assertNotNull(singularModule);
+        Assert.assertNotNull(workspaceRegistry);
+        Assert.assertEquals(singularModule.abbreviation(), CommonsInitializerMock.TESTE);
+        Assert.assertEquals(workspaceRegistry.getContexts().size(), 3);
     }
 }

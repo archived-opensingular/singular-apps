@@ -20,7 +20,7 @@ import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.persistence.util.HibernateSingularFlowConfigurationBean;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.form.DefinitionsPackageProvider;
 import org.opensingular.schedule.IScheduleService;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -33,7 +33,7 @@ import javax.transaction.Transactional;
 public class SingularServerFlowConfigurationBean extends HibernateSingularFlowConfigurationBean implements Loggable {
 
     @Inject
-    protected SingularModuleConfiguration singularModuleConfiguration;
+    protected SingularModule singularModule;
 
     @Inject
     protected PlatformTransactionManager transactionManager;
@@ -46,7 +46,7 @@ public class SingularServerFlowConfigurationBean extends HibernateSingularFlowCo
 
     @PostConstruct
     protected void postConstruct() {
-        this.setModuleCod(singularModuleConfiguration.getModuleCod());
+        this.setModuleCod(singularModule.abbreviation());
         this.setDefinitionsPackages(definitionsPackageProvider.get());
         Flow.setConf(this, true);
         initializeFlowDefinitionsDatabase();
