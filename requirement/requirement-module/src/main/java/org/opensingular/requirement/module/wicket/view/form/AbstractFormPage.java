@@ -51,6 +51,7 @@ import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
@@ -865,7 +866,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
             protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget);
+                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget, getFormInstance());
             }
 
             @Override
@@ -885,10 +886,20 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
 
-    private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget) {
+    private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget,
+                                  IModel<? extends SInstance> formInstance) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean show = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal.getModalBorder(), ajaxRequestTarget);
+        boolean show = true;
+        if (controller != null) {
+            if (controller.isValidatePageForm()) {
+                List<ValidationError> retrieveWarningErrors = WicketFormProcessing.retrieveWarningErrors(formInstance.getObject());
+                if(CollectionUtils.isNotEmpty(retrieveWarningErrors)) {
+                    modal.getModalBorder().updateWarnings(retrieveWarningErrors);
+                }
+            }
+            show = controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal.getModalBorder(), ajaxRequestTarget);
+        }
         if (show) {
             modal.onShowUpdate(ajaxRequestTarget);
         }
