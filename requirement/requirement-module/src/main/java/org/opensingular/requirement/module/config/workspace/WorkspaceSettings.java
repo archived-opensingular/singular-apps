@@ -3,11 +3,10 @@ package org.opensingular.requirement.module.config.workspace;
 import org.apache.wicket.Application;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class WorkspaceSettings implements Serializable {
+public class WorkspaceSettings {
     private String contextPath;
     private String propertiesBaseKey;
     private Class<? extends Application> wicketApplicationClass;

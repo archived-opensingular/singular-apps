@@ -36,7 +36,7 @@ import java.util.List;
 
 public interface DefaultContexts {
     class WorklistContextWithCAS extends ServerContext {
-        public static final String NAME = "WORKLIST_WITH_CAS";
+        public static final String NAME = "WORKLIST";
 
         public WorklistContextWithCAS() {
             super(NAME);
@@ -63,7 +63,7 @@ public interface DefaultContexts {
     }
 
     class RequirementContextWithCAS extends ServerContext {
-        public static final String NAME = "REQUIREMENT_WITH_CAS";
+        public static final String NAME = "REQUIREMENT";
 
         public RequirementContextWithCAS() {
             super(NAME);

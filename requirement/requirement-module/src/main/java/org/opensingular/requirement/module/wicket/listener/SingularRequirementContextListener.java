@@ -52,12 +52,9 @@ public class SingularRequirementContextListener extends SingularCsrfPreventionRe
         super.onRequestHandlerResolved(cycle, handler);
         if (SingularSession.get().isAuthtenticated() && isPageRequest(handler)) {
             SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-            if (!userDetails.keepLoginThroughContexts()) {
-                IServerContext requestCtx = ApplicationContextProvider.get().getBean(IServerContext.class);
-                IServerContext sessionCtx = SingularSession.get().getServerContext();
-                if (!sessionCtx.equals(requestCtx)) {
-                    resetLogin(cycle);
-                }
+            IServerContext requestCtx = ApplicationContextProvider.get().getBean(IServerContext.class);
+            if (!userDetails.getAllowedContexts().contains(requestCtx.getClass())) {
+                resetLogin(cycle);
             }
         }
     }

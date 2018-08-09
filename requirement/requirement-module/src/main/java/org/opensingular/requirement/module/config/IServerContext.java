@@ -19,13 +19,11 @@ package org.opensingular.requirement.module.config;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceSettings;
 
-import java.io.Serializable;
-
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public interface IServerContext extends Serializable {
+public interface IServerContext {
     /**
      * @return the name of the context
      */

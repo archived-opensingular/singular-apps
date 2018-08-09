@@ -139,7 +139,7 @@ public interface SecurityConfigs {
                 @Override
                 protected UserDetails retrieveUser(String username, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
                     if (StringUtils.isNotBlank(username)) {
-                        return new DefaultUserDetails(username, Collections.emptyList(), username, getContext());
+                        return new DefaultUserDetails(username, username, Collections.emptyList(), Collections.singletonList(getContext().getClass()));
                     }
                     throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
                 }

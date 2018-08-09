@@ -17,14 +17,6 @@
 package org.opensingular.requirement.module.wicket.view.util.history;
 
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import javax.inject.Inject;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.behavior.AttributeAppender;
@@ -49,15 +41,24 @@ import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
+import org.springframework.beans.factory.ObjectFactory;
 import org.wicketstuff.annotation.mount.MountPath;
+
+import javax.inject.Inject;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
@@ -72,6 +73,9 @@ public class HistoryPage extends ServerTemplate {
 
     @Inject
     private RequirementService<?, ?> requirementService;
+
+    @Inject
+    private ObjectFactory<IServerContext> serverContextObjectFactory;
 
     private Long requirementPK;
 
@@ -259,7 +263,7 @@ public class HistoryPage extends ServerTemplate {
 
 
     protected String getBaseUrl() {
-        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getSettings().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + serverContextObjectFactory.getObject().getSettings().getUrlPath();
     }
 
     @Override

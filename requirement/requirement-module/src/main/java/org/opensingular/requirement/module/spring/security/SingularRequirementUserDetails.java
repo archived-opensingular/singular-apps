@@ -17,46 +17,53 @@
 package org.opensingular.requirement.module.spring.security;
 
 
-import java.util.Arrays;
-import java.util.List;
-
 import org.opensingular.form.spring.SingularUserDetails;
 import org.opensingular.requirement.module.config.IServerContext;
 
+import java.util.Arrays;
+import java.util.List;
+
 public interface SingularRequirementUserDetails extends SingularUserDetails {
-
-    default boolean isContext(IServerContext context) {
-        return context.equals(getServerContext());
-    }
-
     /**
      * Representantion ID.
      * The same as username by default.
+     *
      * @return
      */
-    default String getApplicantId(){
+    default String getApplicantId() {
         return getUsername();
     }
 
-    IServerContext getServerContext();
+    /**
+     * Contexts in which this user can access
+     */
+    List<Class<? extends IServerContext>> getAllowedContexts();
 
+    /**
+     *
+     */
     List<SingularPermission> getPermissions();
 
+    /**
+     *
+     */
     void addPermission(SingularPermission role);
 
+    /**
+     *
+     */
     default void addPermissions(SingularPermission... roles) {
         addPermissions(Arrays.asList(roles));
     }
 
+    /**
+     *
+     */
     default void addPermissions(List<SingularPermission> roles) {
         if (roles != null) {
             for (SingularPermission role : roles) {
                 addPermission(role);
             }
         }
-    }
-
-    default boolean keepLoginThroughContexts() {
-        return false;
     }
 }

@@ -36,7 +36,8 @@ public class DefaultUserDetailService implements SingularUserDetailsService {
     @Override
     public SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException {
         SUser user = actorDAO.retrieveByUserCod(username);
-        return new DefaultUserDetails(username, new ArrayList<>(), Optional.ofNullable(user).map(SUser::getSimpleName).orElse(username), context);
+        return new DefaultUserDetails(username, Optional.ofNullable(user).map(SUser::getSimpleName).orElse(username),
+                new ArrayList<>(), Collections.singletonList(context.getClass()));
     }
 
     @Override

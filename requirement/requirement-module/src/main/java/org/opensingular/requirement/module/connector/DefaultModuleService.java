@@ -36,6 +36,7 @@ import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
@@ -48,8 +49,8 @@ import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
-import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.beans.factory.ObjectFactory;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -87,6 +88,9 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Inject
     private BoxFilterFactory boxFilterFactory;
+
+    @Inject
+    private ObjectFactory<IServerContext> serverContextObjectFactory;
 
     @Override
     public String countAll(BoxDefinition box) {
@@ -217,7 +221,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public String getBaseUrl() {
-        return getModuleContext() + SingularSession.get().getServerContext().getSettings().getUrlPath();
+        return getModuleContext() + serverContextObjectFactory.getObject().getSettings().getUrlPath();
     }
 
     /**
