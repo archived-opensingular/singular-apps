@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.auth;
 
+import com.google.common.collect.ImmutableList;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
@@ -25,7 +26,8 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.List;
 
 public class AdministrationAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
@@ -49,9 +51,11 @@ public class AdministrationAuthenticationProvider extends AbstractUserDetailsAut
     public UserDetails retrieveUser(String principal, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         if (credentialChecker.check(principal, authentication.getCredentials().toString())) {
-            return new DefaultUserDetails(principal, null,
-                    Collections.singletonList(new SingularPermission("ADMIN", null)),
-                    Collections.singletonList(serverContext.getClass()));
+            List<Class<? extends IServerContext>> ctxs = new ArrayList<>();
+            if (serverContext != null) {
+                ctxs.add(serverContext.getClass());
+            }
+            return new DefaultUserDetails(principal, null, ImmutableList.of(new SingularPermission("ADMIN", null)), ctxs);
         }
         throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
     }
