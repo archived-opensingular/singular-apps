@@ -7,12 +7,13 @@ import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.opensingular.studio.core.definition.StudioDefinition;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-public class WorkspaceMenuCategory {
+public class WorkspaceMenuCategory implements Serializable {
     private final Set<WorkspaceMenuItem> workspaceMenuItens = new LinkedHashSet<>();
     private final String name;
     private Icon icon;
