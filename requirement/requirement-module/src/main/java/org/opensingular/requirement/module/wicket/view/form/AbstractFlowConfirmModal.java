@@ -54,10 +54,6 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
         };
     }
 
-    protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return newFlowConfirmButton(tn, im, vm, m, true);
-    }
-
     protected void onConfirm(String tn, IModel<? extends SInstance> im) {
 
     }
