@@ -16,25 +16,8 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
-
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.wicket.Application;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -80,8 +63,27 @@ import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.module.wicket.SingularSession;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
@@ -312,7 +314,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     public void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByRequirementId(requirement.getCod());
-        FormEntity                   formEntity   = requirement.getEntity().getMainForm();
+        FormEntity formEntity = requirement.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -321,7 +323,10 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         contentHistoryEntity.setRequirementEntity(requirement.getEntity());
 
         if (taskInstance.isPresent()) {
-            contentHistoryEntity.setActor(taskInstance.get().getAllocatedUser());
+
+            Actor actor = getActorOfAction(taskInstance.get());
+
+            contentHistoryEntity.setActor(actor);
             contentHistoryEntity.setTaskInstanceEntity(taskInstance.get());
         }
 
@@ -342,6 +347,19 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
                         .map(f -> formRequirementService.createFormVersionHistory(contentHistoryEntity, f))
                         .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * This method is responsible for get the user responsible for the action.
+     * First will try to get the authenticated user, if doesn't have the user will be the same of the allocated.
+     *
+     * @param taskInstance The task instance.
+     * @return Return the Actor.
+     */
+    private Actor getActorOfAction(TaskInstanceEntity taskInstance) {
+        return Application.exists() && SingularSession.exists()
+                ? (Actor) RequirementUtil.findUserOrException(SingularSession.get().getUsername())
+                : taskInstance.getAllocatedUser();
     }
 
 
@@ -507,7 +525,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codRequirement) {
         RequirementEntity requirementEntity = requirementDAO.findOrException(codRequirement);
-        FormEntity        mainForm          = requirementEntity.getMainForm();
+        FormEntity mainForm = requirementEntity.getMainForm();
         return formRequirementService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -595,7 +613,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      */
     @Nonnull
     public Optional<FormVersionEntity> findLastFormEntityByType(@Nonnull RequirementInstance requirement,
-                                                                        @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                @Nonnull Class<? extends SType<?>> typeClass) {
         Objects.requireNonNull(requirement);
         return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeClass, requirement.getCod())
                 .map(FormVersionHistoryEntity::getFormVersion);
