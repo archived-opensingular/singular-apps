@@ -357,7 +357,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * @return Return the Actor.
      */
     private Actor getActorOfAction(TaskInstanceEntity taskInstance) {
-        return Application.exists() && SingularSession.exists()
+        return Application.exists() && SingularSession.exists() && SingularSession.get().isAuthtenticated()
                 ? (Actor) RequirementUtil.findUserOrException(SingularSession.get().getUsername())
                 : taskInstance.getAllocatedUser();
     }
