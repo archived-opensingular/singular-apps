@@ -24,6 +24,10 @@ public class WorkspaceMenuCategory {
     public WorkspaceMenuCategory addItem(Class<? extends WorkspaceMenuItem> workspaceMenuItemClass) {
         WorkspaceMenuItem workspaceMenuItem = new Mirror().on(workspaceMenuItemClass).invoke().constructor().withoutArgs();
         SingularSpringInjector.get().inject(workspaceMenuItem);
+        return addItem(workspaceMenuItem);
+    }
+
+    public WorkspaceMenuCategory addItem(WorkspaceMenuItem workspaceMenuItem) {
         workspaceMenuItens.add(workspaceMenuItem);
         return this;
     }
@@ -41,14 +45,14 @@ public class WorkspaceMenuCategory {
     }
 
     public WorkspaceMenuCategory addCRUD(Class<? extends StudioDefinition> studioDefinitionClass,
-                                         Consumer<WorkspaceMenuStudioItem> crudConfigurer) {
+                                         Consumer<WorkspaceMenuCRUDItem> crudConfigurer) {
         StudioDefinition studioDefinition = new Mirror().on(studioDefinitionClass).invoke().constructor().withoutArgs();
         SingularSpringInjector.get().inject(studioDefinition);
-        WorkspaceMenuStudioItem workspaceMenuStudioItem = new WorkspaceMenuStudioItem(studioDefinition);
+        WorkspaceMenuCRUDItem workspaceMenuCRUDItem = new WorkspaceMenuCRUDItem(studioDefinition);
         if (crudConfigurer != null) {
-            crudConfigurer.accept(workspaceMenuStudioItem);
+            crudConfigurer.accept(workspaceMenuCRUDItem);
         }
-        workspaceMenuItens.add(workspaceMenuStudioItem);
+        workspaceMenuItens.add(workspaceMenuCRUDItem);
         return this;
     }
 

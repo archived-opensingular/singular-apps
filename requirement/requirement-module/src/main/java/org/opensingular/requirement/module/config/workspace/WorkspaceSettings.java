@@ -13,6 +13,7 @@ public class WorkspaceSettings {
     private Class<? extends AbstractSingularSpringSecurityAdapter> springSecurityConfigClass;
     private boolean checkOwner;
     private List<String> publicUrls = new ArrayList<>();
+    private boolean hideFromStudioMenu = false;
 
     public WorkspaceSettings addPublicUrl(String publicUrl) {
         this.publicUrls.add(publicUrl);
@@ -41,6 +42,11 @@ public class WorkspaceSettings {
 
     public WorkspaceSettings checkOwner(boolean checkOwner) {
         this.checkOwner = checkOwner;
+        return this;
+    }
+
+    public WorkspaceSettings hideFromStudioMenu(boolean hideFromStudioMenu) {
+        this.hideFromStudioMenu = hideFromStudioMenu;
         return this;
     }
 
@@ -82,5 +88,9 @@ public class WorkspaceSettings {
 
     public List<String> getPublicUrls() {
         return publicUrls;
+    }
+
+    public boolean isHideFromStudioMenu() {
+        return hideFromStudioMenu;
     }
 }

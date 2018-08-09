@@ -19,6 +19,7 @@ package org.opensingular.requirement.module.wicket.box;
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
 import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -28,13 +29,11 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.opensingular.requirement.module.wicket.view.template.Menu;
-import org.opensingular.requirement.module.workspace.BoxDefinition;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.annotation.Nonnull;
@@ -90,7 +89,7 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
                 .orElse(null);
 
         if (workspaceMenuItem != null && workspaceMenuItem.getObject() != null) {
-            add(newBoxContent());
+            add(new Form<Void>("form").add(newBoxContent()));
         } else {
             getLogger().error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
             throw new RestartResponseException(Page403.class);
@@ -100,10 +99,10 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
     private void addItemParam(Workspace workspace, PageParameters pageParameters) {
         workspace.menu().getCategories()
                 .stream()
-                .filter(i -> !i.getDefinitions().isEmpty())
+                .filter(i -> !i.getWorkspaceMenuItens().isEmpty())
                 .findFirst().ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
-            pageParameters.add(ITEM_PARAM_NAME, category.getDefinitions().stream().findFirst().map(BoxDefinition::getItemBox).map(ItemBox::getName).orElse(null));
+            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().findFirst().map(WorkspaceMenuItem::getName).orElse(null));
         });
     }
 

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.admin.healthsystem;
+package org.opensingular.requirement.commons.admin.healthsystem;
 
 import java.util.List;
 import javax.annotation.Nonnull;

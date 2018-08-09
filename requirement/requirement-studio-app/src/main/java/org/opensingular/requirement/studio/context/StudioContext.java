@@ -34,7 +34,8 @@ public class StudioContext extends ServerContext {
                 .contextPath("/*")
                 .propertiesBaseKey("singular.studio")
                 .wicketApplicationClass(RequirementStudioApplication.class)
-                .springSecurityConfigClass(null);
+                .springSecurityConfigClass(null)
+                .hideFromStudioMenu(true);
     }
 
     @Override

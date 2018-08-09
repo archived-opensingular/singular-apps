@@ -18,27 +18,32 @@ public class WorkspaceMenuBoxItem implements WorkspaceMenuItem {
 
     @Override
     public Panel newContent(String id) {
-        return new BoxContent(id, new Model<>(boxDefinition));
+        return new BoxContent(id, new Model<>(getBoxDefinition()));
     }
 
     @Override
     public Icon getIcon() {
-        return boxDefinition.getItemBox().getIcone();
+        return getBoxDefinition().getItemBox().getIcone();
     }
 
     @Override
     public String getName() {
-        return boxDefinition.getItemBox().getName();
+        return getBoxDefinition().getItemBox().getName();
     }
 
     @Override
     public String getDescription() {
-        return boxDefinition.getItemBox().getDescription();
+        return getBoxDefinition().getItemBox().getDescription();
     }
 
     @Override
     public String getHelpText() {
-        return boxDefinition.getItemBox().getHelpText();
+        return getBoxDefinition().getItemBox().getHelpText();
+    }
+
+    @Override
+    public boolean isVisible() {
+        return getBoxDefinition().isVisible();
     }
 
     public final BoxDefinition getBoxDefinition() {
@@ -49,8 +54,4 @@ public class WorkspaceMenuBoxItem implements WorkspaceMenuItem {
         return boxDefinition;
     }
 
-    @Override
-    public boolean isVisible() {
-        return boxDefinition.isVisible();
-    }
 }
