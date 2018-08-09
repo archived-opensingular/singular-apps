@@ -16,8 +16,6 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
@@ -34,8 +32,10 @@ import java.util.List;
 public interface SingularUserDetailsService extends UserDetailsService, UserDetailsContextMapper {
 
     @Override
-    default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations, String s, Collection<? extends GrantedAuthority> collection) {
-        return loadUserByUsername(s);
+    default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations,
+                                                              String username,
+                                                              Collection<? extends GrantedAuthority> collection) {
+        return loadUserByUsername(username);
     }
 
     @Override
@@ -43,12 +43,7 @@ public interface SingularUserDetailsService extends UserDetailsService, UserDeta
     }
 
     @Override
-    default SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return loadUserByUsername(username, ApplicationContextProvider.get().getBean(IServerContext.class));
-    }
-
-    SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException;
+    SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     List<SingularPermission> searchPermissions(String idUsuarioLogado);
-
 }
