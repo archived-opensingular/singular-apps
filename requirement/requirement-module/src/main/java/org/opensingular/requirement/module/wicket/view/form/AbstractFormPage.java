@@ -16,17 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -62,6 +51,7 @@ import org.opensingular.form.document.SDocument;
 import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
@@ -106,6 +96,17 @@ import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.ModuleButtonFactory;
 import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.button;
@@ -118,6 +119,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     protected final IModel<FormKey> formKeyModel;
     protected final FormPageExecutionContext config;
     protected final SingularFormPanel singularFormPanel;
+    protected Component containerBehindSingularPanel;
     protected final IModel<Boolean> inheritParentFormData;
     protected final IModel<FormKey> parentRequirementFormKeyModel;
     protected final BSContainer<?> modalContainer = new BSContainer<>("modals");
@@ -128,7 +130,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
     private IModel<RI> currentModel;
-    private transient Optional<TaskInstance> currentTaskInstance;
+    private TaskInstance currentTaskInstance;
 
 
     @Inject
@@ -162,6 +164,15 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
+
+        currentTaskInstance = loadCurrentTask();
+    }
+
+    private TaskInstance loadCurrentTask() {
+        return config
+                .getRequirementId()
+                .flatMap(id -> requirementService.findCurrentTaskInstanceByRequirementId(id))
+                .orElse(null);
     }
 
     private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends RequirementInstance> requirementModel) {
@@ -175,12 +186,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        if (currentTaskInstance == null) {//NOSONAR
-            currentTaskInstance = Optional.empty();
-            config.getRequirementId().ifPresent(si -> currentTaskInstance = requirementService
-                    .findCurrentTaskInstanceByRequirementId(config.getRequirementId().get()));
+        if (currentTaskInstance == null) {
+            return Optional.empty();
         }
-        return currentTaskInstance;
+        return Optional.of(currentTaskInstance);
     }
 
     private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
@@ -320,6 +329,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
         form.add(singularFormPanel);
+
+        this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");
+        form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
@@ -333,6 +345,18 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         add(form);
         addSaveCallBackUrl();
     }
+
+
+    /**
+     * Panel that will show behind the Singular panel.
+     *
+     * @param id The id of the panel.
+     * @return Returns the panel will be showing behind the Singular Panel.
+     */
+    public Component buildBehindSingularPanelContent(String id) {
+        return new WebMarkupContainer(id).setVisible(false);
+    }
+
 
     private Component buildExtensionButtons() {
         return new ExtensionButtonsPanel<>("extensions-buttons", currentModel, singularFormPanel.getInstanceModel())
@@ -577,8 +601,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
-        final BSModalBorder modal = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
-        buildFlowButton(buttonId, buttonContainer, transitionName, modal, transitionButtonEnabled);
+        final FlowConfirmPanel modalType = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
+        buildFlowButton(buttonId, buttonContainer, transitionName, modalType, transitionButtonEnabled);
     }
 
     public void atualizarContentWorklist(AjaxRequestTarget target) {
@@ -609,6 +633,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                     protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
                         enviarModal.hide(target);
                         target.add(form);
+                        //TODO Não há necessidade desse método. [Avaliar a remoção do mesmo.] -> Validação é feita antes de chamar a modal.
                         addToastrErrorMessage("message.send.error");
                     }
 
@@ -622,12 +647,20 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void saveForm(IModel<? extends SInstance> currentInstance, String transitionName) {
+        assertSameTask();
         onBeforeSave(currentInstance);
         SInstance instance = currentInstance.getObject();
         if (instance != null) {
             RI requirement = getUpdatedRequirementFromInstance(currentInstance, isMainForm());
             formKeyModel.setObject(requirementService.saveOrUpdate(requirement, instance, isMainForm()));
             onSave(requirement, transitionName);
+        }
+    }
+
+    protected void assertSameTask() {
+        if (currentTaskInstance != null && !currentTaskInstance.getEntityTaskInstance()
+                .equals(loadCurrentTask().getEntityTaskInstance())) {
+            throw new SingularServerException(getString("message.save.concurrent_error"));
         }
     }
 
@@ -719,9 +752,9 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void onBeforeExecuteTransition(AjaxRequestTarget ajaxRequestTarget,
-            Form<?> form,
-            String transitionName,
-            IModel<? extends SInstance> currentInstance)
+                                             Form<?> form,
+                                             String transitionName,
+                                             IModel<? extends SInstance> currentInstance)
             throws SingularServerFormValidationError {
         final STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
         if (flowConfirmModal == null) {
@@ -824,16 +857,16 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     private void buildFlowButton(String buttonId,
-            BSContainer<?> buttonContainer,
-            String transitionName,
-            BSModalBorder confirmActionFlowModal, TransitionAccess access) {
+                                 BSContainer<?> buttonContainer,
+                                 String transitionName,
+                                 FlowConfirmPanel confirmActionFlowModal, TransitionAccess access) {
         final TemplatePanel tp = buttonContainer.newTemplateTag(tt ->
                 "<button transition='" + transitionName + " ' type='submit' class='btn flow-btn' wicket:id='" + buttonId + "'>\n <span wicket:id='flowButtonLabel' /> \n</button>\n"
         );
         final SingularButton singularButton = new SingularButton(buttonId, getFormInstance()) {
             @Override
             protected void onSubmit(AjaxRequestTarget ajaxRequestTarget, Form<?> form) {
-                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget);
+                showConfirmModal(transitionName, confirmActionFlowModal, ajaxRequestTarget, getFormInstance());
             }
 
             @Override
@@ -852,12 +885,23 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         tp.add(singularButton);
     }
 
-    protected void showConfirmModal(String transitionName, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
+
+    private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget,
+                                  IModel<? extends SInstance> formInstance) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?, ?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean show = controller == null || controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal, ajaxRequestTarget);
+        boolean show = true;
+        if (controller != null) {
+            if (controller.isValidatePageForm()) {
+                List<ValidationError> retrieveWarningErrors = WicketFormProcessing.retrieveWarningErrors(formInstance.getObject());
+                if(CollectionUtils.isNotEmpty(retrieveWarningErrors)) {
+                    modal.getModalBorder().updateWarnings(retrieveWarningErrors);
+                }
+            }
+            show = controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal.getModalBorder(), ajaxRequestTarget);
+        }
         if (show) {
-            modal.show(ajaxRequestTarget);
+            modal.onShowUpdate(ajaxRequestTarget);
         }
 
     }
@@ -869,10 +913,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
      * @param im        -> instance model
      * @return
      */
-    private BSModalBorder buildFlowConfirmationModal(String idSuffix, BSContainer<?> container, String tn, IModel<? extends SInstance> im) {
+    private FlowConfirmPanel buildFlowConfirmationModal(String idSuffix, BSContainer<?> container, String tn, IModel<? extends SInstance> im) {
         final FlowConfirmPanel flowConfirmPanel = resolveFlowConfirmModal("confirmPanel" + idSuffix, tn);
         container.appendTag("div", flowConfirmPanel);
-        return flowConfirmPanel.getModalBorder();
+        return flowConfirmPanel;
     }
 
     /**
@@ -883,7 +927,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     protected FlowConfirmPanel resolveFlowConfirmModal(String id, String transitionName) {
         TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         if (controller == null || controller.getType() == null) {
-            return new SimpleMessageFlowConfirmModal<>(id, transitionName, this);
+            return getSimpleMessageFLowConfirmModal(id, transitionName, this);
         }
         RefType refType = getFormRequirementService().loadRefType(controller.getType());
         FormKey formKey = loadFormKeyFromTypeAndTask(controller.getType(), false).orElse(null);
@@ -896,6 +940,21 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                 controller);
         transitionConfirmModalMap.put(transitionName, modal);
         return modal;
+    }
+
+    /**
+     * Method to create the Simple Message Flow.
+     * This modal is create when don't have a TransitionController for the flow.
+     * <p>
+     * Note: This should be overridden for customize the Modal.
+     *
+     * @param id             The id of modal.
+     * @param transitionName The name of the transition.
+     * @param formPage       The form of the page.
+     * @return Instance of the Modal.
+     */
+    protected SimpleMessageFlowConfirmModal<RE, RI> getSimpleMessageFLowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+        return new SimpleMessageFlowConfirmModal<>(id, transitionName, formPage);
     }
 
     private boolean isMainForm() {
@@ -1125,6 +1184,33 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
+
+    }
+
+
+    /**
+     * This button will show modal for confirmation when success,
+     * and a toast if has error in validation.
+     * This button have already implemented the ValidationSuccess and ValidationError.
+     */
+    protected static class ServerSendButton extends SingularSaveButton {
+
+        private final BSModalBorder sendModal;
+
+        public ServerSendButton(String id, IModel<? extends SInstance> currentInstance, BSModalBorder sendModal) {
+            super(id, currentInstance);
+            this.sendModal = sendModal;
+        }
+
+        @Override
+        protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            sendModal.show(target);
+        }
+
+        @Override
+        protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+            findParent(AbstractFormPage.class).addToastrErrorMessage("message.send.error");
+        }
 
     }
 }
