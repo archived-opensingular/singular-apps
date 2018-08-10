@@ -1,9 +1,26 @@
+/*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.opensingular.requirement.module.config;
 
 import org.opensingular.app.commons.spring.persistence.SingularPersistenceDefaultBeanFactory;
 import org.opensingular.lib.support.spring.security.DefaultRestSecurity;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
+import org.opensingular.requirement.module.spring.SingularBeanPostProcessor;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.spring.SingularServerSpringAppConfig;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -48,32 +65,16 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
         annotatedClasses.add(getSingularPersistenceConfigurationBeanFactoryClass());
         annotatedClasses.add(getSingularSpringWebMVCConfigClass());
         annotatedClasses.add(getSingularRestSecurityConfigClass());
+        annotatedClasses.add(getSingularBeanPostProcessorConfigClass());
         return annotatedClasses;
     }
+
 
     /**
      * Recupera o timeout da sessão web em minutos
      */
     protected int getSessionTimeoutMinutes() {
         return 15;
-    }
-
-    /**
-     * TODO Remover
-     */
-    @Deprecated
-    public SchedulerAppInitializerListener newSchedulerInitializerListener() {
-        return new SchedulerAppInitializerListener() {
-            @Override
-            public Class<?> mailConfiguration() {
-                return MailSenderSchedulerInitializer.class;
-            }
-
-            @Override
-            public Class<?> attachmentGCConfiguration() {
-                return AttachmentGCSchedulerInitializer.class;
-            }
-        };
     }
 
     /**
@@ -147,6 +148,16 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
         return DefaultRestSecurity.class;
     }
 
+
+    /**
+     * Recupera a configuração de pos processamento dos beans
+     *
+     * @see org.springframework.beans.factory.config.BeanPostProcessor
+     */
+    private Class<SingularBeanPostProcessor> getSingularBeanPostProcessorConfigClass() {
+        return SingularBeanPostProcessor.class;
+    }
+
     /**
      * Lista os initializer que serão executados pelo {@link SingularWebAppInitializer}
      */
@@ -154,7 +165,6 @@ public abstract class AbstractSingularInitializer implements SingularInitializer
     public List<? extends SingularWebAppInitializerListener> getSingularWebInitializerListener() {
         List<SingularWebAppInitializerListener> initializerListeners = new ArrayList<>();
         initializerListeners.add(newSpringConfigRegisterSingularWebInitializerListener());
-        initializerListeners.add(newSchedulerInitializerListener());
         initializerListeners.add(newServletContextSetupSingularWebInitializerListener());
         initializerListeners.add(newWorkspaceInitializerListener());
         return initializerListeners;

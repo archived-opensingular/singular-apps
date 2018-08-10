@@ -1,24 +1,23 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.requirement.module.service;
 
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.wicket.Application;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -71,6 +70,7 @@ import org.opensingular.requirement.module.spring.security.RequirementAuthMetada
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.springframework.core.ResolvableType;
+import org.opensingular.requirement.module.wicket.SingularSession;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -92,6 +92,25 @@ import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.*;
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import javax.inject.Provider;
+import java.io.Serializable;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
+
+import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
 
 @Transactional
 public abstract class RequirementService implements Loggable {
@@ -345,7 +364,7 @@ public abstract class RequirementService implements Loggable {
     public <RI extends RequirementInstance> void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
         Optional<TaskInstanceEntity> taskInstance = findCurrentTaskEntityByRequirementId(requirement.getCod());
-        FormEntity                   formEntity   = requirement.getEntity().getMainForm();
+        FormEntity formEntity = requirement.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");
 
@@ -354,7 +373,10 @@ public abstract class RequirementService implements Loggable {
         contentHistoryEntity.setRequirementEntity(requirement.getEntity());
 
         if (taskInstance.isPresent()) {
-            contentHistoryEntity.setActor(taskInstance.get().getAllocatedUser());
+
+            Actor actor = getActorOfAction(taskInstance.get());
+
+            contentHistoryEntity.setActor(actor);
             contentHistoryEntity.setTaskInstanceEntity(taskInstance.get());
         }
 
@@ -375,6 +397,19 @@ public abstract class RequirementService implements Loggable {
                         .map(f -> formRequirementService.createFormVersionHistory(contentHistoryEntity, f))
                         .collect(Collectors.toList())
         );
+    }
+
+    /**
+     * This method is responsible for get the user responsible for the action.
+     * First will try to get the authenticated user, if doesn't have the user will be the same of the allocated.
+     *
+     * @param taskInstance The task instance.
+     * @return Return the Actor.
+     */
+    private Actor getActorOfAction(TaskInstanceEntity taskInstance) {
+        return Application.exists() && SingularSession.exists() && SingularSession.get().isAuthtenticated()
+                ? (Actor) RequirementUtil.findUserOrException(SingularSession.get().getUsername())
+                : taskInstance.getAllocatedUser();
     }
 
 
@@ -518,7 +553,7 @@ public abstract class RequirementService implements Loggable {
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codRequirement) {
         RequirementEntity requirementEntity = requirementDAO.findOrException(codRequirement);
-        FormEntity        mainForm          = requirementEntity.getMainForm();
+        FormEntity mainForm = requirementEntity.getMainForm();
         return formRequirementService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -571,7 +606,7 @@ public abstract class RequirementService implements Loggable {
      */
     @Nonnull
     public Optional<SInstance> findLastFormRequirementInstanceByType(@Nonnull RequirementInstance requirement,
-                                                                     @Nonnull Class<? extends SType<?>> typeClass) {
+                                                                     @Nonnull Class<? extends SType<? extends SInstance>> typeClass) {
         return getFormRequirementService().findLastFormRequirementInstanceByType(requirement, typeClass);
     }
 
@@ -656,7 +691,7 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public void startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition flowDefinition, @Nullable String codSubmitterActor) {
+    public void startNewFlow(@Nonnull RequirementInstance requirement, @Nonnull FlowDefinition<?> flowDefinition, @Nullable String codSubmitterActor) {
         FlowInstance newFlowInstance = flowDefinition.newPreStartInstance();
         newFlowInstance.setDescription(requirement.getDescription());
 

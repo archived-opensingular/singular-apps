@@ -20,21 +20,38 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 
 public class SimpleMessageFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
+    private String modalLabel = String.format("Tem certeza que deseja %s ?", getTransition());
+    private boolean validationEnabled = true;
+
     public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RI> formPage) {
         super(id, transitionName, formPage);
+    }
+
+
+    /**
+     * @param id                id for modal.
+     * @param transitionName    name of transition.
+     * @param formPage          form of the page.
+     * @param validationEnabled True for validate the form.
+     * @param modalLabel        The modal's label.
+     */
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RI> formPage,
+                                         boolean validationEnabled, String modalLabel) {
+        this(id, transitionName, formPage);
+        this.modalLabel = modalLabel;
+        this.validationEnabled = validationEnabled;
     }
 
     @Override
     void addComponentsToModalBorder(BSModalBorder modalBorder) {
         addDefaultCancelButton(modalBorder);
-        addDefaultConfirmButton(modalBorder);
-        modalBorder.add(new Label("flow-msg", String.format("Tem certeza que deseja %s ?", getTransition())));
+        addDefaultConfirmButton(modalBorder, validationEnabled);
+        modalBorder.add(new Label("flow-msg", modalLabel));
     }
 
     @Override

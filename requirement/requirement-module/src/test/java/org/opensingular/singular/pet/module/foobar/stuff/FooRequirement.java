@@ -28,7 +28,7 @@ public class FooRequirement extends RequirementDefinition<RequirementInstance> {
 
 
     public FooRequirement() {
-        super("FOO_REQ");
+        super("FOO_REQ", RequirementInstance.class);
     }
 
     @Override

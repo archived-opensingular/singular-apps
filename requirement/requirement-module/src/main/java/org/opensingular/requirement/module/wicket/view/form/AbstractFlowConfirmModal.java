@@ -44,8 +44,8 @@ public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> e
      * @param m  -> modal
      * @return the new AjaxButton
      */
-    protected FlowConfirmButton<RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m) {
-        return new FlowConfirmButton<RI>(tn, "confirm-btn", im, ViewMode.EDIT == vm, formPage, m) {
+    protected FlowConfirmButton<RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m, boolean validation) {
+        return new FlowConfirmButton<RI>(tn, "confirm-btn", im, validation && ViewMode.EDIT == vm, formPage, m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form form, IModel model) {
                 onConfirm(tn, im);
@@ -56,6 +56,10 @@ public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> e
 
     protected void onConfirm(String tn, IModel<? extends SInstance> im) {
 
+    }
+
+    protected void addDefaultConfirmButton(BSModalBorder modal) {
+        addDefaultConfirmButton(modal, true);
     }
 
     /**
@@ -70,16 +74,15 @@ public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> e
      *
      * @param modal the modal to add the button
      */
-    protected void addDefaultConfirmButton(BSModalBorder modal) {
+    protected void addDefaultConfirmButton(BSModalBorder modal, boolean validation) {
         String transition = getTransition();
         IModel<? extends SInstance> formInstance = getFormPage().getFormInstance();
         ViewMode viewMode = getFormPage().getViewMode(getFormPage().getConfig());
 
-        FlowConfirmButton<RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal);
-
         String transitionButtonLabel= "label.button.confirm."+ SingularUtil.convertToJavaIdentity(transition, true);
         String defaultButtonLabelWhenNull = getString("label.button.confirm", null, "Confirmar");
 
+        FlowConfirmButton<RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal, validation);
         modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, transitionButtonLabel, defaultButtonLabelWhenNull, button );
     }
 
