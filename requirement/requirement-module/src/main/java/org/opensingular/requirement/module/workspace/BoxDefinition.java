@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.box.form.STypeDynamicAdvancedFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -60,5 +61,19 @@ public interface BoxDefinition extends Serializable {
      */
     default boolean isVisible(){
         return true;
+    }
+
+    /**
+     * Setup the dynamic advanced filter type, by default will add all table columns as string fields
+     *
+     * @param sTypeDynamicAdvancedFilter the dynamic type
+     */
+    default void setupDynamicAdvancedFilterType(STypeDynamicAdvancedFilter sTypeDynamicAdvancedFilter){
+        for (DatatableField datatableField : getDatatableFields()) {
+            sTypeDynamicAdvancedFilter.addFieldString(datatableField.getLabel())
+                    .asAtr()
+                    .label(datatableField.getKey())
+                    .asAtrBootstrap().colPreference(2);
+        }
     }
 }

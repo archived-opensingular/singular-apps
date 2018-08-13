@@ -16,21 +16,28 @@
 
 package org.opensingular.requirement.module.persistence.query;
 
-import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.opensingular.flow.core.TaskType;
+import org.opensingular.form.SInstance;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.FilterToken;
+import org.opensingular.requirement.module.persistence.filter.FilterTokenFactory;
 
 import javax.annotation.Nonnull;
+import java.util.Collection;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.function.Function;
 
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_REQUIREMENT;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_USUARIO_ALOCADO;
@@ -239,27 +246,49 @@ public class RequirementSearchQueryFactory {
     }
 
     private void appendFilterByQickFilter() {
-        query.addConditionToQuickFilter(filter -> new BooleanBuilder()
-                .or($.allocatedUser.nome.likeIgnoreCase(filter))
-                .or($.requirement.description.likeIgnoreCase(filter))
-                .or($.flowDefinitionEntity.name.likeIgnoreCase(filter))
-                .or($.taskVersion.name.likeIgnoreCase(filter))
-                .or($.requirement.cod.like(filter))
-                .or(toCharDate($.currentFormVersion.inclusionDate, filter))
-                .or(toCharDate($.currentFormDraftVersionEntity.inclusionDate, filter))
-                .or(toCharDate($.currentDraftEntity.editionDate, filter))
-                .or(toCharDate($.task.beginDate, filter))
-                .or(toCharDate($.flowInstance.beginDate, filter)));
+        Map<String, Function<String, BooleanExpression>> expressionMap = new LinkedHashMap<>();
+        expressionMap.put(NOME_USUARIO_ALOCADO, filter -> $.allocatedUser.nome.likeIgnoreCase(filter));
+        expressionMap.put(DESCRIPTION, filter -> $.requirement.description.likeIgnoreCase(filter));
+        expressionMap.put(PROCESS_NAME, filter -> $.flowDefinitionEntity.name.likeIgnoreCase(filter));
+        expressionMap.put(TASK_NAME, filter -> $.taskVersion.name.likeIgnoreCase(filter));
+        expressionMap.put(COD_REQUIREMENT, filter -> $.requirement.cod.like(filter));
+        expressionMap.put(CREATION_DATE, filter -> likeDate($.currentFormVersion.inclusionDate, filter).or(likeDate($.currentFormDraftVersionEntity.inclusionDate, filter)));
+        expressionMap.put(EDITION_DATE, filter -> likeDate($.currentDraftEntity.editionDate, filter));
+        expressionMap.put(SITUATION_BEGIN_DATE, filter -> likeDate($.task.beginDate, filter));
+        expressionMap.put(PROCESS_BEGIN_DATE, filter -> likeDate($.flowInstance.beginDate, filter));
+
+        query.addConditionToQuickFilter(filter -> expressionMap.values()
+                .stream()
+                .map(i -> i.apply(filter))
+                .reduce(BooleanExpression::or)
+                .orElse(null));
+
+        SInstance advancedFilterInstance = ctx.getBoxFilter().getAdvancedFilterInstance();
+        if (advancedFilterInstance != null && advancedFilterInstance.isNotEmptyOfData()) {
+            advancedFilterInstance.getChildren().stream()
+                    .filter(SInstance::isNotEmptyOfData)
+                    .filter(i -> expressionMap.containsKey(i.getName()))
+                    .forEach(childSinstance -> new FilterToken((String) childSinstance.getValue(), false)
+                            .getAllPossibleMatches()
+                            .stream()
+                            .map(token -> expressionMap.get(childSinstance.getName()).apply(token))
+                            .reduce(BooleanExpression::or)
+                            .ifPresent(query::where));
+        }
     }
 
     @Nonnull
-    private BooleanExpression toCharDate(Path<?> path, String filter) {
-        return Expressions.stringTemplate(TO_CHAR_DATE, path).like(filter)
-                .or(toCharDateShort(path, filter));
+    private BooleanExpression likeDate(Path<?> path, String filter) {
+        return toCharDate(path).like(filter).or(toCharDateShort(path).like(filter));
     }
 
     @Nonnull
-    private BooleanExpression toCharDateShort(Path<?> path, String filter) {
-        return Expressions.stringTemplate(TO_CHAR_DATE_SHORT, path).like(filter);
+    private StringTemplate toCharDate(Path<?> path) {
+        return Expressions.stringTemplate(TO_CHAR_DATE, path);
+    }
+
+    @Nonnull
+    private StringTemplate toCharDateShort(Path<?> path) {
+        return Expressions.stringTemplate(TO_CHAR_DATE_SHORT, path);
     }
 }

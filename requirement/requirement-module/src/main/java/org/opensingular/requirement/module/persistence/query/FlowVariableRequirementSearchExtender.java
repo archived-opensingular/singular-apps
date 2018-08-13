@@ -22,6 +22,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.opensingular.flow.persistence.entity.QVariableInstanceEntity;
+import org.opensingular.form.SInstance;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 
 /**
@@ -59,6 +60,15 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
                 .leftJoin($.flowInstance.variables, variableEntity).on(variableEntity.name.eq(variableName));
         ctx.getQuery()
                 .addConditionToQuickFilter((token) -> new BooleanBuilder().or(toChar(variableEntity).likeIgnoreCase(token)));
+
+        SInstance advancedFilterInstance = ctx.getBoxFilter().getAdvancedFilterInstance();
+        if (advancedFilterInstance != null && advancedFilterInstance.isNotEmptyOfData()) {
+            advancedFilterInstance.getChildren()
+                    .stream()
+                    .filter(SInstance::isNotEmptyOfData)
+                    .filter(i -> queryAlias.equals(i.getName()))
+                    .forEach(i -> ctx.getQuery().where(toChar(variableEntity).likeIgnoreCase((String) i.getValue())));
+        }
     }
 
     @Nonnull
