@@ -39,6 +39,7 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
@@ -139,7 +140,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             throw new RedirectToUrlException(path);
         }
 
-        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), RequirementUtil.getTypeName(formType));
+        String formName = Optional.ofNullable(formType).map(RequirementUtil::getTypeName).orElse(null);
+        this.config = new FormPageExecutionContext(Objects.requireNonNull(context), formName);
         this.parentRequirementFormKeyModel = $m.ofValue();
         this.inheritParentFormData = $m.ofValue();
         this.typeName = config.getFormName();
@@ -174,6 +176,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         Form<?> form = new Form<>("save-form");
         form.setMultiPart(true);
         form.add(singularFormPanel);
+        this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");
+        form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
@@ -194,7 +198,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        return getRequirement().getFlowInstance().getCurrentTask();
+        return Optional.ofNullable(getRequirement().getFlowInstance()).map(FlowInstance::getCurrentTask).map(Optional::get);
     }
 
 
