@@ -17,7 +17,6 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvider;
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
 import org.opensingular.requirement.module.service.dto.ItemBox;
@@ -43,9 +42,9 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
     @Override
     public ItemBox getItemBox() {
         if (itemBox == null) {
-            itemBox = new ItemBox();
-            itemBox.setBoxDefinitionClass(getClass());
-            itemBox.setFieldsDatatable(getDatatableFields());
+            itemBox = new ItemBox()
+                    .boxDefinitionClass(getClass())
+                    .fieldsDatatable(getDatatableFields());
             configure(itemBox);
         }
         return itemBox;
@@ -55,7 +54,7 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
     public RequirementBoxItemDataProvider getDataProvider() {
         ActionProviderBuilder builder = new ActionProviderBuilder();
         addActions(builder);
-        RequirementBoxItemDataProvider requirementBoxItemDataProvider = requirementBoxItemDataProviderFactory.create(mustEvalPermissions(), builder);
+        RequirementBoxItemDataProvider requirementBoxItemDataProvider = requirementBoxItemDataProviderFactory.create(getItemBox().isEvalPermission(), builder);
         addDateFilters(requirementBoxItemDataProvider);
         return requirementBoxItemDataProvider;
     }
@@ -70,12 +69,6 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
     protected void addDateFilters(RequirementBoxItemDataProvider requirementBoxItemDataProvider) {
         requirementBoxItemDataProvider.addFilter(new DateBoxItemDataFilter());
     }
-
-    /**
-     * @return a value that indicates if the database query must eval the permissions,
-     * if true the {@link #getDataProvider()} result will be filtered
-     */
-    protected abstract Boolean mustEvalPermissions();
 
     /**
      * Add actions to the providerBuilder

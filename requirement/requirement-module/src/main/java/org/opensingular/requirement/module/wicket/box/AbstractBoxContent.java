@@ -252,10 +252,10 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                     boolean ascending) {
                 BoxFilter boxFilter = newFilter()
-                        .withFirst(first)
-                        .withCount(count)
-                        .withSortProperty(sortProperty)
-                        .withAscending(ascending);
+                        .first(first)
+                        .count(count)
+                        .sortProperty(sortProperty)
+                        .ascending(ascending);
 
                 return quickSearch(boxFilter).iterator();
             }

@@ -80,7 +80,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     }
 
     protected void addEnabledTasksToFilter(BoxFilter filter) {
-        filter.forTasks(tasks.toArray(new String[0]));
+        filter.tasks(tasks);
     }
 
     protected List<SingularPermission> searchPermissions(BoxFilter filter) {

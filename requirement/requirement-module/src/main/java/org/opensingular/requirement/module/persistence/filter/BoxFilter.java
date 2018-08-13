@@ -16,16 +16,11 @@
 
 package org.opensingular.requirement.module.persistence.filter;
 
-import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
 public class BoxFilter implements Serializable {
-
     private String filter;
     private boolean showDraft;
     private String idPessoa;
@@ -40,116 +35,6 @@ public class BoxFilter implements Serializable {
     private List<String> typesNames;
     private boolean checkApplicant = false;
 
-    public BoxFilter withFilter(String filter) {
-        this.filter = filter;
-        return this;
-    }
-
-    public String getIdUsuarioLogado() {
-        return idUsuarioLogado;
-    }
-
-    public BoxFilter withIdUsuarioLogado(String idUsuarioLogado) {
-        this.idUsuarioLogado = idUsuarioLogado;
-        return this;
-    }
-
-    public String getIdPessoa() {
-        return idPessoa;
-    }
-
-    public BoxFilter withIdPessoa(String idPessoa) {
-        this.idPessoa = idPessoa;
-        return this;
-    }
-
-    public int getFirst() {
-        return first;
-    }
-
-    public BoxFilter withFirst(int first) {
-        this.first = first;
-        return this;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public BoxFilter withCount(int count) {
-        this.count = count;
-        return this;
-    }
-
-    public String getSortProperty() {
-        return sortProperty;
-    }
-
-    public BoxFilter withSortProperty(String sortProperty) {
-        this.sortProperty = sortProperty;
-        return this;
-    }
-
-    public boolean isAscending() {
-        return ascending;
-    }
-
-    public BoxFilter withAscending(boolean ascending) {
-        this.ascending = ascending;
-        return this;
-    }
-
-    public BoxFilter sortAscending() {
-        this.ascending = true;
-        return this;
-    }
-
-    public BoxFilter sortDescending() {
-        this.ascending = false;
-        return this;
-    }
-
-    public boolean hasFilter() {
-        return filter != null
-                && !filter.isEmpty();
-    }
-
-    public BoxFilter forTasks(String... tasks) {
-        this.tasks = Arrays.asList(tasks);
-        return this;
-    }
-
-    public List<String> getTasks() {
-        return tasks;
-    }
-
-    public List<String> getProcessesAbbreviation() {
-        return processesAbbreviation;
-    }
-
-    public BoxFilter withProcessesAbbreviation(List<String> processesAbbreviation) {
-        this.processesAbbreviation = processesAbbreviation;
-        return this;
-    }
-
-    public List<String> getTypesNames() {
-        return typesNames;
-    }
-
-    public BoxFilter withTypesNames(List<String> typesNames) {
-        this.typesNames = typesNames;
-        return this;
-    }
-
-    public Boolean getEndedTasks() {
-        return endedTasks;
-    }
-
-    public BoxFilter withEndedTasks(Boolean endedTasks) {
-        this.endedTasks = endedTasks;
-        return this;
-    }
-
     public List<FilterToken> listFilterTokens() {
         if (filter != null) {
             return new FilterTokenFactory(filter).make();
@@ -161,42 +46,116 @@ public class BoxFilter implements Serializable {
         return filter;
     }
 
-    /**
-     * Indicates if the requirement owner should be checked
-     *
-     * @param checkApplicant the indicator
-     * @return the BoxFilter
-     * @see RequirementEntity
-     * @see ApplicantEntity
-     */
-    public BoxFilter withCheckApplicant(boolean checkApplicant) {
-        this.checkApplicant = checkApplicant;
+    public BoxFilter filter(String filter) {
+        this.filter = filter;
         return this;
     }
 
-    /**
-     * Indicates whether requirements that are not yet bound to a to flow instance should be displayed
-     *
-     * @param showDraft the indicator
-     * @return the BoxFilter
-     * @see RequirementEntity#flowInstanceEntity
-     */
-    public BoxFilter withShowDraft(boolean showDraft) {
+    public boolean isShowDraft() {
+        return showDraft;
+    }
+
+    public BoxFilter showDraft(boolean showDraft) {
         this.showDraft = showDraft;
         return this;
     }
 
-    /**
-     * @return the checkApplicant value
-     */
+    public String getIdPessoa() {
+        return idPessoa;
+    }
+
+    public BoxFilter idPessoa(String idPessoa) {
+        this.idPessoa = idPessoa;
+        return this;
+    }
+
+    public String getIdUsuarioLogado() {
+        return idUsuarioLogado;
+    }
+
+    public BoxFilter idUsuarioLogado(String idUsuarioLogado) {
+        this.idUsuarioLogado = idUsuarioLogado;
+        return this;
+    }
+
+    public int getFirst() {
+        return first;
+    }
+
+    public BoxFilter first(int first) {
+        this.first = first;
+        return this;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public BoxFilter count(int count) {
+        this.count = count;
+        return this;
+    }
+
+    public String getSortProperty() {
+        return sortProperty;
+    }
+
+    public BoxFilter sortProperty(String sortProperty) {
+        this.sortProperty = sortProperty;
+        return this;
+    }
+
+    public boolean isAscending() {
+        return ascending;
+    }
+
+    public BoxFilter ascending(boolean ascending) {
+        this.ascending = ascending;
+        return this;
+    }
+
+    public Boolean getEndedTasks() {
+        return endedTasks;
+    }
+
+    public BoxFilter endedTasks(Boolean endedTasks) {
+        this.endedTasks = endedTasks;
+        return this;
+    }
+
+    public List<String> getTasks() {
+        return tasks;
+    }
+
+    public BoxFilter tasks(List<String> tasks) {
+        this.tasks = tasks;
+        return this;
+    }
+
+    public List<String> getProcessesAbbreviation() {
+        return processesAbbreviation;
+    }
+
+    public BoxFilter processesAbbreviation(List<String> processesAbbreviation) {
+        this.processesAbbreviation = processesAbbreviation;
+        return this;
+    }
+
+    public List<String> getTypesNames() {
+        return typesNames;
+    }
+
+    public BoxFilter typesNames(List<String> typesNames) {
+        this.typesNames = typesNames;
+        return this;
+    }
+
     public boolean isCheckApplicant() {
         return checkApplicant;
     }
 
-    /**
-     * @return the showDraft value
-     */
-    public boolean isShowDraft() {
-        return showDraft;
+    public BoxFilter checkApplicant(boolean checkApplicant) {
+        this.checkApplicant = checkApplicant;
+        return this;
     }
 }

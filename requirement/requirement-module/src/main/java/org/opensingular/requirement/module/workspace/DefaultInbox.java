@@ -28,14 +28,11 @@ import java.util.List;
 public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
     public void configure(ItemBox itemBox) {
-        itemBox.setName("Caixa de Entrada");
-        itemBox.setDescription("Requerimentos aguardando ação do usuário");
-        itemBox.setIcone(DefaultIcons.DOCS);
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.TRUE;
+        itemBox
+                .name("Caixa de Entrada")
+                .description("Requerimentos aguardando ação do usuário")
+                .icon(DefaultIcons.DOCS)
+                .evalPermission(true);
     }
 
     @Override
@@ -64,7 +61,7 @@ public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
     public BoxFilter createBoxFilter() {
         return super.createBoxFilter()
-                .withEndedTasks(Boolean.FALSE)
-                .withCheckApplicant(false);
+                .endedTasks(Boolean.FALSE)
+                .checkApplicant(false);
     }
 }

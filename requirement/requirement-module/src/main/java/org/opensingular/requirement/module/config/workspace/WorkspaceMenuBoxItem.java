@@ -23,7 +23,7 @@ public class WorkspaceMenuBoxItem implements WorkspaceMenuItem {
 
     @Override
     public Icon getIcon() {
-        return getBoxDefinition().getItemBox().getIcone();
+        return getBoxDefinition().getItemBox().getIcon();
     }
 
     @Override

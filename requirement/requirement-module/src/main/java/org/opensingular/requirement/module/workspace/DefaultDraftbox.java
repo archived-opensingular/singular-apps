@@ -28,14 +28,10 @@ import java.util.List;
 public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
     @Override
     public void configure(ItemBox itemBox) {
-        itemBox.setName("Rascunho");
-        itemBox.setDescription("Requerimentos de rascunho");
-        itemBox.setIcone(DefaultIcons.DOCS);
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.FALSE;
+        itemBox.name("Rascunho")
+                .description("Requerimentos de rascunho")
+                .icon(DefaultIcons.DOCS)
+                .evalPermission(true);
     }
 
     @Override
@@ -58,7 +54,7 @@ public class DefaultDraftbox extends AbstractRequirementBoxDefinition {
     @Override
     public BoxFilter createBoxFilter() {
         return super.createBoxFilter()
-                .withShowDraft(true)
-                .withCheckApplicant(true);
+                .showDraft(true)
+                .checkApplicant(true);
     }
 }

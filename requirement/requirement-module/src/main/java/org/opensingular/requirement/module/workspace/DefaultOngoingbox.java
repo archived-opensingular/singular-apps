@@ -28,14 +28,9 @@ import java.util.List;
 public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
     @Override
     public void configure(ItemBox itemBox) {
-        itemBox.setName("Acompanhamento");
-        itemBox.setDescription("Requerimentos em andamento");
-        itemBox.setIcone(DefaultIcons.CLOCK);
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.FALSE;
+        itemBox.name("Acompanhamento")
+                .description("Requerimentos em andamento")
+                .icon(DefaultIcons.CLOCK);
     }
 
     @Override
@@ -58,8 +53,6 @@ public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
 
     @Override
     public BoxFilter createBoxFilter() {
-        return super
-                .createBoxFilter()
-                .withCheckApplicant(true);
+        return super.createBoxFilter().checkApplicant(true);
     }
 }

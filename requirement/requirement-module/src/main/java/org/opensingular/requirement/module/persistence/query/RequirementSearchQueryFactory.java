@@ -23,6 +23,7 @@ import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -96,7 +97,7 @@ public class RequirementSearchQueryFactory {
 
     private void applyQuickFilter() {
         BoxFilter boxFilter = ctx.getBoxFilter();
-        if (boxFilter != null && boxFilter.hasFilter()) {
+        if (boxFilter != null && StringUtils.isNotEmpty(boxFilter.getFilter())) {
             query.applyQuickFilter(boxFilter.listFilterTokens());
         }
     }

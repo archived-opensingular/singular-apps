@@ -294,7 +294,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     @Override
     protected BoxFilter newFilterBasic() {
-        return boxFilterFactory.create(getBoxDefinitionObject()).withFilter(getFiltroRapidoModelObject());
+        return boxFilterFactory.create(getBoxDefinitionObject()).filter(getFiltroRapidoModelObject());
     }
 
     private BoxPage getBoxPage() {

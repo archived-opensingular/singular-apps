@@ -28,14 +28,10 @@ import java.util.List;
 public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
     protected void configure(ItemBox itemBox) {
-        itemBox.setName("Concluídos");
-        itemBox.setDescription("Requerimentos concluídos");
-        itemBox.setIcone(DefaultIcons.DOCS);
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.TRUE;
+        itemBox.name("Concluídos")
+                .description("Requerimentos concluídos")
+                .icon(DefaultIcons.DOCS)
+                .evalPermission(true);
     }
 
     @Override
@@ -60,7 +56,7 @@ public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
     public BoxFilter createBoxFilter() {
         return super.createBoxFilter()
-                .withEndedTasks(Boolean.TRUE)
-                .withCheckApplicant(false);
+                .endedTasks(Boolean.TRUE)
+                .checkApplicant(false);
     }
 }

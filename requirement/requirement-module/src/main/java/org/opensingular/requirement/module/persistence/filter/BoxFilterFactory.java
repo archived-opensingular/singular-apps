@@ -38,10 +38,10 @@ public class BoxFilterFactory {
 
     public BoxFilter create(BoxDefinition box) {
         return box.createBoxFilter()
-                .withIdUsuarioLogado(getIdUsuario())
-                .withIdPessoa(getIdPessoa())
-                .withProcessesAbbreviation(getProcessesNames())
-                .withTypesNames(getFormNames());
+                .idUsuarioLogado(getIdUsuario())
+                .idPessoa(getIdPessoa())
+                .processesAbbreviation(getProcessesNames())
+                .typesNames(getFormNames());
     }
 
     private List<String> getFormNames() {

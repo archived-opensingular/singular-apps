@@ -16,12 +16,8 @@
 
 package org.opensingular.requirement.module.service.dto;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
-import org.opensingular.requirement.module.jackson.IconJsonSerializer;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
@@ -39,77 +35,87 @@ public class ItemBox implements Serializable {
     private Class<? extends BoxDefinition> boxDefinitionClass;
     private Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
     private boolean displayCounters = true;
+    private boolean evalPermission = false;
+
+    public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
+        getRequirements().add(requirement);
+        return this;
+    }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public ItemBox name(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public ItemBox description(String description) {
         this.description = description;
-    }
-
-    public List<DatatableField> getFieldsDatatable() {
-        return fieldsDatatable;
-    }
-
-    public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
-        this.fieldsDatatable = fieldsDatatable;
-    }
-
-    @JsonSerialize(using = IconJsonSerializer.class)
-    public Icon getIcone() {
-        return icon;
-    }
-
-    @JsonDeserialize(using = IconJsonDeserializer.class)
-    public void setIcone(Icon icon) {
-        this.icon = icon;
+        return this;
     }
 
     public String getHelpText() {
         return helpText;
     }
 
-    public void setHelpText(String helpText) {
+    public ItemBox helpText(String helpText) {
         this.helpText = helpText;
+        return this;
     }
 
-    public Class<? extends BoxDefinition> getBoxDefinitionClass() {
-        return boxDefinitionClass;
+    public Icon getIcon() {
+        return icon;
     }
 
-    public void setBoxDefinitionClass(Class<? extends BoxDefinition> boxDefinitionClass) {
-        this.boxDefinitionClass = boxDefinitionClass;
+    public ItemBox icon(Icon icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public List<DatatableField> getFieldsDatatable() {
+        return fieldsDatatable;
+    }
+
+    public ItemBox fieldsDatatable(List<DatatableField> fieldsDatatable) {
+        this.fieldsDatatable = fieldsDatatable;
+        return this;
     }
 
     public boolean isShowQuickFilter() {
         return showQuickFilter;
     }
 
-    /**
-     * Indicates if the quick filter field should be displayed
-     *
-     * @param showQuickFilter the indicator
-     */
-    public void setShowQuickFilter(boolean showQuickFilter) {
+    public ItemBox showQuickFilter(boolean showQuickFilter) {
         this.showQuickFilter = showQuickFilter;
+        return this;
+    }
+
+    public Class<? extends BoxDefinition> getBoxDefinitionClass() {
+        return boxDefinitionClass;
+    }
+
+    public ItemBox boxDefinitionClass(Class<? extends BoxDefinition> boxDefinitionClass) {
+        this.boxDefinitionClass = boxDefinitionClass;
+        return this;
     }
 
     public Set<Class<? extends SingularRequirement>> getRequirements() {
         return requirements;
     }
 
-    public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
-        getRequirements().add(requirement);
+    public ItemBox requirements(Set<Class<? extends SingularRequirement>> requirements) {
+        this.requirements = requirements;
         return this;
+    }
+
+    public boolean isDisplayCounters() {
+        return displayCounters;
     }
 
     public ItemBox displayCounters(boolean displayCounters) {
@@ -117,7 +123,12 @@ public class ItemBox implements Serializable {
         return this;
     }
 
-    public boolean isDisplayCounters() {
-        return displayCounters;
+    public boolean isEvalPermission() {
+        return evalPermission;
+    }
+
+    public ItemBox evalPermission(boolean evalPermission) {
+        this.evalPermission = evalPermission;
+        return this;
     }
 }
