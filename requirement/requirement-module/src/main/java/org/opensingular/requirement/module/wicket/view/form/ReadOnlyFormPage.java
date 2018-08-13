@@ -17,9 +17,10 @@
 package org.opensingular.requirement.module.wicket.view.form;
 
 
-import javax.inject.Inject;
-
+import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.ExternalLink;
+import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -28,6 +29,13 @@ import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
+import org.opensingular.requirement.module.wicket.view.util.ActionContext;
+import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
+
+import javax.inject.Inject;
+
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_FORM_VERSION_ID;
+import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_FORM_VERSION_ID;
 
 public class ReadOnlyFormPage extends ServerTemplate {
 
@@ -55,7 +63,18 @@ public class ReadOnlyFormPage extends ServerTemplate {
         singularFormPanel.setAnnotationMode(
                 showAnnotations.getObject() ? AnnotationMode.READ_ONLY : AnnotationMode.NONE);
 
-        add(new Form("form").add(singularFormPanel));
+        FormVersionEntity previousVersion = formRequirementService.findPreviousVersion(formVersionEntityPK.getObject());
+        Component viewDiff;
+        if (previousVersion != null) {
+            viewDiff = new ExternalLink("viewDiff", DispatcherPageUtil.buildFullURL(new ActionContext()
+                    .setDiffEnabled(true)
+                    .setParam(CURRENT_FORM_VERSION_ID, formVersionEntityPK.getObject().toString())
+                    .setParam(PREVIOUS_FORM_VERSION_ID, previousVersion.getCod().toString())) + "&dispatch=true");
+        } else {
+            viewDiff = new EmptyPanel("viewDiff").setVisible(false);
+        }
+
+        add(new Form("form").add(singularFormPanel).add(viewDiff));
     }
 
     @Override

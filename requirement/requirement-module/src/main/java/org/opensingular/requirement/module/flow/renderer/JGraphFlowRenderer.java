@@ -2,7 +2,7 @@
  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
  * http://www.apache.org/licenses/LICENSE-2.0
@@ -15,18 +15,6 @@
  */
 
 package org.opensingular.requirement.module.flow.renderer;
-
-import java.awt.*;
-import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.imageio.ImageIO;
-import javax.swing.*;
 
 import com.google.common.base.Throwables;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
@@ -45,6 +33,22 @@ import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.renderer.ExecutionHistoryForRendering;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.imageio.ImageIO;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.RenderedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JGraphFlowRenderer implements IFlowRenderer {
 
@@ -125,8 +129,17 @@ public class JGraphFlowRenderer implements IFlowRenderer {
         addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
 
         for (final STask<?> task : fluxo.getTasks()) {
-            for (final STransition transition : task.getTransitions()) {
-                createTransition(graph, transition, mapaVertice);
+            //for (STransition transition : task.getTransitions()) {
+            //    createTransition(graph, transition, mapaVertice);
+            //}
+            //The code bellow works around a bug of mxGraph. The commented code above should have been enough.
+            Collection<List<STransition>> simplify = joinTransactionSameDestination(task.getTransitions());
+            for (List<STransition> transitionBlock : simplify) {
+                if (simplify.size() == 1) {
+                    createTransition(graph, transitionBlock.get(0), mapaVertice);
+                } else {
+                    createTransition(graph, transitionBlock, mapaVertice);
+                }
             }
         }
 
@@ -147,6 +160,14 @@ public class JGraphFlowRenderer implements IFlowRenderer {
         return graph;
     }
 
+    private static Collection<List<STransition>> joinTransactionSameDestination(List<STransition> transitions) {
+        Map<STask<?>,List<STransition>> groups = new HashMap<>();
+        for(STransition t : transitions) {
+            groups.computeIfAbsent(t.getDestination(), d -> new ArrayList<>()).add(t);
+        }
+        return groups.values();
+    }
+
     private static void addStartTransition(mxGraph graph, STask<?> taskInicial, Map<String, Object> mapaVertice) {
         final Object v = graph.insertVertex(graph.getDefaultParent(), null, null, 20, 20, 20, 20);
 
@@ -155,17 +176,26 @@ public class JGraphFlowRenderer implements IFlowRenderer {
         graph.insertEdge(graph.getDefaultParent(), null, null, v, destiny);
     }
 
-    private static void createTransition(mxGraph graph, STransition transition, Map<String, Object> mapNodes) {
-        final Object origin  = mapNodes.get(transition.getOrigin().getAbbreviation());
-        final Object destiny = mapNodes.get(transition.getDestination().getAbbreviation());
-        String       name    = transition.getName();
-        if (transition.getDestination().getName().equals(name)) {
-            name = null;
-        } else {
-            name = formatName(name);
-        }
+    private static void createTransition(mxGraph graph, List<STransition> transitionBlock,
+            Map<String, Object> mapNodes) {
+        String name = transitionBlock.stream().map(t -> t.getName()).filter(t -> t != null).collect(
+                Collectors.joining("\n"));
+        createTransition(graph, transitionBlock.get(0), name, mapNodes);
+    }
 
-        graph.insertEdge(graph.getDefaultParent(), null, name, origin, destiny);
+    private static void createTransition(mxGraph graph, STransition transition, Map<String, Object> mapNodes) {
+        createTransition(graph, transition, transition.getName(), mapNodes);
+    }
+
+    private static void createTransition(mxGraph graph, STransition transition, String transitionName,
+            Map<String, Object> mapNodes) {
+        Object origin = mapNodes.get(transition.getOrigin().getAbbreviation());
+        Object destiny = mapNodes.get(transition.getDestination().getAbbreviation());
+        String name = transitionName;
+        if (transition.getDestination().getName().equals(transitionName)) {
+            name = null;
+        }
+        graph.insertEdge(graph.getDefaultParent(), null, formatName(name), origin, destiny);
     }
 
     private static Object insertVertex(mxGraph graph, STask<?> task) {
@@ -192,8 +222,9 @@ public class JGraphFlowRenderer implements IFlowRenderer {
         ((mxICell) v).setStyle(style);
     }
 
-    private static String formatName(String name) {
-        return name.replace(' ', '\n');
+    @Nullable
+    private static String formatName(@Nullable String name) {
+        return name == null ? null : name.replace(' ', '\n');
     }
 
 }
