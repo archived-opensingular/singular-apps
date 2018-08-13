@@ -25,12 +25,16 @@ import org.springframework.context.annotation.Bean;
 public class RequirementStudioBeanFactory extends SingularDefaultBeanFactory {
     @Bean
     public StudioMenu studioMenu(WorkspaceRegistry workspaceRegistry) {
+        return studioMenuBuilder(workspaceRegistry).getStudioMenu();
+    }
+
+    private StudioMenu.Builder studioMenuBuilder(WorkspaceRegistry workspaceRegistry) {
         StudioMenu.Builder builder = StudioMenu.Builder.newPortalMenu();
         workspaceRegistry.getContexts().forEach(ctx -> {
             if (!ctx.getSettings().isHideFromStudioMenu()) {
                 builder.addHTTPEndpoint(DefaultIcons.CUBES, ctx.getName(), ctx.getSettings().getUrlPath());
             }
         });
-        return builder.getStudioMenu();
+        return builder;
     }
 }
