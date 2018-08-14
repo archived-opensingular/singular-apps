@@ -16,6 +16,18 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
+import org.apache.commons.collections4.CollectionUtils;
+import org.opensingular.form.SType;
+import org.opensingular.form.STypes;
+import org.opensingular.form.view.Block;
+import org.opensingular.form.view.SView;
+import org.opensingular.form.view.SViewByBlock;
+import org.opensingular.form.view.SViewTab;
+import org.opensingular.form.view.ViewResolver;
+import org.opensingular.form.view.list.SViewListByMasterDetail;
+import org.opensingular.lib.commons.lambda.IBiFunction;
+import org.opensingular.requirement.module.admin.healthsystem.DocumentationMetadataUtil;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -25,18 +37,6 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import org.apache.commons.collections4.CollectionUtils;
-import org.opensingular.form.SType;
-import org.opensingular.form.STypes;
-import org.opensingular.form.view.Block;
-import org.opensingular.form.view.SView;
-import org.opensingular.form.view.SViewByBlock;
-import org.opensingular.form.view.SViewListByMasterDetail;
-import org.opensingular.form.view.SViewTab;
-import org.opensingular.form.view.ViewResolver;
-import org.opensingular.lib.commons.lambda.IBiFunction;
-import org.opensingular.requirement.module.admin.healthsystem.DocumentationMetadataUtil;
 
 /**
  * Responsible for collect metadata for SType documentation

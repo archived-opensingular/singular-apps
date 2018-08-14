@@ -16,12 +16,6 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.stypes;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
 import org.opensingular.form.SInfoType;
@@ -33,9 +27,15 @@ import org.opensingular.form.type.core.SIString;
 import org.opensingular.form.type.core.STypeBoolean;
 import org.opensingular.form.type.core.STypeString;
 import org.opensingular.form.validation.InstanceValidatable;
-import org.opensingular.form.view.SViewListByMasterDetail;
-import org.opensingular.form.view.SViewListByTable;
+import org.opensingular.form.view.list.SViewListByMasterDetail;
+import org.opensingular.form.view.list.SViewListByTable;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
+
+import javax.annotation.Nonnull;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 @SInfoType(spackage = SSystemHealthPackage.class,  name = "dbhealth")
 public class SDbHealth extends STypeComposite<SIComposite> {
@@ -53,7 +53,7 @@ public class SDbHealth extends STypeComposite<SIComposite> {
     protected void onLoadType(@Nonnull TypeBuilder tb) {
 
         tablesList = this.addFieldListOfComposite("tablesList", "tabela");
-        tablesList.withView(() -> new SViewListByMasterDetail().fullSize().disableNew().disableDelete());
+        tablesList.withView(() -> new SViewListByMasterDetail().fullSize().disableNew().configureDeleteButton(f -> false));
 
         STypeComposite<SIComposite> table = tablesList.getElementsType();
 
@@ -89,13 +89,13 @@ public class SDbHealth extends STypeComposite<SIComposite> {
                 .enabled(true)
                 .asAtrBootstrap()
                 .colPreference(2);
-        userPrivs.withView(() -> new SViewListByTable().disableNew().disableDelete());
+        userPrivs.withView(() -> new SViewListByTable().disableNew().configureDeleteButton(f -> false));
 
         table.addInstanceValidator(this::tableValidation);
 
         columnsInfo = table.addFieldListOfComposite("columnsInfo", "column");
 
-        columnsInfo.withView(() -> new SViewListByTable().disableNew().disableDelete());
+        columnsInfo.withView(() -> new SViewListByTable().disableNew().configureDeleteButton(f -> false));
         columnsInfo.asAtr().label("Colunas");
 
         STypeComposite<SIComposite> column = columnsInfo.getElementsType();

@@ -18,8 +18,6 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
-import javax.annotation.Nonnull;
-
 import org.opensingular.form.PackageBuilder;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoPackage;
@@ -29,7 +27,9 @@ import org.opensingular.form.STypeComposite;
 import org.opensingular.form.STypeList;
 import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.core.STypeString;
-import org.opensingular.form.view.SViewListByMasterDetail;
+import org.opensingular.form.view.list.SViewListByMasterDetail;
+
+import javax.annotation.Nonnull;
 
 
 @SInfoPackage(name = SPackageFoo.NAME)

@@ -16,17 +16,17 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.stypes;
 
-import java.util.Arrays;
-
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInfoType;
 import org.opensingular.form.STypeComposite;
 import org.opensingular.form.STypeList;
 import org.opensingular.form.TypeBuilder;
 import org.opensingular.form.type.core.STypeString;
-import org.opensingular.form.view.SViewListByTable;
+import org.opensingular.form.view.list.SViewListByTable;
 import org.opensingular.requirement.module.admin.healthsystem.validation.webchecker.IProtocolChecker;
 import org.opensingular.requirement.module.admin.healthsystem.validation.webchecker.ProtocolCheckerFactory;
+
+import java.util.Arrays;
 
 @SInfoType(spackage = SSystemHealthPackage.class,  name = SWebHealth.TYPE_NAME, label = "Utilitário de rede")
 public class SWebHealth extends STypeComposite<SIComposite> {

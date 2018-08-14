@@ -16,11 +16,6 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.docs;
 
-import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.SType;
 import org.opensingular.form.STypeAttachmentList;
@@ -35,11 +30,16 @@ import org.opensingular.form.type.core.attachment.STypeAttachment;
 import org.opensingular.form.view.SMultiSelectionByCheckboxView;
 import org.opensingular.form.view.SMultiSelectionByPicklistView;
 import org.opensingular.form.view.SView;
-import org.opensingular.form.view.SViewListByMasterDetail;
 import org.opensingular.form.view.ViewResolver;
+import org.opensingular.form.view.list.SViewListByMasterDetail;
 import org.opensingular.form.wicket.behavior.InputMaskBehavior;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.admin.healthsystem.DocumentationMetadataUtil;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Translates some metadatas from {@link SType} to human-readable documentation info.
