@@ -60,6 +60,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     public void init() {
         super.init();
 
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(150));
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
 
