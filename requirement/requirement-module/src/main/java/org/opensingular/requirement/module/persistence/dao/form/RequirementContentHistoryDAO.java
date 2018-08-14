@@ -16,22 +16,21 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-
+import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.hibernate.Query;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
+import org.opensingular.requirement.module.persistence.dto.QRequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.QRequirementContentHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.service.RequirementUtil;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import java.util.List;
+import java.util.Optional;
 
 public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHistoryEntity, Long> {
 
@@ -40,44 +39,13 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
     }
 
     public List<RequirementHistoryDTO> listRequirementContentHistoryByCodRequirement(Long codRequirement) {
-
-        final List<TaskInstanceEntity>              tasks;
-        final List<RequirementContentHistoryEntity> histories;
-        final List<RequirementHistoryDTO>           requirementHistoryDTOS;
-        final List<Integer>                         requirementHistoryTaskCods;
-
-        tasks = getSession()
-                .createQuery("select task from RequirementEntity p " +
-                        " inner join p.flowInstanceEntity.tasks as task where p.cod = :codRequirement")
-                .setParameter("codRequirement", codRequirement).list();
-
-        histories = getSession()
-                .createQuery("select h from RequirementContentHistoryEntity h " +
-                        " where h.requirementEntity.cod = :codRequirement")
-                .setParameter("codRequirement", codRequirement).list();
-
-        requirementHistoryDTOS = new ArrayList<>();
-
-        histories.forEach(history -> requirementHistoryDTOS
-                .add(new RequirementHistoryDTO().setRequirementContentHistory(history).setTask(history.getTaskInstanceEntity())));
-
-        requirementHistoryTaskCods = histories
-                .stream()
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
-                .map(TaskInstanceEntity::getCod)
-                .collect(Collectors.toList());
-
-        tasks
-                .stream()
-                .filter(task -> !requirementHistoryTaskCods.contains(task.getCod()))
-                .forEach(task -> requirementHistoryDTOS.add(new RequirementHistoryDTO().setTask(task)));
-
-
-        return requirementHistoryDTOS
-                .stream()
-                .sorted(Comparator.comparing(a -> a.getTask().getBeginDate()))
-                .collect(Collectors.toList());
-
+        QRequirementContentHistoryEntity qRequirementContentHistory = new QRequirementContentHistoryEntity("qRequirementContentHistory");
+        return new HibernateQueryFactory(getSession())
+                .from(qRequirementContentHistory)
+                .select(new QRequirementHistoryDTO(qRequirementContentHistory))
+                .where(qRequirementContentHistory.taskInstanceEntity.isNotNull())
+                .orderBy(qRequirementContentHistory.historyDate.asc())
+                .fetch();
     }
 
     public Optional<FormVersionHistoryEntity> findLastByCodRequirementAndType(Class<? extends SType<?>> typeClass, Long cod) {
