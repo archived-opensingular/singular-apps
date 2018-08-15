@@ -49,7 +49,6 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementCo
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
-import org.springframework.beans.factory.ObjectFactory;
 import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
@@ -75,7 +74,7 @@ public class HistoryPage extends ServerTemplate {
     private RequirementService<?, ?> requirementService;
 
     @Inject
-    private ObjectFactory<IServerContext> serverContextObjectFactory;
+    private IServerContext serverContext;
 
     private Long requirementPK;
 
@@ -263,7 +262,7 @@ public class HistoryPage extends ServerTemplate {
 
 
     protected String getBaseUrl() {
-        return RequestCycle.get().getRequest().getContextPath() + serverContextObjectFactory.getObject().getSettings().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + serverContext.getSettings().getUrlPath();
     }
 
     @Override
