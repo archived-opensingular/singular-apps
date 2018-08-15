@@ -36,6 +36,7 @@ import org.opensingular.internal.lib.wicket.test.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
+import org.opensingular.lib.wicket.util.application.SingularSerializer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
@@ -59,6 +60,10 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     @Override
     public void init() {
         super.init();
+
+        getFrameworkSettings().setSerializer(new SingularSerializer());
+
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(35));
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
