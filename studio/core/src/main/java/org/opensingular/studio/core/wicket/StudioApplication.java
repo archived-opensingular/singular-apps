@@ -89,10 +89,10 @@ public class StudioApplication extends WebApplication implements SingularAdminAp
 
     @Override
     public RuntimeConfigurationType getConfigurationType() {
-        if (SingularProperties.get().isFalse(SingularProperties.SINGULAR_DEV_MODE)) {
-            return RuntimeConfigurationType.DEPLOYMENT;
-        } else {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_WICKET_DEBUG_ENABLED)) {
             return RuntimeConfigurationType.DEVELOPMENT;
+        } else {
+            return RuntimeConfigurationType.DEPLOYMENT;
         }
     }
 
