@@ -16,9 +16,6 @@
 
 package org.opensingular.requirement.module.wicket;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Locale;
-
 import org.apache.wicket.MarkupContainer;
 import org.apache.wicket.RuntimeConfigurationType;
 import org.apache.wicket.Session;
@@ -35,8 +32,8 @@ import org.apache.wicket.util.time.Duration;
 import org.opensingular.internal.lib.wicket.test.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.lib.wicket.util.application.LZ4Serializer;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
-import org.opensingular.lib.wicket.util.application.SingularSerializer;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
@@ -47,6 +44,9 @@ import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavi
 import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
 import org.springframework.context.ApplicationContext;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Locale;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -61,9 +61,9 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     public void init() {
         super.init();
 
-        getFrameworkSettings().setSerializer(new SingularSerializer());
+        getFrameworkSettings().setSerializer(new LZ4Serializer());
 
-        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(35));
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(25));
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
@@ -89,7 +89,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
 
         new SingularAnnotatedMountScanner().mountPages(this);
-        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_WICKET_DEBUG_ENABLED)) {
+        if (RuntimeConfigurationType.DEVELOPMENT == getConfigurationType()) {
             getDebugSettings().setComponentPathAttributeName("wicketdebug");
             WicketSerializationDebugUtil.configurePageSerializationDebug(this, this.getClass());
         }
@@ -113,10 +113,10 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
     @Override
     public RuntimeConfigurationType getConfigurationType() {
-        if (SingularProperties.get().isFalse(SingularProperties.SINGULAR_DEV_MODE)) {
-            return RuntimeConfigurationType.DEPLOYMENT;
-        } else {
+        if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_WICKET_DEBUG_ENABLED)) {
             return RuntimeConfigurationType.DEVELOPMENT;
+        } else {
+            return RuntimeConfigurationType.DEPLOYMENT;
         }
     }
 
