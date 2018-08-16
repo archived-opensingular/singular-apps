@@ -313,7 +313,10 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
 
     public void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
 
-        Optional<TaskInstance> taskInstance = requirement.getFlowInstance().getLastFinishedTask();
+        Optional<TaskInstance> taskInstance = requirement.getFlowInstance().getTasksNewerFirstAsStream()
+                .filter(i -> i.isFinished() && !i.getFlowTaskOrException().isEnd())
+                .findFirst();
+
         FormEntity formEntity = requirement.getEntity().getMainForm();
 
         getLogger().info("Atualizando histórico da petição.");

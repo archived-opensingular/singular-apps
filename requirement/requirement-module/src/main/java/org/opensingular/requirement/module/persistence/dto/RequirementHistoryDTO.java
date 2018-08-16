@@ -18,6 +18,8 @@ package org.opensingular.requirement.module.persistence.dto;
 
 import com.querydsl.core.annotations.QueryProjection;
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.flow.core.entity.IEntityTaskVersion;
+import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.AbstractTaskTransitionVersionEntity;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
@@ -28,55 +30,79 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.Optional;
 
-public class RequirementHistoryDTO implements Serializable {
+public class RequirementHistoryDTO implements Serializable, Comparable<RequirementHistoryDTO> {
 
     private final RequirementContentHistoryEntity requirementContentHistory;
+    private final TaskInstanceEntity taskInstanceEntity;
+
+    @QueryProjection
+    public RequirementHistoryDTO(RequirementContentHistoryEntity requirementContentHistory, TaskInstanceEntity taskInstanceEntity) {
+        this.requirementContentHistory = requirementContentHistory;
+        this.taskInstanceEntity = taskInstanceEntity;
+    }
 
     @QueryProjection
     public RequirementHistoryDTO(RequirementContentHistoryEntity requirementContentHistory) {
         this.requirementContentHistory = requirementContentHistory;
+        this.taskInstanceEntity = null;
+    }
+
+    @QueryProjection
+    public RequirementHistoryDTO(TaskInstanceEntity taskInstanceEntity) {
+        this.requirementContentHistory = null;
+        this.taskInstanceEntity = taskInstanceEntity;
+    }
+
+    private Optional<TaskInstanceEntity> getTaskVersion() {
+        if (taskInstanceEntity != null) {
+            return Optional.of(taskInstanceEntity);
+        }
+        if (requirementContentHistory != null) {
+            return Optional.of(requirementContentHistory.getTaskInstanceEntity());
+        }
+        return Optional.empty();
     }
 
     public String getTaskAbbreviation() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
-                .map(TaskInstanceEntity::getTaskVersion)
-                .map(TaskVersionEntity::getAbbreviation)
-                .orElse(StringUtils.EMPTY);
+        return getTaskVersion()
+                .map(AbstractTaskInstanceEntity::getTaskVersion)
+                .map(IEntityTaskVersion::getAbbreviation).orElse(StringUtils.EMPTY);
     }
 
     public String getTaskName() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
+        return getTaskVersion()
                 .map(TaskInstanceEntity::getTaskVersion)
                 .map(TaskVersionEntity::getName)
                 .orElse(StringUtils.EMPTY);
     }
 
     public String getActor() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getActor)
+        if (requirementContentHistory != null) {
+            return Optional.of(requirementContentHistory)
+                    .map(RequirementContentHistoryEntity::getActor)
+                    .map(Actor::getNome)
+                    .orElse(StringUtils.EMPTY);
+        }
+        return getTaskVersion()
+                .map(AbstractTaskInstanceEntity::getAllocatedUser)
                 .map(Actor::getNome)
                 .orElse(StringUtils.EMPTY);
     }
 
     public Date getBeginDate() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
+        return getTaskVersion()
                 .map(TaskInstanceEntity::getBeginDate)
                 .orElse(null);
     }
 
     public Date getEndDate() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
+        return getTaskVersion()
                 .map(TaskInstanceEntity::getEndDate)
                 .orElse(null);
     }
 
     public String getExecutedTransition() {
-        return Optional.of(requirementContentHistory)
-                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
+        return getTaskVersion()
                 .map(TaskInstanceEntity::getExecutedTransition)
                 .map(AbstractTaskTransitionVersionEntity::getName)
                 .orElse(StringUtils.EMPTY);
@@ -84,5 +110,10 @@ public class RequirementHistoryDTO implements Serializable {
 
     public RequirementContentHistoryEntity getRequirementContentHistory() {
         return requirementContentHistory;
+    }
+
+    @Override
+    public int compareTo(RequirementHistoryDTO o) {
+        return getBeginDate().compareTo(o.getBeginDate());
     }
 }
