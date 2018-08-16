@@ -36,7 +36,6 @@ import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
@@ -53,10 +52,8 @@ import org.wicketstuff.annotation.mount.MountPath;
 
 import javax.inject.Inject;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
@@ -151,22 +148,11 @@ public class HistoryPage extends ServerTemplate {
 
     protected BSDataTable<RequirementHistoryDTO, String> setupDataTable(BaseDataProvider<RequirementHistoryDTO, String> dataProvider) {
         return new BSDataTableBuilder<>(dataProvider)
-                .appendPropertyColumn(
-                        getMessage("label.table.column.task.name"),
-                        p -> p.getTaskName()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.begin.date"),
-                        p -> p.getBeginDate()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.end.date"),
-                        p -> p.getEndDate()
-                )
-                .appendPropertyColumn(
-                        getMessage("label.table.column.allocated.user"),
-                        p -> p.getAllocatedUser()
-                )
+                .appendPropertyColumn(getMessage("label.table.column.task.name"), RequirementHistoryDTO::getTaskName)
+                .appendPropertyColumn(getMessage("label.table.column.begin.date"), RequirementHistoryDTO::getBeginDate)
+                .appendPropertyColumn(getMessage("label.table.column.end.date"), RequirementHistoryDTO::getEndDate)
+                .appendPropertyColumn(getMessage("label.table.column.action"), RequirementHistoryDTO::getExecutedTransition)
+                .appendPropertyColumn(getMessage("label.table.column.allocated.user"), RequirementHistoryDTO::getActor)
                 .appendActionColumn(
                         Model.of(""),
                         column -> column.appendComponentFactory((id, model) -> {
@@ -205,23 +191,6 @@ public class HistoryPage extends ServerTemplate {
                 return ";var newtab = window.open('" + url + "'); newtab.opener=null;";
             }
         };
-    }
-
-    protected Map<String, String> buildViewFormParameters(IModel<RequirementHistoryDTO> model) {
-        final Map<String, String> params = new HashMap<>();
-        if (model.getObject().getRequirementContentHistory() != null) {
-            params.put(FORM_VERSION_KEY, model
-                    .getObject()
-                    .getRequirementContentHistory()
-                    .getFormVersionHistoryEntities()
-                    .stream()
-                    .filter(f -> SimNao.SIM == f.getMainForm())
-                    .findFirst()
-                    .map(FormVersionHistoryEntity::getCodFormVersion)
-                    .map(Object::toString)
-                    .orElse(null));
-        }
-        return params;
     }
 
     protected BaseDataProvider<RequirementHistoryDTO, String> createDataProvider() {
