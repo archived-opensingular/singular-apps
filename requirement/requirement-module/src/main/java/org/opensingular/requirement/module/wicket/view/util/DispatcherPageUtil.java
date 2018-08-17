@@ -53,10 +53,6 @@ public class DispatcherPageUtil {
         }
     }
 
-    public static String buildFullURL(ActionContext actionContext) {
-        return new StringBuilder(getBaseURL()).append('?').append(actionContext.toURL()).toString();
-    }
-
     public static String getBaseURL() {
 
         final RequestCycle requestCycle = RequestCycle.get();

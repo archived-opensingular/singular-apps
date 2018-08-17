@@ -28,7 +28,6 @@ public class ActionContextTest {
 
     private ActionContext newActionContext() {
         ActionContext actionContext = new ActionContext();
-        actionContext.setDiffEnabled(true);
         actionContext.setFormAction(FormAction.FORM_ANALYSIS);
         actionContext.setFormName("Nomezinho");
         actionContext.setFormVersionId(1l);
@@ -44,7 +43,6 @@ public class ActionContextTest {
     public void testSetGet() {
         ActionContext actionContext = newActionContext();
 
-        Assert.assertTrue(actionContext.getDiffEnabled());
         Assert.assertEquals(actionContext.getFormAction().get(), FormAction.FORM_ANALYSIS);
         Assert.assertEquals(actionContext.getFormName().get(), "Nomezinho");
         Assert.assertEquals((long) actionContext.getFormVersionId().get(), 1l);

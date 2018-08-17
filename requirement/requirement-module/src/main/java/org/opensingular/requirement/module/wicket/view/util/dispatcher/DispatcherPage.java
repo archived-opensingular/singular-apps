@@ -146,9 +146,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage retrieveDestination(ActionContext context) {
-        if (context.getDiffEnabled()) {
-            return newDiffPage(context);
-        } else if (isViewModeReadOnly(context) && !isAnnotationModeEdit(context)) {
+         if (isViewModeReadOnly(context) && !isAnnotationModeEdit(context)) {
             return newVisualizationPage(context);
         } else {
             return retrieveSingularWebRef(context)
@@ -164,10 +162,6 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     private boolean isViewModeReadOnly(ActionContext context) {
         return context.getFormAction().map(FormAction::isViewModeReadOnly).orElse(Boolean.FALSE);
-    }
-
-    private WebPage newDiffPage(ActionContext context) {
-        return new DiffFormPage(context);
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
