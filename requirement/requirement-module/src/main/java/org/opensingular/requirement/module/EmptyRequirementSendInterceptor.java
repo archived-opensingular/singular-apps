@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
@@ -30,22 +31,28 @@ public class EmptyRequirementSendInterceptor implements RequirementSendIntercept
     }
 
     @Override
-    public void onBeforeSend(RequirementInstance requirement, String codSubmitterActor, RequirementSubmissionResponse response) {
+    public RequirementApplicant configureApplicant(RequirementApplicant applicant) {
+        return applicant;
+    }
+
+    @Override
+    public void onBeforeSend(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onAfterStartFlow(RequirementInstance requirement, String codSubmitterActor, RequirementSubmissionResponse response) {
+    public void onAfterStartFlow(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onBeforeStartFlow(RequirementInstance requirement, String codSubmitterActor, RequirementSubmissionResponse response) {
+    public void onBeforeStartFlow(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onAfterSend(RequirementInstance requirement, String codSubmitterActor, RequirementSubmissionResponse response) {
+    public void onAfterSend(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
+
 }

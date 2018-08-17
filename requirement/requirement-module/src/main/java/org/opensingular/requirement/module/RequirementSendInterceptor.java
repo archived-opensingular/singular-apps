@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
@@ -24,13 +25,14 @@ public interface RequirementSendInterceptor<RI extends RequirementInstance, RSR 
 
     RSR newInstanceSubmissionResponse();
 
-    void onBeforeSend(RI requirement, String codSubmitterActor, RSR response);
+    RequirementApplicant configureApplicant(RequirementApplicant applicant);
 
-    void onAfterStartFlow(RI requirement, String codSubmitterActor, RSR response);
+    void onBeforeSend(RI requirement, RequirementApplicant applicant, RSR response);
 
+    void onAfterStartFlow(RI requirement, RequirementApplicant applicant, RSR response);
 
-    void onBeforeStartFlow(RI requirement, String codSubmitterActor, RSR response);
+    void onBeforeStartFlow(RI requirement, RequirementApplicant applicant, RSR response);
 
-    void onAfterSend(RI requirement, String codSubmitterActor, RSR response);
+    void onAfterSend(RI requirement, RequirementApplicant applicant, RSR response);
 
 }

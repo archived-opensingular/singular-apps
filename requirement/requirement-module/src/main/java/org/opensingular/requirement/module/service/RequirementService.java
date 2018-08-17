@@ -71,7 +71,6 @@ import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.springframework.core.ResolvableType;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
@@ -206,25 +205,27 @@ public abstract class RequirementService implements Loggable {
     }
 
     /**
-     * Configures the applicant in an requirement.
+     * Find applicant or create a new one
      *
      * @param requirement
      */
-    protected <RI extends RequirementInstance> void configureApplicant(RI requirement) {
-        UserDetails userDetails = singularUserDetails.get();
-        if (userDetails instanceof SingularRequirementUserDetails) {
-            ApplicantEntity p;
-            p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
-            if (p == null) {
+    public ApplicantEntity getApplicant(RequirementInstance<?, ?> requirement, String codSubmitterActor) {
+        ApplicantEntity p;
+        p = applicantDAO.findApplicantByExternalId(codSubmitterActor);
+        if (p == null) {
+            Optional<Actor> actorOpt = findActor(codSubmitterActor);
+            if (actorOpt.isPresent()) {
+                Actor actor = actorOpt.get();
                 p = new ApplicantEntity();
-                p.setIdPessoa(userDetails.getUsername());
-                p.setName(((SingularRequirementUserDetails) userDetails).getDisplayName());
+                p.setIdPessoa(codSubmitterActor);
+                p.setName(actor.getNome());
                 p.setPersonType(PersonType.FISICA);
+                applicantDAO.save(p);
+            } else {
+                getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularRequirementUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
             }
-            requirement.getEntity().setApplicant(p);
-        } else {
-            getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularRequirementUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
         }
+        return p;
     }
 
     /**
@@ -683,11 +684,7 @@ public abstract class RequirementService implements Loggable {
 
         FlowInstanceEntity flowEntity = newFlowInstance.saveEntity();
 
-        if (codSubmitterActor != null) {
-            RequirementUtil.findUser(codSubmitterActor).filter(u -> u instanceof Actor).ifPresent(user -> {
-                flowEntity.setUserCreator((Actor) user);
-            });
-        }
+        findActor(codSubmitterActor).ifPresent(flowEntity::setUserCreator);
 
         RequirementEntity requirementEntity = requirement.getEntity();
         requirementEntity.setFlowInstanceEntity(flowEntity);
@@ -697,6 +694,13 @@ public abstract class RequirementService implements Loggable {
         newFlowInstance.start();
 
         requirement.setFlowInstance(newFlowInstance);
+    }
+
+    public Optional<Actor> findActor(@Nullable String codSubmitterActor) {
+        if (codSubmitterActor == null) {
+            return Optional.empty();
+        }
+        return RequirementUtil.findUser(codSubmitterActor).filter(u -> u instanceof Actor).map(Actor.class::cast);
     }
 
 

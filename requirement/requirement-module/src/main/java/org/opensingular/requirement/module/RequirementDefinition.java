@@ -23,6 +23,9 @@ import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
+import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicantImpl;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.FormRequirementService;
@@ -122,20 +125,23 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     public <RSR extends RequirementSubmissionResponse> RSR send(@Nonnull RI requirementInstance, @Nullable String codSubmitterActor) {
         RequirementSendInterceptor<RI, RSR> listener = requirementConfiguration.getRequirementSendInterceptor();
         springServiceRegistry.lookupSingularInjector().inject(listener);
-        RSR response = listener.newInstanceSubmissionResponse();
+        RSR                  response  = listener.newInstanceSubmissionResponse();
+        ApplicantEntity applicantEntity = requirementService.getApplicant(requirementInstance, codSubmitterActor);
+        RequirementApplicant applicant = listener.configureApplicant(new RequirementApplicantImpl(applicantEntity));
+        requirementInstance.getEntity().setApplicant(applicantEntity.copyFrom(applicant));
 
-        listener.onBeforeSend(requirementInstance, codSubmitterActor, response);
+        listener.onBeforeSend(requirementInstance, applicant, response);
 
         final List<FormEntity> consolidatedDrafts = formRequirementService.consolidateDrafts(requirementInstance);
 
         requirementInstance.setFlowDefinition(requirementConfiguration.getFlowDefinition());
-        listener.onBeforeStartFlow(requirementInstance, codSubmitterActor, response);
+        listener.onBeforeStartFlow(requirementInstance, applicant, response);
         requirementService.startNewFlow(requirementInstance, requirementInstance.getFlowDefinition(), codSubmitterActor);
-        listener.onAfterStartFlow(requirementInstance, codSubmitterActor, response);
+        listener.onAfterStartFlow(requirementInstance, applicant, response);
 
         requirementService.saveRequirementHistory(requirementInstance, consolidatedDrafts);
 
-        listener.onAfterSend(requirementInstance, codSubmitterActor, response);
+        listener.onAfterSend(requirementInstance, applicant, response);
 
         return response;
     }
