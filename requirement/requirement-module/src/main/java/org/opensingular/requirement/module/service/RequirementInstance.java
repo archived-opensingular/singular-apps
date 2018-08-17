@@ -23,6 +23,7 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -205,7 +206,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     @Nonnull
     public SIComposite getForm() {
         if (mainForm == null) {
-            mainForm = requirementService.getMainFormAsInstance(getEntity());
+            mainForm = getForm(getRequirementDefinition().getMainForm());
         }
         return mainForm;
     }
@@ -232,9 +233,19 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
                 .orElseThrow(() -> new SingularRequirementException(String.format("No form found for type '%s'", form.getName())));
     }
 
+    /**
+     * Returns the current open draft for the main form or exception if it does not exists
+     *
+     * @param
+     * @return
+     */
+    public SIComposite getDraft() {
+        return getDraft(SFormUtil.getTypeName(getRequirementDefinition().getMainForm()));
+    }
+
 
     /**
-     * Returns the current open draft for the given type or creates a new transient one if there is no current draft.
+     * Returns the current open draft for the given type or exception if it does not exists
      *
      * @param formName
      * @return

@@ -50,11 +50,11 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         RequirementInstance requirement = getRequirementDefinition().newRequirement();
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
-        requirementService.saveOrUpdate(requirement, instance, true);
+        requirement.saveForm(instance);
 
-        Assert.assertNotNull(requirement.getForm());
+        Assert.assertNotNull(requirement.getDraft());
 
-        Assert.assertTrue(requirement.getForm(STypeFoo.class).getType() instanceof STypeFoo);
+        Assert.assertTrue(requirement.getDraft(STypeFoo.class).getType() instanceof STypeFoo);
 
 
         Assert.assertNotNull(requirement.getFlowDefinition());

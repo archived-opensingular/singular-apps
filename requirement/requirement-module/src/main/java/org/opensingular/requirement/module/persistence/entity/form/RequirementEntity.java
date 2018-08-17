@@ -167,6 +167,12 @@ public class RequirementEntity extends BaseEntity<Long> {
         this.formRequirementEntities = formRequirementEntities;
     }
 
+    /**
+     * Utilizar a busca pelo tipo ao invés de fazer essa iteração na entidade
+     * getForm, getDraft
+     * @return
+     */
+    @Deprecated
     @Nonnull
     public FormEntity getMainForm() {
         FormEntity form = null;

@@ -69,8 +69,8 @@ import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.springframework.core.ResolvableType;
 import org.opensingular.requirement.module.wicket.SingularSession;
+import org.springframework.core.ResolvableType;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -89,25 +89,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.BiConsumer;
-import java.util.stream.Collectors;
-
-import static org.opensingular.flow.core.TaskInstance.*;
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
-import javax.inject.Inject;
-import javax.inject.Provider;
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
@@ -430,7 +411,7 @@ public abstract class RequirementService implements Loggable {
             }
 
             List<FormEntity> formEntities = formRequirementService.consolidateDrafts(requirement);
-            FlowInstance flowInstance = requirement.getFlowInstance();
+            FlowInstance     flowInstance = requirement.getFlowInstance();
 
             if (processParameters != null && !processParameters.isEmpty()) {
                 for (Map.Entry<String, String> entry : processParameters.entrySet()) {
@@ -557,7 +538,7 @@ public abstract class RequirementService implements Loggable {
 
     public List<FormVersionEntity> buscarDuasUltimasVersoesForm(@Nonnull Long codRequirement) {
         RequirementEntity requirementEntity = requirementDAO.findOrException(codRequirement);
-        FormEntity mainForm = requirementEntity.getMainForm();
+        FormEntity        mainForm          = requirementEntity.getMainForm();
         return formRequirementService.findTwoLastFormVersions(mainForm.getCod());
     }
 
@@ -639,10 +620,9 @@ public abstract class RequirementService implements Loggable {
 
     @Nonnull
     public Optional<SIComposite> findCurrentDraftForType(RequirementInstance instance, String formName) {
-        return Optional
-                .ofNullable(formVersionDAO.findCurrentDraftFormVersionEntityForType(instance.getCod(), formName))
+        return formRequirementService.findLastDraftByTypeName(instance.getCod(), formName)
                 .map(getFormRequirementService()::getSInstance)
-                .map(i -> (SIComposite)i);
+                .map(i -> (SIComposite) i);
     }
 
 

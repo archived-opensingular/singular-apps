@@ -23,9 +23,14 @@ import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.form.persistence.entity.QFormEntity;
+import org.opensingular.form.persistence.entity.QFormTypeEntity;
 import org.opensingular.form.persistence.entity.QFormVersionEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
+import org.opensingular.requirement.module.persistence.entity.form.QDraftEntity;
+import org.opensingular.requirement.module.persistence.entity.form.QFormRequirementEntity;
+import org.opensingular.requirement.module.persistence.entity.form.QRequirementEntity;
 
 import javax.annotation.Nonnull;
 import java.util.List;
@@ -39,8 +44,8 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
 
     @Nonnull
     public Optional<FormRequirementEntity> findFormRequirementEntityByTypeName(@Nonnull Long requirementPK,
-            @Nonnull String typeName) {
-        return findUniqueResult(FormRequirementEntity.class,  getSession()
+                                                                               @Nonnull String typeName) {
+        return findUniqueResult(FormRequirementEntity.class, getSession()
                 .createCriteria(FormRequirementEntity.class)
                 .createAlias("form", "formEntity")
                 .createAlias("formEntity.formType", "formType")
@@ -49,7 +54,7 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
     }
 
     public Optional<FormRequirementEntity> findFormRequirementEntityByTypeNameAndTask(@Nonnull Long requirementPK,
-            @Nonnull String typeName, @Nonnull Integer taskDefinitionEntityPK) {
+                                                                                      @Nonnull String typeName, @Nonnull Integer taskDefinitionEntityPK) {
         return findUniqueResult(FormRequirementEntity.class, getSession()
                 .createCriteria(FormRequirementEntity.class)
                 .createAlias("form", "formEntity")
@@ -60,7 +65,7 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
     }
 
     public Optional<FormRequirementEntity> findLastFormRequirementEntityByTypeName(@Nonnull Long requirementPK,
-            @Nonnull String typeName) {
+                                                                                   @Nonnull String typeName) {
         return findUniqueResult(FormRequirementEntity.class, getSession()
                 .createCriteria(FormRequirementEntity.class)
                 .createAlias("form", "formEntity")
@@ -69,6 +74,31 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
                 .add(Restrictions.eq("requirement.cod", requirementPK))
                 .add(Restrictions.eq("formType.abbreviation", typeName))
                 .addOrder(Order.desc("currentFormVersion.inclusionDate")));
+    }
+
+
+    public Optional<FormVersionEntity> findLastDraftByTypeName(@Nonnull Long requirementPK, @Nonnull String typeName) {
+        QFormRequirementEntity formRequirementEntity = QFormRequirementEntity.formRequirementEntity;
+        QRequirementEntity     requirementEntity     = QRequirementEntity.requirementEntity;
+        QDraftEntity           draftEntity           = QDraftEntity.draftEntity;
+        QFormEntity            formEntity            = QFormEntity.formEntity;
+        QFormTypeEntity        formTypeEntity        = QFormTypeEntity.formTypeEntity;
+        QFormVersionEntity     formVersionEntity     = QFormVersionEntity.formVersionEntity;
+
+        return Optional.ofNullable(new HibernateQueryFactory(getSession())
+                .from(formRequirementEntity)
+                .join(formRequirementEntity.requirement, requirementEntity)
+                .join(formRequirementEntity.currentDraftEntity, draftEntity)
+                .join(draftEntity.form, formEntity)
+                .join(formEntity.formType, formTypeEntity)
+                .join(formEntity.currentFormVersionEntity, formVersionEntity)
+                .where(
+                        requirementEntity.cod.eq(requirementPK)
+                                .and(formTypeEntity.abbreviation.eq(typeName))
+                )
+                .select(formVersionEntity)
+                .orderBy(formVersionEntity.inclusionDate.desc())
+                .fetchFirst());
     }
 
     @SuppressWarnings("unchecked")
@@ -84,7 +114,7 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
     }
 
     public FormVersionEntity findPreviousVersion(@Nonnull Long formVersionCod) {
-        QFormVersionEntity qAllFormVersion = QFormVersionEntity.formVersionEntity;
+        QFormVersionEntity qAllFormVersion     = QFormVersionEntity.formVersionEntity;
         QFormVersionEntity qCurrentFormVersion = QFormVersionEntity.formVersionEntity;
         return new HibernateQueryFactory(getSession())
                 .from(qAllFormVersion)
