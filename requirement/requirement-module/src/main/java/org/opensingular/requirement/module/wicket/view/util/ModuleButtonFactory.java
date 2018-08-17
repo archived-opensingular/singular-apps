@@ -40,7 +40,6 @@ public class ModuleButtonFactory {
     }
 
     public DiffLink getDiffButton(String id) {
-        this.context.setDiffEnabled(true);
         return new DiffLink(id, $m.ofValue("Visualizar Diferenças"), context);
     }
 
