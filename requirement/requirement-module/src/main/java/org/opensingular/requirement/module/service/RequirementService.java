@@ -44,6 +44,7 @@ import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.RequirementSendInterceptor;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -60,11 +61,14 @@ import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicantImpl;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.QuickFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
@@ -746,4 +750,41 @@ public abstract class RequirementService implements Loggable {
         requirementDefinitionDAO.save(requirementDefinitionEntity);
     }
 
+    /**
+     * Requirement send process.
+     *
+     * @param requirementInstance
+     *  instace to be sent
+     * @param codSubmitterActor
+     *  actor responsible for sending the requirement
+     * @param listener
+     *  requirment send interceptor
+     * @param flowDefinition
+     *  flow definition
+     * @param <RI>
+     *
+     * @param <RSR>
+     * @return
+     */
+    public <RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> RSR sendRequirement(RI requirementInstance, String codSubmitterActor, RequirementSendInterceptor<RI, RSR> listener, Class<? extends FlowDefinition> flowDefinition) {
+        RSR                  response        = listener.newInstanceSubmissionResponse();
+        ApplicantEntity      applicantEntity = getApplicant(requirementInstance, codSubmitterActor);
+        RequirementApplicant applicant       = listener.configureApplicant(new RequirementApplicantImpl(applicantEntity));
+        requirementInstance.getEntity().setApplicant(applicantEntity.copyFrom(applicant));
+
+        listener.onBeforeSend(requirementInstance, applicant, response);
+
+        final List<FormEntity> consolidatedDrafts = formRequirementService.consolidateDrafts(requirementInstance);
+
+        requirementInstance.setFlowDefinition(flowDefinition);
+        listener.onBeforeStartFlow(requirementInstance, applicant, response);
+        startNewFlow(requirementInstance, requirementInstance.getFlowDefinition(), codSubmitterActor);
+        listener.onAfterStartFlow(requirementInstance, applicant, response);
+
+        saveRequirementHistory(requirementInstance, consolidatedDrafts);
+
+        listener.onAfterSend(requirementInstance, applicant, response);
+
+        return response;
+    }
 }

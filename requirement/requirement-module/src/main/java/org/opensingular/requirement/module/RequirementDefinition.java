@@ -59,8 +59,6 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     @Inject
     private SpringServiceRegistry springServiceRegistry;
 
-    @Inject
-    private FormRequirementService formRequirementService;
 
 
     /**
@@ -121,29 +119,10 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
         return requirementConfiguration.getMainForm();
     }
 
-    @Transactional
     public <RSR extends RequirementSubmissionResponse> RSR send(@Nonnull RI requirementInstance, @Nullable String codSubmitterActor) {
         RequirementSendInterceptor<RI, RSR> listener = requirementConfiguration.getRequirementSendInterceptor();
         springServiceRegistry.lookupSingularInjector().inject(listener);
-        RSR                  response  = listener.newInstanceSubmissionResponse();
-        ApplicantEntity applicantEntity = requirementService.getApplicant(requirementInstance, codSubmitterActor);
-        RequirementApplicant applicant = listener.configureApplicant(new RequirementApplicantImpl(applicantEntity));
-        requirementInstance.getEntity().setApplicant(applicantEntity.copyFrom(applicant));
-
-        listener.onBeforeSend(requirementInstance, applicant, response);
-
-        final List<FormEntity> consolidatedDrafts = formRequirementService.consolidateDrafts(requirementInstance);
-
-        requirementInstance.setFlowDefinition(requirementConfiguration.getFlowDefinition());
-        listener.onBeforeStartFlow(requirementInstance, applicant, response);
-        requirementService.startNewFlow(requirementInstance, requirementInstance.getFlowDefinition(), codSubmitterActor);
-        listener.onAfterStartFlow(requirementInstance, applicant, response);
-
-        requirementService.saveRequirementHistory(requirementInstance, consolidatedDrafts);
-
-        listener.onAfterSend(requirementInstance, applicant, response);
-
-        return response;
+        return requirementService.sendRequirement(requirementInstance, codSubmitterActor, listener, requirementConfiguration.getFlowDefinition());
     }
 
     /**

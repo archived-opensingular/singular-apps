@@ -49,7 +49,6 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
                 .formAction(formAction.getId())
                 .requirementId(line.getRequirementId())
                 .param(FORM_NAME, line.getType())
-                .param(REQUIREMENT_DEFINITION_KEY, line.getRequirementDefinitionId())
                 .build();
 
     }

@@ -342,9 +342,18 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected RequirementDefinition getRequirementDefinition() {
-        return requirementService.lookupRequirementDefinition(getConfig()
+        return (RequirementDefinition) getConfig()
                 .getRequirementDefinitionKey()
-                .orElseThrow(() -> new SingularRequirementException("Could not identify the RequirementDefinition, requirement definition key or requirement id must be provided.")));
+                .map(requirementService::lookupRequirementDefinition)
+                .orElseGet(() ->
+                        getConfig().getRequirementId()
+                                .map(requirementService::lookupRequirementDefinitionForRequirementId)
+                                .orElseThrow(
+                                        () -> new SingularRequirementException(
+                                                "Could not identify the RequirementDefinition, requirement definition key or requirement id must be provided."))
+                );
+
+
     }
 
     private Optional<FormRequirementEntity> getFormRequirementEntity(RI requirement) {
