@@ -16,43 +16,26 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
-import java.util.Optional;
-
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
+import org.opensingular.link.NewTabPageLink;
 import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public class ViewVersionLink extends Panel {
-
-    private ActionContext context;
-
     public ViewVersionLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
-        this.context = new ActionContext(context);
-        this.context.setDiffEnabled(false);
-        this.context.setFormAction(FormAction.FORM_ANALYSIS_VIEW);
-        Link<String> link = new Link<String>("oldVersionLink") {
-            @Override
-            protected void onConfigure() {
-                super.onConfigure();
-                
-                Optional<Long> formVersionId = ViewVersionLink.this.context.getFormVersionId();
-                if (formVersionId.isPresent()) {
-                    this.add($b.attr("target", String.format("version%s", formVersionId.get())));
-                    this.add($b.attr("href", DispatcherPageUtil.buildFullURL(ViewVersionLink.this.context)));
-                    this.setBody(labelModel);
-                }
-            }
-
-            @Override
-            public void onClick() {
-            }
-        };
-        this.add(link);
+        ActionContext newContext = new ActionContext(context);
+        newContext.setFormAction(FormAction.FORM_ANALYSIS_VIEW);
+        Long formVersionCod = newContext.getFormVersionId().orElse(null);
+        if (formVersionCod != null) {
+            NewTabPageLink link = new NewTabPageLink("oldVersionLink", () ->
+                    new ReadOnlyFormPage(new Model<>(formVersionCod), new Model<>(Boolean.TRUE)));
+            link.setTarget(String.format("version%s", formVersionCod));
+            link.setBody(labelModel);
+            this.add(link);
+        }
     }
 }
