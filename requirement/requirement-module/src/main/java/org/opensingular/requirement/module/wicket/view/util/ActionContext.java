@@ -51,8 +51,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public final static String FORM_VERSION_KEY = "v";
 
-    public final static String DIFF = "d";
-
     public final static String FORM_PAGE_CLASS = "w";
 
     public final static String INHERIT_PARENT_FORM_DATA = "b";
@@ -157,15 +155,6 @@ public class ActionContext implements Serializable, Loggable {
 
     public ActionContext setFormVersionId(Long formVersionId) {
         this.params.put(FORM_VERSION_KEY, String.valueOf(formVersionId));
-        return this;
-    }
-
-    public boolean getDiffEnabled() {
-        return Optional.ofNullable(this.params.get(DIFF)).flatMap(s -> Optional.of(Boolean.valueOf(s))).orElse(Boolean.FALSE);
-    }
-
-    public ActionContext setDiffEnabled(boolean enabled) {
-        this.params.put(DIFF, String.valueOf(enabled));
         return this;
     }
 
