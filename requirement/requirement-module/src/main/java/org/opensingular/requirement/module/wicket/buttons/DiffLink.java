@@ -16,90 +16,22 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
-import java.util.Optional;
-
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.opensingular.link.NewTabPageLink;
+import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
-
-import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_FORM_VERSION_ID;
-import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_REQUIREMENT_ID;
-import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_FORM_VERSION_ID;
-import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_REQUIREMENT_ID;
 
 public class DiffLink extends Panel {
-
-    public static class FormVersionsToDiff {
-        private Long current;
-        private Long previous;
-
-        public FormVersionsToDiff(Long current, Long previous) {
-            this.current = current;
-            this.previous = previous;
-        }
-    }
-
-    public static class RequirementVersionsToDiff {
-        private Long current;
-        private Long previous;
-
-        public RequirementVersionsToDiff(Long current, Long previous) {
-            this.current = current;
-            this.previous = previous;
-        }
-    }
-
-
-    public DiffLink(String id, IModel<String> labelModel, ActionContext context, RequirementVersionsToDiff requirementVersionsToDiff) {
-        super(id);
-        ActionContext actionContext = new ActionContext(context)
-                .setParam(CURRENT_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.current));
-
-        if (requirementVersionsToDiff.previous != null) {
-            actionContext.setParam(PREVIOUS_REQUIREMENT_ID, String.valueOf(requirementVersionsToDiff.previous));
-        }
-
-        init(labelModel, actionContext);
-    }
-
-    public DiffLink(String id, IModel<String> labelModel, ActionContext context, FormVersionsToDiff formVersionsToDiff) {
-        super(id);
-        ActionContext actionContext = new ActionContext(context)
-                .setParam(CURRENT_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.current));
-
-        if (formVersionsToDiff.previous != null) {
-            actionContext.setParam(PREVIOUS_FORM_VERSION_ID, String.valueOf(formVersionsToDiff.previous));
-        }
-
-        init(labelModel, actionContext);
-    }
-
     public DiffLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
         init(labelModel, context);
     }
 
     private void init(IModel<String> labelModel, ActionContext context) {
-        Link<String> link = new Link<String>("diffLink") {
-            @Override
-            protected void onConfigure() {
-                super.onConfigure();
-                Optional<Long> requirementId = context.getRequirementId();
-                if (requirementId.isPresent()) {
-                    this.add($b.attr("target", String.format("diff%s", requirementId.get())));
-                    this.add($b.attr("href", DispatcherPageUtil.buildFullURL(context)));
-                    this.setBody(labelModel);
-                }
-            }
-
-            @Override
-            public void onClick() {
-            }
-        };
+        NewTabPageLink link = new NewTabPageLink("diffLink", () -> new DiffFormPage(context));
+        context.getRequirementId().ifPresent(requirementCod -> link.setTarget(String.format("diff%s", requirementCod)));
+        link.setBody(labelModel);
         this.add(link);
     }
-
 }
