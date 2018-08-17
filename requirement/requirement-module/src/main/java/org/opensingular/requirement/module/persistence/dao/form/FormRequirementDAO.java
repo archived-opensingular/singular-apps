@@ -34,6 +34,7 @@ import org.opensingular.requirement.module.persistence.entity.form.QRequirementE
 
 import javax.annotation.Nonnull;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
@@ -78,6 +79,8 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
 
 
     public Optional<FormVersionEntity> findLastDraftByTypeName(@Nonnull Long requirementPK, @Nonnull String typeName) {
+        Objects.requireNonNull(requirementPK);
+        Objects.requireNonNull(typeName);
         QFormRequirementEntity formRequirementEntity = QFormRequirementEntity.formRequirementEntity;
         QRequirementEntity     requirementEntity     = QRequirementEntity.requirementEntity;
         QDraftEntity           draftEntity           = QDraftEntity.draftEntity;

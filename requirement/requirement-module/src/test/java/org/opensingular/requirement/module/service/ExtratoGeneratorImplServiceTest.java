@@ -71,7 +71,7 @@ public class ExtratoGeneratorImplServiceTest {
                 siComposite.findField(STypeMock.class, i -> i.nome);
         nome.ifPresent(field -> field.setValue(JOAQUIM));
 
-        when(requirement.getForm()).thenReturn(siComposite);
+        when(requirement.getForm()).thenReturn(Optional.of(siComposite));
         when(requirementService.loadRequirementInstance(1L))
                 .thenReturn(requirement);
     }

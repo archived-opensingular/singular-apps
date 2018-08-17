@@ -32,15 +32,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  */
 @Entity
 @SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
-@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", indexes = {
-        @Index(columnList = "CO_MODULO ASC, NO_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO")
-})
+@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", uniqueConstraints = @UniqueConstraint(name = "UK_DEFINICAO_REQUISICAO",
+        columnNames = {"CO_MODULO", "SG_DEFINICAO_REQUISICAO"}),
+        indexes = {@Index(columnList = "CO_MODULO ASC, SG_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO"),
+        })
 public class RequirementDefinitionEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_DEFINICAO_REQUISICAO";

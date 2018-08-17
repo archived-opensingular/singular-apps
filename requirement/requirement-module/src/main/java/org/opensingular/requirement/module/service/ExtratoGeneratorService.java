@@ -16,7 +16,7 @@
 
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.form.SIComposite;
+import org.opensingular.form.SInstance;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
@@ -57,8 +57,7 @@ public class ExtratoGeneratorService {
      * @return String with html content.
      */
     public String generateHtml(Long codRequirement) {
-        SIComposite siComposite = requirementService.loadRequirementInstance(codRequirement).getForm();
-        return extratoGenerator.generate(siComposite);
+        return (String) requirementService.loadRequirementInstance(codRequirement).getForm().map(si -> extratoGenerator.generate((SInstance) si)).orElse(null);
     }
 
 }

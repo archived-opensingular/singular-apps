@@ -620,7 +620,9 @@ public abstract class RequirementService implements Loggable {
 
     @Nonnull
     public Optional<SIComposite> findCurrentDraftForType(RequirementInstance instance, String formName) {
-        return formRequirementService.findLastDraftByTypeName(instance.getCod(), formName)
+        return Optional
+                .ofNullable(instance.getCod())
+                .map(cod -> formRequirementService.findLastDraftByTypeName(cod, formName).orElse(null))
                 .map(getFormRequirementService()::getSInstance)
                 .map(i -> (SIComposite) i);
     }

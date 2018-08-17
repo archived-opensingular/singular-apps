@@ -204,11 +204,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @return returns requirement main form last version.
      */
     @Nonnull
-    public SIComposite getForm() {
-        if (mainForm == null) {
-            mainForm = getForm(getRequirementDefinition().getMainForm());
-        }
-        return mainForm;
+    public Optional<SIComposite> getForm() {
+        return getForm(getRequirementDefinition().getMainForm());
     }
 
     /**
@@ -217,9 +214,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public SIComposite getForm(@Nonnull String formName) {
-        return requirementService.findLastFormInstanceByType(this, formName)
-                .orElseThrow(() -> new SingularRequirementException(String.format("No form found for type '%s'", formName)));
+    public Optional<SIComposite> getForm(@Nonnull String formName) {
+        return requirementService.findLastFormInstanceByType(this, formName);
     }
 
     /**
@@ -228,9 +224,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param form
      * @return
      */
-    public SIComposite getForm(@Nonnull Class<? extends SType<?>> form) {
-        return requirementService.findLastFormInstanceByType(this, form)
-                .orElseThrow(() -> new SingularRequirementException(String.format("No form found for type '%s'", form.getName())));
+    public Optional<SIComposite> getForm(@Nonnull Class<? extends SType<?>> form) {
+        return requirementService.findLastFormInstanceByType(this, form);
     }
 
     /**
@@ -239,7 +234,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param
      * @return
      */
-    public SIComposite getDraft() {
+    public Optional<SIComposite> getDraft() {
         return getDraft(SFormUtil.getTypeName(getRequirementDefinition().getMainForm()));
     }
 
@@ -250,12 +245,11 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public SIComposite getDraft(@Nonnull String formName) {
-        return requirementService.findCurrentDraftForType(this, formName)
-                .orElseThrow(() -> new SingularRequirementException(String.format("No form draft found for type '%s'", formName)));
+    public Optional<SIComposite> getDraft(@Nonnull String formName) {
+        return requirementService.findCurrentDraftForType(this, formName);
     }
 
-    public SIComposite getDraft(@Nonnull Class<? extends SType<?>> form) {
+    public Optional<SIComposite> getDraft(@Nonnull Class<? extends SType<?>> form) {
         return getDraft(RequirementUtil.getTypeName(form));
     }
 
@@ -263,15 +257,15 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return newForm(getRequirementDefinition().getMainForm());
     }
 
-    public SInstance newForm(Class<? extends SType<?>> form) {
+    public SInstance newForm(@Nonnull Class<? extends SType<?>> form) {
         return newForm(RequirementUtil.getTypeName(form));
     }
 
-    private SInstance newForm(RefType refType) {
+    private SInstance newForm(@Nonnull RefType refType) {
         return formRequirementService.createInstance(refType, localServicesBinder());
     }
 
-    public SInstance newForm(String formName) {
+    public SInstance newForm(@Nonnull String formName) {
         return newForm(formRequirementService.loadRefType(formName));
     }
 

@@ -19,6 +19,7 @@ package org.opensingular.requirement.module;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
+//TODO reqdef documentar
 public interface RequirementSendInterceptor<RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> {
 
     RSR newInstanceSubmissionResponse();

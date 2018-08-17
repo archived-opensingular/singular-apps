@@ -18,9 +18,6 @@
 
 package org.opensingular.requirement.commons.service;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SFormUtil;
@@ -29,11 +26,14 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
-import org.opensingular.singular.pet.module.foobar.stuff.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.singular.pet.module.foobar.stuff.FOOFlowWithTransition;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
@@ -47,14 +47,14 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        RequirementInstance requirement = getRequirementDefinition().newRequirement();
+        RequirementInstance<?, ?> requirement = getRequirementDefinition().newRequirement();
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
         requirement.saveForm(instance);
 
         Assert.assertNotNull(requirement.getDraft());
 
-        Assert.assertTrue(requirement.getDraft(STypeFoo.class).getType() instanceof STypeFoo);
+        Assert.assertTrue(requirement.getDraft(STypeFoo.class).get().getType() instanceof STypeFoo);
 
 
         Assert.assertNotNull(requirement.getFlowDefinition());
