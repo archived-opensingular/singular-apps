@@ -37,14 +37,19 @@ import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanne
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
+import org.opensingular.requirement.module.spring.security.config.LoginPage;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
 import org.opensingular.requirement.module.wicket.listener.SingularRequirementContextListener;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.web.savedrequest.SavedRequest;
 
+import javax.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -60,6 +65,8 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     @Override
     public void init() {
         super.init();
+
+        createMountPageForLogin();
 
         getFrameworkSettings().setSerializer(new LZ4Serializer());
 
@@ -95,6 +102,18 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
         }
     }
 
+    /**
+     * TODO documentar.
+     */
+    private void createMountPageForLogin() {
+        ApplicationContextProvider.get().getBean(WorkspaceRegistry.class)
+                .getContexts()
+                .parallelStream()
+                .filter(c -> c.getSettings().getSpringSecurityConfigClass() != null
+                        && AbstractSingularSpringSecurityAdapter.class.isAssignableFrom(c.getSettings().getSpringSecurityConfigClass()))
+                .forEach(c -> mountPage("/login", LoginPage.class));
+    }
+
     @Override
     public Session newSession(Request request, Response response) {
         return new SingularSession(request, response);
@@ -125,8 +144,8 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     }
 
     @Override
-    public TransparentWebMarkupContainer  buildPageBody(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
-        TransparentWebMarkupContainer  pageBody = new TransparentWebMarkupContainer(id);
+    public TransparentWebMarkupContainer buildPageBody(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
+        TransparentWebMarkupContainer pageBody = new TransparentWebMarkupContainer(id);
         if (!withMenu) {
             pageBody.add($b.classAppender("page-full-width"));
         }

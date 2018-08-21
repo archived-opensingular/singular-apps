@@ -55,7 +55,7 @@ public class AdministrationAuthenticationProvider extends AbstractUserDetailsAut
             if (serverContext != null) {
                 ctxs.add(serverContext.getClass());
             }
-            return new DefaultUserDetails(principal, null, ImmutableList.of(new SingularPermission("ADMIN", null)), ctxs);
+            return new DefaultUserDetails(principal, principal, ImmutableList.of(new SingularPermission("ADMIN", null)), ctxs);
         }
         throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
     }
