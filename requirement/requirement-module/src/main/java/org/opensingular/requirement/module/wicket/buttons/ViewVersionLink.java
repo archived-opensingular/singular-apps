@@ -32,7 +32,7 @@ public class ViewVersionLink extends Panel {
         Long formVersionCod = newContext.getFormVersionId().orElse(null);
         if (formVersionCod != null) {
             NewTabPageLink link = new NewTabPageLink("oldVersionLink", () ->
-                    new ReadOnlyFormPage(new Model<>(formVersionCod), new Model<>(Boolean.TRUE)));
+                    new ReadOnlyFormPage(new Model<>(formVersionCod), new Model<>(Boolean.TRUE), true));
             link.setTarget(String.format("version%s", formVersionCod));
             link.setBody(labelModel);
             this.add(link);
