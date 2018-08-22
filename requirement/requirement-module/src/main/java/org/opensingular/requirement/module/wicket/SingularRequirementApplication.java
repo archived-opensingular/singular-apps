@@ -37,6 +37,7 @@ import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanne
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.config.LoginPage;
 import org.opensingular.requirement.module.wicket.error.Page403;
@@ -47,9 +48,7 @@ import org.opensingular.requirement.module.wicket.view.template.Footer;
 import org.opensingular.requirement.module.wicket.view.template.Header;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.web.savedrequest.SavedRequest;
 
-import javax.servlet.http.HttpSession;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
@@ -103,15 +102,64 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
     }
 
     /**
-     * TODO documentar.
+     * Method responsible for create the MountPage for LoginPage.
+     * This will create a login for each Security config that extends <code>AbstractSingularSpringSecurityAdapter</code>
+     *
+     * @see AbstractSingularSpringSecurityAdapter
      */
     private void createMountPageForLogin() {
         ApplicationContextProvider.get().getBean(WorkspaceRegistry.class)
                 .getContexts()
                 .parallelStream()
-                .filter(c -> c.getSettings().getSpringSecurityConfigClass() != null
-                        && AbstractSingularSpringSecurityAdapter.class.isAssignableFrom(c.getSettings().getSpringSecurityConfigClass()))
-                .forEach(c -> mountPage("/login", LoginPage.class));
+                .filter(this::findLoginPageByContext)
+                .forEach(c -> mountPage("/login", getLoginPage()));
+    }
+
+    /**
+     * Method will return verify if IServerContext is the same of the current Context,
+     * if the Spring Security Config is a <code> AbstractSingularSpringSecurityAdapter</code>,
+     * and the Login page has been configurated.
+     *
+     * @param serverContext
+     * @return True if find the login Page config.
+     */
+    private boolean findLoginPageByContext(IServerContext serverContext) {
+        return isSingularSpringSecurity(serverContext)
+                && equalsCurrentContext(serverContext)
+                && getLoginPage() != null;
+    }
+
+    /**
+     * Verify if the ServerContext is a <code>AbstractSingularSpringSecurityAdapter</code>
+     *
+     * @param serverContext
+     * @return True if is AbstractSingularSpringSecurityAdapter, false if not.
+     */
+    private boolean isSingularSpringSecurity(IServerContext serverContext) {
+        return serverContext.getSettings().getSpringSecurityConfigClass() != null
+                && AbstractSingularSpringSecurityAdapter.class.isAssignableFrom(serverContext.getSettings().getSpringSecurityConfigClass());
+    }
+
+    /**
+     * Verify if serverContext is the same of the currentContext.
+     *
+     * @param serverContext
+     * @return True if the serverContext is the same of the current context.
+     */
+    private boolean equalsCurrentContext(IServerContext serverContext) {
+        return serverContext.getSettings().getUrlPath().replaceAll("/", "").equals(getWicketFilter().getFilterPath().replaceAll("/", ""));
+    }
+
+    /**
+     * Method to override the login page.
+     * For login work's fine, is necessery to config others things.
+     * For more info look the method #findLoginPageByContext.
+     *
+     * @return Login page.
+     * @see #findLoginPageByContext
+     */
+    protected Class<? extends WebPage> getLoginPage() {
+        return LoginPage.class;
     }
 
     @Override

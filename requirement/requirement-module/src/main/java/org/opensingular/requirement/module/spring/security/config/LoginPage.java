@@ -41,6 +41,9 @@ import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
+/**
+ * Login page used for Singular.
+ */
 public class LoginPage extends SingularAdminTemplate implements Loggable {
 
     @Inject
@@ -109,19 +112,7 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
 
         boolean authenticate(String username, String password) {
             try {
-                AuthenticationManager authenticationManager = ApplicationContextProvider.get()
-                        .getBeansOfType(AbstractSingularSpringSecurityAdapter.class)
-                        .values()
-                        .stream()
-                        .filter(i -> i.getContext().getName().equals(serverContext.getName())).findFirst()
-                        .map(i -> {
-                            try {
-                                return i.authenticationManagerBean();
-                            } catch (Exception ex) {
-                                return null;
-                            }
-                        })
-                        .orElse(null);
+                AuthenticationManager authenticationManager = getAuthenticationManager();
                 if (authenticationManager != null) {
                     Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
                     if (auth.isAuthenticated()) {
@@ -139,6 +130,30 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
             }
             return false;
         }
+    }
+
+    /**
+     * This method will try to find a the security spring adapter for the specific context.
+     *
+     * @return The AuthenticationManager of Spring.
+     * @see AbstractSingularSpringSecurityAdapter
+     */
+    private AuthenticationManager getAuthenticationManager() {
+        return ApplicationContextProvider.get()
+                .getBeansOfType(AbstractSingularSpringSecurityAdapter.class)
+                .values()
+                .stream()
+                .filter(i -> i.getContext().getName().equals(serverContext.getName()))
+                .findFirst()
+                .map(i -> {
+                    try {
+                        return i.authenticationManagerBean();
+                    } catch (Exception ex) {
+                        getLogger().warn(ex.getMessage(), ex);
+                        return null;
+                    }
+                })
+                .orElse(null);
     }
 
 }
