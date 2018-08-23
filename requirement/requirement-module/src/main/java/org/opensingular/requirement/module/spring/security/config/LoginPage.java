@@ -59,15 +59,15 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
     }
 
     private class LoginForm extends Form<Void> {
-        private Model<String> username = new Model<>();
-        private Model<String> password = new Model<>();
-        private WebMarkupContainer feedBackMessage;
 
         LoginForm(String id) {
             super(id);
-            feedBackMessage = new WebMarkupContainer("feedback");
+            WebMarkupContainer feedBackMessage = new WebMarkupContainer("feedback");
             feedBackMessage.setVisible(hasError);
             add(feedBackMessage);
+
+            Model<String> username = new Model<>();
+            Model<String> password = new Model<>();
             add(new RequiredTextField<>("username", username).setLabel(new Model<>("Login")));
             add(new PasswordTextField("password", password).setLabel(new Model<>("Senha")));
         }
