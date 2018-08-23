@@ -147,7 +147,8 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
      * @return True if the serverContext is the same of the current context.
      */
     private boolean equalsCurrentContext(IServerContext serverContext) {
-        return serverContext.getSettings().getUrlPath().replaceAll("/", "").equals(getWicketFilter().getFilterPath().replaceAll("/", ""));
+        return getWicketFilter().getFilterPath() != null && serverContext.getSettings().getUrlPath() != null
+                && serverContext.getSettings().getUrlPath().replaceAll("/", "").equals(getWicketFilter().getFilterPath().replaceAll("/", ""));
     }
 
     /**
