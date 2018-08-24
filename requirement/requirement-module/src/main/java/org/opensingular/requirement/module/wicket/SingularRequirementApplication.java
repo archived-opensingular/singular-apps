@@ -62,7 +62,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
         super.init();
 
         getFrameworkSettings().setSerializer(new DeflatedJavaSerializer(getApplicationKey()));
-        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(35));
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(50));
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
