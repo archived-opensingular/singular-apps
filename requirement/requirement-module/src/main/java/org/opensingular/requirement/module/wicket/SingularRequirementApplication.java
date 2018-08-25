@@ -63,8 +63,7 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
         super.init();
 
         setPageManagerProvider(new RequirementPageManagerProvider(this));
-        getFrameworkSettings().setSerializer(new FSTSerializer());
-        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(25));
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(20));
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
