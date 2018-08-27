@@ -106,15 +106,17 @@ public class RequirementTransitionPanel extends Panel implements Loggable {
                     try {
                         RequirementInstance requirement = requirementService.getRequirement(Long.valueOf(idRequirement.getObject()));
                         instance = requirement.getFlowInstance();
-                        requirementTask.setObject(instance.getCurrentTask().map(TaskInstance::getName).orElse(null));
-                        dropDownChoice.setVisible(true);
-                        target.add(form);
+                        if (instance == null) {
+                            dontFindRequerimentAction(target, dropDownChoice, form, idRequirement);
+                        } else {
+                            requirementTask.setObject(instance.getCurrentTask().map(TaskInstance::getName).orElse(null));
+                            dropDownChoice.setVisible(true);
+                            target.add(form);
+                        }
                     } catch (SingularServerException e) {
                         getLogger().debug(e.getMessage(), e);
                         instance = null;
-                        dropDownChoice.setVisible(false);
-                        target.add(form);
-                        showErrorToast("Não foi encontrada a petição de cod=" + idRequirement.getObject());
+                        dontFindRequerimentAction(target, dropDownChoice, form, idRequirement);
                     }
 
                 }
@@ -128,6 +130,12 @@ public class RequirementTransitionPanel extends Panel implements Loggable {
                 target.add(form);
             }
         };
+    }
+
+    private void dontFindRequerimentAction(AjaxRequestTarget target, Component dropDownChoice, Form form, IModel<String> idRequirement) {
+        dropDownChoice.setVisible(false);
+        target.add(form);
+        showErrorToast("Não foi encontrada a petição de cod=" + idRequirement.getObject());
     }
 
     private void addSubmitButton(Form form) {
