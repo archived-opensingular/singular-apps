@@ -193,9 +193,14 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByCurrentTask() {
         if (ctx.getQuickFilter().getEndedTasks() == null) {
-            query.where($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
+            //TODO Validar com vinicius o impacto dessa clausula.
+            query.where($.task.versionStamp.eq(0).
+                    and($.taskVersion.type.eq(TaskType.END)
+                            .or($.taskVersion.type.ne(TaskType.END)
+                                    .and($.task.endDate.isNull()))));
         } else if (Boolean.TRUE.equals(ctx.getQuickFilter().getEndedTasks())) {
-            query.where($.taskVersion.type.eq(TaskType.END));
+            query.where($.task.versionStamp.eq(0)
+                    .and($.taskVersion.type.eq(TaskType.END)));
         } else {
             query.where($.task.endDate.isNull());
         }
