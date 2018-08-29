@@ -13,7 +13,8 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <meta http-equiv="Content-type" content="text/html; charset=UTF-8">
     <script src="/singular-static/resources/singular/plugins/jquery.min.js" type="text/javascript"></script>
-    <script src="/singular-static/resources/singular/scripts/singular-resource-handler.js" type="text/javascript"></script>
+    <script src="/singular-static/resources/singular/scripts/singular-resource-handler.js"
+            type="text/javascript"></script>
     <style type="text/css">
         .login .logo img.logo-sso {
             height: auto;
@@ -36,7 +37,6 @@
             .addScript("/global/scripts/app.js")
             .addScript("/global/plugins/respond.min.js")
             .addScript("/global/plugins/excanvas.min.js")
-            .addScript("/global/plugins/jquery-migrate.min.js")
             .addScript("/global/plugins/bootstrap/js/bootstrap.min.js")
             .addScript("/global/plugins/jquery.blockui.min.js")
             .addScript("/global/plugins/uniform/jquery.uniform.min.js")
@@ -59,13 +59,13 @@
 </div>
 
 <div class="content">
-    <form action="<@spring.url '/login'/>" method="POST" class="login-form">
+    <form action="<@spring.url loginPath/>" method="POST" class="login-form">
         <h3 class="form-title">Login</h3>
 
     <#if RequestParameters.error??>
         <div class="alert alert-danger">
             <button class="close" data-close="alert"></button>
-            <span>Preencha o usuário e a senha.</span>
+            <span>Não foi possível autenticar o usuario</span>
         </div>
     </#if>
         <div class="form-group">
@@ -82,7 +82,7 @@
             <input type="password"
                    class="form-control form-control-solid placeholder-no-fix"
                    name="password"
-                   autocomplete="on"
+                   autocomplete="off"
                    placeholder="Senha"
                    id="password"/>
         </div>
@@ -94,7 +94,7 @@
 
 </div>
 <div class="copyright">
-    2017 ©
+    2018 ©
     <a target="_blank" id="ownerLink7" href="http://www.opensingular.org"
        title="Soluções Inteligentes para criação de petição e análise.">
         Singular.

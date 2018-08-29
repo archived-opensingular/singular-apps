@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-apps</artifactId>
 
-    <version>1.8.0-SNAPSHOT</version>
+    <version>1.8.2-SNAPSHOT</version>
     <name>[singular-apps]</name>
     <description>Singular Apps</description>
     <url>http://opensingular.org</url>
@@ -69,7 +69,23 @@
                     <source>${jdk.version}</source>
                     <target>${jdk.version}</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
+                    <compilerId>javac-with-errorprone</compilerId>
+                    <forceJavacCompilerUse>true</forceJavacCompilerUse>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.plexus</groupId>
+                        <artifactId>plexus-compiler-javac-errorprone</artifactId>
+                        <version>2.8.3</version>
+                    </dependency>
+                    <!-- override plexus-compiler-javac-errorprone's dependency on
+                         Error Prone with the latest version -->
+                    <dependency>
+                        <groupId>com.google.errorprone</groupId>
+                        <artifactId>error_prone_core</artifactId>
+                        <version>2.3.1</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -183,7 +199,7 @@
             <dependency>
                 <groupId>org.opensingular</groupId>
                 <artifactId>bom</artifactId>
-                <version>1.8.0-SNAPSHOT</version>
+                <version>1.8.2-SNAPSHOT</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
@@ -198,6 +214,16 @@
 
         <!-- FOR JAVADOC GENERATION -->
         <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.activation</groupId>
+            <artifactId>activation</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
             <groupId>javax.interceptor</groupId>
             <artifactId>javax.interceptor-api</artifactId>
             <scope>provided</scope>
@@ -205,6 +231,21 @@
         <dependency>
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.jws</groupId>
+            <artifactId>jsr181-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.xml.ws</groupId>
+            <artifactId>jaxws-api</artifactId>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -276,7 +317,7 @@
 
     <properties>
         <sonar.issue.ignore.multicriteria>
-            e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15,e16,e17,e18,e19,s1,s2,s3,s4,s5,s6,s7,s8,s9
+            e1,e2,e3,e4,e5,e6,e7,e8,e9,e10,e11,e12,e13,e14,e15,e16,e17,e18,e19,e20,s1,s2,s3,s4,s5,s6,s7,s8,s9,s10,s11,s12,s13
         </sonar.issue.ignore.multicriteria>
         <!-- Falso positivo: injeção via construtor -->
         <sonar.issue.ignore.multicriteria.e1.ruleKey>squid:S3306</sonar.issue.ignore.multicriteria.e1.ruleKey>
@@ -348,6 +389,11 @@
         <sonar.issue.ignore.multicriteria.e19.ruleKey>fb-contrib:PCOA_PARTIALLY_CONSTRUCTED_OBJECT_ACCESS
         </sonar.issue.ignore.multicriteria.e19.ruleKey>
         <sonar.issue.ignore.multicriteria.e19.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e19.resourceKey>
+        <!-- Falso positivo: alteração de coleção list para set -->
+        <sonar.issue.ignore.multicriteria.e20.ruleKey>fb-contrib:DLC_DUBIOUS_LIST_COLLECTION</sonar.issue.ignore.multicriteria.e20.ruleKey>
+        <sonar.issue.ignore.multicriteria.e20.resourceKey>**/*.java</sonar.issue.ignore.multicriteria.e20.resourceKey>
+
+
 
         <!-- Falso positivo: concatenacao de parametros  -->
         <sonar.issue.ignore.multicriteria.s1.ruleKey>findsecbugs:SQL_INJECTION_HIBERNATE
@@ -390,6 +436,14 @@
         </sonar.issue.ignore.multicriteria.s9.ruleKey>
         <sonar.issue.ignore.multicriteria.s9.resourceKey>**/SingularApplication.java
         </sonar.issue.ignore.multicriteria.s9.resourceKey>
+        <sonar.issue.ignore.multicriteria.s10.ruleKey>fb-contrib:JVR_JDBC_VENDOR_RELIANCE</sonar.issue.ignore.multicriteria.s10.ruleKey>
+        <sonar.issue.ignore.multicriteria.s10.resourceKey>**/H2DropAllObjectsPopulator.java</sonar.issue.ignore.multicriteria.s10.resourceKey>
+        <sonar.issue.ignore.multicriteria.s11.ruleKey>findsecbugs:SQL_INJECTION_JDBC</sonar.issue.ignore.multicriteria.s11.ruleKey>
+        <sonar.issue.ignore.multicriteria.s11.resourceKey>**/H2DropAllObjectsPopulator.java</sonar.issue.ignore.multicriteria.s11.resourceKey>
+        <sonar.issue.ignore.multicriteria.s12.ruleKey>fb-contrib:JVR_JDBC_VENDOR_RELIANCE</sonar.issue.ignore.multicriteria.s12.ruleKey>
+        <sonar.issue.ignore.multicriteria.s12.resourceKey>**/SingularDataBasePopulator.java</sonar.issue.ignore.multicriteria.s12.resourceKey>
+        <sonar.issue.ignore.multicriteria.s13.ruleKey>findsecbugs:SQL_INJECTION_JDBC</sonar.issue.ignore.multicriteria.s13.ruleKey>
+        <sonar.issue.ignore.multicriteria.s13.resourceKey>**/SingularDataBasePopulator.java</sonar.issue.ignore.multicriteria.s13.resourceKey>
 
         <!-- Sonar -->
         <sonar.java.coveragePlugin>jacoco</sonar.java.coveragePlugin>

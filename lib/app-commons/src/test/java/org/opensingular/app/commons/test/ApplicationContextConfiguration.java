@@ -18,19 +18,27 @@
 
 package org.opensingular.app.commons.test;
 
-import java.nio.charset.StandardCharsets;
-import java.util.Optional;
-import java.util.Properties;
-import javax.sql.DataSource;
-
 import com.zaxxer.hikari.HikariDataSource;
 import org.hibernate.SessionFactory;
-import org.opensingular.app.commons.mail.service.email.DefaultEmailConfiguration;
+import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
+import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
+import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
+import org.opensingular.app.commons.mail.schedule.TransactionalQuartzScheduledService;
+import org.opensingular.app.commons.mail.service.dto.Email;
+import org.opensingular.app.commons.mail.service.email.EmailPersistenceService;
+import org.opensingular.app.commons.mail.service.email.EmailSender;
+import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
+import org.opensingular.app.commons.mail.service.email.IEmailService;
+import org.opensingular.form.persistence.dao.AttachmentContentDao;
+import org.opensingular.form.persistence.dao.AttachmentDao;
+import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
+import org.opensingular.schedule.IScheduleService;
+import org.opensingular.schedule.ScheduleDataBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -44,6 +52,12 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import javax.sql.DataSource;
+import java.nio.charset.StandardCharsets;
+import java.util.Optional;
+import java.util.Properties;
+import java.util.UUID;
+
 import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA_NAME;
 
 @EnableTransactionManagement(proxyTargetClass = true)
@@ -54,7 +68,7 @@ import static org.opensingular.lib.commons.base.SingularProperties.CUSTOM_SCHEMA
                 @ComponentScan.Filter(type = FilterType.ANNOTATION,
                         value = AutoScanDisabled.class)
         })
-public class ApplicationContextConfiguration extends DefaultEmailConfiguration implements Loggable {
+public class ApplicationContextConfiguration implements Loggable {
 
 
     @Bean
@@ -102,7 +116,7 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         try {
             getLogger().warn("Usando datasource banco embarcado H2");
             HikariDataSource dataSource = new HikariDataSource();//NOSONAR
-            dataSource.setJdbcUrl("jdbc:h2:./singularserverdb;AUTO_SERVER=TRUE;mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
+            dataSource.setJdbcUrl("jdbc:h2:mem:maildb" + UUID.randomUUID().toString() + ";mode=ORACLE;CACHE_SIZE=4096;EARLY_FILTER=1;MULTI_THREADED=1;LOCK_TIMEOUT=15000;");
             dataSource.setUsername("sa");
             dataSource.setPassword("sa");
             dataSource.setDriverClassName("org.h2.Driver");
@@ -131,6 +145,68 @@ public class ApplicationContextConfiguration extends DefaultEmailConfiguration i
         initializer.setDatabasePopulator(databasePopulator());
         return initializer;
     }
+
+    @Bean
+    public AttachmentDao attachmentDao() {
+        return new AttachmentDao();
+    }
+
+    @Bean
+    public AttachmentContentDao attachmentContentDao() {
+        return new AttachmentContentDao<>();
+    }
+
+    @Bean
+    public AttachmentPersistenceService filePersistence() {
+        return new AttachmentPersistenceService();
+    }
+
+    @Bean
+    public EmailDao emailDao() {
+        return new EmailDao();
+    }
+
+    @Bean
+    public EmailAddresseeDao emailAddresseeDao() {
+        return new EmailAddresseeDao();
+    }
+
+    @Bean
+    public EmailSender emailSender() {
+        return new EmailSender();
+    }
+
+    @Bean
+    public IEmailService<Email> emailService() {
+        return new EmailPersistenceService();
+    }
+
+    @Bean
+    @DependsOn({"emailSender", "scheduleService", "emailService"})
+    public EmailSenderScheduledJob scheduleEmailSenderJob(IScheduleService scheduleService) {
+        EmailSenderScheduledJob emailSenderScheduledJob = new EmailSenderScheduledJob(ScheduleDataBuilder.buildMinutely(1));
+        scheduleService.schedule(emailSenderScheduledJob);
+        return emailSenderScheduledJob;
+    }
+
+    // ######### Beans for Quartz ##########
+    @Bean
+    @DependsOn("schedulerFactoryBean")
+    public IScheduleService scheduleService(SingularSchedulerBean schedulerFactoryBean) {
+        return new TransactionalQuartzScheduledService(schedulerFactoryBean);
+    }
+
+    /**
+     * Configure the SchedulerBean for Singular.
+     * This bean have to implents InitializingBean to work properly.
+     *
+     * @return SingularSchedulerBean instance.
+     */
+    @Bean
+    public SingularSchedulerBean schedulerFactoryBean(DataSource dataSource) {
+        return new SingularSchedulerBean(dataSource);
+    }
+
 
 
 }

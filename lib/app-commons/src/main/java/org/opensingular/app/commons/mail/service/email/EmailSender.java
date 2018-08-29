@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.opensingular.app.commons.mail.service.email;
 
@@ -50,26 +48,26 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
     @PostConstruct
     public void init() {
         SingularProperties properties = SingularProperties.get();
-        setHost(properties.getPropertyOpt("singular.mail.host").orElse(null));
+        setHost(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_HOST).orElse(null));
         if (getHost() != null) {
-            from = properties.getPropertyOpt("singular.mail.from").orElse(null);
-            setPort(properties.getPropertyOpt("singular.mail.port").orElse(null));
-            setUsername(properties.getPropertyOpt("singular.mail.username").orElse(null));
-            setPassword(properties.getPropertyOpt("singular.mail.password").orElse(null));
-            setProtocol(properties.getPropertyOpt("singular.mail.protocol").orElse(null));
+            from = properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_FROM).orElse(null);
+            setPort(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PORT).orElse(null));
+            setUsername(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_USERNAME).orElse(null));
+            setPassword(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SECURITY_WORD).orElse(null));
+            setProtocol(properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_PROTOCOL).orElse(null));
 
             getJavaMailProperties().setProperty("mail.smtp.host", getHost());
             getJavaMailProperties().setProperty("mail.smtp.port", String.valueOf(getPort()));
             if (getUsername() != null) {
                 getJavaMailProperties().setProperty("mail.smtp.user", getUsername());
             }
-            properties.getPropertyOpt("singular.mail.auth").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_AUTH).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.auth", v));
 
-            properties.getPropertyOpt("singular.mail.smtp.starttls.enable").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SMTP_STARTTLS_ENABLE).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.starttls.enable", v));
 
-            properties.getPropertyOpt("singular.mail.smtp.ssl.trust").ifPresent(
+            properties.getPropertyOpt(SingularProperties.SINGULAR_MAIL_SMTP_SSL_TRUST).ifPresent(
                     v -> getJavaMailProperties().put("mail.smtp.ssl.trust", v));
 
             getLogger().info("SMTP mail sender Enabled.");

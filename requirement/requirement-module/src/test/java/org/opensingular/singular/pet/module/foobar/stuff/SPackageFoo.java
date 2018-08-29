@@ -18,14 +18,53 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
-import org.opensingular.form.PackageBuilder;
-import org.opensingular.form.SPackage;
+import javax.annotation.Nonnull;
 
+import org.opensingular.form.PackageBuilder;
+import org.opensingular.form.SIComposite;
+import org.opensingular.form.SInfoPackage;
+import org.opensingular.form.SInfoType;
+import org.opensingular.form.SPackage;
+import org.opensingular.form.STypeComposite;
+import org.opensingular.form.STypeList;
+import org.opensingular.form.TypeBuilder;
+import org.opensingular.form.type.core.STypeString;
+import org.opensingular.form.view.SViewListByMasterDetail;
+
+
+@SInfoPackage(name = SPackageFoo.NAME)
 public class SPackageFoo extends SPackage {
 
+    public static final String NAME = "foooooo";
+
     @Override
-    protected void onLoadPackage(PackageBuilder pb) {
+    protected void onLoadPackage(@Nonnull PackageBuilder pb) {
         super.onLoadPackage(pb);
         pb.createType(STypeFoo.class);
+    }
+
+    @SInfoType(label = "FooModalWithAnnotations", name = STypeFOOModal.NAME, spackage = SPackageFoo.class)
+    public static class STypeFOOModal extends STypeComposite<SIComposite> {
+
+        public static final String NAME = "StypeFooModal";
+
+        public static final String FULL_NAME = SPackageFoo.NAME + "." + NAME;
+        public static final String FIELD_NOME = "nome";
+
+        public STypeList<STypeComposite<SIComposite>, SIComposite> pessoas;
+
+        @Override
+        protected void onLoadType(@Nonnull TypeBuilder tb) {
+            pessoas = this.addFieldListOfComposite("pessoas", "pessoa");
+
+            STypeComposite<SIComposite> pessoa = pessoas.getElementsType();
+            STypeString nome = pessoa.addFieldString("nome");
+
+            pessoas.withView(new SViewListByMasterDetail()
+                    .col(nome, "Nome")
+            );
+
+            nome.asAtrAnnotation().setAnnotated();
+        }
     }
 }

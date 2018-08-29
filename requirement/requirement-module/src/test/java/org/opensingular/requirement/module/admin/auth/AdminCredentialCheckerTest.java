@@ -26,12 +26,11 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.opensingular.requirement.commons.auth.AdminCredentialChecker;
-import org.opensingular.requirement.commons.persistence.entity.parameter.ParameterEntity;
-import org.opensingular.requirement.commons.service.ParameterService;
-import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.admin.auth.DatabaseAdminCredentialChecker;
+import org.opensingular.requirement.module.auth.AdminCredentialChecker;
+import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
+import org.opensingular.requirement.module.service.ParameterService;
+import org.opensingular.requirement.module.SingularModule;
 
 import java.util.Optional;
 

@@ -1,19 +1,17 @@
 /*
+ * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
- *  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
- *  *
- *  * Licensed under the Apache License, Version 2.0 (the "License");
- *  *  you may not use this file except in compliance with the License.
- *  * You may obtain a copy of the License at
- *  *
- *  * http://www.apache.org/licenses/LICENSE-2.0
- *  *
- *  * Unless required by applicable law or agreed to in writing, software
- *  * distributed under the License is distributed on an "AS IS" BASIS,
- *  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  * See the License for the specific language governing permissions and
- *  * limitations under the License.
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
  *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
 package org.opensingular.studio.core.panel;
@@ -59,16 +57,23 @@ import java.util.Optional;
 
 public class CrudListContent extends CrudShellContent {
 
-    private IModel<Icon>            iconModel          = new Model<>();
-    private IModel<String>          titleModel         = new Model<>();
+    private IModel<Icon> iconModel = new Model<>();
+    private IModel<String> titleModel = new Model<>();
     private List<HeaderRightButton> headerRightButtons = new ArrayList<>();
 
-    private   BFModalWindow           modalFilter;
-    private   SingularFormPanel       filterPanel;
+    private BFModalWindow modalFilter;
+    private SingularFormPanel filterPanel;
     protected FormStateUtil.FormState filterState;
 
+    private final CrudListConfig crudListConfig;
+
     public CrudListContent(CrudShellManager crudShellManager) {
+        this(crudShellManager, new CrudListConfig());
+    }
+
+    public CrudListContent(CrudShellManager crudShellManager, CrudListConfig crudListConfig) {
         super(crudShellManager);
+        this.crudListConfig = crudListConfig;
         addDefaultHeaderRightActions();
     }
 
@@ -92,9 +97,10 @@ public class CrudListContent extends CrudShellContent {
 
     private void addTable() {
         BSDataTableBuilder<SInstance, String, IColumn<SInstance, String>> tableBuilder = new BSDataTableBuilder<>(resolveProvider());
-        tableBuilder.setBorderedTable(false);
+
         StudioTableDefinition configuredStudioTable = getConfiguredStudioTable();
-        configuredStudioTable.getColumns()
+        configuredStudioTable
+                .getColumns()
                 .forEach((name, path) -> tableBuilder.appendPropertyColumn(Model.of(name), path, ins -> ins.getField(path).toStringDisplay()));
 
         tableBuilder.appendActionColumn("", (BSDataTableBuilder.BSActionColumnCallback<SInstance, String>)
@@ -103,6 +109,32 @@ public class CrudListContent extends CrudShellContent {
                     listAction.configure(config);
                     actionColumn.appendAction(config, (org.opensingular.lib.wicket.util.datatable.IBSAction<SInstance>) (target, model) -> listAction.onAction(target, model, getCrudShellManager()));
                 }));
+
+        tableBuilder.setBorderedTable(false);
+
+        if (crudListConfig.getRowsPerPage() != null) {
+            tableBuilder.setRowsPerPage(crudListConfig.getRowsPerPage());
+        }
+
+        if (crudListConfig.getAdvancedTable() != null) {
+            tableBuilder.setAdvancedTable(crudListConfig.getAdvancedTable());
+        }
+
+        if (crudListConfig.getBorderedTable() != null) {
+            tableBuilder.setBorderedTable(crudListConfig.getBorderedTable());
+        }
+
+        if (crudListConfig.getCondensedTable() != null) {
+            tableBuilder.setCondensedTable(crudListConfig.getCondensedTable());
+        }
+
+        if (crudListConfig.getHoverRows() != null) {
+            tableBuilder.setHoverRows(crudListConfig.getHoverRows());
+        }
+
+        if (crudListConfig.getStripedRows() != null) {
+            tableBuilder.setStripedRows(crudListConfig.getStripedRows());
+        }
 
         add(tableBuilder.build("table"));
     }
@@ -179,6 +211,18 @@ public class CrudListContent extends CrudShellContent {
                 }
             });
 
+            AjaxButton limparButton = new AjaxButton("btnLimpar") {
+                @Override
+                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    filterPanel.getInstanceModel().getObject().clearInstance();
+                    form.clearInput();
+//                    filterPanel.getInstanceModel().getObject().init();
+                    target.add(filterPanel);
+                }
+            };
+            limparButton.setDefaultFormProcessing(false);
+            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
+
             AjaxButton cancelButton = new AjaxButton("btnCancelar") {
                 @Override
                 protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
@@ -223,13 +267,8 @@ public class CrudListContent extends CrudShellContent {
 
         @Override
         protected void populateItem(ListItem<HeaderRightButton> item) {
+            item.setRenderBodyOnly(true);
             item.add(new HeaderRightActionActionAjaxLink(item.getModelObject()));
-        }
-
-        @Override
-        protected void onInitialize() {
-            super.onInitialize();
-            setRenderBodyOnly(true);
         }
 
         private static class HeaderRightActionActionAjaxLink extends ActionAjaxLink<Void> {
@@ -331,7 +370,7 @@ public class CrudListContent extends CrudShellContent {
         public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
             this.crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
                 studioDefinition.getRepository().delete(FormKey.from(model.getObject()));
-                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluido com sucesso.");
+                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluído com sucesso.");
                 this.crudShellManager.update(ajaxRequestTarget);
             });
         }
