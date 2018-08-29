@@ -16,18 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.view.util.history;
 
-import static org.opensingular.lib.wicket.util.util.Shortcuts.*;
-import static org.opensingular.requirement.commons.wicket.view.util.ActionContext.*;
-
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-
-import javax.inject.Inject;
-
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -73,6 +61,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_ID;
