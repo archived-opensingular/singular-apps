@@ -19,7 +19,6 @@ package org.opensingular.requirement.module.wicket.view.form;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.ExternalLink;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
@@ -27,10 +26,10 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.link.NewTabPageLink;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
-import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import javax.inject.Inject;
 
@@ -44,10 +43,12 @@ public class ReadOnlyFormPage extends ServerTemplate {
 
     protected final IModel<Long> formVersionEntityPK;
     protected final IModel<Boolean> showAnnotations;
+    private final boolean showCompareLastVersionButton;
 
-    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
+    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations, boolean showCompareLastVersionButton) {
         this.formVersionEntityPK = formVersionEntityPK;
         this.showAnnotations = showAnnotations;
+        this.showCompareLastVersionButton = showCompareLastVersionButton;
     }
 
     @Override
@@ -65,11 +66,10 @@ public class ReadOnlyFormPage extends ServerTemplate {
 
         FormVersionEntity previousVersion = formRequirementService.findPreviousVersion(formVersionEntityPK.getObject());
         Component viewDiff;
-        if (previousVersion != null) {
-            viewDiff = new ExternalLink("viewDiff", DispatcherPageUtil.buildFullURL(new ActionContext()
-                    .setDiffEnabled(true)
+        if (previousVersion != null && showCompareLastVersionButton) {
+            viewDiff = new NewTabPageLink("viewDiff", () -> new DiffFormPage(new ActionContext()
                     .setParam(CURRENT_FORM_VERSION_ID, formVersionEntityPK.getObject().toString())
-                    .setParam(PREVIOUS_FORM_VERSION_ID, previousVersion.getCod().toString())) + "&dispatch=true");
+                    .setParam(PREVIOUS_FORM_VERSION_ID, previousVersion.getCod().toString())));
         } else {
             viewDiff = new EmptyPanel("viewDiff").setVisible(false);
         }
