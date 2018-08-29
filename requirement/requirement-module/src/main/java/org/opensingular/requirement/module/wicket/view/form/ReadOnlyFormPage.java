@@ -43,10 +43,12 @@ public class ReadOnlyFormPage extends ServerTemplate {
 
     protected final IModel<Long> formVersionEntityPK;
     protected final IModel<Boolean> showAnnotations;
+    private final boolean showCompareLastVersionButton;
 
-    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations) {
+    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations, boolean showCompareLastVersionButton) {
         this.formVersionEntityPK = formVersionEntityPK;
         this.showAnnotations = showAnnotations;
+        this.showCompareLastVersionButton = showCompareLastVersionButton;
     }
 
     @Override
@@ -64,7 +66,7 @@ public class ReadOnlyFormPage extends ServerTemplate {
 
         FormVersionEntity previousVersion = formRequirementService.findPreviousVersion(formVersionEntityPK.getObject());
         Component viewDiff;
-        if (previousVersion != null) {
+        if (previousVersion != null && showCompareLastVersionButton) {
             viewDiff = new NewTabPageLink("viewDiff", () -> new DiffFormPage(new ActionContext()
                     .setParam(CURRENT_FORM_VERSION_ID, formVersionEntityPK.getObject().toString())
                     .setParam(PREVIOUS_FORM_VERSION_ID, previousVersion.getCod().toString())));
