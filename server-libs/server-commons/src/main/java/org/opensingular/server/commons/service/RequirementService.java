@@ -20,6 +20,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
@@ -600,4 +601,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
         taskInstance.log(TASK_VISUALIZATION, FormatUtil.dateToDefaultTimestampString(new Date()));
     }
 
+    @Transactional
+    public void forceStateUpdate(FlowInstance instance, STask<?> sTaskByName) {
+        instance.forceStateUpdate(sTaskByName);
+    }
 }

@@ -26,4 +26,5 @@ org.opensingular.server.p.commons.admin.healthsystem.extension.DocsAdminEntry
 org.opensingular.server.p.commons.admin.healthsystem.extension.ThreadsAdminEntry
 org.opensingular.server.p.commons.admin.healthsystem.extension.DiskAdminEntry
 org.opensingular.server.p.commons.admin.healthsystem.extension.MemoryAdminEntry
+org.opensingular.server.p.commons.admin.healthsystem.extension.RequirementTransitionEntry
 
