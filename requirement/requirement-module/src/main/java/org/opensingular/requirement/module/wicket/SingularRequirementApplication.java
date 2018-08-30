@@ -26,13 +26,14 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.apache.wicket.serialize.java.JavaSerializer;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.opensingular.internal.lib.wicket.test.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.lib.wicket.util.application.LZ4Serializer;
+import org.opensingular.lib.wicket.util.application.FSTSerializer;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
@@ -67,9 +68,8 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
         createMountPageForLogin();
 
-        getFrameworkSettings().setSerializer(new LZ4Serializer());
-
-        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(25));
+        setPageManagerProvider(new RequirementPageManagerProvider(this));
+        getStoreSettings().setMaxSizePerSession(Bytes.megabytes(20));
 
         getRequestCycleSettings().setTimeout(Duration.minutes(5));
         getRequestCycleListeners().add(new SingularRequirementContextListener());
