@@ -17,7 +17,7 @@
 package org.opensingular.requirement.module.service.dto;
 
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.io.Serializable;
@@ -26,18 +26,18 @@ import java.util.List;
 import java.util.Set;
 
 public class ItemBox implements Serializable {
-    private String name;
-    private String description;
-    private String helpText;
-    private Icon icon;
-    private List<DatatableField> fieldsDatatable;
-    private boolean showQuickFilter = true;
-    private Class<? extends BoxDefinition> boxDefinitionClass;
-    private Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
-    private boolean displayCounters = true;
-    private boolean evalPermission = false;
+    private String                                         name;
+    private String                                         description;
+    private String                                         helpText;
+    private Icon                                           icon;
+    private List<DatatableField>                           fieldsDatatable;
+    private boolean                                        showQuickFilter = true;
+    private Class<? extends BoxDefinition>                 boxDefinitionClass;
+    private Set<Class<? extends RequirementDefinition<?>>> requirements    = new LinkedHashSet<>();
+    private boolean                                        displayCounters = true;
+    private boolean                                        evalPermission  = false;
 
-    public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
+    public ItemBox newFor(Class<? extends RequirementDefinition<?>> requirement) {
         getRequirements().add(requirement);
         return this;
     }
@@ -105,11 +105,11 @@ public class ItemBox implements Serializable {
         return this;
     }
 
-    public Set<Class<? extends SingularRequirement>> getRequirements() {
+    public Set<Class<? extends RequirementDefinition<?>>> getRequirements() {
         return requirements;
     }
 
-    public ItemBox requirements(Set<Class<? extends SingularRequirement>> requirements) {
+    public ItemBox requirements(Set<Class<? extends RequirementDefinition<?>>> requirements) {
         this.requirements = requirements;
         return this;
     }

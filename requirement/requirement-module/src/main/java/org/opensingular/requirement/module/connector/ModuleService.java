@@ -18,6 +18,7 @@ package org.opensingular.requirement.module.connector;
 
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -66,7 +67,7 @@ public interface ModuleService {
     /**
      *
      */
-    RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType);
+    RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> singularRequirement, FormTypeEntity formType);
 
     /**
      *

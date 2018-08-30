@@ -23,9 +23,8 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.RequirementDefinition;
-import org.opensingular.requirement.module.SingularRequirement;
+
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
@@ -71,7 +70,7 @@ public class NewRequirementLink extends Panel {
     }
 
     protected void addSingleButton(ISupplier<Boolean> visibleSupplier) {
-        Optional<RequirementDefinition> findFirst = getRequirementsStream().findFirst();
+        Optional<RequirementDefinition<?>> findFirst = getRequirementsStream().findFirst();
         if (findFirst.isPresent()) {
             Link<Void> newButton = buildLink("_botao", labelModel, findFirst.get());
             newButton.add($b.visibleIf(visibleSupplier));
@@ -111,7 +110,7 @@ public class NewRequirementLink extends Panel {
         this.add(dropdownMenu);
     }
 
-    private Stream<RequirementDefinition> getRequirementsStream() {
+    private Stream<RequirementDefinition<?>> getRequirementsStream() {
         return requirementDefinitionService.getRequirements().stream()
                 .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> reqClass.isAssignableFrom(req.getClass())));
     }

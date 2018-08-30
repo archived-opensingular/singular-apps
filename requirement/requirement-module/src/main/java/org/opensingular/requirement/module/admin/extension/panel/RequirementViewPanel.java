@@ -45,7 +45,7 @@ public class RequirementViewPanel extends Panel {
         add(new RequirementTableBuilder().build("table"));
     }
 
-    private List<RequirementDefinition> getRequirements() {
+    private List<RequirementDefinition<?>> getRequirements() {
         return requirementDefinitionService.getRequirements();
     }
 

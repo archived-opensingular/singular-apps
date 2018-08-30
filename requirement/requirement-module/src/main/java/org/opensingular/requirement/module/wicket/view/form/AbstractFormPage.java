@@ -167,7 +167,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
         modalContainer.setOutputMarkupId(true);
-        modalContainer.add(new ModalEventListenerBehavior(modalContainer));
+        modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
         singularFormPanel.setInstanceCreator(() -> (SInstance) getRequirement().getDraft(config.getFormName()).orElse(getRequirement().newForm(config.getFormName())));

@@ -65,7 +65,7 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
     protected RequirementService requirementService;
 
     @Inject
-    protected FormRequirementService<?> formRequirementService;
+    protected FormRequirementService formRequirementService;
 
     /**
      * Tabela de registros

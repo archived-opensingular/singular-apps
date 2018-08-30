@@ -22,8 +22,6 @@ import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
@@ -40,6 +38,8 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
+import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.RequirementService;
@@ -60,6 +60,7 @@ import java.util.stream.Collectors;
 
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
+
     @Inject
     private SingularModule singularModule;
 
@@ -181,23 +182,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     @Override
-    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user) {
-        return new WorkspaceConfigurationMetadata(listMenu(context, user));
-    }
-
-    @Override
-    public void save(SingularRequirement requirement) {
-        Class<? extends SType> mainForm = requirement.getMainForm();
-        SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
-
-        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirement, formType);
-        requirementDefinitionDAO.save(requirementDefinitionEntity);
-        requirement.setEntity(requirementDefinitionEntity);
-    }
-
-    @Override
-    public RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType) {
+    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> singularRequirement, FormTypeEntity formType) {
         ModuleEntity module = getModule();
         RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
 

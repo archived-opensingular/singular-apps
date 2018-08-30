@@ -5,7 +5,7 @@ import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.context.SFormConfig;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
@@ -72,8 +72,8 @@ public class BoxFilterFactory {
     private List<FormDTO> listMainFormsWithPermission() {
         if (mainForms == null) {
             mainForms = new ArrayList<>();
-            List<SingularRequirement> requirements = requirementDefinitionService.getRequirements();
-            for (SingularRequirement requirement : requirements) {
+            List<RequirementDefinition<?>> requirements = requirementDefinitionService.getRequirements();
+            for (RequirementDefinition<?> requirement : requirements) {
                 String name = SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
                 Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
                 if (sTypeOptional.isPresent()) {

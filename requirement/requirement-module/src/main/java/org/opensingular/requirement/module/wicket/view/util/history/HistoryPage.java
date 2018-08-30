@@ -125,7 +125,7 @@ public class HistoryPage extends ServerTemplate {
             imageHistFlow = new Image(id, new DynamicImageResource() {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
-                    FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+                    FlowInstance flowInstance = requirementService.loadRequirementInstance(requirementPK).getFlowInstance();
                     IFlowRenderer renderer = findFlowExecutionImageExtension()
                         .map(it -> it.getRenderer())
                         .orElse(NullFlowRenderer.INSTANCE);

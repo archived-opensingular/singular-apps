@@ -21,6 +21,7 @@ package org.opensingular.requirement.module.service;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.spring.SpringSDocumentFactory;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -234,16 +236,6 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     }
 
     public RequirementInstance sendRequirement(String description) {
-        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-        requirementInstance.setDescription(description);
-        requirementService.saveOrUpdate(requirementInstance, instance, true);
-        requirementInstance.setFlowDefinition(FOOFlow.class);
-        requirementSender.send(requirementInstance, instance, "vinicius.nunes");
-
-//    public RequirementInstance sendRequirement(String description) {
 //        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
 //        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
 //        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
@@ -254,7 +246,8 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 //        requirementSender.send(requirementInstance, instance, "vinicius.nunes");
 //
 //        return requirementInstance;
-//    }
+        return null;
+    }
 //
 //    @Test
 //    public void testSearchs() {
