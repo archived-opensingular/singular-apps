@@ -1,5 +1,9 @@
 .imageFlow {
-    padding-bottom: 10px;
-    padding-left: 20px;
-    padding-right: 20px;
+	padding-bottom: 10px;
+	padding-left: 20px;
+	padding-right: 20px;
+	max-width: 100%;
+	max-height: 75vh;
+	height: auto;
+	width: auto;
 }
