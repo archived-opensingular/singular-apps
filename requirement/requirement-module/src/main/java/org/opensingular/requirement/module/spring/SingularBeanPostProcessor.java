@@ -17,10 +17,11 @@
 package org.opensingular.requirement.module.spring;
 
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.WorkspaceAppInitializerListener;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.context.annotation.Bean;
@@ -36,13 +37,23 @@ public class SingularBeanPostProcessor implements BeanPostProcessor, ServletCont
     private ServletContext servletContext;
 
     /**
-     * @return o SingularModuleConfiguration extraido do ServletContext
+     * @return o WorkspaceRegistry extraido do ServletContext
      * @see WorkspaceAppInitializerListener
+     * @see WorkspaceRegistry
      */
     @Bean
-    public SingularModuleConfiguration singularModuleConfiguration() {
-        return (SingularModuleConfiguration) servletContext
-                .getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG);
+    public WorkspaceRegistry workspaceRegistry() {
+        return ((WorkspaceRegistry) servletContext.getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_WORKSPACE_REGISTRY));
+    }
+
+    /**
+     * @return o SingularModule extraido do ServletContext
+     * @see WorkspaceAppInitializerListener
+     * @see SingularModule
+     */
+    @Bean
+    public SingularModule singularModule() {
+        return ((SingularModule) servletContext.getAttribute(WorkspaceAppInitializerListener.SERVLET_ATTRIBUTE_SGL_MODULE));
     }
 
     /**
@@ -53,9 +64,9 @@ public class SingularBeanPostProcessor implements BeanPostProcessor, ServletCont
     @Override
     public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
         if (AbstractSingularSpringSecurityAdapter.class.isAssignableFrom(bean.getClass())) {
-            for (IServerContext context : singularModuleConfiguration().getContexts()) {
-                if (context.getSpringSecurityConfigClass() != null &&
-                        context.getSpringSecurityConfigClass().isAssignableFrom(bean.getClass())) {
+            for (IServerContext context : workspaceRegistry().getContexts()) {
+                if (context.getSettings().getSpringSecurityConfigClass() != null &&
+                        context.getSettings().getSpringSecurityConfigClass().isAssignableFrom(bean.getClass())) {
                     ((AbstractSingularSpringSecurityAdapter) bean).setContext(context);
                 }
             }

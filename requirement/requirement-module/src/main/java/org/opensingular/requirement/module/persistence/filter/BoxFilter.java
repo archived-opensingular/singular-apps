@@ -17,14 +17,12 @@
 package org.opensingular.requirement.module.persistence.filter;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class QuickFilter implements Serializable {
-
+public class BoxFilter implements Serializable {
     private String filter;
-    private boolean rascunho;
+    private boolean showDraft;
     private String idPessoa;
     private String idUsuarioLogado;
     private int first;
@@ -35,125 +33,7 @@ public class QuickFilter implements Serializable {
     private List<String> tasks;
     private List<String> processesAbbreviation;
     private List<String> typesNames;
-
-    public QuickFilter withFilter(String filter) {
-        this.filter = filter;
-        return this;
-    }
-
-    public String getIdUsuarioLogado() {
-        return idUsuarioLogado;
-    }
-
-    public QuickFilter withIdUsuarioLogado(String idUsuarioLogado) {
-        this.idUsuarioLogado = idUsuarioLogado;
-        return this;
-    }
-
-    public String getIdPessoa() {
-        return idPessoa;
-    }
-
-    public QuickFilter withIdPessoa(String idPessoa) {
-        this.idPessoa = idPessoa;
-        return this;
-    }
-
-    public boolean isRascunho() {
-        return rascunho;
-    }
-
-    public QuickFilter withRascunho(boolean rascunho) {
-        this.rascunho = rascunho;
-        return this;
-    }
-
-    public int getFirst() {
-        return first;
-    }
-
-    public QuickFilter withFirst(int first) {
-        this.first = first;
-        return this;
-    }
-
-    public int getCount() {
-        return count;
-    }
-
-    public QuickFilter withCount(int count) {
-        this.count = count;
-        return this;
-    }
-
-    public String getSortProperty() {
-        return sortProperty;
-    }
-
-    public QuickFilter withSortProperty(String sortProperty) {
-        this.sortProperty = sortProperty;
-        return this;
-    }
-
-    public boolean isAscending() {
-        return ascending;
-    }
-
-    public QuickFilter withAscending(boolean ascending) {
-        this.ascending = ascending;
-        return this;
-    }
-
-    public QuickFilter sortAscending() {
-        this.ascending = true;
-        return this;
-    }
-
-    public QuickFilter sortDescending() {
-        this.ascending = false;
-        return this;
-    }
-
-    public boolean hasFilter() {
-        return filter != null
-                && !filter.isEmpty();
-    }
-
-    public QuickFilter forTasks(String... tasks) {
-        this.tasks = Arrays.asList(tasks);
-        return this;
-    }
-
-    public List<String> getTasks() {
-        return tasks;
-    }
-
-    public List<String> getProcessesAbbreviation() {
-        return processesAbbreviation;
-    }
-
-    public QuickFilter withProcessesAbbreviation(List<String> processesAbbreviation) {
-        this.processesAbbreviation = processesAbbreviation;
-        return this;
-    }
-
-    public List<String> getTypesNames() {
-        return typesNames;
-    }
-
-    public QuickFilter withTypesNames(List<String> typesNames) {
-        this.typesNames = typesNames;
-        return this;
-    }
-
-    public Boolean getEndedTasks() {
-        return endedTasks;
-    }
-
-    public QuickFilter withEndedTasks(Boolean endedTasks) {
-        this.endedTasks = endedTasks;
-        return this;
-    }
+    private boolean checkApplicant = false;
 
     public List<FilterToken> listFilterTokens() {
         if (filter != null) {
@@ -166,4 +46,116 @@ public class QuickFilter implements Serializable {
         return filter;
     }
 
+    public BoxFilter filter(String filter) {
+        this.filter = filter;
+        return this;
+    }
+
+    public boolean isShowDraft() {
+        return showDraft;
+    }
+
+    public BoxFilter showDraft(boolean showDraft) {
+        this.showDraft = showDraft;
+        return this;
+    }
+
+    public String getIdPessoa() {
+        return idPessoa;
+    }
+
+    public BoxFilter idPessoa(String idPessoa) {
+        this.idPessoa = idPessoa;
+        return this;
+    }
+
+    public String getIdUsuarioLogado() {
+        return idUsuarioLogado;
+    }
+
+    public BoxFilter idUsuarioLogado(String idUsuarioLogado) {
+        this.idUsuarioLogado = idUsuarioLogado;
+        return this;
+    }
+
+    public int getFirst() {
+        return first;
+    }
+
+    public BoxFilter first(int first) {
+        this.first = first;
+        return this;
+    }
+
+    public int getCount() {
+        return count;
+    }
+
+    public BoxFilter count(int count) {
+        this.count = count;
+        return this;
+    }
+
+    public String getSortProperty() {
+        return sortProperty;
+    }
+
+    public BoxFilter sortProperty(String sortProperty) {
+        this.sortProperty = sortProperty;
+        return this;
+    }
+
+    public boolean isAscending() {
+        return ascending;
+    }
+
+    public BoxFilter ascending(boolean ascending) {
+        this.ascending = ascending;
+        return this;
+    }
+
+    public Boolean getEndedTasks() {
+        return endedTasks;
+    }
+
+    public BoxFilter endedTasks(Boolean endedTasks) {
+        this.endedTasks = endedTasks;
+        return this;
+    }
+
+    public List<String> getTasks() {
+        return tasks;
+    }
+
+    public BoxFilter tasks(List<String> tasks) {
+        this.tasks = tasks;
+        return this;
+    }
+
+    public List<String> getProcessesAbbreviation() {
+        return processesAbbreviation;
+    }
+
+    public BoxFilter processesAbbreviation(List<String> processesAbbreviation) {
+        this.processesAbbreviation = processesAbbreviation;
+        return this;
+    }
+
+    public List<String> getTypesNames() {
+        return typesNames;
+    }
+
+    public BoxFilter typesNames(List<String> typesNames) {
+        this.typesNames = typesNames;
+        return this;
+    }
+
+    public boolean isCheckApplicant() {
+        return checkApplicant;
+    }
+
+    public BoxFilter checkApplicant(boolean checkApplicant) {
+        this.checkApplicant = checkApplicant;
+        return this;
+    }
 }

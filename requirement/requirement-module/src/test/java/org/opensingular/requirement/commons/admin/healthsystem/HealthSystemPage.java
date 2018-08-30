@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.admin.healthsystem;
+package org.opensingular.requirement.commons.admin.healthsystem;
 
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;

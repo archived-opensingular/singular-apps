@@ -16,8 +16,7 @@
 
 package org.opensingular.requirement.module.auth;
 
-import java.util.Collections;
-
+import com.google.common.collect.ImmutableList;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
@@ -27,10 +26,13 @@ import org.springframework.security.authentication.dao.AbstractUserDetailsAuthen
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AdministrationAuthenticationProvider extends AbstractUserDetailsAuthenticationProvider {
 
     private final AdminCredentialChecker credentialChecker;
-    private final IServerContext         serverContext;
+    private final IServerContext serverContext;
 
     public AdministrationAuthenticationProvider(AdminCredentialChecker credentialChecker,
                                                 IServerContext serverContext) {
@@ -40,19 +42,20 @@ public class AdministrationAuthenticationProvider extends AbstractUserDetailsAut
 
     @Override
     public void additionalAuthenticationChecks(UserDetails userDetails,
-                                                  UsernamePasswordAuthenticationToken authentication)
+                                               UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
 
     }
 
     @Override
-    public UserDetails retrieveUser(String principal,
-                                       UsernamePasswordAuthenticationToken authentication)
+    public UserDetails retrieveUser(String principal, UsernamePasswordAuthenticationToken authentication)
             throws AuthenticationException {
         if (credentialChecker.check(principal, authentication.getCredentials().toString())) {
-            return new DefaultUserDetails(principal,
-                    Collections.singletonList(new SingularPermission("ADMIN", null)),
-                    principal, serverContext);
+            List<Class<? extends IServerContext>> ctxs = new ArrayList<>();
+            if (serverContext != null) {
+                ctxs.add(serverContext.getClass());
+            }
+            return new DefaultUserDetails(principal, null, ImmutableList.of(new SingularPermission("ADMIN", null)), ctxs);
         }
         throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
     }

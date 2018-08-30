@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -27,18 +27,11 @@ import java.util.List;
 
 public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
-        final ItemBox concluidas = new ItemBox();
-        concluidas.setName("Concluídos");
-        concluidas.setDescription("Requerimentos concluídos");
-        concluidas.setIcone(DefaultIcons.DOCS);
-        concluidas.setEndedTasks(Boolean.TRUE);
-        return concluidas;
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.TRUE;
+    protected void configure(ItemBox itemBox) {
+        itemBox.name("Concluídos")
+                .description("Requerimentos concluídos")
+                .icon(DefaultIcons.DOCS)
+                .evalPermission(true);
     }
 
     @Override
@@ -58,5 +51,12 @@ public class DefaultDonebox extends AbstractRequirementBoxDefinition {
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         fields.add(DatatableField.of("Situação", "taskName"));
         return fields;
+    }
+
+    @Override
+    public BoxFilter createBoxFilter() {
+        return super.createBoxFilter()
+                .endedTasks(Boolean.TRUE)
+                .checkApplicant(false);
     }
 }

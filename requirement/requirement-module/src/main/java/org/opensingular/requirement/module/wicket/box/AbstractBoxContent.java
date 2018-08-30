@@ -16,7 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.box;
 
-import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
@@ -30,7 +29,6 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -38,24 +36,17 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
 import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.FormDTO;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 
 import javax.inject.Inject;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
@@ -67,34 +58,24 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
     public static final int DEFAULT_ROWS_PER_PAGE = 15;
     private static final long serialVersionUID = -3611649597709058163L;
 
-
     @Inject
     protected RequirementService<?, ?> requirementService;
-
-    @Inject
-    @SpringBean(required = false)
-    protected WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
 
     /**
      * Tabela de registros
      */
     protected BSDataTable<T, String> table;
-    /**
-     * Confirmation Form
-     */
 
-
-    private   String                         menu;
-    private   List<RequirementDefinitionDTO> processes;
-    private   List<FormDTO>                  forms;
     /**
      * Form padrão
      */
     private Form<?> form = new Form<>("form");
+
     /**
      * Filtro Rapido
      */
     private TextField<String> filtroRapido = new TextField<>("filtroRapido", new Model<>());
+
     /**
      * Botão de pesquisa do filtro rapido
      */
@@ -110,9 +91,8 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
 
     private WebMarkupContainer confirmModalWrapper = new WebMarkupContainer("confirmModalWrapper");
 
-    public AbstractBoxContent(String id, String menu) {
+    public AbstractBoxContent(String id) {
         super(id);
-        this.menu = menu;
     }
 
     public IModel<T> getDataModel() {
@@ -249,16 +229,6 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         queue(table);
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
-        if (getMenu() != null) {
-            if (workspaceConfigurationMetadata != null) {
-                Optional<BoxConfigurationData> boxConfig = workspaceConfigurationMetadata.getMenuByLabel(getMenu());
-                setProcesses(boxConfig.map(BoxConfigurationData::getProcesses).orElse(new ArrayList<>(0)));
-                setForms(boxConfig.map(BoxConfigurationData::getForms).orElse(new ArrayList<>(0)));
-            }
-            if (CollectionUtils.isEmpty(getProcesses())) {
-                getLogger().warn("!! NENHUM PROCESSO ENCONTRADO PARA A MONTAGEM DO MENU !!");
-            }
-        }
     }
 
     /**
@@ -275,45 +245,21 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         BaseDataProvider<T, String> dataProvider = new BaseDataProvider<T, String>() {
             @Override
             public long size() {
-                if (getProcessesNames().isEmpty()) {
-                    return 0;
-                }
-                return countQuickSearch(newFilter(), getProcessesNames(), getFormNames());
+                return countQuickSearch(newFilter());
             }
 
             @Override
             public Iterator<? extends T> iterator(int first, int count, String sortProperty,
                     boolean ascending) {
-                QuickFilter quickFilter = newFilter()
-                        .withFirst(first)
-                        .withCount(count)
-                        .withSortProperty(sortProperty)
-                        .withAscending(ascending);
+                BoxFilter boxFilter = newFilter()
+                        .first(first)
+                        .count(count)
+                        .sortProperty(sortProperty)
+                        .ascending(ascending);
 
-                return quickSearch(quickFilter, getProcessesNames(), getFormNames()).iterator();
+                return quickSearch(boxFilter).iterator();
             }
 
-            private List<String> getProcessesNames() {
-                if (getProcesses() == null) {
-                    return Collections.emptyList();
-                } else {
-                    return getProcesses()
-                            .stream()
-                            .map(RequirementDefinitionDTO::getAbbreviation)
-                            .collect(Collectors.toList());
-                }
-            }
-
-            private List<String> getFormNames() {
-                if (getProcesses() == null) {
-                    return Collections.emptyList();
-                } else {
-                    return getProcesses()
-                            .stream()
-                            .map(RequirementDefinitionDTO::getFormName)
-                            .collect(Collectors.toList());
-                }
-            }
         };
         Pair<String, SortOrder> sort = getSortProperty();
         if (sort != null) {
@@ -322,39 +268,15 @@ public abstract class AbstractBoxContent<T extends Serializable> extends Panel i
         return dataProvider;
     }
 
-    protected QuickFilter newFilter() {
+    protected BoxFilter newFilter() {
         return newFilterBasic();
     }
 
-    protected abstract QuickFilter newFilterBasic();
+    protected abstract BoxFilter newFilterBasic();
 
-    protected abstract List<T> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames);
+    protected abstract List<T> quickSearch(BoxFilter filter);
 
-    protected abstract long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames);
-
-    public List<RequirementDefinitionDTO> getProcesses() {
-        return processes;
-    }
-
-    public void setProcesses(List<RequirementDefinitionDTO> processes) {
-        this.processes = processes;
-    }
-
-    public String getMenu() {
-        return menu;
-    }
-
-    public void setMenu(String menu) {
-        this.menu = menu;
-    }
-
-    public List<FormDTO> getForms() {
-        return forms;
-    }
-
-    public void setForms(List<FormDTO> forms) {
-        this.forms = forms;
-    }
+    protected abstract long countQuickSearch(BoxFilter filter);
 
     protected StringResourceModel getMessage(String prop) {
         return new StringResourceModel(prop.trim(), this, null);

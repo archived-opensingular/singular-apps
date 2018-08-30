@@ -18,7 +18,7 @@ package org.opensingular.requirement.module;
 
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 public abstract class ActionProviderDecorator implements ActionProvider {
 
@@ -29,10 +29,10 @@ public abstract class ActionProviderDecorator implements ActionProvider {
     }
 
 
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
-        return decorate(delegate.getLineActions(boxInfo, line, filter), boxInfo, line, filter);
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
+        return decorate(delegate.getLineActions(line, filter), line, filter);
     }
 
 
-    public abstract BoxItemActionList decorate(BoxItemActionList boxItemActionList, BoxInfo boxInfo, BoxItemData line, QuickFilter filter);
+    public abstract BoxItemActionList decorate(BoxItemActionList boxItemActionList, BoxItemData line, BoxFilter filter);
 }

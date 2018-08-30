@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -27,18 +27,12 @@ import java.util.List;
 
 public class DefaultInbox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
-        final ItemBox caixaEntrada = new ItemBox();
-        caixaEntrada.setName("Caixa de Entrada");
-        caixaEntrada.setDescription("Requerimentos aguardando ação do usuário");
-        caixaEntrada.setIcone(DefaultIcons.DOCS);
-        caixaEntrada.setEndedTasks(Boolean.FALSE);
-        return caixaEntrada;
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.TRUE;
+    public void configure(ItemBox itemBox) {
+        itemBox
+                .name("Caixa de Entrada")
+                .description("Requerimentos aguardando ação do usuário")
+                .icon(DefaultIcons.DOCS)
+                .evalPermission(true);
     }
 
     @Override
@@ -62,5 +56,12 @@ public class DefaultInbox extends AbstractRequirementBoxDefinition {
         fields.add(DatatableField.of("Situação", "taskName"));
         fields.add(DatatableField.of("Alocado", "nomeUsuarioAlocado"));
         return fields;
+    }
+
+    @Override
+    public BoxFilter createBoxFilter() {
+        return super.createBoxFilter()
+                .endedTasks(Boolean.FALSE)
+                .checkApplicant(false);
     }
 }

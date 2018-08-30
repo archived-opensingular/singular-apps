@@ -19,23 +19,19 @@ package org.opensingular.requirement.module.connector;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.wicket.request.Url;
-import org.opensingular.flow.core.Flow;
-import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
-import org.opensingular.form.context.SFormConfig;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.BoxController;
+import org.opensingular.requirement.module.ActionProvider;
+import org.opensingular.requirement.module.AuthorizationAwareActionProviderDecorator;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -46,37 +42,28 @@ import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.BoxService;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
-import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+import org.springframework.beans.factory.ObjectFactory;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.io.Serializable;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
-
-    @Inject
-    private BoxService boxService;
+    private SingularModule singularModule;
 
     @Inject
     private RequirementService<?, ?> requirementService;
@@ -86,10 +73,6 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Inject
     private PermissionResolverService permissionResolverService;
-
-    @Inject
-    @Named("formConfigWithDatabase")
-    private SFormConfig<String> singularFormConfig;
 
     @Inject
     private FormTypeService formTypeService;
@@ -103,25 +86,25 @@ public class DefaultModuleService implements ModuleService, Loggable {
     @Inject
     private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
 
+    @Inject
+    private BoxFilterFactory boxFilterFactory;
+
+    @Inject
+    private ObjectFactory<IServerContext> serverContextObjectFactory;
+
     @Override
-    public String countAll(ItemBox box, List<String> flowNames, String loggedUser) {
-        QuickFilter filter = new QuickFilter()
-                .withProcessesAbbreviation(flowNames)
-                .withRascunho(box.isShowDraft())
-                .withEndedTasks(box.getEndedTasks())
-                .withIdUsuarioLogado(loggedUser)
-                .withIdPessoa(SingularSession.get().getUserDetails().getApplicantId());
-        return String.valueOf(count(box.getId(), filter));
+    public String countAll(BoxDefinition box) {
+        return String.valueOf(count(box, boxFilterFactory.create(box)));
     }
 
     @Override
-    public long countFiltered(ItemBox box, QuickFilter filter) {
-        return count(box.getId(), filter);
+    public long countFiltered(BoxDefinition box, BoxFilter filter) {
+        return count(box, filter);
     }
 
     @Override
-    public List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter) {
-        return search(box.getId(), filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
+    public List<BoxItemDataMap> searchFiltered(BoxDefinition box, BoxFilter filter) {
+        return search(box, filter).getBoxItemDataList().stream().map(BoxItemDataMap::new).collect(Collectors.toList());
     }
 
     @Override
@@ -153,21 +136,13 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    public Long count(String boxId, QuickFilter filter) {
-        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
-        if (boxController.isPresent()) {
-            return boxController.get().countItens(filter);
-        }
-        return 0L;
+    public Long count(BoxDefinition boxDefinition, BoxFilter filter) {
+        return boxDefinition.getDataProvider().count(filter);
     }
 
 
-    public BoxItemDataList search(String boxId, QuickFilter filter) {
-        Optional<BoxController> boxController = boxService.getBoxControllerByBoxId(boxId);
-        if (boxController.isPresent()) {
-            return boxController.get().searchItens(filter);
-        }
-        return new BoxItemDataList();
+    public BoxItemDataList search(BoxDefinition boxDefinition, BoxFilter filter) {
+        return searchCheckingActionPermissions(boxDefinition, filter);
     }
 
     private String appendParameters(Map<String, String> additionalParams) {
@@ -178,10 +153,6 @@ public class DefaultModuleService implements ModuleService, Loggable {
             }
         }
         return paramsValue.toString();
-    }
-
-    public List<BoxConfigurationData> listMenu(String context, String user) {
-        return listMenu(IServerContext.getContextFromName(context, singularModuleConfiguration.getContexts()), user);
     }
 
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
@@ -203,71 +174,13 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
-    private List<BoxConfigurationData> listMenu(IServerContext context, String user) {
-        List<BoxConfigurationData> groups = listMenuGroups();
-        filterAccessRight(groups, user);
-        customizeMenu(groups, context, user);
-        return groups;
-    }
 
-    private List<BoxConfigurationData> listMenuGroups() {
-        final List<BoxConfigurationData> groups = new ArrayList<>();
-        getDefinitionsMap().forEach((category, definitions) -> {
-            BoxConfigurationData boxConfigurationMetadata = new BoxConfigurationData();
-            boxConfigurationMetadata.setId(permissionResolverService.buildCategoryPermission(category).getSingularId());
-            boxConfigurationMetadata.setLabel(category);
-            boxConfigurationMetadata.setProcesses(new ArrayList<>());
-            definitions.forEach(d -> {
-                boxConfigurationMetadata.getProcesses().add(
-                        new RequirementDefinitionDTO(d.getKey(), d.getName(), null));
-            });
-            addForms(boxConfigurationMetadata);
-            groups.add(boxConfigurationMetadata);
-        });
-        return groups;
-    }
-
-    private Map<String, List<FlowDefinition>> getDefinitionsMap() {
-        final Map<String, List<FlowDefinition>> definitionMap = new HashMap<>();
-        Flow.getDefinitions().forEach(d -> {
-            if (!definitionMap.containsKey(d.getCategory())) {
-                definitionMap.put(d.getCategory(), new ArrayList<>());
-            }
-            definitionMap.get(d.getCategory()).add(d);
-        });
-        return definitionMap;
-    }
-
-    @SuppressWarnings("unchecked")
-    private void addForms(BoxConfigurationData boxConfigurationMetadata) {
-        for (Class<? extends SType<?>> formClass : singularModuleConfiguration.getFormTypes()) {
-            String name = SFormUtil.getTypeName(formClass);
-            Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
-            if (sTypeOptional.isPresent()) {
-                SType<?> sType = sTypeOptional.get();
-                String label = sType.asAtr().getLabel();
-                boxConfigurationMetadata.getForms().add(new FormDTO(name, sType.getNameSimple(), label));
-            }
-        }
-    }
-
-    private void filterAccessRight(List<BoxConfigurationData> groupDTOs, String user) {
-        authorizationService.filterBoxWithPermissions(groupDTOs, user);
-    }
-
-    private void customizeMenu(List<BoxConfigurationData> groupDTOs, IServerContext menuContext, String user) {
-        for (BoxConfigurationData boxConfigurationMetadata : groupDTOs) {
-            boxConfigurationMetadata.setBoxesDefinition(boxService.buildItemBoxes(menuContext));
-        }
+    public boolean hasModuleAccess(String user) {
+        return authorizationService.hasPermission(user, permissionResolverService.buildCategoryPermission(singularModule.abbreviation()).getSingularId());
     }
 
     public List<Actor> listAllowedUsers(Map<String, Object> selectedTask) {
         return requirementService.listAllowedUsers(selectedTask);
-    }
-
-    @Override
-    public WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user) {
-        return new WorkspaceConfigurationMetadata(listMenu(context, user));
     }
 
     @Override
@@ -303,15 +216,18 @@ public class DefaultModuleService implements ModuleService, Loggable {
      */
     @Override
     public ModuleEntity getModule() {
-        SingularModule module = singularModuleConfiguration.getModule();
-        return moduleDAO.findOrException(module.abbreviation());
+        return moduleDAO.findOrException(singularModule.abbreviation());
     }
 
     @Override
     public String getBaseUrl() {
-        return getModuleContext() + SingularSession.get().getServerContext().getUrlPath();
+        return getModuleContext() + serverContextObjectFactory.getObject().getSettings().getUrlPath();
     }
 
+    /**
+     * Evoluir para botão wicket
+     */
+    @Deprecated
     @Override
     public String getModuleContext() {
         final String groupConnectionURL = getModule().getConnectionURL();
@@ -327,4 +243,21 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
+    protected BoxItemDataList searchCheckingActionPermissions(BoxDefinition boxDefinition, BoxFilter filter) {
+        List<Map<String, Serializable>> itens = boxDefinition.getDataProvider().search(filter);
+        BoxItemDataList result = new BoxItemDataList();
+        ActionProvider actionProvider = addBuiltInDecorators(boxDefinition.getDataProvider().getActionProvider());
+
+        for (Map<String, Serializable> item : itens) {
+            BoxItemDataImpl line = new BoxItemDataImpl();
+            line.setRawMap(item);
+            line.setBoxItemActions(actionProvider.getLineActions(line, filter));
+            result.getBoxItemDataList().add(line);
+        }
+        return result;
+    }
+
+    protected ActionProvider addBuiltInDecorators(ActionProvider actionProvider) {
+        return new AuthorizationAwareActionProviderDecorator(actionProvider);
+    }
 }
