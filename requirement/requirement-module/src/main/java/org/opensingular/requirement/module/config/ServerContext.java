@@ -54,8 +54,8 @@ public abstract class ServerContext implements IServerContext {
         settings
                 .contextPath("/" + nameJavaIdentity + "/*")
                 .propertiesBaseKey("singular." + nameJavaIdentity)
-                .addPublicUrl("/wicket/resource/*")
-                .addPublicUrl("/public/*");
+                .addPublicUrl("/wicket/resource/**")
+                .addPublicUrl("/public/**");
 
         configure(settings);
 
