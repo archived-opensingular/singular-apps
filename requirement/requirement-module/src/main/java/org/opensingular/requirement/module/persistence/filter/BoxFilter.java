@@ -16,11 +16,12 @@
 
 package org.opensingular.requirement.module.persistence.filter;
 
-import java.io.Serializable;
+import org.opensingular.form.SInstance;
+
 import java.util.Collections;
 import java.util.List;
 
-public class BoxFilter implements Serializable {
+public class BoxFilter {
     private String filter;
     private boolean showDraft;
     private String idPessoa;
@@ -34,6 +35,8 @@ public class BoxFilter implements Serializable {
     private List<String> processesAbbreviation;
     private List<String> typesNames;
     private boolean checkApplicant = false;
+    private SInstance advancedFilterInstance;
+
 
     public List<FilterToken> listFilterTokens() {
         if (filter != null) {
@@ -156,6 +159,15 @@ public class BoxFilter implements Serializable {
 
     public BoxFilter checkApplicant(boolean checkApplicant) {
         this.checkApplicant = checkApplicant;
+        return this;
+    }
+
+    public SInstance getAdvancedFilterInstance() {
+        return advancedFilterInstance;
+    }
+
+    public BoxFilter advancedFilterInstance(SInstance advancedFilterInstance) {
+        this.advancedFilterInstance = advancedFilterInstance;
         return this;
     }
 }

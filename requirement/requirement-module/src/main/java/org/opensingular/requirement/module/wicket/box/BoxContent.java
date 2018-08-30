@@ -40,7 +40,6 @@ import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
@@ -60,7 +59,7 @@ import java.util.Set;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
-public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
+public class BoxContent extends AbstractBoxContent implements Loggable {
     @Inject
     private ModuleService moduleService;
 
@@ -69,11 +68,8 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
 
     private Pair<String, SortOrder> sortProperty;
 
-    private IModel<BoxDefinition> boxDefinition;
-
     public BoxContent(String id, IModel<BoxDefinition> boxDefinition) {
-        super(id);
-        this.boxDefinition = boxDefinition;
+        super(id, boxDefinition);
     }
 
     @Override
@@ -159,7 +155,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
-                getDataModel().setObject(model.getObject());
+                getModel().setObject(model.getObject());
                 showConfirm(target, construirModalConfirmationBorder(itemAction, additionalParams));
             };
         } else {
@@ -234,26 +230,26 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction,
                                                                                       Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
-            return new BoxContentAllocateModal(itemAction, getDataModel()) {
+            return new BoxContentAllocateModal(itemAction, getModel()) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
-                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
+                    relocate(itemAction, additionalParams, getModel().getObject(), target, null);
                     target.add(table);
                     atualizarContadores(target);
                 }
 
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, usersDropDownChoice.getModelObject());
+                    relocate(itemAction, additionalParams, getModel().getObject(), target, usersDropDownChoice.getModelObject());
                     target.add(table);
                     atualizarContadores(target);
                 }
             };
         } else {
-            return new BoxContentConfirmModal<BoxItemDataMap>(itemAction, getDataModel()) {
+            return new BoxContentConfirmModal<BoxItemDataMap>(itemAction, getModel()) {
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    executeDynamicAction(itemAction, additionalParams, getDataModel().getObject(), target);
+                    executeDynamicAction(itemAction, additionalParams, getModel().getObject(), target);
                     target.add(table);
                     atualizarContadores(target);
                 }
@@ -287,10 +283,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         this.sortProperty = sortProperty;
     }
 
-    @Override
-    protected void onDelete(BoxItemDataMap peticao) {
-
-    }
 
     @Override
     protected BoxFilter newFilterBasic() {
@@ -304,12 +296,6 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     @Override
     protected List<BoxItemDataMap> quickSearch(BoxFilter filter) {
         return moduleService.searchFiltered(getBoxDefinitionObject(), filter);
-    }
-
-    @Override
-    protected WebMarkupContainer createLink(String id, IModel<BoxItemDataMap> requirementModel, FormAction formAction) {
-        // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
-        throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
     }
 
     private Map<String, String> getLinkParams() {
