@@ -23,9 +23,20 @@ import org.opensingular.requirement.module.exception.SingularServerException;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+/**
+ * The WorkspaceRegistry, where the contexts should be added
+ *
+ * @see org.opensingular.requirement.module.SingularModule
+ * @see org.opensingular.requirement.module.WorkspaceAppInitializerListener
+ */
 public class WorkspaceRegistry implements Loggable {
     private final Set<IServerContext> contexts = new LinkedHashSet<>();
 
+    /**
+     * Add a contexts to the registry
+     * @param serverContextClass the context class
+     * @return the current registry
+     */
     public WorkspaceRegistry add(Class<? extends IServerContext> serverContextClass) {
         try {
             contexts.add(serverContextClass.newInstance());
@@ -36,6 +47,9 @@ public class WorkspaceRegistry implements Loggable {
         return this;
     }
 
+    /**
+     * @return all contexts added to this registry
+     */
     public Set<IServerContext> getContexts() {
         return contexts;
     }
