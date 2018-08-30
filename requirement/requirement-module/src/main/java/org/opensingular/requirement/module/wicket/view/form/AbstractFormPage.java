@@ -57,7 +57,7 @@ import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
-import org.opensingular.form.wicket.panel.ModalEventListenerBehavior;
+import org.opensingular.form.wicket.panel.SFormModalEventListenerBehavior;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
@@ -320,7 +320,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
         modalContainer.setOutputMarkupId(true);
-        modalContainer.add(new ModalEventListenerBehavior(modalContainer));
+        modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
         singularFormPanel.setInstanceCreator(() -> createInstance(formRequirementService.loadRefType(config.getFormName())));
