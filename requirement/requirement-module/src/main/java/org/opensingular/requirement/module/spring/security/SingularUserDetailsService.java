@@ -16,14 +16,6 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import javax.servlet.http.HttpServletRequest;
-import javax.transaction.Transactional;
-
-import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.ldap.core.DirContextAdapter;
 import org.springframework.ldap.core.DirContextOperations;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,16 +23,19 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.ldap.userdetails.UserDetailsContextMapper;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.transaction.Transactional;
+import java.util.Collection;
+import java.util.List;
 
 @Transactional
 public interface SingularUserDetailsService extends UserDetailsService, UserDetailsContextMapper {
 
-
     @Override
-    default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations, String s, Collection<? extends GrantedAuthority> collection) {
-        return loadUserByUsername(s);
+    default SingularRequirementUserDetails mapUserFromContext(DirContextOperations dirContextOperations,
+                                                              String username,
+                                                              Collection<? extends GrantedAuthority> collection) {
+        return loadUserByUsername(username);
     }
 
     @Override
@@ -48,16 +43,7 @@ public interface SingularUserDetailsService extends UserDetailsService, UserDeta
     }
 
     @Override
-    default SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        return loadUserByUsername(username, IServerContext.getContextFromRequest(request, Arrays.asList(getContexts())));
-    }
-
-
-    SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException;
-
-    IServerContext[] getContexts();
+    SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException;
 
     List<SingularPermission> searchPermissions(String idUsuarioLogado);
-
 }

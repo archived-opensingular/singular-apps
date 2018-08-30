@@ -18,60 +18,53 @@ package org.opensingular.requirement.module.wicket.view.template;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
-import org.apache.wicket.Page;
 import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.markup.html.panel.Panel;
-import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.component.IRequestablePage;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.handler.TextRequestHandler;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.menu.MetronicMenu;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuGroup;
 import org.opensingular.lib.wicket.util.menu.MetronicMenuItem;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuBoxItem;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
-import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
+import java.util.ArrayList;
+import java.util.List;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 
 public class Menu extends Panel implements Loggable {
-
-    @Inject
-    @SpringBean(required = false)
-    private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
-
     @Inject
     private ModuleService moduleService;
 
+    @Inject
+    private IServerContext serverContext;
+
     private Class<? extends WebPage> boxPageClass;
+
     private MetronicMenu menu;
 
     public Menu(String id, Class<? extends WebPage> boxPageClass) {
         super(id);
         this.boxPageClass = boxPageClass;
         add(buildMenu());
-        buildMenuGroup();
+        appendMenuItens();
     }
 
     protected MetronicMenu buildMenu() {
@@ -79,91 +72,47 @@ public class Menu extends Panel implements Loggable {
         return this.menu;
     }
 
-
-    protected void buildMenuGroup() {
-        Optional.ofNullable(workspaceConfigurationMetadata)
-                .map(WorkspaceConfigurationMetadata::getBoxesConfiguration)
-                .map(Collection::stream)
-                .orElse(Stream.empty())
-                .forEach(boxConfigurationMetadata -> {
-                    List<MenuItemConfig> subMenus;
-                    if (boxConfigurationMetadata.getItemBoxes() == null) {
-                        subMenus = buildDefaultSubMenus(boxConfigurationMetadata);
-                    } else {
-                        subMenus = buildSubMenus(boxConfigurationMetadata);
-                    }
-                    if (!subMenus.isEmpty()) {
-                        buildMenus(menu, boxConfigurationMetadata, subMenus);
-                    }
-                });
-    }
-
-    protected List<MenuItemConfig> buildDefaultSubMenus(BoxConfigurationData boxConfigurationMetadata) {
-        return Collections.emptyList();
-    }
-
-    protected void buildMenus(MetronicMenu menu, BoxConfigurationData boxConfigurationMetadata,
-                              List<MenuItemConfig> subMenus) {
-        MetronicMenuGroup group = new MetronicMenuGroup(DefaultIcons.LAYERS, boxConfigurationMetadata.getLabel());
-        menu.addItem(group);
+    protected void appendMenuItens() {
         final List<Pair<Component, ISupplier<String>>> itens = new ArrayList<>();
-
-        for (MenuItemConfig t : subMenus) {
-            PageParameters pageParameters = new PageParameters();
-            pageParameters.add(MENU_PARAM_NAME, boxConfigurationMetadata.getLabel());
-            pageParameters.add(ITEM_PARAM_NAME, t.name);
-
-            MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
-            group.addItem(i);
-            itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+        for (WorkspaceMenuCategory category : serverContext.getWorkspace().menu().getCategories()) {
+            MetronicMenuGroup group = new MetronicMenuGroup(category.getIcon(), category.getName());
+            menu.addItem(group);
+            for (WorkspaceMenuItem workspaceMenuItem : category.getWorkspaceMenuItens()) {
+                if (!workspaceMenuItem.isVisible()) {
+                    continue;
+                }
+                MenuItemConfig t = buildMenuItemConfig(workspaceMenuItem);
+                PageParameters pageParameters = new PageParameters();
+                pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
+                pageParameters.add(ITEM_PARAM_NAME, t.name);
+                MetronicMenuItem i = new ServerMenuItem(t.icon, t.name, t.pageClass, t.page, pageParameters);
+                if (t.counterSupplier != null) {
+                    itens.add(Pair.of(i.getHelper(), t.counterSupplier));
+                }
+                group.addItem(i);
+            }
         }
         menu.add(new AddContadoresBehaviour(itens));
-        onBuildModuleGroup(group, menu);
+        onBuildModuleGroup(menu);
     }
 
-    protected void onBuildModuleGroup(MetronicMenuGroup group, MetronicMenu menu) {
+    protected void onBuildModuleGroup(MetronicMenu menu) {
 
     }
 
-    protected List<MenuItemConfig> buildSubMenus(BoxConfigurationData boxConfigurationMetadata) {
-
-        List<String> abbreviations = boxConfigurationMetadata.getProcesses().stream()
-                .map(RequirementDefinitionDTO::getAbbreviation)
-                .collect(Collectors.toList());
-
-        List<MenuItemConfig> configs = new ArrayList<>();
-
-        for (ItemBox itemBoxDTO : boxConfigurationMetadata.getItemBoxes()) {
-            final ISupplier<String> countSupplier = createCountSupplier(itemBoxDTO, abbreviations);
-            configs.add(MenuItemConfig.of(getBoxPageClass(), itemBoxDTO.getName(), itemBoxDTO.getHelpText(), itemBoxDTO.getIcone(), countSupplier));
-
+    protected MenuItemConfig buildMenuItemConfig(WorkspaceMenuItem workspaceMenuItem) {
+        ISupplier<String> countSupplier = null;
+        if (workspaceMenuItem instanceof WorkspaceMenuBoxItem) {
+            BoxDefinition boxDefinition = ((WorkspaceMenuBoxItem) workspaceMenuItem).getBoxDefinition();
+            if (boxDefinition.getItemBox().isDisplayCounters()) {
+                countSupplier = createCountSupplier(boxDefinition);
+            }
         }
-
-        return configs;
+        return MenuItemConfig.of(boxPageClass, workspaceMenuItem.getName(), workspaceMenuItem.getHelpText(), workspaceMenuItem.getIcon(), countSupplier);
     }
 
-    protected ISupplier<String> createCountSupplier(ItemBox itemBoxDTO, List<String> abbreviations) {
-        return () -> moduleService.countAll(itemBoxDTO, abbreviations, getIdCurrentUser());
-    }
-
-    protected String getIdPessoa() {
-        return getIdCurrentUser();
-    }
-
-    protected String getIdCurrentUser() {
-        SingularRequirementUserDetails singularUserDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(singularUserDetails)
-                .map(SingularRequirementUserDetails::getUsername)
-                .orElse(null);
-    }
-
-    //TODO buggy, should be refactored
-    public Class<? extends Page> getBoxPageClass() {
-        Class<? extends Page> homePage = WebApplication.get().getHomePage();
-        if (homePage != null) {
-            return homePage;
-        }
-        return boxPageClass;
+    protected ISupplier<String> createCountSupplier(BoxDefinition boxDefinition) {
+        return () -> moduleService.countAll(boxDefinition);
     }
 
     protected static class AddContadoresBehaviour extends AbstractDefaultAjaxBehavior {

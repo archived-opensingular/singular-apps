@@ -29,7 +29,7 @@ import org.opensingular.form.wicket.helpers.AssertionsWComponent;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
+import org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.AdministrationEntryExtension;
 import org.opensingular.requirement.module.admin.healthsystem.extension.CacheAdminEntry;
 import org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry;
@@ -45,7 +45,7 @@ import org.springframework.test.context.TestExecutionListeners;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import static org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
+import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)

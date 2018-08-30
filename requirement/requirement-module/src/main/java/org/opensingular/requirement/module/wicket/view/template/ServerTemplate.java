@@ -16,15 +16,11 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
-import javax.annotation.Nonnull;
-
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
-import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
@@ -40,12 +36,6 @@ public abstract class ServerTemplate extends SingularAdminTemplate {
 
     public ServerTemplate(PageParameters parameters) {
         super(parameters);
-    }
-
-    @Override
-    protected @Nonnull
-    WebMarkupContainer buildPageMenu(String id) {
-        return new Menu(id, (Class<? extends WebPage>) this.getPageClass());
     }
 
     @Override

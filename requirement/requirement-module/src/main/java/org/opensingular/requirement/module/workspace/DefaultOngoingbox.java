@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.ActionProviderBuilder;
-import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
@@ -27,17 +27,10 @@ import java.util.List;
 
 public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
     @Override
-    public ItemBox build(IServerContext context) {
-        final ItemBox acompanhamento = new ItemBox();
-        acompanhamento.setName("Acompanhamento");
-        acompanhamento.setDescription("Requerimentos em andamento");
-        acompanhamento.setIcone(DefaultIcons.CLOCK);
-        return acompanhamento;
-    }
-
-    @Override
-    protected Boolean mustEvalPermissions() {
-        return Boolean.FALSE;
+    public void configure(ItemBox itemBox) {
+        itemBox.name("Acompanhamento")
+                .description("Requerimentos em andamento")
+                .icon(DefaultIcons.CLOCK);
     }
 
     @Override
@@ -56,5 +49,10 @@ public class DefaultOngoingbox extends AbstractRequirementBoxDefinition {
         fields.add(DatatableField.of("Situação", "situation"));
         fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         return fields;
+    }
+
+    @Override
+    public BoxFilter createBoxFilter() {
+        return super.createBoxFilter().checkApplicant(true);
     }
 }

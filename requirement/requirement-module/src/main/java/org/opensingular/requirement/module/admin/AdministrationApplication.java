@@ -1,4 +1,4 @@
-    /*
+/*
  * Copyright (C) 2016 Singular Studios (a.k.a Atom Tecnologia) - www.opensingular.com
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,22 +17,13 @@
 package org.opensingular.requirement.module.admin;
 
 import org.apache.wicket.Page;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
+import org.opensingular.requirement.module.wicket.box.BoxPage;
 
 
-    public class AdministrationApplication extends SingularRequirementApplication {
-
-
-    @Override
-    public void init() {
-        super.init();
-        mountPage(HealthSystemPage.HEALTH_SYSTEM_MOUNT_PATH, HealthSystemPage.class);
-    }
-
+public class AdministrationApplication extends SingularRequirementApplication {
     @Override
     public Class<? extends Page> getHomePage() {
-        return HealthSystemPage.class;
+        return BoxPage.class;
     }
-
 }
