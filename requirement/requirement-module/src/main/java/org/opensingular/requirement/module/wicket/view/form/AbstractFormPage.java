@@ -327,7 +327,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
         singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");
-        form.setMultiPart(true);
+        form.setMultiPart(true); //This have to be set to work properly with CKEditor
         form.add(singularFormPanel);
 
         this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");

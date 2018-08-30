@@ -57,7 +57,7 @@ public class SSOFilterTest {
         request = new MockHttpServletRequest(application, new MockHttpSession(context), context){
             @Override
             public String getContextPath() {
-                return worklistContextWithCAS.getUrlPath();
+                return worklistContextWithCAS.getSettings().getUrlPath();
             }
         };
 

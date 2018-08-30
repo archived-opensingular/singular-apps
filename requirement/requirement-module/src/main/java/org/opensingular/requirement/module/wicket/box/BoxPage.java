@@ -18,39 +18,43 @@ package org.opensingular.requirement.module.wicket.box;
 
 import org.apache.wicket.Component;
 import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
-import org.apache.wicket.spring.injection.annot.SpringBean;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
+import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.wicket.SingularSession;
+import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
-import org.slf4j.LoggerFactory;
+import org.opensingular.requirement.module.wicket.view.template.Menu;
 import org.wicketstuff.annotation.mount.MountPath;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.CATEGORY_PARAM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ITEM_PARAM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.MENU_PARAM_NAME;
 
 @MountPath("/box")
-public class BoxPage extends ServerBoxTemplate {
-
-    private final static org.slf4j.Logger LOGGER = LoggerFactory.getLogger(BoxPage.class);
-
-    private BoxDefinitionData boxDefinitionData;
+public class BoxPage extends ServerBoxTemplate implements Loggable {
 
     @Inject
-    @SpringBean(required = false)
-    private WorkspaceConfigurationMetadata workspaceConfigurationMetadata;
+    private IServerContext serverContext;
+
+    @Inject
+    private UserDetailsProvider userDetailsProvider;
+
+    private IModel<WorkspaceMenuItem> workspaceMenuItem;
 
     public BoxPage(PageParameters parameters) {
         super(parameters);
@@ -58,118 +62,103 @@ public class BoxPage extends ServerBoxTemplate {
     }
 
     public void addBox() {
-        String menu = getPageParameters().get(MENU_PARAM_NAME).toOptionalString();
+        String category = getPageParameters().get(CATEGORY_PARAM_NAME).toOptionalString();
         String item = getPageParameters().get(ITEM_PARAM_NAME).toOptionalString();
 
-        if (isAccessWithoutParams(menu, item)) {
-            for (BoxConfigurationData box : workspaceConfigurationMetadata.getBoxesConfiguration()) {
-                menu = box.getLabel();
-                PageParameters pageParameters = new PageParameters();
-
-                addItemParam(box, pageParameters);
-
-                pageParameters.add(MENU_PARAM_NAME, menu);
-                throw new RestartResponseException(getPageClass(), pageParameters);
-            }
+        if (serverContext == null) {
+            getLogger().error("Não foi possivel determinal o contexto atual");
+            throw new RestartResponseException(Page403.class);
         }
 
-        BoxConfigurationData boxConfigurationMetadata = null;
-        if (workspaceConfigurationMetadata != null) {
-            boxConfigurationMetadata = workspaceConfigurationMetadata.getMenuByLabel(menu).orElse(null);
-        }
-        if (boxConfigurationMetadata != null) {
-            boxDefinitionData = boxConfigurationMetadata.getItemPorLabel(item);
-            //itemBoxDTO pode ser nulo quando nenhum item está selecionado.
-            if (boxDefinitionData != null) {
-                add(newBoxContent("box", boxConfigurationMetadata, boxDefinitionData));
-                return;
-            }
+        Workspace workspace = serverContext.getWorkspace();
+
+        if (item == null || category == null) {
+            PageParameters pageParameters = new PageParameters();
+            addItemParam(workspace, pageParameters);
+            throw new RestartResponseException(getPageClass(), pageParameters);
         }
 
-        if (boxConfigurationMetadata == null) {
-            LOGGER.error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
-        }
-        LOGGER.error("Não existe caixa correspondente para {}", String.valueOf(item));
-        throw new RestartResponseException(Page403.class);
-    }
+        workspaceMenuItem = workspace.menu()
+                .getCategories()
+                .stream()
+                .filter(i -> i.getName().equalsIgnoreCase(category))
+                .map(WorkspaceMenuCategory::getWorkspaceMenuItens)
+                .flatMap(Collection::stream)
+                .filter(i -> i.getName().equals(item)).findFirst()
+                .map(Model::new)
+                .orElse(null);
 
-    private boolean isAccessWithoutParams(String menu, String item) {
-        return menu == null
-                && item == null
-                && workspaceConfigurationMetadata != null;
-    }
-
-    private void addItemParam(BoxConfigurationData mg, PageParameters pageParameters) {
-        if (!mg.getBoxesDefinition().isEmpty()) {
-            String item = mg.getItemBoxes().get(0).getName();
-            pageParameters.add(ITEM_PARAM_NAME, item);
+        if (workspaceMenuItem != null && workspaceMenuItem.getObject() != null) {
+            add(new Form<Void>("form").add(newBoxContent()));
+        } else {
+            getLogger().error("As configurações de caixas não foram encontradas. Verfique se as permissões estão configuradas corretamente");
+            throw new RestartResponseException(Page403.class);
         }
     }
 
-    protected Component newBoxContent(String id, BoxConfigurationData boxConfigurationMetadata, BoxDefinitionData boxDefinitionData) {
-        return new BoxContent(id, boxConfigurationMetadata.getLabel(), boxDefinitionData);
+    private void addItemParam(Workspace workspace, PageParameters pageParameters) {
+        workspace.menu().getCategories()
+                .stream()
+                .filter(i -> !i.getWorkspaceMenuItens().isEmpty())
+                .findFirst().ifPresent(category -> {
+            pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
+            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().findFirst().map(WorkspaceMenuItem::getName).orElse(null));
+        });
+    }
+
+    private Component newBoxContent() {
+        return workspaceMenuItem.getObject().newContent("box");
     }
 
     protected Map<String, String> createLinkParams() {
         return new HashMap<>();
     }
 
-    protected QuickFilter createFilter() {
-        return new QuickFilter()
-                .withIdUsuarioLogado(getIdUsuario())
-                .withIdPessoa(getIdPessoa());
-    }
-
-    protected String getIdUsuario() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getUsername)
-                .orElse(null);
-    }
-
-    protected String getIdPessoa() {
-        SingularRequirementUserDetails userDetails = SingularSession.get().getUserDetails();
-        return Optional.ofNullable(userDetails)
-                .map(SingularRequirementUserDetails::getApplicantId)
-                .orElse(null);
-    }
-
     @Override
     protected IModel<String> getContentSubtitle() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getDescription();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getDescription();
             }
         };
     }
 
     @Override
     protected IModel<String> getContentTitle() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getName();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getName();
             }
         };
     }
 
     @Override
     public IModel<String> getHelpText() {
-        return new Model<String>() {
+        return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                if (boxDefinitionData != null) {
-                    return boxDefinitionData.getItemBox().getHelpText();
-                }
-                return null;
+                return workspaceMenuItem.getObject().getHelpText();
             }
         };
+    }
+
+    protected String getIdUsuario() {
+        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
+                .map(SingularRequirementUserDetails::getUsername)
+                .orElse(null);
+    }
+
+    protected String getIdPessoa() {
+        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
+                .map(SingularRequirementUserDetails::getApplicantId)
+                .orElse(null);
+    }
+
+    @Nonnull
+    @Override
+    protected WebMarkupContainer buildPageMenu(String id) {
+        return new Menu(id, getClass());
     }
 }

@@ -51,7 +51,7 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
 
@@ -218,16 +218,16 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
             }
         }
 
-        QuickFilter                     f1    = new QuickFilter();
+        BoxFilter f1    = new BoxFilter();
         List<Map<String, Serializable>> maps1 = requirementService.quickSearchMap(f1);
         assertEquals(qtdEnviada, maps1.size());
 
-        QuickFilter f2 = new QuickFilter();
-        f2.withRascunho(true).withSortProperty("description");
+        BoxFilter f2 = new BoxFilter();
+        f2.showDraft(true).sortProperty("description");
         List<Map<String, Serializable>> maps2 = requirementService.quickSearchMap(f2);
         assertEquals(qtdRascunho, maps2.size());
 
-        QuickFilter f3    = new QuickFilter();
+        BoxFilter f3    = new BoxFilter();
         Long        count = requirementService.countQuickSearch(f3);
         assertTrue(count == qtdEnviada);
     }
@@ -235,9 +235,9 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     @Rollback
     public void countTasks() {
-        QuickFilter filter = new QuickFilter();
-        filter.withFilter("filter");
-        filter.withProcessesAbbreviation(Arrays.asList("task1", "task2"));
+        BoxFilter filter = new BoxFilter();
+        filter.filter("filter");
+        filter.processesAbbreviation(Arrays.asList("task1", "task2"));
 
         SingularPermission permission = new SingularPermission("singularId", "internalId");
 
@@ -249,8 +249,8 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         String description = "Descrição XYZ única - " + System.nanoTime();
         sendRequirement(description);
 
-        QuickFilter filter = new QuickFilter();
-        filter.withFilter(description);
+        BoxFilter filter = new BoxFilter();
+        filter.filter(description);
         List<Map<String, Serializable>> maps = requirementService.listTasks(filter, Collections.emptyList());
 
         assertEquals(1, maps.size());

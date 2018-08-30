@@ -162,6 +162,11 @@
             <scope>provided</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.opensingular</groupId>
+            <artifactId>singular-studio-core</artifactId>
+        </dependency>
+
     </dependencies>
 
 

@@ -22,7 +22,7 @@ import java.util.List;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 
 public class ActionProviderBuilder implements ActionProvider {
@@ -30,23 +30,23 @@ public class ActionProviderBuilder implements ActionProvider {
     private List<ActionConfigurer> actionConfigurers = new ArrayList<>();
 
     public ActionProviderBuilder addViewAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addViewAction(line));
+        actionConfigurers.add((line, filter, list) -> list.addViewAction(line));
         return this;
 
     }
 
     public ActionProviderBuilder addEditAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addEditAction(line));
+        actionConfigurers.add((line, filter, list) -> list.addEditAction(line));
         return this;
     }
 
     public ActionProviderBuilder addDeleteAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addDeleteAction(line));
+        actionConfigurers.add((line, filter, list) -> list.addDeleteAction(line));
         return this;
     }
 
     public ActionProviderBuilder addAssignAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> {
+        actionConfigurers.add((line, filter, list) -> {
 
             if (line.getAllocatedSUserId() == null && TaskType.HUMAN == line.getTaskType()) {
                 list.addAssignAction(line);
@@ -56,7 +56,7 @@ public class ActionProviderBuilder implements ActionProvider {
     }
 
     public ActionProviderBuilder addRelocateAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> {
+        actionConfigurers.add((line, filter, list) -> {
             if (TaskType.HUMAN == line.getTaskType()) {
                 list.addRelocateAction(line);
             }
@@ -65,7 +65,7 @@ public class ActionProviderBuilder implements ActionProvider {
     }
 
     public ActionProviderBuilder addAnalyseAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> {
+        actionConfigurers.add((line, filter, list) -> {
             if (filter.getIdUsuarioLogado() != null && filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
                 list.addAnalyseAction(line);
             }
@@ -79,28 +79,26 @@ public class ActionProviderBuilder implements ActionProvider {
     }
 
     public ActionProviderBuilder addHistoryAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addHistoryAction(line));
+        actionConfigurers.add((line, filter, list) -> list.addHistoryAction(line));
         return this;
     }
 
     public ActionProviderBuilder addExtratoAction() {
-        actionConfigurers.add((boxInfo, line, filter, list) -> list.addExtratoAction(line));
+        actionConfigurers.add((line, filter, list) -> list.addExtratoAction(line));
         return this;
     }
 
-
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
         BoxItemActionList list = new BoxItemActionList();
         for (ActionConfigurer configurer : actionConfigurers) {
-            configurer.configure(boxInfo, line, filter, list);
+            configurer.configure(line, filter, list);
         }
         return list;
     }
 
-
     @FunctionalInterface
     public interface ActionConfigurer {
-        void configure(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list);
+        void configure(BoxItemData line, BoxFilter filter, BoxItemActionList list);
     }
 }

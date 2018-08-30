@@ -16,13 +16,12 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import java.util.List;
-import javax.annotation.Nullable;
-
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
+
+import javax.annotation.Nullable;
+import java.util.List;
 
 /**
  * Service responsible every authorization check in a Singular Requirement Application.
@@ -31,8 +30,7 @@ public interface AuthorizationService extends Loggable {
     String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
     String SEPARATOR                    = "|$|";
 
-
-    void filterBoxWithPermissions(List<BoxConfigurationData> groupDTOs, String idUsuario);
+    boolean hasPermission(String idUsuario, String permissionKey);
 
     void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario);
 
@@ -56,4 +54,6 @@ public interface AuthorizationService extends Loggable {
      * @return
      */
     boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, IServerContext context, boolean readonly);
+
+    boolean hasPermissionToForm(String formName, String idUsuario);
 }

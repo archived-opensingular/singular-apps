@@ -23,7 +23,6 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
@@ -34,7 +33,6 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -77,7 +75,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private IServerContext serverContext;
 
     public DispatcherPage() {
         buildPage();
@@ -233,7 +231,6 @@ public class DispatcherPage extends WebPage implements Loggable {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
-        IServerContext serverContext = IServerContext.getContextFromRequest(RequestCycle.get().getRequest(), singularServerConfiguration.getContexts());
         if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
             redirectForbidden();
         } else {

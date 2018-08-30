@@ -21,41 +21,48 @@
             position: unset;
         }
     </style>
-    <div class="portlet light">
-        <div class="portlet-body form">
-            <div class="row">
-                <form wicket:id="form">
-
-                    <div wicket:id="newButtonArea" class="col-md-4 form-group"></div>
-
-                    <div class="form-group col-md-6 col-md-offset-2 col-lg-4 col-lg-offset-4">
+    <form wicket:id="form">
+        <div class="portlet light">
+            <div class="portlet-title">
+                <div class="caption">
+                    <div wicket:id="newButtonArea"></div>
+                </div>
+                <div class="actions">
+                    <div class="portlet-input input-inline input-xlarge">
                         <div class="input-group input-icon left">
-
                             <i class="icon-question" data-container="body"
                                data-toggle="dropdown" aria-expanded="false" style="cursor: pointer"> </i>
                             <div class="singular-form-action-preview dropdown-menu theme-panel hold-on-click dropdown-custom"
-                                 style="right: 0px; min-width: 100%; left: auto;">
+                                 style="right: 0; min-width: 100%; left: auto;">
                                 <div wicket:id="help"></div>
                             </div>
 
+                            <!--suppress HtmlFormInputWithoutLabel -->
                             <input type="text" wicket:id="filtroRapido" class="form-control"
                                    wicket:message="placeholder:label.filtro.rapido">
                             <div class="input-group-btn">
                                 <button class="btn" wicket:id="pesquisar">
-                                    <span class="glyphicon glyphicon-search"/>
+                                    <span class="glyphicon glyphicon-search"></span>
                                 </button>
                             </div>
                         </div>
                     </div>
-                </form>
+                    <button title="Pesquisa Avançada" class="btn btn-default" style="height: 34px;" type="button"
+                            data-toggle="collapse" data-target="#filtroAvancado"><i class="fa fa-bars"></i></button>
+                </div>
             </div>
-            <div wicket:id="beforeTableContainer"></div>
-            <div class="dataTables_wrapper no-footer table-responsive">
-                <table wicket:id="update-region"></table>
+            <div class="portlet-body form">
+                <div id="filtroAvancado" class="collapse ">
+                    <div class="box-advanced-filter" wicket:id="advancedFilter"></div>
+                </div>
+                <div wicket:id="beforeTableContainer"></div>
+                <div class="dataTables_wrapper no-footer table-responsive">
+                    <table wicket:id="update-region"></table>
+                </div>
+                <div wicket:id="afterTableContainer"></div>
             </div>
-            <div wicket:id="afterTableContainer"></div>
         </div>
-    </div>
+    </form>
     <div wicket:id="confirmModalWrapper">
         <div wicket:id="confirmationModal"></div>
     </div>
