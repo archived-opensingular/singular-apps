@@ -48,7 +48,6 @@ import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.view.SingularHeaderResponseDecorator;
 import org.opensingular.requirement.module.wicket.view.behavior.SingularJSBehavior;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
-import org.opensingular.requirement.module.wicket.view.form.DiffFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
@@ -116,8 +115,8 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti   = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
-        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<TaskInstance> ti = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
+        Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
 
             Optional<FormAction> formActionOpt = actionContext.getFormAction();
@@ -146,7 +145,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage retrieveDestination(ActionContext context) {
-         if (isViewModeReadOnly(context) && !isAnnotationModeEdit(context)) {
+        if (isViewModeReadOnly(context) && !isAnnotationModeEdit(context)) {
             return newVisualizationPage(context);
         } else {
             return retrieveSingularWebRef(context)
@@ -165,7 +164,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long    formVersionPK;
+        Long formVersionPK;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
@@ -182,10 +181,23 @@ public class DispatcherPage extends WebPage implements Loggable {
         }
 
         if (formVersionPK != null) {
-            return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations));
+            return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations), showCompareLastVersionButton());
         }
 
         throw new SingularServerException("Não foi possivel identificar qual é o formulário a ser exibido");
+    }
+
+    /**
+     * This method is responsible for showing the Compare Last Version Button.
+     * <p>
+     * Default: the button will be invisible.
+     * <p>
+     * Note: Override this method for show the button.
+     *
+     * @return True for show, false for not.
+     */
+    protected boolean showCompareLastVersionButton() {
+        return false;
     }
 
     private boolean isAnnotationModeReadOnly(ActionContext context) {
@@ -209,12 +221,12 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void dispatch(ActionContext context) {
-        Long    requirementId = context.getRequirementId().orElse(null);
-        String  formType      = context.getFormName().orElse(null);
-        String  action        = context.getFormAction().map(FormAction::name).orElse(null);
-        boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
-        String  idUsuario     = null;
-        String  idApplicant   = null;
+        Long requirementId = context.getRequirementId().orElse(null);
+        String formType = context.getFormName().orElse(null);
+        String action = context.getFormAction().map(FormAction::name).orElse(null);
+        boolean readonly = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
+        String idUsuario = null;
+        String idApplicant = null;
         if (SingularSession.exists()) {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
