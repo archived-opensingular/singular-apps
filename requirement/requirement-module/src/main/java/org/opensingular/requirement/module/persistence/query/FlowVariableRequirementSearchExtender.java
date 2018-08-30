@@ -56,7 +56,7 @@ public class FlowVariableRequirementSearchExtender implements RequirementSearchE
                     .stream()
                     .filter(SInstance::isNotEmptyOfData)
                     .filter(i -> queryAlias.equals(i.getName()))
-                    .forEach(i -> ctx.getQuery().where(toChar(variableEntity).likeIgnoreCase((String) i.getValue())));
+                    .forEach(i -> ctx.getQuery().where(variableEntity.value.stringValue().likeIgnoreCase((String) i.getValue())));
         }
     }
 }
