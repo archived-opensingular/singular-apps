@@ -50,6 +50,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.error.Page500;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.wicket.view.form.SimpleMessageFlowConfirmModal;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
@@ -217,8 +218,8 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         Component confirmationButton = new AssertionsWComponent(p2)
                 .getSubComponentWithId("modals")
-                .getSubComponents(TemplatePanel.class)
-                .last()
+                .getSubComponents(SimpleMessageFlowConfirmModal.class)
+                .first()
                 .getSubComponents(SingularButton.class)
                 .first()
                 .getTarget();
@@ -226,7 +227,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         RequirementInstance requirementFrom = getRequirementFrom(p2);
         TaskInstance        currentTask     = requirementFrom.getCurrentTaskOrException();
-        assertEquals("No more bar", currentTask.getName());
+        assertEquals("Transition bar", currentTask.getName());
     }
 
     @WithUserDetails("vinicius.nunes")
