@@ -34,7 +34,6 @@ import org.springframework.test.context.TestExecutionListeners;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class TemplatePageTest extends SingularCommonsBaseTest {
-
     @Inject
     private CommonsApplicationMock singularApplication;
 
@@ -44,15 +43,7 @@ public class TemplatePageTest extends SingularCommonsBaseTest {
     @Test
     public void testFormPageRendering() {
         tester = new SingularWicketTester(singularApplication);
-        FooTemplatePage page = tester.startPage(FooTemplatePage.class);
-        MetronicMenu            m    = (MetronicMenu) new AssertionsWComponent(page).getSubComponents(MetronicMenu.class).first().getTarget();
-        for (Behavior b : m.getBehaviors()) {
-            if (b instanceof AbstractAjaxBehavior) {
-                tester.executeBehavior((AbstractAjaxBehavior) b);
-            }
-        }
+        tester.startPage(FooTemplatePage.class);
         tester.assertRenderedPage(FooTemplatePage.class);
     }
-
-
 }

@@ -31,7 +31,6 @@ public class ActionContextTest {
         actionContext.setFormAction(FormAction.FORM_ANALYSIS);
         actionContext.setFormName("Nomezinho");
         actionContext.setFormVersionId(1l);
-        actionContext.setMenuLabel("menuzinho");
         actionContext.setParam("nada", "outro");
         actionContext.setParentRequirementId(2l);
         actionContext.setRequirementId(3l);
@@ -47,7 +46,6 @@ public class ActionContextTest {
         Assert.assertEquals(actionContext.getFormAction().get(), FormAction.FORM_ANALYSIS);
         Assert.assertEquals(actionContext.getFormName().get(), "Nomezinho");
         Assert.assertEquals((long) actionContext.getFormVersionId().get(), 1l);
-        Assert.assertEquals(actionContext.getMenuLabel().get(), "menuzinho");
         Assert.assertEquals(actionContext.getParam("nada").get(), "outro");
         Assert.assertEquals((long) actionContext.getParentRequirementId().get(), 2l);
         Assert.assertEquals((long) actionContext.getRequirementId().get(), 3l);

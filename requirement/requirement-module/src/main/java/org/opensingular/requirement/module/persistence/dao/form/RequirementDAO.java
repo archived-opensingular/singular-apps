@@ -45,7 +45,7 @@ import org.opensingular.requirement.module.persistence.entity.form.QDraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QFormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
@@ -70,7 +70,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
         return criteria.list();
     }
 
-    public Long countQuickSearch(QuickFilter filter,
+    public Long countQuickSearch(BoxFilter filter,
                                  List<SingularPermission> permissions,
                                  List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
@@ -80,7 +80,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
                 .addPermissions(permissions));
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public Long countQuickSearch(BoxFilter filter, List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.TRUE));
@@ -94,14 +94,14 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
         return new RequirementSearchQueryFactory(ctx).build(getSession());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.FALSE));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<SingularPermission> permissions,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)

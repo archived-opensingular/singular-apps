@@ -30,7 +30,7 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.springframework.test.annotation.Rollback;
 
@@ -188,16 +188,16 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
             }
         }
 
-        QuickFilter                     f1    = new QuickFilter();
+        BoxFilter f1    = new BoxFilter();
         List<Map<String, Serializable>> maps1 = requirementService.quickSearchMap(f1);
         assertEquals(qtdEnviada, maps1.size());
 
-        QuickFilter f2 = new QuickFilter();
-        f2.withRascunho(true).withSortProperty("description");
+        BoxFilter f2 = new BoxFilter();
+        f2.showDraft(true).sortProperty("description");
         List<Map<String, Serializable>> maps2 = requirementService.quickSearchMap(f2);
         assertEquals(qtdRascunho, maps2.size());
 
-        QuickFilter f3    = new QuickFilter();
+        BoxFilter f3    = new BoxFilter();
         Long        count = requirementService.countQuickSearch(f3);
         assertTrue(count == qtdEnviada);
     }
@@ -205,33 +205,43 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     @Rollback
     public void countTasks() {
-        QuickFilter filter = new QuickFilter();
-        filter.withFilter("filter");
-        filter.withProcessesAbbreviation(Arrays.asList("task1", "task2"));
+        BoxFilter filter = new BoxFilter();
+        filter.filter("filter");
+        filter.processesAbbreviation(Arrays.asList("task1", "task2"));
 
         SingularPermission permission = new SingularPermission("singularId", "internalId");
 
         Assert.assertEquals(new Long(0), requirementService.countTasks(filter, Arrays.asList(permission)));
     }
-//
-//    @Test
-//    public void listTasks() {
-//        String description = "Descrição XYZ única - " + System.nanoTime();
-//        sendRequirement(description);
-//
-//        QuickFilter filter = new QuickFilter();
-//        filter.withFilter(description);
-//        List<Map<String, Serializable>> maps = requirementService.listTasks(filter, Collections.emptyList());
-//
-//        assertEquals(1, maps.size());
-//        Map<String, Serializable> task = maps.get(0);
-//        assertNull(task.get("codUsuarioAlocado"));
-//        assertNull(task.get("nomeUsuarioAlocado"));
-//        assertEquals("Do bar", task.get("taskName"));
-//        assertEquals(TaskType.HUMAN, task.get("taskType"));
-//        assertEquals("foooooo.STypeFoo", task.get("type"));
-//        assertEquals(description, task.get("description"));
-//    }
+
+    @Test
+    public void listTasks() {
+        String description = "Descrição XYZ única - " + System.nanoTime();
+        sendRequirement(description);
+
+        BoxFilter filter = new BoxFilter();
+        filter.filter(description);
+        List<Map<String, Serializable>> maps = requirementService.listTasks(filter, Collections.emptyList());
+
+        assertEquals(1, maps.size());
+        Map<String, Serializable> task = maps.get(0);
+        assertNull(task.get("codUsuarioAlocado"));
+        assertNull(task.get("nomeUsuarioAlocado"));
+        assertEquals("Do bar", task.get("taskName"));
+        assertEquals(TaskType.HUMAN, task.get("taskType"));
+        assertEquals("foooooo.STypeFoo", task.get("type"));
+        assertEquals(description, task.get("description"));
+    }
+
+    public RequirementInstance sendRequirement(String description) {
+        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
+        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
+        requirementInstance.setDescription(description);
+        requirementService.saveOrUpdate(requirementInstance, instance, true);
+        requirementInstance.setFlowDefinition(FOOFlow.class);
+        requirementSender.send(requirementInstance, instance, "vinicius.nunes");
 
 //    public RequirementInstance sendRequirement(String description) {
 //        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();

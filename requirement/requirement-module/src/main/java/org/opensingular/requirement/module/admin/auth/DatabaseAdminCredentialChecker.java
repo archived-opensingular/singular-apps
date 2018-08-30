@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.admin.auth;
 
 
 import org.apache.commons.lang3.StringUtils;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
+import org.opensingular.requirement.module.SingularModule;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
 import org.opensingular.requirement.module.service.ParameterService;
@@ -37,7 +37,7 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     private ParameterService parameterService;
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private SingularModule singularModule;
 
     @Override
     public boolean check(String username, String password) {
@@ -59,8 +59,8 @@ public class DatabaseAdminCredentialChecker implements AdminCredentialChecker {
     }
 
     private String retrieveParameter(String parameterName) {
-        if (singularModuleConfiguration.getModule().abbreviation() != null) {
-            return parameterService.findByNameAndModule(parameterName, singularModuleConfiguration.getModule().abbreviation())
+        if (singularModule.abbreviation() != null) {
+            return parameterService.findByNameAndModule(parameterName, singularModule.abbreviation())
                     .map(ParameterEntity::getValue)
                     .orElse(null);
         }

@@ -22,31 +22,21 @@ import org.apache.wicket.Session;
 import org.apache.wicket.markup.head.filter.JavaScriptFilteredIntoFooterHeaderResponse;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.apache.wicket.resource.loader.ClassStringResourceLoader;
-import org.apache.wicket.resource.loader.IStringResourceLoader;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.error.Page410;
-import org.opensingular.studio.core.config.StudioConfig;
-import org.opensingular.studio.core.config.StudioConfigProvider;
 import org.opensingular.studio.core.view.StudioFooter;
 import org.opensingular.studio.core.view.StudioHeader;
 import org.opensingular.studio.core.view.StudioPage;
 import org.wicketstuff.annotation.scan.AnnotatedMountScanner;
 
 import java.nio.charset.StandardCharsets;
-import java.util.List;
 import java.util.Locale;
 
 public class RequirementStudioApplication extends SingularRequirementApplication {
-    private final StudioConfig appConfig;
-
-    public RequirementStudioApplication() {
-        this.appConfig = StudioConfigProvider.get().retrieve();
-    }
 
     @Override
     public Class<? extends Page> getHomePage() {
@@ -73,8 +63,6 @@ public class RequirementStudioApplication extends SingularRequirementApplication
         setHeaderResponseDecorator(r -> new JavaScriptFilteredIntoFooterHeaderResponse(r, SingularTemplate.JAVASCRIPT_CONTAINER));
         getComponentInstantiationListeners().add(new SpringComponentInjector(this));
         new AnnotatedMountScanner().scanPackage("org.opensingular.studio").mount(this);
-        List<IStringResourceLoader> stringResourceLoaders = getResourceSettings().getStringResourceLoaders();
-        stringResourceLoaders.add(0, new ClassStringResourceLoader(appConfig.getClass()));
         getComponentOnConfigureListeners().add(component -> {
             boolean outputId = !component.getRenderBodyOnly();
             component.setOutputMarkupId(outputId).setOutputMarkupPlaceholderTag(outputId);

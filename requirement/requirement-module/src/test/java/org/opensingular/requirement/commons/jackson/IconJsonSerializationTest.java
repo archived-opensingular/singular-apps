@@ -30,7 +30,6 @@ import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
 import org.opensingular.requirement.module.jackson.SingularObjectMapper;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-import org.opensingular.requirement.module.service.dto.ItemBox;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
@@ -80,15 +79,4 @@ public class IconJsonSerializationTest {
         BoxItemAction boxitemActionDesarialized = mapper.readValue(serializedValue, BoxItemAction.class);
         assertEquals(DefaultIcons.ARROW_DOWN.getCssClass(), boxitemActionDesarialized.getIcon().getCssClass());
     }
-
-    @Test
-    public void testSerializationItemBox() throws Exception {
-        ItemBox itemBox = new ItemBox();
-        itemBox.setIcone(DefaultIcons.ARROW_DOWN);
-        String serializedValue = mapper.writeValueAsString(itemBox);
-        assertThat(serializedValue, Matchers.containsString("{\"cssClass\":\"fa fa-arrow-down\"}"));
-        ItemBox itemBoxDeserialized = mapper.readValue(serializedValue, ItemBox.class);
-        assertEquals(DefaultIcons.ARROW_DOWN.getCssClass(), itemBoxDeserialized.getIcone().getCssClass());
-    }
-
 }

@@ -66,7 +66,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementAp
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
@@ -316,19 +316,19 @@ public abstract class RequirementService implements Loggable {
         requirementDAO.find(idRequirement).ifPresent(re -> requirementDAO.delete(re));
     }
 
-    public Long countQuickSearch(QuickFilter filter) {
+    public Long countQuickSearch(BoxFilter filter) {
         return countQuickSearch(filter, Collections.emptyList());
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public Long countQuickSearch(BoxFilter filter, List<RequirementSearchExtender> extenders) {
         return requirementDAO.countQuickSearch(filter, extenders);
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter) {
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter) {
         return quickSearchMap(filter, Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter, List<RequirementSearchExtender> extenders) {
         return requirementDAO.quickSearchMap(filter, extenders);
     }
 
@@ -440,19 +440,19 @@ public abstract class RequirementService implements Loggable {
         }
     }
 
-    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions) {
+    public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<SingularPermission> permissions) {
         return listTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
     }
 
-    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions) {
+    public Long countTasks(BoxFilter filter, List<SingularPermission> permissions) {
         return countTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
     }
 
-    public List<Map<String, Serializable>> listTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+    public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
         return requirementDAO.quickSearchMap(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 
-    public Long countTasks(QuickFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
+    public Long countTasks(BoxFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
         return requirementDAO.countQuickSearch(filter, authorizationService.filterListTaskPermissions(permissions), extenders);
     }
 

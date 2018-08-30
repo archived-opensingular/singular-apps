@@ -16,10 +16,10 @@
 
 package org.opensingular.requirement.module.wicket.view.util.history;
 
-
+import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AjaxEventBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.html.WebComponent;
@@ -34,19 +34,25 @@ import org.apache.wicket.request.resource.DynamicImageResource;
 import org.apache.wicket.request.resource.IResource;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.FlowInstance;
-import org.opensingular.flow.core.renderer.RendererUtil;
+import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
+import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.flow.core.renderer.NullFlowRenderer;
+import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.lib.wicket.util.image.PhotoSwipeBehavior;
+import org.opensingular.lib.wicket.util.image.PhotoSwipePanel;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -57,6 +63,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_ID;
@@ -65,13 +72,28 @@ import static org.opensingular.requirement.module.wicket.view.util.ActionContext
 @MountPath("history")
 public class HistoryPage extends ServerTemplate {
 
-    private static final long serialVersionUID = -3344810189307767761L;
-    private static final int QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE = 5;
+    private static final long        serialVersionUID = -3344810189307767761L;
+
+    private static final String      IMAGE_HIST_ID    = "imageHist";
 
     @Inject
     private RequirementService requirementService;
 
-    private Long requirementPK;
+    @Inject
+    private IServerContext serverContext;
+
+    private Long                     requirementPK;
+    //    private PhotoSwipePanel          gallery          = new PhotoSwipePanel("gallery", PhotoSwipeBehavior.forURLs($m.get(() -> {
+    //                                                          return IntStream.range(0, 100)
+    //                                                              .mapToObj(it -> "https://picsum.photos/200/300?image=" + it)
+    //                                                              .toArray(n -> new String[n]);
+    //                                                      })));
+    private PhotoSwipePanel          gallery          = new PhotoSwipePanel("gallery", PhotoSwipeBehavior.forImages($m.get(() -> {
+                                                          Component img = get(IMAGE_HIST_ID);
+                                                          return (img instanceof Image)
+                                                              ? new Image[] { (Image) img }
+                                                              : new Image[0];
+                                                      })));
 
     public HistoryPage() {
     }
@@ -85,7 +107,8 @@ public class HistoryPage extends ServerTemplate {
         super.onInitialize();
         requirementPK = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
         add(setupDataTable(createDataProvider()));
-        addImageHistoryFLow();
+        add(gallery);
+        add(newImageHistoryFLow(IMAGE_HIST_ID));
         add(getBtnFechar());
     }
 
@@ -94,41 +117,40 @@ public class HistoryPage extends ServerTemplate {
         super.renderHead(response);
         response.render(CssHeaderItem.forReference(new PackageResourceReference(HistoryPage.class, "HistoryPage.css")));
 
-
     }
 
-    private void addImageHistoryFLow() {
-        WebComponent imageHistFlow;
-        if (requirementPK != null) {
-            String classCss = " col-md-12 ";
-            FlowInstance flowInstance = getRequirementInstance().getFlowInstance();
-            flowInstance.getTasksOlderFirst();
-            if (flowInstance.getFlowDefinition().getFlowMap().getAllTasks().size() <= QUANTIDADE_MAX_TAKS_TO_MIDDLE_SIZE) {
-                classCss = " col-md-6 col-md-offset-3 ";
-            }
-            byte[] bytes = generateHistImage(flowInstance);
-            DynamicImageResource imageResource = new DynamicImageResource() {
+    private Component newImageHistoryFLow(String id) {
+        Component imageHistFlow;
+        if ((requirementPK != null) && findFlowExecutionImageExtension().isPresent()) {
+            imageHistFlow = new Image(id, new DynamicImageResource() {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
-                    return bytes;
+                    FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+                    IFlowRenderer renderer = findFlowExecutionImageExtension()
+                        .map(it -> it.getRenderer())
+                        .orElse(NullFlowRenderer.INSTANCE);
+                    return renderer.generateHistoryPng(flowInstance);
                 }
-            };
-            imageHistFlow = new Image("imageHist", imageResource);
-            imageHistFlow.setVisible(bytes.length != 0);
-            imageHistFlow.add(new AttributeAppender("class", classCss));
+            });
+            imageHistFlow.add(new AjaxEventBehavior("click") {
+                @Override
+                protected void onEvent(AjaxRequestTarget target) {
+                    gallery.setVisible(true);
+                    target.add(gallery);
+                }
+            });
+
         } else {
-            imageHistFlow = new WebComponent("imageHist");
-            imageHistFlow.setVisible(false);
+            imageHistFlow = new WebComponent(id).setVisible(false);
         }
-
-
-        add(imageHistFlow);
+        return imageHistFlow;
     }
 
-    private byte[] generateHistImage(FlowInstance flowInstance) {
-        return RendererUtil.findRendererForUserDisplay()
-                .map(p -> p.generateHistoryPng(flowInstance))
-                .orElse(new byte[0]);
+    private Optional<FlowRendererProviderExtension> findFlowExecutionImageExtension() {
+        return SingularExtensionUtil.get()
+            .findExtensions(FlowRendererProviderExtension.class)
+            .stream()
+            .findFirst();
     }
 
     protected AjaxLink<?> getBtnFechar() {
@@ -155,34 +177,33 @@ public class HistoryPage extends ServerTemplate {
                         Model.of(""),
                         column -> column.appendComponentFactory((id, model) -> {
 
-                            final DropDownButtonPanel dropDownButtonPanel;
+                    final DropDownButtonPanel dropDownButtonPanel;
 
-                            dropDownButtonPanel = new DropDownButtonPanel(id)
-                                    .setDropdownLabel(Model.of("Formulários"))
-                                    .setInvisibleIfEmpty(Boolean.TRUE)
-                                    .setPullRight(Boolean.TRUE);
+                    dropDownButtonPanel = new DropDownButtonPanel(id)
+                        .setDropdownLabel(Model.of("Formulários"))
+                        .setInvisibleIfEmpty(Boolean.TRUE)
+                        .setPullRight(Boolean.TRUE);
 
-                            Optional.of(model.getObject())
-                                    .map(RequirementHistoryDTO::getRequirementContentHistory)
-                                    .map(RequirementContentHistoryEntity::getFormVersionHistoryEntities)
-                                    .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
-                                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
+                    Optional.of(model.getObject())
+                        .map(RequirementHistoryDTO::getRequirementContentHistory)
+                        .map(RequirementContentHistoryEntity::getFormVersionHistoryEntities)
+                        .ifPresent(list -> list.forEach(fvh -> dropDownButtonPanel
+                            .addButton(Model.of(fvh.getFormVersion().getFormEntity().getFormType().getLabel()), viewFormButton(fvh))));
 
-                            return dropDownButtonPanel;
-                        })
-                )
-                .build("tabela");
+                    return dropDownButtonPanel;
+                }))
+            .build("tabela");
 
     }
 
     private IFunction<String, Button> viewFormButton(final FormVersionHistoryEntity formVersionHistoryEntity) {
         final String url = DispatcherPageUtil
-                .baseURL(getBaseUrl())
-                .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
-                .requirementId(null)
-                .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
-                .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
-                .build();
+            .baseURL(getBaseUrl())
+            .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
+            .requirementId(null)
+            .param(FORM_NAME, formVersionHistoryEntity.getFormVersion().getFormEntity().getFormType().getAbbreviation())
+            .param(FORM_VERSION_KEY, formVersionHistoryEntity.getCod().getCodFormVersion())
+            .build();
         return id -> new Button(id) {
             @Override
             protected String getOnClickScript() {
@@ -231,9 +252,8 @@ public class HistoryPage extends ServerTemplate {
         return false;
     }
 
-
     protected String getBaseUrl() {
-        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + serverContext.getSettings().getUrlPath();
     }
 
     @Override

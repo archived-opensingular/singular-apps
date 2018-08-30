@@ -17,17 +17,17 @@
 package org.opensingular.requirement.module.spring.security;
 
 
+import org.opensingular.flow.core.SUser;
+import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
+import org.springframework.beans.factory.ObjectFactory;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+
+import javax.inject.Inject;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import javax.inject.Inject;
-
-import org.opensingular.flow.core.SUser;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 public class DefaultUserDetailService implements SingularUserDetailsService {
 
@@ -35,17 +35,13 @@ public class DefaultUserDetailService implements SingularUserDetailsService {
     private ActorDAO actorDAO;
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private ObjectFactory<IServerContext> serverContextObjectFactory;
 
     @Override
-    public SingularRequirementUserDetails loadUserByUsername(String username, IServerContext context) throws UsernameNotFoundException {
+    public SingularRequirementUserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         SUser user = actorDAO.retrieveByUserCod(username);
-        return new DefaultUserDetails(username, new ArrayList<>(), Optional.ofNullable(user).map(SUser::getSimpleName).orElse(username), context);
-    }
-
-    @Override
-    public IServerContext[] getContexts() {
-        return singularServerConfiguration.getContexts().toArray(new IServerContext[]{});
+        return new DefaultUserDetails(username, Optional.ofNullable(user).map(SUser::getSimpleName).orElse(username),
+                new ArrayList<>(), Collections.singletonList(serverContextObjectFactory.getObject().getClass()));
     }
 
     @Override

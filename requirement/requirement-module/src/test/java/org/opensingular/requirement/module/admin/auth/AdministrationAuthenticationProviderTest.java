@@ -26,7 +26,6 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.persistence.entity.parameter.ParameterEntity;
@@ -46,9 +45,6 @@ public class AdministrationAuthenticationProviderTest {
     private AdministrationAuthenticationProvider administrationAuthenticationProvider;
 
     @Mock
-    SingularModuleConfiguration moduleConfiguration;
-
-    @Mock
     SingularModule module;
 
     @Mock
@@ -60,7 +56,6 @@ public class AdministrationAuthenticationProviderTest {
     @Before
     public void setUp() {
         when(module.abbreviation()).thenReturn("FooCategory");
-        when(moduleConfiguration.getModule()).thenReturn(module);
         ParameterEntity        userParameterEntity = new ParameterEntity();
         userParameterEntity.setValue("USER");
         Mockito.when(parameterService.findByNameAndModule(DatabaseAdminCredentialChecker.PARAM_ADMINUSERNAME, "FooCategory")).thenReturn(Optional.of(userParameterEntity));

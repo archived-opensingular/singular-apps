@@ -19,14 +19,18 @@ package org.opensingular.requirement.module.wicket.buttons;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
 import javax.inject.Inject;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
@@ -40,17 +44,19 @@ public class NewRequirementLink extends Panel {
 
     private final String url;
     private final Map<String, String> params;
-    private IModel<Set<Class<? extends RequirementDefinition>>> requirements;
+    private IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements;
     private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private RequirementDefinitionService requirementDefinitionService;
 
-    public NewRequirementLink(String id, String url, Map<String, String> params, IModel<Set<Class<? extends RequirementDefinition>>> requirements) {
+    public NewRequirementLink(String id, String url, Map<String, String> params,
+                              IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements) {
         this(id, null, url, params, requirements);
     }
 
-    public NewRequirementLink(String id, IModel<String> labelModel, String url, Map<String, String> params, IModel<Set<Class<? extends RequirementDefinition>>> requirements) {
+    public NewRequirementLink(String id, IModel<String> labelModel, String url,
+                              Map<String, String> params, IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements) {
         super(id);
         this.url = url;
         this.labelModel = labelModel == null ? this.labelModel : labelModel;
@@ -106,7 +112,7 @@ public class NewRequirementLink extends Panel {
     }
 
     private Stream<RequirementDefinition> getRequirementsStream() {
-        return singularModuleConfiguration.getRequirements().stream()
+        return requirementDefinitionService.getRequirements().stream()
                 .filter(req -> requirements.getObject().stream().anyMatch(reqClass -> reqClass.isAssignableFrom(req.getClass())));
     }
 

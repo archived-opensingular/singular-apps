@@ -14,23 +14,26 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module;
+package org.opensingular.requirement.module.wicket;
 
-import org.springframework.beans.factory.BeanFactory;
+import org.apache.wicket.Application;
+import org.apache.wicket.DefaultPageManagerProvider;
+import org.apache.wicket.pageStore.IDataStore;
+import org.opensingular.lib.wicket.util.application.LZ4DataStore;
 
-import javax.inject.Inject;
-import javax.inject.Named;
+public class RequirementPageManagerProvider extends DefaultPageManagerProvider {
+    /**
+     * Constructor.
+     *
+     * @param application The application instance
+     */
+    public RequirementPageManagerProvider(Application application) {
+        super(application);
+    }
 
-/**
- * TODO Vinicius, devemos conversar sobre a maneira padrão de criar objetos que usam spring beans e ao
- * mesmo tempo possuem estado, acredito que essa abordagem é mais facil de refatorar
- */
-@Named
-public class BoxControllerFactory {
-    @Inject
-    private BeanFactory beanFactory;
 
-    public BoxController create(BoxInfo boxInfo) {
-        return new BoxController(boxInfo, beanFactory.getBean(boxInfo.getBoxDefinitionClass()).getDataProvider());
+    @Override
+    protected IDataStore newDataStore() {
+        return new LZ4DataStore(super.newDataStore());
     }
 }

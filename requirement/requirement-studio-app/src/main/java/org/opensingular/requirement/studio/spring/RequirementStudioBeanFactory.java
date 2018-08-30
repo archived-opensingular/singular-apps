@@ -16,21 +16,25 @@
 
 package org.opensingular.requirement.studio.spring;
 
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
-import org.opensingular.studio.core.config.StudioConfig;
-import org.opensingular.studio.core.config.StudioConfigProvider;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.opensingular.studio.core.menu.StudioMenu;
 import org.springframework.context.annotation.Bean;
 
 public class RequirementStudioBeanFactory extends SingularDefaultBeanFactory {
-    private StudioConfig studioConfig;
-
-    public RequirementStudioBeanFactory() {
-        this.studioConfig = StudioConfigProvider.get().retrieve();
+    @Bean
+    public StudioMenu studioMenu(WorkspaceRegistry workspaceRegistry) {
+        return studioMenuBuilder(workspaceRegistry).getStudioMenu();
     }
 
-    @Bean
-    public StudioMenu studioMenu() {
-        return studioConfig.getAppMenu();
+    private StudioMenu.Builder studioMenuBuilder(WorkspaceRegistry workspaceRegistry) {
+        StudioMenu.Builder builder = StudioMenu.Builder.newPortalMenu();
+        workspaceRegistry.getContexts().forEach(ctx -> {
+            if (!ctx.getSettings().isHideFromStudioMenu()) {
+                builder.addHTTPEndpoint(DefaultIcons.CUBES, ctx.getName(), ctx.getSettings().getUrlPath());
+            }
+        });
+        return builder;
     }
 }

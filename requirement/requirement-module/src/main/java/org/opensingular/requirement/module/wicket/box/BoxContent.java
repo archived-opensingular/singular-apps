@@ -26,7 +26,6 @@ import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
-import org.apache.wicket.model.PropertyModel;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.lib.commons.lambda.IBiFunction;
 import org.opensingular.lib.commons.lambda.IFunction;
@@ -41,39 +40,36 @@ import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.connector.ModuleService;
-import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
-import org.opensingular.requirement.module.service.dto.BoxDefinitionData;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.DatatableField;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
-import org.opensingular.requirement.module.service.dto.ItemBox;
-import org.opensingular.requirement.module.service.dto.RequirementDefinitionDTO;
 import org.opensingular.requirement.module.wicket.buttons.NewRequirementLink;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import javax.inject.Inject;
-import java.util.Collections;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.stream.Collectors;
 
-import static org.opensingular.lib.wicket.util.util.WicketUtils.*;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
-public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Loggable {
-
+public class BoxContent extends AbstractBoxContent implements Loggable {
     @Inject
     private ModuleService moduleService;
 
-    private Pair<String, SortOrder>   sortProperty;
-    private IModel<BoxDefinitionData> definitionModel;
+    @Inject
+    private BoxFilterFactory boxFilterFactory;
 
-    public BoxContent(String id, String menu, BoxDefinitionData itemBox) {
-        super(id, menu);
-        this.definitionModel = new Model<>(itemBox);
+    private Pair<String, SortOrder> sortProperty;
+
+    public BoxContent(String id, IModel<BoxDefinition> boxDefinition) {
+        super(id, boxDefinition);
     }
 
     @Override
@@ -83,14 +79,14 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     private void configureQuickFilter() {
-        getFiltroRapido().setVisible(isShowQuickFilter());
-        getPesquisarButton().setVisible(isShowQuickFilter());
+        getFiltroRapido().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
+        getPesquisarButton().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
     }
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<Set<Class<? extends RequirementDefinition>>> requirementsModel = new PropertyModel<>(definitionModel, "requirements");
-        if (!requirementsModel.getObject().isEmpty() && getMenu() != null) {
+        IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirementsModel = new Model<>(new LinkedHashSet<>(getBoxDefinitionObject().getItemBox().getRequirements()));
+        if (!requirementsModel.getObject().isEmpty()) {
             return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {
             return super.buildNewRequirementButton(id);
@@ -146,10 +142,9 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         builder.appendColumn(actionColumn);
     }
 
-
     public IBiFunction<String, IModel<BoxItemDataMap>, MarkupContainer> linkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         return (id, boxItemModel) -> {
-            String             url  = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
+            String url = moduleService.buildUrlToBeRedirected(boxItemModel.getObject(), itemAction, additionalParams, moduleService.getBaseUrl());
             WebMarkupContainer link = new WebMarkupContainer(id);
             link.add($b.attr("target", String.format("_%s_%s", itemAction.getName(), boxItemModel.getObject().getCod())));
             link.add($b.attr("href", url));
@@ -160,7 +155,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IBSAction<BoxItemDataMap> dynamicLinkFunction(BoxItemAction itemAction, Map<String, String> additionalParams) {
         if (itemAction.getConfirmation() != null) {
             return (target, model) -> {
-                getDataModel().setObject(model.getObject());
+                getModel().setObject(model.getObject());
                 showConfirm(target, construirModalConfirmationBorder(itemAction, additionalParams));
             };
         } else {
@@ -235,26 +230,26 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     protected BoxContentConfirmModal<BoxItemDataMap> construirModalConfirmationBorder(BoxItemAction itemAction,
                                                                                       Map<String, String> additionalParams) {
         if (StringUtils.isNotBlank(itemAction.getConfirmation().getSelectEndpoint())) {
-            return new BoxContentAllocateModal(itemAction, getDataModel()) {
+            return new BoxContentAllocateModal(itemAction, getModel()) {
                 @Override
                 protected void onDeallocate(AjaxRequestTarget target) {
-                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, null);
+                    relocate(itemAction, additionalParams, getModel().getObject(), target, null);
                     target.add(table);
                     atualizarContadores(target);
                 }
 
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    relocate(itemAction, additionalParams, getDataModel().getObject(), target, usersDropDownChoice.getModelObject());
+                    relocate(itemAction, additionalParams, getModel().getObject(), target, usersDropDownChoice.getModelObject());
                     target.add(table);
                     atualizarContadores(target);
                 }
             };
         } else {
-            return new BoxContentConfirmModal<BoxItemDataMap>(itemAction, getDataModel()) {
+            return new BoxContentConfirmModal<BoxItemDataMap>(itemAction, getModel()) {
                 @Override
                 protected void onConfirm(AjaxRequestTarget target) {
-                    executeDynamicAction(itemAction, additionalParams, getDataModel().getObject(), target);
+                    executeDynamicAction(itemAction, additionalParams, getModel().getObject(), target);
                     target.add(table);
                     atualizarContadores(target);
                 }
@@ -270,7 +265,7 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     private IFunction<IModel<BoxItemDataMap>, Boolean> visibleFunction(BoxItemAction itemAction) {
         return (model) -> {
             BoxItemDataMap boxItemDataMap = model.getObject();
-            boolean        visible        = boxItemDataMap.hasAction(itemAction);
+            boolean visible = boxItemDataMap.hasAction(itemAction);
             if (!visible) {
                 getLogger().debug("Action {} não está disponível para o item ({}: código da petição) da listagem ", itemAction.getName(), boxItemDataMap.getCod());
             }
@@ -288,57 +283,19 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
         this.sortProperty = sortProperty;
     }
 
-    @Override
-    protected void onDelete(BoxItemDataMap peticao) {
-
-    }
 
     @Override
-    protected QuickFilter newFilterBasic() {
-        BoxPage boxPage = getBoxPage();
-        return boxPage.createFilter()
-                .withFilter(getFiltroRapidoModelObject())
-                .withProcessesAbbreviation(getProcessesNames())
-                .withTypesNames(getFormNames())
-                .withRascunho(isWithRascunho())
-                .withEndedTasks(getItemBoxModelObject().getEndedTasks());
+    protected BoxFilter newFilterBasic() {
+        return boxFilterFactory.create(getBoxDefinitionObject()).filter(getFiltroRapidoModelObject());
     }
 
     private BoxPage getBoxPage() {
         return (BoxPage) getPage();
     }
 
-    private List<String> getProcessesNames() {
-        if (getProcesses() == null) {
-            return Collections.emptyList();
-        } else {
-            return getProcesses()
-                    .stream()
-                    .map(RequirementDefinitionDTO::getAbbreviation)
-                    .collect(Collectors.toList());
-        }
-    }
-
-    private List<String> getFormNames() {
-        if (getForms() == null) {
-            return Collections.emptyList();
-        } else {
-            return getForms()
-                    .stream()
-                    .map(FormDTO::getName)
-                    .collect(Collectors.toList());
-        }
-    }
-
     @Override
-    protected List<BoxItemDataMap> quickSearch(QuickFilter filter, List<String> flowDefinitionAbbreviation, List<String> formNames) {
-        return moduleService.searchFiltered(getItemBoxModelObject(), filter);
-    }
-
-    @Override
-    protected WebMarkupContainer createLink(String id, IModel<BoxItemDataMap> requirementModel, FormAction formAction) {
-        // Em virtude da sobrescrita do appendActionColumns, esse método não é utilizado aqui.
-        throw new UnsupportedOperationException("Esse metodo não é utilizado no BoxContent");
+    protected List<BoxItemDataMap> quickSearch(BoxFilter filter) {
+        return moduleService.searchFiltered(getBoxDefinitionObject(), filter);
     }
 
     private Map<String, String> getLinkParams() {
@@ -347,31 +304,16 @@ public class BoxContent extends AbstractBoxContent<BoxItemDataMap> implements Lo
     }
 
     @Override
-    protected long countQuickSearch(QuickFilter filter, List<String> processesNames, List<String> formNames) {
-        return moduleService.countFiltered(getItemBoxModelObject(), filter);
-    }
-
-    public boolean isShowQuickFilter() {
-        return getItemBoxModelObject().isQuickFilter();
+    protected long countQuickSearch(BoxFilter filter) {
+        return moduleService.countFiltered(getBoxDefinitionObject(), filter);
     }
 
     public List<DatatableField> getFieldsDatatable() {
-        return getItemBoxModelObject().getFieldsDatatable();
+        return getBoxDefinitionObject().getDatatableFields();
     }
 
-    public String getSearchEndpoint() {
-        return getItemBoxModelObject().getSearchEndpoint();
+    private BoxDefinition getBoxDefinitionObject() {
+        return boxDefinition.getObject();
     }
 
-    public String getCountEndpoint() {
-        return getItemBoxModelObject().getCountEndpoint();
-    }
-
-    public boolean isWithRascunho() {
-        return getItemBoxModelObject().isShowDraft();
-    }
-
-    private ItemBox getItemBoxModelObject() {
-        return definitionModel.getObject().getItemBox();
-    }
 }
