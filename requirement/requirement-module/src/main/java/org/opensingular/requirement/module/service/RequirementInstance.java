@@ -150,7 +150,12 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     }
 
-    //TODO reqdef
+    /**
+     *
+     * @return
+     * @deprecated
+     * must not be used, it will be turned into private method on future releases.
+     */
     @Deprecated
     public RequirementEntity getEntity() {
         if (getCod() != null) {
@@ -193,8 +198,6 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     public String getApplicantName() {
         return Optional.of(getApplicant()).map(ApplicantEntity::getName).orElse(null);
     }
-
-    //TODO reqdef salvar/criar o form por meio da instance
 
     public RequirementSubmissionResponse send(@Nullable String codSubmitterActor) {
         return getRequirementDefinition().send((SELF) this, codSubmitterActor);
