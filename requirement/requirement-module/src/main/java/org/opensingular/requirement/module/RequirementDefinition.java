@@ -22,6 +22,8 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.requirement.module.builder.RequirementConfigurationBuilder;
+import org.opensingular.requirement.module.builder.RequirementDefinitionConfiguration;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
