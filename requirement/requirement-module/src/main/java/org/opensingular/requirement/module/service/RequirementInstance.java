@@ -204,7 +204,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @return returns requirement main form last version.
      */
     @Nonnull
-    public Optional<SIComposite> getForm() {
+    public <SI extends SInstance> Optional<SI> getForm() {
         return getForm(getRequirementDefinition().getMainForm());
     }
 
@@ -224,8 +224,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param form
      * @return
      */
-    public Optional<SIComposite> getForm(@Nonnull Class<? extends SType<?>> form) {
-        return requirementService.findLastFormInstanceByType(this, form);
+    public <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<SType<SI>> form) {
+        return (Optional<SI>) requirementService.findLastFormInstanceByType(this, form);
     }
 
     /**

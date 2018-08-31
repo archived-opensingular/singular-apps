@@ -18,17 +18,13 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
-import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicantImpl;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
@@ -39,8 +35,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
-import java.util.List;
 
 /**
  * Singular requirement specification.
@@ -58,7 +52,6 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
     @Inject
     private SpringServiceRegistry springServiceRegistry;
-
 
 
     /**
@@ -115,8 +108,8 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     }
 
 
-    public Class<? extends SType<?>> getMainForm() {
-        return requirementConfiguration.getMainForm();
+    public <SI extends SInstance> Class<SType<SI>> getMainForm() {
+        return (Class<SType<SI>>) requirementConfiguration.getMainForm();
     }
 
     public <RSR extends RequirementSubmissionResponse> RSR send(@Nonnull RI requirementInstance, @Nullable String codSubmitterActor) {
