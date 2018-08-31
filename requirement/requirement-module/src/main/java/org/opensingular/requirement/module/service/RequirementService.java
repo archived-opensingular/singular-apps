@@ -429,11 +429,11 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     public Optional<TaskInstanceEntity> findCurrentTaskEntityByRequirementId(@Nonnull Long requirementId) {
         //TODO (Daniel) Por que usar essa entidade em vez de TaskIntnstace ?
         Objects.requireNonNull(requirementId);
-        List<TaskInstanceEntity> taskInstances = taskInstanceDAO.findCurrentTasksByRequirementId(requirementId);
-        if (taskInstances.isEmpty()) {
+        TaskInstanceEntity taskInstances = taskInstanceDAO.findCurrentTasksByRequirementId(requirementId);
+        if (taskInstances == null) {
             return Optional.empty();
         }
-        return Optional.of(taskInstances.get(0));
+        return Optional.of(taskInstances);
     }
 
     public List<ModuleEntity> listAllModules() {

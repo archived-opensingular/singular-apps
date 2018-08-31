@@ -24,6 +24,7 @@ import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.Session;
+import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
@@ -193,11 +194,14 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByCurrentTask() {
         if (ctx.getQuickFilter().getEndedTasks() == null) {
-            query.where($.taskVersion.type.eq(TaskType.END).or($.taskVersion.type.ne(TaskType.END).and($.task.endDate.isNull())));
+            //Retrieve all current tasks.
+            query.where($.task.currentInstanceStatus.eq(CurrentInstanceStatus.YES));
         } else if (Boolean.TRUE.equals(ctx.getQuickFilter().getEndedTasks())) {
-            query.where($.taskVersion.type.eq(TaskType.END));
+            //Retrieve just the finished tasks.
+            query.where($.task.currentInstanceStatus.eq(CurrentInstanceStatus.YES).and($.taskVersion.type.eq(TaskType.END)));
         } else {
-            query.where($.task.endDate.isNull());
+            //Retrieve the current task if it's not the end task.
+            query.where($.task.currentInstanceStatus.eq(CurrentInstanceStatus.YES).and($.taskVersion.type.ne(TaskType.END)));
         }
     }
 
