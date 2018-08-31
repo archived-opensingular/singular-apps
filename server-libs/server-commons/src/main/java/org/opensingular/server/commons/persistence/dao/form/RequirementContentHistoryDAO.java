@@ -118,4 +118,13 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
                 .setParameter("typeName", typeName)
                 .setParameter("cod", cod));
     }
+
+    public RequirementContentHistoryEntity findRequirementContentHistoryByFormVersionCod(Long formVersionCod) {
+        return (RequirementContentHistoryEntity) getSession()
+                .createQuery("select rch from RequirementContentHistoryEntity rch " +
+                "inner join rch.formVersionHistoryEntities fvh " +
+                "where fvh.codFormVersion = :formVersionCod")
+                .setParameter("formVersionCod", formVersionCod)
+                .setMaxResults(1).uniqueResult();
+    }
 }

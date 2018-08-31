@@ -605,4 +605,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     public void forceStateUpdate(FlowInstance instance, STask<?> sTaskByName) {
         instance.forceStateUpdate(sTaskByName);
     }
+
+    public RequirementContentHistoryEntity findRequirementContentHistoryByFormVersionCod(Long formVersionCod) {
+        return requirementContentHistoryDAO.findRequirementContentHistoryByFormVersionCod(formVersionCod);
+    }
 }

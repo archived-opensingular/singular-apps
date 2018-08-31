@@ -20,19 +20,24 @@ package org.opensingular.server.commons.wicket.view.form;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.opensingular.form.SInstance;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.server.commons.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.server.commons.service.FormRequirementService;
+import org.opensingular.server.commons.service.RequirementService;
 import org.opensingular.server.commons.wicket.view.template.ServerTemplate;
 
 import javax.inject.Inject;
 
 public class ReadOnlyFormPage extends ServerTemplate {
-
     @Inject
     private FormRequirementService formRequirementService;
+
+    @Inject
+    private RequirementService<?, ?> requirementService;
 
     protected final IModel<Long> formVersionEntityPK;
     protected final IModel<Boolean> showAnnotations;
@@ -45,17 +50,30 @@ public class ReadOnlyFormPage extends ServerTemplate {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
+          SingularFormPanel singularFormPanel = new SingularFormPanel("singularFormPanel");
         singularFormPanel.setInstanceCreator(() -> {
             FormVersionEntity formVersionEntity = formRequirementService.loadFormVersionEntity(formVersionEntityPK.getObject());
-            return formRequirementService.getSInstance(formVersionEntity);
+            SInstance ins = formRequirementService.getSInstance(formVersionEntity);
+            if (ins instanceof ExecutedTransitionAware) {
+                setExecutedTransition((ExecutedTransitionAware) ins);
+            }
+            return ins;
         });
-
         singularFormPanel.setViewMode(ViewMode.READ_ONLY);
-        singularFormPanel.setAnnotationMode(
-                showAnnotations.getObject() ? AnnotationMode.READ_ONLY : AnnotationMode.NONE);
-
+        singularFormPanel.setAnnotationMode(showAnnotations.getObject() ? AnnotationMode.READ_ONLY : AnnotationMode.NONE);
         add(new Form("form").add(singularFormPanel));
+    }
+
+    private void setExecutedTransition(ExecutedTransitionAware ins) {
+        RequirementContentHistoryEntity rch = requirementService
+                .findRequirementContentHistoryByFormVersionCod(formVersionEntityPK.getObject());
+        String executedTransition;
+        if (rch != null) {
+            executedTransition = rch.getTaskInstanceEntity().getExecutedTransition().getName();
+        } else {
+            executedTransition = null;
+        }
+        ins.setExecutedTransition(executedTransition);
     }
 
     @Override
