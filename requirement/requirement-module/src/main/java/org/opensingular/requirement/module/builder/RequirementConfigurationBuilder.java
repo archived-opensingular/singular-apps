@@ -16,7 +16,6 @@
 
 package org.opensingular.requirement.module.builder;
 
-//TODO reqdef fazer esse builder fluente
 public class RequirementConfigurationBuilder {
 
     private RequirementDefinitionConfiguration requirementDefinitionConfiguration = new RequirementDefinitionConfiguration();

@@ -21,7 +21,15 @@ package org.opensingular.requirement.module.service;
 import org.hibernate.Session;
 import org.junit.Assert;
 import org.junit.Test;
+import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.STask;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TaskType;
+import org.opensingular.form.SIComposite;
+import org.opensingular.form.SInstance;
+import org.opensingular.form.document.RefSDocumentFactory;
+import org.opensingular.form.document.SDocumentFactory;
+import org.opensingular.form.helpers.AssertionsSInstance;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormService;
 import org.opensingular.form.spring.SpringSDocumentFactory;
@@ -33,6 +41,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementDe
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
+import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.test.annotation.Rollback;
 
 import javax.inject.Inject;
@@ -42,8 +51,12 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 @Transactional
 public class RequirementServiceTest extends SingularCommonsBaseTest {
@@ -77,97 +90,74 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     }
 
-    //TODO reqdef
-//
-//    @Test
-//    public void newRequirementEntity() {
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        assertNotNull(requirementEntity);
-//    }
-//
-//    @Test
-//    public void newRequirementInstance() {
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        assertNotNull(requirementInstance);
-//        assertEquals(requirementEntity, requirementInstance.getEntity());
-//    }
-//
-//    @Test
-//    public void saveNewRequirement() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        SIComposite mainFormAsInstance = requirementService.getMainFormAsInstance(requirementEntity);
-//        new AssertionsSInstance(instance).isValueEquals(mainFormAsInstance);
-//    }
-//
 
-//
-//    @Test
-//    public void testFindRequirement() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        Optional<RequirementInstance> requirement = requirementService.findRequirementEntity(requirementInstance.getCod());
-//    }
-//
-//    @Test
-//    public void testGetRequirement() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        RequirementInstance requirement = requirementService.getRequirementEntity(requirementInstance.getCod());
-//        Assert.assertEquals(requirementInstance.getEntity(), requirement.getEntity());
-//    }
-//
-//    @Test
-//    public void testDeleteRequirement() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        requirementService.deleteRequirement(requirementInstance.getCod());
-//        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
-//    }
-//
-//    @Test
-//    public void testDeleteRequirementWithRequirementDTO() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        requirementService.deleteRequirement(requirementInstance.getCod());
-//        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
-//    }
-//
-//    @Test
-//    public void testListCurrentTaskTransitionsWithEmptyTransitions() {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//
-//        Assert.assertEquals(0, requirementService.findCurrentTaskInstanceByRequirementId(requirementInstance.getCod())
-//                .flatMap(TaskInstance::getFlowTask)
-//                .map(STask::getTransitions)
-//                .orElse(Collections.emptyList()).size());
-//    }
+    @Test
+    public void newRequirementEntity() {
+        RequirementEntity requirementEntity = getRequirementDefinition().newRequirement().getEntity();
+        assertNotNull(requirementEntity);
+    }
+
+    @Test
+    public void newRequirementInstance() {
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        assertNotNull(requirementInstance);
+    }
+
+    @Test
+    public void saveNewRequirement() {
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        SInstance           instance            = requirementInstance.newForm();
+        requirementInstance.saveForm(instance);
+
+        SIComposite mainFormAsInstance = requirementService.getMainFormAsInstance(requirementInstance.getEntity());
+        new AssertionsSInstance(instance).isValueEquals(mainFormAsInstance);
+    }
+
+
+    @Test
+    public void testFindRequirement() {
+        RequirementInstance requirementInstance = createAndSaveRequirement();
+        Assert.assertEquals(requirementInstance, requirementService.loadRequirementInstance(requirementInstance.getCod()));
+    }
+
+    @Test
+    public void testGetRequirement() {
+        RequirementInstance requirementInstance = createAndSaveRequirement();
+        RequirementInstance requirement = requirementService.loadRequirementInstance(requirementInstance.getCod());
+        Assert.assertEquals(requirementInstance.getEntity(), requirement.getEntity());
+    }
+
+    @Test
+    public void testDeleteRequirement() {
+        RequirementInstance requirementInstance = createAndSaveRequirement();
+        requirementService.deleteRequirement(requirementInstance.getCod());
+        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
+    }
+
+    private RequirementInstance createAndSaveRequirement() {
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        SInstance           instance            = requirementInstance.newForm();
+        requirementInstance.saveForm(instance);
+        return requirementInstance;
+    }
+
+    @Test
+    public void testDeleteRequirementWithRequirementDTO() {
+        RequirementInstance requirementInstance = createAndSaveRequirement();
+
+        requirementService.deleteRequirement(requirementInstance.getCod());
+        Assert.assertFalse(requirementService.findRequirementEntity(requirementInstance.getCod()).isPresent());
+    }
+
+    @Test
+    public void testListCurrentTaskTransitionsWithEmptyTransitions() {
+        RequirementInstance requirementInstance = createAndSaveRequirement();
+
+        Assert.assertEquals(0, requirementService.findCurrentTaskInstanceByRequirementId(requirementInstance.getCod())
+                .flatMap(TaskInstance::getFlowTask)
+                .map(STask::getTransitions)
+                .orElse(Collections.emptyList()).size());
+    }
 
     @Test(expected = SingularException.class)
     @Rollback
@@ -190,7 +180,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
             }
         }
 
-        BoxFilter f1    = new BoxFilter();
+        BoxFilter                       f1    = new BoxFilter();
         List<Map<String, Serializable>> maps1 = requirementService.quickSearchMap(f1);
         assertEquals(qtdEnviada, maps1.size());
 
@@ -200,7 +190,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         assertEquals(qtdRascunho, maps2.size());
 
         BoxFilter f3    = new BoxFilter();
-        Long        count = requirementService.countQuickSearch(f3);
+        Long      count = requirementService.countQuickSearch(f3);
         assertTrue(count == qtdEnviada);
     }
 
@@ -218,11 +208,11 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void listTasks() {
-        String description = "Descrição XYZ única - " + System.nanoTime();
-        sendRequirement(description);
+        String ator = "Fulano";
+        sendRequirement(ator);
 
         BoxFilter filter = new BoxFilter();
-        filter.filter(description);
+        filter.filter(ator);
         List<Map<String, Serializable>> maps = requirementService.listTasks(filter, Collections.emptyList());
 
         assertEquals(1, maps.size());
@@ -232,47 +222,39 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         assertEquals("Do bar", task.get("taskName"));
         assertEquals(TaskType.HUMAN, task.get("taskType"));
         assertEquals("foooooo.STypeFoo", task.get("type"));
-        assertEquals(description, task.get("description"));
+        assertEquals(ator, task.get("description"));
     }
 
-    public RequirementInstance sendRequirement(String description) {
-//        RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-//        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-//        RequirementEntity requirementEntity = requirementService.newRequirementEntityFor(getRequirementDefinition());
-//        RequirementInstance requirementInstance = requirementService.newRequirementInstance(requirementEntity);
-//        requirementInstance.setDescription(description);
-//        requirementService.saveOrUpdate(requirementInstance, instance, true);
-//        requirementInstance.setFlowDefinition(FOOFlow.class);
-//        requirementSender.send(requirementInstance, instance, "vinicius.nunes");
-//
-//        return requirementInstance;
-        return null;
+    public RequirementInstance sendRequirement(String codAtor) {
+        RequirementInstance instance = createAndSaveRequirement();
+        instance.send(codAtor);
+        return instance;
     }
-//
-//    @Test
-//    public void testSearchs() {
-//        RequirementInstance requirementInstance = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-//        FlowInstance flowInstance = requirementInstance.getFlowInstance();
-//
-//        RequirementInstance p2 = requirementService.getRequirementInstance(flowInstance);
-//        RequirementInstance p3 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
-//        RequirementInstance p4 = requirementService.getRequirementEntity(flowInstance);
-//        RequirementInstance p5 = requirementService.getRequirementEntity(flowInstance.getCurrentTaskOrException());
-//
-//        assertEquals(requirementInstance.getCod(), p2.getCod());
-//        assertEquals(requirementInstance.getCod(), p3.getCod());
-//        assertEquals(requirementInstance.getCod(), p4.getCod());
-//        assertEquals(requirementInstance.getCod(), p5.getCod());
-//    }
-//
-//    @Test
-//    public void createRequirementWithoutSave() {
-//        RequirementInstance parent = sendRequirement("Descrição XYZ única - " + System.nanoTime());
-//
-//        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(FOOFlow.class, parent, RequirementInstance::getCod, getRequirementDefinition());
-//
-//        assertNull(requirement.getCod());
-//    }
+
+    @Test
+    public void testSearchs() {
+        RequirementInstance requirementInstance = sendRequirement("Descrição XYZ única - " + System.nanoTime());
+        FlowInstance        flowInstance        = requirementInstance.getFlowInstance();
+
+        RequirementInstance p2 = requirementService.getRequirementInstance(flowInstance);
+        RequirementInstance p3 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
+        RequirementInstance p4 = requirementService.getRequirementInstance(flowInstance);
+        RequirementInstance p5 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
+
+        assertEquals(requirementInstance.getCod(), p2.getCod());
+        assertEquals(requirementInstance.getCod(), p3.getCod());
+        assertEquals(requirementInstance.getCod(), p4.getCod());
+        assertEquals(requirementInstance.getCod(), p5.getCod());
+    }
+
+    @Test
+    public void createRequirementWithoutSave() {
+        RequirementInstance parent = sendRequirement("Descrição XYZ única - " + System.nanoTime());
+
+        RequirementInstance requirement = getRequirementDefinition().newRequirement(parent);
+
+        assertNull(requirement.getCod());
+    }
 
 
 }
