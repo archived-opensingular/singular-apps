@@ -16,10 +16,8 @@
 
 package org.opensingular.requirement.module.persistence.dao.flow;
 
-import java.util.List;
-
 import org.hibernate.Query;
-import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -35,18 +33,17 @@ public class TaskInstanceDAO extends BaseDAO<TaskInstanceEntity, Integer> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<TaskInstanceEntity> findCurrentTasksByRequirementId(Long requirementId) {
+    public TaskInstanceEntity findCurrentTasksByRequirementId(Long requirementId) {
         String sb = " select ti " + " from " + getRequirementEntityClass().getName() + " pet " +
                 " inner join pet.flowInstanceEntity pi " +
                 " inner join pi.tasks ti " +
-                " inner join ti.task task " +
                 " where pet.cod = :requirementId  " +
-                "   and (ti.endDate is null OR task.type = :tipoEnd)  ";
-
+                "   and ti.currentInstanceStatus = :isCurrent  ";
         final Query query = getSession().createQuery(sb);
         query.setParameter("requirementId", requirementId);
-        query.setParameter("tipoEnd", TaskType.END);
-        return query.list();
+        query.setParameter("isCurrent", CurrentInstanceStatus.YES);
+        query.setMaxResults(1);
+        return (TaskInstanceEntity) query.uniqueResult();
     }
 
 }
