@@ -18,10 +18,6 @@ package org.opensingular.requirement.module;
 
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 /**
  * Configuration object for module {@link SingularRequirement} registration.
  */
@@ -41,14 +37,5 @@ public class RequirementRegistry {
     public RequirementRegistry add(Class<? extends SingularRequirement> requirement) {
         annotationConfigWebApplicationContext.register(requirement);
         return this;
-    }
-
-    /**
-     * @return todos os requerimentos registrados
-     */
-    public List<SingularRequirement> getRequirements() {
-        return Stream.of(annotationConfigWebApplicationContext.getBeanNamesForType(SingularRequirement.class))
-                .map(beanName -> annotationConfigWebApplicationContext.getBean(beanName, SingularRequirement.class))
-                .collect(Collectors.toList());
     }
 }

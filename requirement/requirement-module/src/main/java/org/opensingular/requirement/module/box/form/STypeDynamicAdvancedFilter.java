@@ -14,18 +14,24 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.spring.security.config;
+package org.opensingular.requirement.module.box.form;
 
-import org.springframework.web.servlet.ModelAndView;
+import org.opensingular.form.SIComposite;
+import org.opensingular.form.SInfoType;
+import org.opensingular.form.STypeComposite;
+import org.opensingular.form.TypeBuilder;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.HashMap;
-import java.util.Map;
+import javax.annotation.Nonnull;
 
-public class LoginController {
-    public ModelAndView getLoginView(HttpServletRequest request) {
-        Map<String, String> model = new HashMap<>();
-        model.put("loginPath", request.getRequestURI());
-        return new ModelAndView("login", model);
+@SInfoType(spackage = SPackageBoxFilter.class)
+public class STypeDynamicAdvancedFilter extends STypeComposite<SIComposite> {
+    /**
+     * This type is dynamic loaded
+     *
+     * @see org.opensingular.requirement.module.wicket.box.AbstractBoxContent
+     */
+    @Override
+    protected void onLoadType(@Nonnull TypeBuilder tb) {
+        //does nothing
     }
 }

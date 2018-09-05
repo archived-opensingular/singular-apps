@@ -17,44 +17,39 @@
 package org.opensingular.requirement.module.spring.security;
 
 
+import org.opensingular.requirement.module.config.IServerContext;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.opensingular.requirement.module.config.IServerContext;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-
 public class DefaultUserDetails implements SingularRequirementUserDetails {
-
     public static final String ROLE_PREFIX = "ROLE_";
-    private String displayName;
 
-    private List<SingularPermission> permissions;
+    private final String username;
+    private final String displayName;
+    private final List<SingularPermission> permissions = new ArrayList<>();
+    private final List<Class<? extends IServerContext>> allowedContexts = new ArrayList<>();
 
-    private IServerContext serverContext;
-
-    private String username;
-
-    public DefaultUserDetails(String username, List<SingularPermission> roles, String displayName, IServerContext context) {
+    public DefaultUserDetails(String username, String displayName, List<SingularPermission> permissions,
+                              List<Class<? extends IServerContext>> allowedContexts) {
         this.username = username;
-        this.permissions = roles;
         this.displayName = displayName;
-        this.serverContext = context;
+        this.permissions.addAll(permissions);
+        this.allowedContexts.addAll(allowedContexts);
     }
 
     @Override
     public void addPermission(SingularPermission role) {
-        if(permissions == null){
-            permissions = new ArrayList<>();
-        }
         permissions.add(role);
     }
 
     @Override
-    public IServerContext getServerContext() {
-        return serverContext;
+    public List<Class<? extends IServerContext>> getAllowedContexts() {
+        return allowedContexts;
     }
 
     @Override
@@ -79,12 +74,9 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return permissions != null
-                ? permissions
-                .parallelStream()
+        return permissions.parallelStream()
                 .map(SingularPermission::getSingularId)
                 .map(s -> new SimpleGrantedAuthority(ROLE_PREFIX + s))
-                .collect(Collectors.toList())
-                : new ArrayList<>();
+                .collect(Collectors.toList());
     }
 }

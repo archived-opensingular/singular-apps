@@ -20,68 +20,68 @@ import org.opensingular.flow.core.TaskType;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 
 
 public class DefaultActionProvider implements ActionProvider, Loggable {
 
-    protected void addViewAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addViewAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addViewAction(line);
     }
 
 
-    protected void addEditAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addEditAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addEditAction(line);
     }
 
 
-    protected void addDeleteAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addDeleteAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addDeleteAction(line);
     }
 
 
-    protected void addAssignAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addAssignAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (line.getAllocatedSUserId() == null && TaskType.HUMAN == line.getTaskType()) {
             list.addAssignAction(line);
         }
     }
 
-    protected void addRelocateAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addRelocateAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (TaskType.HUMAN == line.getTaskType()) {
             list.addRelocateAction(line);
         }
     }
 
-    protected void addHistoryAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addHistoryAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         list.addHistoryAction(line);
     }
 
-    protected void addAnalyseAction(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addAnalyseAction(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
         if (filter.getIdUsuarioLogado() != null && filter.getIdUsuarioLogado().equalsIgnoreCase((String) line.getAllocatedSUserId())) {
             list.addAnalyseAction(line);
         }
     }
 
-    protected void addCustomActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter, BoxItemActionList list) {
+    protected void addCustomActions(BoxItemData line, BoxFilter filter, BoxItemActionList list) {
 
     }
 
 
-    protected BoxItemActionList getDefaultActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
+    protected BoxItemActionList getDefaultActions(BoxItemData line, BoxFilter filter) {
         BoxItemActionList list = new BoxItemActionList();
-        addAssignAction(boxInfo, line, filter, list);
-        addAnalyseAction(boxInfo, line, filter, list);
-        addEditAction(boxInfo, line, filter, list);
-        addRelocateAction(boxInfo, line, filter, list);
-        addCustomActions(boxInfo, line, filter, list);
-        addViewAction(boxInfo, line, filter, list);
-        addDeleteAction(boxInfo, line, filter, list);
-        addHistoryAction(boxInfo, line, filter, list);
+        addAssignAction(line, filter, list);
+        addAnalyseAction(line, filter, list);
+        addEditAction(line, filter, list);
+        addRelocateAction(line, filter, list);
+        addCustomActions(line, filter, list);
+        addViewAction(line, filter, list);
+        addDeleteAction(line, filter, list);
+        addHistoryAction(line, filter, list);
         return list;
     }
 
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
-        return getDefaultActions(boxInfo, line, filter);
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
+        return getDefaultActions(line, filter);
     }
 }

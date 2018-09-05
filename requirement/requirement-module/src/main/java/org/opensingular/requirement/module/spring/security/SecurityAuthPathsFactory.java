@@ -16,29 +16,19 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import java.io.Serializable;
-import javax.servlet.ServletContext;
-
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.util.url.UrlToolkitBuilder;
 import org.opensingular.requirement.module.wicket.SingularRequirementApplication;
-import org.opensingular.requirement.module.wicket.SingularSession;
+
+import javax.servlet.ServletContext;
+import java.io.Serializable;
 
 public class SecurityAuthPathsFactory implements Serializable {
-
     public SecurityAuthPaths get() {
-
-        SingularSession                singularSession                = SingularSession.get();
-        SingularRequirementApplication singularRequirementApplication = SingularRequirementApplication.get();
-
-        SingularRequirementUserDetails userDetails   = singularSession.getUserDetails();
-        IServerContext                 serverContext = userDetails.getServerContext();
-
-        ServletContext servletContext = singularRequirementApplication.getServletContext();
-
         UrlToolkitBuilder urlToolkitBuilder = new UrlToolkitBuilder();
-
-        return new SecurityAuthPaths(servletContext.getContextPath(), serverContext.getUrlPath(), urlToolkitBuilder);
+        ServletContext servletContextr = SingularRequirementApplication.get().getServletContext();
+        IServerContext serverContext = ApplicationContextProvider.get().getBean(IServerContext.class);
+        return new SecurityAuthPaths(servletContextr.getContextPath(), serverContext.getSettings().getUrlPath(), urlToolkitBuilder);
     }
-
 }

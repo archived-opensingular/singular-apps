@@ -18,14 +18,9 @@ package org.opensingular.requirement.module.admin.extension;
 
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.requirement.module.admin.extension.panel.RequirementViewPanel;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.AdministrationEntryExtension;
 
 /**
- * Carregado por :
- * @see HealthSystemPage#loadExtensions()
- * Registrado em:
- * @see
  */
 public class RequirementViewAdminEntry implements AdministrationEntryExtension {
     @Override

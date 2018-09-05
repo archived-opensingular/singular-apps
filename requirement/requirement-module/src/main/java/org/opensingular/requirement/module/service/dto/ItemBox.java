@@ -16,121 +16,119 @@
 
 package org.opensingular.requirement.module.service.dto;
 
-import java.io.Serializable;
-import java.util.List;
-
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
-import org.opensingular.requirement.module.jackson.IconJsonSerializer;
+import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
+
+import java.io.Serializable;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ItemBox implements Serializable {
-
-    private static final long serialVersionUID = 1L;
-
-    private String id;
     private String name;
     private String description;
     private String helpText;
-    private boolean quickFilter       = true;
-    private boolean showDraft         = false;
-    private boolean showHistoryAction = true;
-    private Boolean              endedTasks;
-    private Icon                 icon;
+    private Icon icon;
     private List<DatatableField> fieldsDatatable;
+    private boolean showQuickFilter = true;
+    private Class<? extends BoxDefinition> boxDefinitionClass;
+    private Set<Class<? extends SingularRequirement>> requirements = new LinkedHashSet<>();
+    private boolean displayCounters = true;
+    private boolean evalPermission = false;
 
-    public ItemBox() {
-    }
-
-    public boolean isShowHistoryAction() {
-        return showHistoryAction;
-    }
-
-    public void setShowHistoryAction(boolean showHistoryAction) {
-        this.showHistoryAction = showHistoryAction;
+    public ItemBox newFor(Class<? extends SingularRequirement> requirement) {
+        getRequirements().add(requirement);
+        return this;
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
+    public ItemBox name(String name) {
         this.name = name;
+        return this;
     }
 
     public String getDescription() {
         return description;
     }
 
-    public void setDescription(String description) {
+    public ItemBox description(String description) {
         this.description = description;
-    }
-
-    public boolean isQuickFilter() {
-        return quickFilter;
-    }
-
-    public void setQuickFilter(boolean quickFilter) {
-        this.quickFilter = quickFilter;
-    }
-
-    public List<DatatableField> getFieldsDatatable() {
-        return fieldsDatatable;
-    }
-
-    public void setFieldsDatatable(List<DatatableField> fieldsDatatable) {
-        this.fieldsDatatable = fieldsDatatable;
-    }
-
-    public boolean isShowDraft() {
-        return showDraft;
-    }
-
-    public void setShowDraft(boolean showDraft) {
-        this.showDraft = showDraft;
-    }
-
-    @JsonSerialize(using = IconJsonSerializer.class)
-    public Icon getIcone() {
-        return icon;
-    }
-
-    @JsonDeserialize(using = IconJsonDeserializer.class)
-    public void setIcone(Icon icon) {
-        this.icon = icon;
-    }
-
-    public Boolean getEndedTasks() {
-        return endedTasks;
-    }
-
-    @Deprecated
-    public void setEndedTasks(Boolean endedTasks) {
-        this.endedTasks = endedTasks;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public String getSearchEndpoint() {
-        return "/search/" + id;
-    }
-
-    public String getCountEndpoint() {
-        return "/count/" + id;
+        return this;
     }
 
     public String getHelpText() {
         return helpText;
     }
 
-    public void setHelpText(String helpText) {
+    public ItemBox helpText(String helpText) {
         this.helpText = helpText;
+        return this;
+    }
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public ItemBox icon(Icon icon) {
+        this.icon = icon;
+        return this;
+    }
+
+    public List<DatatableField> getFieldsDatatable() {
+        return fieldsDatatable;
+    }
+
+    public ItemBox fieldsDatatable(List<DatatableField> fieldsDatatable) {
+        this.fieldsDatatable = fieldsDatatable;
+        return this;
+    }
+
+    public boolean isShowQuickFilter() {
+        return showQuickFilter;
+    }
+
+    public ItemBox showQuickFilter(boolean showQuickFilter) {
+        this.showQuickFilter = showQuickFilter;
+        return this;
+    }
+
+    public Class<? extends BoxDefinition> getBoxDefinitionClass() {
+        return boxDefinitionClass;
+    }
+
+    public ItemBox boxDefinitionClass(Class<? extends BoxDefinition> boxDefinitionClass) {
+        this.boxDefinitionClass = boxDefinitionClass;
+        return this;
+    }
+
+    public Set<Class<? extends SingularRequirement>> getRequirements() {
+        return requirements;
+    }
+
+    public ItemBox requirements(Set<Class<? extends SingularRequirement>> requirements) {
+        this.requirements = requirements;
+        return this;
+    }
+
+    public boolean isDisplayCounters() {
+        return displayCounters;
+    }
+
+    public ItemBox displayCounters(boolean displayCounters) {
+        this.displayCounters = displayCounters;
+        return this;
+    }
+
+    public boolean isEvalPermission() {
+        return evalPermission;
+    }
+
+    public ItemBox evalPermission(boolean evalPermission) {
+        this.evalPermission = evalPermission;
+        return this;
     }
 }

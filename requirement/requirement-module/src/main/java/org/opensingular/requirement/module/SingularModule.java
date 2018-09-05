@@ -43,7 +43,20 @@ public interface SingularModule {
     void requirements(RequirementRegistry requirementRegistry);
 
     /**
-     * TODO
+     * <p> Setups the workspace, adding contexts that will be exposed by the application. All contexts added will be used
+     * to register a WicketFilter at {@link WorkspaceAppInitializerListener} </p>
+     *
+     * <p>A simple example of implementation is:</p>
+     *
+     * <pre>
+     * workspaceRegistry
+     *      .add(MyFirstContext.class)
+     *      .add(MySecondContext.class)
+     * </pre>
+     *
+     * <p>Where MyFirstContext and MySecondContext are implementations of {@link org.opensingular.requirement.module.config.IServerContext}</p>
+     *
+     * @param workspaceRegistry the registry where the contexts should be added
      */
     void workspace(WorkspaceRegistry workspaceRegistry);
 

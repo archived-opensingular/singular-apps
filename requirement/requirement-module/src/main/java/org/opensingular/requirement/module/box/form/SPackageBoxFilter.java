@@ -14,23 +14,11 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module;
+package org.opensingular.requirement.module.box.form;
 
-import org.springframework.beans.factory.BeanFactory;
+import org.opensingular.form.SInfoPackage;
+import org.opensingular.form.SPackage;
 
-import javax.inject.Inject;
-import javax.inject.Named;
-
-/**
- * TODO Vinicius, devemos conversar sobre a maneira padrão de criar objetos que usam spring beans e ao
- * mesmo tempo possuem estado, acredito que essa abordagem é mais facil de refatorar
- */
-@Named
-public class BoxControllerFactory {
-    @Inject
-    private BeanFactory beanFactory;
-
-    public BoxController create(BoxInfo boxInfo) {
-        return new BoxController(boxInfo, beanFactory.getBean(boxInfo.getBoxDefinitionClass()).getDataProvider());
-    }
+@SInfoPackage
+public class SPackageBoxFilter extends SPackage {
 }

@@ -30,13 +30,12 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import static org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
+import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class SDbHealthTest extends SingularCommonsBaseTest {

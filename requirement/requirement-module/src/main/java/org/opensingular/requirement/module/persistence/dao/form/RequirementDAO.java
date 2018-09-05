@@ -17,19 +17,13 @@
 package org.opensingular.requirement.module.persistence.dao.form;
 
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -45,12 +39,18 @@ import org.opensingular.requirement.module.persistence.entity.form.QDraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QFormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
+
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
 
 public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long> {
@@ -70,7 +70,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return criteria.list();
     }
 
-    public Long countQuickSearch(QuickFilter filter,
+    public Long countQuickSearch(BoxFilter filter,
                                  List<SingularPermission> permissions,
                                  List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
@@ -80,7 +80,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .addPermissions(permissions));
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public Long countQuickSearch(BoxFilter filter, List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.TRUE));
@@ -94,14 +94,14 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return new RequirementSearchQueryFactory(ctx).build(getSession());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.FALSE));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<SingularPermission> permissions,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
@@ -168,11 +168,11 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         query.append(" left join fpe.currentDraftEntity cde  ");
         query.append(" left join cde.form  f ");
         query.append(" left join f.formType ft ");
-        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND (ct.endDate is null or t.type = :fim )");
+        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND ct.currentInstanceStatus = :isCurrentInstance ");
         query.append(" order by ct.cod DESC ");
         return (RequirementAuthMetadataDTO) Optional.ofNullable(getSession().createQuery(query.toString())
                 .setParameter("sim", SimNao.SIM)
-                .setParameter("fim", TaskType.END)
+                .setParameter("isCurrentInstance", CurrentInstanceStatus.YES)
                 .setParameter("requirementId", requirementId)
                 .setMaxResults(1)
                 .list())

@@ -19,7 +19,7 @@ package org.opensingular.requirement.module;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.spring.security.AuthorizationService;
 
 public class AuthorizationAwareActionProviderDecorator implements ActionProvider {
@@ -31,13 +31,13 @@ public class AuthorizationAwareActionProviderDecorator implements ActionProvider
     }
 
     @Override
-    public BoxItemActionList getLineActions(BoxInfo boxInfo, BoxItemData line, QuickFilter filter) {
-        BoxItemActionList actionList = delegate.getLineActions(boxInfo, line, filter);
+    public BoxItemActionList getLineActions(BoxItemData line, BoxFilter filter) {
+        BoxItemActionList actionList = delegate.getLineActions(line, filter);
         filterAllowedActions(actionList, line, filter);
         return actionList;
     }
 
-    private void filterAllowedActions(BoxItemActionList actions, BoxItemData line, QuickFilter filter) {
+    private void filterAllowedActions(BoxItemActionList actions, BoxItemData line, BoxFilter filter) {
         ApplicationContextProvider.get().getBean(AuthorizationService.class).filterActions((String) line.getType(), (Long) line.getRequirementId(), actions, filter.getIdUsuarioLogado());
     }
 }
