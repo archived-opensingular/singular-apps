@@ -76,8 +76,12 @@ public class StudioHeader extends Panel {
     }
 
     private Optional<SingularUserDetails> getUserDetails() {
-        return Optional.ofNullable((SingularUserDetails)ApplicationContextProvider.get().getBean(UserDetails.class));
+        UserDetails userDetails = ApplicationContextProvider.get().getBean(UserDetails.class);
+        if (userDetails instanceof SingularUserDetails) {
+            return Optional.ofNullable((SingularUserDetails) userDetails);
+        } else {
+            return Optional.empty();
+        }
     }
-
 
 }
