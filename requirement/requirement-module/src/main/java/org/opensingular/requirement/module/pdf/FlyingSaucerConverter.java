@@ -39,7 +39,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
     private String ofLabel = "de";
 
     public FlyingSaucerConverter() {
-        this.showPageNumber = true;
+        this.showPageNumber = false;
     }
 
     public FlyingSaucerConverter(boolean showPageNumber) {
@@ -138,34 +138,45 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
 
     /**
      * Converts the HtmlToPdfDTO into an InputStream.
-     * It concatenates the header with body and footer of the HtmlToPdfDTO.
-     * Adds the page counter if it is mean to.
      * @param htmlToPdfDTO the HtmlToPdfDTO.
      * @return InputStream with the whole PDF information (html).
      */
     @Override
     public InputStream convertStream(HtmlToPdfDTO htmlToPdfDTO) {
-        String html = null;
-        try {
-            html = formatHtml( (showPageNumber ? getPageNumberHtml() : EMPTY) + htmlToPdfDTO.getAll());
-        } catch (UnsupportedEncodingException e) {
-            getLogger().error("Erro ao formatar html", e);
-        }
-        return new ByteArrayInputStream(html.getBytes(StandardCharsets.UTF_8));
+        return new ByteArrayInputStream(getPagehtml(htmlToPdfDTO).getBytes(StandardCharsets.UTF_8));
     }
 
     /**
-     * Merges the template "pageNumber.ftl" with pageLabel and ofLabel and
+     * It concatenates the header with body and footer of the HtmlToPdfDTO.
+     * Adds the page counter if it is mean to.
+     * @param htmlToPdfDTO the HtmlToPdfDTO.
+     * @return full formatted html of the page to be converted in PDF
+     */
+    private String getPagehtml(HtmlToPdfDTO htmlToPdfDTO) {
+        try {
+            String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
+            String body = "<div id=\"flying-saucer-body\">" + htmlToPdfDTO.getBody() +  "</div>";
+            String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";
+            return formatHtml(getPageNumberHtml() + header + footer + body);
+        } catch (UnsupportedEncodingException e) {
+            getLogger().error("Erro ao formatar html", e);
+        }
+        return EMPTY;
+    }
+
+    /**
+     * Merges the template "FlyingSaucerTemplatePage.ftl" with pageLabel and ofLabel and
      * returns the html String with the component for page counting in the
      * generated PDF.
      * @return the html String for page counting.
      */
     private String getPageNumberHtml() {
         Map<String, Object> map = new HashMap<>();
+        map.put("showPageNumber", showPageNumber ? "block" : "none");
         map.put("page", pageLabel);
         map.put("of", ofLabel);
 
-        return PServerFreeMarkerUtil.mergeWithFreemarker("pageNumber.ftl", map);
+        return PServerFreeMarkerUtil.mergeWithFreemarker("FlyingSaucerTemplatePage.ftl", map);
     }
 
     /**
