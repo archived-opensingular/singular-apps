@@ -33,6 +33,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
      * Where X is the current page and Y the total amount of pages.
      * e.g. "Página 4 de 10" - by default.
      * e.g. "pág. 4 / 10".
+     * e.g. "Page 4 of 10".
      * Can be customized by it's setter methods.
      */
     private String pageLabel = "Página";
