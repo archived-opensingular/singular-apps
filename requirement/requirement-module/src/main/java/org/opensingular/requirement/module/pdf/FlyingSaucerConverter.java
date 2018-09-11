@@ -40,7 +40,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
     private String ofLabel = "de";
 
     public FlyingSaucerConverter() {
-        this.showPageNumber = false;
+        this.showPageNumber = true;
     }
 
     public FlyingSaucerConverter(boolean showPageNumber) {
