@@ -25,6 +25,7 @@ import java.util.Date;
 import java.util.List;
 import javax.activation.DataHandler;
 
+import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.requirement.connector.sei30.model.NivelAcesso;
@@ -36,7 +37,6 @@ import org.opensingular.requirement.connector.sei30.ws.Destinatario;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Interessado;
 import org.opensingular.requirement.connector.sei30.ws.Remetente;
-import org.opensingular.requirement.module.exception.SingularServerException;
 
 /**
  * Classe DocumentoBuilder.
@@ -288,7 +288,7 @@ public class DocumentoBuilder implements Serializable, Loggable {
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.transferToTempFile(value).toURI().toURL()));
         } catch (Exception e) {
             getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
-            throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
+            throw SingularException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
     }
@@ -306,7 +306,7 @@ public class DocumentoBuilder implements Serializable, Loggable {
             this.documento.setConteudoMTOM(new DataHandler(arquivo.toURI().toURL()));
         } catch (Exception e) {
             getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
-            throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
+            throw SingularException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
     }
@@ -325,7 +325,7 @@ public class DocumentoBuilder implements Serializable, Loggable {
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.stream2file(arquivo).toURI().toURL()));
         } catch (Exception e) {
             getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
-            throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
+            throw SingularException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
     }
@@ -345,7 +345,7 @@ public class DocumentoBuilder implements Serializable, Loggable {
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.createTempFile(binaryData).toURI().toURL()));
         } catch (Exception e) {
             getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
-            throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
+            throw SingularException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
     }
@@ -365,7 +365,7 @@ public class DocumentoBuilder implements Serializable, Loggable {
             this.documento.setConteudoMTOM(new DataHandler(TempFileUtils.decodeToTempFile(new String(binaryData, Charset.forName("UTF-8"))).toURI().toURL()));
         } catch (Exception e) {
             getLogger().error(ERRO_CARREGAR_ARQUIVO, e);
-            throw SingularServerException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
+            throw SingularException.rethrow(ERRO_CARREGAR_ARQUIVO, e);
         }
         return this;
     }
