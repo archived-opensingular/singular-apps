@@ -16,8 +16,6 @@
 
 package org.opensingular.app.commons.spring.persistence;
 
-import javax.sql.DataSource;
-
 import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.spring.persistence.database.H2DropAllObjectsPopulator;
 import org.opensingular.app.commons.spring.persistence.database.PersistenceConfigurationProvider;
@@ -27,9 +25,11 @@ import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.DependsOn;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import javax.sql.DataSource;
 
 @EnableTransactionManagement(proxyTargetClass = true)
 public class SingularPersistenceDefaultBeanFactory implements Loggable {

@@ -27,7 +27,7 @@ import org.opensingular.requirement.module.exception.RequirementConcurrentModifi
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
 public class FlowConfirmButton<RE extends RequirementEntity, RI extends RequirementInstance> extends SingularSaveButton implements Loggable {
 

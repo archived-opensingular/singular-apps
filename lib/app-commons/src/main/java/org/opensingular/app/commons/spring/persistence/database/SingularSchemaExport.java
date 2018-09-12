@@ -16,28 +16,30 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.io.BufferedReader;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import javax.persistence.Entity;
-
 import org.apache.commons.collections.CollectionUtils;
+import org.hibernate.boot.MetadataSources;
+import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.engine.jdbc.internal.FormatStyle;
 import org.hibernate.engine.jdbc.internal.Formatter;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+import org.hibernate.tool.schema.TargetType;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
+
+import javax.persistence.Entity;
+import java.io.*;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.EnumSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class SingularSchemaExport implements Loggable {
 
@@ -75,7 +77,6 @@ public class SingularSchemaExport implements Loggable {
 
         StringBuilder scriptsText = readScriptsContent(scriptsPath);
 
-
         try {
             Set<Class<?>> typesAnnotatedWith = SingularClassPathScanner.get().findClassesAnnotatedWith(Entity.class);
             List<Class<?>> list = typesAnnotatedWith
@@ -83,21 +84,22 @@ public class SingularSchemaExport implements Loggable {
                     .filter(t -> filterPackages(t, packages))
                     .collect(Collectors.toList());
 
-            //create a minimal configuration
-            Configuration cfg = new Configuration();
-            cfg.setProperty("hibernate.dialect", dialect != null ? dialect.getName() : H2Dialect.class.getName());
-            cfg.setProperty("hibernate.hbm2ddl.auto", "create-drop");
+            //creates a minimal configuration in a MetadataSources
+            MetadataSources metadata = new MetadataSources(new StandardServiceRegistryBuilder()
+                    .applySetting("hibernate.dialect", dialect != null ? dialect.getName() : H2Dialect.class.getName())
+                    .build());
 
             for (Class<?> c : list) {
-                cfg.addAnnotatedClass(c);
+                metadata.addAnnotatedClass(c);
             }
 
-            //build all the mappings, before calling the AuditConfiguration
-            cfg.buildMappings();
+            //exports the creation scripts in a file then reads from it
+            SchemaExport schemaExport = new SchemaExport();
+            schemaExport.setOutputFile("db/ddl/scripts.sql");
+            schemaExport.create(EnumSet.of(TargetType.SCRIPT), metadata.buildMetadata());
 
-            Thread.currentThread().getContextClassLoader().getResource("db/ddl/drops.sql");
-            Dialect hibDialect = Dialect.getDialect(cfg.getProperties());
-            String[] scriptsEntities = cfg.generateSchemaCreationScript(hibDialect);
+            String[] scriptsEntities = readFile("db/ddl/scripts.sql", Charset.forName("UTF-8")).split("\n");
+
             return formatterScript(scriptsEntities, scriptsText);
         } catch (Exception e) {
             throw new ExportScriptGenerationException(e.getMessage(), e);
@@ -173,4 +175,8 @@ public class SingularSchemaExport implements Loggable {
     }
 
 
+    private static String readFile(String path, Charset encoding) throws IOException {
+        byte[] encoded = Files.readAllBytes(Paths.get(path));
+        return new String(encoded, encoding);
+    }
 }

@@ -89,7 +89,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
         if (result == null && cod == null) {
             Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
-            if (!dialect.supportsIdentityColumns()) {
+            if (!dialect.getIdentityColumnSupport().supportsIdentityColumns()) {
                 getSession().doWork(connection -> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into "
                             + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES ("
