@@ -253,7 +253,7 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
-    public interface ListAcsetSerietion extends Serializable {
+    public interface ListAction extends Serializable {
         void configure(BSActionPanel.ActionConfig<SInstance> config);
 
         void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager);
