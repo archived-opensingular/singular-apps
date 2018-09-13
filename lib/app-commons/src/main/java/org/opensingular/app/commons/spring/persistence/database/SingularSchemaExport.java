@@ -87,6 +87,7 @@ public class SingularSchemaExport implements Loggable {
             //creates a minimal configuration in a MetadataSources
             MetadataSources metadata = new MetadataSources(new StandardServiceRegistryBuilder()
                     .applySetting("hibernate.dialect", dialect != null ? dialect.getName() : H2Dialect.class.getName())
+                    .applySetting("hibernate.id.new_generator_mappings", "false")
                     .build());
 
             for (Class<?> c : list) {
