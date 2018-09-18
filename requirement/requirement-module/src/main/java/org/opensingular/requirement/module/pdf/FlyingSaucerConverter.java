@@ -13,7 +13,10 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
 
 import static org.apache.logging.log4j.util.Strings.EMPTY;
 
@@ -61,6 +64,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
 
     /**
      * Generates the File from the HtmlToPdfDTO.
+     *
      * @param htmlToPdfDTO the HtmlToPdfDTO.
      * @return Optional of File with the PDF.
      */
@@ -68,27 +72,25 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
     public Optional<File> convert(HtmlToPdfDTO htmlToPdfDTO) {
         InputStream in = convertStream(htmlToPdfDTO);
         if (in != null) {
-            return Optional.ofNullable(createTempFile(in));
+            return Optional.ofNullable(convertHtmlToPdf(in));
         }
         return Optional.empty();
     }
 
     /**
-     * Creates the temporary File for the PDF using the Flying Saucer library.
+     * Converts the html into a PDF file using Flying Saucer library via ITextRenderer.
+     *
+     * @param in InputStream with the PDF information (html).
+     * @return PDF File.
      * @apiNote even though the Flying Saucer api does not support scripts,
      * if the html contains any <script> tag, it's content must be
      * surrounded with  <![CDATA[ ... ]]> tag in order to avoid conflicts
      * with html entities and scripts syntax during PDF generation.
-     * @param in InputStream with the PDF information (html).
-     * @return PDF File.
      */
-    private File createTempFile(InputStream in) {
-
-        Path path = null;
+    private File convertHtmlToPdf(InputStream in) {
         String content = readFromInputStream(in);
-
         try {
-            path = Files.createTempFile(generateFileName(), ".pdf");
+            Path path = Files.createTempFile(generateFileName(), ".pdf");
 
             try (OutputStream out = Files.newOutputStream(path)) {
 
@@ -113,14 +115,16 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
 
     /**
      * Generates the name for the temporary File for the PDF.
+     *
      * @return the name for the temporary File.
      */
     private static String generateFileName() {
-        return String.format("singular-fs-html2pdf-%s.pdf", UUID.randomUUID() );
+        return String.format("singular-fs-html2pdf-%s.pdf", UUID.randomUUID());
     }
 
     /**
      * Converts the InputStream into a String with it's information (html in this case).
+     *
      * @param inputStream the InputStream.
      * @return the String information of the InputStream
      */
@@ -139,6 +143,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
 
     /**
      * Converts the HtmlToPdfDTO into an InputStream.
+     *
      * @param htmlToPdfDTO the HtmlToPdfDTO.
      * @return InputStream with the whole PDF information (html).
      */
@@ -148,17 +153,24 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
     }
 
     /**
-     * It concatenates the header with body and footer of the HtmlToPdfDTO.
+     * It returns the body of the HtmlToPdfDTO.
      * Adds the page counter if it is mean to.
+     *
      * @param htmlToPdfDTO the HtmlToPdfDTO.
      * @return full formatted html of the page to be converted in PDF
      */
     private String getPagehtml(HtmlToPdfDTO htmlToPdfDTO) {
         try {
-            String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
-            String body = "<div id=\"flying-saucer-body\">" + htmlToPdfDTO.getBody() +  "</div>";
-            String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";
-            return formatHtml(getPageNumberHtml() + header + footer + body);
+            //TODO: evolve API for header and footer support
+            //String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
+            //String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";
+
+            if (!htmlToPdfDTO.getHeader().isEmpty() || !htmlToPdfDTO.getFooter().isEmpty()) {
+                getLogger().warn("The contents of the HtmlToPdfDTO's header and footer are ignored in the final PDF file.");
+            }
+
+            String body = "<div id=\"flying-saucer-body\">" + htmlToPdfDTO.getBody() + "</div>";
+            return formatHtml(getPageNumberHtml() /*+ header + footer*/ + body);
         } catch (UnsupportedEncodingException e) {
             getLogger().error("Erro ao formatar html", e);
         }
@@ -169,6 +181,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
      * Merges the template "FlyingSaucerTemplatePage.ftl" with pageLabel and ofLabel and
      * returns the html String with the component for page counting in the
      * generated PDF.
+     *
      * @return the html String for page counting.
      */
     private String getPageNumberHtml() {
@@ -182,6 +195,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
 
     /**
      * It takes a mal-formed html and restructures it, encoding in UTF-8.
+     *
      * @param data mal-formed html.
      * @return String well-formed html.
      * @throws UnsupportedEncodingException

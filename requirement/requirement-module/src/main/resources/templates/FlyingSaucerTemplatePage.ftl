@@ -1,8 +1,4 @@
 <style type="text/css">
-    /*body {*/
-        /*font-family: sans-serif;*/
-        /*font-size: 10pt;*/
-    /*}*/
 
     /* footer, header - position: fixed */
     #flying-saucer-header {
@@ -21,29 +17,12 @@
         right: 0;
     }
 
-
     @page {
-        /*@top-center {*/
-            /*content: element(header);*/
-        /*}*/
-
-        /*@bottom-center {*/
-            /*content: element(first);*/
-        /*}*/
-
         @bottom-right {
             content: element(footer);
         }
 
     }
-
-    /*#flying-saucer-header {*/
-        /*position: running(header);*/
-    /*}*/
-
-    /*#flying-saucer-footer {*/
-        /*position: running(first);*/
-    /*}*/
 
     #pageCounter {
         position: running(footer);
