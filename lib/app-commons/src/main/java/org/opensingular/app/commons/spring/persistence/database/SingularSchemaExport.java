@@ -35,11 +35,13 @@ import java.io.*;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class SingularSchemaExport implements Loggable {
 
@@ -99,7 +101,9 @@ public class SingularSchemaExport implements Loggable {
             schemaExport.setOutputFile("db/ddl/scripts.sql");
             schemaExport.create(EnumSet.of(TargetType.SCRIPT), metadata.buildMetadata());
 
-            String[] scriptsEntities = readFile("db/ddl/scripts.sql", Charset.forName("UTF-8")).split("\n");
+            String[] scriptsEntities = Stream.of(readFile("db/ddl/scripts.sql").split("\n"))
+                    .map(s -> s = s.concat(";"))
+                    .toArray(String[]::new);
 
             return formatterScript(scriptsEntities, scriptsText);
         } catch (Exception e) {
@@ -176,8 +180,11 @@ public class SingularSchemaExport implements Loggable {
     }
 
 
-    private static String readFile(String path, Charset encoding) throws IOException {
-        byte[] encoded = Files.readAllBytes(Paths.get(path));
-        return new String(encoded, encoding);
+    private static String readFile(String path) throws IOException {
+        Path filePath = Paths.get(path);
+        byte[] encoded = Files.readAllBytes(filePath);
+        String s = new String(encoded, Charset.forName("UTF-8"));
+        Files.delete(filePath);
+        return s;
     }
 }
