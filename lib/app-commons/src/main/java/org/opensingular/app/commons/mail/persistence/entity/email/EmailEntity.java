@@ -15,28 +15,14 @@
  */
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.Lob;
-import javax.persistence.OneToMany;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
-import javax.persistence.UniqueConstraint;
-
-import org.hibernate.annotations.ForeignKey;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
+
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @SequenceGenerator(name = EmailEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_EMAIL", schema = Constants.SCHEMA)
@@ -70,9 +56,10 @@ public class EmailEntity extends BaseEntity<Long> {
     @OneToMany
     @JoinTable(schema = Constants.SCHEMA, name = "TB_EMAIL_ARQUIVO",
             uniqueConstraints = {@UniqueConstraint(name = "UK_EMAIL_ARQUIVO", columnNames = "CO_ARQUIVO")},
+            foreignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL"),
             joinColumns = @JoinColumn(name = "CO_EMAIL"),
+            inverseForeignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_ARQUIVO"),
             inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
-    @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL", inverseName = "FK_EMAIL_ARQUIVO_ARQUIVO")
     private List<AttachmentEntity> attachments = new ArrayList<>();
 
     @Override

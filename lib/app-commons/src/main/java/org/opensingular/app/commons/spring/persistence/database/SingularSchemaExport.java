@@ -19,7 +19,6 @@ package org.opensingular.app.commons.spring.persistence.database;
 import org.apache.commons.collections.CollectionUtils;
 import org.hibernate.boot.MetadataSources;
 import org.hibernate.boot.registry.StandardServiceRegistryBuilder;
-import org.hibernate.cfg.Configuration;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.engine.jdbc.internal.FormatStyle;
@@ -41,7 +40,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class SingularSchemaExport implements Loggable {
 
@@ -99,11 +97,9 @@ public class SingularSchemaExport implements Loggable {
             //exports the creation scripts in a file then reads from it
             SchemaExport schemaExport = new SchemaExport();
             schemaExport.setOutputFile("db/ddl/scripts.sql");
-            schemaExport.create(EnumSet.of(TargetType.SCRIPT), metadata.buildMetadata());
+            schemaExport.createOnly(EnumSet.of(TargetType.SCRIPT), metadata.buildMetadata());
 
-            String[] scriptsEntities = Stream.of(readFile("db/ddl/scripts.sql").split("\n"))
-                    .map(s -> s = s.concat(";"))
-                    .toArray(String[]::new);
+            String[] scriptsEntities = readFile("db/ddl/scripts.sql").split("\n");
 
             return formatterScript(scriptsEntities, scriptsText);
         } catch (Exception e) {
