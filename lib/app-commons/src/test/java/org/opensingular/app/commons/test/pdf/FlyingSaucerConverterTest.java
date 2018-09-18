@@ -1,5 +1,7 @@
 package org.opensingular.app.commons.test.pdf;
 
+import org.apache.commons.io.FileUtils;
+import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.app.commons.pdf.FlyingSaucerConverter;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
@@ -13,6 +15,8 @@ import java.nio.file.Paths;
 import java.util.Optional;
 
 public class FlyingSaucerConverterTest {
+
+    private boolean showPDF = false;
 
     @Test
     public void convert() throws IOException {
@@ -31,7 +35,9 @@ public class FlyingSaucerConverterTest {
 
         Optional<File> convert = flyingSaucerConverter.convert(htmlToPdfDTO);
 
-        if (convert.isPresent()) {
+        Assert.assertTrue(convert.isPresent() && FileUtils.sizeOf(convert.get()) > 1L);
+
+        if (showPDF) {
             File file = convert.get();
             Desktop desktop = Desktop.getDesktop();
             try {
