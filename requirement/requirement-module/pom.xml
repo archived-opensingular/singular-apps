@@ -92,12 +92,6 @@
             <artifactId>ehcache</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.testautomationguru.pdfutil</groupId>
-            <artifactId>pdf-util</artifactId>
-            <version>0.0.1</version>
-        </dependency>
-
-        <dependency>
             <groupId>org.opensingular</groupId>
             <artifactId>singular-flow-core</artifactId>
         </dependency>

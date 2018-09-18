@@ -1,15 +1,22 @@
-package org.opensingular.requirement.module.pdf;
+package org.opensingular.app.commons.pdf;
 
 import com.itextpdf.text.DocumentException;
 import org.apache.commons.io.IOUtils;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
-import org.opensingular.requirement.module.PServerFreeMarkerUtil;
 import org.w3c.tidy.Configuration;
 import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.pdf.ITextRenderer;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
