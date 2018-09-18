@@ -51,7 +51,6 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
         String typeName = RequirementUtil.getTypeName(type);
         add(typeName, () -> {
             SDictionary d = SDictionary.create();
-            d.loadPackage(SFormUtil.getTypePackage(type));
             return d.getType(type);
         });
     }
