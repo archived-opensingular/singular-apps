@@ -2,6 +2,7 @@ package org.opensingular.app.commons.pdf;
 
 import com.itextpdf.text.DocumentException;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.w3c.tidy.Configuration;
@@ -177,7 +178,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
             String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
             String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";*/
 
-            if (!htmlToPdfDTO.getHeader().isEmpty() || !htmlToPdfDTO.getFooter().isEmpty()) {
+            if (StringUtils.isNotEmpty(htmlToPdfDTO.getHeader()) || StringUtils.isNotEmpty(htmlToPdfDTO.getFooter())) {
                 getLogger().warn("The contents of the HtmlToPdfDTO's header and footer are ignored in the final PDF file.");
             }
 
