@@ -143,7 +143,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
      */
     private String readFromInputStream(InputStream inputStream) {
         StringBuilder resultStringBuilder = new StringBuilder();
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream,  StandardCharsets.UTF_8))) {
             String line;
             while ((line = br.readLine()) != null) {
                 resultStringBuilder.append(line).append('\n');
@@ -223,7 +223,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
         ByteArrayInputStream inputStream = new ByteArrayInputStream(data.getBytes(StandardCharsets.UTF_8));
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         tidy.parseDOM(inputStream, outputStream);
-        return outputStream.toString("UTF-8");
+        return outputStream.toString(StandardCharsets.UTF_8.displayName());
     }
 
 }
