@@ -99,25 +99,30 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
         try {
             Path path = Files.createTempFile(generateFileName(), ".pdf");
 
-            try (OutputStream out = Files.newOutputStream(path)) {
-
-                ITextRenderer renderer = new ITextRenderer();
-                renderer.setDocumentFromString(content);
-                renderer.layout();
-                renderer.createPDF(out);
-
-                IOUtils.copy(in, out);
-                return path.toFile();
-            } catch (IOException ex) {
-                getLogger().error("Não foi possivel escrever o arquivo temporario", ex);
-            } catch (DocumentException e) {
-                getLogger().error("Problema na geração de PDF", e);
-            }
+            if (createPdfFile(in, content, path)) return path.toFile();
         } catch (IOException e) {
             getLogger().error("Não foi possivel criar o arquivo temporario", e);
         }
 
         return null;
+    }
+
+    private boolean createPdfFile(InputStream in, String content, Path path) {
+        try (OutputStream out = Files.newOutputStream(path)) {
+
+            ITextRenderer renderer = new ITextRenderer();
+            renderer.setDocumentFromString(content);
+            renderer.layout();
+            renderer.createPDF(out);
+
+            IOUtils.copy(in, out);
+            return true;
+        } catch (IOException ex) {
+            getLogger().error("Não foi possivel escrever o arquivo temporario", ex);
+        } catch (DocumentException e) {
+            getLogger().error("Problema na geração de PDF", e);
+        }
+        return false;
     }
 
     /**
@@ -140,7 +145,7 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
         try (BufferedReader br = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = br.readLine()) != null) {
-                resultStringBuilder.append(line).append("\n");
+                resultStringBuilder.append(line).append('\n');
             }
         } catch (IOException e) {
             getLogger().error("Erro ao ler InputStream", e);
@@ -168,9 +173,9 @@ public class FlyingSaucerConverter implements HtmlToPdfConverter {
      */
     private String getPagehtml(HtmlToPdfDTO htmlToPdfDTO) {
         try {
-            //TODO: evolve API for header and footer support
-            //String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
-            //String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";
+            /*TODO: evolve API for header and footer support
+            String header = "<div id=\"flying-saucer-header\">" + htmlToPdfDTO.getHeader() +  "</div>";
+            String footer = "<div id=\"flying-saucer-footer\">" + htmlToPdfDTO.getFooter() +  "</div>";*/
 
             if (!htmlToPdfDTO.getHeader().isEmpty() || !htmlToPdfDTO.getFooter().isEmpty()) {
                 getLogger().warn("The contents of the HtmlToPdfDTO's header and footer are ignored in the final PDF file.");
