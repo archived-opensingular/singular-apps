@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.connector.sei30;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.WSClientSafeWrapper;
 import org.opensingular.requirement.connector.sei30.model.SimNao;
 import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
@@ -27,8 +28,10 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfProcedimentoRelacionado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfSerie;
+import org.opensingular.requirement.connector.sei30.ws.ArrayOfString;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfTipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfUsuario;
+import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
 import org.opensingular.requirement.connector.sei30.ws.RetornoConsultaBloco;
@@ -45,9 +48,11 @@ import org.opensingular.requirement.connector.sei30.ws.Usuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.xml.ws.BindingProvider;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -56,12 +61,11 @@ import java.util.List;
  * ao SEI, visto que esta classe não é gerada, podem ser criados
  * diversos métodos para facilitar o desenvolvimento.
  */
-public class SEIWS implements SEIPortType {
+public class SEIWS implements SEIPortType, Loggable {
 
     private final SeiPortType seiPortType;
     private final String      siglaSistema;
     private final String      identificacaoServico;
-    private static final Logger logger = LoggerFactory.getLogger(SEIWS.class);
 
     /**
      * Instancia um novo objeto SEIWS delegate.
@@ -574,6 +578,11 @@ public class SEIWS implements SEIPortType {
 		return seiPortType.cancelarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento, motivo);
 
 	}
+
+    @Override
+    public List<Contato> listarContatos(@Nullable UnidadeSei unidade, String idTipoContato, String sigla) {
+        return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
+    }
 
 
 }

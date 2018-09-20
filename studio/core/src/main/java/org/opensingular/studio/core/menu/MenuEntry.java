@@ -17,7 +17,6 @@
 package org.opensingular.studio.core.menu;
 
 import com.google.common.collect.Lists;
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.studio.core.util.StudioWicketUtils;
@@ -78,7 +77,7 @@ public interface MenuEntry extends Serializable {
             entry = entry.getParent();
         }
         return Lists.reverse(paths).stream()
-                .map(i -> SingularUtil.convertToJavaIdentity(i, true).toLowerCase())
+                .map(i -> SingularUtil.convertToJavaIdentifier(i).toLowerCase())
                 .collect(Collectors.joining("/"));
     }
 

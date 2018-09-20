@@ -20,10 +20,12 @@ import org.opensingular.requirement.connector.sei30.model.SimNao;
 import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
 import org.opensingular.requirement.connector.sei30.model.UnidadeSei;
 import org.opensingular.requirement.connector.sei30.ws.ArquivoExtensao;
+import org.opensingular.requirement.connector.sei30.ws.ArrayOfContato;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfProcedimentoRelacionado;
+import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
 import org.opensingular.requirement.connector.sei30.ws.RetornoConsultaBloco;
@@ -54,24 +56,15 @@ public interface SEIPortType {
     /**
      * Gerar procedimento.
      *
-     * @param procedimento
-     *            o(a) procedimento.
-     * @param documentos
-     *            o(a) documentos.
-     * @param procedimentosRelacionados
-     *            o(a) procedimentos relacionados.
-     * @param unidadesEnvio
-     *            o(a) unidades envio.
-     * @param sinManterAbertoUnidade
-     *            o(a) sin manter aberto unidade.
-     * @param sinEnviarEmailNotificacao
-     *            o(a) sin enviar email notificacao.
-     * @param dataRetornoProgramado
-     *            o(a) data retorno programado.
-     * @param idMarcador
-     *            o id do marcador
-     * @param textoMarcador
-     *            o texto do marcador
+     * @param procedimento              o(a) procedimento.
+     * @param documentos                o(a) documentos.
+     * @param procedimentosRelacionados o(a) procedimentos relacionados.
+     * @param unidadesEnvio             o(a) unidades envio.
+     * @param sinManterAbertoUnidade    o(a) sin manter aberto unidade.
+     * @param sinEnviarEmailNotificacao o(a) sin enviar email notificacao.
+     * @param dataRetornoProgramado     o(a) data retorno programado.
+     * @param idMarcador                o id do marcador
+     * @param textoMarcador             o texto do marcador
      * @return o valor de retorno geracao procedimento
      */
     RetornoGeracaoProcedimento gerarProcedimento(UnidadeSei unidade, Procedimento procedimento, ArrayOfDocumento documentos,
@@ -83,8 +76,7 @@ public interface SEIPortType {
     /**
      * Reabrir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     Boolean reabrirProcesso(UnidadeSei unidade, String protocoloProcedimento);
@@ -92,8 +84,7 @@ public interface SEIPortType {
     /**
      * Listar usuarios.
      *
-     * @param idUsuario
-     *            o(a) id usuario.
+     * @param idUsuario o(a) id usuario.
      * @return o valor de array of usuario
      */
     List<Usuario> listarUsuarios(UnidadeSei unidade, String idUsuario);
@@ -103,8 +94,7 @@ public interface SEIPortType {
      * básicos. Para uma pesquisa mais abrangente utilizar
      * {@link #consultarProcedimento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
      *
-     * @param protocoloProcedimento
-     *            o(UnidadeSei unidade, a) protocolo procedimento.
+     * @param protocoloProcedimento o(UnidadeSei unidade, a) protocolo procedimento.
      * @return o valor de retorno consulta procedimento
      */
     RetornoConsultaProcedimento consultarProcedimentoBasico(UnidadeSei unidade, String protocoloProcedimento);
@@ -112,26 +102,16 @@ public interface SEIPortType {
     /**
      * Consultar procedimento.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param sinRetornarAssuntos
-     *            o(a) sin retornar assuntos.
-     * @param sinRetornarInteressados
-     *            o(a) sin retornar interessados.
-     * @param sinRetornarObservacoes
-     *            o(a) sin retornar observacoes.
-     * @param sinRetornarAndamentoGeracao
-     *            o(a) sin retornar andamento geracao.
-     * @param sinRetornarAndamentoConclusao
-     *            o(a) sin retornar andamento conclusao.
-     * @param sinRetornarUltimoAndamento
-     *            o(a) sin retornar ultimo andamento.
-     * @param sinRetornarUnidadesProcedimentoAberto
-     *            o(a) sin retornar unidades procedimento aberto.
-     * @param sinRetornarProcedimentosRelacionados
-     *            o(a) sin retornar procedimentos relacionados.
-     * @param sinRetornarProcedimentosAnexados
-     *            o(a) sin retornar procedimentos anexados.
+     * @param protocoloProcedimento                 o(a) protocolo procedimento.
+     * @param sinRetornarAssuntos                   o(a) sin retornar assuntos.
+     * @param sinRetornarInteressados               o(a) sin retornar interessados.
+     * @param sinRetornarObservacoes                o(a) sin retornar observacoes.
+     * @param sinRetornarAndamentoGeracao           o(a) sin retornar andamento geracao.
+     * @param sinRetornarAndamentoConclusao         o(a) sin retornar andamento conclusao.
+     * @param sinRetornarUltimoAndamento            o(a) sin retornar ultimo andamento.
+     * @param sinRetornarUnidadesProcedimentoAberto o(a) sin retornar unidades procedimento aberto.
+     * @param sinRetornarProcedimentosRelacionados  o(a) sin retornar procedimentos relacionados.
+     * @param sinRetornarProcedimentosAnexados      o(a) sin retornar procedimentos anexados.
      * @return o valor de retorno consulta procedimento
      */
     RetornoConsultaProcedimento consultarProcedimento(UnidadeSei unidade, String protocoloProcedimento, SimNao sinRetornarAssuntos,
@@ -143,12 +123,9 @@ public interface SEIPortType {
     /**
      * Atribuir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param idUsuario
-     *            o(a) id usuario.
-     * @param sinReabrir
-     *            o(a) sin reabrir.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
+     * @param idUsuario             o(a) id usuario.
+     * @param sinReabrir            o(a) sin reabrir.
      * @return o valor de boolean
      */
     Boolean atribuirProcesso(UnidadeSei unidade, String protocoloProcedimento, String idUsuario, SimNao sinReabrir);
@@ -156,10 +133,8 @@ public interface SEIPortType {
     /**
      * Incluir documento bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param idBloco            o(a) id bloco.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de boolean
      */
     Boolean incluirDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento);
@@ -167,8 +142,7 @@ public interface SEIPortType {
     /**
      * Concluir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     Boolean concluirProcesso(UnidadeSei unidade, String protocoloProcedimento);
@@ -176,8 +150,7 @@ public interface SEIPortType {
     /**
      * Cancelar disponibilizacao bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     Boolean cancelarDisponibilizacaoBloco(UnidadeSei unidade, String idBloco);
@@ -185,10 +158,8 @@ public interface SEIPortType {
     /**
      * Listar unidades.
      *
-     * @param idTipoProcedimento
-     *            o(a) id tipo procedimento.
-     * @param idSerie
-     *            o(a) id serie.
+     * @param idTipoProcedimento o(a) id tipo procedimento.
+     * @param idSerie            o(a) id serie.
      * @return o valor de array of unidade
      */
     List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie);
@@ -196,8 +167,7 @@ public interface SEIPortType {
     /**
      * Listar series.
      *
-     * @param idTipoProcedimento
-     *            o(a) id tipo procedimento.
+     * @param idTipoProcedimento o(a) id tipo procedimento.
      * @return o valor de array of serie
      */
     List<Serie> listarSeries(UnidadeSei unidade, String idTipoProcedimento);
@@ -205,8 +175,7 @@ public interface SEIPortType {
     /**
      * Excluir bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     Boolean excluirBloco(UnidadeSei unidade, String idBloco);
@@ -214,8 +183,7 @@ public interface SEIPortType {
     /**
      * Disponibilizar bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     Boolean disponibilizarBloco(UnidadeSei unidade, String idBloco);
@@ -223,10 +191,8 @@ public interface SEIPortType {
     /**
      * Incluir processo bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param idBloco               o(a) id bloco.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     Boolean incluirProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento);
@@ -234,8 +200,7 @@ public interface SEIPortType {
     /**
      * Incluir documento.
      *
-     * @param documento
-     *            o(a) documento.
+     * @param documento o(a) documento.
      * @return o valor de retorno inclusao documento
      */
     RetornoInclusaoDocumento incluirDocumento(UnidadeSei unidade, Documento documento);
@@ -245,16 +210,11 @@ public interface SEIPortType {
     /**
      * Gerar bloco.
      *
-     * @param tipoBlocoEnum
-     *            o(a) tipo bloco enum.
-     * @param descricao
-     *            o(a) descricao.
-     * @param unidadesDisponibilizacao
-     *            o(a) unidades disponibilizacao.
-     * @param documentos
-     *            o(a) documentos.
-     * @param sinDisponibilizar
-     *            o(a) sin disponibilizar.
+     * @param tipoBlocoEnum            o(a) tipo bloco enum.
+     * @param descricao                o(a) descricao.
+     * @param unidadesDisponibilizacao o(a) unidades disponibilizacao.
+     * @param documentos               o(a) documentos.
+     * @param sinDisponibilizar        o(a) sin disponibilizar.
      * @return o valor de string
      */
     String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao, ArrayOfIdUnidade unidadesDisponibilizacao,
@@ -264,10 +224,8 @@ public interface SEIPortType {
      * Gerar bloco, utiliza dados padrão nos campos opcionais.
      * Não faz a disponibilização de bloco.
      *
-     * @param tipoBlocoEnum
-     *            o(a) tipo bloco enum.
-     * @param descricao
-     *            o(a) descricao.
+     * @param tipoBlocoEnum o(a) tipo bloco enum.
+     * @param descricao     o(a) descricao.
      * @return o valor de string
      */
     String gerarBloco(UnidadeSei unidade, TipoBlocoEnum tipoBlocoEnum, String descricao);
@@ -277,14 +235,10 @@ public interface SEIPortType {
      * para realizar uma consulta com mais informações a respeito
      * do documento.
      *
-     * @param protocoloDocumento
-     *            o(a) protocolo documento {@link RetornoInclusaoDocumento#getDocumentoFormatado()}.
-     * @param sinRetornarAndamentoGeracao
-     *            o(a) sin retornar andamento geracao.
-     * @param sinRetornarAssinaturas
-     *            o(a) sin retornar assinaturas.
-     * @param sinRetornarPublicacao
-     *            o(a) sin retornar publicacao.
+     * @param protocoloDocumento          o(a) protocolo documento {@link RetornoInclusaoDocumento#getDocumentoFormatado()}.
+     * @param sinRetornarAndamentoGeracao o(a) sin retornar andamento geracao.
+     * @param sinRetornarAssinaturas      o(a) sin retornar assinaturas.
+     * @param sinRetornarPublicacao       o(a) sin retornar publicacao.
      * @param sinRetornarCampos
      * @return o valor de retorno consulta documento
      */
@@ -295,8 +249,7 @@ public interface SEIPortType {
      * Consultar documento da forma mais simples, caso seja necessária
      * uma consulta mais completa utilizar {@link #consultarDocumento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao)} .
      *
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de retorno consulta documento
      */
     RetornoConsultaDocumento consultarDocumento(UnidadeSei unidade, String protocoloDocumento);
@@ -320,18 +273,12 @@ public interface SEIPortType {
     /**
      * Enviar processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param unidadesDestino
-     *            o(a) unidades destino.
-     * @param sinManterAbertoUnidade
-     *            o(a) sin manter aberto unidade.
-     * @param sinRemoverAnotacao
-     *            o(a) sin remover anotacao.
-     * @param sinEnviarEmailNotificacao
-     *            o(a) sin enviar email notificacao.
-     * @param dataRetornoProgramado
-     *            o(a) data retorno programado.
+     * @param protocoloProcedimento     o(a) protocolo procedimento.
+     * @param unidadesDestino           o(a) unidades destino.
+     * @param sinManterAbertoUnidade    o(a) sin manter aberto unidade.
+     * @param sinRemoverAnotacao        o(a) sin remover anotacao.
+     * @param sinEnviarEmailNotificacao o(a) sin enviar email notificacao.
+     * @param dataRetornoProgramado     o(a) data retorno programado.
      * @return o valor de boolean
      */
     Boolean enviarProcesso(UnidadeSei unidade, String protocoloProcedimento, ArrayOfIdUnidade unidadesDestino,
@@ -341,10 +288,8 @@ public interface SEIPortType {
     /**
      * Retirar documento bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param idBloco            o(a) id bloco.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de boolean
      */
     Boolean retirarDocumentoBloco(UnidadeSei unidade, String idBloco, String protocoloDocumento);
@@ -352,10 +297,8 @@ public interface SEIPortType {
     /**
      * Retirar processo bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param idBloco               o(a) id bloco.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     Boolean retirarProcessoBloco(UnidadeSei unidade, String idBloco, String protocoloProcedimento);
@@ -363,8 +306,7 @@ public interface SEIPortType {
     /**
      * Listar extensoes permitidas.
      *
-     * @param idArquivoExtensao
-     *            o(a) id arquivo extensao.
+     * @param idArquivoExtensao o(a) id arquivo extensao.
      * @return o valor de array of arquivo extensao
      */
     List<ArquivoExtensao> listarExtensoesPermitidas(UnidadeSei unidade, String idArquivoExtensao);
@@ -372,33 +314,42 @@ public interface SEIPortType {
     /**
      * Listar tipos procedimento.
      *
-     * @param idSerie
-     *            o(a) id serie.
+     * @param idSerie o(a) id serie.
      * @return o valor de array of tipo procedimento
      */
     List<TipoProcedimento> listarTiposProcedimento(UnidadeSei unidade, String idSerie);
 
 
-	/**
-	 * Consultar bloco
-	 *
-	 * @param idBloco
-	 *            - o(a) id do bloco
-	 * @return o retorno da consulta de bloco
-	 * 
-	 */
-	public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco);
+    /**
+     * Consultar bloco
+     *
+     * @param idBloco - o(a) id do bloco
+     * @return o retorno da consulta de bloco
+     */
+    public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco);
 
-	/**
-	 * Cancelamento de documentos
-	 * 
-	 * @param motivo
-	 *            - o(a) motivo
-	 * @param protocoloDocumento
-	 *            - o(a) protocolo do documento
-	 * @return - O retorno do cancelamento do documento
-	 */
-	public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo);
+    /**
+     * Cancelamento de documentos
+     *
+     * @param motivo             - o(a) motivo
+     * @param protocoloDocumento - o(a) protocolo do documento
+     * @return - O retorno do cancelamento do documento
+     */
+    public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo);
+
+
+    /**
+     * Lista de contatos
+     *
+     * @param sigla
+     * @param idTipoContato
+     * @param unidade
+     * @return returns ArrayOfContato
+     */
+    public List<Contato> listarContatos(
+            UnidadeSei unidade,
+            String idTipoContato,
+            String sigla);
 
 
 }

@@ -35,6 +35,7 @@ import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.persistence.SessionLocator;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.schedule.IScheduleService;
@@ -207,7 +208,10 @@ public class ApplicationContextConfiguration implements Loggable {
         return new SingularSchedulerBean(dataSource);
     }
 
-
+    @Bean
+    public SessionLocator sessionProvider(SessionFactory sessionFactory){
+        return () -> sessionFactory.getCurrentSession();
+    }
 
 }
 

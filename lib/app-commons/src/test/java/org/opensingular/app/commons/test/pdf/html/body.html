@@ -1,0 +1,254 @@
+
+<style>
+p.error {
+    color: red;
+}
+
+table, th, td {
+    border: 1px solid black;
+}
+
+table.names tr:nth-child(even) {
+    background-color: #eee;
+}
+table.names tr:nth-child(odd) {
+    background-color:#fff;
+}
+table.names th {
+    background-color: black;
+    color: white
+}
+div.cities {
+    background-color: black;
+    color: white;
+    margin: 20px 0 20px 0;
+    padding: 20px;
+}
+#footer {
+    position: running(footer);
+    text-align: right;
+}
+
+@page {
+    @bottom-right {
+        content: element(footer);
+    }
+}
+
+#pagenumber:before {
+    content: counter(page);
+}
+
+#pagecount:before {
+    content: counter(pages);
+}
+</style>
+
+<script>
+    <![CDATA[
+    function subst() {
+        var vars = {}, x, i;
+        x = window.location.search.substring(1).split('&');
+        for (i in x) {
+            if (x.hasOwnProperty(i)) {
+                var z = x[i].split('=', 2);
+                vars[z[0]] = decodeURIComponent(z[1]);
+            }
+        }
+        x = ['frompage', 'topage', 'page', 'webpage', 'section', 'subsection', 'subsubsection'];
+        for (i in x) {
+            if (x.hasOwnProperty(i)) {
+                var y = document.getElementsByClassName(x[i]);
+                for (var j = 0; j < y.length; ++j) y[j].textContent = vars[x[i]];
+            }
+    }
+}
+]]>
+</script>
+
+<p>This text is normal.</p>
+<a href="https://www.w3schools.com">This is a link</a>
+<p style="background-color:powderblue;">This text is normal with blue background.</p>
+<h1 style="color:blue;">This is a blue heading</h1>
+<p style="color:red;">This is a paragraph.</p>
+<p style="color:red;">I am red</p>
+<p style="color:blue;">I am blue</p>
+<p style="font-size:50px;">I am big</p>
+<h1 style="text-align:center;">Centered Heading</h1>
+<p style="text-align:center;">Centered paragraph.</p>
+<p style="font-family:verdana;">I'm using Verdana font family</p>
+<p style="font-family:courier;">I'm using Courier font family</p>
+<p><em>This text is emphasized.</em></p>
+<p><i>This text is italic.</i></p>
+<p>My favorite color is <del>blue</del> red.</p>
+<p>My favorite <ins>color</ins> is red.</p>
+<p>This is <sub>subscripted</sub> text.</p>
+<p>This is <sup>superscripted</sup> text.</p>
+<p class="error">I am using error class.</p>
+
+<p><b>This text is bold.</b></p>
+<br/>
+<br/>
+
+<p>Using full css</p>
+<div style="position:relative;">
+    <div style="opacity:0.5;position:absolute;left:50px;top:-30px;width:300px;height:150px;background-color:#40B3DF"></div>
+    <div style="opacity:0.3;position:absolute;left:120px;top:20px;width:100px;height:170px;background-color:#73AD21"></div>
+    <div style="margin-top:30px;width:360px;height:130px;padding:20px;border-radius:10px;border:10px solid #EE872A;font-size:120%;">
+        <h1>CSS = Styles and Colors</h1>
+        <div style="letter-spacing:12px;font-size:15px;position:relative;left:25px;top:25px;">Manipulate Text</div>
+        <div style="color:#40B3DF;letter-spacing:12px;font-size:15px;position:relative;left:25px;top:30px;">Colors,
+            <span style="background-color:#B4009E;color:#ffffff;">�Boxes</span></div>
+        </div>
+    </div>
+
+
+    <br/>
+    <br/>
+    <br/>
+    <h2>Bordered Table</h2>
+    <p>Use the CSS border property to add a border to the table.</p>
+
+    <table style="width:100%">
+        <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+        </tr>
+        <tr>
+            <td>Jill</td>
+            <td>Smith</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>Eve</td>
+            <td>Jackson</td>
+            <td>94</td>
+        </tr>
+        <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>80</td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+
+    <table style="border-collapse: collapse;">
+        <tr>
+            <td>
+                <p>This is a paragraph</p>
+                <p>This is another paragraph</p>
+            </td>
+            <td>This cell contains a table:
+                <table>
+                    <tr>
+                        <td>A</td>
+                        <td>B</td>
+                    </tr>
+                    <tr>
+                        <td>C</td>
+                        <td>D</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>This cell contains a list
+                <ul>
+                    <li>apples</li>
+                    <li>bananas</li>
+                    <li>pineapples</li>
+                </ul>
+            </td>
+            <td>HELLO</td>
+        </tr>
+    </table>
+    <br/>
+    <br/>
+    <table class="names" style="border-collapse: collapse;">
+        <tr>
+            <th>Firstname</th>
+            <th>Lastname</th>
+            <th>Age</th>
+        </tr>
+        <tr>
+            <td>Jill</td>
+            <td>Smith</td>
+            <td>50</td>
+        </tr>
+        <tr>
+            <td>Eve</td>
+            <td>Jackson</td>
+            <td>94</td>
+        </tr>
+        <tr>
+            <td>John</td>
+            <td>Doe</td>
+            <td>80</td>
+        </tr>
+    </table>
+
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <h2>Navigation Menu</h2>
+    <p>In this example, we use CSS to style the list horizontally, to create a navigation menu:</p>
+
+    <ul>
+        <li><a href="#home">Home</a></li>
+        <li><a href="#news">News</a></li>
+        <li><a href="#contact">Contact</a></li>
+        <li><a href="#about">About</a></li>
+    </ul>
+
+    <div class="cities">
+        <h2>London</h2>
+        <p>London is the capital of England. It is the most populous city in the United Kingdom, with a metropolitan area of over 13 million inhabitants.</p>
+        <p>Standing on the River Thames, London has been a major settlement for two millennia, its history going back to its founding by the Romans, who named it Londinium.</p>
+    </div>
+
+    <div class="cities">
+        <h2>Paris</h2>
+        <p>Paris is the capital and most populous city of France.</p>
+        <p>Situated on the Seine River, it is at the heart of the �le-de-France region, also known as the r�gion parisienne.</p>
+        <p>Within its metropolitan area is one of the largest population centers in Europe, with over 12 million inhabitants.</p>
+    </div>
+
+    <br/>
+    <br/>
+
+    <h1>Html form</h1>
+
+    <h2>Input</h2>
+
+    <form>
+        First name:
+        <input type="text" name="firstname" value="Nome"/>
+        <br/>
+        Last name:
+        <input type="text" name="lastname"/>
+    </form>
+
+    <br/>
+
+    <h2>Radio Buttons</h2>
+
+    <form>
+        <input type="radio" name="gender" value="male" checked="true"/> Male<br/>
+        <input type="radio" name="gender" value="female"/> Female<br/>
+        <input type="radio" name="gender" value="other"/> Other
+    </form>
+
+    <button type="button" onclick="alert('Hello World!')">Click Me!</button>
+
+    <br/>
+    <br/>
+    <h2>Canvas</h2>
+
+<br/>
+
+<h2>HTML Image</h2>
+<img src="src/test/java/org/opensingular/requirement/module/pdf/html/pic_trulli.jpg" alt="Trulli" width="500" height="333"/>
