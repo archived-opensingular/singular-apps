@@ -48,7 +48,7 @@ public abstract class ServerContext implements IServerContext {
             return settings;
         }
 
-        String nameJavaIdentity = SingularUtil.convertToJavaIdentity(name, true).toLowerCase();
+        String nameJavaIdentity = SingularUtil.convertToJavaIdentifier(name).toLowerCase();
 
         settings = new WorkspaceSettings();
         settings
