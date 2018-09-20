@@ -24,12 +24,16 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
+import org.opensingular.lib.commons.context.SingularContextSetup;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
+import org.springframework.context.ApplicationContext;
 
 public class ActorDAOTest extends SingularCommonsBaseTest {
 
