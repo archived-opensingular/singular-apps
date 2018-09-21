@@ -20,6 +20,7 @@ package org.opensingular.requirement.module.persistence.dao.form;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
@@ -200,7 +201,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         QFormVersionEntity formVersion = new QFormVersionEntity("formVersionEntity");
         QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
 
-        return new HibernateQueryFactory(getSession())
+        return new JPAQueryFactory(getSession())
                 .selectDistinct(formAttachment)
                 .from(requirement)
                 .innerJoin(requirement.formRequirementEntities, formRequirement)
