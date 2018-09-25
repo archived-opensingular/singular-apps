@@ -81,20 +81,20 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
             new ThreadLocal<DataSource>();
 
     public SingularSchedulerBean(DataSource dataSource) {
-        Properties quartzProperties = new Properties();
-        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SingularFlowScheduler");
-        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
+        Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.instanceName", "SingularFlowScheduler");
+        properties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
         if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
-            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", SingularProperties.getOpt(SINGULAR_QUARTZ_DRIVER_DELEGATE).orElse("org.quartz.impl.jdbcjobstore.StdJDBCDelegate"));
-            quartzProperties.put("org.quartz.jobStore.tablePrefix", SingularProperties.getOpt(SINGULAR_QUARTZ_TABLE_PREFIX).orElse("QRTZ_"));
-            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
-            setQuartzProperties(quartzProperties);
+            properties.setProperty("org.quartz.jobStore.useProperties", "false");
+            properties.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
+            properties.setProperty("org.quartz.jobStore.driverDelegateClass", SingularProperties.getOpt(SINGULAR_QUARTZ_DRIVER_DELEGATE).orElse("org.quartz.impl.jdbcjobstore.StdJDBCDelegate"));
+            properties.setProperty("org.quartz.jobStore.tablePrefix", SingularProperties.getOpt(SINGULAR_QUARTZ_TABLE_PREFIX).orElse("QRTZ_"));
+            properties.setProperty("org.quartz.jobStore.isClustered", "true");
+            setQuartzProperties(properties);
             setDataSource(dataSource);
             setOverwriteExistingJobs(true);
         } else {
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+            properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
         }
 
     }
