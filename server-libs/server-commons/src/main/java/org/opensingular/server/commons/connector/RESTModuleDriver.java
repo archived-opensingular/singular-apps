@@ -62,7 +62,14 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         if (userDetails != null) {
             url += "&" + USER + "=" + userDetails.getUserPermissionKey();
         }
-        return restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class);
+        try {
+            return restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class);
+        } catch (Exception ex) {
+            /*Modulos com versões de runtime superiores a 1.7.X não responderão este endpoint, retornando null*/
+            getLogger().debug(ex.getMessage(), ex);
+            getLogger().warn("Não foi possível recuperar informações do modulo {}", module.getName());
+            return null;
+        }
     }
 
     @Override

@@ -63,7 +63,10 @@ public class SingularServerSessionConfiguration implements Loggable {
         try {
             IServerContext menuContext = getMenuContext();
             for (ModuleEntity module : buscarCategorias()) {
-                configMaps.put(module, rmoduleDriver.retrieveModuleWorkspace(module, menuContext));
+                WorkspaceConfigurationMetadata workspaceConfigurationMetadata = rmoduleDriver.retrieveModuleWorkspace(module, menuContext);
+                if (workspaceConfigurationMetadata != null) {
+                    configMaps.put(module, workspaceConfigurationMetadata);
+                }
             }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
@@ -98,7 +101,9 @@ public class SingularServerSessionConfiguration implements Loggable {
         List<ModuleEntity> categorias = buscarCategorias();
         for (ModuleEntity categoria : categorias) {
             final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
-            map.put(categoria, boxConfigurationMetadataDTOs);
+            if(!boxConfigurationMetadataDTOs.isEmpty()) {
+                map.put(categoria, boxConfigurationMetadataDTOs);
+            }
         }
         return map;
     }
