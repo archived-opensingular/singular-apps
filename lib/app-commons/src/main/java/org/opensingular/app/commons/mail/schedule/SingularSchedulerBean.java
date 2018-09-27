@@ -90,13 +90,12 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
             properties.setProperty("org.quartz.jobStore.driverDelegateClass", SingularProperties.getOpt(SINGULAR_QUARTZ_DRIVER_DELEGATE).orElse("org.quartz.impl.jdbcjobstore.StdJDBCDelegate"));
             properties.setProperty("org.quartz.jobStore.tablePrefix", SingularProperties.getOpt(SINGULAR_QUARTZ_TABLE_PREFIX).orElse("QRTZ_"));
             properties.setProperty("org.quartz.jobStore.isClustered", "true");
-            setQuartzProperties(properties);
             setDataSource(dataSource);
             setOverwriteExistingJobs(true);
         } else {
             properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
         }
-
+        setQuartzProperties(properties);
     }
 
     /**

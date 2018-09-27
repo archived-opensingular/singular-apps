@@ -7,32 +7,6 @@
 -- Many other users (including the primary author of Quartz) have had success
 -- runing in dedicated mode, so only consider the above as a hint ;-)
 --
-
-delete from DBSINGULAR.QRTZ_fired_triggers;
-delete from DBSINGULAR.QRTZ_simple_triggers;
-delete from DBSINGULAR.QRTZ_simprop_triggers;
-delete from DBSINGULAR.QRTZ_cron_triggers;
-delete from DBSINGULAR.QRTZ_blob_triggers;
-delete from DBSINGULAR.QRTZ_triggers;
-delete from DBSINGULAR.QRTZ_job_details;
-delete from DBSINGULAR.QRTZ_calendars;
-delete from DBSINGULAR.QRTZ_paused_trigger_grps;
-delete from DBSINGULAR.QRTZ_locks;
-delete from DBSINGULAR.QRTZ_scheduler_state;
-
-drop table DBSINGULAR.QRTZ_calendars;
-drop table DBSINGULAR.QRTZ_fired_triggers;
-drop table DBSINGULAR.QRTZ_blob_triggers;
-drop table DBSINGULAR.QRTZ_cron_triggers;
-drop table DBSINGULAR.QRTZ_simple_triggers;
-drop table DBSINGULAR.QRTZ_simprop_triggers;
-drop table DBSINGULAR.QRTZ_triggers;
-drop table DBSINGULAR.QRTZ_job_details;
-drop table DBSINGULAR.QRTZ_paused_trigger_grps;
-drop table DBSINGULAR.QRTZ_locks;
-drop table DBSINGULAR.QRTZ_scheduler_state;
-
-
 CREATE TABLE DBSINGULAR.QRTZ_job_details
   (
     SCHED_NAME VARCHAR2(120) NOT NULL,
@@ -167,26 +141,26 @@ CREATE TABLE DBSINGULAR.QRTZ_locks
     CONSTRAINT DBSINGULAR.QRTZ_LOCKS_PK PRIMARY KEY (SCHED_NAME,LOCK_NAME)
 );
 
-create index idx_DBSINGULAR.QRTZ_j_req_recovery on DBSINGULAR.QRTZ_job_details(SCHED_NAME,REQUESTS_RECOVERY);
-create index idx_DBSINGULAR.QRTZ_j_grp on DBSINGULAR.QRTZ_job_details(SCHED_NAME,JOB_GROUP);
+create index idx_qrtz_j_req_recovery on DBSINGULAR.QRTZ_job_details(SCHED_NAME,REQUESTS_RECOVERY);
+create index idx_qrtz_j_grp on DBSINGULAR.QRTZ_job_details(SCHED_NAME,JOB_GROUP);
 
-create index idx_DBSINGULAR.QRTZ_t_j on DBSINGULAR.QRTZ_triggers(SCHED_NAME,JOB_NAME,JOB_GROUP);
-create index idx_DBSINGULAR.QRTZ_t_jg on DBSINGULAR.QRTZ_triggers(SCHED_NAME,JOB_GROUP);
-create index idx_DBSINGULAR.QRTZ_t_c on DBSINGULAR.QRTZ_triggers(SCHED_NAME,CALENDAR_NAME);
-create index idx_DBSINGULAR.QRTZ_t_g on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_GROUP);
-create index idx_DBSINGULAR.QRTZ_t_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_STATE);
-create index idx_DBSINGULAR.QRTZ_t_n_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE);
-create index idx_DBSINGULAR.QRTZ_t_n_g_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE);
-create index idx_DBSINGULAR.QRTZ_t_next_fire_time on DBSINGULAR.QRTZ_triggers(SCHED_NAME,NEXT_FIRE_TIME);
-create index idx_DBSINGULAR.QRTZ_t_nft_st on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME);
-create index idx_DBSINGULAR.QRTZ_t_nft_misfire on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME);
-create index idx_DBSINGULAR.QRTZ_t_nft_st_misfire on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE);
-create index idx_DBSINGULAR.QRTZ_t_nft_st_misfire_grp on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE);
+create index idx_qrtz_t_j on DBSINGULAR.QRTZ_triggers(SCHED_NAME,JOB_NAME,JOB_GROUP);
+create index idx_qrtz_t_jg on DBSINGULAR.QRTZ_triggers(SCHED_NAME,JOB_GROUP);
+create index idx_qrtz_t_c on DBSINGULAR.QRTZ_triggers(SCHED_NAME,CALENDAR_NAME);
+create index idx_qrtz_t_g on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_GROUP);
+create index idx_qrtz_t_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_STATE);
+create index idx_qrtz_t_n_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP,TRIGGER_STATE);
+create index idx_qrtz_t_n_g_state on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_GROUP,TRIGGER_STATE);
+create index idx_qrtz_t_next_fire_time on DBSINGULAR.QRTZ_triggers(SCHED_NAME,NEXT_FIRE_TIME);
+create index idx_qrtz_t_nft_st on DBSINGULAR.QRTZ_triggers(SCHED_NAME,TRIGGER_STATE,NEXT_FIRE_TIME);
+create index idx_qrtz_t_nft_misfire on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME);
+create index idx_qrtz_t_nft_st_misfire on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_STATE);
+create index idx_qrtz_t_nft_st_misfire_grp on DBSINGULAR.QRTZ_triggers(SCHED_NAME,MISFIRE_INSTR,NEXT_FIRE_TIME,TRIGGER_GROUP,TRIGGER_STATE);
 
-create index idx_DBSINGULAR.QRTZ_ft_trig_inst_name on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,INSTANCE_NAME);
-create index idx_DBSINGULAR.QRTZ_ft_inst_job_req_rcvry on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY);
-create index idx_DBSINGULAR.QRTZ_ft_j_g on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,JOB_NAME,JOB_GROUP);
-create index idx_DBSINGULAR.QRTZ_ft_jg on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,JOB_GROUP);
-create index idx_DBSINGULAR.QRTZ_ft_t_g on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP);
-create index idx_DBSINGULAR.QRTZ_ft_tg on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,TRIGGER_GROUP);
+create index idx_qrtz_ft_trig_inst_name on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,INSTANCE_NAME);
+create index idx_qrtz_ft_inst_job_req_rcvry on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,INSTANCE_NAME,REQUESTS_RECOVERY);
+create index idx_qrtz_ft_j_g on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,JOB_NAME,JOB_GROUP);
+create index idx_qrtz_ft_jg on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,JOB_GROUP);
+create index idx_qrtz_ft_t_g on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,TRIGGER_NAME,TRIGGER_GROUP);
+create index idx_qrtz_ft_tg on DBSINGULAR.QRTZ_fired_triggers(SCHED_NAME,TRIGGER_GROUP);
 
