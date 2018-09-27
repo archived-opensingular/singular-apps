@@ -15,9 +15,12 @@
  */
 package org.opensingular.server.commons.persistence.entity.email;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import org.hibernate.annotations.GenericGenerator;
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
+import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,17 +28,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import org.hibernate.annotations.GenericGenerator;
-
-import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.lib.support.persistence.util.HybridIdentityOrSequenceGenerator;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 @Entity
 @GenericGenerator(name = EmailEntity.PK_GENERATOR_NAME, strategy = HybridIdentityOrSequenceGenerator.CLASS_NAME)
@@ -70,7 +70,11 @@ public class EmailEntity extends BaseEntity<Long> {
         joinColumns = @JoinColumn(name = "CO_EMAIL"),
         inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
     private List<AttachmentEntity> attachments = new ArrayList<>();
-    
+
+    @ManyToOne
+    @JoinColumn(name = "CO_MODULO", nullable = true)
+    private ModuleEntity module;
+
     @Override
     public Long getCod() {
         return cod;
@@ -128,4 +132,11 @@ public class EmailEntity extends BaseEntity<Long> {
         this.attachments = attachments;
     }
 
+    public ModuleEntity getModule() {
+        return module;
+    }
+
+    public void setModule(ModuleEntity module) {
+        this.module = module;
+    }
 }

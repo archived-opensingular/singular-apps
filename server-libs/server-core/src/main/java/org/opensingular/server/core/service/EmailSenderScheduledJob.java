@@ -15,29 +15,39 @@
  */
 package org.opensingular.server.core.service;
 
-import javax.inject.Inject;
-
-import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.flow.schedule.IScheduleData;
 import org.opensingular.flow.schedule.IScheduledJob;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.service.EmailPersistenceService;
 import org.opensingular.server.commons.service.dto.Email.Addressee;
 
+import javax.inject.Inject;
+import java.util.Optional;
+
+import static org.opensingular.lib.commons.base.SingularProperties.EMAIL_COD_MODULE;
+
 public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
-    
+
     @Inject
     private EmailSender emailSender;
-    
+
     @Inject
     private EmailPersistenceService emailPersistenceService;
-    
+
     private IScheduleData scheduleData;
-    
+
     private int emailsPerPage = 20;
-    
+    private String identifierModule;
+
     public EmailSenderScheduledJob(IScheduleData scheduleData) {
         super();
         this.scheduleData = scheduleData;
+    }
+
+    public EmailSenderScheduledJob(IScheduleData scheduleData, String identifierModule) {
+        this(scheduleData);
+        this.identifierModule = identifierModule;
     }
 
     @Override
@@ -51,8 +61,9 @@ public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
         int pending = totalPendingRecipients;
         int page = 0, sent = 0;
         while (pending > 0) {
-            for (Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage)) {
-                if(emailSender.send(addressee)){
+            String identifier = Optional.ofNullable(identifierModule).orElse(SingularProperties.get().getProperty(EMAIL_COD_MODULE));
+            for (Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage, identifier)) {
+                if (emailSender.send(addressee)) {
                     emailPersistenceService.markAsSent(addressee);
                     sent++;
                 }
@@ -61,13 +72,13 @@ public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
             page++;
         }
         getLogger().info("{} sent from total of {}", sent, totalPendingRecipients);
-        return sent + " sent from total of "+totalPendingRecipients;
+        return sent + " sent from total of " + totalPendingRecipients;
     }
 
     public void setEmailsPerPage(int emailsPerPage) {
         this.emailsPerPage = emailsPerPage;
     }
-        
+
     @Override
     public String getId() {
         return "EmailSender";
