@@ -424,7 +424,7 @@ CREATE TABLE DBSINGULAR.TB_EMAIL
    TX_ASSUNTO           VARCHAR(200)         NOT NULL,
    TX_CONTEUDO          CLOB                 NOT NULL,
    DT_CRIACAO           DATE                 NOT NULL,
-   CO_MODULO            VARCHAR2(30),
+   CO_MODULO            VARCHAR(30),
    CONSTRAINT PK_EMAIL PRIMARY KEY (CO_EMAIL)
 );
 

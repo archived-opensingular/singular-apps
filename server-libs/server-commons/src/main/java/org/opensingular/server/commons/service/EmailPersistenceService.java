@@ -67,7 +67,9 @@ public class EmailPersistenceService implements IEmailService<Email> {
         emailEntity.setContent(email.getContent());
         String emailIdentifier = Optional.ofNullable(email.getModuleCod())
                 .orElse(SingularProperties.get().getProperty(EMAIL_COD_MODULE));
-        emailEntity.setModule(moduleDAO.find(emailIdentifier).orElse(null));
+        if(emailIdentifier != null) {
+            emailEntity.setModule(moduleDAO.find(emailIdentifier).orElse(null));
+        }
         emailEntity.setReplyTo(email.getReplyToJoining());
 
         for (IAttachmentRef attachmentRef : email.getAttachments()) {
