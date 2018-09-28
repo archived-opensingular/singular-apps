@@ -103,7 +103,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
-                    ps.execute();
+                    ps.executeUpdate();
                 });
             }
             getSession().flush();
