@@ -27,26 +27,33 @@ import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.service.AttachmentPersistenceService;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.validation.SingularEmailValidator;
+import org.opensingular.lib.commons.base.SingularProperties;
 
+import javax.annotation.Nullable;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
+import static org.opensingular.lib.commons.base.SingularProperties.EMAIL_COD_MODULE;
+
+
 @Transactional(Transactional.TxType.MANDATORY)
-public class EmailPersistenceService implements IEmailService<Email>{
+public class EmailPersistenceService implements IEmailService<Email> {
 
     @Inject
     private EmailDao<EmailEntity> emailDao;
-    
+
     @Inject
     private EmailAddresseeDao<EmailAddresseeEntity> emailAddresseeDao;
-    
-    @Inject @Named(SDocument.FILE_PERSISTENCE_SERVICE)
+
+    @Inject
+    @Named(SDocument.FILE_PERSISTENCE_SERVICE)
     private AttachmentPersistenceService<AttachmentEntity, AttachmentContentEntity> persistenceHandler;
-    
+
     @Override
     public boolean send(Email email) {
         EmailEntity emailEntity = new EmailEntity();
@@ -56,20 +63,24 @@ public class EmailPersistenceService implements IEmailService<Email>{
         emailEntity.setSubject(email.getSubject());
         emailEntity.setContent(email.getContent());
         emailEntity.setReplyTo(email.getReplyToJoining());
-        
+
+        String emailIdentifier = Optional.ofNullable(email.getModuleCod())
+                .orElse(SingularProperties.get().getPropertyOpt(EMAIL_COD_MODULE).orElse(null));
+        emailEntity.setModule(emailIdentifier);
+
         for (IAttachmentRef attachmentRef : email.getAttachments()) {
             IAttachmentRef attachment = persistenceHandler.copy(attachmentRef, null).getNewAttachmentRef();
             emailEntity.getAttachments().add(persistenceHandler.getAttachmentEntity(attachment));
         }
         emailEntity.setCreationDate(new Date());
         emailDao.save(emailEntity);
-        
+
         for (Email.Addressee addressee : email.getAllRecipients()) {
             EmailAddresseeEntity addresseeEntity = new EmailAddresseeEntity();
             addresseeEntity.setAddress(addressee.getAddress());
             addresseeEntity.setAddresseType(addressee.getType());
             addresseeEntity.setEmail(emailEntity);
-            
+
             emailAddresseeDao.save(addresseeEntity);
         }
         return true;
@@ -85,30 +96,33 @@ public class EmailPersistenceService implements IEmailService<Email>{
     }
 
     @Transactional(Transactional.TxType.REQUIRES_NEW)
-    public void markAsSent(Email.Addressee addressee){
+    public void markAsSent(Email.Addressee addressee) {
         EmailAddresseeEntity entity = emailAddresseeDao.findOrException(addressee.getCod());
         entity.setSentDate(new Date());
         emailAddresseeDao.saveOrUpdate(entity);
-        
+
         addressee.setSentDate(entity.getSentDate());
     }
-    
+
     public int countPendingRecipients() {
         return emailAddresseeDao.countPending();
     }
-    
-    public List<Email.Addressee> listPendingRecipients(int firstResult, int maxResults) {
-        return emailAddresseeDao.listPending(firstResult, maxResults).stream().map(addressee -> {
+
+    public List<Email.Addressee> listPendingRecipients(int firstResult, int maxResults, @Nullable String codModule) {
+        return emailAddresseeDao.listPending(firstResult, maxResults)
+                .stream()
+                .filter(s -> codModule == null || codModule.equals(s.getEmail().getModule()))
+                .map(addressee -> {
             Email email = new Email();
             email.withSubject(addressee.getEmail().getSubject());
             email.withContent(addressee.getEmail().getContent());
             email.addReplyTo(addressee.getEmail().getReplyTo());
             email.setCreationDate(addressee.getEmail().getCreationDate());
-            
+
             for (AttachmentEntity attachmentEntity : addressee.getEmail().getAttachments()) {
                 email.addAttachments(persistenceHandler.createRef(attachmentEntity));
             }
-            
+
             return new Email.Addressee(email, addressee);
         }).collect(Collectors.toList());
     }
