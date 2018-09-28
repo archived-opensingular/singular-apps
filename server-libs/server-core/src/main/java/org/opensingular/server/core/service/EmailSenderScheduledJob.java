@@ -61,8 +61,8 @@ public class EmailSenderScheduledJob implements IScheduledJob, Loggable {
         int pending = totalPendingRecipients;
         int page = 0, sent = 0;
         while (pending > 0) {
-            String identifier = Optional.ofNullable(identifierModule).orElse(SingularProperties.get().getProperty(EMAIL_COD_MODULE));
-            for (Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage, identifier)) {
+            String codModule = Optional.ofNullable(identifierModule).orElse(SingularProperties.get().getProperty(EMAIL_COD_MODULE));
+            for (Addressee addressee : emailPersistenceService.listPendingRecipients(page * emailsPerPage, emailsPerPage, codModule)) {
                 if (emailSender.send(addressee)) {
                     emailPersistenceService.markAsSent(addressee);
                     sent++;

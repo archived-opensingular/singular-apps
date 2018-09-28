@@ -25,7 +25,6 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.dao.EmailAddresseeDao;
 import org.opensingular.server.commons.persistence.dao.EmailDao;
-import org.opensingular.server.commons.persistence.dao.server.ModuleDAO;
 import org.opensingular.server.commons.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.server.commons.persistence.entity.email.EmailEntity;
 import org.opensingular.server.commons.service.dto.Email;
@@ -51,9 +50,6 @@ public class EmailPersistenceService implements IEmailService<Email> {
     private EmailAddresseeDao<EmailAddresseeEntity> emailAddresseeDao;
 
     @Inject
-    private ModuleDAO moduleDAO;
-
-    @Inject
     @Named(SDocument.FILE_PERSISTENCE_SERVICE)
     private AttachmentPersistenceService<AttachmentEntity, AttachmentContentEntity> persistenceHandler;
 
@@ -67,9 +63,7 @@ public class EmailPersistenceService implements IEmailService<Email> {
         emailEntity.setContent(email.getContent());
         String emailIdentifier = Optional.ofNullable(email.getModuleCod())
                 .orElse(SingularProperties.get().getProperty(EMAIL_COD_MODULE));
-        if(emailIdentifier != null) {
-            emailEntity.setModule(moduleDAO.find(emailIdentifier).orElse(null));
-        }
+        emailEntity.setModule(emailIdentifier);
         emailEntity.setReplyTo(email.getReplyToJoining());
 
         for (IAttachmentRef attachmentRef : email.getAttachments()) {
@@ -112,10 +106,10 @@ public class EmailPersistenceService implements IEmailService<Email> {
         return emailAddresseeDao.countPending();
     }
 
-    public List<Addressee> listPendingRecipients(int firstResult, int maxResults, String identifier) {
-        return emailAddresseeDao.listPending(firstResult, maxResults).stream()
-                .filter(s -> identifier == null ||
-                        (s.getEmail().getModule() != null && identifier.equals(s.getEmail().getModule().getCod())))
+    public List<Addressee> listPendingRecipients(int firstResult, int maxResults, String codModule) {
+        return emailAddresseeDao.listPending(firstResult, maxResults)
+                .stream()
+                .filter(s -> codModule == null || codModule.equals(s.getEmail().getModule()))
                 .map(addressee -> {
                     Email email = new Email();
                     email.withSubject(addressee.getEmail().getSubject());

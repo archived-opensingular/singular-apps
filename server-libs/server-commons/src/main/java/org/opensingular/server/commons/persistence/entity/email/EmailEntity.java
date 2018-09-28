@@ -16,7 +16,6 @@
 package org.opensingular.server.commons.persistence.entity.email;
 
 import org.hibernate.annotations.GenericGenerator;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
@@ -28,7 +27,6 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -71,9 +69,8 @@ public class EmailEntity extends BaseEntity<Long> {
         inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
     private List<AttachmentEntity> attachments = new ArrayList<>();
 
-    @ManyToOne
-    @JoinColumn(name = "CO_MODULO", nullable = true)
-    private ModuleEntity module;
+    @Column(name = "CO_MODULO", nullable = true, length = 200)
+    private String module;
 
     @Override
     public Long getCod() {
@@ -132,11 +129,11 @@ public class EmailEntity extends BaseEntity<Long> {
         this.attachments = attachments;
     }
 
-    public ModuleEntity getModule() {
+    public String getModule() {
         return module;
     }
 
-    public void setModule(ModuleEntity module) {
+    public void setModule(String module) {
         this.module = module;
     }
 }
