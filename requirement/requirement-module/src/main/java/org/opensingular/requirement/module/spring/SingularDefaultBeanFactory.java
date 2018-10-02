@@ -117,6 +117,7 @@ import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sql.DataSource;
+import java.util.Optional;
 
 
 @SuppressWarnings("rawtypes")
@@ -389,7 +390,7 @@ public class SingularDefaultBeanFactory {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
         HttpServletRequest req = sra.getRequest();
         IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
-        return moduleService.loadWorkspaceConfiguration(menuContext.getName(), singularUserDetails.getUsername());
+        return moduleService.loadWorkspaceConfiguration(menuContext.getName(), Optional.ofNullable(singularUserDetails).map(SingularUserDetails::getUsername).orElse(null));
     }
 
     @Bean
