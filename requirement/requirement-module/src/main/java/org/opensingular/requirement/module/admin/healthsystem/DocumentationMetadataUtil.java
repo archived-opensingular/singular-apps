@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.admin.healthsystem;
 
 import org.opensingular.form.AtrRef;
+import org.opensingular.form.SAttributeUtil;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.type.basic.AtrBasic;
@@ -40,9 +41,6 @@ public class DocumentationMetadataUtil {
     /**
      * Fields that are hard-coded invisible, or do not exists or explicit marked as hidden for documentation should not appear in the documentation as it is not related to anything functional
      * for users.
-     *
-     * @param sType
-     * @return
      */
     public static boolean isHiddenForDocumentation(SType<?> sType) {
         boolean visible = getAttribute(sType, SPackageBasic.ATR_EXISTS).orElse(Boolean.TRUE);
@@ -52,7 +50,7 @@ public class DocumentationMetadataUtil {
     }
 
     public static <V> Optional<V> getAttribute(SType<?> type, AtrRef<?, ?, V> ref) {
-        if (type.hasAttributeDefinedInHierarchy(ref)) {
+        if (SAttributeUtil.hasAttributeDefinitionInHierarchy(type, ref)) {
             return Optional.ofNullable(type.getAttributeValue(ref));
         }
         return Optional.empty();

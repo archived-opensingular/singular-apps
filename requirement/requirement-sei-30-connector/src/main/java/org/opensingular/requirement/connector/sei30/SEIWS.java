@@ -581,7 +581,7 @@ public class SEIWS implements SEIPortType, Loggable {
 
     @Override
     public List<Contato> listarContatos(@Nullable UnidadeSei unidade, String idTipoContato, String sigla) {
-        return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
+            return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
     }
 
 
