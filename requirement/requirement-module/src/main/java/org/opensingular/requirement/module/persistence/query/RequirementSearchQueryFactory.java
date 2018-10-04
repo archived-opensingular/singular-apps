@@ -32,10 +32,8 @@ import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.FilterToken;
-import org.opensingular.requirement.module.persistence.filter.FilterTokenFactory;
 
 import javax.annotation.Nonnull;
-import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -242,8 +240,8 @@ public class RequirementSearchQueryFactory {
                 && boxFilter.getProcessesAbbreviation() != null
                 && !boxFilter.getProcessesAbbreviation().isEmpty()) {
             BooleanExpression expr = $.flowDefinitionEntity.key.in(boxFilter.getProcessesAbbreviation());
-            if (boxFilter.getTypesNames() != null && !boxFilter.getTypesNames().isEmpty()) {
-                expr = expr.or($.formType.abbreviation.in(boxFilter.getTypesNames()));
+            if (boxFilter.getTypesAbbreviations() != null && !boxFilter.getTypesAbbreviations().isEmpty()) {
+                expr = expr.or($.formType.abbreviation.in(boxFilter.getTypesAbbreviations()));
             }
             query.where(expr);
         }

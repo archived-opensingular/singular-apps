@@ -144,11 +144,11 @@ public class BoxFilter {
         return this;
     }
 
-    public List<String> getTypesNames() {
+    public List<String> getTypesAbbreviations() {
         return typesNames;
     }
 
-    public BoxFilter typesNames(List<String> typesNames) {
+    public BoxFilter typesAbbreviations(List<String> typesNames) {
         this.typesNames = typesNames;
         return this;
     }

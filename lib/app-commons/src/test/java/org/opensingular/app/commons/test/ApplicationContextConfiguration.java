@@ -73,6 +73,12 @@ public class ApplicationContextConfiguration implements Loggable {
 
 
     @Bean
+    public SessionLocator sessionLocator(SessionFactory sessionFactory) {
+        return () -> sessionFactory.getCurrentSession();
+    }
+
+
+    @Bean
     @DependsOn("scriptsInitializer")
     public LocalSessionFactoryBean sessionFactory(final DataSource dataSource) {
         final LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
