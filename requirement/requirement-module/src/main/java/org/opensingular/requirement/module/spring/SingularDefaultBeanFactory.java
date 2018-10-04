@@ -117,6 +117,8 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 import org.springframework.core.annotation.Order;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.security.web.firewall.HttpFirewall;
+import org.springframework.security.web.firewall.StrictHttpFirewall;
 import org.springframework.web.context.ConfigurableWebApplicationContext;
 
 import javax.servlet.http.HttpServletRequest;
@@ -367,6 +369,14 @@ public class SingularDefaultBeanFactory {
     @Bean
     public UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails() {
         return new UserDetailsProvider<>(SingularRequirementUserDetails.class);
+    }
+
+    @Bean
+    public HttpFirewall allowUrlEncodedSlashHttpFirewall() {
+        StrictHttpFirewall firewall = new StrictHttpFirewall();
+        firewall.setAllowUrlEncodedSlash(true);
+        firewall.setAllowSemicolon(true);
+        return firewall;
     }
 
     @Bean
