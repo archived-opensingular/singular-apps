@@ -27,7 +27,7 @@ import org.opensingular.app.commons.mail.service.email.EmailSender;
 import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.app.commons.mail.service.email.IMailSenderREST;
-import org.opensingular.app.commons.spring.security.SingularUserDetailsFactoryBean;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
@@ -101,7 +101,6 @@ import org.opensingular.requirement.module.spring.security.DefaultUserDetailServ
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
-import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
@@ -366,8 +365,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public SingularUserDetailsFactoryBean<? extends SingularRequirementUserDetails> singularUserDetails() {
-        return new SingularUserDetailsFactoryBean<>(SingularRequirementUserDetails.class);
+    public UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails() {
+        return new UserDetailsProvider<>(SingularRequirementUserDetails.class);
     }
 
     @Bean
@@ -498,16 +497,11 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public UserDetailsProvider userDetailsProvider() {
-        return new UserDetailsProvider();
-    }
-
-    @Bean
     @Scope(ConfigurableWebApplicationContext.SCOPE_REQUEST)
     public IServerContext serverContext(HttpServletRequest httpServletRequest, WorkspaceRegistry workspaceRegistry) {
         if (httpServletRequest != null) {
             String contextPath = httpServletRequest.getContextPath();
-            String context = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
+            String context     = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
             for (IServerContext ctx : workspaceRegistry.getContexts()) {
                 if (context.startsWith(ctx.getSettings().getUrlPath())) {
                     return ctx;
@@ -518,7 +512,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public SessionLocator sessionProvider(SessionFactory sessionFactory){
+    public SessionLocator sessionProvider(SessionFactory sessionFactory) {
         return () -> sessionFactory.getCurrentSession();
     }
 

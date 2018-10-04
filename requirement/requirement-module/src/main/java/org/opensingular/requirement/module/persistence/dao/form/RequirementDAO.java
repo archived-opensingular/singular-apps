@@ -19,7 +19,8 @@ package org.opensingular.requirement.module.persistence.dao.form;
 
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -220,7 +221,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
 
     public boolean containChildren(Long codRequirement) {
         QRequirementEntity requirementEntity = QRequirementEntity.requirementEntity;
-        return new HibernateQueryFactory(getSession())
+        return new JPAQueryFactory(getSession())
                 .selectFrom(requirementEntity)
                 .where(requirementEntity.parentRequirement.cod.eq(codRequirement))
                 .fetchCount() > 0;
@@ -232,7 +233,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         QFormEntity form = new QFormEntity("form");
         QFormTypeEntity formTypeEntity = new QFormTypeEntity("formType");
 
-        HibernateQuery<RequirementEntity> hibernateQuery = new HibernateQueryFactory(getSession())
+        JPAQuery<RequirementEntity> jpaQuery = new JPAQueryFactory(getSession())
                 .selectFrom(requirement)
                 .innerJoin(requirement.formRequirementEntities, formRequirement)
                 .innerJoin(formRequirement.form, form)
@@ -240,9 +241,9 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .where(formRequirement.mainForm.eq(SimNao.SIM)
                         .and(requirement.rootRequirement.cod.eq(rootRequirement))
                         .and(formTypeEntity.abbreviation.eq(type)));
-        hibernateQuery.getMetadata().setLimit(1L);
+        jpaQuery.getMetadata().setLimit(1L);
 
-        return (T) hibernateQuery.fetchOne();
+        return (T) jpaQuery.fetchOne();
     }
 
 }
