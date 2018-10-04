@@ -384,17 +384,6 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    @Scope(WebApplicationContext.SCOPE_REQUEST)
-    public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
-            SingularModuleConfiguration singularServerConfiguration, ModuleService moduleService,
-            SingularUserDetails singularUserDetails) {
-        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest req = sra.getRequest();
-        IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
-        return moduleService.loadWorkspaceConfiguration(menuContext.getName(), Optional.ofNullable(singularUserDetails).map(SingularUserDetails::getUsername).orElse(null));
-    }
-
-    @Bean
     public SingularServerDocumentFactory documentFactory() {
         return new SingularServerDocumentFactory();
     }
