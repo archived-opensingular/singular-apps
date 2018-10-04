@@ -123,6 +123,7 @@ import javax.sql.DataSource;
 import java.lang.reflect.Modifier;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.Optional;
 
 
 @SuppressWarnings("rawtypes")
@@ -380,6 +381,17 @@ public class SingularDefaultBeanFactory {
     @Bean
     public ExtratoGenerator extratoGenerator() {
         return new ExtratoGeneratorImpl();
+    }
+
+    @Bean
+    @Scope(WebApplicationContext.SCOPE_REQUEST)
+    public WorkspaceConfigurationMetadata workspaceConfigurationMetadata(
+            SingularModuleConfiguration singularServerConfiguration, ModuleService moduleService,
+            SingularUserDetails singularUserDetails) {
+        ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        HttpServletRequest req = sra.getRequest();
+        IServerContext menuContext = IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
+        return moduleService.loadWorkspaceConfiguration(menuContext.getName(), Optional.ofNullable(singularUserDetails).map(SingularUserDetails::getUsername).orElse(null));
     }
 
     @Bean

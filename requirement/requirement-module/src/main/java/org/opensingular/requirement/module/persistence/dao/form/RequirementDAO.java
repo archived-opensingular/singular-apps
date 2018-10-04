@@ -168,7 +168,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         query.append(" left join fpe.currentDraftEntity cde  ");
         query.append(" left join cde.form  f ");
         query.append(" left join f.formType ft ");
-        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND ct.currentInstanceStatus = :isCurrentInstance ");
+        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND (ct.currentInstanceStatus = :isCurrentInstance or ct.currentInstanceStatus is null )");
         query.append(" order by ct.cod DESC ");
         return (RequirementAuthMetadataDTO) Optional.ofNullable(getSession().createQuery(query.toString())
                 .setParameter("sim", SimNao.SIM)

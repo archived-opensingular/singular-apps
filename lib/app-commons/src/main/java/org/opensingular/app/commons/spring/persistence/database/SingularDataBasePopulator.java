@@ -44,22 +44,8 @@ public class SingularDataBasePopulator extends ResourceDatabasePopulator impleme
 
     @Override
     public void populate(Connection connection) throws ScriptException {
-
-        try {
-            connection.setAutoCommit(false);
-            Savepoint savepoint = connection.setSavepoint();
-            try {
-                super.addScript(new ByteArrayResource(formattedScriptsToExecute(persistenceConfigurationProvider).toString().getBytes(Charset.forName(this.sqlScriptEncoding)), "Singular Schema Export Hibernate DDL + SQL Files"));
-                super.populate(connection);
-                connection.commit();
-                connection.setAutoCommit(true);
-            } catch (Exception e) {
-                connection.rollback(savepoint);
-                getLogger().error("Error running the Database populator >>> {} ", e);
-            }
-        } catch (SQLException e) {
-            getLogger().error("Error trying to set autocommit false >>> {}", e);
-        }
+        super.addScript(new ByteArrayResource(formattedScriptsToExecute(persistenceConfigurationProvider).toString().getBytes(Charset.forName(this.sqlScriptEncoding)),"Singular Schema Export Hibernate DDL + SQL Files"));
+        super.populate(connection);
     }
 
     /**
