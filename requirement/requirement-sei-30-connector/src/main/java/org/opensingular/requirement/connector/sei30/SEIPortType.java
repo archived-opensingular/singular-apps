@@ -20,7 +20,6 @@ import org.opensingular.requirement.connector.sei30.model.SimNao;
 import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
 import org.opensingular.requirement.connector.sei30.model.UnidadeSei;
 import org.opensingular.requirement.connector.sei30.ws.ArquivoExtensao;
-import org.opensingular.requirement.connector.sei30.ws.ArrayOfContato;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
@@ -163,6 +162,13 @@ public interface SEIPortType {
      * @return o valor de array of unidade
      */
     List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie);
+
+    /**
+     * Listar unidades.
+     *
+     * @return o valor de array of unidade
+     */
+    List<Unidade> listarUnidades();
 
     /**
      * Listar series.

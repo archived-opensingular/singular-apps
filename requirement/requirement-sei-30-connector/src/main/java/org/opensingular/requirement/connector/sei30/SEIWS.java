@@ -45,8 +45,6 @@ import org.opensingular.requirement.connector.sei30.ws.Serie;
 import org.opensingular.requirement.connector.sei30.ws.TipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.Unidade;
 import org.opensingular.requirement.connector.sei30.ws.Usuario;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import javax.annotation.Nullable;
 import javax.xml.ws.BindingProvider;
@@ -295,6 +293,17 @@ public class SEIWS implements SEIPortType, Loggable {
     public List<Unidade> listarUnidades(String idTipoProcedimento, String idSerie) {
         return seiPortType.listarUnidades(siglaSistema, identificacaoServico, idTipoProcedimento, idSerie).getItem();
     }
+
+    /**
+     * Listar unidades.
+     *
+     * @return o valor de array of unidade
+     */
+    @Override
+    public List<Unidade> listarUnidades() {
+        return seiPortType.listarUnidades(siglaSistema, identificacaoServico).getItem();
+    }
+
 
     /**
      * Listar series.
