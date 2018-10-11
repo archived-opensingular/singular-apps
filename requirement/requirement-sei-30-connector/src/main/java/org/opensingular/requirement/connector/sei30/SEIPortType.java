@@ -179,6 +179,13 @@ public interface SEIPortType {
     List<Serie> listarSeries(UnidadeSei unidade, String idTipoProcedimento);
 
     /**
+     * Listar series.
+     *
+     * @return o valor de array of serie
+     */
+    List<Serie> listarSeries();
+
+    /**
      * Excluir bloco.
      *
      * @param idBloco o(a) id bloco.

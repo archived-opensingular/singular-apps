@@ -320,6 +320,19 @@ public class SEIWS implements SEIPortType, Loggable {
         }
         return arrayOfSerie.getItem();
     }
+    /**
+     * Listar series.
+     *
+     * @return o valor de array of serie
+     */
+    @Override
+    public List<Serie> listarSeries() {
+        ArrayOfSerie arrayOfSerie = seiPortType.listarSeries(siglaSistema, identificacaoServico);
+        if (arrayOfSerie == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfSerie.getItem();
+    }
 
     /**
      * Excluir bloco.
