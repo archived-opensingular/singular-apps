@@ -325,6 +325,14 @@ public interface SEIPortType {
      */
     List<TipoProcedimento> listarTiposProcedimento(UnidadeSei unidade, String idSerie);
 
+    /**
+     * Listar tipos procedimento.
+     *
+     * @return o valor de array of tipo procedimento
+     */
+    List<TipoProcedimento> listarTiposProcedimento();
+
+
 
     /**
      * Consultar bloco

@@ -174,6 +174,22 @@ public interface SeiPortType {
                     String idSerie);
 
     /**
+     * Lista de tipos de processo disponiveis
+     *
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @return
+     *     returns ArrayOfTipoProcedimento
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public ArrayOfTipoProcedimento listarTiposProcedimento(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico);
+
+    /**
      * Lista de series disponiveis
      * 
      * @param identificacaoServico

@@ -562,6 +562,20 @@ public class SEIWS implements SEIPortType, Loggable {
     }
 
     /**
+     * Listar tipos procedimento.
+     *
+     * @return o valor de array of tipo procedimento
+     */
+    @Override
+    public List<TipoProcedimento> listarTiposProcedimento() {
+        ArrayOfTipoProcedimento arrayOfTipoProcedimento = seiPortType.listarTiposProcedimento(siglaSistema, identificacaoServico);
+        if (arrayOfTipoProcedimento == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfTipoProcedimento.getItem();
+    }
+
+    /**
      * Faz a conversão dos retornos de uma string
      * binária (0 ou 1) para um booleano.
      *
