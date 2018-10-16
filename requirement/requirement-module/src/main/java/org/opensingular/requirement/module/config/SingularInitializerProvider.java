@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.config;
 
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.commons.util.ObjectUtils;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 
 import java.lang.reflect.Modifier;
@@ -46,11 +47,7 @@ class SingularInitializerProvider {
             throw new SingularServerInitializerProviderException("Não é permitido possuir mais de uma implementação de " + SingularInitializer.class);
         }
         Class<? extends SingularInitializer> configClass = configs.get(0);
-        try {
-            return configClass.newInstance();
-        } catch (InstantiationException | IllegalAccessException ex) {
-            throw new SingularServerInitializerProviderException("Não foi possivel criar uma nova instancia de " + configClass.getName(), ex);
-        }
+        return ObjectUtils.newInstance(configClass);
     }
 
     private static List<Class<? extends SingularInitializer>> findAllInstantiableConfigs() {

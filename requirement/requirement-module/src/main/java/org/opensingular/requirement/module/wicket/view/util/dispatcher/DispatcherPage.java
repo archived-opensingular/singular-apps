@@ -286,7 +286,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        Optional<Class<? extends AbstractFormPage<?, ?>>> formPageClass = config.getFormPageClass();
+        Optional<Class<? extends AbstractFormPage>> formPageClass = config.getFormPageClass();
         if (formPageClass.isPresent()) {
             return formPageClass.get();
         } else {
