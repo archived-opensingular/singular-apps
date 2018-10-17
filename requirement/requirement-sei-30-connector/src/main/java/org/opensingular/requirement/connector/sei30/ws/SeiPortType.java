@@ -345,6 +345,52 @@ public interface SeiPortType {
                     String sinRetornarProcedimentosAnexados);
 
     /**
+     * Consulta de processos
+     *
+     * @param sinRetornarAndamentoGeracao
+     * @param sinRetornarUltimoAndamento
+     * @param siglaSistema
+     * @param sinRetornarProcedimentosRelacionados
+     * @param protocoloProcedimento
+     * @param sinRetornarAssuntos
+     * @param identificacaoServico
+     * @param sinRetornarUnidadesProcedimentoAberto
+     * @param sinRetornarAndamentoConclusao
+     * @param sinRetornarProcedimentosAnexados
+     * @param sinRetornarInteressados
+     * @param sinRetornarObservacoes
+     * @return
+     *     returns RetornoConsultaProcedimento
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public RetornoConsultaProcedimento consultarProcedimento(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico,
+            @WebParam(name = "ProtocoloProcedimento", partName = "ProtocoloProcedimento")
+                    String protocoloProcedimento,
+            @WebParam(name = "SinRetornarAssuntos", partName = "SinRetornarAssuntos")
+                    String sinRetornarAssuntos,
+            @WebParam(name = "SinRetornarInteressados", partName = "SinRetornarInteressados")
+                    String sinRetornarInteressados,
+            @WebParam(name = "SinRetornarObservacoes", partName = "SinRetornarObservacoes")
+                    String sinRetornarObservacoes,
+            @WebParam(name = "SinRetornarAndamentoGeracao", partName = "SinRetornarAndamentoGeracao")
+                    String sinRetornarAndamentoGeracao,
+            @WebParam(name = "SinRetornarAndamentoConclusao", partName = "SinRetornarAndamentoConclusao")
+                    String sinRetornarAndamentoConclusao,
+            @WebParam(name = "SinRetornarUltimoAndamento", partName = "SinRetornarUltimoAndamento")
+                    String sinRetornarUltimoAndamento,
+            @WebParam(name = "SinRetornarUnidadesProcedimentoAberto", partName = "SinRetornarUnidadesProcedimentoAberto")
+                    String sinRetornarUnidadesProcedimentoAberto,
+            @WebParam(name = "SinRetornarProcedimentosRelacionados", partName = "SinRetornarProcedimentosRelacionados")
+                    String sinRetornarProcedimentosRelacionados,
+            @WebParam(name = "SinRetornarProcedimentosAnexados", partName = "SinRetornarProcedimentosAnexados")
+                    String sinRetornarProcedimentosAnexados);
+
+    /**
      * Consulta de processos individuais por usuario interessado
      * 
      * @param identificacaoServico

@@ -98,6 +98,7 @@ public interface SEIPortType {
      */
     RetornoConsultaProcedimento consultarProcedimentoBasico(UnidadeSei unidade, String protocoloProcedimento);
 
+
     /**
      * Consultar procedimento.
      *
@@ -118,6 +119,38 @@ public interface SEIPortType {
                                                       SimNao sinRetornarAndamentoGeracao, SimNao sinRetornarAndamentoConclusao,
                                                       SimNao sinRetornarUltimoAndamento, SimNao sinRetornarUnidadesProcedimentoAberto,
                                                       SimNao sinRetornarProcedimentosRelacionados, SimNao sinRetornarProcedimentosAnexados);
+
+
+    /**
+     * Consultar procedimento.
+     *
+     * @param protocoloProcedimento
+     *            o(a) protocolo procedimento.
+     * @param sinRetornarAssuntos
+     *            o(a) sin retornar assuntos.
+     * @param sinRetornarInteressados
+     *            o(a) sin retornar interessados.
+     * @param sinRetornarObservacoes
+     *            o(a) sin retornar observacoes.
+     * @param sinRetornarAndamentoGeracao
+     *            o(a) sin retornar andamento geracao.
+     * @param sinRetornarAndamentoConclusao
+     *            o(a) sin retornar andamento conclusao.
+     * @param sinRetornarUltimoAndamento
+     *            o(a) sin retornar ultimo andamento.
+     * @param sinRetornarUnidadesProcedimentoAberto
+     *            o(a) sin retornar unidades procedimento aberto.
+     * @param sinRetornarProcedimentosRelacionados
+     *            o(a) sin retornar procedimentos relacionados.
+     * @param sinRetornarProcedimentosAnexados
+     *            o(a) sin retornar procedimentos anexados.
+     * @return o valor de retorno consulta procedimento
+     */
+    RetornoConsultaProcedimento consultarProcedimento(String protocoloProcedimento, SimNao sinRetornarAssuntos,
+                                                             SimNao sinRetornarInteressados, SimNao sinRetornarObservacoes,
+                                                             SimNao sinRetornarAndamentoGeracao, SimNao sinRetornarAndamentoConclusao,
+                                                             SimNao sinRetornarUltimoAndamento, SimNao sinRetornarUnidadesProcedimentoAberto,
+                                                             SimNao sinRetornarProcedimentosRelacionados, SimNao sinRetornarProcedimentosAnexados);
 
     /**
      * Atribuir processo.
