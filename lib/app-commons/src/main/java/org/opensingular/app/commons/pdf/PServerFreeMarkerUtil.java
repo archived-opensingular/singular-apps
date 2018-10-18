@@ -20,6 +20,8 @@ package org.opensingular.app.commons.pdf;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import freemarker.cache.ClassTemplateLoader;
 import freemarker.template.Configuration;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import freemarker.template.Version;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.form.SInstance;
@@ -32,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.util.HtmlUtils;
 
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -39,7 +42,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+import java.util.UUID;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -81,11 +86,29 @@ public class PServerFreeMarkerUtil implements Loggable {
     }
 
     public String doMergeWithFreemarker(String templateName, Map<String, Object> model) {
-
         if (model == null || templateName == null) {
             return StringUtils.EMPTY;
         }
+        try {
+            return merge(cfg.getTemplate(templateName), model);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new SingularFormException("Não foi possivel fazer o merge do template " + templateName, ex);
+        }
+    }
 
+    public String doMergeWithStringTemplate(String templateCode, Map<String, Object> model) {
+        Objects.requireNonNull(templateCode, "Template não pode ser null");
+        Objects.requireNonNull(model, "Model Não pode ser null");
+        try {
+            return merge(new Template(UUID.randomUUID().toString(), templateCode, cfg), model);
+        } catch (Exception ex) {
+            LOGGER.error(ex.getMessage(), ex);
+            throw new SingularFormException("Não foi possivel fazer o merge com o template infomado", ex);
+        }
+    }
+
+    private String merge(Template template, Map<String, Object> model) throws IOException, TemplateException {
         final StringWriter sw = new StringWriter();
 
         Predicate<Map.Entry<String, Object>> isInstance = (entry) -> Optional.ofNullable(entry)
@@ -98,19 +121,12 @@ public class PServerFreeMarkerUtil implements Loggable {
 
         Map<String, Object> pojos = model.entrySet()
                 .stream().filter(isInstance.negate())
-                .collect(HashMap::new, (m,v)->m.put(v.getKey(), v.getValue()), HashMap::putAll);
+                .collect(HashMap::new, (m, v) -> m.put(v.getKey(), v.getValue()), HashMap::putAll);
 
         final Map map = new ObjectMapper().convertValue(pojos, Map.class);
 
         map.putAll(instances);
-
-        try {
-            cfg.getTemplate(templateName).process(encode(map), sw, new FormObjectWrapper(false));
-        } catch (Exception ex) {
-            LOGGER.error(ex.getMessage(), ex);
-            throw new SingularFormException("Não foi possivel fazer o merge do template " + templateName, ex);
-        }
-
+        template.process(encode(map), sw, new FormObjectWrapper(false));
         return sw.toString();
     }
 
