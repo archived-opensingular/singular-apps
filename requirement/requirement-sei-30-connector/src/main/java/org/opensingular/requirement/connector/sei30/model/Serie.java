@@ -4,6 +4,11 @@ import java.io.Serializable;
 
 public class Serie implements Serializable {
 
+    public static final String DOC_INTERNO_EXTERNO = "T";
+    public static final String DOC_INTERNO = "I";
+    public static final String DOC_EXTERNO = "E";
+    public static final String FORMULARIO = "F";
+
     private String id;
     private String nome;
     private String aplicabilidade;
