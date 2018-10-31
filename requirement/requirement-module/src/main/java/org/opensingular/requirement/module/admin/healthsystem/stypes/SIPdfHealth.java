@@ -18,6 +18,8 @@ package org.opensingular.requirement.module.admin.healthsystem.stypes;
 
 import org.opensingular.form.SIComposite;
 
+import javax.annotation.Nonnull;
+
 public class SIPdfHealth extends SIComposite {
 
     public String getEndpoint() {
@@ -28,6 +30,7 @@ public class SIPdfHealth extends SIComposite {
         return getField(getType().htmlToExport).getValue();
     }
 
+    @Nonnull
     @Override
     public STypePdfHealth getType() {
         return (STypePdfHealth) super.getType();
