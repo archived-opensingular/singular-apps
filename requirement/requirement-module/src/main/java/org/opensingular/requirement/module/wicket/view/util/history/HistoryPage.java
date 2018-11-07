@@ -37,6 +37,7 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.core.renderer.NullFlowRenderer;
+import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
@@ -127,7 +128,6 @@ public class HistoryPage extends ServerTemplate {
                 protected byte[] getImageData(IResource.Attributes attributes) {
                     FlowInstance flowInstance = requirementService.loadRequirementInstance(requirementPK).getFlowInstance();
                     IFlowRenderer renderer = findFlowExecutionImageExtension()
-                        .map(it -> it.getRenderer())
                         .orElse(NullFlowRenderer.INSTANCE);
                     return renderer.generateHistoryPng(flowInstance);
                 }
@@ -146,11 +146,8 @@ public class HistoryPage extends ServerTemplate {
         return imageHistFlow;
     }
 
-    private Optional<FlowRendererProviderExtension> findFlowExecutionImageExtension() {
-        return SingularExtensionUtil.get()
-            .findExtensions(FlowRendererProviderExtension.class)
-            .stream()
-            .findFirst();
+    private Optional<IFlowRenderer> findFlowExecutionImageExtension() {
+        return RendererUtil.findRendererForUserDisplay();
     }
 
     protected AjaxLink<?> getBtnFechar() {

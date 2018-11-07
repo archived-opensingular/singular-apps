@@ -59,7 +59,9 @@ import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_DRIVER_DELEGATE;
 import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_JOBSTORE_ENABLED;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_QUARTZ_TABLE_PREFIX;
 
 
 public class SingularSchedulerBean extends SingularSchedulerAccessor implements FactoryBean<Scheduler>,
@@ -79,22 +81,21 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
             new ThreadLocal<DataSource>();
 
     public SingularSchedulerBean(DataSource dataSource) {
-        Properties quartzProperties = new Properties();
-        quartzProperties.setProperty("org.quartz.scheduler.instanceName", "SINGULARID");
-        quartzProperties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
+        Properties properties = new Properties();
+        properties.setProperty("org.quartz.scheduler.instanceName", "SingularFlowScheduler");
+        properties.setProperty("org.quartz.scheduler.instanceId", "AUTO");
         if (SingularProperties.get().isTrue(SINGULAR_QUARTZ_JOBSTORE_ENABLED)) {
-            quartzProperties.put("org.quartz.jobStore.useProperties", "false");
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
-            quartzProperties.put("org.quartz.jobStore.driverDelegateClass", "org.quartz.impl.jdbcjobstore.MSSQLDelegate");
-            quartzProperties.put("org.quartz.jobStore.tablePrefix", "DBSINGULAR.qrtz_");
-            quartzProperties.put("org.quartz.jobStore.isClustered", "true");
-            setQuartzProperties(quartzProperties);
+            properties.setProperty("org.quartz.jobStore.useProperties", "false");
+            properties.setProperty("org.quartz.jobStore.class", "org.quartz.impl.jdbcjobstore.JobStoreTX");
+            properties.setProperty("org.quartz.jobStore.driverDelegateClass", SingularProperties.getOpt(SINGULAR_QUARTZ_DRIVER_DELEGATE).orElse("org.quartz.impl.jdbcjobstore.StdJDBCDelegate"));
+            properties.setProperty("org.quartz.jobStore.tablePrefix", SingularProperties.getOpt(SINGULAR_QUARTZ_TABLE_PREFIX).orElse("QRTZ_"));
+            properties.setProperty("org.quartz.jobStore.isClustered", "true");
             setDataSource(dataSource);
             setOverwriteExistingJobs(true);
         } else {
-            quartzProperties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
+            properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");
         }
-
+        setQuartzProperties(properties);
     }
 
     /**
@@ -351,7 +352,8 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
      * Set whether to automatically start the scheduler after initialization.
      * <p>Default is "true"; set this to "false" to allow for manual startup.
      */
-    public void setAutoStartup(boolean autoStartup) {}
+    public void setAutoStartup(boolean autoStartup) {
+    }
 
     /**
      * Specify the phase in which this scheduler should be started and

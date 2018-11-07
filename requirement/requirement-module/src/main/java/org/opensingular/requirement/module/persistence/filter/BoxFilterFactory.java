@@ -40,18 +40,18 @@ public class BoxFilterFactory {
         return box.createBoxFilter()
                 .idUsuarioLogado(getIdUsuario())
                 .idPessoa(getIdPessoa())
-                .processesAbbreviation(getProcessesNames())
-                .typesNames(getFormNames());
+                .processesAbbreviation(getProcessAbbreviations())
+                .typesAbbreviations(getFormsAbbreviations());
     }
 
-    private List<String> getFormNames() {
-        return listMainFormsWithPermission().stream().map(FormDTO::getName).collect(Collectors.toList());
+    private List<String> getFormsAbbreviations() {
+        return listMainFormsWithPermission().stream().map(FormDTO::getAbbreviation).collect(Collectors.toList());
     }
 
-    private List<String> getProcessesNames() {
+    private List<String> getProcessAbbreviations() {
         return Flow.getDefinitions()
                 .stream()
-                .map(FlowDefinition::getName)
+                .map(FlowDefinition::getKey)
                 .collect(Collectors.toList());
     }
 

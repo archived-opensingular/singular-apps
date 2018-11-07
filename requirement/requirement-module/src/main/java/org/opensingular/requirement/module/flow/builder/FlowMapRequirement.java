@@ -20,6 +20,8 @@ import org.opensingular.flow.core.FlowMap;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.STask;
 
+import javax.annotation.Nonnull;
+
 /**
  * Representa uma {@link FlowMap} especilizada em requerimentos. Apresenta comportamentos e configurações
  * adicionais específicos de requerimentos.
@@ -33,7 +35,9 @@ public class FlowMapRequirement extends FlowMap {
     }
 
     @Override
-    protected STransitionRequirement newTransition(STask<?> origin, String name, STask<?> destination) {
+    @Nonnull
+    protected STransitionRequirement newTransition(@Nonnull STask<?> origin, @Nonnull String name,
+            @Nonnull STask<?> destination) {
         return new STransitionRequirement(origin, name, destination);
     }
 

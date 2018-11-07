@@ -35,6 +35,9 @@
             <testResource>
                 <filtering>false</filtering>
                 <directory>src/test/resources</directory>
+                <excludes>
+                    <exclude>**/*.properties</exclude>
+                </excludes>
             </testResource>
             <testResource>
                 <filtering>false</filtering>

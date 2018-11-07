@@ -16,25 +16,30 @@
 
 package org.opensingular.requirement.module.persistence.dao;
 
-import java.util.Map;
-import javax.inject.Named;
-import javax.transaction.Transactional;
-
+import org.hibernate.SessionFactory;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.opensingular.lib.support.persistence.SimpleDAO;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.util.Map;
+
 @Named
 public class HealthSystemDAO extends SimpleDAO {
 
-	@Transactional
-	public Map<String, ClassMetadata> getAllDbMetaData(){		
-		return sessionFactory.getAllClassMetadata();
-	}
-	
-	@Transactional
-	public String getHibernateDialect(){
-		return ((SessionFactoryImpl)sessionFactory).getDialect().toString();
-	}
+    @Inject
+    private SessionFactory sessionFactory;
+
+    @Transactional
+    public Map<String, ClassMetadata> getAllDbMetaData() {
+        return sessionFactory.getAllClassMetadata();
+    }
+
+    @Transactional
+    public String getHibernateDialect() {
+        return ((SessionFactoryImpl) sessionFactory).getDialect().toString();
+    }
 
 }

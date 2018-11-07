@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.spring;
 
+import org.hibernate.SessionFactory;
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
 import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
@@ -54,6 +55,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.support.persistence.SessionLocator;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
 import org.opensingular.requirement.module.cache.SingularKeyGenerator;
@@ -499,7 +501,7 @@ public class SingularDefaultBeanFactory {
     public IServerContext serverContext(HttpServletRequest httpServletRequest, WorkspaceRegistry workspaceRegistry) {
         if (httpServletRequest != null) {
             String contextPath = httpServletRequest.getContextPath();
-            String context = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
+            String context     = httpServletRequest.getPathInfo().replaceFirst(contextPath, "");
             for (IServerContext ctx : workspaceRegistry.getContexts()) {
                 if (context.startsWith(ctx.getSettings().getUrlPath())) {
                     return ctx;
@@ -507,6 +509,11 @@ public class SingularDefaultBeanFactory {
             }
         }
         return null;
+    }
+
+    @Bean
+    public SessionLocator sessionLocator(SessionFactory sessionFactory) {
+        return sessionFactory::getCurrentSession;
     }
 
 }

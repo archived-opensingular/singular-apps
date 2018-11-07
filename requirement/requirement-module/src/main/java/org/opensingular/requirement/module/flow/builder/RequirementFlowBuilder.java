@@ -144,7 +144,8 @@ public class RequirementFlowBuilder extends
          * com o nome informado.
          */
         @Override
-        public BuilderTransitionRequirement go(String actionName, ITaskDefinition taskRefDestiny) {
+        @Nonnull
+        public BuilderTransitionRequirement go(@Nonnull String actionName, @Nonnull ITaskDefinition taskRefDestiny) {
             return (BuilderTransitionRequirement) super.go(actionName, taskRefDestiny);
         }
 
@@ -152,7 +153,8 @@ public class RequirementFlowBuilder extends
          * Cria uma nova transição da task atual para a task destino informada
          */
         @Override
-        public BuilderTransitionRequirement go(ITaskDefinition taskRefDestiny) {
+        @Nonnull
+        public BuilderTransitionRequirement go(@Nonnull ITaskDefinition taskRefDestiny) {
             return (BuilderTransitionRequirement) super.go(taskRefDestiny);
         }
 
