@@ -344,7 +344,7 @@ public abstract class RequirementService implements Loggable {
     }
 
 
-    public <RI extends RequirementInstance> void saveRequirementHistory(RequirementInstance requirement, List<FormEntity> newEntities) {
+    public <RI extends RequirementInstance> void saveRequirementHistory(RI requirement, List<FormEntity> newEntities) {
 
         Optional<TaskInstance> taskInstance = requirement.getFlowInstance().getTasksNewerFirstAsStream()
                 .filter(i -> i.isFinished() && !i.getFlowTaskOrException().isEnd())
