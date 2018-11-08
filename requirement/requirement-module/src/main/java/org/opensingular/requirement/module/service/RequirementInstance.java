@@ -63,8 +63,6 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     private transient FlowInstance flowInstance;
 
-    private transient SIComposite mainForm;
-
     public RequirementInstance(RequirementEntity requirementEntity, RD requirementDefinition) {
         this.requirementEntity = Objects.requireNonNull(requirementEntity);
         this.requirementDefinition = requirementDefinition;
