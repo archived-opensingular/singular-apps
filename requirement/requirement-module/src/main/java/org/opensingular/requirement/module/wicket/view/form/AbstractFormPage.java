@@ -640,6 +640,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
             onAfterSend(ajxrt, sm, sendedFeedback);
         } catch (Exception ex) {
+            getLogger().error(ex.getMessage(), ex);
             //recarrega a petição novamente
             getRequirementModel().setObject(requirementService.loadRequirementInstance(requirement.getCod()));
             //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
