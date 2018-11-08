@@ -88,7 +88,7 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
         QFormTypeEntity        formTypeEntity        = QFormTypeEntity.formTypeEntity;
         QFormVersionEntity     formVersionEntity     = QFormVersionEntity.formVersionEntity;
 
-        return Optional.ofNullable(new HibernateQueryFactory(getSession())
+        return Optional.ofNullable(new JPAQueryFactory(getSession())
                 .from(formRequirementEntity)
                 .join(formRequirementEntity.requirement, requirementEntity)
                 .join(formRequirementEntity.currentDraftEntity, draftEntity)

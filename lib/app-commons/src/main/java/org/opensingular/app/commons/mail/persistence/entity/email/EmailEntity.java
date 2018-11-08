@@ -15,13 +15,14 @@
  */
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import org.hibernate.annotations.ForeignKey;
+
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -38,10 +39,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 @Entity
 @SequenceGenerator(name = EmailEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_EMAIL", schema = Constants.SCHEMA)
