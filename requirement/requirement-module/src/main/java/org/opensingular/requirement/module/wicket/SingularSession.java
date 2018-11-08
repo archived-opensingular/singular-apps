@@ -24,6 +24,7 @@ import org.apache.wicket.request.Response;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -76,7 +77,7 @@ public class SingularSession extends AuthenticatedWebSession {
     }
 
     public <T extends SingularRequirementUserDetails> T getUserDetails() {
-        return ApplicationContextProvider.get().getBean((Class<T>) SingularRequirementUserDetails.class);
+        return (T) ApplicationContextProvider.get().getBean(UserDetailsProvider.class).get();
     }
 
     public ModuleEntity getCategoriaSelecionada() {
