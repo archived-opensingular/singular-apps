@@ -59,3 +59,8 @@ out/**
 # Aid Diagramas      #
 ######################
 **/*.ucls
+
+# Outros             #
+######################
+buildall\.sh
+

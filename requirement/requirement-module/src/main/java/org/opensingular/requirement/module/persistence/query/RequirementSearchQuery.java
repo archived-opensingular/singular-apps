@@ -16,24 +16,25 @@
 
 package org.opensingular.requirement.module.persistence.query;
 
+import com.querydsl.core.BooleanBuilder;
+import com.querydsl.core.types.Expression;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.Predicate;
+import com.querydsl.core.types.dsl.CaseBuilder;
+import com.querydsl.jpa.impl.JPAQuery;
+import org.hibernate.Session;
+import org.hibernate.query.Query;
+import org.hibernate.transform.AliasToEntityMapResultTransformer;
+import org.opensingular.lib.commons.lambda.IFunction;
+import org.opensingular.requirement.module.persistence.filter.FilterToken;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import com.querydsl.core.BooleanBuilder;
-import com.querydsl.core.types.Expression;
-import com.querydsl.core.types.OrderSpecifier;
-import com.querydsl.core.types.Predicate;
-import com.querydsl.core.types.dsl.CaseBuilder;
-import com.querydsl.jpa.hibernate.HibernateQuery;
-import org.hibernate.Session;
-import org.hibernate.transform.AliasToEntityMapResultTransformer;
-import org.opensingular.lib.commons.lambda.IFunction;
-import org.opensingular.requirement.module.persistence.filter.FilterToken;
-
-public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> {
+public class RequirementSearchQuery extends JPAQuery<Map<String, Object>> {
     private final List<Expression<?>>                selects               = new ArrayList<>();
     private final List<IFunction<String, Predicate>> quickFilterConditions = new ArrayList<>();
 
@@ -66,6 +67,7 @@ public class RequirementSearchQuery extends HibernateQuery<Map<String, Object>> 
     public List<Map<String, Serializable>> fetchMap() {
         return select(selects.toArray(new Expression<?>[]{}))
                 .createQuery()
+                .unwrap(Query.class)
                 .setResultTransformer(AliasToEntityMapResultTransformer.INSTANCE)
                 .list();
     }

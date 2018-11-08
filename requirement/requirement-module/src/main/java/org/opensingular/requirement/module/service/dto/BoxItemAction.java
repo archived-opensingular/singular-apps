@@ -16,17 +16,17 @@
 
 package org.opensingular.requirement.module.service.dto;
 
-import java.io.Serializable;
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.lib.commons.util.ObjectUtils;
 import org.opensingular.requirement.module.flow.controllers.IController;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.jackson.IconJsonDeserializer;
 import org.opensingular.requirement.module.jackson.IconJsonSerializer;
+
+import java.io.Serializable;
 
 public class BoxItemAction implements Serializable {
 
@@ -152,12 +152,8 @@ public class BoxItemAction implements Serializable {
 
     @SuppressWarnings("unchecked")
     @JsonIgnore
-    public Class<IController> getController() {
-        try {
-            return (Class<IController>) Class.forName(controllerClassName);
-        } catch (ClassNotFoundException e) {
-            throw SingularServerException.rethrow(e.getMessage(), e);
-        }
+    public Class<? extends IController> getController() {
+        return ObjectUtils.loadClass(controllerClassName, IController.class);
     }
 
     public String getControllerClassName() {

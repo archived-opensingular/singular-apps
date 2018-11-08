@@ -21,6 +21,7 @@ import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;

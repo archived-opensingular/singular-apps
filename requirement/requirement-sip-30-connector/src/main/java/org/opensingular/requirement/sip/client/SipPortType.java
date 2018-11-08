@@ -22,6 +22,7 @@ import javax.jws.WebParam;
 import javax.jws.WebResult;
 import javax.jws.WebService;
 import javax.jws.soap.SOAPBinding;
+import javax.xml.bind.annotation.XmlSeeAlso;
 
 
 /**
@@ -32,6 +33,9 @@ import javax.jws.soap.SOAPBinding;
  */
 @WebService(name = "sipPortType", targetNamespace = "sipns")
 @SOAPBinding(style = SOAPBinding.Style.RPC)
+@XmlSeeAlso({
+    ObjectFactory.class
+})
 public interface SipPortType {
 
 
@@ -55,5 +59,50 @@ public interface SipPortType {
         String sigla,
         @WebParam(name = "Senha", partName = "Senha")
         String senha);
+
+    /**
+     * 
+     * @param senha
+     * @param siglaOrgaoSistema
+     * @param sigla
+     * @param idOrgao
+     * @param siglaSistema
+     * @return
+     *     returns org.opensingular.sip.RetornoAutenticarCompleto
+     */
+    @WebMethod(action = "sipnsAction")
+    @WebResult(name = "returnAutenticarCompleto", partName = "returnAutenticarCompleto")
+    public RetornoAutenticarCompleto autenticarCompleto(
+        @WebParam(name = "IdOrgao", partName = "IdOrgao")
+        String idOrgao,
+        @WebParam(name = "Sigla", partName = "Sigla")
+        String sigla,
+        @WebParam(name = "Senha", partName = "Senha")
+        String senha,
+        @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+        String siglaSistema,
+        @WebParam(name = "SiglaOrgaoSistema", partName = "SiglaOrgaoSistema")
+        String siglaOrgaoSistema);
+
+    /**
+     * 
+     * @param idSistema
+     * @param idUsuario
+     * @param hashAgente
+     * @param idLogin
+     * @return
+     *     returns org.opensingular.sip.RetornoValidarLogin
+     */
+    @WebMethod(action = "sipnsAction")
+    @WebResult(name = "returnLogin", partName = "returnLogin")
+    public RetornoValidarLogin validarLogin(
+        @WebParam(name = "IdLogin", partName = "IdLogin")
+        String idLogin,
+        @WebParam(name = "IdSistema", partName = "IdSistema")
+        long idSistema,
+        @WebParam(name = "IdUsuario", partName = "IdUsuario")
+        long idUsuario,
+        @WebParam(name = "HashAgente", partName = "HashAgente")
+        String hashAgente);
 
 }

@@ -68,7 +68,7 @@ public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> e
      * the transition name Analisar Outorga has java identity equals to analisarOutorga, creating the resource key
      * label.button.confirm.analisarOutorga=Confirmar Analise, will override the button label.
      *
-     * @see SingularUtil#convertToJavaIdentity(String, boolean)
+     * @see SingularUtil#convertToJavaIdentifier(String)
      * @see org.apache.wicket.resource.loader.IStringResourceLoader
      * @see <a href='https://ci.apache.org/projects/wicket/guide/6.x/guide/i18n.html'>Internationalization with Wicket</a>
      *
@@ -79,7 +79,7 @@ public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> e
         IModel<? extends SInstance> formInstance = getFormPage().getFormInstance();
         ViewMode viewMode = getFormPage().getViewMode(getFormPage().getConfig());
 
-        String transitionButtonLabel= "label.button.confirm."+ SingularUtil.convertToJavaIdentity(transition, true);
+        String transitionButtonLabel= "label.button.confirm."+ SingularUtil.convertToJavaIdentifier(transition);
         String defaultButtonLabelWhenNull = getString("label.button.confirm", null, "Confirmar");
 
         FlowConfirmButton<RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal, validation);

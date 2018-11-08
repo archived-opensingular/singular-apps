@@ -19,6 +19,7 @@ package org.opensingular.requirement.module.wicket.view.util;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.commons.util.ObjectUtils;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPageExecutionContext;
@@ -162,12 +163,12 @@ public class ActionContext implements Serializable, Loggable {
         return ParameterHttpSerializer.encode(params);
     }
 
-    public Optional<Class<? extends AbstractFormPage<?>>> getFormPageClass() {
+    public Optional<Class<? extends AbstractFormPage>> getFormPageClass() {
         String formPageClassName = params.get(FORM_PAGE_CLASS);
         if (formPageClassName != null) {
             try {
-                return Optional.ofNullable((Class<? extends AbstractFormPage<?>>) Class.forName(formPageClassName));
-            } catch (ClassNotFoundException e) {
+                return Optional.of(ObjectUtils.loadClass(formPageClassName, AbstractFormPage.class));
+            } catch (Exception e) {
                 getLogger().info("Nenhuma classe fornecida", e);
             }
         }

@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.connector.sei30;
 
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.WSClientSafeWrapper;
 import org.opensingular.requirement.connector.sei30.model.SimNao;
 import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
@@ -27,8 +28,10 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfProcedimentoRelacionado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfSerie;
+import org.opensingular.requirement.connector.sei30.ws.ArrayOfString;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfTipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfUsuario;
+import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
 import org.opensingular.requirement.connector.sei30.ws.RetornoConsultaBloco;
@@ -42,12 +45,12 @@ import org.opensingular.requirement.connector.sei30.ws.Serie;
 import org.opensingular.requirement.connector.sei30.ws.TipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.Unidade;
 import org.opensingular.requirement.connector.sei30.ws.Usuario;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import javax.xml.ws.BindingProvider;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 
 /**
@@ -56,12 +59,11 @@ import java.util.List;
  * ao SEI, visto que esta classe não é gerada, podem ser criados
  * diversos métodos para facilitar o desenvolvimento.
  */
-public class SEIWS implements SEIPortType {
+public class SEIWS implements SEIPortType, Loggable {
 
     private final SeiPortType seiPortType;
     private final String      siglaSistema;
     private final String      identificacaoServico;
-    private static final Logger logger = LoggerFactory.getLogger(SEIWS.class);
 
     /**
      * Instancia um novo objeto SEIWS delegate.
@@ -220,6 +222,44 @@ public class SEIWS implements SEIPortType {
     }
 
     /**
+     * Consultar procedimento.
+     *
+     * @param protocoloProcedimento
+     *            o(a) protocolo procedimento.
+     * @param sinRetornarAssuntos
+     *            o(a) sin retornar assuntos.
+     * @param sinRetornarInteressados
+     *            o(a) sin retornar interessados.
+     * @param sinRetornarObservacoes
+     *            o(a) sin retornar observacoes.
+     * @param sinRetornarAndamentoGeracao
+     *            o(a) sin retornar andamento geracao.
+     * @param sinRetornarAndamentoConclusao
+     *            o(a) sin retornar andamento conclusao.
+     * @param sinRetornarUltimoAndamento
+     *            o(a) sin retornar ultimo andamento.
+     * @param sinRetornarUnidadesProcedimentoAberto
+     *            o(a) sin retornar unidades procedimento aberto.
+     * @param sinRetornarProcedimentosRelacionados
+     *            o(a) sin retornar procedimentos relacionados.
+     * @param sinRetornarProcedimentosAnexados
+     *            o(a) sin retornar procedimentos anexados.
+     * @return o valor de retorno consulta procedimento
+     */
+    @Override
+    public RetornoConsultaProcedimento consultarProcedimento(String protocoloProcedimento, SimNao sinRetornarAssuntos,
+                                                             SimNao sinRetornarInteressados, SimNao sinRetornarObservacoes,
+                                                             SimNao sinRetornarAndamentoGeracao, SimNao sinRetornarAndamentoConclusao,
+                                                             SimNao sinRetornarUltimoAndamento, SimNao sinRetornarUnidadesProcedimentoAberto,
+                                                             SimNao sinRetornarProcedimentosRelacionados, SimNao sinRetornarProcedimentosAnexados) {
+
+        return seiPortType.consultarProcedimento(siglaSistema, identificacaoServico, protocoloProcedimento, sinRetornarAssuntos.getCodigo(),
+                sinRetornarInteressados.getCodigo(), sinRetornarObservacoes.getCodigo(), sinRetornarAndamentoGeracao.getCodigo(),
+                sinRetornarAndamentoConclusao.getCodigo(), sinRetornarUltimoAndamento.getCodigo(), sinRetornarUnidadesProcedimentoAberto.getCodigo(),
+                sinRetornarProcedimentosRelacionados.getCodigo(), sinRetornarProcedimentosAnexados.getCodigo());
+    }
+
+    /**
      * Atribuir processo.
      *
      * @param protocoloProcedimento
@@ -293,6 +333,17 @@ public class SEIWS implements SEIPortType {
     }
 
     /**
+     * Listar unidades.
+     *
+     * @return o valor de array of unidade
+     */
+    @Override
+    public List<Unidade> listarUnidades() {
+        return seiPortType.listarUnidades(siglaSistema, identificacaoServico).getItem();
+    }
+
+
+    /**
      * Listar series.
      *
      * @param idTipoProcedimento
@@ -302,6 +353,19 @@ public class SEIWS implements SEIPortType {
     @Override
     public List<Serie> listarSeries(UnidadeSei unidade, String idTipoProcedimento) {
         ArrayOfSerie arrayOfSerie = seiPortType.listarSeries(siglaSistema, identificacaoServico, unidade.getId(), idTipoProcedimento);
+        if (arrayOfSerie == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfSerie.getItem();
+    }
+    /**
+     * Listar series.
+     *
+     * @return o valor de array of serie
+     */
+    @Override
+    public List<Serie> listarSeries() {
+        ArrayOfSerie arrayOfSerie = seiPortType.listarSeries(siglaSistema, identificacaoServico);
         if (arrayOfSerie == null) {
             return Collections.emptyList();
         }
@@ -549,6 +613,20 @@ public class SEIWS implements SEIPortType {
     }
 
     /**
+     * Listar tipos procedimento.
+     *
+     * @return o valor de array of tipo procedimento
+     */
+    @Override
+    public List<TipoProcedimento> listarTiposProcedimento() {
+        ArrayOfTipoProcedimento arrayOfTipoProcedimento = seiPortType.listarTiposProcedimento(siglaSistema, identificacaoServico);
+        if (arrayOfTipoProcedimento == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfTipoProcedimento.getItem();
+    }
+
+    /**
      * Faz a conversão dos retornos de uma string
      * binária (0 ou 1) para um booleano.
      *
@@ -574,6 +652,11 @@ public class SEIWS implements SEIPortType {
 		return seiPortType.cancelarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento, motivo);
 
 	}
+
+    @Override
+    public List<Contato> listarContatos(@Nullable UnidadeSei unidade, String idTipoContato, String sigla) {
+            return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
+    }
 
 
 }

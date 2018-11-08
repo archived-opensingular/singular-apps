@@ -18,6 +18,7 @@ package org.opensingular.requirement.module.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Application;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -80,7 +81,6 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -124,7 +124,7 @@ public abstract class RequirementService implements Loggable {
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
-    private Provider<SingularRequirementUserDetails> singularUserDetails;
+    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
 
     @Inject
     private FormTypeService formTypeService;

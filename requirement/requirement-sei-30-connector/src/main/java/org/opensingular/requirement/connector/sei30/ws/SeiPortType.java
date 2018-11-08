@@ -136,6 +136,22 @@ public interface SeiPortType {
                     String idSerie);
 
     /**
+     * Lista de unidades disponiveis
+     *
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @return
+     *     returns ArrayOfUnidade
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public ArrayOfUnidade listarUnidades(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico);
+
+    /**
      * Lista de tipos de processo disponiveis
      * 
      * @param identificacaoServico
@@ -158,6 +174,22 @@ public interface SeiPortType {
                     String idSerie);
 
     /**
+     * Lista de tipos de processo disponiveis
+     *
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @return
+     *     returns ArrayOfTipoProcedimento
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public ArrayOfTipoProcedimento listarTiposProcedimento(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico);
+
+    /**
      * Lista de series disponiveis
      * 
      * @param identificacaoServico
@@ -178,6 +210,22 @@ public interface SeiPortType {
                     String idUnidade,
             @WebParam(name = "IdTipoProcedimento", partName = "IdTipoProcedimento")
                     String idTipoProcedimento);
+
+    /**
+     * Lista de series disponiveis
+     *
+     * @param identificacaoServico
+     * @param siglaSistema
+     * @return
+     *     returns ArrayOfSerie
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public ArrayOfSerie listarSeries(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico);
 
     /**
      * Lista de contatos
@@ -275,6 +323,52 @@ public interface SeiPortType {
                     String identificacaoServico,
             @WebParam(name = "IdUnidade", partName = "IdUnidade")
                     String idUnidade,
+            @WebParam(name = "ProtocoloProcedimento", partName = "ProtocoloProcedimento")
+                    String protocoloProcedimento,
+            @WebParam(name = "SinRetornarAssuntos", partName = "SinRetornarAssuntos")
+                    String sinRetornarAssuntos,
+            @WebParam(name = "SinRetornarInteressados", partName = "SinRetornarInteressados")
+                    String sinRetornarInteressados,
+            @WebParam(name = "SinRetornarObservacoes", partName = "SinRetornarObservacoes")
+                    String sinRetornarObservacoes,
+            @WebParam(name = "SinRetornarAndamentoGeracao", partName = "SinRetornarAndamentoGeracao")
+                    String sinRetornarAndamentoGeracao,
+            @WebParam(name = "SinRetornarAndamentoConclusao", partName = "SinRetornarAndamentoConclusao")
+                    String sinRetornarAndamentoConclusao,
+            @WebParam(name = "SinRetornarUltimoAndamento", partName = "SinRetornarUltimoAndamento")
+                    String sinRetornarUltimoAndamento,
+            @WebParam(name = "SinRetornarUnidadesProcedimentoAberto", partName = "SinRetornarUnidadesProcedimentoAberto")
+                    String sinRetornarUnidadesProcedimentoAberto,
+            @WebParam(name = "SinRetornarProcedimentosRelacionados", partName = "SinRetornarProcedimentosRelacionados")
+                    String sinRetornarProcedimentosRelacionados,
+            @WebParam(name = "SinRetornarProcedimentosAnexados", partName = "SinRetornarProcedimentosAnexados")
+                    String sinRetornarProcedimentosAnexados);
+
+    /**
+     * Consulta de processos
+     *
+     * @param sinRetornarAndamentoGeracao
+     * @param sinRetornarUltimoAndamento
+     * @param siglaSistema
+     * @param sinRetornarProcedimentosRelacionados
+     * @param protocoloProcedimento
+     * @param sinRetornarAssuntos
+     * @param identificacaoServico
+     * @param sinRetornarUnidadesProcedimentoAberto
+     * @param sinRetornarAndamentoConclusao
+     * @param sinRetornarProcedimentosAnexados
+     * @param sinRetornarInteressados
+     * @param sinRetornarObservacoes
+     * @return
+     *     returns RetornoConsultaProcedimento
+     */
+    @WebMethod(action = "SeiAction")
+    @WebResult(name = "parametros", partName = "parametros")
+    public RetornoConsultaProcedimento consultarProcedimento(
+            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
+                    String siglaSistema,
+            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
+                    String identificacaoServico,
             @WebParam(name = "ProtocoloProcedimento", partName = "ProtocoloProcedimento")
                     String protocoloProcedimento,
             @WebParam(name = "SinRetornarAssuntos", partName = "SinRetornarAssuntos")

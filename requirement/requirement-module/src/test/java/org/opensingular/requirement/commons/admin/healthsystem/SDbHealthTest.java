@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
@@ -57,8 +58,10 @@ public class SDbHealthTest extends SingularCommonsBaseTest {
         reachDbPanel();
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonDB").isNotNull().getTarget(), "click");
 
-        SInstance panelDB = tester.getAssertionsInstance().getTarget();
-        Assert.assertEquals(0, ((SIList) (((SIComposite) panelDB).getAllFields().get(0))).get(0).getValidationErrors().size());
+        SIComposite panelDB = (SIComposite) tester.getAssertionsInstance().getTarget();
+        SIList siList = (SIList) (panelDB.getAllFields().get(0));
+
+        Assert.assertEquals(0, siList.size());
     }
 
 }

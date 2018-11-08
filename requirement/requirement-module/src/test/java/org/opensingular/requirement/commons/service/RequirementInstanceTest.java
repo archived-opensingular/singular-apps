@@ -19,6 +19,7 @@
 package org.opensingular.requirement.commons.service;
 
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
@@ -26,21 +27,32 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
+import org.opensingular.lib.commons.context.SingularContextSetup;
+import org.opensingular.lib.commons.context.SingularSingletonStrategy;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.singular.pet.module.foobar.stuff.FOOFlowWithTransition;
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
+import org.springframework.context.ApplicationContext;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+@TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
     @Inject
     private DefaultRequirementService requirementService;
 
+
     @Test
+    @WithUserDetails("edgar.fabiano")
     @Transactional
     public void testSomeFunctions() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();

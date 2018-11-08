@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.persistence.dao.form;
 
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.criterion.Order;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
@@ -119,7 +119,7 @@ public class FormRequirementDAO extends BaseDAO<FormRequirementEntity, Long> {
     public FormVersionEntity findPreviousVersion(@Nonnull Long formVersionCod) {
         QFormVersionEntity qAllFormVersion     = QFormVersionEntity.formVersionEntity;
         QFormVersionEntity qCurrentFormVersion = QFormVersionEntity.formVersionEntity;
-        return new HibernateQueryFactory(getSession())
+        return new JPAQueryFactory(getSession())
                 .from(qAllFormVersion)
                 .where(qAllFormVersion.formEntity
                         .eq(JPAExpressions

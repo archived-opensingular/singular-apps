@@ -26,7 +26,7 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.exception.RequirementConcurrentModificationException;
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
 public class FlowConfirmButton<RI extends RequirementInstance> extends SingularSaveButton implements Loggable {
 
