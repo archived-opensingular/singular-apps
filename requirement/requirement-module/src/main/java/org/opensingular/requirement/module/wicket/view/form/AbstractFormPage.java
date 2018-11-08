@@ -716,6 +716,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
                     throw new SingularServerException("O RequirementSender não foi configurado corretamente");
                 }
             } catch (Exception ex) {
+                getLogger().error(ex.getMessage(), ex);
                 //recarrega a petição novamente
                 getRequirementModel().setObject(requirementService.getRequirement(requirement.getCod()));
                 //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
