@@ -15,17 +15,6 @@
  */
 package org.opensingular.app.commons.mail.service.dto;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.SetMultimap;
@@ -37,6 +26,17 @@ import org.opensingular.form.io.HashUtil;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.handlers.FileSystemAttachmentRef;
 
+import javax.annotation.Nullable;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 public class Email {
@@ -54,6 +54,8 @@ public class Email {
     private Date creationDate;
 
     private String aliasFrom;
+
+    private String moduleCod;
     
     public Email() {
     }
@@ -62,7 +64,16 @@ public class Email {
         this.subject = subject;
         return this;
     }
-    
+
+    /**
+     * @param moduleCod This identifier must be the same of <code>ModuleEntity.cod</code>
+     * @return <code>this</code>
+     */
+    public Email withModuleCod(@Nullable String moduleCod) {
+        this.moduleCod = moduleCod;
+        return this;
+    }
+
     public Email withContent(String content) {
         this.content = content;
         return this;
@@ -124,6 +135,10 @@ public class Email {
     
     public String getContent() {
         return content;
+    }
+
+    public String getModuleCod() {
+        return moduleCod;
     }
     
     public List<Addressee> getAllRecipients(){

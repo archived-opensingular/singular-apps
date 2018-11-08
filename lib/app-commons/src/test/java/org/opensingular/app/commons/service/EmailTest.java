@@ -79,7 +79,7 @@ public class EmailTest extends SpringBaseTest {
     @Rollback
     public void testListPending() {
         generateMockEmailAddresseEntitties();
-        List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 10);
+        List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 10, null);
 
         Assert.assertEquals(2, list.size());
     }
@@ -87,7 +87,7 @@ public class EmailTest extends SpringBaseTest {
     @Test
     @Rollback
     public void testSentMarked() {
-        List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 1);
+        List<Email.Addressee> list = emailPersistenceService.listPendingRecipients(0, 1, null);
 
         Email.Addressee addressee = list.get(0);
 
