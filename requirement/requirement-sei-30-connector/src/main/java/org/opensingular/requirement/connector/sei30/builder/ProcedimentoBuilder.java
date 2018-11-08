@@ -46,9 +46,8 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de tipo procedimento.
-     * 
-     * @param tipoProcedimento
-     *            o(a) value.
+     *
+     * @param tipoProcedimento o(a) value.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setTipoProcedimento(TipoProcedimento tipoProcedimento) {
@@ -58,9 +57,8 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de especificacao.
-     * 
-     * @param value
-     *            o(a) value.
+     *
+     * @param value o(a) value.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setEspecificacao(String value) {
@@ -70,9 +68,8 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de assuntos.
-     * 
-     * @param assuntos
-     *            o(a) assuntos.
+     *
+     * @param assuntos o(a) assuntos.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setAssuntos(AssuntoSei... assuntos) {
@@ -87,9 +84,11 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de interessados.
-     * 
-     * @param interessados
-     *            o(a) interessados.
+     *
+     * @param interessados o(a) interessados.
+     *                     <p> Os interessados são os nomes dos usuários,não é o login, é o nome.
+     *                     Caso o interessado não tenha cadastro na base, será realizado um cadastro temporario para o nome do interessado.
+     *                     </p>
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setInteressados(String... interessados) {
@@ -108,9 +107,8 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de observacao.
-     * 
-     * @param value
-     *            o(a) value.
+     *
+     * @param value o(a) value.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setObservacao(String value) {
@@ -120,9 +118,8 @@ public class ProcedimentoBuilder {
 
     /**
      * Atualiza o novo valor de nivel acesso.
-     * 
-     * @param nivelAcesso
-     *            o(a) nivel acesso.
+     *
+     * @param nivelAcesso o(a) nivel acesso.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setNivelAcesso(NivelAcesso nivelAcesso) {
@@ -132,7 +129,7 @@ public class ProcedimentoBuilder {
 
     /**
      * Cria o procedimento.
-     * 
+     *
      * @return o valor de procedimento
      */
     public Procedimento createProcedimento() {

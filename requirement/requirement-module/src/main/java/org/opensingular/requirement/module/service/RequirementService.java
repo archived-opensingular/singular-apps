@@ -18,6 +18,7 @@ package org.opensingular.requirement.module.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Application;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -64,13 +65,11 @@ import org.opensingular.requirement.module.spring.security.RequirementAuthMetada
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
-import javax.inject.Provider;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Collections;
@@ -118,7 +117,7 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
-    private Provider<SingularRequirementUserDetails> singularUserDetails;
+    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
 
     /**
      * FOR INTERNAL USE ONLY,
@@ -189,8 +188,8 @@ public abstract class RequirementService<RE extends RequirementEntity, RI extend
      * @param requirement
      */
     protected void configureApplicant(RI requirement) {
-        UserDetails userDetails = singularUserDetails.get();
-        if (userDetails instanceof SingularRequirementUserDetails) {
+        SingularRequirementUserDetails userDetails = singularUserDetails.get();
+        if (userDetails != null) {
             ApplicantEntity p;
             p = applicantDAO.findApplicantByExternalId(userDetails.getUsername());
             if (p == null) {

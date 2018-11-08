@@ -49,8 +49,8 @@ import org.springframework.context.annotation.FilterType;
 import org.springframework.core.io.Resource;
 import org.springframework.jdbc.datasource.init.DataSourceInitializer;
 import org.springframework.jdbc.datasource.init.ResourceDatabasePopulator;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
+import org.springframework.orm.hibernate5.HibernateTransactionManager;
+import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import javax.sql.DataSource;
@@ -214,7 +214,10 @@ public class ApplicationContextConfiguration implements Loggable {
         return new SingularSchedulerBean(dataSource);
     }
 
-
+    @Bean
+    public SessionLocator sessionProvider(SessionFactory sessionFactory){
+        return () -> sessionFactory.getCurrentSession();
+    }
 
 }
 

@@ -416,7 +416,7 @@ eplicarUsuarioRequest
 
   <wsdl:service name="sipService">
     <wsdl:port name="sipPortType" binding="tns:sipBinding">
-      <soap:address location="http://treinamentosei3singular.antaq.gov.br/sip/ws/SipWS.php"/>
+      <soap:address location="http://sei/sip/ws/SipWS.php"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

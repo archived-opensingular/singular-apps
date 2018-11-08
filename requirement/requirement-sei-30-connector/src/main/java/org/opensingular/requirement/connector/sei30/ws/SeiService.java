@@ -45,7 +45,7 @@ public class SeiService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = Thread.currentThread().getContextClassLoader().getResource("sei20180418.wsdl");
+            url = SeiService.class.getResource("sei20180418.wsdl");
         } catch (Exception ex) {
             e = new WebServiceException(ex);
         }

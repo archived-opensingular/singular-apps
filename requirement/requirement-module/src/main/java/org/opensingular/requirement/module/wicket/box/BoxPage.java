@@ -24,13 +24,13 @@ import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.workspace.Workspace;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuCategory;
 import org.opensingular.requirement.module.config.workspace.WorkspaceMenuItem;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
-import org.opensingular.requirement.module.spring.security.UserDetailsProvider;
 import org.opensingular.requirement.module.wicket.error.Page403;
 import org.opensingular.requirement.module.wicket.template.ServerBoxTemplate;
 import org.opensingular.requirement.module.wicket.view.template.Menu;
@@ -52,7 +52,7 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
     private IServerContext serverContext;
 
     @Inject
-    private UserDetailsProvider userDetailsProvider;
+    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
 
     private IModel<WorkspaceMenuItem> workspaceMenuItem;
 
@@ -145,13 +145,13 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
     }
 
     protected String getIdUsuario() {
-        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
+        return singularUserDetails.getOptional()
                 .map(SingularRequirementUserDetails::getUsername)
                 .orElse(null);
     }
 
     protected String getIdPessoa() {
-        return userDetailsProvider.getOptional(SingularRequirementUserDetails.class)
+        return singularUserDetails.getOptional()
                 .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
     }

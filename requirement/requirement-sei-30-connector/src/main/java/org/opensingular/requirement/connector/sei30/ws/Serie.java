@@ -107,7 +107,12 @@ public class Serie {
 
     /**
      * Obtém o valor da propriedade aplicabilidade.
-     * 
+     *
+     * T = Documentos internos e externos
+     * I = documentos internos
+     * E = documentos externos
+     * F = formulários
+     *
      * @return
      *     possible object is
      *     {@link String }

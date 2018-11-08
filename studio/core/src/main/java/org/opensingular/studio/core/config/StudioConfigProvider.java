@@ -19,6 +19,7 @@ package org.opensingular.studio.core.config;
 import org.opensingular.lib.commons.context.SingularContext;
 import org.opensingular.lib.commons.context.SingularSingletonStrategy;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
+import org.opensingular.lib.commons.util.ObjectUtils;
 
 import java.lang.reflect.Modifier;
 import java.util.List;
@@ -46,11 +47,7 @@ public class StudioConfigProvider {
                 throw new StudioAppConfigProviderException("Não é permitido possuir mais de uma implementação de " + StudioConfig.class);
             }
             Class<? extends StudioConfig> configClass = configs.get(0);
-            try {
-                config = configClass.newInstance();
-            } catch (InstantiationException | IllegalAccessException ex) {
-                throw new StudioAppConfigProviderException("Não foi possivel criar uma nova instancia de " + configClass.getName(), ex);
-            }
+            config = ObjectUtils.newInstance(configClass);
         }
         return config;
     }

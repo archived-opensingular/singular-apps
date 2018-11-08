@@ -24,6 +24,7 @@ import org.opensingular.lib.support.persistence.SimpleDAO;
 import javax.inject.Inject;
 import javax.inject.Named;
 import javax.transaction.Transactional;
+import java.util.Collections;
 import java.util.Map;
 
 @Named
@@ -32,14 +33,17 @@ public class HealthSystemDAO extends SimpleDAO {
     @Inject
     private SessionFactory sessionFactory;
 
-    @Transactional
-    public Map<String, ClassMetadata> getAllDbMetaData() {
-        return sessionFactory.getAllClassMetadata();
-    }
-
-    @Transactional
-    public String getHibernateDialect() {
-        return ((SessionFactoryImpl) sessionFactory).getDialect().toString();
-    }
+	@Transactional
+	public Map<String, ClassMetadata> getAllDbMetaData(){
+		//TODO: evoluir para dar suporte ao Hibernate 5
+        //https://vladmihalcea.com/how-to-get-access-to-database-table-metadata-with-hibernate-5/
+        //return sessionFactory.getAllClassMetadata();
+        return Collections.emptyMap();
+	}
+	
+	@Transactional
+	public String getHibernateDialect(){
+		return ((SessionFactoryImpl)sessionFactory).getDialect().toString();
+	}
 
 }

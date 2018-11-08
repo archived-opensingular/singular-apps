@@ -94,7 +94,7 @@ import org.opensingular.requirement.module.wicket.view.panel.NotificationPanel;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.ModuleButtonFactory;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

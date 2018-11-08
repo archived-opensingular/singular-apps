@@ -118,7 +118,7 @@ public class RequirementFlowBuilder extends
     public BuilderRoleRequirement addBusinessRole(String description,
                                                   BusinessRoleStrategy<? extends FlowInstance> businessRoleStrategy,
                                                   boolean automaticUserAllocation) {
-        return addBusinessRole(description, SingularUtil.convertToJavaIdentity(description, true, false),
+        return addBusinessRole(description, SingularUtil.convertToJavaIdentifier(description, true),
                 businessRoleStrategy, automaticUserAllocation);
     }
 

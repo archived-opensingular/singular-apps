@@ -38,6 +38,11 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 @Entity
 @SequenceGenerator(name = EmailEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_EMAIL", schema = Constants.SCHEMA)
 @Table(name = "TB_EMAIL", schema = Constants.SCHEMA)
@@ -70,9 +75,10 @@ public class EmailEntity extends BaseEntity<Long> {
     @OneToMany
     @JoinTable(schema = Constants.SCHEMA, name = "TB_EMAIL_ARQUIVO",
             uniqueConstraints = {@UniqueConstraint(name = "UK_EMAIL_ARQUIVO", columnNames = "CO_ARQUIVO")},
+            foreignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL"),
             joinColumns = @JoinColumn(name = "CO_EMAIL"),
+            inverseForeignKey = @ForeignKey(name = "FK_EMAIL_ARQUIVO_ARQUIVO"),
             inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
-    @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL", inverseName = "FK_EMAIL_ARQUIVO_ARQUIVO")
     private List<AttachmentEntity> attachments = new ArrayList<>();
 
 
