@@ -38,8 +38,6 @@ public abstract class SingularRequirementResolver extends RequirementDefinition 
     private Class<? extends RequirementResolverPage> requirementResolverPage = RequirementResolverPage.class;
     private RequirementResolver requirementResolver;
 
-    private RequirementDefinitionEntity requirementDefinitionEntity;
-
     public SingularRequirementResolver(String key, RequirementResolver requirementResolver) {
         super(key, RequirementInstance.class);
         this.requirementResolver = requirementResolver;
