@@ -250,6 +250,7 @@ public class RequirementSearchQueryFactory {
     private void appendFilterByQickFilter() {
         Map<String, Function<String, BooleanExpression>> expressionMap = new LinkedHashMap<>();
         expressionMap.put(NOME_USUARIO_ALOCADO, filter -> $.allocatedUser.nome.likeIgnoreCase(filter));
+        expressionMap.put(SOLICITANTE, filter -> $.applicantEntity.name.likeIgnoreCase(filter));
         expressionMap.put(DESCRIPTION, filter -> $.requirement.description.likeIgnoreCase(filter));
         expressionMap.put(PROCESS_NAME, filter -> $.flowDefinitionEntity.name.likeIgnoreCase(filter));
         expressionMap.put(TASK_NAME, filter -> $.taskVersion.name.likeIgnoreCase(filter));

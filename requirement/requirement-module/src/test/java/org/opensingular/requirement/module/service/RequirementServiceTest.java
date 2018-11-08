@@ -219,10 +219,10 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         Map<String, Serializable> task = maps.get(0);
         assertNull(task.get("codUsuarioAlocado"));
         assertNull(task.get("nomeUsuarioAlocado"));
-        assertEquals("Do bar", task.get("taskName"));
+        assertEquals("Start bar", task.get("taskName"));
         assertEquals(TaskType.HUMAN, task.get("taskType"));
         assertEquals("foooooo.STypeFoo", task.get("type"));
-        assertEquals(ator, task.get("description"));
+        assertEquals(ator, task.get("solicitante"));
     }
 
     public RequirementInstance sendRequirement(String codAtor) {
