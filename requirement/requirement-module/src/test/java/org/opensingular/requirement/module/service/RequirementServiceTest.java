@@ -117,7 +117,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     @Test
     public void testFindRequirement() {
         RequirementInstance requirementInstance = createAndSaveRequirement();
-        Assert.assertEquals(requirementInstance, requirementService.loadRequirementInstance(requirementInstance.getCod()));
+        Assert.assertEquals(requirementInstance.getCod(), requirementService.loadRequirementInstance(requirementInstance.getCod()).getCod());
     }
 
     @Test
