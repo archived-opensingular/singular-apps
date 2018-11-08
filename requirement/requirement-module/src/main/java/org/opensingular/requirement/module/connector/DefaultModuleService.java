@@ -74,15 +74,10 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private PermissionResolverService permissionResolverService;
 
     @Inject
-    private FormTypeService formTypeService;
-
-    @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
     private ModuleDAO moduleDAO;
-
-
 
     @Inject
     private BoxFilterFactory boxFilterFactory;
