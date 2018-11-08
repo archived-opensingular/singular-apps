@@ -37,12 +37,13 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
+import java.io.Serializable;
 
 /**
  * Singular requirement specification.
  * This class groups the main Singular components needed to orchestrate the requirement.
  */
-public abstract class RequirementDefinition<RI extends RequirementInstance> implements Loggable {
+public abstract class RequirementDefinition<RI extends RequirementInstance> implements Loggable, Serializable {
 
     private final String                             key;
     private final Class<RI>                          requirementInstanceClass;
