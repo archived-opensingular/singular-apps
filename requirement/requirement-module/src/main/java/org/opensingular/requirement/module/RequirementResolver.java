@@ -20,6 +20,7 @@ import org.opensingular.form.SInstance;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 
 import javax.annotation.Nonnull;
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -34,7 +35,7 @@ import org.opensingular.requirement.module.exception.SingularRequirementExceptio
  * on a SInstance filled by the user.
  * See {@link SingularRequirementResolver}.
  */
-public abstract class RequirementResolver<SI extends SInstance> {
+public abstract class RequirementResolver<SI extends SInstance> implements Serializable {
 
     private List<RequirementDefinition> requirements;
 

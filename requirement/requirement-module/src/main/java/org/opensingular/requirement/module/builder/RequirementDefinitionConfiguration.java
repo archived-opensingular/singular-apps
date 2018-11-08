@@ -25,7 +25,9 @@ import org.opensingular.requirement.module.service.dto.RequirementSubmissionResp
 import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
-public class RequirementDefinitionConfiguration {
+import java.io.Serializable;
+
+public class RequirementDefinitionConfiguration implements Serializable {
 
 
     private Class<? extends AbstractFormPage<?>> executionPage              = FormPage.class;
