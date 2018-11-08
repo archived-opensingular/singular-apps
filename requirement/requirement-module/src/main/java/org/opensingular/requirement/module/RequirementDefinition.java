@@ -89,7 +89,7 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
             return instance;
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
-            throw new SingularRequirementException(e.getMessage());
+            throw new SingularRequirementException(e.getMessage(), e);
         }
     }
 
