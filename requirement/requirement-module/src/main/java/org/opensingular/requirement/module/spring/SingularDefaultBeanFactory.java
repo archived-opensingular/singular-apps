@@ -306,7 +306,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> FormRequirementService formRequirementService() {
+    public FormRequirementService formRequirementService() {
         return new FormRequirementService();
     }
 
