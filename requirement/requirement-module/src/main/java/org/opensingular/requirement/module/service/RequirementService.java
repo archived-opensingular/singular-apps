@@ -136,9 +136,6 @@ public abstract class RequirementService implements Loggable {
     private ModuleService moduleService;
 
 
-    @Inject
-    private FormVersionDAO formVersionDAO;
-
     /**
      * FOR INTERNAL USE ONLY,
      * MUST NOT BE EXPOSED BY SUBCLASSES
