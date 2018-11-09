@@ -225,7 +225,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param form
      * @return
      */
-    public <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<SType<SI>> form) {
+    public <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form) {
         return (Optional<SI>) requirementService.findLastFormInstanceByType(this, form);
     }
 
