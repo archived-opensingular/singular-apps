@@ -638,8 +638,9 @@ public abstract class RequirementService implements Loggable {
                                                             @Nonnull String typeName) {
         //TODO Verificar se esse método não está redundante com FormRequirementService.findLastFormRequirementEntityByType
         Objects.requireNonNull(requirement);
-        return requirementContentHistoryDAO.findLastByCodRequirementAndType(typeName, requirement.getCod())
-                .map(FormVersionHistoryEntity::getFormVersion)
+        return formRequirementService.findLastFormRequirementEntityByType(requirement, typeName)
+                .map(FormRequirementEntity::getForm)
+                .map(FormEntity::getCurrentFormVersionEntity)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
 
