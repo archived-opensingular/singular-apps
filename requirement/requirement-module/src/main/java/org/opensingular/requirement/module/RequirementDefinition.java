@@ -81,6 +81,7 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
     public abstract RequirementDefinitionConfiguration configure(RequirementConfigurationBuilder conf);
 
+    @SuppressWarnings("fb-contrib:CLI_CONSTANT_LIST_INDEX")
     private RI newRequirementInstance(RequirementEntity requirementEntity) {
         try {
             for (Constructor<?> constructor : this.requirementInstanceClass.getConstructors()) {

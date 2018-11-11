@@ -42,7 +42,7 @@ public class WorkspaceRegistry implements Loggable {
      */
     public WorkspaceRegistry add(Class<? extends IServerContext> serverContextClass) {
         if (!contextClasses.add(serverContextClass)) {
-            throw new SingularRequirementException(String.format("Context class " + serverContextClass.getName() + " is already registered"));
+            throw new SingularRequirementException(String.format("Context class %s is already registered",serverContextClass.getName()));
         }
         try {
             contexts.add(serverContextClass.newInstance());

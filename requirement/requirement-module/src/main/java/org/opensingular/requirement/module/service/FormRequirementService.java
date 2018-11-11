@@ -529,12 +529,10 @@ public class FormRequirementService {
             SIList sourceList = (SIList) source;
             SIList targetList = (SIList) target;
 
-            if (sourceList.getChildren() != null) {
-                for (int i = 0; i < sourceList.getChildren().size() ; i++) {
-                    SInstance sourceItem = (SInstance) sourceList.getChildren().get(i);
-                    SInstance targetItem = (SInstance) targetList.getChildren().get(i);
-                    copyIdValues(sourceItem, targetItem);
-                }
+            for (int i = 0; i < sourceList.getChildren().size() ; i++) {
+                SInstance sourceItem = (SInstance) sourceList.getChildren().get(i);
+                SInstance targetItem = (SInstance) targetList.getChildren().get(i);
+                copyIdValues(sourceItem, targetItem);
             }
         }
     }
