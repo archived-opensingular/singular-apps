@@ -117,6 +117,7 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     }
 
 
+    @Nonnull
     public <SI extends SInstance> Class<SType<SI>> getMainForm() {
         return (Class<SType<SI>>) requirementConfiguration.getMainForm();
     }
