@@ -38,6 +38,7 @@ import javax.annotation.Nullable;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.lang.reflect.Constructor;
 
 /**
  * Singular requirement specification.
@@ -82,15 +83,20 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
     private RI newRequirementInstance(RequirementEntity requirementEntity) {
         try {
-            RI instance = this.requirementInstanceClass
-                    .getConstructor(RequirementEntity.class, this.getClass())
-                    .newInstance(requirementEntity, this);
-            springServiceRegistry.lookupSingularInjector().inject(instance);
-            return instance;
+            for (Constructor<?> constructor : this.requirementInstanceClass.getConstructors()) {
+                if (constructor.getParameterTypes().length == 2
+                        && constructor.getParameterTypes()[0].isAssignableFrom(RequirementEntity.class)
+                        && constructor.getParameterTypes()[1].isAssignableFrom(this.getClass())){
+                    RI instance = (RI) constructor.newInstance(requirementEntity, this);
+                    springServiceRegistry.lookupSingularInjector().inject(instance);
+                    return instance;
+                }
+            }
         } catch (Exception e) {
             getLogger().error(e.getMessage(), e);
             throw new SingularRequirementException(e.getMessage(), e);
         }
+        throw new SingularRequirementException("Could not find a suitable constructor, make sure your requeriment instance class has a two args constructor (RequirementEntity, RequirmentDefintion)  ");
     }
 
 
