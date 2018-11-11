@@ -149,10 +149,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     /**
-     *
      * @return
-     * @deprecated
-     * must not be used, it will be turned into private method on future releases.
+     * @deprecated must not be used, it will be turned into private method on future releases.
      */
     @Deprecated
     public RequirementEntity getEntity() {
@@ -205,7 +203,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @return returns requirement main form last version.
      */
     @Nonnull
-    public <SI extends SInstance> Optional<SI> getForm() {
+    public final <SI extends SInstance> Optional<SI> getForm() {
         return getForm(getRequirementDefinition().getMainForm());
     }
 
@@ -225,8 +223,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param form
      * @return
      */
-    public <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form) {
-        return (Optional<SI>) requirementService.findLastFormInstanceByType(this, form);
+    public final <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form) {
+        return (Optional<SI>) getForm(SFormUtil.getTypeName(form));
     }
 
     /**
@@ -235,7 +233,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param
      * @return
      */
-    public Optional<SIComposite> getDraft() {
+    public final Optional<SIComposite> getDraft() {
         return getDraft(SFormUtil.getTypeName(getRequirementDefinition().getMainForm()));
     }
 
@@ -250,15 +248,15 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return requirementService.findCurrentDraftForType(this, formName);
     }
 
-    public Optional<SIComposite> getDraft(@Nonnull Class<? extends SType<?>> form) {
+    public final Optional<SIComposite> getDraft(@Nonnull Class<? extends SType<?>> form) {
         return getDraft(RequirementUtil.getTypeName(form));
     }
 
-    public SInstance newForm() {
+    public final SInstance newForm() {
         return newForm(getRequirementDefinition().getMainForm());
     }
 
-    public SInstance newForm(@Nonnull Class<? extends SType<?>> form) {
+    public final SInstance newForm(@Nonnull Class<? extends SType<?>> form) {
         return newForm(RequirementUtil.getTypeName(form));
     }
 
