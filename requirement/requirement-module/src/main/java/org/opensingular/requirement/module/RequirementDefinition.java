@@ -83,7 +83,7 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     private RI newRequirementInstance(RequirementEntity requirementEntity) {
         try {
             RI instance = this.requirementInstanceClass
-                    .getConstructor(RequirementEntity.class, RequirementDefinition.class)
+                    .getConstructor(RequirementEntity.class, this.getClass())
                     .newInstance(requirementEntity, this);
             springServiceRegistry.lookupSingularInjector().inject(instance);
             return instance;
