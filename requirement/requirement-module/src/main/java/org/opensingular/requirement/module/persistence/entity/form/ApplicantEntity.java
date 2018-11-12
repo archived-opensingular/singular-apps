@@ -17,14 +17,6 @@
 package org.opensingular.requirement.module.persistence.entity.form;
 
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-
 import org.hibernate.annotations.Check;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.Parameter;
@@ -34,11 +26,19 @@ import org.opensingular.lib.support.persistence.util.Constants;
 import org.opensingular.lib.support.persistence.util.GenericEnumUserType;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+
 @Entity
 @Table(schema = Constants.SCHEMA, name = "TB_REQUISITANTE")
-@Check(constraints ="TP_PESSOA IN ('J','F')")
+@Check(constraints = "TP_PESSOA IN ('J','F')")
 @SequenceGenerator(name = ApplicantEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_REQUISITANTE", schema = Constants.SCHEMA)
-public class ApplicantEntity extends BaseEntity<Long> {
+public class ApplicantEntity extends BaseEntity<Long> implements RequirementApplicant {
 
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_REQUISITANTE";
@@ -65,6 +65,17 @@ public class ApplicantEntity extends BaseEntity<Long> {
     @ColumnDefault(value = "'J'")
     private PersonType personType;
 
+    public ApplicantEntity copyFrom(RequirementApplicant applicant) {
+        this.setIdPessoa(applicant.getIdPessoa());
+        this.setName(applicant.getName());
+        this.setPersonType(applicant.getPersonType());
+        this.setCpfCNPJ(applicant.getCpfCNPJ());
+        return this;
+    }
+
+    public ApplicantEntity() {
+    }
+
     @Override
     public Long getCod() {
         return cod;
@@ -74,6 +85,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
         this.cod = cod;
     }
 
+    @Override
     public String getName() {
         return name;
     }
@@ -82,6 +94,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
         this.name = name;
     }
 
+    @Override
     public String getIdPessoa() {
         return idPessoa;
     }
@@ -90,6 +103,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
         this.idPessoa = idPessoa;
     }
 
+    @Override
     public String getCpfCNPJ() {
         return cpfCNPJ;
     }
@@ -98,6 +112,7 @@ public class ApplicantEntity extends BaseEntity<Long> {
         this.cpfCNPJ = cpfCNPJ;
     }
 
+    @Override
     public PersonType getPersonType() {
         return personType;
     }

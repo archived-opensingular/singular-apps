@@ -51,7 +51,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
@@ -259,7 +259,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @return
      */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
-        RequirementInstance requirement = requirementService.getRequirement(requirementId);
+        RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
         boolean truth = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()

@@ -34,7 +34,7 @@ import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.IBSAction;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionColumn;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionAtribuirRequest;
 import org.opensingular.requirement.module.box.action.ActionRequest;
@@ -85,7 +85,7 @@ public class BoxContent extends AbstractBoxContent implements Loggable {
 
     @Override
     public Component buildNewRequirementButton(String id) {
-        IModel<LinkedHashSet<Class<? extends SingularRequirement>>> requirementsModel = new Model<>(new LinkedHashSet<>(getBoxDefinitionObject().getItemBox().getRequirements()));
+        IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirementsModel = new Model<>(new LinkedHashSet<>(getBoxDefinitionObject().getItemBox().getRequirements()));
         if (!requirementsModel.getObject().isEmpty()) {
             return new NewRequirementLink(id, moduleService.getBaseUrl(), getLinkParams(), requirementsModel);
         } else {

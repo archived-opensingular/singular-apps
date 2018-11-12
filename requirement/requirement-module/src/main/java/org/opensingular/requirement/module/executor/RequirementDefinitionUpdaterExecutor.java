@@ -16,7 +16,8 @@
 
 package org.opensingular.requirement.module.executor;
 
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularServerException;
@@ -25,6 +26,7 @@ import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.inject.Named;
+import org.opensingular.requirement.module.service.RequirementService;
 
 /**
  * Classe para abrigar a lógica de carga
@@ -41,7 +43,7 @@ public class RequirementDefinitionUpdaterExecutor {
     private ServerStartExecutorBean serverStartExecutorBean;
 
     @Inject
-    private ModuleService moduleService;
+    private RequirementService requirementService;
 
     @PostConstruct
     public void init() {
@@ -53,11 +55,11 @@ public class RequirementDefinitionUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllRequirementDefinitions() {
-        for (SingularRequirement singularRequirement : requirementDefinitionService.getRequirements()) {
+        for (RequirementDefinition requirementDefinition : requirementDefinitionService.getRequirements()) {
             try {
-                moduleService.save(singularRequirement);
+                requirementService.saveOrUpdateRequirementDefinition(requirementDefinition);
             } catch (Exception e) {
-                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", singularRequirement.getName()), e);
+                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", requirementDefinition.getName()), e);
             }
         }
     }

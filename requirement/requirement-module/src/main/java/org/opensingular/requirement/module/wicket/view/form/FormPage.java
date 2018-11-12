@@ -31,7 +31,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 @SuppressWarnings("serial")
 @MountPath("/view")
-public class FormPage extends AbstractFormPage<RequirementEntity, RequirementInstance> {
+public class FormPage extends AbstractFormPage<RequirementInstance> {
 
     public FormPage() {
         this(null);

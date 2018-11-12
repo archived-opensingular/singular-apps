@@ -83,7 +83,6 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDefin
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.service.AttachmentGCJob;
-import org.opensingular.requirement.module.service.DefaultRequirementSender;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.ParameterService;
@@ -151,8 +150,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> RequirementDAO<T> requirementDAO() {
-        return new RequirementDAO<>();
+    public RequirementDAO requirementDAO() {
+        return new RequirementDAO();
     }
 
     @Bean
@@ -171,7 +170,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public RequirementService<?, ?> workListRequirementServiceFactory() {
+    public RequirementService workListRequirementServiceFactory() {
         return new DefaultRequirementService();
     }
 
@@ -308,8 +307,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public <T extends RequirementEntity> FormRequirementService<T> formRequirementService() {
-        return new FormRequirementService<>();
+    public FormRequirementService formRequirementService() {
+        return new FormRequirementService();
     }
 
     @Bean
@@ -349,11 +348,6 @@ public class SingularDefaultBeanFactory {
     @Bean
     public RestUserDetailsService restUserDetailsService() {
         return new DefaultRestUserDetailsService();
-    }
-
-    @Bean
-    public DefaultRequirementSender defaultRequirementSender() {
-        return new DefaultRequirementSender();
     }
 
     @Bean

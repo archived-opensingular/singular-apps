@@ -28,11 +28,11 @@ import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
-public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends FlowConfirmPanel {
+public abstract class AbstractFlowConfirmModal<RI extends RequirementInstance> extends FlowConfirmPanel {
 
-    private final AbstractFormPage<RE, RI> formPage;
+    private final AbstractFormPage<RI> formPage;
 
-    public AbstractFlowConfirmModal(String id, String transition, AbstractFormPage<RE, RI> formPage) {
+    public AbstractFlowConfirmModal(String id, String transition, AbstractFormPage<RI> formPage) {
         super(id, transition);
         this.formPage = formPage;
     }
@@ -44,8 +44,8 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
      * @param m  -> modal
      * @return the new AjaxButton
      */
-    protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m, boolean validation) {
-        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, validation && ViewMode.EDIT == vm, formPage, m) {
+    protected FlowConfirmButton<RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m, boolean validation) {
+        return new FlowConfirmButton<RI>(tn, "confirm-btn", im, validation && ViewMode.EDIT == vm, formPage, m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form form, IModel model) {
                 onConfirm(tn, im);
@@ -79,11 +79,10 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
         IModel<? extends SInstance> formInstance = getFormPage().getFormInstance();
         ViewMode viewMode = getFormPage().getViewMode(getFormPage().getConfig());
 
-
         String transitionButtonLabel= "label.button.confirm."+ SingularUtil.convertToJavaIdentifier(transition);
         String defaultButtonLabelWhenNull = getString("label.button.confirm", null, "Confirmar");
 
-        FlowConfirmButton<RE, RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal, validation);
+        FlowConfirmButton<RI> button = newFlowConfirmButton(transition, formInstance, viewMode, modal, validation);
         modal.addButton(BSModalBorder.ButtonStyle.CONFIRM, transitionButtonLabel, defaultButtonLabelWhenNull, button );
     }
 
@@ -101,7 +100,7 @@ public abstract class AbstractFlowConfirmModal<RE extends RequirementEntity, RI 
         );
     }
 
-    protected final AbstractFormPage<RE, RI> getFormPage() {
+    protected final AbstractFormPage<RI> getFormPage() {
         return formPage;
     }
 }

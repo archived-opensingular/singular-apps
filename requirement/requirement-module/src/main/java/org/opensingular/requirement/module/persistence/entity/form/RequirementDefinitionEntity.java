@@ -16,6 +16,11 @@
 
 package org.opensingular.requirement.module.persistence.entity.form;
 
+import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.form.persistence.entity.FormTypeEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.ForeignKey;
@@ -27,20 +32,17 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
+import javax.persistence.UniqueConstraint;
 
 /**
  *
  */
 @Entity
 @SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
-@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", indexes = {
-        @Index(columnList = "CO_MODULO ASC, NO_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO")
-})
+@Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", uniqueConstraints = @UniqueConstraint(name = "UK_DEFINICAO_REQUISICAO",
+        columnNames = {"CO_MODULO", "SG_DEFINICAO_REQUISICAO"}),
+        indexes = {@Index(columnList = "CO_MODULO ASC, SG_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO"),
+        })
 public class RequirementDefinitionEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_DEFINICAO_REQUISICAO";
@@ -50,12 +52,15 @@ public class RequirementDefinitionEntity extends BaseEntity<Long> {
     @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
     private Long cod;
 
+    @Column(name = "SG_DEFINICAO_REQUISICAO", length = 200, nullable = false)
+    private String key;
+
     @ManyToOne
-    @JoinColumn(name = "CO_TIPO_FORMULARIO" , foreignKey = @ForeignKey(name = "FK_DEFI_REQ_TIPO_FORMULARIO"), nullable = false)
+    @JoinColumn(name = "CO_TIPO_FORMULARIO", foreignKey = @ForeignKey(name = "FK_DEFI_REQ_TIPO_FORMULARIO"), nullable = false)
     private FormTypeEntity formType;
 
     @ManyToOne
-    @JoinColumn(name = "CO_MODULO" , foreignKey = @ForeignKey(name = "FK_DEFI_REQ_MODULO"), nullable = false)
+    @JoinColumn(name = "CO_MODULO", foreignKey = @ForeignKey(name = "FK_DEFI_REQ_MODULO"), nullable = false)
     private ModuleEntity module;
 
     @Column(name = "NO_DEFINICAO_REQUISICAO", nullable = false, length = 300)
@@ -92,5 +97,13 @@ public class RequirementDefinitionEntity extends BaseEntity<Long> {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
     }
 }

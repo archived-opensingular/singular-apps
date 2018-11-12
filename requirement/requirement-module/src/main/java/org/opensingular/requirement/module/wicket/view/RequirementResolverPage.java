@@ -26,7 +26,7 @@ import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.SingularRequirementResolver;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
@@ -52,7 +52,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
  * @param <RE>
  * @param <RI>
  */
-public class RequirementResolverPage<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFormPage<RE, RI> {
+public class RequirementResolverPage<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFormPage<RI> {
 
     @Inject
     private ModuleService moduleService;
@@ -69,8 +69,8 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
     @Override
     protected void send(IModel<? extends SInstance> mi, AjaxRequestTarget ajxrt, BSModalBorder sm) {
         SingularRequirementResolver requirementResolver = (SingularRequirementResolver) getSingularRequirement(getConfig().copyOfInnerActionContext()).orElseThrow(() -> new SingularRequirementException("No requirement definition found!"));
-        SingularRequirement requirement = requirementResolver.resolve((SIComposite) mi.getObject());
-        redirectToResolvedRequirement(requirement.getDefinitionCod(), new HashMap<>(0));
+        RequirementDefinition requirement = requirementResolver.resolve((SIComposite) mi.getObject());
+        redirectToResolvedRequirement(requirement.getKey(), new HashMap<>(0));
     }
 
     @Override
@@ -86,11 +86,11 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
     /**
      * Override this method to send additional URL parameters to create a new Requirement of the given type (i.e: requirement definition with id {@param idRequirementDefinition})
      *
-     * @param idRequirementDefinition
+     * @param requirementDefinitionKey
      * @param additionalParameters
      */
-    protected void redirectToResolvedRequirement(Long idRequirementDefinition, Map<String, String> additionalParameters) {
-        throw new RedirectToUrlException(new NewRequirementUrlBuilder(moduleService.getBaseUrl(), idRequirementDefinition).getURL(additionalParameters));
+    protected void redirectToResolvedRequirement(String requirementDefinitionKey, Map<String, String> additionalParameters) {
+        throw new RedirectToUrlException(new NewRequirementUrlBuilder(moduleService.getBaseUrl(), requirementDefinitionKey).getURL(additionalParameters));
     }
 
     @Nonnull

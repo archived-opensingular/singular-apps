@@ -19,7 +19,7 @@ package org.opensingular.requirement.module;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
 /**
- * Configuration object for module {@link SingularRequirement} registration.
+ * Configuration object for module {@link RequirementDefinition} registration.
  */
 public class RequirementRegistry {
     private final AnnotationConfigWebApplicationContext annotationConfigWebApplicationContext;
@@ -29,12 +29,12 @@ public class RequirementRegistry {
     }
 
     /**
-     * Register a  {@link SingularRequirement}
+     * Register a  {@link RequirementDefinition}
      *
-     * @param requirement the {@link SingularRequirement} instance.
+     * @param requirement the {@link RequirementDefinition} instance.
      * @return
      */
-    public RequirementRegistry add(Class<? extends SingularRequirement> requirement) {
+    public RequirementRegistry add(Class<? extends RequirementDefinition> requirement) {
         annotationConfigWebApplicationContext.register(requirement);
         return this;
     }

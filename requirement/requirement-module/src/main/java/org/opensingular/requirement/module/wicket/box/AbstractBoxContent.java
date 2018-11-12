@@ -62,10 +62,10 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
     private static final long serialVersionUID = -3611649597709058163L;
 
     @Inject
-    protected RequirementService<?, ?> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
-    protected FormRequirementService<?> formRequirementService;
+    protected FormRequirementService formRequirementService;
 
     /**
      * Tabela de registros

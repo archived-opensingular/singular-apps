@@ -38,13 +38,13 @@ import java.util.Set;
 public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final Boolean evalPermissions;
     private final ActionProvider actionProvider;
-    private final RequirementService<?, ?> requirementService;
+    private final RequirementService requirementService;
     private final List<String> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final Set<BoxItemDataFilter> filters = new HashSet<>();
 
     RequirementBoxItemDataProvider(Boolean evalPermissions, ActionProvider actionProvider,
-                                   RequirementService<?, ?> requirementService) {
+                                   RequirementService requirementService) {
         this.evalPermissions = evalPermissions;
         this.actionProvider = actionProvider;
         this.requirementService = requirementService;

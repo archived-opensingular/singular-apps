@@ -26,6 +26,7 @@ import org.apache.wicket.Page;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextArea;
 import org.apache.wicket.markup.html.form.TextField;
+import org.apache.wicket.model.IModel;
 import org.junit.Test;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SFormUtil;
@@ -49,11 +50,17 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.opensingular.requirement.module.wicket.error.Page500;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
+import org.opensingular.requirement.module.wicket.view.form.SimpleMessageFlowConfirmModal;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.singular.pet.module.foobar.stuff.SPackageFoo;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
+
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
+import java.util.Date;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -71,7 +78,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     FormService formService;
 
     @Inject
-    RequirementService<?, ?> requirementService;
+    RequirementService requirementService;
 
 
     @Inject
@@ -87,6 +94,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SFormUtil.getTypeName(STypeFoo.class));
         context.setFormAction(FormAction.FORM_FILL);
+        context.setRequirementDefinitionKey("FOO_REQ");
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -113,7 +121,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SFormUtil.getTypeName(STypeFoo.class));
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -131,7 +139,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(formName);
         context.setFormAction(FormAction.FORM_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);
@@ -180,7 +188,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
     }
 
     public RequirementInstance getRequirementFrom(FormPage p) {
-        return (RequirementInstance) new Mirror().on(p).invoke().method("getRequirement").withoutArgs();
+        return (RequirementInstance) ((IModel) new Mirror().on(p).invoke().method("getRequirementModel").withoutArgs()).getObject();
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -210,8 +218,8 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         Component confirmationButton = new AssertionsWComponent(p2)
                 .getSubComponentWithId("modals")
-                .getSubComponents(TemplatePanel.class)
-                .last()
+                .getSubComponents(SimpleMessageFlowConfirmModal.class)
+                .first()
                 .getSubComponents(SingularButton.class)
                 .first()
                 .getTarget();
@@ -219,7 +227,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
 
         RequirementInstance requirementFrom = getRequirementFrom(p2);
         TaskInstance        currentTask     = requirementFrom.getCurrentTaskOrException();
-        assertEquals("No more bar", currentTask.getName());
+        assertEquals("Transition bar", currentTask.getName());
     }
 
     @WithUserDetails("vinicius.nunes")
@@ -241,7 +249,7 @@ public class FormPageTest extends SingularCommonsBaseTest {
         ActionContext context = new ActionContext();
         context.setFormName(SPackageFoo.STypeFOOModal.FULL_NAME);
         context.setFormAction(FormAction.FORM_FILL_WITH_ANALYSIS_FILL);
-        context.setRequirementDefinitionId(getCodRequirementDefinition());
+        context.setRequirementDefinitionKey(getRequirementDefinitionKey());
         FormPage p = new FormPage(context);
         tester.startPage(p);
         tester.assertRenderedPage(FormPage.class);

@@ -30,7 +30,7 @@ import javax.inject.Named;
 @Named
 public class RequirementBoxItemDataProviderFactory {
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     public RequirementBoxItemDataProvider create(Boolean evalPermission, ActionProvider actionProvider) {
         return new RequirementBoxItemDataProvider(evalPermission, actionProvider, requirementService);

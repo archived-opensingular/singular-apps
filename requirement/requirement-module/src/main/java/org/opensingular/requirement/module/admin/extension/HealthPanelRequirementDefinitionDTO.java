@@ -20,21 +20,21 @@ import java.io.Serializable;
 
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 
 public class HealthPanelRequirementDefinitionDTO implements Serializable {
 
-    private final Long                   id;
+    private final String                 id;
     private final String                 name;
     private final Class<? extends SType> mainForm;
 
-    public HealthPanelRequirementDefinitionDTO(SingularRequirement requirement) {
-        id = requirement.getDefinitionCod();
+    public HealthPanelRequirementDefinitionDTO(RequirementDefinition requirement) {
+        id = requirement.getKey();
         name = requirement.getName();
         mainForm = requirement.getMainForm();
     }
 
-    public Long getId() {
+    public String getId() {
         return id;
     }
 

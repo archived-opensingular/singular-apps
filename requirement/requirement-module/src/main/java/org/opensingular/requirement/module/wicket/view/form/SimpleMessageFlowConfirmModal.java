@@ -20,16 +20,15 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.model.IModel;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 
-public class SimpleMessageFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
+public class SimpleMessageFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
     private String modalLabel = String.format("Tem certeza que deseja %s ?", getTransition());
     private boolean validationEnabled = true;
 
-    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage) {
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RI> formPage) {
         super(id, transitionName, formPage);
     }
 
@@ -41,7 +40,7 @@ public class SimpleMessageFlowConfirmModal<RE extends RequirementEntity, RI exte
      * @param validationEnabled True for validate the form.
      * @param modalLabel        The modal's label.
      */
-    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RE, RI> formPage,
+    public SimpleMessageFlowConfirmModal(String id, String transitionName, AbstractFormPage<RI> formPage,
                                          boolean validationEnabled, String modalLabel) {
         this(id, transitionName, formPage);
         this.modalLabel = modalLabel;

@@ -16,11 +16,6 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.io.Serializable;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-
 import org.hibernate.SessionFactory;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
@@ -28,30 +23,53 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.form.SingularFormException;
+import org.opensingular.form.document.RefType;
+import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
+import org.opensingular.requirement.module.flow.ProcessServiceSetup;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
+import javax.inject.Inject;
+import java.io.Serializable;
+import java.util.Objects;
+import java.util.Optional;
 
 /**
  * @author Daniel C. Bordin on 07/03/2017.
  */
-public class RequirementInstance implements Serializable {
+public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD extends RequirementDefinition<SELF>> implements Serializable {
+
+    @Inject
+    private RequirementService requirementService;
+
+    @Inject
+    private FormRequirementService formRequirementService;
+
+    private RD requirementDefinition;
 
     private RequirementEntity requirementEntity;
 
     private transient FlowInstance flowInstance;
 
-    private transient SIComposite mainForm;
-
-    public RequirementInstance(RequirementEntity requirementEntity) {
+    public RequirementInstance(RequirementEntity requirementEntity, RD requirementDefinition) {
         this.requirementEntity = Objects.requireNonNull(requirementEntity);
+        this.requirementDefinition = requirementDefinition;
+    }
+
+    public RD getRequirementDefinition() {
+        return requirementDefinition;
     }
 
     public FlowInstance getFlowInstance() {
@@ -69,33 +87,11 @@ public class RequirementInstance implements Serializable {
         return getEntity().getFlowInstanceEntity() != null;
     }
 
-    @Nonnull
-    public SIComposite getMainForm() {
-        if (mainForm == null) {
-            mainForm = getRequirementService().getMainFormAsInstance(getEntity());
-        }
-        return mainForm;
-    }
 
     @Nonnull
-    public <I extends SInstance, K extends SType<? extends I>> I getMainForm(@Nonnull Class<K> expectedType) {
-        return FormRequirementService.checkIfExpectedType(getMainForm(), expectedType);
-    }
-
-    @Nonnull
-    public <I extends SInstance> I getMainFormAndCast(@Nonnull Class<I> expectedType) {
-        SIComposite i = getMainForm();
-        if (expectedType.isAssignableFrom(i.getClass())) {
-            return (I) i;
-        }
-        throw new SingularFormException(
-                "Era esperado a instância recuperada fosse do tipo " + expectedType.getName() +
-                        " mas ela é do tipo " + i.getClass(), i);
-    }
-
-    @Nonnull
-    private RequirementService<?, ?> getRequirementService() {
-        return ApplicationContextProvider.get().getBean(RequirementService.class);
+    public void saveForm(@Nonnull SInstance instance) {
+        boolean mainForm = getRequirementDefinition().getMainForm().equals(instance.getType().getClass());//TODO reqdef idetificar isso de uma maneira melhor
+        requirementService.saveOrUpdate(this, instance, mainForm);
     }
 
     public FlowDefinition<?> getFlowDefinition() {
@@ -125,8 +121,10 @@ public class RequirementInstance implements Serializable {
 
     @Nonnull
     public Optional<RequirementInstance> getParentRequirement() {
-        return Optional.ofNullable(getEntity().getParentRequirement()).map(
-                parent -> ((RequirementService<RequirementEntity, ?>) getRequirementService()).newRequirementInstance(parent));
+        return Optional.ofNullable(this.getEntity())
+                .map(RequirementEntity::getParentRequirement)
+                .map(RequirementEntity::getCod)
+                .map(cod -> requirementService.loadRequirementInstance(cod));
     }
 
     @Nonnull
@@ -150,11 +148,11 @@ public class RequirementInstance implements Serializable {
 
     }
 
-    public FlowInstance startNewFlow(@Nonnull FlowDefinition flowDefinition) {
-        flowInstance = getRequirementService().startNewFlow(this, flowDefinition, null);
-        return flowInstance;
-    }
-
+    /**
+     * @return
+     * @deprecated must not be used, it will be turned into private method on future releases.
+     */
+    @Deprecated
     public RequirementEntity getEntity() {
         if (getCod() != null) {
             requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
@@ -182,17 +180,95 @@ public class RequirementInstance implements Serializable {
         return getMainFormCurrentFormVersion().getCod();
     }
 
+    @Deprecated
     public String getMainFormTypeName() {
         return getEntity().getMainForm().getFormType().getAbbreviation();
     }
 
+    @Deprecated
     public String getRequirementDefinitionName() {
         return getEntity().getRequirementDefinitionEntity().getName();
     }
 
+    @Deprecated
     public String getApplicantName() {
         return Optional.of(getApplicant()).map(ApplicantEntity::getName).orElse(null);
     }
 
+    public RequirementSubmissionResponse send(@Nullable String codSubmitterActor) {
+        return getRequirementDefinition().send((SELF) this, codSubmitterActor);
+    }
 
+    /**
+     * @return returns requirement main form last version.
+     */
+    @Nonnull
+    public final <SI extends SInstance> Optional<SI> getForm() {
+        return getForm(getRequirementDefinition().getMainForm());
+    }
+
+    /**
+     * Return the given form type last version
+     *
+     * @param formName
+     * @return
+     */
+    public Optional<SIComposite> getForm(@Nonnull String formName) {
+        return requirementService.findLastFormInstanceByType(this, formName);
+    }
+
+    /**
+     * Return the given form type last version
+     *
+     * @param form
+     * @return
+     */
+    public final <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form) {
+        return (Optional<SI>) getForm(SFormUtil.getTypeName(form));
+    }
+
+    /**
+     * Returns the current open draft for the main form or exception if it does not exists
+     *
+     * @param
+     * @return
+     */
+    public final Optional<SIComposite> getDraft() {
+        return getDraft(SFormUtil.getTypeName(getRequirementDefinition().getMainForm()));
+    }
+
+
+    /**
+     * Returns the current open draft for the given type or exception if it does not exists
+     *
+     * @param formName
+     * @return
+     */
+    public Optional<SIComposite> getDraft(@Nonnull String formName) {
+        return requirementService.findCurrentDraftForType(this, formName);
+    }
+
+    public final Optional<SIComposite> getDraft(@Nonnull Class<? extends SType<?>> form) {
+        return getDraft(RequirementUtil.getTypeName(form));
+    }
+
+    public final SInstance newForm() {
+        return newForm(getRequirementDefinition().getMainForm());
+    }
+
+    public final SInstance newForm(@Nonnull Class<? extends SType<?>> form) {
+        return newForm(RequirementUtil.getTypeName(form));
+    }
+
+    private SInstance newForm(@Nonnull RefType refType) {
+        return formRequirementService.createInstance(refType, localServicesBinder());
+    }
+
+    public SInstance newForm(@Nonnull String formName) {
+        return newForm(formRequirementService.loadRefType(formName));
+    }
+
+    private SDocumentConsumer localServicesBinder() {
+        return SDocumentConsumer.of(new ProcessServiceSetup(getCod()));
+    }
 }

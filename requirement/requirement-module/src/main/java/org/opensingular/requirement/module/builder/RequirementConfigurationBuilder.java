@@ -16,18 +16,13 @@
 
 package org.opensingular.requirement.module.builder;
 
-import org.opensingular.requirement.module.SingularRequirement;
+public class RequirementConfigurationBuilder {
 
-public class SingularRequirementDefinitionFlow {
+    private RequirementDefinitionConfiguration requirementDefinitionConfiguration = new RequirementDefinitionConfiguration();
 
-    private SingularRequirement requirement;
-
-    SingularRequirementDefinitionFlow(SingularRequirement requirement) {
-        this.requirement = requirement;
-    }
-
-    public SingularRequirement build(){
-        return requirement;
+    public RequirementFormConfigurationBuilder name(String name) {
+        requirementDefinitionConfiguration.setName(name);
+        return new RequirementFormConfigurationBuilder(requirementDefinitionConfiguration);
     }
 
 }

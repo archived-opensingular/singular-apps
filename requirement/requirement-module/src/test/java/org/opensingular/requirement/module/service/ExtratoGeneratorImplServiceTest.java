@@ -29,17 +29,20 @@ import org.mockito.Mock;
 import org.mockito.Spy;
 import org.opensingular.form.SDictionary;
 import org.opensingular.form.SIComposite;
+import org.opensingular.form.SType;
 import org.opensingular.form.type.core.SIString;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
 import org.opensingular.requirement.commons.service.dto.STypeMock;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.extrato.ExtratoGenerator;
 import org.opensingular.requirement.module.extrato.ExtratoGeneratorImpl;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.ws.wkhtmltopdf.client.MockHtmlToPdfConverter;
 import org.springframework.web.util.HtmlUtils;
 
 import static org.junit.Assert.assertTrue;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -55,13 +58,16 @@ public class ExtratoGeneratorImplServiceTest {
     private ExtratoGenerator extratoGenerator = new ExtratoGeneratorImpl();
 
     @Mock
-    private RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    private RequirementService requirementService;
 
     @Spy
     private HtmlToPdfConverter htmlToPdfConverter = new MockHtmlToPdfConverter();
 
     @Mock
     private RequirementInstance requirement;
+
+    @Mock
+    private RequirementDefinition requirementDefinition;
 
     @Before
     public void configure() {
@@ -72,8 +78,10 @@ public class ExtratoGeneratorImplServiceTest {
                 siComposite.findField(STypeMock.class, i -> i.nome);
         nome.ifPresent(field -> field.setValue(JOAQUIM));
 
-        when(requirement.getMainForm()).thenReturn(siComposite);
-        when(requirementService.getRequirement(1L))
+        when(requirement.getRequirementDefinition()).thenReturn(requirementDefinition);
+        when(requirementDefinition.getMainForm()).thenReturn((Class) siComposite.getType().getClass());
+        when(requirement.getForm()).thenReturn(Optional.of(siComposite));
+        when(requirementService.loadRequirementInstance(1L))
                 .thenReturn(requirement);
     }
 

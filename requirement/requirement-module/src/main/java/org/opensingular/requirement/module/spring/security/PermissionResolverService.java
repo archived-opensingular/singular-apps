@@ -44,7 +44,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")

@@ -22,15 +22,14 @@ import org.apache.wicket.request.Url;
 import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.SType;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.AuthorizationAwareActionProviderDecorator;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.SingularModule;
-import org.opensingular.requirement.module.SingularRequirement;
 import org.opensingular.requirement.module.box.BoxItemDataImpl;
 import org.opensingular.requirement.module.box.BoxItemDataList;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
@@ -39,7 +38,6 @@ import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.controllers.IController;
-import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
@@ -62,11 +60,12 @@ import java.util.stream.Collectors;
 
 @Transactional
 public class DefaultModuleService implements ModuleService, Loggable {
+
     @Inject
     private SingularModule singularModule;
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     @Inject
     private AuthorizationService authorizationService;
@@ -75,16 +74,10 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private PermissionResolverService permissionResolverService;
 
     @Inject
-    private FormTypeService formTypeService;
-
-    @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
     private ModuleDAO moduleDAO;
-
-    @Inject
-    private SingularServerSpringTypeLoader singularServerSpringTypeLoader;
 
     @Inject
     private BoxFilterFactory boxFilterFactory;
@@ -158,7 +151,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
     public ActionResponse executar(Long id, ActionRequest actionRequest) {
         try {
             IController controller = getActionController(actionRequest);
-            return controller.run(requirementService.getRequirement(id), actionRequest);
+            return controller.run(requirementService.loadRequirementInstance(id), actionRequest);
         } catch (Exception e) {
             final String msg = String.format("Erro ao executar a ação %s para o id %d. ", StringEscapeUtils.escapeJava(actionRequest.getAction().getName()), id);
             getLogger().error(msg, e);//NOSONAR
@@ -184,26 +177,16 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     @Override
-    public void save(SingularRequirement requirement) {
-        Class<? extends SType> mainForm = requirement.getMainForm();
-        SType<?> type = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
-        FormTypeEntity formType = formTypeService.findFormTypeEntity(type);
-
-        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirement, formType);
-        requirementDefinitionDAO.save(requirementDefinitionEntity);
-        requirement.setEntity(requirementDefinitionEntity);
-    }
-
-    @Override
-    public RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType) {
+    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> requirementDefinition, FormTypeEntity formType) {
         ModuleEntity module = getModule();
-        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
+        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByKey(module.getCod(), requirementDefinition.getKey());
 
         if (requirementDefinitionEntity == null) {
             requirementDefinitionEntity = new RequirementDefinitionEntity();
             requirementDefinitionEntity.setFormType(formType);
+            requirementDefinitionEntity.setKey(requirementDefinition.getKey());
             requirementDefinitionEntity.setModule(module);
-            requirementDefinitionEntity.setName(singularRequirement.getName());
+            requirementDefinitionEntity.setName(requirementDefinition.getName());
         }
 
         return requirementDefinitionEntity;
