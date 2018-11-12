@@ -16,12 +16,11 @@
 
 package org.opensingular.requirement.module.form;
 
-import org.opensingular.form.SDictionary;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.SingularFormException;
+import org.opensingular.form.document.RefDictionary;
 import org.opensingular.form.spring.SpringTypeLoader;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.service.RequirementUtil;
 
 import javax.annotation.Nonnull;
@@ -38,39 +37,38 @@ public class SingularServerSpringTypeLoader extends SpringTypeLoader<String> {
     private final Map<String, Supplier<SType<?>>> entries = new LinkedHashMap<>();
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private FormTypesProvider formTypesProvider;
 
     public SingularServerSpringTypeLoader() {
     }
 
     @PostConstruct
     private void init() {
-        singularServerConfiguration.getFormTypes().forEach(this::add);
+        formTypesProvider.get().forEach(this::add);
     }
 
-    private void add(Class<? extends SType<?>> type) {
+    private void add(@Nonnull Class<? extends SType<?>> type) {
         String typeName = RequirementUtil.getTypeName(type);
-        add(typeName, () -> {
-            SDictionary d = SDictionary.create();
-            d.loadPackage(SFormUtil.getTypePackage(type));
-            return d.getType(type);
-        });
+        add(typeName, () -> RefDictionary.newBlank().get().getType(type));
     }
 
-    private void add(String typeName, Supplier<SType<?>> typeSupplier) {
+    private void add(@Nonnull String typeName, @Nonnull Supplier<SType<?>> typeSupplier) {
         entries.put(typeName, typeSupplier);
     }
 
     @Override
-    protected Optional<SType<?>> loadTypeImpl(String typeId) {
+    @Nonnull
+    protected Optional<SType<?>> loadTypeImpl(@Nonnull String typeId) {
         return Optional.ofNullable(entries.get(typeId)).map(Supplier::get);
     }
 
+    @Nonnull
     public Optional<SType<?>> loadType(@Nonnull Class<? extends SType> typeClass) {
-        String typeId = SFormUtil.getTypeName((Class<? extends SType<?>>) typeClass);
+        String typeId = SFormUtil.getTypeName(typeClass);
         return loadTypeImpl(typeId);
     }
 
+    @Nonnull
     public SType<?> loadTypeOrException(@Nonnull Class<? extends SType> typeClass) {
         Objects.requireNonNull(typeClass);
         return loadType(typeClass).orElseThrow(() -> new SingularFormException("Não foi encontrado o tipo para a classe=" + typeClass));

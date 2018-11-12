@@ -16,15 +16,6 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import java.util.Iterator;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import javax.inject.Inject;
-import javax.inject.Named;
-import javax.transaction.Transactional;
-
 import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -33,15 +24,21 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.config.ServerContext;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.service.dto.BoxConfigurationData;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
-import org.opensingular.requirement.module.service.dto.FormDTO;
 import org.opensingular.requirement.module.wicket.SingularSession;
+
+import javax.inject.Inject;
+import javax.inject.Named;
+import javax.transaction.Transactional;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * Classe responsável por resolver as permissões do usuário em permissões do singular
@@ -54,7 +51,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     protected PermissionResolverService permissionResolverService;
 
     @Inject
-    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
@@ -65,19 +62,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private Optional<SFormConfig<String>> singularFormConfig;
 
     @Override
-    public void filterBoxWithPermissions(List<BoxConfigurationData> groupDTOs, String idUsuario) {
+    public boolean hasPermission(String idUsuario, String permissionKey) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
-
-        for (Iterator<BoxConfigurationData> it = groupDTOs.iterator(); it.hasNext(); ) {
-            BoxConfigurationData boxConfigurationMetadata = it.next();
-            String               permissionNeeded         = boxConfigurationMetadata.getId().toUpperCase();
-            if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
-                it.remove();
-            } else {
-                filterForms(boxConfigurationMetadata, permissions, idUsuario);
-            }
-
-        }
+        return hasPermission(idUsuario, permissionKey, permissions);
     }
 
     @Override
@@ -93,9 +80,9 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         }
         for (Iterator<BoxItemAction> it = actions.iterator(); it.hasNext(); ) {
-            BoxItemAction action           = it.next();
-            String        permissionsNeeded;
-            String        typeAbbreviation = getFormSimpleName(formType);
+            BoxItemAction action = it.next();
+            String permissionsNeeded;
+            String typeAbbreviation = getFormSimpleName(formType);
             if (action.getFormAction() != null) {
                 permissionsNeeded = buildPermissionKey(
                         requirementAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
@@ -128,15 +115,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return permissionResolverService.searchPermissions(userPermissionKey);
     }
 
-
-    private void filterForms(BoxConfigurationData boxConfigurationMetadata, List<SingularPermission> permissions, String idUsuario) {
-        for (Iterator<FormDTO> it = boxConfigurationMetadata.getForms().iterator(); it.hasNext(); ) {
-            FormDTO form             = it.next();
-            String  permissionNeeded = buildPermissionKey(null, form.getAbbreviation(), FormAction.FORM_FILL.name());
-            if (!hasPermission(idUsuario, permissionNeeded, permissions)) {
-                it.remove();
-            }
-        }
+    @Override
+    public boolean hasPermissionToForm(String formName, String idUsuario) {
+        List<SingularPermission> permissions = searchPermissions(idUsuario);
+        String permissionNeeded = buildPermissionKey(null, formName, FormAction.FORM_FILL.name());
+        return hasPermission(idUsuario, permissionNeeded, permissions);
     }
 
     /**
@@ -202,11 +185,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return hasPermission(idUsuario, buildPermissionKey(requirementAuthMetadataDTO, formSimpleName, action));
     }
 
-    private boolean hasPermission(String idUsuario, String permissionNeeded) {
-        List<SingularPermission> permissions = searchPermissions(idUsuario);
-        return hasPermission(idUsuario, permissionNeeded, permissions);
-    }
-
     private String removeTask(String permissionId) {
         int idx = permissionId.lastIndexOf(SEPARATOR);
         if (idx > -1) {
@@ -255,11 +233,11 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 action
         );
 
-        boolean isOwner       = false;
+        boolean isOwner = false;
         boolean isAllowedUser = requirementId == null;
 
         if (requirementId != null) {
-            if (context.checkOwner()) {
+            if (context.getSettings().isCheckOwner()) {
                 isOwner = isOwner(requirementId, userId, applicantId);
 
             } else {
@@ -281,8 +259,8 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @return
      */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
-        RequirementInstance requirement = requirementService.getRequirement(requirementId);
-        boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
+        boolean truth = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()
                     .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",

@@ -30,10 +30,10 @@ import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.base.SingularUtil;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.cache.SingularCacheForever;
 import org.opensingular.requirement.module.cache.SingularSessionCache;
 import org.opensingular.requirement.module.form.FormAction;
+import org.opensingular.requirement.module.form.FormTypesProvider;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
@@ -44,18 +44,17 @@ import org.opensingular.requirement.module.service.RequirementService;
 public class PermissionResolverService implements Loggable {
 
     @Inject
-    protected RequirementService<RequirementEntity, RequirementInstance> requirementService;
+    protected RequirementService requirementService;
 
     @Inject
     @Named("peticionamentoUserDetailService")
     private SingularUserDetailsService peticionamentoUserDetailService;
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
-
-    @Inject
     private Optional<SingularFlowConfigurationBean> singularFlowConfigurationBean;
 
+    @Inject
+    private FormTypesProvider formTypesProvider;
 
     @SingularSessionCache
     public List<SingularPermission> searchPermissions(String idUsuario) {
@@ -84,8 +83,8 @@ public class PermissionResolverService implements Loggable {
     }
 
     @SingularCacheForever
-    private List<String> listAllTypeNames() {
-        return singularServerConfiguration.getFormTypes()
+    protected List<String> listAllTypeNames() {
+        return formTypesProvider.get()
                 .stream()
                 .map(clazz -> SFormUtil.getTypeSimpleName(clazz).get().toUpperCase())
                 .collect(Collectors.toList());
@@ -105,7 +104,7 @@ public class PermissionResolverService implements Loggable {
     }
 
     @SingularCacheForever
-    private List<? extends SingularPermission> listPermissions(Class<? extends FlowDefinition> clazz) {
+    protected List<? extends SingularPermission> listPermissions(Class<? extends FlowDefinition> clazz) {
         return Collections.emptyList();
     }
 

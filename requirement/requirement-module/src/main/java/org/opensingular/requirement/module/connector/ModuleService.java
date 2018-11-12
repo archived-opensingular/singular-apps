@@ -19,16 +19,15 @@ package org.opensingular.requirement.module.connector;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.requirement.module.SingularRequirement;
-import org.opensingular.requirement.module.WorkspaceConfigurationMetadata;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionConfirmation;
-import org.opensingular.requirement.module.service.dto.ItemBox;
+import org.opensingular.requirement.module.workspace.BoxDefinition;
 
 import java.util.List;
 import java.util.Map;
@@ -38,17 +37,17 @@ public interface ModuleService {
     /**
      * Count all elements inside a box
      */
-    String countAll(ItemBox box, List<String> flowNames, String loggedUser);
+    String countAll(BoxDefinition box);
 
     /**
      * Count elements inside a box, applying the filter
      */
-    long countFiltered(ItemBox box, QuickFilter filter);
+    long countFiltered(BoxDefinition box, BoxFilter filter);
 
     /**
      * Searchelements inside a box, applying the filter
      */
-    List<BoxItemDataMap> searchFiltered(ItemBox box, QuickFilter filter);
+    List<BoxItemDataMap> searchFiltered(BoxDefinition box, BoxFilter filter);
 
     /**
      * Find users that can execute the confirmAction
@@ -66,14 +65,9 @@ public interface ModuleService {
     String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI);
 
     /**
-     * Load the workspace metadata
-     */
-    WorkspaceConfigurationMetadata loadWorkspaceConfiguration(String context, String user);
-
-    /**
      *
      */
-    RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType);
+    RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> singularRequirement, FormTypeEntity formType);
 
     /**
      *
@@ -89,13 +83,5 @@ public interface ModuleService {
      *
      */
     String getModuleContext();
-
-    /**
-     * Persiste se necessário o RequirementDefinitionEntity
-     * e atualiza no ref o valor que está em banco.
-     *
-     * @param singularRequirement - o requerimento do qual o {@link RequirementDefinitionEntity} será criado
-     */
-    void save(SingularRequirement singularRequirement);
 
 }

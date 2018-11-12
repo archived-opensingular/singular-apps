@@ -16,7 +16,6 @@
 
 package org.opensingular.requirement.module.flow.renderer;
 
-import com.google.common.base.Throwables;
 import com.mxgraph.layout.hierarchical.mxHierarchicalLayout;
 import com.mxgraph.layout.mxEdgeLabelLayout;
 import com.mxgraph.layout.mxParallelEdgeLayout;
@@ -28,11 +27,13 @@ import com.mxgraph.view.mxGraph;
 import com.mxgraph.view.mxStylesheet;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowMap;
+import org.opensingular.flow.core.SStart;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STaskEnd;
 import org.opensingular.flow.core.STransition;
-import org.opensingular.flow.core.renderer.ExecutionHistoryForRendering;
+import org.opensingular.flow.core.SingularFlowException;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
+import org.opensingular.flow.core.renderer.RendererRequest;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -52,20 +53,20 @@ import java.util.stream.Collectors;
 
 public class JGraphFlowRenderer implements IFlowRenderer {
 
+    @Override
     @Nonnull
-    public byte[] generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history) {
+    public byte[] generatePng(@Nonnull RendererRequest request) {
         try (ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
-            generatePng(definition, history, outputStream);
+            generatePng(request, outputStream);
             return outputStream.toByteArray();
         } catch (IOException e) {
-            throw Throwables.propagate(e);
+            throw new SingularFlowException(e);
         }
     }
 
     @Override
-    public void generatePng(@Nonnull FlowDefinition<?> definition, @Nullable ExecutionHistoryForRendering history,
-            @Nonnull OutputStream out) throws IOException {
-        mxGraph graph = renderGraph(definition);
+    public void generatePng(@Nonnull RendererRequest request, @Nonnull OutputStream out) throws IOException {
+        mxGraph graph = renderGraph(request.getDefinition());
         RenderedImage img = mxCellRenderer.createBufferedImage(graph, null, 1, Color.WHITE, false, null);
         ImageIO.write(img, "png", out);
     }
@@ -126,7 +127,9 @@ public class JGraphFlowRenderer implements IFlowRenderer {
             mapaVertice.put(task.getAbbreviation(), v);
         }
 
-        addStartTransition(graph, fluxo.getStart().getTask(), mapaVertice);
+        for(SStart start : fluxo.getStarts()) {
+            addStartTransition(graph, start.getTask(), mapaVertice);
+        }
 
         for (final STask<?> task : fluxo.getTasks()) {
             //for (STransition transition : task.getTransitions()) {

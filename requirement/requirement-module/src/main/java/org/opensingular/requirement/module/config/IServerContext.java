@@ -16,115 +16,33 @@
 
 package org.opensingular.requirement.module.config;
 
-import org.apache.wicket.Application;
-import org.apache.wicket.request.Request;
-import org.opensingular.requirement.module.WorkspaceConfiguration;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-
-import javax.servlet.http.HttpServletRequest;
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import org.opensingular.requirement.module.config.workspace.Workspace;
+import org.opensingular.requirement.module.config.workspace.WorkspaceSettings;
 
 /**
  * Utilitário para prover a configuração de contexto atual e os métodos utilitários
  * relacionados.
  */
-public interface IServerContext extends Serializable {
-
-    static IServerContext getContextFromRequest(Request request, Collection<IServerContext> contexts) {
-        return getContextFromRequest((HttpServletRequest) request.getContainerRequest(), contexts);
-    }
-
-    static IServerContext getContextFromName(String name, Collection<IServerContext> contexts) {
-        for (IServerContext ctx : contexts) {
-            if (name.equals(ctx.getName())) {
-                return ctx;
-            }
-        }
-        throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
-    }
-
-    static IServerContext getContextFromRequest(HttpServletRequest request, Collection<IServerContext> contexts) {
-        String contextPath = request.getContextPath();
-        String context = request.getPathInfo().replaceFirst(contextPath, "");
-        for (IServerContext ctx : contexts) {
-            if (context.startsWith(ctx.getUrlPath())) {
-                return ctx;
-            }
-        }
-        throw SingularServerException.rethrow("Não foi possível determinar o contexto do servidor do singular");
-    }
-
-    default String getServerPropertyKey(String basePropertyKey) {
-        return getPropertiesBaseKey() + "." + basePropertyKey;
-    }
-
+public interface IServerContext {
     /**
-     * O contexto no formato aceito por servlets e filtros
-     */
-    String getContextPath();
-
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para java regex
-     */
-    String getPathRegex();
-
-    /**
-     * Conversao do formato aceito por servlets e filtros (contextPath) para um formato de url
-     * sem a / ao final.
-     */
-    String getUrlPath();
-
-    /**
-     * Informa o nome teste contexto
+     * @return the name of the context
      */
     String getName();
 
     /**
-     * Informa a aplicação wicket deste contexto
+     * @return the workspace settings of the context
      */
-    Class<? extends Application> getWicketApplicationClass();
+    WorkspaceSettings getSettings();
 
     /**
-     * Informa a configuração do spring security para este contexto
+     * @return the workspace of the context
      */
-    Class<? extends AbstractSingularSpringSecurityAdapter> getSpringSecurityConfigClass();
+    Workspace getWorkspace();
 
     /**
-     * Informa se os requerimentos que passarem por esse contexto deve ter seus owners checkados
-     *
-     * @deprecated API_REVIEW
+     * @return the base key concatenated with the property
      */
-    @Deprecated
-    default boolean checkOwner() {
-        return false;
+    default String getServerPropertyKey(String basePropertyKey) {
+        return getSettings().getPropertiesBaseKey() + "." + basePropertyKey;
     }
-
-    /**
-     *
-     */
-    @Deprecated
-    String getPropertiesBaseKey();
-
-    /**
-     * Contexts public urls
-     *
-     * @return
-     */
-    default List<String> getPublicUrls() {
-        ArrayList<String> urls = new ArrayList<>();
-        urls.add(getUrlPath() + "/wicket/resource/*");
-        urls.add(getUrlPath() + "/public/*");
-        return urls;
-    }
-
-    /**
-     * Configura o workspace, adicionando caixas e outros itens
-     */
-    void setup(WorkspaceConfiguration workspaceConfiguration);
 }

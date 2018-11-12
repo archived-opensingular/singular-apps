@@ -17,13 +17,13 @@
 package org.opensingular.requirement.module;
 
 import org.apache.wicket.protocol.http.WicketFilter;
-import org.opensingular.form.SType;
 import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.SingularWebAppInitializerListener;
-import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
+import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.config.SingularLogoutFilter;
+import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
@@ -31,9 +31,8 @@ import javax.servlet.DispatcherType;
 import javax.servlet.FilterRegistration;
 import javax.servlet.ServletContext;
 import java.lang.reflect.Modifier;
-import java.util.ArrayList;
 import java.util.EnumSet;
-import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -46,37 +45,38 @@ import java.util.stream.Collectors;
  * - Requerimentos {@link SingularRequirement}
  */
 public class WorkspaceAppInitializerListener implements SingularWebAppInitializerListener, Loggable {
+    public static final String SERVLET_ATTRIBUTE_SGL_MODULE = "Singular-SingularModule";
 
-    public static final String SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG = "Singular-SingularModuleConfiguration";
+    public static final String SERVLET_ATTRIBUTE_SGL_WORKSPACE_REGISTRY = "Singular-SingularWorkspaceRegistry";
 
     /**
      * Inicializa os contextos, registrando um WicketApplication para cada contexto
      */
     @Override
     public void onInitialize(ServletContext servletContext, AnnotationConfigWebApplicationContext applicationContext) {
-        SingularModuleConfiguration singularModuleConfiguration = new SingularModuleConfiguration();
         try {
-            singularModuleConfiguration.init(applicationContext);
+            SingularModule module = lookupModule();
+            WorkspaceRegistry workspaceRegistry = new WorkspaceRegistry();
+            if (module != null) {
+                module.requirements(new RequirementRegistry(applicationContext));
+                module.workspace(workspaceRegistry);
+                module.defaultWorkspace(workspaceRegistry);
+            }
+
+            for (IServerContext context : workspaceRegistry.getContexts()) {
+                addWicketFilter(servletContext, context);
+                Class<?> config = getSpringSecurityConfigClassByContext(context);
+                if (config != null) {
+                    applicationContext.register(config);
+                    addLogoutFilter(servletContext, context);
+                }
+            }
+            servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_MODULE, module);
+            servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_WORKSPACE_REGISTRY, workspaceRegistry);
+
         } catch (IllegalAccessException | InstantiationException ex) {
             getLogger().error(ex.getMessage(), ex);
         }
-
-        for (IServerContext context : singularModuleConfiguration.getContexts()) {
-            addWicketFilter(servletContext, context);
-            Class<?> config = getSpringSecurityConfigClassByContext(context);
-            if (config != null) {
-                applicationContext.register(config);
-                addLogoutFilter(servletContext, context);
-            }
-        }
-
-        singularModuleConfiguration.setFormTypes(lookupFormTypes());
-        for (String url : publicUrls()) {
-            singularModuleConfiguration.addPublicUrl(url);
-        }
-        singularModuleConfiguration.initDefinitionsPackages(lookupRequirementFlowDefinition());
-
-        servletContext.setAttribute(SERVLET_ATTRIBUTE_SGL_MODULE_CONFIG, singularModuleConfiguration);
     }
 
     /**
@@ -84,9 +84,9 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
      */
     protected void addWicketFilter(ServletContext ctx, IServerContext context) {
         FilterRegistration.Dynamic wicketFilter = ctx.addFilter(context.getName() + System.identityHashCode(context), WicketFilter.class);
-        wicketFilter.setInitParameter("applicationClassName", context.getWicketApplicationClass().getName());
-        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getContextPath());
-        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getContextPath());
+        wicketFilter.setInitParameter("applicationClassName", context.getSettings().getWicketApplicationClass().getName());
+        wicketFilter.setInitParameter(WicketFilter.FILTER_MAPPING_PARAM, context.getSettings().getContextPath());
+        wicketFilter.addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), true, context.getSettings().getContextPath());
     }
 
     /**
@@ -95,47 +95,39 @@ public class WorkspaceAppInitializerListener implements SingularWebAppInitialize
     protected void addLogoutFilter(ServletContext ctx, IServerContext context) {
         ctx
                 .addFilter("singularLogoutFilter" + System.identityHashCode(context), SingularLogoutFilter.class)
-                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getUrlPath() + "/logout");
+                .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, context.getSettings().getUrlPath() + "/logout");
     }
 
     /**
      * Recupera a configuração de segurança por contexto, por padrão delega para o contexto atual
      */
     protected Class<? extends WebSecurityConfigurerAdapter> getSpringSecurityConfigClassByContext(IServerContext context) {
-        return context.getSpringSecurityConfigClass();
+        return context.getSettings().getSpringSecurityConfigClass();
     }
 
     /**
-     * Procura todos os STypes do ClassPath
+     * Busca o modulo no classpath
+     *
+     * @return
+     * @throws IllegalAccessException
+     * @throws InstantiationException
      */
-    protected List<Class<? extends SType<?>>> lookupFormTypes() {
-        return SingularClassPathScanner.get()
-                .findSubclassesOf(SType.class)
+    private SingularModule lookupModule() throws IllegalAccessException, InstantiationException {
+        Set<Class<? extends SingularModule>> modules = SingularClassPathScanner.get()
+                .findSubclassesOf(SingularModule.class)
                 .stream()
-                .filter(f -> !Modifier.isAbstract(f.getModifiers()))
-                .map(i -> (Class<? extends SType<?>>) i)
-                .collect(Collectors.toList());
-    }
+                .filter(f -> !Modifier.isAbstract(f.getModifiers()) || !Modifier.isInterface(f.getModifiers()))
+                .collect(Collectors.toSet());
 
-    /**
-     * Lista as UrlsPublicas padrões
-     */
-    protected String[] publicUrls() {
-        List<String> urls = new ArrayList<>();
-        urls.add("/rest/*");
-        urls.add("/resources/*");
-        urls.add("/public/*");
-        urls.add("/index.html");
-        return urls.toArray(new String[0]);
+        if ((long) modules.size() != 1) {
+            throw new SingularServerException(String.format("Apenas uma e somente uma implementação de %s " +
+                    "é permitida por módulo. Encontradas: %s", SingularModule.class.getName(), String.valueOf(modules
+                    .stream().map(Class::getName).collect(Collectors.toList()))));
+        }
+        Optional<Class<? extends SingularModule>> firstModule = modules.stream().findFirst();
+        if (firstModule.isPresent()) {
+            return firstModule.get().newInstance();
+        }
+        return null;
     }
-
-    /**
-     * Procuta todas as definições de flow
-     * TODO Vinicius ainda precisamos disso?
-     */
-    protected Set<Class<? extends RequirementFlowDefinition>> lookupRequirementFlowDefinition() {
-        return SingularClassPathScanner.get()
-                .findSubclassesOf(RequirementFlowDefinition.class);
-    }
-
 }

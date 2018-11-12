@@ -25,13 +25,12 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.exception.RequirementConcurrentModificationException;
 import org.opensingular.requirement.module.exception.SingularServerFormValidationError;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
-import org.springframework.orm.hibernate4.HibernateOptimisticLockingFailureException;
+import org.springframework.orm.hibernate5.HibernateOptimisticLockingFailureException;
 
-public class FlowConfirmButton<RE extends RequirementEntity, RI extends RequirementInstance> extends SingularSaveButton implements Loggable {
+public class FlowConfirmButton<RI extends RequirementInstance> extends SingularSaveButton implements Loggable {
 
-    private final AbstractFormPage<RE, RI> formPage;
+    private final AbstractFormPage<RI> formPage;
     private final String              transitionName;
     private final BSModalBorder       modal;
 
@@ -39,7 +38,7 @@ public class FlowConfirmButton<RE extends RequirementEntity, RI extends Requirem
                              final String id,
                              final IModel<? extends SInstance> model,
                              final boolean validate,
-                             final AbstractFormPage<RE, RI> formPage,
+                             final AbstractFormPage<RI> formPage,
                              final BSModalBorder modal) {
         super(id, model, validate);
         this.formPage = formPage;

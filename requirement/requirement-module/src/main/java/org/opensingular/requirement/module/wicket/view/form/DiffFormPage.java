@@ -17,15 +17,11 @@
 package org.opensingular.requirement.module.wicket.view.form;
 
 
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Optional;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.math.NumberUtils;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.util.diff.DocumentDiff;
+import org.opensingular.form.wicket.panel.diff.DiffVisualizer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSGrid;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSLabel;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSRow;
@@ -36,6 +32,11 @@ import org.opensingular.requirement.module.service.SingularDiffService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.opensingular.requirement.module.wicket.view.util.ModuleButtonFactory;
+
+import javax.inject.Inject;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
@@ -48,7 +49,7 @@ public class DiffFormPage extends ServerTemplate {
     public static final String PREVIOUS_REQUIREMENT_ID = "pr";
 
     @Inject
-    protected FormRequirementService<?> formRequirementService;
+    protected FormRequirementService formRequirementService;
 
     @Inject
     protected SingularDiffService singularDiffService;

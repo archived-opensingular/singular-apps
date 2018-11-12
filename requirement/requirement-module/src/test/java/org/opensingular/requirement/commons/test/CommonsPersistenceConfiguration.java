@@ -25,6 +25,7 @@ import org.opensingular.app.commons.spring.persistence.database.PackageScanConfi
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
 
 import java.util.List;
+import java.util.Properties;
 import java.util.UUID;
 
 public class CommonsPersistenceConfiguration implements SingularPersistenceConfiguration {
@@ -32,6 +33,12 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public void configureHibernatePackagesToScan(PackageScanConfiguration packagesToScan) {
+    }
+
+
+    @Override
+    public void configureHibernateProperties(Properties properties) {
+        properties.setProperty("hibernate.show_sql", "true");
     }
 
     @Override

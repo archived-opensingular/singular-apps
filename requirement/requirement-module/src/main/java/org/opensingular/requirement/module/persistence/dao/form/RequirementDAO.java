@@ -17,19 +17,15 @@
 package org.opensingular.requirement.module.persistence.dao.form;
 
 
-import java.io.Serializable;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
-
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.hibernate.HibernateQuery;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQuery;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Restrictions;
-import org.opensingular.flow.core.TaskType;
+import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
@@ -45,32 +41,38 @@ import org.opensingular.requirement.module.persistence.entity.form.QDraftEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QFormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.QRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
-import org.opensingular.requirement.module.persistence.filter.QuickFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
+import java.io.Serializable;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 
-public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long> {
+
+public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
 
     public RequirementDAO() {
-        super((Class<T>) RequirementEntity.class);
+        super(RequirementEntity.class);
     }
 
-    public RequirementDAO(Class<T> entityClass) {
+    public RequirementDAO(Class<RequirementEntity> entityClass) {
         super(entityClass);
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> list(String type) {
+    public List<RequirementEntity> list(String type) {
         Criteria criteria = getSession().createCriteria(this.entityClass);
         criteria.add(Restrictions.eq("type", type));
         return criteria.list();
     }
 
-    public Long countQuickSearch(QuickFilter filter,
+    public Long countQuickSearch(BoxFilter filter,
                                  List<SingularPermission> permissions,
                                  List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
@@ -80,7 +82,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .addPermissions(permissions));
     }
 
-    public Long countQuickSearch(QuickFilter filter, List<RequirementSearchExtender> extenders) {
+    public Long countQuickSearch(BoxFilter filter, List<RequirementSearchExtender> extenders) {
         return countQuickSearch(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.TRUE));
@@ -94,14 +96,14 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return new RequirementSearchQueryFactory(ctx).build(getSession());
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
                 .setExtenders(extenders)
                 .setCount(Boolean.FALSE));
     }
 
-    public List<Map<String, Serializable>> quickSearchMap(QuickFilter filter,
+    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,
                                                           List<SingularPermission> permissions,
                                                           List<RequirementSearchExtender> extenders) {
         return quickSearchMap(new RequirementSearchContext(filter)
@@ -115,20 +117,20 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return buildRequirementSearchQuery(query).fetchMap();
     }
 
-    public T findByFlowCodOrException(Integer cod) {
+    public RequirementEntity findByFlowCodOrException(Integer cod) {
         return findByFlowCod(cod).orElseThrow(
                 () -> new SingularServerException("Não foi encontrado a petição com flowInstanceEntity.cod=" + cod));
     }
 
-    public Optional<T> findByFlowCod(Integer cod) {
+    public Optional<RequirementEntity> findByFlowCod(Integer cod) {
         Objects.requireNonNull(cod);
         return findUniqueResult(entityClass, getSession()
                 .createCriteria(entityClass)
                 .add(Restrictions.eq("flowInstanceEntity.cod", cod)));
     }
 
-    public T findByFormEntity(FormEntity formEntity) {
-        return (T) getSession()
+    public RequirementEntity findByFormEntity(FormEntity formEntity) {
+        return (RequirementEntity) getSession()
                 .createQuery(" select p from " + entityClass.getName() + " p inner join p.formRequirementEntities fpe where fpe.form = :form ")
                 .setParameter("form", formEntity)
                 .setMaxResults(1)
@@ -136,7 +138,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     @Override
-    public void delete(T requirement) {
+    public void delete(RequirementEntity requirement) {
         findFormAttachmentByCodRequirement(requirement.getCod()).forEach(getSession()::delete);
         requirement.getFormRequirementEntities().forEach(formRequirementEntity -> {
             FormEntity formEntity = formRequirementEntity.getForm();
@@ -168,11 +170,11 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         query.append(" left join fpe.currentDraftEntity cde  ");
         query.append(" left join cde.form  f ");
         query.append(" left join f.formType ft ");
-        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND (ct.endDate is null or t.type = :fim )");
+        query.append(" where pe.cod = :requirementId and fpe.mainForm = :sim AND (ct.currentInstanceStatus = :isCurrentInstance or ct.currentInstanceStatus is null )");
         query.append(" order by ct.cod DESC ");
         return (RequirementAuthMetadataDTO) Optional.ofNullable(getSession().createQuery(query.toString())
                 .setParameter("sim", SimNao.SIM)
-                .setParameter("fim", TaskType.END)
+                .setParameter("isCurrentInstance", CurrentInstanceStatus.YES)
                 .setParameter("requirementId", requirementId)
                 .setMaxResults(1)
                 .list())
@@ -182,7 +184,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     @SuppressWarnings("unchecked")
-    public List<RequirementEntity> findByRootRequirement(T rootRequirement) {
+    public List<RequirementEntity> findByRootRequirement(RequirementEntity rootRequirement) {
         String hql = "FROM " + RequirementEntity.class.getName() + " pe "
                 + " WHERE pe.rootRequirement = :rootRequirement ";
 
@@ -192,15 +194,15 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByCodRequirement(Long codRequirement) {
-        QRequirementEntity requirement = new QRequirementEntity("requirementEntity");
+        QRequirementEntity     requirement     = new QRequirementEntity("requirementEntity");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirementEntity");
-        QFormEntity form = new QFormEntity("formEntity");
-        QDraftEntity currentDraft = new QDraftEntity("draftEntity");
-        QFormEntity draftForm = new QFormEntity("draftFormEntity");
-        QFormVersionEntity formVersion = new QFormVersionEntity("formVersionEntity");
-        QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
+        QFormEntity            form            = new QFormEntity("formEntity");
+        QDraftEntity           currentDraft    = new QDraftEntity("draftEntity");
+        QFormEntity            draftForm       = new QFormEntity("draftFormEntity");
+        QFormVersionEntity     formVersion     = new QFormVersionEntity("formVersionEntity");
+        QFormAttachmentEntity  formAttachment  = new QFormAttachmentEntity("formAttachmentEntity");
 
-        return new HibernateQueryFactory(getSession())
+        return new JPAQueryFactory(getSession())
                 .selectDistinct(formAttachment)
                 .from(requirement)
                 .innerJoin(requirement.formRequirementEntities, formRequirement)
@@ -217,21 +219,21 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .fetch();
     }
 
-    public boolean containChildren(Long codRequirement) {
+    public boolean hasAnyChildrenRequirement(Long codRequirement) {
         QRequirementEntity requirementEntity = QRequirementEntity.requirementEntity;
-        return new HibernateQueryFactory(getSession())
+        return new JPAQueryFactory(getSession())
                 .selectFrom(requirementEntity)
                 .where(requirementEntity.parentRequirement.cod.eq(codRequirement))
                 .fetchCount() > 0;
     }
 
-    public T findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
-        QRequirementEntity requirement = new QRequirementEntity("requirement");
+    public RequirementEntity findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
+        QRequirementEntity     requirement     = new QRequirementEntity("requirement");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirement");
-        QFormEntity form = new QFormEntity("form");
-        QFormTypeEntity formTypeEntity = new QFormTypeEntity("formType");
+        QFormEntity            form            = new QFormEntity("form");
+        QFormTypeEntity        formTypeEntity  = new QFormTypeEntity("formType");
 
-        HibernateQuery<RequirementEntity> hibernateQuery = new HibernateQueryFactory(getSession())
+        JPAQuery<RequirementEntity> jpaQuery = new JPAQueryFactory(getSession())
                 .selectFrom(requirement)
                 .innerJoin(requirement.formRequirementEntities, formRequirement)
                 .innerJoin(formRequirement.form, form)
@@ -239,9 +241,9 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .where(formRequirement.mainForm.eq(SimNao.SIM)
                         .and(requirement.rootRequirement.cod.eq(rootRequirement))
                         .and(formTypeEntity.abbreviation.eq(type)));
-        hibernateQuery.getMetadata().setLimit(1L);
+        jpaQuery.getMetadata().setLimit(1L);
 
-        return (T) hibernateQuery.fetchOne();
+        return (RequirementEntity) jpaQuery.fetchOne();
     }
 
 }

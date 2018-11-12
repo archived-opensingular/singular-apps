@@ -22,7 +22,8 @@ import org.apache.commons.collections4.MapUtils;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
+
 
 /**
  * Responsible for generating a redirect link to a new requirement page.
@@ -30,11 +31,11 @@ import static org.opensingular.requirement.module.wicket.view.util.ActionContext
 public class NewRequirementUrlBuilder {
 
     private final String baseURL;
-    private final Long   requirementDefinitionId;
+    private final String requirementDefinitionKey;
 
-    public NewRequirementUrlBuilder(String baseURL, Long requirementDefinitionId) {
+    public NewRequirementUrlBuilder(String baseURL, String requirementDefinitionKey) {
         this.baseURL = baseURL;
-        this.requirementDefinitionId = requirementDefinitionId;
+        this.requirementDefinitionKey = requirementDefinitionKey;
     }
 
     public String getURL(Map<String, String> params) {
@@ -43,7 +44,7 @@ public class NewRequirementUrlBuilder {
                 .baseURL(baseURL)
                 .formAction(FormAction.FORM_FILL.getId())
                 .requirementId(null)
-                .param(REQUIREMENT_DEFINITION_ID, requirementDefinitionId)
+                .param(REQUIREMENT_DEFINITION_KEY, requirementDefinitionKey)
                 .params(params);
         return builder.build();
     }

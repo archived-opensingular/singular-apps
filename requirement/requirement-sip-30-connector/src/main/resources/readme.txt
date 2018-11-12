@@ -2,7 +2,7 @@ Para gerar stubs:
 
 [sigtaq-client/src/main/java]
 
-wsimport -encoding utf-8 -d . -s . -p br.gov.antaq.sip.client ../resources/ws_sip_autenticar.wsdl
+wsimport -encoding utf-8 -d . -s . -p org.opensingular.sip.client ../resources/ws_sip_autenticar.wsdl
 
 
 

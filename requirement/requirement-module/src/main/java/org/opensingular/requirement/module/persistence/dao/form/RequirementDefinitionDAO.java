@@ -16,11 +16,11 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 
+@SuppressWarnings("unchecked")
 public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> extends BaseDAO<T, Long> {
 
     public RequirementDefinitionDAO() {
@@ -31,18 +31,33 @@ public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> ext
         super(entityClass);
     }
 
-    public RequirementDefinitionEntity findByModuleAndName(ModuleEntity moduleEntity, FormTypeEntity formType) {
+    public T findByKey(String codModulo, String key) {
         StringBuilder hql = new StringBuilder();
 
         hql.append(" FROM ");
         hql.append(RequirementDefinitionEntity.class.getName());
         hql.append(" as req ");
-        hql.append(" WHERE req.module = :module ");
-        hql.append("    AND req.formType = :formType ");
+        hql.append(" WHERE req.module.cod = :codModulo ");
+        hql.append("    AND req.key = :key ");
 
-        return (RequirementDefinitionEntity) getSession().createQuery(hql.toString())
-            .setParameter("module", moduleEntity)
-            .setParameter("formType", formType)
-            .uniqueResult();
+        return (T) getSession().createQuery(hql.toString())
+                .setParameter("codModulo", codModulo)
+                .setParameter("key", key)
+                .uniqueResult();
+    }
+
+    public T findRequirementDefinitionByRequrimentId(Long requirementId) {
+        StringBuilder hql = new StringBuilder();
+
+        hql.append(" select reqdef ");
+        hql.append(" FROM ");
+        hql.append(RequirementEntity.class.getName());
+        hql.append(" as req ");
+        hql.append(" inner join req.requirementDefinitionEntity as reqdef ");
+        hql.append("    where req.cod = :cod ");
+
+        return (T) getSession().createQuery(hql.toString())
+                .setParameter("cod", requirementId)
+                .uniqueResult();
     }
 }

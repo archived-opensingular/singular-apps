@@ -17,12 +17,9 @@
 package org.opensingular.requirement.module.spring.security.config.cas.util;
 
 
-import java.io.IOException;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Optional;
+import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.commons.util.ObjectUtils;
+
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
 import javax.servlet.FilterConfig;
@@ -30,8 +27,12 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
-
-import org.opensingular.lib.commons.base.SingularProperties;
+import java.io.IOException;
+import java.util.Collections;
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 
 /**
@@ -125,7 +126,7 @@ public class AuthenticationFilterWrapper extends SSOConfigurableFilter {
                     return filterConfig.getFilterName();
                 }
             };
-            delegate = (Filter) Class.forName(DELEGATE_CLASS_NAME).newInstance();
+            delegate = ObjectUtils.newInstance(DELEGATE_CLASS_NAME, Filter.class);
             delegate.init(newConfig);
         } catch (Exception e) {
             throw new ServletException(e.getMessage(), e);

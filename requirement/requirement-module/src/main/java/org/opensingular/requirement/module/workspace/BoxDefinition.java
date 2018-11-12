@@ -17,27 +17,24 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.BoxItemDataProvider;
-import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.box.form.STypeDynamicAdvancedFilter;
+import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * Factory responsible for build one item box with its listings, custom actions and controllers
  */
-public interface BoxDefinition {
-
+public interface BoxDefinition extends Serializable {
     /**
-     * Builds an {@link ItemBox}. This method do not need to check if the {@param context} is supported, the current
-     * {@link IServerContext} can be used to decide about minor changes in the {@param ItemBox} for each different
-     * context
+     * Get the ItemBox that represents this box definition
      *
-     * @param context the current {@link IServerContext}
-     * @return An proper configured ItemBox
+     * @return a configured ItemBox
      */
-    ItemBox build(IServerContext context);
-
+    ItemBox getItemBox();
 
     /**
      * @return the data provider responsible for populate the box data
@@ -49,4 +46,34 @@ public interface BoxDefinition {
      */
     List<DatatableField> getDatatableFields();
 
+    /**
+     * Create a BoxFilter, this method must always return a new instance
+     *
+     * @return a fresh BoxFilter
+     */
+    default BoxFilter createBoxFilter(){
+        return new BoxFilter();
+    }
+
+    /**
+     * Eval if the box is visible, usually is used in conjunction
+     * with {@link org.springframework.security.core.userdetails.UserDetails}
+     */
+    default boolean isVisible(){
+        return true;
+    }
+
+    /**
+     * Setup the dynamic advanced filter type, by default will add all table columns as string fields
+     *
+     * @param sTypeDynamicAdvancedFilter the dynamic type
+     */
+    default void setupDynamicAdvancedFilterType(STypeDynamicAdvancedFilter sTypeDynamicAdvancedFilter){
+        for (DatatableField datatableField : getDatatableFields()) {
+            sTypeDynamicAdvancedFilter.addFieldString(datatableField.getLabel())
+                    .asAtr()
+                    .label(datatableField.getKey())
+                    .asAtrBootstrap().colPreference(2);
+        }
+    }
 }

@@ -21,7 +21,7 @@ package org.opensingular.requirement.commons.flow.renderer.remote;
 import org.apache.commons.lang3.NotImplementedException;
 import org.junit.Assert;
 import org.junit.Test;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
+import org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.flow.SingularWebRef;
 
 public class SingularWebRefTest {

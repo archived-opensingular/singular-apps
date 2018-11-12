@@ -16,8 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.view.template;
 
-import java.util.Optional;
-
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
@@ -32,6 +30,8 @@ import org.opensingular.lib.wicket.util.template.SkinOptions.Skin;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.requirement.module.wicket.SingularSession;
+
+import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
@@ -54,30 +54,25 @@ public class TopMenu extends Panel {
     protected void buildContent() {
         queue(new Label("nome", $m.ofValue(SingularSession.get().getName())));
 
-        WebMarkupContainer avatar    = new WebMarkupContainer("codrh");
-        Optional<String>   avatarSrc = Optional.ofNullable(null);
+        WebMarkupContainer avatar = new WebMarkupContainer("codrh");
+        Optional<String> avatarSrc = Optional.ofNullable(null);
         avatarSrc.ifPresent(src -> avatar.add($b.attr("src", src)));
         queue(avatar);
         avatar.setVisible(avatarSrc.isPresent());
 
-        SecurityAuthPathsFactory securityAuthPathsFactory = new SecurityAuthPathsFactory();
-        SecurityAuthPaths        securityAuthPaths        = securityAuthPathsFactory.get();
-
         Link logout = new Link("logout") {
+            SecurityAuthPaths securityAuthPaths;
+
             @Override
             public void onClick() {
+                if (securityAuthPaths == null) {
+                    securityAuthPaths = new SecurityAuthPathsFactory().get();
+                }
                 throw new RedirectToUrlException(securityAuthPaths.getLogoutPath(RequestCycle.get()));
             }
         };
-
         queue(logout);
-
-
-//        final WebMarkupContainer opcoesVisuais = new WebMarkupContainer("opcoes-visuais");
-//        opcoesVisuais.setRenderBodyOnly(true);
-//        opcoesVisuais.setVisible(option.options().size() > 1);
-//        opcoesVisuais.queue(buildSkinOptions());
-//        queue(opcoesVisuais);
+        this.setVisible(SingularSession.get().getUserDetails() != null);
     }
 
     protected ListView buildSkinOptions() {

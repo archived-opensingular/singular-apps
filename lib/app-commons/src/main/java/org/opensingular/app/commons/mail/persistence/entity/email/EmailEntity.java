@@ -15,11 +15,14 @@
  */
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+
+import org.opensingular.form.persistence.entity.AttachmentEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.util.Constants;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.ForeignKey;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,11 +35,10 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.UniqueConstraint;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
-import org.hibernate.annotations.ForeignKey;
-import org.opensingular.form.persistence.entity.AttachmentEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.util.Constants;
 
 @Entity
 @SequenceGenerator(name = EmailEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_EMAIL", schema = Constants.SCHEMA)
@@ -70,10 +72,15 @@ public class EmailEntity extends BaseEntity<Long> {
     @OneToMany
     @JoinTable(schema = Constants.SCHEMA, name = "TB_EMAIL_ARQUIVO",
             uniqueConstraints = {@UniqueConstraint(name = "UK_EMAIL_ARQUIVO", columnNames = "CO_ARQUIVO")},
+            foreignKey = @javax.persistence.ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL"),
             joinColumns = @JoinColumn(name = "CO_EMAIL"),
+            inverseForeignKey = @javax.persistence.ForeignKey(name = "FK_EMAIL_ARQUIVO_ARQUIVO"),
             inverseJoinColumns = @JoinColumn(name = "CO_ARQUIVO"))
-    @ForeignKey(name = "FK_EMAIL_ARQUIVO_EMAIL", inverseName = "FK_EMAIL_ARQUIVO_ARQUIVO")
     private List<AttachmentEntity> attachments = new ArrayList<>();
+
+
+    @Column(name = "CO_MODULO", length = 30)
+    private String module;
 
     @Override
     public Long getCod() {
@@ -132,4 +139,11 @@ public class EmailEntity extends BaseEntity<Long> {
         this.attachments = attachments;
     }
 
+    public String getModule() {
+        return module;
+    }
+
+    public void setModule(String module) {
+        this.module = module;
+    }
 }

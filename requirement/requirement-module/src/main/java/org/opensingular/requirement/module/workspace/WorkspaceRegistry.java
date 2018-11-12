@@ -16,46 +16,47 @@
 
 package org.opensingular.requirement.module.workspace;
 
-import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.WorkspaceConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.springframework.web.context.support.AnnotationConfigWebApplicationContext;
 
-import java.util.*;
+import java.util.LinkedHashSet;
+import java.util.Set;
 
+/**
+ * The WorkspaceRegistry, where the contexts should be added
+ *
+ * @see org.opensingular.requirement.module.SingularModule
+ * @see org.opensingular.requirement.module.WorkspaceAppInitializerListener
+ */
 public class WorkspaceRegistry implements Loggable {
-    private final Map<IServerContext, WorkspaceConfiguration> workspaceConfigurationMap;
-    private final AnnotationConfigWebApplicationContext applicationContext;
+    private final Set<IServerContext>                  contexts       = new LinkedHashSet<>();
+    private final Set<Class<? extends IServerContext>> contextClasses = new LinkedHashSet<>();
 
-    public WorkspaceRegistry(AnnotationConfigWebApplicationContext applicationContext) {
-        this.workspaceConfigurationMap = new LinkedHashMap<>();
-        this.applicationContext = applicationContext;
-    }
-
+    /**
+     * Add a contexts to the registry
+     *
+     * @param serverContextClass the context class
+     * @return the current registry
+     */
     public WorkspaceRegistry add(Class<? extends IServerContext> serverContextClass) {
+        if (!contextClasses.add(serverContextClass)) {
+            throw new SingularRequirementException(String.format("Context class %s is already registered",serverContextClass.getName()));
+        }
         try {
-            IServerContext serverContext = serverContextClass.newInstance();
-            WorkspaceConfiguration cfg = new WorkspaceConfiguration(applicationContext);
-            serverContext.setup(cfg);
-            workspaceConfigurationMap.put(serverContext, cfg);
+            contexts.add(serverContextClass.newInstance());
         } catch (InstantiationException | IllegalAccessException ex) {
             getLogger().error(ex.getMessage(), ex);
-            throw SingularServerException.rethrow("Não foi possivel criar uma instancia de "+serverContextClass, ex);
+            throw SingularServerException.rethrow("Não foi possivel criar uma instancia de " + serverContextClass, ex);
         }
         return this;
     }
 
-    public Optional<WorkspaceConfiguration> get(IServerContext serverContext) {
-        return Optional.ofNullable(workspaceConfigurationMap.get(serverContext));
-    }
-
-    public Collection<WorkspaceConfiguration> listConfigs() {
-        return workspaceConfigurationMap.values();
-    }
-
-    public Set<IServerContext> listContexts() {
-        return workspaceConfigurationMap.keySet();
+    /**
+     * @return all contexts added to this registry
+     */
+    public Set<IServerContext> getContexts() {
+        return contexts;
     }
 }

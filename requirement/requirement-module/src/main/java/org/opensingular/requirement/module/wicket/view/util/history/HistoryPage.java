@@ -37,20 +37,23 @@ import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.renderer.FlowRendererProviderExtension;
 import org.opensingular.flow.core.renderer.IFlowRenderer;
 import org.opensingular.flow.core.renderer.NullFlowRenderer;
+import org.opensingular.flow.core.renderer.RendererUtil;
 import org.opensingular.lib.commons.extension.SingularExtensionUtil;
 import org.opensingular.lib.commons.lambda.IFunction;
 import org.opensingular.lib.wicket.util.button.DropDownButtonPanel;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.lib.wicket.util.image.PhotoSwipeBehavior;
 import org.opensingular.lib.wicket.util.image.PhotoSwipePanel;
+import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
-import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -75,7 +78,10 @@ public class HistoryPage extends ServerTemplate {
     private static final String      IMAGE_HIST_ID    = "imageHist";
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
+
+    @Inject
+    private IServerContext serverContext;
 
     private Long                     requirementPK;
     //    private PhotoSwipePanel          gallery          = new PhotoSwipePanel("gallery", PhotoSwipeBehavior.forURLs($m.get(() -> {
@@ -120,9 +126,8 @@ public class HistoryPage extends ServerTemplate {
             imageHistFlow = new Image(id, new DynamicImageResource() {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
-                    FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+                    FlowInstance flowInstance = requirementService.loadRequirementInstance(requirementPK).getFlowInstance();
                     IFlowRenderer renderer = findFlowExecutionImageExtension()
-                        .map(it -> it.getRenderer())
                         .orElse(NullFlowRenderer.INSTANCE);
                     return renderer.generateHistoryPng(flowInstance);
                 }
@@ -141,11 +146,8 @@ public class HistoryPage extends ServerTemplate {
         return imageHistFlow;
     }
 
-    private Optional<FlowRendererProviderExtension> findFlowExecutionImageExtension() {
-        return SingularExtensionUtil.get()
-            .findExtensions(FlowRendererProviderExtension.class)
-            .stream()
-            .findFirst();
+    private Optional<IFlowRenderer> findFlowExecutionImageExtension() {
+        return RendererUtil.findRendererForUserDisplay();
     }
 
     protected AjaxLink<?> getBtnFechar() {
@@ -236,7 +238,11 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private List<RequirementHistoryDTO> getHistoryTasks() {
-        return requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, showHiddenTasks());
+        return requirementService.listRequirementContentHistoryByCodRequirement(getRequirementInstance(), showHiddenTasks());
+    }
+
+    private RequirementInstance getRequirementInstance(){
+        return requirementService.loadRequirementInstance(requirementPK);
     }
 
     protected boolean showHiddenTasks() {
@@ -244,7 +250,7 @@ public class HistoryPage extends ServerTemplate {
     }
 
     protected String getBaseUrl() {
-        return RequestCycle.get().getRequest().getContextPath() + SingularSession.get().getServerContext().getUrlPath();
+        return RequestCycle.get().getRequest().getContextPath() + serverContext.getSettings().getUrlPath();
     }
 
     @Override

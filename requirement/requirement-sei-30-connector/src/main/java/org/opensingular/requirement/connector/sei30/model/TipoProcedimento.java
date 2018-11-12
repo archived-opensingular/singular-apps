@@ -17,6 +17,7 @@
 package org.opensingular.requirement.connector.sei30.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 public class TipoProcedimento implements Serializable {
 
@@ -37,4 +38,16 @@ public class TipoProcedimento implements Serializable {
         return id;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TipoProcedimento)) return false;
+        TipoProcedimento that = (TipoProcedimento) o;
+        return Objects.equals(getId(), that.getId());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId());
+    }
 }

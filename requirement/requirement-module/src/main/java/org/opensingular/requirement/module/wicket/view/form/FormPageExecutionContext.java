@@ -22,26 +22,20 @@ import java.util.Optional;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.flow.FlowResolver;
-import org.opensingular.requirement.module.service.RequirementSender;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 public class FormPageExecutionContext implements Serializable {
 
     private ActionContext actionContext;
     private String formType;
-    private FlowResolver resolver;
     private boolean mainForm = true;
-    private Class<? extends RequirementSender> requirementSender;
 
-    public FormPageExecutionContext(ActionContext context, String formName, FlowResolver resolver, Class<? extends RequirementSender> requirementSender) {
+    public FormPageExecutionContext(ActionContext context, String formName) {
         this(context);
-        this.resolver = resolver;
         if (formName != null) {
             this.mainForm = false;
             this.formType = formName;
         }
-        this.requirementSender = requirementSender;
     }
 
     public FormPageExecutionContext(ActionContext context) {
@@ -77,19 +71,11 @@ public class FormPageExecutionContext implements Serializable {
         return mainForm;
     }
 
-    public FlowResolver getFlowResolver() {
-        return resolver;
-    }
-
     public ActionContext copyOfInnerActionContext() {
         return new ActionContext(actionContext);
     }
 
-    public Class<? extends RequirementSender> getRequirementSender() {
-        return requirementSender;
-    }
-
-    public Optional<Long> getRequirementDefinitionId() {
-        return actionContext.getRequirementDefinitionId();
+    public Optional<String> getRequirementDefinitionKey() {
+        return actionContext.getRequirementDefinitionKey();
     }
 }

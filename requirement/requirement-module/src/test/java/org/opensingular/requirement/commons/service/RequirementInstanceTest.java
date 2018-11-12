@@ -18,9 +18,6 @@
 
 package org.opensingular.requirement.commons.service;
 
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.form.SFormUtil;
@@ -29,34 +26,42 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefSDocumentFactory;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocumentFactory;
-import org.opensingular.requirement.commons.FOOFlowWithTransition;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
+import org.opensingular.singular.pet.module.foobar.stuff.FOOFlowWithTransition;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
+import org.springframework.security.test.context.support.WithUserDetails;
+import org.springframework.test.context.TestExecutionListeners;
 
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+@TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
     @Inject
     private DefaultRequirementService requirementService;
 
+
     @Test
+    @WithUserDetails("edgar.fabiano")
     @Transactional
-    public void testSomeFunctions(){
+    public void testSomeFunctions() {
         RefSDocumentFactory documentFactoryRef = SDocumentFactory.empty().getDocumentFactoryRef();
-        SInstance instance = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        RequirementInstance requirement = requirementService.createNewRequirementWithoutSave(null, null, p -> {}, getRequirementDefinition());
+        RequirementInstance<?, ?> requirement = getRequirementDefinition().newRequirement();
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
-        requirementService.saveOrUpdate(requirement, instance, true);
+        requirement.saveForm(instance);
 
-        Assert.assertNotNull(requirement.getMainForm());
+        Assert.assertNotNull(requirement.getDraft());
 
-        Assert.assertTrue(requirement.getMainForm(STypeFoo.class).getType() instanceof STypeFoo);
+        Assert.assertTrue(requirement.getDraft(STypeFoo.class).get().getType() instanceof STypeFoo);
 
-        Assert.assertNotNull(requirement.getMainFormAndCast(SIComposite.class));
 
         Assert.assertNotNull(requirement.getFlowDefinition());
 
@@ -68,4 +73,16 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
 
         Assert.assertEquals(SFormUtil.getTypeName(STypeFoo.class), requirement.getMainFormTypeName());
     }
+
+
+    @Test
+    public void sendNewRequirement() {
+        RefSDocumentFactory documentFactoryRef  = SDocumentFactory.empty().getDocumentFactoryRef();
+        SInstance           instance            = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        requirementInstance.saveForm(instance);
+        requirementInstance.send("vinicius.nunes");
+        requirementService.executeTransition("No more bar", requirementInstance, null, null, null);
+    }
+
 }

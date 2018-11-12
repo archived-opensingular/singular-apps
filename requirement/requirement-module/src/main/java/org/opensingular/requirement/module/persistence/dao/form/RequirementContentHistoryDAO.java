@@ -17,7 +17,7 @@
 package org.opensingular.requirement.module.persistence.dao.form;
 
 import com.querydsl.jpa.JPAExpressions;
-import com.querydsl.jpa.hibernate.HibernateQueryFactory;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Query;
 import org.opensingular.flow.persistence.entity.QTaskInstanceEntity;
 import org.opensingular.form.SType;
@@ -49,7 +49,7 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
         QRequirementEntity qRequirement = new QRequirementEntity("qRequirement");
         QTaskInstanceEntity qTaskInstance = new QTaskInstanceEntity("qTaskInstance");
 
-        List<RequirementHistoryDTO> statesWithoutContent = new HibernateQueryFactory(getSession())
+        List<RequirementHistoryDTO> statesWithoutContent = new JPAQueryFactory(getSession())
                 .from(qRequirement)
                 .innerJoin(qRequirement.flowInstanceEntity.tasks, qTaskInstance)
                 .where(qRequirement.cod.eq(codRequirement).and(qTaskInstance.notIn(JPAExpressions
@@ -59,7 +59,7 @@ public class RequirementContentHistoryDAO extends BaseDAO<RequirementContentHist
                 .select(new QRequirementHistoryDTO( qTaskInstance))
                 .fetch();
 
-        List<RequirementHistoryDTO> statesWithContent = new HibernateQueryFactory(getSession())
+        List<RequirementHistoryDTO> statesWithContent = new JPAQueryFactory(getSession())
                 .from(qRequirementContentHistory)
                 .where(qRequirementContentHistory.requirementEntity.cod.eq(codRequirement)
                         .and(qRequirementContentHistory.taskInstanceEntity.isNotNull()))

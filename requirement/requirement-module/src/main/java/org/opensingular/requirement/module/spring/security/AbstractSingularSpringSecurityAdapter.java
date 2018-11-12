@@ -16,17 +16,14 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import org.opensingular.requirement.module.SingularModuleConfiguration;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 
-import javax.inject.Inject;
+import java.util.stream.Collectors;
 
 public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityConfigurerAdapter {
-    @Inject
-    protected SingularModuleConfiguration singularModuleConfiguration;
-
     private IServerContext context;
 
     @Override
@@ -35,7 +32,10 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
     }
 
     public String[] getDefaultPublicUrls() {
-        return singularModuleConfiguration.getPublicUrls().toArray(new String[]{});
+        return getContext().getSettings().getPublicUrls()
+                .stream()
+                .map(publicPath -> getContext().getSettings().getUrlPath() + publicPath)
+                .collect(Collectors.toList()).toArray(new String[]{});
     }
 
     public final IServerContext getContext() {
@@ -46,6 +46,9 @@ public abstract class AbstractSingularSpringSecurityAdapter extends WebSecurityC
      * Sets the contexts that this security represents
      */
     public void setContext(IServerContext context) {
+        if (this.context != null) {
+            throw new SingularRequirementException(String.format("Spring Security Config Class: %s is already is use by context %s, trying to configure context %s.", this.getClass().getName(), this.context.getName(), context.getName()));
+        }
         this.context = context;
     }
 }

@@ -23,6 +23,7 @@ import javax.transaction.Transactional;
 
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.junit.Assert;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SIList;
@@ -30,13 +31,12 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.helpers.SingularWicketTester;
 import org.opensingular.requirement.commons.CommonsApplicationMock;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
-import org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage;
 import org.opensingular.requirement.module.admin.healthsystem.extension.DatabaseTablesAdminEntry;
 import org.opensingular.requirement.module.test.SingularServletContextTestExecutionListener;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
-import static org.opensingular.requirement.module.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
+import static org.opensingular.requirement.commons.admin.healthsystem.HealthSystemPage.ENTRY_PATH_PARAM;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class SDbHealthTest extends SingularCommonsBaseTest {
@@ -58,8 +58,10 @@ public class SDbHealthTest extends SingularCommonsBaseTest {
         reachDbPanel();
         tester.executeAjaxEvent(tester.getAssertionsForSubComp("checkButtonDB").isNotNull().getTarget(), "click");
 
-        SInstance panelDB = tester.getAssertionsInstance().getTarget();
-        Assert.assertEquals(0, ((SIList) (((SIComposite) panelDB).getAllFields().get(0))).get(0).getValidationErrors().size());
+        SIComposite panelDB = (SIComposite) tester.getAssertionsInstance().getTarget();
+        SIList siList = (SIList) (panelDB.getAllFields().get(0));
+
+        Assert.assertEquals(0, siList.size());
     }
 
 }

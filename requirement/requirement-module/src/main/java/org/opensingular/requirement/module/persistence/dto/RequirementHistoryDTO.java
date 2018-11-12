@@ -28,6 +28,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementCo
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Optional;
 
 public class RequirementHistoryDTO implements Serializable, Comparable<RequirementHistoryDTO> {
@@ -115,5 +116,22 @@ public class RequirementHistoryDTO implements Serializable, Comparable<Requireme
     @Override
     public int compareTo(RequirementHistoryDTO o) {
         return getBeginDate().compareTo(o.getBeginDate());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        } else if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        RequirementHistoryDTO that = (RequirementHistoryDTO) o;
+        return Objects.equals(requirementContentHistory, that.requirementContentHistory) && Objects.equals(
+                taskInstanceEntity, that.taskInstanceEntity);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(requirementContentHistory, taskInstanceEntity);
     }
 }

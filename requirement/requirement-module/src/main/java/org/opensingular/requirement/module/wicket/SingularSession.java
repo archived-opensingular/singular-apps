@@ -16,18 +16,18 @@
 
 package org.opensingular.requirement.module.wicket;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.apache.wicket.Session;
 import org.apache.wicket.authroles.authentication.AuthenticatedWebSession;
 import org.apache.wicket.authroles.authorization.strategies.role.Roles;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class SingularSession extends AuthenticatedWebSession {
 
@@ -76,19 +76,8 @@ public class SingularSession extends AuthenticatedWebSession {
         return getUserDetails() != null;
     }
 
-    /**
-     * @return O contexto atual da sessão ou null caso ainda não tenha sido definido.
-     */
-    public IServerContext getServerContext() {
-        if (isAuthtenticated()) {
-            return getUserDetails().getServerContext();
-        }
-        return null;
-    }
-
-
     public <T extends SingularRequirementUserDetails> T getUserDetails() {
-       return ApplicationContextProvider.get().getBean((Class<T>) SingularRequirementUserDetails.class);
+        return (T) ApplicationContextProvider.get().getBean(UserDetailsProvider.class).get();
     }
 
     public ModuleEntity getCategoriaSelecionada() {

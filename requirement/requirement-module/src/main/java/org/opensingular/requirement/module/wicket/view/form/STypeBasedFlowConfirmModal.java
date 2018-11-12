@@ -32,12 +32,11 @@ import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 import java.io.Serializable;
 
-public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends RequirementInstance> extends AbstractFlowConfirmModal<RE, RI> {
+public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
     private final RefType refType;
     private final FormKey formKey;
@@ -48,7 +47,7 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
 
     public STypeBasedFlowConfirmModal(String id,
                                       String transitionName,
-                                      AbstractFormPage<RE, RI> formPage,
+                                      AbstractFormPage<RI> formPage,
                                       RefType refType,
                                       FormKey formKey,
                                       TransitionController<?> transitionController) {
@@ -60,8 +59,8 @@ public class STypeBasedFlowConfirmModal<RE extends RequirementEntity, RI extends
     }
 
     @Override
-    protected FlowConfirmButton<RE, RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m, boolean validation) {
-        return new FlowConfirmButton<RE, RI>(tn, "confirm-btn", im, isValidateConfirmButton(vm, validation), getFormPage(), m) {
+    protected FlowConfirmButton<RI> newFlowConfirmButton(String tn, IModel<? extends SInstance> im, ViewMode vm, BSModalBorder m, boolean validation) {
+        return new FlowConfirmButton<RI>(tn, "confirm-btn", im, isValidateConfirmButton(vm, validation), getFormPage(), m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
                 setDirty(true);

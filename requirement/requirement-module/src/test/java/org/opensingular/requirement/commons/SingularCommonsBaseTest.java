@@ -18,18 +18,17 @@
 
 package org.opensingular.requirement.commons;
 
-import javax.inject.Inject;
-
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
+import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.SingularModuleContextLoader;
 import org.opensingular.requirement.module.test.ModuleConfigurationMock;
 import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
@@ -40,6 +39,8 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.inject.Inject;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
@@ -55,14 +56,15 @@ public abstract class SingularCommonsBaseTest implements Loggable {
     @Inject
     protected PlatformTransactionManager transactionManager;
 
-
     @Inject
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
-
+    @Inject
+    private RequirementDefinitionService requirementDefinitionService;
 
     @Inject
-    private SingularModuleConfiguration singularModuleConfiguration;
+    private ModuleService moduleService;
+
 
     protected Session session;
 
@@ -71,12 +73,17 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         session = sessionFactory.getCurrentSession();
     }
 
-    protected RequirementDefinitionEntity getRequirementDefinition() {
-        return requirementDefinitionDAO.getOrException(getCodRequirementDefinition());
+    protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return requirementDefinitionDAO.findByKey(moduleService.getModule().getCod(), getRequirementDefinitionKey());
     }
 
-    protected Long getCodRequirementDefinition() {
-        return singularModuleConfiguration.getRequirements()
+
+    protected String getRequirementDefinitionKey() {
+        return getRequirementDefinition().getKey();
+    }
+
+    protected RequirementDefinition getRequirementDefinition() {
+        return requirementDefinitionService.getRequirements()
                 .stream()
                 .filter(s -> {
                             String name  = s.getMainForm().getSimpleName();
@@ -85,7 +92,6 @@ public abstract class SingularCommonsBaseTest implements Loggable {
                         }
                 )
                 .findFirst()
-                .map(SingularRequirement::getDefinitionCod)
                 .orElse(null);
 
     }

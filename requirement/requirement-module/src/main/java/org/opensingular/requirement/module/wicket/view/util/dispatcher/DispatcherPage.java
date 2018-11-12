@@ -23,7 +23,6 @@ import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.head.filter.HeaderResponseContainer;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.WebPage;
-import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.ITaskPageStrategy;
@@ -34,8 +33,7 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SType;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularModuleConfiguration;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
@@ -68,7 +66,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private final WebMarkupContainer bodyContainer = new WebMarkupContainer("body");
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     @Inject
     private SingularRequirementService singularRequirementService;
@@ -77,7 +75,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private AuthorizationService authorizationService;
 
     @Inject
-    private SingularModuleConfiguration singularServerConfiguration;
+    private IServerContext serverContext;
 
     public DispatcherPage() {
         buildPage();
@@ -94,7 +92,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     @SuppressWarnings("unchecked")
     @Deprecated
     private ActionContext setFormNameActionContext(ActionContext context) {
-        SingularRequirement req = singularRequirementService.getSingularRequirement(context);
+        RequirementDefinition req = singularRequirementService.getSingularRequirement(context);
         if (req != null && !context.getFormName().isPresent()) {
             context.setFormName(SFormUtil.getTypeName((Class<? extends SType<?>>) req.getMainForm()));
         }
@@ -233,7 +231,6 @@ public class DispatcherPage extends WebPage implements Loggable {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
-        IServerContext serverContext = IServerContext.getContextFromRequest(RequestCycle.get().getRequest(), singularServerConfiguration.getContexts());
         if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
             redirectForbidden();
         } else {
@@ -289,13 +286,13 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        Optional<Class<? extends AbstractFormPage<?, ?>>> formPageClass = config.getFormPageClass();
+        Optional<Class<? extends AbstractFormPage>> formPageClass = config.getFormPageClass();
         if (formPageClass.isPresent()) {
             return formPageClass.get();
         } else {
-            SingularRequirement singularRequirement = singularRequirementService.getSingularRequirement(config);
-            if (singularRequirement != null) {
-                return singularRequirement.getDefaultExecutionPage();
+            RequirementDefinition requirementDefinition = singularRequirementService.getSingularRequirement(config);
+            if (requirementDefinition != null) {
+                return requirementDefinition.getDefaultExecutionPage();
             }
         }
         return FormPage.class;

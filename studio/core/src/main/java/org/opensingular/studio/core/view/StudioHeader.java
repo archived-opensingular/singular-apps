@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.form.spring.SingularUserDetails;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.studio.core.util.StudioWicketUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,8 +77,12 @@ public class StudioHeader extends Panel {
     }
 
     private Optional<SingularUserDetails> getUserDetails() {
-        return Optional.ofNullable((SingularUserDetails)ApplicationContextProvider.get().getBean(UserDetails.class));
+        UserDetails userDetails = ApplicationContextProvider.get().getBean(UserDetailsProvider.class).get();
+        if (userDetails instanceof SingularUserDetails) {
+            return Optional.of((SingularUserDetails) userDetails);
+        } else {
+            return Optional.empty();
+        }
     }
-
 
 }
