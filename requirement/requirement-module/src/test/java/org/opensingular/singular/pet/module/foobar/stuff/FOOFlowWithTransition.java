@@ -18,6 +18,8 @@
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
+import javax.annotation.Nonnull;
+
 import org.opensingular.flow.core.DefinitionInfo;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -29,32 +31,48 @@ import org.opensingular.flow.core.defaults.PermissiveTaskAccessStrategy;
 import org.opensingular.requirement.module.flow.SingularRequirementTaskPageStrategy;
 import org.opensingular.requirement.module.wicket.view.form.FormPage;
 
-@DefinitionInfo("fooooooooFlow")
-public class FooFlow extends FlowDefinition<FlowInstance> {
+@DefinitionInfo("fooFlowWithTransitionCommons")
+public class FOOFlowWithTransition extends FlowDefinition<FlowInstance> {
 
-
-    public FooFlow() {
+    public FOOFlowWithTransition() {
         super(FlowInstance.class);
     }
 
+    @Nonnull
     @Override
     protected FlowMap createFlowMap() {
         FlowBuilder flow = new FlowBuilderImpl(this);
 
+        ITaskDefinition startbarDef  = () -> "Start bar";
         ITaskDefinition dobarDef  = () -> "Do bar";
-        ITaskDefinition endbarDef = () -> "No more bar";
+        ITaskDefinition middlebarDef = () -> "Transition bar";
+        ITaskDefinition nobarDef = () -> "No more bar";
+        ITaskDefinition endbarDef = () -> "End bar";
 
-        flow.addEndTask(endbarDef);
         flow.addHumanTask(dobarDef)
                 .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
-                .uiAccess(new PermissiveTaskAccessStrategy())
-                .go(endbarDef);
+                .uiAccess(new PermissiveTaskAccessStrategy());
 
-        flow.setStartTask(dobarDef);
+        flow.addHumanTask(startbarDef)
+                .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
+                .uiAccess(new PermissiveTaskAccessStrategy());
+
+        flow.addHumanTask(middlebarDef)
+                .withExecutionPage(SingularRequirementTaskPageStrategy.of(FormPage.class))
+                .uiAccess(new PermissiveTaskAccessStrategy());
+
+        flow.setStartTask(startbarDef);
+
+        flow.addEndTask(endbarDef);
+        flow.addEndTask(nobarDef);
+
+        flow.from(startbarDef).go(middlebarDef);
+        flow.from(startbarDef).go(dobarDef);
+        flow.from(dobarDef).go(nobarDef);
+        flow.from(startbarDef).go(nobarDef);
+        flow.from(middlebarDef).go(endbarDef);
 
 
-        return flow.build();
-
+        return flow.build();//NOSONAR
     }
-
 }

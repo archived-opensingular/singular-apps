@@ -14,14 +14,35 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.builder;
+package org.opensingular.requirement.module.service.dto;
 
-public class SingularRequirementBuilder {
 
-    public SingularRequirementBuilder() {
+import org.opensingular.requirement.module.service.RequirementInstance;
+
+import java.io.Serializable;
+
+/**
+ * Metadadata resulting from requirement submission
+ */
+public class RequirementSubmissionResponse implements Serializable {
+
+    private boolean success = true;
+    private String  message = "";
+
+
+    public boolean isSuccess() {
+        return success;
     }
 
-    public SingularRequirementDefinitionForm name(String name) {
-        return new SingularRequirementDefinitionForm(new SingularRequirementBuilderContext().setName(name));
+    public void setSuccess(boolean success) {
+        this.success = success;
+    }
+
+    public String getMessage() {
+        return message;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 }

@@ -39,9 +39,7 @@ import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.anyBoolean;
 import static org.mockito.Mockito.reset;
 import static org.mockito.Mockito.when;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ACTION;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.*;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DispatcherPageTest extends SingularCommonsBaseTest {
@@ -68,7 +66,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, getCodRequirementDefinition());
+        pageParameters.add(REQUIREMENT_DEFINITION_KEY, getRequirementDefinitionKey());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(Page403.class);
     }
@@ -81,7 +79,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         PageParameters pageParameters = new PageParameters();
         pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
-        pageParameters.add(REQUIREMENT_DEFINITION_ID, getCodRequirementDefinition());
+        pageParameters.add(REQUIREMENT_DEFINITION_KEY, getRequirementDefinitionKey());
         tester.startPage(DispatcherPage.class, pageParameters);
         tester.assertRenderedPage(FormPage.class);
     }

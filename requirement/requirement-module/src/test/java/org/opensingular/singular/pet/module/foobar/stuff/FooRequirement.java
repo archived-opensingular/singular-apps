@@ -19,12 +19,24 @@
 package org.opensingular.singular.pet.module.foobar.stuff;
 
 
-import org.opensingular.requirement.module.FormFlowSingularRequirement;
+import org.opensingular.requirement.module.builder.RequirementConfigurationBuilder;
+import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.builder.RequirementDefinitionConfiguration;
+import org.opensingular.requirement.module.service.RequirementInstance;
 
-public class FooRequirement extends FormFlowSingularRequirement {
+public class FooRequirement extends RequirementDefinition<RequirementInstance> {
 
 
     public FooRequirement() {
-        super("Foo requirement", STypeFoo.class, FooFlow.class);
+        super("FOO_REQ", RequirementInstance.class);
+    }
+
+    @Override
+    public RequirementDefinitionConfiguration configure(RequirementConfigurationBuilder conf) {
+        return conf
+                .name("Foo requirement")
+                .mainForm(STypeFoo.class)
+                .flowDefintion(FOOFlowWithTransition.class)
+                .build();
     }
 }

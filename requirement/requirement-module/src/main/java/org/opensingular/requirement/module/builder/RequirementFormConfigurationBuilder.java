@@ -17,23 +17,20 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.form.SType;
-import org.opensingular.requirement.module.wicket.view.form.AbstractFormPage;
 
-public class SingularRequirementDefinitionForm {
+import javax.annotation.Nonnull;
 
-    private SingularRequirementBuilderContext builderContext;
+public class RequirementFormConfigurationBuilder {
 
-    SingularRequirementDefinitionForm(SingularRequirementBuilderContext builderContext) {
-        this.builderContext = builderContext;
+    private final RequirementDefinitionConfiguration requirementDefinitionConfiguration;
+
+    public RequirementFormConfigurationBuilder(@Nonnull RequirementDefinitionConfiguration requirementDefinitionConfiguration) {
+        this.requirementDefinitionConfiguration = requirementDefinitionConfiguration;
     }
 
-    public SingularRequirementDefinitionForms mainForm(Class<? extends SType<?>> form) {
-        return new SingularRequirementDefinitionForms(builderContext.setMainForm(form));
-    }
 
-    public SingularRequirementDefinitionForm defaultExecutionPage(Class<? extends AbstractFormPage<?, ?>> defaultExecutionPage) {
-        builderContext.defaultExecutionPage(defaultExecutionPage);
-        return this;
+    public RequirementFlowConfigurationBuilder mainForm(Class<? extends SType<?>> mainForm) {
+        requirementDefinitionConfiguration.setMainForm(mainForm);
+        return new RequirementFlowConfigurationBuilder(requirementDefinitionConfiguration);
     }
-
 }

@@ -31,7 +31,7 @@ import org.springframework.stereotype.Controller;
 public class DefaultDeleteController extends IController implements Loggable {
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     @Override
     public ActionResponse execute(@Nonnull RequirementInstance requirement, ActionRequest action) {

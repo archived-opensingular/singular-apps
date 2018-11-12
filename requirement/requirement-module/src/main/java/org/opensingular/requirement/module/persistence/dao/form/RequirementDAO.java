@@ -55,18 +55,18 @@ import java.util.Objects;
 import java.util.Optional;
 
 
-public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long> {
+public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
 
     public RequirementDAO() {
-        super((Class<T>) RequirementEntity.class);
+        super(RequirementEntity.class);
     }
 
-    public RequirementDAO(Class<T> entityClass) {
+    public RequirementDAO(Class<RequirementEntity> entityClass) {
         super(entityClass);
     }
 
     @SuppressWarnings("unchecked")
-    public List<T> list(String type) {
+    public List<RequirementEntity> list(String type) {
         Criteria criteria = getSession().createCriteria(this.entityClass);
         criteria.add(Restrictions.eq("type", type));
         return criteria.list();
@@ -117,20 +117,20 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
         return buildRequirementSearchQuery(query).fetchMap();
     }
 
-    public T findByFlowCodOrException(Integer cod) {
+    public RequirementEntity findByFlowCodOrException(Integer cod) {
         return findByFlowCod(cod).orElseThrow(
                 () -> new SingularServerException("Não foi encontrado a petição com flowInstanceEntity.cod=" + cod));
     }
 
-    public Optional<T> findByFlowCod(Integer cod) {
+    public Optional<RequirementEntity> findByFlowCod(Integer cod) {
         Objects.requireNonNull(cod);
         return findUniqueResult(entityClass, getSession()
                 .createCriteria(entityClass)
                 .add(Restrictions.eq("flowInstanceEntity.cod", cod)));
     }
 
-    public T findByFormEntity(FormEntity formEntity) {
-        return (T) getSession()
+    public RequirementEntity findByFormEntity(FormEntity formEntity) {
+        return (RequirementEntity) getSession()
                 .createQuery(" select p from " + entityClass.getName() + " p inner join p.formRequirementEntities fpe where fpe.form = :form ")
                 .setParameter("form", formEntity)
                 .setMaxResults(1)
@@ -138,7 +138,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     @Override
-    public void delete(T requirement) {
+    public void delete(RequirementEntity requirement) {
         findFormAttachmentByCodRequirement(requirement.getCod()).forEach(getSession()::delete);
         requirement.getFormRequirementEntities().forEach(formRequirementEntity -> {
             FormEntity formEntity = formRequirementEntity.getForm();
@@ -184,7 +184,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     @SuppressWarnings("unchecked")
-    public List<RequirementEntity> findByRootRequirement(T rootRequirement) {
+    public List<RequirementEntity> findByRootRequirement(RequirementEntity rootRequirement) {
         String hql = "FROM " + RequirementEntity.class.getName() + " pe "
                 + " WHERE pe.rootRequirement = :rootRequirement ";
 
@@ -194,13 +194,13 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
     }
 
     public List<FormAttachmentEntity> findFormAttachmentByCodRequirement(Long codRequirement) {
-        QRequirementEntity requirement = new QRequirementEntity("requirementEntity");
+        QRequirementEntity     requirement     = new QRequirementEntity("requirementEntity");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirementEntity");
-        QFormEntity form = new QFormEntity("formEntity");
-        QDraftEntity currentDraft = new QDraftEntity("draftEntity");
-        QFormEntity draftForm = new QFormEntity("draftFormEntity");
-        QFormVersionEntity formVersion = new QFormVersionEntity("formVersionEntity");
-        QFormAttachmentEntity formAttachment = new QFormAttachmentEntity("formAttachmentEntity");
+        QFormEntity            form            = new QFormEntity("formEntity");
+        QDraftEntity           currentDraft    = new QDraftEntity("draftEntity");
+        QFormEntity            draftForm       = new QFormEntity("draftFormEntity");
+        QFormVersionEntity     formVersion     = new QFormVersionEntity("formVersionEntity");
+        QFormAttachmentEntity  formAttachment  = new QFormAttachmentEntity("formAttachmentEntity");
 
         return new JPAQueryFactory(getSession())
                 .selectDistinct(formAttachment)
@@ -219,7 +219,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .fetch();
     }
 
-    public boolean containChildren(Long codRequirement) {
+    public boolean hasAnyChildrenRequirement(Long codRequirement) {
         QRequirementEntity requirementEntity = QRequirementEntity.requirementEntity;
         return new JPAQueryFactory(getSession())
                 .selectFrom(requirementEntity)
@@ -227,11 +227,11 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                 .fetchCount() > 0;
     }
 
-    public T findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
-        QRequirementEntity requirement = new QRequirementEntity("requirement");
+    public RequirementEntity findRequirementByRootRequirementAndType(Long rootRequirement, String type) {
+        QRequirementEntity     requirement     = new QRequirementEntity("requirement");
         QFormRequirementEntity formRequirement = new QFormRequirementEntity("formRequirement");
-        QFormEntity form = new QFormEntity("form");
-        QFormTypeEntity formTypeEntity = new QFormTypeEntity("formType");
+        QFormEntity            form            = new QFormEntity("form");
+        QFormTypeEntity        formTypeEntity  = new QFormTypeEntity("formType");
 
         JPAQuery<RequirementEntity> jpaQuery = new JPAQueryFactory(getSession())
                 .selectFrom(requirement)
@@ -243,7 +243,7 @@ public class RequirementDAO<T extends RequirementEntity> extends BaseDAO<T, Long
                         .and(formTypeEntity.abbreviation.eq(type)));
         jpaQuery.getMetadata().setLimit(1L);
 
-        return (T) jpaQuery.fetchOne();
+        return (RequirementEntity) jpaQuery.fetchOne();
     }
 
 }

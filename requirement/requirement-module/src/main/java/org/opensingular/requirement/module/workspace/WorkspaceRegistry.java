@@ -18,6 +18,7 @@ package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.requirement.module.config.IServerContext;
+import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
 
 import java.util.LinkedHashSet;
@@ -30,14 +31,19 @@ import java.util.Set;
  * @see org.opensingular.requirement.module.WorkspaceAppInitializerListener
  */
 public class WorkspaceRegistry implements Loggable {
-    private final Set<IServerContext> contexts = new LinkedHashSet<>();
+    private final Set<IServerContext>                  contexts       = new LinkedHashSet<>();
+    private final Set<Class<? extends IServerContext>> contextClasses = new LinkedHashSet<>();
 
     /**
      * Add a contexts to the registry
+     *
      * @param serverContextClass the context class
      * @return the current registry
      */
     public WorkspaceRegistry add(Class<? extends IServerContext> serverContextClass) {
+        if (!contextClasses.add(serverContextClass)) {
+            throw new SingularRequirementException(String.format("Context class %s is already registered",serverContextClass.getName()));
+        }
         try {
             contexts.add(serverContextClass.newInstance());
         } catch (InstantiationException | IllegalAccessException ex) {

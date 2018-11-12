@@ -1,6 +1,7 @@
 package org.opensingular.requirement.module.service;
 
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
+
 
 import javax.inject.Inject;
 import java.util.List;
@@ -15,22 +16,22 @@ public class RequirementDefinitionService {
      * Todas as definições de requerimento registradas no modulo
      */
     @Inject
-    private List<SingularRequirement> requirements;
+    private List<RequirementDefinition<?>> requirements;
 
     /**
      * Lista os requerimentos carregados
      */
-    public List<SingularRequirement> getRequirements() {
+    public List<RequirementDefinition<?>> getRequirements() {
         return requirements;
     }
 
     /**
      * Recupera o requerimento pelo id informado
      */
-    public SingularRequirement getRequirementById(Long id) {
+    public RequirementDefinition<?> getRequirementByKey(String key) {
         return getRequirements()
                 .stream()
-                .filter(r -> Objects.equals(r.getDefinitionCod(), id))
+                .filter(r -> Objects.equals(r.getKey(), key))
                 .findFirst()
                 .orElse(null);
     }

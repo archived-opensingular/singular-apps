@@ -16,6 +16,10 @@
 
 package org.opensingular.requirement.module.exception;
 
+import org.opensingular.flow.core.FlowDefinition;
+import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.requirement.module.service.RequirementInstance;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
@@ -70,10 +74,10 @@ public class SingularServerException extends SingularException {
 
     /** Adds information about de requirement involved in the exception. */
     @Nonnull
-    public SingularServerException add(@Nullable RequirementInstance requirement) {
+    public SingularServerException add(@Nullable RequirementInstance<?,?> requirement) {
         if (requirement != null) {
             add("codRequirement", () -> requirement.getCod());
-            add("requirementFlow", () -> requirement.getFlowDefinitionOpt().map(d -> d.getName()).orElse(null));
+            add("requirementFlow", () -> requirement.getFlowDefinitionOpt().map(FlowDefinition::getName).orElse(null));
             add("requirementDescription", () -> requirement.getDescription());
         }
         return this;

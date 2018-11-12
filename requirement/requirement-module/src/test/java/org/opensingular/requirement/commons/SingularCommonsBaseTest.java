@@ -24,7 +24,8 @@ import org.junit.Before;
 import org.junit.runner.RunWith;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
+import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
@@ -61,6 +62,10 @@ public abstract class SingularCommonsBaseTest implements Loggable {
     @Inject
     private RequirementDefinitionService requirementDefinitionService;
 
+    @Inject
+    private ModuleService moduleService;
+
+
     protected Session session;
 
     @Before
@@ -68,11 +73,16 @@ public abstract class SingularCommonsBaseTest implements Loggable {
         session = sessionFactory.getCurrentSession();
     }
 
-    protected RequirementDefinitionEntity getRequirementDefinition() {
-        return requirementDefinitionDAO.getOrException(getCodRequirementDefinition());
+    protected RequirementDefinitionEntity getRequirementDefinitionEntity() {
+        return requirementDefinitionDAO.findByKey(moduleService.getModule().getCod(), getRequirementDefinitionKey());
     }
 
-    protected Long getCodRequirementDefinition() {
+
+    protected String getRequirementDefinitionKey() {
+        return getRequirementDefinition().getKey();
+    }
+
+    protected RequirementDefinition getRequirementDefinition() {
         return requirementDefinitionService.getRequirements()
                 .stream()
                 .filter(s -> {
@@ -82,7 +92,6 @@ public abstract class SingularCommonsBaseTest implements Loggable {
                         }
                 )
                 .findFirst()
-                .map(SingularRequirement::getDefinitionCod)
                 .orElse(null);
 
     }

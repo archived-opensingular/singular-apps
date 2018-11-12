@@ -17,22 +17,20 @@
 package org.opensingular.requirement.module.builder;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.requirement.module.service.RequirementSender;
 
-public class SingularRequirementDefinitionForms {
+import javax.annotation.Nonnull;
 
-    private SingularRequirementBuilderContext builderContext;
+public class RequirementFlowConfigurationBuilder {
 
-    SingularRequirementDefinitionForms(SingularRequirementBuilderContext builderContext) {
-        this.builderContext = builderContext;
+    private final RequirementDefinitionConfiguration requirementDefinitionConfiguration;
+
+    public RequirementFlowConfigurationBuilder(@Nonnull RequirementDefinitionConfiguration requirementDefinitionConfiguration) {
+        this.requirementDefinitionConfiguration = requirementDefinitionConfiguration;
     }
 
-    public SingularRequirementDefinitionFlows allowedFlow(Class<? extends FlowDefinition> flowClass) {
-        return new SingularRequirementDefinitionFlows(builderContext.addFlowClass(flowClass));
-    }
 
-    public SingularRequirementDefinitionForms requirementSenderBeanClass(Class<? extends RequirementSender> requirementSender) {
-        builderContext.setRequirementSenderBeanClass(requirementSender);
-        return this;
+    public RequirementAdvancedConfigurationBuilder flowDefintion(Class<? extends FlowDefinition> flowDefinitionClass) {
+        requirementDefinitionConfiguration.setFlowDefition(flowDefinitionClass);
+        return new RequirementAdvancedConfigurationBuilder(requirementDefinitionConfiguration);
     }
 }

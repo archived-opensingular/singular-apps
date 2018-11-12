@@ -14,14 +14,17 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.service;
+package org.opensingular.requirement.module.persistence.entity.form;
 
-/**
- * Implementação padrão de {@link RequirementService}. Não acrescenta nenhuma funcionaldiade ao serviço.
- *
- * @author Daniel C. Bordin on 08/03/2017.
- */
-public class DefaultRequirementService extends RequirementService {
+import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 
+public interface RequirementApplicant {
 
+    String getName();
+
+    String getIdPessoa();
+
+    String getCpfCNPJ();
+
+    PersonType getPersonType();
 }

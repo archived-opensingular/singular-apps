@@ -60,7 +60,7 @@ public class RequirementTransitionPanel extends Panel implements Loggable {
     private static final String MASK_99_MILLION = "99999999";
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
     private FlowInstance instance;
     private IModel<String> requirementTask = new Model<>();
     private AjaxButton submitButton;
@@ -105,7 +105,7 @@ public class RequirementTransitionPanel extends Panel implements Loggable {
             protected void onUpdate(AjaxRequestTarget target) {
                 if (idRequirement.getObject() != null) {
                     try {
-                        RequirementInstance requirement = requirementService.getRequirement(Long.valueOf(idRequirement.getObject()));
+                        RequirementInstance requirement = requirementService.loadRequirementInstance(Long.valueOf(idRequirement.getObject()));
                         instance = requirement.getFlowInstance();
                         if (instance == null) {
                             dontFindRequerimentAction(target, dropDownChoice, form, idRequirement, true);

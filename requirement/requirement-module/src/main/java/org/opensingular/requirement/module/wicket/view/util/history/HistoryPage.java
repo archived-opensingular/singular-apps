@@ -52,6 +52,7 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.persistence.dto.RequirementHistoryDTO;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
@@ -77,7 +78,7 @@ public class HistoryPage extends ServerTemplate {
     private static final String      IMAGE_HIST_ID    = "imageHist";
 
     @Inject
-    private RequirementService<?, ?> requirementService;
+    private RequirementService requirementService;
 
     @Inject
     private IServerContext serverContext;
@@ -125,7 +126,7 @@ public class HistoryPage extends ServerTemplate {
             imageHistFlow = new Image(id, new DynamicImageResource() {
                 @Override
                 protected byte[] getImageData(IResource.Attributes attributes) {
-                    FlowInstance flowInstance = requirementService.getRequirement(requirementPK).getFlowInstance();
+                    FlowInstance flowInstance = requirementService.loadRequirementInstance(requirementPK).getFlowInstance();
                     IFlowRenderer renderer = findFlowExecutionImageExtension()
                         .orElse(NullFlowRenderer.INSTANCE);
                     return renderer.generateHistoryPng(flowInstance);
@@ -237,7 +238,11 @@ public class HistoryPage extends ServerTemplate {
     }
 
     private List<RequirementHistoryDTO> getHistoryTasks() {
-        return requirementService.listRequirementContentHistoryByCodRequirement(requirementPK, showHiddenTasks());
+        return requirementService.listRequirementContentHistoryByCodRequirement(getRequirementInstance(), showHiddenTasks());
+    }
+
+    private RequirementInstance getRequirementInstance(){
+        return requirementService.loadRequirementInstance(requirementPK);
     }
 
     protected boolean showHiddenTasks() {

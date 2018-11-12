@@ -19,7 +19,7 @@ package org.opensingular.requirement.module.connector;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.requirement.module.SingularRequirement;
+import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.action.ActionRequest;
 import org.opensingular.requirement.module.box.action.ActionResponse;
@@ -67,7 +67,7 @@ public interface ModuleService {
     /**
      *
      */
-    RequirementDefinitionEntity getOrCreateRequirementDefinition(SingularRequirement singularRequirement, FormTypeEntity formType);
+    RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> singularRequirement, FormTypeEntity formType);
 
     /**
      *
@@ -83,13 +83,5 @@ public interface ModuleService {
      *
      */
     String getModuleContext();
-
-    /**
-     * Persiste se necessário o RequirementDefinitionEntity
-     * e atualiza no ref o valor que está em banco.
-     *
-     * @param singularRequirement - o requerimento do qual o {@link RequirementDefinitionEntity} será criado
-     */
-    void save(SingularRequirement singularRequirement);
 
 }
