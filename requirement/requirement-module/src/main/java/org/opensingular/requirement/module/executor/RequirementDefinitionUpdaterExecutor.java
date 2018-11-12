@@ -55,11 +55,11 @@ public class RequirementDefinitionUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllRequirementDefinitions() {
-        for (RequirementDefinition singularRequirement : requirementDefinitionService.getRequirements()) {
+        for (RequirementDefinition requirementDefinition : requirementDefinitionService.getRequirements()) {
             try {
-                requirementService.saveOrUpdateRequirementDefinition(singularRequirement);
+                requirementService.saveOrUpdateRequirementDefinition(requirementDefinition);
             } catch (Exception e) {
-                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", singularRequirement.getName()), e);
+                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", requirementDefinition.getName()), e);
             }
         }
     }

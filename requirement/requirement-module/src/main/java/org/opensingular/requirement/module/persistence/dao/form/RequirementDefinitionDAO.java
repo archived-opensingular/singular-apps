@@ -16,8 +16,6 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import org.opensingular.flow.persistence.entity.ModuleEntity;
-import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -32,22 +30,6 @@ public class RequirementDefinitionDAO<T extends RequirementDefinitionEntity> ext
     public RequirementDefinitionDAO(Class<T> entityClass) {
         super(entityClass);
     }
-
-    public T findByModuleAndName(ModuleEntity moduleEntity, FormTypeEntity formType) {
-        StringBuilder hql = new StringBuilder();
-
-        hql.append(" FROM ");
-        hql.append(RequirementDefinitionEntity.class.getName());
-        hql.append(" as req ");
-        hql.append(" WHERE req.module = :module ");
-        hql.append("    AND req.formType = :formType ");
-
-        return (T) getSession().createQuery(hql.toString())
-            .setParameter("module", moduleEntity)
-            .setParameter("formType", formType)
-            .uniqueResult();
-    }
-
 
     public T findByKey(String codModulo, String key) {
         StringBuilder hql = new StringBuilder();

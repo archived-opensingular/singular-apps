@@ -18,7 +18,6 @@ package org.opensingular.requirement.module.service;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.Application;
-import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
@@ -28,18 +27,17 @@ import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
-import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.persistence.FormKey;
-import org.opensingular.form.persistence.dao.FormVersionDAO;
 import org.opensingular.form.persistence.entity.FormAnnotationEntity;
 import org.opensingular.form.persistence.entity.FormEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.FormTypeService;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
@@ -264,20 +262,6 @@ public abstract class RequirementService implements Loggable {
     public RequirementEntity getRequirementEntity(@Nonnull Long cod) {
         return findRequirementEntity(cod).orElseThrow(
                 () -> SingularServerException.rethrow("Não foi encontrada a petição de cod=" + cod));
-    }
-
-    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition requirementDefintion, FormTypeEntity formType, ModuleEntity module) {
-        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
-
-        if (requirementDefinitionEntity == null) {
-            requirementDefinitionEntity = new RequirementDefinitionEntity();
-            requirementDefinitionEntity.setKey(requirementDefintion.getKey());
-            requirementDefinitionEntity.setFormType(formType);
-            requirementDefinitionEntity.setModule(module);
-            requirementDefinitionEntity.setName(requirementDefintion.getName());
-        }
-
-        return requirementDefinitionEntity;
     }
 
     /**
@@ -744,7 +728,7 @@ public abstract class RequirementService implements Loggable {
         SType<?>               type     = singularServerSpringTypeLoader.loadTypeOrException(mainForm);
         FormTypeEntity         formType = formTypeService.findFormTypeEntity(type);
 
-        RequirementDefinitionEntity requirementDefinitionEntity = getOrCreateRequirementDefinition(requirementDefinition, formType, moduleService.getModule());
+        RequirementDefinitionEntity requirementDefinitionEntity = moduleService.getOrCreateRequirementDefinition(requirementDefinition, formType);
         requirementDefinitionDAO.save(requirementDefinitionEntity);
     }
 

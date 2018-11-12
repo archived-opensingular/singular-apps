@@ -177,15 +177,16 @@ public class DefaultModuleService implements ModuleService, Loggable {
     }
 
     @Override
-    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> singularRequirement, FormTypeEntity formType) {
+    public RequirementDefinitionEntity getOrCreateRequirementDefinition(RequirementDefinition<?> requirementDefinition, FormTypeEntity formType) {
         ModuleEntity module = getModule();
-        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByModuleAndName(module, formType);
+        RequirementDefinitionEntity requirementDefinitionEntity = requirementDefinitionDAO.findByKey(module.getCod(), requirementDefinition.getKey());
 
         if (requirementDefinitionEntity == null) {
             requirementDefinitionEntity = new RequirementDefinitionEntity();
             requirementDefinitionEntity.setFormType(formType);
+            requirementDefinitionEntity.setKey(requirementDefinition.getKey());
             requirementDefinitionEntity.setModule(module);
-            requirementDefinitionEntity.setName(singularRequirement.getName());
+            requirementDefinitionEntity.setName(requirementDefinition.getName());
         }
 
         return requirementDefinitionEntity;
