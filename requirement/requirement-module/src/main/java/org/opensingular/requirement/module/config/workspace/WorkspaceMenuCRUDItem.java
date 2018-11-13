@@ -63,4 +63,9 @@ public class WorkspaceMenuCRUDItem implements WorkspaceMenuItem {
         this.title = title;
         return this;
     }
+
+    @Override
+    public boolean showContentTitle() {
+        return false;
+    }
 }

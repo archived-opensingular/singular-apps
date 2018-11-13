@@ -44,4 +44,12 @@ public interface WorkspaceMenuItem extends Serializable {
     default boolean isVisible(){
         return true;
     }
+
+    /**
+     *
+     * @return
+     */
+    default boolean showContentTitle(){
+        return true;
+    }
 }

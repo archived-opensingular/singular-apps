@@ -28,6 +28,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.opensingular.requirement.module.service.RequirementService;
 
+import java.util.List;
+
 /**
  * Classe para abrigar a lógica de carga
  * de definições de requisição no banco
@@ -55,11 +57,14 @@ public class RequirementDefinitionUpdaterExecutor {
      * e os repassa para salvar/recuperar os dados do banco.
      */
     public void saveAllRequirementDefinitions() {
-        for (RequirementDefinition requirementDefinition : requirementDefinitionService.getRequirements()) {
-            try {
-                requirementService.saveOrUpdateRequirementDefinition(requirementDefinition);
-            } catch (Exception e) {
-                throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", requirementDefinition.getName()), e);
+        List<RequirementDefinition<?>> requirements = requirementDefinitionService.getRequirements();
+        if(requirements != null) {
+            for (RequirementDefinition requirementDefinition : requirements) {
+                try {
+                    requirementService.saveOrUpdateRequirementDefinition(requirementDefinition);
+                } catch (Exception e) {
+                    throw SingularServerException.rethrow(String.format("Erro ao salvar requerimento %s", requirementDefinition.getName()), e);
+                }
             }
         }
     }

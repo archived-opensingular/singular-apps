@@ -1,6 +1,7 @@
 package org.opensingular.requirement.module.service;
 
 import org.opensingular.requirement.module.RequirementDefinition;
+import org.springframework.beans.factory.annotation.Autowired;
 
 
 import javax.inject.Inject;
@@ -15,7 +16,7 @@ public class RequirementDefinitionService {
     /**
      * Todas as definições de requerimento registradas no modulo
      */
-    @Inject
+    @Autowired(required = false)
     private List<RequirementDefinition<?>> requirements;
 
     /**

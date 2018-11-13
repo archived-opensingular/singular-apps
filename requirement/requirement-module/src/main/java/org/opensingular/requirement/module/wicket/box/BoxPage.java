@@ -119,7 +119,10 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
         return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                return workspaceMenuItem.getObject().getDescription();
+                if (workspaceMenuItem.getObject().showContentTitle()) {
+                    return workspaceMenuItem.getObject().getDescription();
+                }
+                return null;
             }
         };
     }
@@ -129,7 +132,10 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
         return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                return workspaceMenuItem.getObject().getName();
+                if (workspaceMenuItem.getObject().showContentTitle()) {
+                    return workspaceMenuItem.getObject().getName();
+                }
+                return null;
             }
         };
     }
@@ -139,7 +145,10 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
         return new AbstractReadOnlyModel<String>() {
             @Override
             public String getObject() {
-                return workspaceMenuItem.getObject().getHelpText();
+                if (workspaceMenuItem.getObject().showContentTitle()) {
+                    return workspaceMenuItem.getObject().getHelpText();
+                }
+                return null;
             }
         };
     }
