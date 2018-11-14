@@ -320,6 +320,7 @@ public abstract class RequirementService implements Loggable {
         Objects.requireNonNull(requirement);
         Objects.requireNonNull(instance);
 
+        updateRequirementDescription(instance, requirement);
         requirementDAO.saveOrUpdate(requirement.getEntity());
 
         if (requirement.getApplicant() != null) {

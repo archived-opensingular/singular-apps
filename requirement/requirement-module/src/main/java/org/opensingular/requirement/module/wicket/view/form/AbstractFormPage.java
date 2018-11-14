@@ -111,7 +111,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     protected final SingularFormPanel        singularFormPanel;
     protected       Component                containerBehindSingularPanel;
     protected final IModel<Boolean>          inheritParentFormData;
-    protected final IModel<FormKey>          parentRequirementFormKeyModel;
     protected final BSContainer<?>           modalContainer = new BSContainer<>("modals");
     protected final BSModalBorder            closeModal     = construirCloseModal();
 
@@ -120,7 +119,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     private       BSModalBorder                              notificacoesModal;
     private       FeedbackAposEnvioPanel                     feedbackAposEnvioPanel    = null;
     private       IModel<RI>                                 requirementInstanceModel;
-    private       TaskInstance                               currentTaskInstance;
+    private       IModel<Long>                               requirementIdModel        = new Model<>();
 
 
     @Inject
@@ -143,7 +142,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
         String formName = Optional.ofNullable(formType).map(RequirementUtil::getTypeName).orElse(null);
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), formName);
-        this.parentRequirementFormKeyModel = $m.ofValue();
         this.inheritParentFormData = $m.ofValue();
         this.typeName = config.getFormName();
         this.singularFormPanel = new SingularFormPanel("singular-panel");
@@ -321,11 +319,11 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private RI loadRequirement() {
         RI               requirement;
-        Optional<Long>   requirementId            = config.getRequirementId();
+        Optional<Long>   requirementId            = Optional.ofNullable(config.getRequirementId().orElse(requirementIdModel.getObject()));
         Optional<String> requirementDefinitionKey = config.getRequirementDefinitionKey();
         if (requirementId.isPresent()) {
             if (requirementDefinitionKey.isPresent()) {
-                requirement = (RI) getRequirementDefinition().loadRequirement(config.getRequirementId().get());
+                requirement = (RI) getRequirementDefinition().loadRequirement(requirementId.get());
             } else {
                 requirement = (RI) requirementService.loadRequirementInstance(requirementId.get());
             }
@@ -530,15 +528,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return transition.getAccessFor(t);
     }
 
-    protected final RI getUpdatedRequirementFromInstance(IModel<? extends SInstance> currentInstance, boolean mainForm) {
-        RI requirement = getRequirement();
-        if (currentInstance.getObject() instanceof SIComposite && mainForm) {
-            requirementService.updateRequirementDescription(currentInstance.getObject(), requirement);
-        }
-        return requirement;
-    }
-
-
     protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
         final FlowConfirmPanel modalType = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
         buildFlowButton(buttonId, buttonContainer, transitionName, modalType, transitionButtonEnabled);
@@ -581,43 +570,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return enviarModal;
     }
 
-    protected void saveForm(IModel<? extends SInstance> currentInstance) {
-        saveForm(currentInstance, null);
-    }
-
-    protected void saveForm(IModel<? extends SInstance> currentInstance, String transitionName) {
-        assertSameTask();
-        onBeforeSave(currentInstance);
-        SInstance instance = currentInstance.getObject();
-        if (instance != null) {
-            getRequirement().saveForm(instance);
-            onSave(getRequirement(), transitionName);
-        }
-    }
-
-    protected void assertSameTask() {
-        if (currentTaskInstance != null && !currentTaskInstance.getEntityTaskInstance()
-                .equals(getCurrentTaskInstance().map(TaskInstance::getEntityTaskInstance).orElse(null))) {
-            throw new SingularServerException(getString("message.save.concurrent_error"));
-        }
-    }
-
-    protected void onSave(RI requirement, String transitionName) {
-        transitionConfirmModalMap.forEach((k, v) -> {
-            if (v.isDirty()) {
-                getRequirementService().saveOrUpdate(requirement, v.getInstanceModel().getObject(), false);
-                v.setDirty(false);
-            }
-        });
-    }
-
-    protected boolean onBeforeSend(IModel<? extends SInstance> currentInstance) {
-        return true;
-    }
-
-    protected void onBeforeSave(IModel<? extends SInstance> currentInstance) {
-    }
-
     /**
      * Inicia o fluxo da petição, consolidando os formularios de rascunho e criando o historico
      *
@@ -634,7 +586,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             String username = SingularSession.get().getUsername();
 
             //save do formulário em transação separada
-            requirement.saveForm(mi.getObject());
+            saveForm(mi.getObject());
 
             //executa o envio, iniciando o fluxo informado
             RequirementSubmissionResponse sendedFeedback = requirement.send(username);
@@ -678,12 +630,12 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             throws SingularServerFormValidationError {
         final STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
         if (flowConfirmModal == null) {
-            getRequirement().saveForm(currentInstance.getObject());
+            saveForm(currentInstance.getObject());
         } else {
             boolean isFormOnModalValid = WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget,
                     flowConfirmModal.getInstanceModel(), true, true);
             if (isFormOnModalValid) {
-                getRequirement().saveForm(currentInstance.getObject());
+                saveForm(currentInstance.getObject());
             } else {
                 throw new SingularServerFormValidationError();
             }
@@ -940,8 +892,13 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void eventOnSaveAction(AjaxRequestTarget target) {
-        getRequirement().saveForm(getFormInstance().getObject());
+        saveForm(getFormInstance().getObject());
         atualizarContentWorklist(target);
+    }
+
+    private void saveForm(SInstance instance) {
+        getRequirement().saveForm(instance);
+        requirementIdModel.setObject(getRequirement().getCod());
     }
 
     private void addSaveCallBackUrl() {
