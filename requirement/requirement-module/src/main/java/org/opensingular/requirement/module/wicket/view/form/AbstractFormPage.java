@@ -325,7 +325,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             if (requirementDefinitionKey.isPresent()) {
                 requirement = (RI) getRequirementDefinition().loadRequirement(requirementId.get());
             } else {
-                requirement = (RI) requirementService.loadRequirementInstance(requirementId.get());
+                requirement = requirementService.loadRequirementInstance(requirementId.get());
             }
         } else {
             RI             parentRequirement   = null;
@@ -415,14 +415,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     @Nonnull
     protected abstract Optional<String> getIdentifier();
 
-    /**
-     * será removido na próxima versão do Singular
-     *
-     * @param requirement
-     */
-    @Deprecated
-    protected void onNewRequirementCreation(RI requirement) {
-    }
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> requirementId = config.getRequirementId();
@@ -1054,14 +1046,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             return SingularSession.get().getUserDetails();
         }
         throw new SingularRequirementException("There is no current logged in user");
-    }
-
-    protected String getUserDisplayName() {
-        return getUserDetails().getDisplayName();
-    }
-
-    public Map<String, STypeBasedFlowConfirmModal<?>> getTransitionConfirmModalMap() {
-        return transitionConfirmModalMap;
     }
 
     public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
