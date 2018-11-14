@@ -76,6 +76,7 @@ import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
 import org.opensingular.requirement.module.service.SingularRequirementService;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
+import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.wicket.builder.HTMLParameters;
 import org.opensingular.requirement.module.wicket.builder.MarkupCreator;
@@ -333,9 +334,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             Optional<Long> parentRequirementId = config.getParentRequirementId();
             if (parentRequirementId.isPresent()) {
                 parentRequirement = requirementService.loadRequirementInstance(parentRequirementId.get());
-                requirement = (RI) getRequirementDefinition().newRequirement(parentRequirement);
+                requirement = (RI) getRequirementDefinition().newRequirement(getUserDetails().getApplicantId(), parentRequirement);
             } else {
-                requirement = (RI) getRequirementDefinition().newRequirement();
+                requirement = (RI) getRequirementDefinition().newRequirement(getUserDetails().getApplicantId());
             }
         }
         return requirement;
@@ -1090,12 +1091,16 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         buttonPanel.add(viewButton);
     }
 
-    protected String getUserDisplayName() {
+    protected SingularRequirementUserDetails getUserDetails() {
         Session session = Session.get();
         if (session instanceof SingularSession) {
-            return SingularSession.get().getUserDetails().getDisplayName();
+            return SingularSession.get().getUserDetails();
         }
-        return "";
+        throw new SingularRequirementException("There is no current logged in user");
+    }
+
+    protected String getUserDisplayName() {
+        return getUserDetails().getDisplayName();
     }
 
     public Map<String, STypeBasedFlowConfirmModal<?>> getTransitionConfirmModalMap() {

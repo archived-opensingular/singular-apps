@@ -93,19 +93,19 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void newRequirementEntity() {
-        RequirementEntity requirementEntity = getRequirementDefinition().newRequirement().getEntity();
+        RequirementEntity requirementEntity = getRequirementDefinition().newRequirement("user").getEntity();
         assertNotNull(requirementEntity);
     }
 
     @Test
     public void newRequirementInstance() {
-        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         assertNotNull(requirementInstance);
     }
 
     @Test
     public void saveNewRequirement() {
-        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         SInstance           instance            = requirementInstance.newForm();
         requirementInstance.saveForm(instance);
 
@@ -135,7 +135,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     }
 
     private RequirementInstance createAndSaveRequirement() {
-        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         SInstance           instance            = requirementInstance.newForm();
         requirementInstance.saveForm(instance);
         return requirementInstance;
@@ -208,7 +208,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
     @Test
     public void listTasks() {
-        String ator = "Fulano";
+        String ator = "user";
         sendRequirement(ator);
 
         BoxFilter filter = new BoxFilter();
@@ -251,7 +251,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
     public void createRequirementWithoutSave() {
         RequirementInstance parent = sendRequirement("Descrição XYZ única - " + System.nanoTime());
 
-        RequirementInstance requirement = getRequirementDefinition().newRequirement(parent);
+        RequirementInstance requirement = getRequirementDefinition().newRequirement("user", parent);
 
         assertNull(requirement.getCod());
     }

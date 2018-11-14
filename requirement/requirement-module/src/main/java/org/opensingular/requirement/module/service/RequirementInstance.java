@@ -36,6 +36,7 @@ import org.opensingular.requirement.module.exception.SingularRequirementExceptio
 import org.opensingular.requirement.module.flow.ProcessServiceSetup;
 import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
@@ -161,7 +162,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return requirementEntity;
     }
 
-    public ApplicantEntity getApplicant() {
+    public RequirementApplicant getApplicant() {
         return getEntity().getApplicant();
     }
 
@@ -193,7 +194,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     @Deprecated
     public String getApplicantName() {
-        return Optional.of(getApplicant()).map(ApplicantEntity::getName).orElse(null);
+        return Optional.of(getApplicant()).map(RequirementApplicant::getName).orElse(null);
     }
 
     public RequirementSubmissionResponse send(@Nullable String codSubmitterActor) {

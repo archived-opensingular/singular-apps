@@ -41,6 +41,7 @@ import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.RequirementSendInterceptor;
@@ -207,9 +208,8 @@ public abstract class RequirementService implements Loggable {
     /**
      * Find applicant or create a new one
      *
-     * @param requirement
      */
-    public ApplicantEntity getApplicant(RequirementInstance<?, ?> requirement, String codSubmitterActor) {
+    public ApplicantEntity getApplicant(String codSubmitterActor) {
         ApplicantEntity p;
         p = applicantDAO.findApplicantByExternalId(codSubmitterActor);
         if (p == null) {
@@ -222,7 +222,7 @@ public abstract class RequirementService implements Loggable {
                 p.setPersonType(PersonType.FISICA);
                 applicantDAO.save(p);
             } else {
-                getLogger().error(" The applicant (current logged user, {}) for requirement: \"{}\" could not be identified ", SingularRequirementUserDetails.class.getSimpleName(), requirement.getRequirementDefinitionName());
+                getLogger().error(" The applicant (current logged user, {})  could not be identified ", SingularRequirementUserDetails.class.getSimpleName());
             }
         }
         return p;
@@ -323,7 +323,7 @@ public abstract class RequirementService implements Loggable {
         requirementDAO.saveOrUpdate(requirement.getEntity());
 
         if (requirement.getApplicant() != null) {
-            applicantDAO.saveOrUpdate(requirement.getApplicant());
+            applicantDAO.saveOrUpdate((BaseEntity) requirement.getApplicant());
         }
         return formRequirementService.saveFormRequirement(requirement, instance, mainForm);
     }
@@ -354,7 +354,7 @@ public abstract class RequirementService implements Loggable {
             contentHistoryEntity.setFormAnnotationsVersions(formEntity.getCurrentFormVersionEntity().getFormAnnotations().stream().map(FormAnnotationEntity::getAnnotationCurrentVersion).collect(Collectors.toList()));
         }
 
-        contentHistoryEntity.setApplicantEntity(requirement.getApplicant());
+        contentHistoryEntity.setApplicantEntity((ApplicantEntity) requirement.getApplicant());
         contentHistoryEntity.setHistoryDate(new Date());
 
         requirementContentHistoryDAO.saveOrUpdate(contentHistoryEntity);
@@ -746,9 +746,8 @@ public abstract class RequirementService implements Loggable {
      */
     public <RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> RSR sendRequirement(RI requirementInstance, String codSubmitterActor, RequirementSendInterceptor<RI, RSR> listener, Class<? extends FlowDefinition> flowDefinition) {
         RSR                  response        = listener.newInstanceSubmissionResponse();
-        ApplicantEntity      applicantEntity = getApplicant(requirementInstance, codSubmitterActor);
-        RequirementApplicant applicant       = listener.configureApplicant(new RequirementApplicantImpl(applicantEntity));
-        requirementInstance.getEntity().setApplicant(applicantEntity.copyFrom(applicant));
+        RequirementApplicant applicant       = listener.configureApplicant(requirementInstance.getApplicant());
+        requirementInstance.getEntity().setApplicant(((ApplicantEntity)requirementInstance.getApplicant()).copyFrom(applicant));
 
         listener.onBeforeSend(requirementInstance, applicant, response);
 

@@ -101,14 +101,15 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
     }
 
 
-    public RI newRequirement() {
+    public RI newRequirement(String codActor) {
         RequirementEntity requirementEntity = new RequirementEntity();
         requirementEntity.setRequirementDefinitionEntity(getRequirementDefinitionEntity());
+        requirementEntity.setApplicant(requirementService.getApplicant(codActor));
         return newRequirementInstance(requirementEntity);
     }
 
-    public RI newRequirement(RequirementInstance parent) {
-        RI requirementInstance = newRequirement();
+    public RI newRequirement(String codActor, RequirementInstance parent) {
+        RI requirementInstance = newRequirement(codActor);
         requirementService.configureParentRequirement(requirementInstance, parent);
         return requirementInstance;
     }

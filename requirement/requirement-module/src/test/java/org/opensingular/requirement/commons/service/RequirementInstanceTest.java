@@ -53,7 +53,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         SInstance           instance           = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
         ((SIComposite) instance).getField(0).setValue("value");
 
-        RequirementInstance<?, ?> requirement = getRequirementDefinition().newRequirement();
+        RequirementInstance<?, ?> requirement = getRequirementDefinition().newRequirement("user");
         requirement.setFlowDefinition(FOOFlowWithTransition.class);
 
         requirement.saveForm(instance);
@@ -79,7 +79,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
     public void sendNewRequirement() {
         RefSDocumentFactory documentFactoryRef  = SDocumentFactory.empty().getDocumentFactoryRef();
         SInstance           instance            = documentFactoryRef.get().createInstance(RefType.of(STypeFoo.class));
-        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement();
+        RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
         requirementService.executeTransition("No more bar", requirementInstance, null, null, null);
