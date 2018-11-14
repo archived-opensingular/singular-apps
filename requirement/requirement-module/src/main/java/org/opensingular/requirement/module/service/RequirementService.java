@@ -80,6 +80,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -170,7 +171,7 @@ public abstract class RequirementService implements Loggable {
      */
     @Deprecated
     @Nonnull
-    public  <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
+    public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
         Objects.requireNonNull(taskInstance);
         return getRequirementInstance(taskInstance.getFlowInstance());
     }
@@ -763,5 +764,14 @@ public abstract class RequirementService implements Loggable {
         listener.onAfterSend(requirementInstance, applicant, response);
 
         return response;
+    }
+
+    public List<RequirementInstance<?,?>> findRequirementInstancesByRootRequirement(Long cod) {
+        List<RequirementInstance<?,?>> result = new ArrayList<>();
+        for (RequirementEntity requirementEntity : requirementDAO.findByRootRequirement(cod)) {
+            result.add(loadRequirementInstance(requirementEntity.getCod()));
+
+        }
+        return result;
     }
 }

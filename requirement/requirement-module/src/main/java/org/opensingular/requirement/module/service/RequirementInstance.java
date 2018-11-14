@@ -43,6 +43,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -270,5 +271,9 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     private SDocumentConsumer localServicesBinder() {
         return SDocumentConsumer.of(new ProcessServiceSetup(getCod()));
+    }
+
+    public List<RequirementInstance<?,?>> getChildrenRequirements() {
+        return requirementService.findRequirementInstancesByRootRequirement(getCod());
     }
 }

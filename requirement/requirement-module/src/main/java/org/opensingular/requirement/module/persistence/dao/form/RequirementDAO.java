@@ -184,12 +184,12 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
     }
 
     @SuppressWarnings("unchecked")
-    public List<RequirementEntity> findByRootRequirement(RequirementEntity rootRequirement) {
+    public List<RequirementEntity> findByRootRequirement(Long rootRequirementCod) {
         String hql = "FROM " + RequirementEntity.class.getName() + " pe "
-                + " WHERE pe.rootRequirement = :rootRequirement ";
+                + " WHERE pe.rootRequirement.cod = :rootRequirementCod ";
 
         Query query = getSession().createQuery(hql);
-        query.setParameter("rootRequirement", rootRequirement);
+        query.setParameter("rootRequirementCod", rootRequirementCod);
         return query.list();
     }
 
