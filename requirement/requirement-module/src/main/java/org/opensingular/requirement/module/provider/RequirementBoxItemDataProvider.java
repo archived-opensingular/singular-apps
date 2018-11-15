@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.provider;
 
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
 import org.opensingular.requirement.module.BoxItemDataProvider;
@@ -39,7 +40,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
     private final Boolean evalPermissions;
     private final ActionProvider actionProvider;
     private final RequirementService requirementService;
-    private final List<String> tasks = new ArrayList<>();
+    private final List<ITaskDefinition> tasks = new ArrayList<>();
     private final List<RequirementSearchExtender> extenders = new ArrayList<>();
     private final Set<BoxItemDataFilter> filters = new HashSet<>();
 
@@ -107,12 +108,12 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         return this;
     }
 
-    public RequirementBoxItemDataProvider addTask(@Nonnull String filter) {
+    public RequirementBoxItemDataProvider addTask(@Nonnull ITaskDefinition filter) {
         tasks.add(filter);
         return this;
     }
 
-    public RequirementBoxItemDataProvider addTasks(@Nonnull List<String> tasks) {
+    public RequirementBoxItemDataProvider addTasks(@Nonnull List<ITaskDefinition> tasks) {
         tasks.forEach(this::addTask);
         return this;
     }

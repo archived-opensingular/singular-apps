@@ -16,26 +16,27 @@
 
 package org.opensingular.requirement.module.persistence.filter;
 
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.form.SInstance;
 
 import java.util.Collections;
 import java.util.List;
 
 public class BoxFilter {
-    private String filter;
-    private boolean showDraft;
-    private String idPessoa;
-    private String idUsuarioLogado;
-    private int first;
-    private int count;
-    private String sortProperty;
-    private boolean ascending;
-    private Boolean endedTasks;
-    private List<String> tasks;
-    private List<String> processesAbbreviation;
-    private List<String> typesNames;
-    private boolean checkApplicant = false;
-    private SInstance advancedFilterInstance;
+    private String                filter;
+    private boolean               showDraft;
+    private String                idPessoa;
+    private String                idUsuarioLogado;
+    private int                   first;
+    private int                   count;
+    private String                sortProperty;
+    private boolean               ascending;
+    private Boolean               endedTasks;
+    private List<ITaskDefinition> tasks;
+    private List<String>          processesAbbreviation;
+    private List<String>          typesNames;
+    private boolean               checkApplicant = false;
+    private SInstance             advancedFilterInstance;
 
 
     public List<FilterToken> listFilterTokens() {
@@ -126,11 +127,11 @@ public class BoxFilter {
         return this;
     }
 
-    public List<String> getTasks() {
+    public List<ITaskDefinition> getTasks() {
         return tasks;
     }
 
-    public BoxFilter tasks(List<String> tasks) {
+    public BoxFilter tasks(List<ITaskDefinition> tasks) {
         this.tasks = tasks;
         return this;
     }

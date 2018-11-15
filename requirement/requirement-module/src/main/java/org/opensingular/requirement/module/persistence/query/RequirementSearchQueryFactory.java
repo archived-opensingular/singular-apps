@@ -26,6 +26,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Session;
 import org.opensingular.flow.core.CurrentInstanceStatus;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.SInstance;
 import org.opensingular.lib.support.persistence.enums.SimNao;
@@ -37,6 +38,7 @@ import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_REQUIREMENT;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.COD_USUARIO_ALOCADO;
@@ -221,7 +223,7 @@ public class RequirementSearchQueryFactory {
 
     private void appendFilterByTasks() {
         if (!CollectionUtils.isEmpty(ctx.getBoxFilter().getTasks())) {
-            query.where($.taskVersion.name.in(ctx.getBoxFilter().getTasks()));
+            query.where($.taskDefinition.abbreviation.in(ctx.getBoxFilter().getTasks().stream().map(ITaskDefinition::getKey).collect(Collectors.toList())));
         }
     }
 
