@@ -32,7 +32,7 @@ public class RequirementStudioBeanFactory extends SingularDefaultBeanFactory {
         StudioMenu.Builder builder = StudioMenu.Builder.newPortalMenu();
         workspaceRegistry.getContexts().forEach(ctx -> {
             if (!ctx.getSettings().isHideFromStudioMenu()) {
-                builder.addHTTPEndpoint(DefaultIcons.CUBES, ctx.getName(), ctx.getSettings().getUrlPath());
+                builder.addHTTPEndpoint(ctx.getSettings().getIcon(), ctx.getName(), ctx.getSettings().getUrlPath());
             }
         });
         return builder;

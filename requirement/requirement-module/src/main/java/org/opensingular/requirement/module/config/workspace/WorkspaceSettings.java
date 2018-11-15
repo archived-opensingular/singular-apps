@@ -1,19 +1,22 @@
 package org.opensingular.requirement.module.config.workspace;
 
 import org.apache.wicket.Application;
+import org.opensingular.lib.commons.ui.Icon;
+import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class WorkspaceSettings {
-    private String contextPath;
-    private String propertiesBaseKey;
-    private Class<? extends Application> wicketApplicationClass;
+    private String                                                 contextPath;
+    private String                                                 propertiesBaseKey;
+    private Class<? extends Application>                           wicketApplicationClass;
     private Class<? extends AbstractSingularSpringSecurityAdapter> springSecurityConfigClass;
-    private boolean checkOwner;
-    private List<String> publicUrls = new ArrayList<>();
-    private boolean hideFromStudioMenu = false;
+    private boolean                                                checkOwner;
+    private List<String>                                           publicUrls         = new ArrayList<>();
+    private boolean                                                hideFromStudioMenu = false;
+    private Icon                                                   icon               = DefaultIcons.CUBES;
 
     public WorkspaceSettings addPublicUrl(String publicUrl) {
         this.publicUrls.add(publicUrl);
@@ -92,5 +95,14 @@ public class WorkspaceSettings {
 
     public boolean isHideFromStudioMenu() {
         return hideFromStudioMenu;
+    }
+
+    public Icon getIcon() {
+        return icon;
+    }
+
+    public WorkspaceSettings icon(Icon icon) {
+        this.icon = icon;
+        return this;
     }
 }
