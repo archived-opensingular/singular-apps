@@ -32,7 +32,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
-import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -123,22 +122,34 @@ public interface SecurityConfigs {
                     .and()
                     .csrf().disable()
                     .authorizeRequests()
-                    .regexMatchers(getContext().getSettings().getUrlPath() + "/login.*")
+                    .regexMatchers(getContext().getSettings().getUrlPath() + getLoginPagePath() + ".*")
                     .permitAll()
                     .anyRequest()
                     .authenticated()
                     .and()
-                    .formLogin().loginPage(getContext().getSettings().getUrlPath() + "/login")
+                    .formLogin().loginPage(getContext().getSettings().getUrlPath() + getLoginPagePath())
                     .and()
                     .logout()
                     .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
-                    .logoutSuccessUrl("/");
+                    .logoutSuccessUrl(getLogoutSuccessUrl());
 
+        }
+
+        protected String getLogoutSuccessUrl() {
+            return "/";
+        }
+
+        protected String getLoginPagePath() {
+            return "/login";
         }
 
         @Override
         protected void configure(AuthenticationManagerBuilder auth) {
-            auth.authenticationProvider(new AbstractUserDetailsAuthenticationProvider() {
+            auth.authenticationProvider(getAuthenticationProvider());
+        }
+
+        protected AbstractUserDetailsAuthenticationProvider getAuthenticationProvider() {
+            return new AbstractUserDetailsAuthenticationProvider() {
                 @Override
                 protected void additionalAuthenticationChecks(UserDetails userDetails, UsernamePasswordAuthenticationToken authentication) throws AuthenticationException {
                 }
@@ -150,7 +161,7 @@ public interface SecurityConfigs {
                     }
                     throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
                 }
-            });
+            };
         }
     }
 
