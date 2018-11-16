@@ -18,7 +18,10 @@
 
 package org.opensingular.studio.app.init;
 
+import net.bull.javamelody.MonitoringFilter;
+import net.bull.javamelody.SessionListener;
 import org.apache.wicket.protocol.http.WicketFilter;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.SingularAnnotationConfigWebApplicationContext;
 import org.opensingular.studio.app.config.StudioAppConfig;
 import org.opensingular.studio.core.config.StudioConfigProvider;
@@ -48,6 +51,17 @@ public class StudioWebAppInitializer implements WebApplicationInitializer {
         addSpringMVCServlet(container, rootContext);
         addWicketFilter(container, rootContext);
         addSpringSecurityFilter(container, rootContext);
+        addJavaMelodyFilter(container, rootContext);
+    }
+
+    private void addJavaMelodyFilter(ServletContext container, AnnotationConfigWebApplicationContext rootContext) {
+        if(SingularProperties.get().isTrue("singular.studio.javamelody.enabled")) {
+            FilterRegistration.Dynamic dynamic = container.addFilter("javamelodyFilter", MonitoringFilter.class);
+            dynamic.addMappingForUrlPatterns(EnumSet.of(DispatcherType.ASYNC, DispatcherType.REQUEST),
+                    false, "/*");
+            dynamic.setAsyncSupported(true);
+            container.addListener(new SessionListener());
+        }
     }
 
     private void configureContext(ServletContext container, AnnotationConfigWebApplicationContext rootContext) {
