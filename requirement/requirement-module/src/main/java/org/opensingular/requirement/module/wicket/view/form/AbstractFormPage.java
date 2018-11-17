@@ -169,7 +169,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
-        singularFormPanel.setInstanceCreator(() -> (SInstance) getRequirement().getDraft(config.getFormName()).orElse(getRequirement().newForm(config.getFormName())));
+        singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
         singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");

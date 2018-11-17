@@ -600,19 +600,18 @@ public abstract class RequirementService implements Loggable {
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
-                                                            @Nonnull Class<? extends SType<?>> typeClass) {
+    public Optional<SInstance> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
+                                                          @Nonnull Class<? extends SType<?>> typeClass) {
         return findLastFormInstanceByType(requirement, RequirementUtil.getTypeName(typeClass));
     }
 
 
     @Nonnull
-    public Optional<SIComposite> findCurrentDraftForType(RequirementInstance instance, String formName) {
+    public Optional<SInstance> findCurrentDraftForType(RequirementInstance instance, String formName) {
         return Optional
                 .ofNullable(instance.getCod())
                 .map(cod -> formRequirementService.findLastDraftByTypeName(cod, formName).orElse(null))
-                .map(getFormRequirementService()::getSInstance)
-                .map(i -> (SIComposite) i);
+                .map(getFormRequirementService()::getSInstance);
     }
 
 
@@ -620,14 +619,14 @@ public abstract class RequirementService implements Loggable {
      * Procura na petição a versão mais recente do formulário do tipo informado.
      */
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
-                                                            @Nonnull String typeName) {
+    public Optional<SInstance> findLastFormInstanceByType(@Nonnull RequirementInstance requirement,
+                                                          @Nonnull String typeName) {
         //TODO Verificar se esse método não está redundante com FormRequirementService.findLastFormRequirementEntityByType
         Objects.requireNonNull(requirement);
         return formRequirementService.findLastFormRequirementEntityByType(requirement, typeName)
                 .map(FormRequirementEntity::getForm)
                 .map(FormEntity::getCurrentFormVersionEntity)
-                .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
+                .map(version -> getFormRequirementService().getSInstance(version));
     }
 
     /**

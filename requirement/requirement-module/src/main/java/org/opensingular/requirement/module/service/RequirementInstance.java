@@ -215,7 +215,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public Optional<SIComposite> getForm(@Nonnull String formName) {
+    public Optional<SInstance> getForm(@Nonnull String formName) {
         return requirementService.findLastFormInstanceByType(this, formName);
     }
 
@@ -235,7 +235,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param
      * @return
      */
-    public final Optional<SIComposite> getDraft() {
+    public final Optional<SInstance> getDraft() {
         return getDraft(SFormUtil.getTypeName(getRequirementDefinition().getMainForm()));
     }
 
@@ -246,11 +246,11 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public Optional<SIComposite> getDraft(@Nonnull String formName) {
+    public Optional<SInstance> getDraft(@Nonnull String formName) {
         return requirementService.findCurrentDraftForType(this, formName);
     }
 
-    public final Optional<SIComposite> getDraft(@Nonnull Class<? extends SType<?>> form) {
+    public final Optional<SInstance> getDraft(@Nonnull Class<? extends SType<?>> form) {
         return getDraft(RequirementUtil.getTypeName(form));
     }
 
@@ -276,5 +276,9 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     public List<RequirementInstance<?,?>> getChildrenRequirements() {
         return requirementService.findRequirementInstancesByRootRequirement(getCod());
+    }
+
+    public SInstance resolveForm(String formName) {
+        return getDraft(formName).orElse(getForm(formName).orElse(newForm(formName)));
     }
 }
