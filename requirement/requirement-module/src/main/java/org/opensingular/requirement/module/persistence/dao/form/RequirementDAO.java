@@ -18,9 +18,7 @@ package org.opensingular.requirement.module.persistence.dao.form;
 
 
 import com.querydsl.core.BooleanBuilder;
-import com.querydsl.jpa.hibernate.HibernateQuery;
 import com.querydsl.jpa.impl.JPAQuery;
-import com.querydsl.jpa.impl.JPAQueryFactory;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
