@@ -95,7 +95,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
 
     @Nonnull
     @Override
-    protected Optional<String> getIdentifier() {
+    protected Optional<String> getRequirementIdentifier() {
         return Optional.empty();
     }
 

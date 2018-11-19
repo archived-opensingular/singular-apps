@@ -412,9 +412,13 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     protected void appendBeforeFormContent(BSContainer container) {
     }
 
-    @Nonnull
-    protected abstract Optional<String> getIdentifier();
 
+    @Nonnull
+    protected Optional<String> getRequirementIdentifier() {
+        return getRequirementOptional()
+                .map(RequirementInstance::getCod)
+                .map(Object::toString);
+    }
 
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> requirementId = config.getRequirementId();
@@ -607,7 +611,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected void addAfterSendSuccessMessage() {
-        Optional<String> identifier = getIdentifier();
+        Optional<String> identifier = getRequirementIdentifier();
         if (identifier.isPresent()) {
             addToastrSuccessMessageWorklist("message.send.success.identifier", identifier.get());
         } else {

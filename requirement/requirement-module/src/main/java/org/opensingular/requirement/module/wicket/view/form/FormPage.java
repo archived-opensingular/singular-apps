@@ -16,13 +16,10 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-import java.util.Optional;
-import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.ResourceModel;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 import org.wicketstuff.annotation.mount.MountPath;
@@ -40,7 +37,7 @@ public class FormPage extends AbstractFormPage<RequirementInstance> {
     @Override
     protected IModel<String> getContentSubtitle() {
         return $m.get(() -> {
-            if (getIdentifier().isPresent()) {
+            if (getRequirementIdentifier().isPresent()) {
                 return "";
             }
             return new ResourceModel("label.form.content.title", "Nova Solicitação").getObject();
@@ -56,11 +53,4 @@ public class FormPage extends AbstractFormPage<RequirementInstance> {
         super(context);
     }
 
-    @Nonnull
-    @Override
-    protected Optional<String> getIdentifier() {
-        return getRequirementOptional()
-                .map(RequirementInstance::getCod)
-                .map(Object::toString);
-    }
 }
