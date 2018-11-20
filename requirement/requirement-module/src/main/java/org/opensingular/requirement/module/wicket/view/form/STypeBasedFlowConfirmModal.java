@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
@@ -25,16 +26,18 @@ import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.event.ISInstanceListener;
-import org.opensingular.form.event.SInstanceEvent;
 import org.opensingular.form.event.SInstanceEventType;
+import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.service.RequirementInstance;
+import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 
 import javax.annotation.Nonnull;
-import java.io.Serializable;
+
+import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
 public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
@@ -42,7 +45,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     private final TransitionController<?> transitionController;
     private       boolean                 dirty;
     private       SingularFormPanel       singularFormPanel;
-    private       DirtyListener           instanceListenerDirty = new DirtyListener();
 
     public STypeBasedFlowConfirmModal(String id,
                                       String transitionName,
@@ -103,9 +105,7 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
 
     private SInstance createInstance() {
         SInstance instance;
-        instanceListenerDirty.setEnabled(false);
         instance = getRequirement().resolveForm(SFormUtil.getTypeName(transitionController.getType()));
-        appendDirtyListener(instance.getDocument(), instanceListenerDirty);
         transitionController.onCreateInstance(getFormPage().getInstance(), instance);
         return instance;
     }
@@ -141,7 +141,19 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     void addComponentsToModalBorder(BSModalBorder modalBorder) {
         addCloseButton(modalBorder);
         addDefaultConfirmButton(modalBorder);
+        addSaveButton(modalBorder);
         modalBorder.add(buildSingularFormPanel());
+    }
+
+    private void addSaveButton(BSModalBorder modalBorder) {
+        modalBorder.addButton(BSModalBorder.ButtonStyle.DEFAULT, "label.button.save", "Salvar", new SingularSaveButton("id", $m.get(() -> singularFormPanel.getInstanceModel().getObject()), false) {
+            @Override
+            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                getRequirement().saveForm(instanceModel.getObject());
+                new SingularToastrHelper(this.getPage()).
+                        addToastrMessage(ToastrType.SUCCESS, "message.data.success", null);
+            }
+        });
     }
 
     /**
@@ -154,23 +166,5 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     public void onShowUpdate(AjaxRequestTarget ajaxRequestTarget) {
         singularFormPanel.updateContainer();
         getModalBorder().show(ajaxRequestTarget);
-        instanceListenerDirty.setEnabled(true);
     }
-
-    private class DirtyListener implements ISInstanceListener, Serializable {
-
-        boolean enabled = true;
-
-        @Override
-        public void onInstanceEvent(SInstanceEvent evt) {
-            if (enabled) {
-                STypeBasedFlowConfirmModal.this.setDirty(true);
-            }
-        }
-
-        public void setEnabled(boolean enabled) {
-            this.enabled = enabled;
-        }
-    }
-
 }
