@@ -32,10 +32,19 @@ public class GroupMenuEntry extends AbstractMenuEntry {
     private final List<MenuEntry> children;
     private final MenuView        menuView;
 
+    private boolean isSuperMenu = true;
+
     public GroupMenuEntry(Icon icon, String name, MenuView menuView) {
         super(icon, name, null);
         this.children = new ArrayList<>();
         this.menuView = menuView;
+    }
+
+    public GroupMenuEntry(Icon icon, String name, MenuView menuView, boolean isSuperMenu) {
+        super(icon, name, null);
+        this.children = new ArrayList<>();
+        this.menuView = menuView;
+        this.isSuperMenu = isSuperMenu;
     }
 
     public GroupMenuEntry(Icon icon, String name, MenuView menuView,
@@ -43,6 +52,15 @@ public class GroupMenuEntry extends AbstractMenuEntry {
         super(icon, name, visibilityFunction);
         this.children = new ArrayList<>();
         this.menuView = menuView;
+    }
+
+    public GroupMenuEntry(Icon icon, String name, MenuView menuView,
+                          boolean isSuperMenu,
+                          IPredicate<MenuEntry> visibilityFunction) {
+        super(icon, name, visibilityFunction);
+        this.children = new ArrayList<>();
+        this.menuView = menuView;
+        this.isSuperMenu = isSuperMenu;
     }
 
     public List<MenuEntry> getChildren() {
@@ -114,6 +132,22 @@ public class GroupMenuEntry extends AbstractMenuEntry {
             return this;
         }
 
+        public Builder addSidebarGroup(Icon icon, String name, Consumer<Builder> groupConsumer, boolean isSuperMenu) {
+            GroupMenuEntry g = groupEntry.add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, isSuperMenu));
+            if (groupConsumer != null) {
+                groupConsumer.accept(new GroupMenuEntry.Builder(g));
+            }
+            return this;
+        }
+
+        public Builder addSidebarGroup(Icon icon, String name, boolean isSuperMenu, Consumer<Builder> groupConsumer, IPredicate<MenuEntry> visibilityFunction) {
+            GroupMenuEntry g = groupEntry.add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, isSuperMenu, visibilityFunction));
+            if (groupConsumer != null) {
+                groupConsumer.accept(new GroupMenuEntry.Builder(g));
+            }
+            return this;
+        }
+
         public Builder addStudioItemWithMenu(String name, IBiFunction<String, MenuEntry, StudioContent> contentFactory, IPredicate<MenuEntry> visibilityFunction) {
             groupEntry.add(new StudioMenuEntry(null, name, contentFactory, true, visibilityFunction));
             return this;
@@ -149,6 +183,10 @@ public class GroupMenuEntry extends AbstractMenuEntry {
             groupEntry.add(new UrlMenuEntry(ico, name, endpoint, visibilityFunction));
             return this;
         }
+    }
+
+    public boolean isSuperMenu() {
+        return isSuperMenu;
     }
 
     public MenuView getMenuView() {
