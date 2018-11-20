@@ -44,6 +44,7 @@ import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionAccess;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -797,14 +798,11 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         if (controller == null || controller.getType() == null) {
             return getSimpleMessageFLowConfirmModal(id, transitionName, this);
         }
-        RefType refType = getFormRequirementService().loadRefType(controller.getType());
-        FormKey formKey = loadFormKeyFromTypeAndTask(controller.getType(), false).orElse(null);
-        STypeBasedFlowConfirmModal<?> modal = new STypeBasedFlowConfirmModal<>(
+        STypeBasedFlowConfirmModal<?> modal = new STypeBasedFlowConfirmModal<RI>(
                 id,
                 transitionName,
                 this,
-                refType,
-                formKey,
+                requirementInstanceModel,
                 controller);
         transitionConfirmModalMap.put(transitionName, modal);
         return modal;
@@ -840,13 +838,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected AnnotationMode getAnnotationMode(FormPageExecutionContext formPageConfig) {
         return formPageConfig.getAnnotationMode();
-    }
-
-    @Nonnull
-    protected final Optional<FormKey> loadFormKeyFromTypeAndTask(@Nonnull Class<? extends SType<?>> typeClass, boolean mainForm) {
-        return formRequirementService.findFormRequirementEntity(getRequirement(), typeClass, mainForm)
-                .map(x -> x.getCurrentDraftEntity() == null ? x.getForm() : x.getCurrentDraftEntity().getForm())
-                .map(formEntity -> formRequirementService.formKeyFromFormEntity(formEntity));
     }
 
     private IReadOnlyModel<SInstance> getInstanceModel() {

@@ -21,39 +21,36 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.document.RefType;
 import org.opensingular.form.document.SDocument;
-import org.opensingular.form.document.SDocumentConsumer;
 import org.opensingular.form.event.ISInstanceListener;
 import org.opensingular.form.event.SInstanceEvent;
 import org.opensingular.form.event.SInstanceEventType;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
+import javax.annotation.Nonnull;
 import java.io.Serializable;
 
 public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
-    private final RefType refType;
-    private final FormKey formKey;
+    private final IModel<RI>              requirementInstanceModel;
     private final TransitionController<?> transitionController;
-    private boolean dirty;
-    private SingularFormPanel singularFormPanel;
-    private DirtyListener instanceListenerDirty = new DirtyListener();
+    private       boolean                 dirty;
+    private       SingularFormPanel       singularFormPanel;
+    private       DirtyListener           instanceListenerDirty = new DirtyListener();
 
     public STypeBasedFlowConfirmModal(String id,
                                       String transitionName,
                                       AbstractFormPage<RI> formPage,
-                                      RefType refType,
-                                      FormKey formKey,
+                                      IModel<RI> requirementInstanceModel,
                                       TransitionController<?> transitionController) {
         super(id, transitionName, formPage);
-        this.refType = refType;
-        this.formKey = formKey;
+        this.requirementInstanceModel = requirementInstanceModel;
         this.transitionController = transitionController;
         this.dirty = false;
     }
@@ -93,18 +90,23 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return singularFormPanel;
     }
 
+    /**
+     * Retorna a petição atual ou dispara exception se ainda não estiver configurada.
+     */
+    @Nonnull
+    protected final RI getRequirement() {
+        if (requirementInstanceModel != null && requirementInstanceModel.getObject() != null) {
+            return requirementInstanceModel.getObject();
+        }
+        throw new SingularServerException("O requerimento (" + RequirementInstance.class.getName() + ") ainda está null");
+    }
+
     private SInstance createInstance() {
         SInstance instance;
         instanceListenerDirty.setEnabled(false);
-        if (formKey != null) {
-            instance = getFormPage().getFormRequirementService().getSInstance(formKey, refType, SDocumentConsumer.of(d -> appendDirtyListener(d, instanceListenerDirty)));
-        } else {
-            instance = getFormPage().getFormRequirementService().createInstance(refType, SDocumentConsumer.of(d -> appendDirtyListener(d, instanceListenerDirty)));
-        }
-        if (transitionController != null) {
-            transitionController.onCreateInstance(getFormPage().getInstance(), instance);
-        }
-
+        instance = getRequirement().resolveForm(SFormUtil.getTypeName(transitionController.getType()));
+        appendDirtyListener(instance.getDocument(), instanceListenerDirty);
+        transitionController.onCreateInstance(getFormPage().getInstance(), instance);
         return instance;
     }
 
