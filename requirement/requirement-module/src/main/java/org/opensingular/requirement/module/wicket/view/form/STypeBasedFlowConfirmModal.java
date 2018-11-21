@@ -24,9 +24,6 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.document.SDocument;
-import org.opensingular.form.event.ISInstanceListener;
-import org.opensingular.form.event.SInstanceEventType;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
@@ -60,6 +57,7 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return new FlowConfirmButton<RI>(tn, "confirm-btn", im, isValidateConfirmButton(vm, validation), getFormPage(), m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
+                getRequirement().saveForm(singularFormPanel.getInstance());
                 super.onValidationSuccess(ajaxRequestTarget, form, model);
             }
         };
@@ -107,12 +105,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return instance;
     }
 
-    //deve ser adicionado apos o listener de criar a instancia
-    private void appendDirtyListener(SDocument document, ISInstanceListener instanceListenerDirty) {
-        document.getInstanceListeners().add(SInstanceEventType.VALUE_CHANGED, instanceListenerDirty);
-    }
-
-
     @SuppressWarnings("unchecked")
     public IModel<? extends SInstance> getInstanceModel() {
         return singularFormPanel.getInstanceModel();
@@ -121,7 +113,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     @Override
     protected void onConfirm(String tn, IModel<? extends SInstance> im) {
         super.onConfirm(tn, im);
-        getRequirement().saveForm(im.getObject());
     }
 
     @Override
