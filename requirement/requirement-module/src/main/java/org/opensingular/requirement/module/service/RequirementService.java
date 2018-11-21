@@ -417,8 +417,10 @@ public abstract class RequirementService implements Loggable {
 
             saveRequirementHistory(requirement, formEntities);
         } catch (SingularException e) {
+            getLogger().error(e.getMessage(), e);
             throw e;
         } catch (Exception e) {
+            getLogger().error(e.getMessage(), e);
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
     }

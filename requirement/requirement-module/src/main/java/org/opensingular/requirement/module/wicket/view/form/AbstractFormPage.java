@@ -676,6 +676,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             //recarrega a petição novamente
             getRequirementModel().setObject(requirementService.loadRequirementInstance(requirement.getCod()));
             //faz o rethrow da exeção, algumas são tratadas e exibidas na tela como mensagens informativas
+            getLogger().error(ex.getMessage(), ex);
             throw SingularServerException.rethrow(ex.getMessage(), ex);
         }
     }
