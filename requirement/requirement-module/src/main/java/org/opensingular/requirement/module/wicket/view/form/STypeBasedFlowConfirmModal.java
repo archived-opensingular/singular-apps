@@ -43,7 +43,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
 
     private final IModel<RI>              requirementInstanceModel;
     private final TransitionController<?> transitionController;
-    private       boolean                 dirty;
     private       SingularFormPanel       singularFormPanel;
 
     public STypeBasedFlowConfirmModal(String id,
@@ -54,7 +53,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         super(id, transitionName, formPage);
         this.requirementInstanceModel = requirementInstanceModel;
         this.transitionController = transitionController;
-        this.dirty = false;
     }
 
     @Override
@@ -62,7 +60,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return new FlowConfirmButton<RI>(tn, "confirm-btn", im, isValidateConfirmButton(vm, validation), getFormPage(), m) {
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
-                setDirty(true);
                 super.onValidationSuccess(ajaxRequestTarget, form, model);
             }
         };
@@ -121,20 +118,10 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return singularFormPanel.getInstanceModel();
     }
 
-    public boolean isDirty() {
-        return dirty;
-    }
-
-    public STypeBasedFlowConfirmModal setDirty(boolean dirty) {
-        this.dirty = dirty;
-        return this;
-    }
-
     @Override
     protected void onConfirm(String tn, IModel<? extends SInstance> im) {
         super.onConfirm(tn, im);
-        // força o estado de "dirty" mesmo que não exista nenhuma alteração ao confirmar o envio
-        this.setDirty(true);
+        getRequirement().saveForm(im.getObject());
     }
 
     @Override
