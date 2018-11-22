@@ -21,6 +21,8 @@ import org.opensingular.requirement.module.box.BoxItemData;
 import org.opensingular.requirement.module.box.action.AbstractURLPopupBoxItemAction;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ROOT_REQUIREMENT_ID;
+
 public class HistoryAction extends AbstractURLPopupBoxItemAction {
 
     public HistoryAction(BoxItemData line) {
@@ -28,6 +30,7 @@ public class HistoryAction extends AbstractURLPopupBoxItemAction {
                 .baseURL("/history")
                 .formAction(null)
                 .requirementId(line.getRequirementId())
+                .param(ROOT_REQUIREMENT_ID, line.getRootRequirement())
                 .build());
     }
 }

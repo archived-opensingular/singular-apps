@@ -40,6 +40,8 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String PARENT_REQUIREMENT_ID = "p";
 
+    public static final String ROOT_REQUIREMENT_ID = "rk";
+
     public static final String FORM_NAME = "f";
 
     public static final String INSTANCE_ID = "i";
