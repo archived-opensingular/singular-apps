@@ -28,6 +28,7 @@ import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -698,12 +699,14 @@ public abstract class RequirementService implements Loggable {
     }
 
     public <RI extends RequirementInstance> void updateRequirementDescription(SInstance currentInstance, RI requirement) {
-        String description = currentInstance.toStringDisplay();
-        if (description != null && description.length() > 200) {
-            getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
-            description = description.substring(0, 197) + "...";
+        if (currentInstance.getType().getClass().equals(requirement.getRequirementDefinition().getMainForm())) {
+            String description = currentInstance.toStringDisplay();
+            if (description != null && description.length() > 200) {
+                getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
+                description = description.substring(0, 197) + "...";
+            }
+            requirement.setDescription(description);
         }
-        requirement.setDescription(description);
     }
 
     public RequirementDefinitionEntity getRequirementDefinitionByRequirementId(Long requirementId) {
