@@ -2,7 +2,11 @@
 
 <wsdl:definitions
         name="ExtensaoWS"
-        targetNamespace="extensaons" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="extensaons" xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/" xmlns:http="http://schemas.xmlsoap.org/wsdl/http/">
+        targetNamespace="extensaons" xmlns="http://schemas.xmlsoap.org/wsdl/"
+        xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+        xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+        xmlns:tns="extensaons"
+        xmlns:http="http://schemas.xmlsoap.org/wsdl/http/">
 
     <wsdl:types>
         <xsd:schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="extensaons">
@@ -107,6 +111,25 @@
                 </xsd:sequence>
             </xsd:complexType>
 
+            <xsd:complexType name="LinkExterno">
+                <xsd:all>
+                    <xsd:element name="ProtocoloProcedimento" type="xsd:string" />
+                    <xsd:element name="LinkExternoProcedimento" type="xsd:string" />
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfLinkExterno">
+                <xsd:sequence>
+                    <xsd:element name="LinkExterno" type="tns:LinkExterno" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfProtocoloProcedimento">
+                <xsd:sequence>
+                    <xsd:element name="ProtocoloProcedimento" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
+                </xsd:sequence>
+            </xsd:complexType>
+
         </xsd:schema>
     </wsdl:types>
 
@@ -208,6 +231,16 @@
         <wsdl:part name="IdProtocolo" type="xsd:string" />
     </wsdl:message>
 
+    <wsdl:message name="consultarLinksExternosProcedimentoRequest">
+        <wsdl:part name="SiglaSistema" type="xsd:string"/>
+        <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
+        <wsdl:part name="ProtocolosProcedimentos" type="tns:ArrayOfProtocoloProcedimento"/>
+    </wsdl:message>
+
+    <wsdl:message name="consultarLinksExternosProcedimentoResponse">
+        <wsdl:part name="retorno" type="tns:ArrayOfLinkExterno" />
+    </wsdl:message>
+
 
     <wsdl:portType name="extensaoPortType">
 
@@ -263,6 +296,12 @@
             <wsdl:documentation>Retorna o id de um documento ou procedimento(processo) com base em seu número de protocolo.</wsdl:documentation>
             <wsdl:input message="tns:consultarIdProtocoloRequest"/>
             <wsdl:output message="tns:consultarIdProtocoloResponse"/>
+        </wsdl:operation>
+
+        <wsdl:operation name="consultarLinksExternosProcedimento">
+            <wsdl:documentation>Retorna os links externos para uma lista de procedimentos.</wsdl:documentation>
+            <wsdl:input message="tns:consultarLinksExternosProcedimentoRequest"/>
+            <wsdl:output message="tns:consultarLinksExternosProcedimentoResponse"/>
         </wsdl:operation>
 
     </wsdl:portType>
@@ -360,6 +399,15 @@
             </wsdl:output>
         </wsdl:operation>
 
+        <wsdl:operation name="consultarLinksExternosProcedimento">
+            <soap:operation soapAction="extensaons/consultarLinksExternosProcedimento"/>
+            <wsdl:input>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
     </wsdl:binding>
 
     <wsdl:service name="extensaoService">
