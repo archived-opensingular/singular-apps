@@ -42,6 +42,10 @@
             <groupId>org.opensingular</groupId>
             <artifactId>singular-app-commons</artifactId>
         </dependency>
+        <dependency>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
