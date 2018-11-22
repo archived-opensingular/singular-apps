@@ -2,6 +2,7 @@ package org.opensingular.app.commons.test.pdf;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.pdfbox.cos.COSDocument;
+import org.apache.pdfbox.io.RandomAccessBufferedFileInputStream;
 import org.apache.pdfbox.io.RandomAccessRead;
 import org.apache.pdfbox.pdfparser.PDFParser;
 import org.apache.pdfbox.pdmodel.PDDocument;
@@ -77,13 +78,13 @@ public class FlyingSaucerConverterTest implements Loggable {
         PDDocument pdDoc = null;
         COSDocument cosDoc = null;
         try {
-            PDFParser parser = new PDFParser((RandomAccessRead) new FileInputStream(convert.get()));
+            PDFParser parser = new PDFParser(new RandomAccessBufferedFileInputStream(convert.get()));
             parser.parse();
             cosDoc = parser.getDocument();
             PDFTextStripper pdfStripper = new PDFTextStripper();
             pdDoc = new PDDocument(cosDoc);
             String parsedText = pdfStripper.getText(pdDoc);
-            Assert.assertEquals("ç^`%$&*#áéíóú", parsedText);
+            Assert.assertTrue(parsedText.contains("ç^`%$&*#áéíóú"));
         } catch (Exception e) {
             getLogger().error("Erro ao abrir o arquivo", e);
             try {

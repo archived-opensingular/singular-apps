@@ -151,6 +151,10 @@ public class StudioPage extends SingularAdminTemplate {
             while (currentMenuEntry instanceof ItemMenuEntry) {
                 currentMenuEntry = currentMenuEntry.getParent();
             }
+            while (currentMenuEntry instanceof GroupMenuEntry && !((GroupMenuEntry) currentMenuEntry).isSuperMenu()){
+                currentMenuEntry = currentMenuEntry.getParent();
+            }
+
             AbstractMenuItem menu = buildMenu(currentMenuEntry, true);
             if (menu instanceof MetronicMenuGroup) {
                 MetronicMenuGroup metronicMenuGroup = (MetronicMenuGroup) menu;
