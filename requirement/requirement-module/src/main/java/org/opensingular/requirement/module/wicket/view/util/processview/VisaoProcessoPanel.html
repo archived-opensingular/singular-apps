@@ -1,0 +1,79 @@
+<html xmlns:wicket="http://wicket.apache.org">
+<wicket:head>
+    <style>
+        .jstree-anchor {
+            /*enable wrapping*/
+            white-space: normal !important;
+            /*ensure lower nodes move down*/
+            height: auto !important;
+            /*offset icon width*/
+            padding-right: 24px;
+        }
+    </style>
+</wicket:head>
+<wicket:panel>
+    <form wicket:id="form">
+        <div class="col-lg-3">
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject">Árvore de Requerimentos</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div id="tree"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-9" style="margin-bottom: 50px;">
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject">Dados do Requerimento</span>
+                    </div>
+                </div>
+                <div class="portlet-body" wicket:id="dadosRequerimento">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <label class="bold">Descrição do processo: </label> <label wicket:id="descricao"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label class="bold">Número do requerimento: </label> <label wicket:id="protocolo"></label>
+                        </div>
+                        <div class="col-lg-4">
+                            <label class="bold">Data de entrada: </label> <label wicket:id="dataEntrada"></label>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-lg-4">
+                            <label class="bold">Situação atual: </label> <label wicket:id="situacaoAtual"></label>
+                        </div>
+                        <div class="col-lg-8">
+                            <label class="bold">Requerente: </label> <label wicket:id="solicitante"></label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="portlet light">
+                <div class="portlet-title">
+                    <div class="caption">
+                        <span class="caption-subject">Fluxo executado</span>
+                    </div>
+                </div>
+                <div class="portlet-body">
+                    <div style="text-align:center" class="row table-responsive">
+                        <img class="imageFlow col-xs-12" wicket:id="imageHist">
+                    </div>
+                </div>
+            </div>
+            <div wicket:id="historico"></div>
+        </div>
+    </form>
+</wicket:panel>
+</html>
