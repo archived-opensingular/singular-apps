@@ -74,6 +74,15 @@ public class StudioMenu {
         }
 
         public Builder addSidebarGroup(Icon icon, String name,
+                                       Consumer<GroupMenuEntry.Builder> groupConsumer, boolean isSuperMenu) {
+            GroupMenuEntry g = studioMenu.add(new GroupMenuEntry(icon, name, MenuView.SIDEBAR, isSuperMenu));
+            if (groupConsumer != null) {
+                groupConsumer.accept(new GroupMenuEntry.Builder(g));
+            }
+            return this;
+        }
+
+        public Builder addSidebarGroup(Icon icon, String name,
                                        IPredicate<MenuEntry> visibilityFunction,
                                        Consumer<GroupMenuEntry.Builder> groupConsumer) {
             GroupMenuEntry g = studioMenu
