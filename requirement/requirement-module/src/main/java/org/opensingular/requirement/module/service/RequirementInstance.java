@@ -258,8 +258,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return newForm(getRequirementDefinition().getMainForm());
     }
 
-    public final SInstance newForm(@Nonnull Class<? extends SType<?>> form) {
-        return newForm(RequirementUtil.getTypeName(form));
+    public final <SI extends SInstance> SI newForm(@Nonnull Class<? extends SType<SI>> form) {
+        return (SI) newForm(RequirementUtil.getTypeName(form));
     }
 
     private SInstance newForm(@Nonnull RefType refType) {

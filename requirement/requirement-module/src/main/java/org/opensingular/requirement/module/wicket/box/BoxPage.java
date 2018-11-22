@@ -102,7 +102,7 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
                 .filter(i -> !i.getWorkspaceMenuItens().isEmpty())
                 .findFirst().ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
-            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().findFirst().map(WorkspaceMenuItem::getName).orElse(null));
+            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().findFirst().map(WorkspaceMenuItem::getName).orElse("null"));
         });
     }
 
