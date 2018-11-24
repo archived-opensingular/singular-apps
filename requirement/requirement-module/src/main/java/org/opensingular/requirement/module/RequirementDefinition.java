@@ -18,6 +18,7 @@
 
 package org.opensingular.requirement.module;
 
+import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
@@ -116,6 +117,10 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
 
     public RI loadRequirement(Long requirementId) {
         return (RI) newRequirementInstance(requirementService.getRequirementEntity(requirementId));
+    }
+
+    public RI loadRequirement(FlowInstance flowInstance) {
+        return (RI) newRequirementInstance(requirementService.getRequirementByFlowCod(flowInstance.getEntityCod()));
     }
 
 
