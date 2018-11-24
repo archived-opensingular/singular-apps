@@ -659,7 +659,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         //petição atual, qualuer alteracao deve ser feita em onBeforeExecuteTransition
         RI requirement = getRequirement();
 
-        saveForm(mi.getObject());
+//        saveForm(mi.getObject()); //TODO se descomentar da pau nas transicoes quando um upload é adicionar ao form.
 
         //busca os parametros do FLOW
         Map<String, String> flowParameters = getFlowParameters(tn);
