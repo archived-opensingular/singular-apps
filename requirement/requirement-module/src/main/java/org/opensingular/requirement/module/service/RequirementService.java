@@ -160,22 +160,10 @@ public abstract class RequirementService implements Loggable {
     /**
      * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
      */
-    @Deprecated
     @Nonnull
     public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull FlowInstance flowInstance) {
         Objects.requireNonNull(flowInstance);
         return getRequirementInstance(getRequirementByFlowCod(flowInstance.getEntityCod()));
-    }
-
-
-    /**
-     * Recupera a petição associada a task informada ou dispara exception senão encontrar.
-     */
-    @Deprecated
-    @Nonnull
-    public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
-        Objects.requireNonNull(taskInstance);
-        return getRequirementInstance(taskInstance.getFlowInstance());
     }
 
     public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinitionForRequirementId(Long requirementId) {

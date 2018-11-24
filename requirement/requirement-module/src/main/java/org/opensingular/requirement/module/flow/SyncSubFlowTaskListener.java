@@ -40,7 +40,7 @@ public class SyncSubFlowTaskListener implements StartedTaskListener {
     @Override
     public void onTaskStart(TaskInstance taskInstance, ExecutionContext executionContext) {
         final RequirementService              requirementService = ApplicationContextProvider.get().getBean(RequirementService.class);
-        final RequirementInstance             requirement        = requirementService.getRequirementInstance(taskInstance);
+        final RequirementInstance             requirement        = requirementService.getRequirementInstance(executionContext.getFlowInstance());
         final RequirementInstance             parent             = requirement.getParentRequirementOrException();
         final List<RequirementInstance<?, ?>> children           = parent.getChildrenRequirements();
 
