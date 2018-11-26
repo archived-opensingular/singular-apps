@@ -25,16 +25,17 @@ import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 
 import java.util.List;
+import java.util.function.BiFunction;
 
 /**
  * Started Task Listener to check if all children flows ended and, if so, trigger a transition on the parent flow.
  */
 public class SyncSubFlowTaskListener implements StartedTaskListener {
 
-    private String parentTransitionName;
+    private BiFunction<TaskInstance, ExecutionContext, String> transitionDecider;
 
-    public SyncSubFlowTaskListener(String parentTransitionName) {
-        this.parentTransitionName = parentTransitionName;
+    protected SyncSubFlowTaskListener(BiFunction<TaskInstance, ExecutionContext, String> transitionDecider) {
+        this.transitionDecider = transitionDecider;
     }
 
     @Override
@@ -48,7 +49,33 @@ public class SyncSubFlowTaskListener implements StartedTaskListener {
                 .stream()
                 .allMatch(r -> r.getCurrentTaskOrException().isEnd());
         if (allTasksEnded) {
-            parent.getFlowInstance().prepareTransition(parentTransitionName).go();
+            parent.getFlowInstance().prepareTransition(decideTranition(taskInstance, executionContext)).go();
         }
+    }
+
+    protected String decideTranition(TaskInstance taskInstance, ExecutionContext executionContext) {
+        return transitionDecider.apply(taskInstance, executionContext);
+    }
+
+    /**
+     * Usa uma transição fixa quando identifica que deve sincronizar com o fluxo pai.
+     *
+     * @param parentTransitionName
+     * @return
+     */
+    public static SyncSubFlowTaskListener fixedTransition(String parentTransitionName) {
+        return new SyncSubFlowTaskListener((t,i) -> parentTransitionName);
+    }
+
+    /**
+     * Decide dinamicamente qual a transição a ser executada quando identifica que deve
+     * sincronizar com o fluxo pai.
+     *
+     * @param transitionDecider
+     * @return
+     */
+    public static SyncSubFlowTaskListener dynamicTransition(BiFunction<TaskInstance, ExecutionContext, String> transitionDecider) {
+        return new SyncSubFlowTaskListener(transitionDecider::apply);
+
     }
 }
