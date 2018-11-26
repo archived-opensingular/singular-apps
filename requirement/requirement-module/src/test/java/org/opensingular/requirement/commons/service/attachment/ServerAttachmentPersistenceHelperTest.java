@@ -31,6 +31,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;
+import org.opensingular.form.persistence.entity.FormAttachmentEntityId;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
@@ -47,8 +48,11 @@ import static org.mockito.Mockito.when;
 @RunWith(MockitoJUnitRunner.class)
 public class ServerAttachmentPersistenceHelperTest {
 
+    public static final long         OBSOLTE_ATTACHMENT_ENTITY_ID = 1L;
+    public static final long         NORMAL_ATTACHMENT_ENTITY_ID  = 2L;
+    public static final long         FORM_VERSION_ID              = 1L;
     @Mock
-    private IFormService formService;
+    private             IFormService formService;
 
     @Mock
     private IFormAttachmentService formAttachmentService;
@@ -94,11 +98,12 @@ public class ServerAttachmentPersistenceHelperTest {
     @Before
     public void setUp() {
 
-        when(obsoletFormAttachmentEntity.getAttachmentEntity()).thenReturn(obsoletAttachmentEntity);
-        when(normalFormAttachmentEntity.getAttachmentEntity()).thenReturn(normalAttachmentEntity);
 
-        when(obsoletAttachmentEntity.getCod()).thenReturn(1L);
-        when(normalAttachmentEntity.getCod()).thenReturn(2L);
+        when(obsoletFormAttachmentEntity.getCod()).thenReturn(new FormAttachmentEntityId(FORM_VERSION_ID, OBSOLTE_ATTACHMENT_ENTITY_ID));
+
+        when(normalFormAttachmentEntity.getCod()).thenReturn(new FormAttachmentEntityId(FORM_VERSION_ID, NORMAL_ATTACHMENT_ENTITY_ID));
+
+
 
         when(normalAttachment.getFileId()).thenReturn("2");
 
