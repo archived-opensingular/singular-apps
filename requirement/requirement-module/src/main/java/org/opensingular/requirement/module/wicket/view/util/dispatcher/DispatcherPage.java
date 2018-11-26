@@ -115,8 +115,12 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Optional<SingularWebRef> retrieveSingularWebRef(ActionContext actionContext) {
-        Optional<TaskInstance> ti = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
-        Optional<STask<?>> task = ti.flatMap(TaskInstance::getFlowTask);
+        Optional<Class<? extends AbstractFormPage>> pageParam = actionContext.getFormPageClass();
+        if (pageParam.isPresent()) {
+            return Optional.of(new SingularWebRef(pageParam.get()));
+        }
+        Optional<TaskInstance> ti   = actionContext.getRequirementId().flatMap(this::findCurrentTaskByRequirementId);
+        Optional<STask<?>>     task = ti.flatMap(TaskInstance::getFlowTask);
         if (task.isPresent()) {
 
             Optional<FormAction> formActionOpt = actionContext.getFormAction();
@@ -164,7 +168,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private WebPage newVisualizationPage(ActionContext context) {
-        Long formVersionPK;
+        Long    formVersionPK;
         Boolean showAnnotations;
         showAnnotations = isAnnotationModeReadOnly(context);
 
@@ -221,12 +225,12 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private void dispatch(ActionContext context) {
-        Long requirementId = context.getRequirementId().orElse(null);
-        String formType = context.getFormName().orElse(null);
-        String action = context.getFormAction().map(FormAction::name).orElse(null);
-        boolean readonly = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
-        String idUsuario = null;
-        String idApplicant = null;
+        Long    requirementId = context.getRequirementId().orElse(null);
+        String  formType      = context.getFormName().orElse(null);
+        String  action        = context.getFormAction().map(FormAction::name).orElse(null);
+        boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
+        String  idUsuario     = null;
+        String  idApplicant   = null;
         if (SingularSession.exists()) {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
@@ -286,15 +290,11 @@ public class DispatcherPage extends WebPage implements Loggable {
     }
 
     private Class<? extends AbstractFormPage> getFormPageClass(ActionContext config) {
-        Optional<Class<? extends AbstractFormPage>> formPageClass = config.getFormPageClass();
-        if (formPageClass.isPresent()) {
-            return formPageClass.get();
-        } else {
-            RequirementDefinition requirementDefinition = singularRequirementService.getSingularRequirement(config);
-            if (requirementDefinition != null) {
-                return requirementDefinition.getDefaultExecutionPage();
-            }
+        RequirementDefinition requirementDefinition = singularRequirementService.getSingularRequirement(config);
+        if (requirementDefinition != null) {
+            return requirementDefinition.getDefaultExecutionPage();
         }
+
         return FormPage.class;
     }
 
