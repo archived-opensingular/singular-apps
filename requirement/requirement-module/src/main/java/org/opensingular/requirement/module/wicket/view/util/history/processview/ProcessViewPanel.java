@@ -45,11 +45,13 @@ import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.wicket.view.panel.EmbeddedHistoryPanel;
 
+import javax.annotation.Nonnull;
 import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
@@ -149,7 +151,8 @@ public class ProcessViewPanel extends Panel {
 
     }
 
-    private void buildHistoryPanel(RequirementInstance<?, ?> requirement) {
+    private void buildHistoryPanel(@Nonnull RequirementInstance<?, ?> requirement) {
+        Objects.requireNonNull(requirement);
         historyPanel.addOrReplace(newFlowPanel(requirement));
         historyPanel.addOrReplace(new EmbeddedHistoryPanel("historico", requirement.getCod()));
         historyPanel.addOrReplace(newDadosRequerimento(requirement));
