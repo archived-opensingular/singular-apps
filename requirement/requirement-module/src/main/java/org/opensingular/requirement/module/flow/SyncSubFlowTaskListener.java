@@ -49,11 +49,11 @@ public class SyncSubFlowTaskListener implements StartedTaskListener {
                 .stream()
                 .allMatch(r -> r.getCurrentTaskOrException().isEnd());
         if (allTasksEnded) {
-            parent.getFlowInstance().prepareTransition(decideTranition(taskInstance, executionContext)).go();
+            parent.getFlowInstance().prepareTransition(decideTransition(taskInstance, executionContext)).go();
         }
     }
 
-    protected String decideTranition(TaskInstance taskInstance, ExecutionContext executionContext) {
+    protected String decideTransition(TaskInstance taskInstance, ExecutionContext executionContext) {
         return transitionDecider.apply(taskInstance, executionContext);
     }
 
