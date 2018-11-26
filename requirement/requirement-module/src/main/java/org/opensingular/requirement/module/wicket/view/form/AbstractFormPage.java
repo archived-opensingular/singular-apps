@@ -44,12 +44,9 @@ import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.core.TransitionAccess;
-import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
-import org.opensingular.form.document.RefType;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
@@ -626,14 +623,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                                              IModel<? extends SInstance> currentInstance)
             throws SingularServerFormValidationError {
         final STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        if (flowConfirmModal == null) {
-            saveForm(currentInstance.getObject());
-        } else {
+        if (flowConfirmModal != null) {
             boolean isFormOnModalValid = WicketFormProcessing.onFormSubmit(form, ajaxRequestTarget,
                     flowConfirmModal.getInstanceModel(), true, true);
-            if (isFormOnModalValid) {
-                saveForm(currentInstance.getObject());
-            } else {
+            if (!isFormOnModalValid) {
                 throw new SingularServerFormValidationError();
             }
         }
@@ -659,7 +652,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         //petição atual, qualuer alteracao deve ser feita em onBeforeExecuteTransition
         RI requirement = getRequirement();
 
-//        saveForm(mi.getObject()); //TODO se descomentar da pau nas transicoes quando um upload é adicionar ao form.
+        saveForm(mi.getObject());
 
         //busca os parametros do FLOW
         Map<String, String> flowParameters = getFlowParameters(tn);

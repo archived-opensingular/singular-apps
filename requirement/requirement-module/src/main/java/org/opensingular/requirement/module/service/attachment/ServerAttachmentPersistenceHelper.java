@@ -63,7 +63,7 @@ public class ServerAttachmentPersistenceHelper extends DefaultAttachmentPersiste
 
     private void removeFormAttachment(List<FormAttachmentEntity> currentFormAttachmentEntities, SIAttachment attachment) {
         currentFormAttachmentEntities.stream()
-                .filter(f -> f.getAttachmentEntity().getCod().toString().equals(attachment.getFileId()))
+                .filter(f -> f.getCod().getAttachmentCod().toString().equals(attachment.getFileId()))
                 .findFirst()
                 .ifPresent(currentFormAttachmentEntities::remove);
     }
