@@ -45,11 +45,11 @@ public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     public List<DatatableField> getDatatableFields() {
         List<DatatableField> fields = new ArrayList<>();
         fields.add(DatatableField.of("Número", "codRequirement"));
-        fields.add(DatatableField.of("Dt. de Entrada", "processBeginDate"));
         fields.add(DatatableField.of("Solicitante", "solicitante"));
         fields.add(DatatableField.of("Descrição", "description"));
-        fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
+        fields.add(DatatableField.of("Dt. de Entrada", "processBeginDate"));
         fields.add(DatatableField.of("Situação", "taskName"));
+        fields.add(DatatableField.of("Dt. Situação", "situationBeginDate"));
         return fields;
     }
 

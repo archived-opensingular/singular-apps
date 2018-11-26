@@ -160,22 +160,10 @@ public abstract class RequirementService implements Loggable {
     /**
      * Recupera a petição associada ao fluxo informado ou dispara exception senão encontrar.
      */
-    @Deprecated
     @Nonnull
     public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull FlowInstance flowInstance) {
         Objects.requireNonNull(flowInstance);
         return getRequirementInstance(getRequirementByFlowCod(flowInstance.getEntityCod()));
-    }
-
-
-    /**
-     * Recupera a petição associada a task informada ou dispara exception senão encontrar.
-     */
-    @Deprecated
-    @Nonnull
-    public <RI extends RequirementInstance> RI getRequirementInstance(@Nonnull TaskInstance taskInstance) {
-        Objects.requireNonNull(taskInstance);
-        return getRequirementInstance(taskInstance.getFlowInstance());
     }
 
     public <RD extends RequirementDefinition<?>> RD lookupRequirementDefinitionForRequirementId(Long requirementId) {
@@ -270,31 +258,10 @@ public abstract class RequirementService implements Loggable {
      * Recupera a petição associado a código de fluxo informado ou dispara exception senão encontrar.
      */
     @Nonnull
-    @Deprecated
     public RequirementEntity getRequirementByFlowCod(@Nonnull Integer cod) {
         Objects.requireNonNull(cod);
         return requirementDAO.findByFlowCodOrException(cod);
     }
-
-//    /**
-//     * Recupera a petição associado ao fluxo informado.
-//     */
-//    @Nonnull
-//    public <RI extends RequirementInstance> RI getRequirementEntity(@Nonnull FlowInstance flowInstance) {
-//        Objects.requireNonNull(flowInstance);
-//        RE requirement = getRequirementByFlowCod(flowInstance.getEntityCod());
-//        return newRequirementInstance(requirement);
-//    }
-
-//    /**
-//     * Recupera a petição associada a tarefa informada.
-//     */
-//    @Nonnull
-//    public <RI extends RequirementInstance> RI getRequirementEntity(@Nonnull TaskInstance taskInstance) {
-//        Objects.requireNonNull(taskInstance);
-//        return getRequirementEntity(taskInstance.getFlowInstance());
-//    }
-
     public void deleteRequirement(@Nonnull Long idRequirement) {
         requirementDAO.find(idRequirement).ifPresent(re -> requirementDAO.delete(re));
     }

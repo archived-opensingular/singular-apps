@@ -237,14 +237,10 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         FlowInstance        flowInstance        = requirementInstance.getFlowInstance();
 
         RequirementInstance p2 = requirementService.getRequirementInstance(flowInstance);
-        RequirementInstance p3 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
         RequirementInstance p4 = requirementService.getRequirementInstance(flowInstance);
-        RequirementInstance p5 = requirementService.getRequirementInstance(flowInstance.getCurrentTaskOrException());
 
         assertEquals(requirementInstance.getCod(), p2.getCod());
-        assertEquals(requirementInstance.getCod(), p3.getCod());
         assertEquals(requirementInstance.getCod(), p4.getCod());
-        assertEquals(requirementInstance.getCod(), p5.getCod());
     }
 
     @Test
