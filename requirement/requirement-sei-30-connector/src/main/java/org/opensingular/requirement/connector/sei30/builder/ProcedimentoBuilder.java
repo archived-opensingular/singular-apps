@@ -106,6 +106,23 @@ public class ProcedimentoBuilder {
     }
 
     /**
+     * Adiciona um novo interessado.
+     *
+     * @param sigla a sigla que vai representar o interessado no sei.
+     *                     <p> A sigla pode ser um login, CPF ou CNPJ de um interessado
+     *                     </p>
+     * @param nome o nome do interessado.
+     * @return o valor de procedimento builder
+     */
+    public ProcedimentoBuilder addnteressado(String sigla, String nome) {
+        Interessado e = new Interessado();
+        e.setSigla(sigla);
+        e.setNome(nome);
+        procedimento.getInteressados().getItem().add(e);
+        return this;
+    }
+
+    /**
      * Atualiza o novo valor de observacao.
      *
      * @param value o(a) value.
