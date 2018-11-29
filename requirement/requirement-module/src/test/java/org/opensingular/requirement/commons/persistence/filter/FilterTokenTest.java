@@ -32,13 +32,11 @@ public class FilterTokenTest {
     public void testCreation() throws Exception {
         FilterToken filterToken = new FilterToken("filter");
         assertNotNull(filterToken);
-        assertFalse(filterToken.isExact());
     }
 
     @Test
     public void testCreationExact() throws Exception {
-        FilterToken filterToken = new FilterToken("filter", true);
-        assertTrue(filterToken.isExact());
+        FilterToken filterToken = new FilterToken("filter");
     }
 
     @Test
@@ -65,13 +63,13 @@ public class FilterTokenTest {
 
     @Test
     public void testGetExact() throws Exception {
-        FilterToken filter = new FilterToken("filter", true);
+        FilterToken filter = new FilterToken("filter");
         assertThat(filter.get(), Matchers.equalTo("filter"));
     }
 
     @Test
     public void testGetOnlyNumbersAndLettersExact() throws Exception {
-        FilterToken filter = new FilterToken("###danilo-$123", true);
+        FilterToken filter = new FilterToken("###danilo-$123");
         assertThat(filter.getOnlyNumbersAndLetters(), Matchers.equalTo("danilo123"));
     }
 
@@ -83,7 +81,7 @@ public class FilterTokenTest {
 
     @Test
     public void testGetAllPossibleMatchesExact() throws Exception {
-        FilterToken filterToken = new FilterToken("teste", true);
+        FilterToken filterToken = new FilterToken("teste");
         assertThat(filterToken.getAllPossibleMatches(), containsInAnyOrder(filterToken.get()));
     }
 

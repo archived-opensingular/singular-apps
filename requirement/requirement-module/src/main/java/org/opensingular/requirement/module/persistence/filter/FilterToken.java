@@ -17,47 +17,39 @@
 package org.opensingular.requirement.module.persistence.filter;
 
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import javax.annotation.Nonnull;
 
 public class FilterToken {
 
     private String token;
-    private boolean exact;
 
     public FilterToken(@Nonnull String token) {
-        this(token, false);
-    }
-
-    public FilterToken(@Nonnull String token, boolean exact) {
         this.token = token;
-        this.exact = exact;
     }
 
     public List<String> getAllPossibleMatches() {
-        if (exact) {
-            return Collections.singletonList(token);
-        } else {
-            List<String> matches = new ArrayList<>();
-            matches.add(get());
-            matches.add(getOnlyNumbersAndLetters());
-            return matches;
-        }
+
+        List<String> matches = new ArrayList<>();
+        matches.add(get());
+        matches.add(getOnlyNumbersAndLetters());
+        return matches;
+
     }
 
     /**
      * Returns raw token value without like wildcards characters.
+     *
      * @return
      */
-    public String getRaw(){
+    public String getRaw() {
         return token;
     }
 
     private String anywhereOrExact(String str) {
-        return exact ? str : "%" + str + "%";
+        return "%" + str + "%";
     }
 
     public String get() {
@@ -66,10 +58,6 @@ public class FilterToken {
 
     public String getOnlyNumbersAndLetters() {
         return anywhereOrExact(token.replaceAll("[^\\da-zA-Z]", ""));
-    }
-
-    public boolean isExact() {
-        return exact;
     }
 
     @Override

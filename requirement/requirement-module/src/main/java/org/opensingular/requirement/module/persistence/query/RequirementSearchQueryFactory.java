@@ -273,7 +273,7 @@ public class RequirementSearchQueryFactory {
             advancedFilterInstance.getChildren().stream()
                     .filter(SInstance::isNotEmptyOfData)
                     .filter(i -> expressionMap.containsKey(i.getName()))
-                    .forEach(childSinstance -> new FilterToken((String) childSinstance.getValue(), false)
+                    .forEach(childSinstance -> new FilterToken((String) childSinstance.getValue())
                             .getAllPossibleMatches()
                             .stream()
                             .map(token -> expressionMap.get(childSinstance.getName()).apply(token))
