@@ -23,7 +23,9 @@ import org.opensingular.requirement.module.form.FormAction;
 
 public class EditAction extends AbstractURLPopupBoxItemAction {
 
+    public static final String NAME = "edit";
+
     public EditAction(BoxItemData line) {
-        super("edit", "Alterar", DefaultIcons.PENCIL, FormAction.FORM_FILL, line);
+        super(NAME, "Alterar", DefaultIcons.PENCIL, FormAction.FORM_FILL, line);
     }
 }

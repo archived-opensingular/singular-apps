@@ -72,7 +72,7 @@ public class PrintFormController implements Loggable {
         String idUsuarioLogado = userDetails.getUsername();
         String idApplicant = userDetails.getApplicantId();
 
-        boolean hasPermission = authorizationService.hasPermission(requirmentId, null, idUsuarioLogado, idApplicant, ExtratoAction.EXTRATO, serverContextObjectFactory.getObject(), true);
+        boolean hasPermission = authorizationService.hasPermission(requirmentId, null, idUsuarioLogado, idApplicant, ExtratoAction.NAME, serverContextObjectFactory.getObject(), true);
 
         if (!hasPermission) {
             response.sendRedirect("/public/error/403");

@@ -24,7 +24,9 @@ import org.opensingular.requirement.module.form.FormAction;
 public class AnalyseAction extends AbstractURLPopupBoxItemAction {
 
 
+    public static final String NAME = "analyse";
+
     public AnalyseAction(BoxItemData line) {
-        super("analyse", "Analisar", DefaultIcons.PENCIL, FormAction.FORM_ANALYSIS, line);
+        super(NAME, "Analisar", DefaultIcons.PENCIL, FormAction.FORM_ANALYSIS, line);
     }
 }

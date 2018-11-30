@@ -26,8 +26,9 @@ public class DeleteAction extends AbstractExecuteItemAction {
 
 
     private static final ItemActionConfirmation CONFIRMATION_DELETE = new ItemActionConfirmation("Excluir o rascunho", "Confirma a exclusão?", "Cancelar", "Remover", null);
+    public static final  String                 NAME                = "delete";
 
     public DeleteAction(BoxItemData line) {
-        super("delete", "Excluir", DefaultIcons.MINUS, DefaultDeleteController.class, CONFIRMATION_DELETE, line);
+        super(NAME, "Excluir", DefaultIcons.MINUS, DefaultDeleteController.class, CONFIRMATION_DELETE, line);
     }
 }

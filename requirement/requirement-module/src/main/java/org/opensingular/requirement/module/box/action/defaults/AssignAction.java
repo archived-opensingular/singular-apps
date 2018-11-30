@@ -23,7 +23,9 @@ import org.opensingular.requirement.module.flow.controllers.DefaultAssignControl
 
 public class AssignAction extends AbstractExecuteItemAction {
 
+    public static final String NAME = "assign";
+
     public AssignAction(BoxItemData line) {
-        super("assign", "Atribuir", DefaultIcons.ARROW_DOWN, DefaultAssignController.class, line);
+        super(NAME, "Atribuir", DefaultIcons.ARROW_DOWN, DefaultAssignController.class, line);
     }
 }

@@ -24,7 +24,9 @@ import org.opensingular.requirement.module.form.FormAction;
 public class ViewAction extends AbstractURLPopupBoxItemAction {
 
 
+    public static final String NAME = "view";
+
     public ViewAction(BoxItemData line) {
-        super("view", "Visualizar", DefaultIcons.EYE, FormAction.FORM_VIEW, line);
+        super(NAME, "Visualizar", DefaultIcons.EYE, FormAction.FORM_VIEW, line);
     }
 }
