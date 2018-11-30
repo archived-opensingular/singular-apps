@@ -58,7 +58,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         if (Boolean.TRUE.equals(evalPermissions)) {
             requirements = requirementService.listTasks(filter, searchPermissions(filter), extenders);
         } else {
-            requirements = requirementService.quickSearchMap(filter, extenders);
+            requirements = requirementService.listTasks(filter, extenders);
         }
         filters.forEach(f -> f.doFilter(requirements));
         return requirements;
@@ -70,7 +70,7 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
         if (Boolean.TRUE.equals(evalPermissions)) {
             return requirementService.countTasks(filter, searchPermissions(filter), extenders);
         } else {
-            return requirementService.countQuickSearch(filter, extenders);
+            return requirementService.countTasks(filter, extenders);
         }
     }
 

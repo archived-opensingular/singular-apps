@@ -16,8 +16,8 @@
 
 package org.opensingular.studio.app.spring;
 
-import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.form.document.SDocumentFactory;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.context.ServiceRegistry;
 import org.opensingular.lib.commons.context.SingularSingletonStrategy;
 import org.opensingular.lib.commons.util.Loggable;
@@ -29,7 +29,6 @@ import org.opensingular.studio.core.wicket.StudioApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.FilterType;
-import org.springframework.security.core.userdetails.UserDetails;
 
 @ComponentScan(basePackages = {"org.opensingular.lib.support.spring.util",
         "org.opensingular.studio.app",
@@ -76,7 +75,7 @@ public class StudioSpringConfiguration implements Loggable {
     }
 
     @Bean
-    public UserDetailsProvider<? extends UserDetails> singularUserDetails() {
-        return new UserDetailsProvider<>(UserDetails.class);
+    public UserDetailsProvider singularUserDetails() {
+        return new UserDetailsProvider();
     }
 }

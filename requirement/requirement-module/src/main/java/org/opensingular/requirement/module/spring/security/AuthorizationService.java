@@ -28,9 +28,9 @@ import java.util.List;
  */
 public interface AuthorizationService extends Loggable {
     String LIST_TASKS_PERMISSION_PREFIX = "LIST_TASKS";
-    String SEPARATOR                    = "|$|";
 
-    boolean hasPermission(String idUsuario, String permissionKey);
+
+    boolean hasPermission(String idUsuario, String singularPermission);
 
     void filterActions(String formType, Long requirementId, BoxItemActionList actions, String idUsuario);
 

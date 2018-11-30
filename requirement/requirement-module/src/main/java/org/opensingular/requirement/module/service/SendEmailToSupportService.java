@@ -34,7 +34,7 @@ public class SendEmailToSupportService implements Loggable {
     private static final String SINGULAR_SUPPORT_ADDRESS = "singular.mail.support.address";
 
     @Inject
-    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
+    private UserDetailsProvider singularUserDetails;
 
     @Inject
     private IEmailService<Email> emailService;
@@ -73,7 +73,7 @@ public class SendEmailToSupportService implements Loggable {
     private String getLoggedUser() {
         StringBuilder returnString = new StringBuilder();
         try {
-            SingularRequirementUserDetails userDetails = singularUserDetails.get();
+            SingularRequirementUserDetails userDetails = singularUserDetails.getTyped();
             if (SecurityContextHolder.getContext().getAuthentication().getPrincipal() instanceof String) {
                 returnString.append("Username: ").append(SecurityContextHolder.getContext().getAuthentication().getPrincipal());
             } else if (userDetails != null) {

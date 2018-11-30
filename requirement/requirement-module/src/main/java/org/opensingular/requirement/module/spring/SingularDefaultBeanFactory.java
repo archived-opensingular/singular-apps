@@ -170,7 +170,7 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public RequirementService workListRequirementServiceFactory() {
+    public RequirementService requirementService() {
         return new DefaultRequirementService();
     }
 
@@ -361,8 +361,8 @@ public class SingularDefaultBeanFactory {
     }
 
     @Bean
-    public UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails() {
-        return new UserDetailsProvider<>(SingularRequirementUserDetails.class);
+    public UserDetailsProvider singularUserDetails() {
+        return new UserDetailsProvider();
     }
 
     @Bean

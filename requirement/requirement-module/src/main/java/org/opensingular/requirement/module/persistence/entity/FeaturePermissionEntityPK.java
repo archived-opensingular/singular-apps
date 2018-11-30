@@ -16,14 +16,14 @@
 
 package org.opensingular.requirement.module.persistence.entity;
 
-import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.io.Serializable;
 
 @Embeddable
 public class FeaturePermissionEntityPK implements Serializable {
 
-    @Column(name = "CO_FUNCIONALIDADE", nullable = false, length = 300)
+    @Column(name = "CO_FUNCIONALIDADE", nullable = false, length = 800)
     private String feature;
 
     @Column(name = "CO_PERMISSAO", nullable = false, length = 50)
@@ -31,6 +31,15 @@ public class FeaturePermissionEntityPK implements Serializable {
 
     @Column(name = "CO_MODULO_SINGULAR", nullable = false, length = 50)
     private String module;
+
+    public FeaturePermissionEntityPK() {
+    }
+
+    public FeaturePermissionEntityPK(String feature, String permission, String module) {
+        this.feature = feature;
+        this.permission = permission;
+        this.module = module;
+    }
 
     public String getFeature() {
         return feature;
