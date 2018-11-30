@@ -16,19 +16,42 @@
 
 package org.opensingular.requirement.module.service;
 
-import java.util.List;
+import org.hibernate.SessionFactory;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.lib.support.persistence.enums.SimNao;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+import org.opensingular.requirement.module.service.dto.EmbeddedHistoryDTO;
+
 import javax.inject.Inject;
 import javax.inject.Named;
-
-import org.hibernate.SessionFactory;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
-import org.opensingular.requirement.module.service.dto.EmbeddedHistoryDTO;
+import java.util.List;
 
 @Named
 public class EmbeddedHistoryService {
 
     @Inject
     private SessionFactory sessionFactory;
+
+
+    public EmbeddedHistoryDTO findMainFormFirstVersion(Long requirementEntityPK) {
+        String hql = "";
+        hql += " select new " + EmbeddedHistoryDTO.class.getName() + " (r,fve) from ";
+        hql += RequirementEntity.class.getName() + " r ";
+        hql += "  inner join r.formRequirementEntities fre ";
+        hql += "  inner join fre.form f, ";
+        hql += FormVersionEntity.class.getName() + " fve ";
+        hql += " where r.cod = :requirementEntityPK  ";
+        hql += " and fre.mainForm = :sim  ";
+        hql += " and fve.formEntity = f  ";
+        hql += " order by fve.inclusionDate ASC  ";
+        return (EmbeddedHistoryDTO) sessionFactory.getCurrentSession()
+                .createQuery(hql)
+                .setParameter("sim", SimNao.SIM)
+                .setParameter("requirementEntityPK", requirementEntityPK)
+                .setMaxResults(1)
+                .uniqueResult();
+    }
 
     public List<EmbeddedHistoryDTO> buscarAnalisesAnteriores(Long requirementEntityPK) {
         String hql = "";

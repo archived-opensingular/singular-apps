@@ -17,17 +17,20 @@
 package org.opensingular.requirement.module.service.dto;
 
 
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.flow.persistence.entity.TaskVersionEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-
-import org.apache.commons.lang3.StringUtils;
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskVersionEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 
 public class EmbeddedHistoryDTO implements Serializable {
 
@@ -35,6 +38,22 @@ public class EmbeddedHistoryDTO implements Serializable {
     private String                actor;
     private Date                  date;
     private List<TypeFormVersion> typeFormVersions;
+
+    public EmbeddedHistoryDTO() {
+    }
+
+    public EmbeddedHistoryDTO(RequirementEntity r, FormVersionEntity formVersionEntity) {
+        name = r.getDescription();
+        actor = Optional.ofNullable(r.getApplicant()).map(ApplicantEntity::getName).orElse(null);
+        date = formVersionEntity.getInclusionDate();
+        typeFormVersions = new ArrayList<>();
+        typeFormVersions.add(new TypeFormVersion(
+                formVersionEntity.getCod(),
+                formVersionEntity
+                        .getFormEntity()
+                        .getFormType()
+                        .getLabel()));
+    }
 
     public EmbeddedHistoryDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
         final Optional<RequirementContentHistoryEntity> historyEntity = Optional.ofNullable(nullableHistoryEntity);

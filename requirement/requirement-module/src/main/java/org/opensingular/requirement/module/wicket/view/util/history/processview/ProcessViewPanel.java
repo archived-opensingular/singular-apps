@@ -154,7 +154,7 @@ public class ProcessViewPanel extends Panel {
     private void buildHistoryPanel(@Nonnull RequirementInstance<?, ?> requirement) {
         Objects.requireNonNull(requirement);
         historyPanel.addOrReplace(newFlowPanel(requirement));
-        historyPanel.addOrReplace(new EmbeddedHistoryPanel("historico", requirement.getCod()));
+        historyPanel.addOrReplace(new EmbeddedHistoryPanel("historico", requirement));
         historyPanel.addOrReplace(newDadosRequerimento(requirement));
 
         historyPanel.add(new Behavior() {

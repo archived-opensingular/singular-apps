@@ -25,8 +25,10 @@ import static org.opensingular.requirement.module.wicket.view.util.ActionContext
 
 public class HistoryAction extends AbstractURLPopupBoxItemAction {
 
+    public static final String NAME = "history";
+
     public HistoryAction(BoxItemData line) {
-        super("history", "Histórico", DefaultIcons.HISTORY, DispatcherPageUtil
+        super(NAME, "Histórico", DefaultIcons.HISTORY, DispatcherPageUtil
                 .baseURL("/history")
                 .formAction(null)
                 .requirementId(line.getRequirementId())
