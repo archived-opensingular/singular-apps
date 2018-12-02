@@ -36,7 +36,7 @@ public class FlowPermissionBuilder {
         this.forms = forms;
     }
 
-    public TaskPermissionBuilder flow(Class<? extends RequirementFlowDefinition<?>> flow) {
+    public TaskPermissionBuilder flow(Class<? extends RequirementFlowDefinition<?>>... flow) {
         flows.addAll(Lists.newArrayList(flow).stream().map(Flow::getKeyFromDefinition).collect(Collectors.toList()));
         return new TaskPermissionBuilder(actions, forms, flows);
     }

@@ -81,11 +81,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             BoxItemAction      action           = it.next();
             SingularPermission permissionsNeeded;
             String             typeAbbreviation = getFormSimpleName(formType);
-            if (action.getFormAction() != null) {
-                permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
-            } else {
-                permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getName());
-            }
+            permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getName());
             if (!hasPermission(idUsuario, permissionsNeeded, permissions)) {
                 it.remove();
             }
@@ -110,13 +106,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             }
         }
         return permissionResolverService.searchPermissions(userPermissionKey);
-    }
-
-    @Override
-    public boolean hasPermissionToForm(String formName, String idUsuario) {
-        List<SingularPermission> permissions      = searchPermissions(idUsuario);
-        SingularPermission       permissionNeeded = buildPermissionKey(null, formName, FormAction.FORM_FILL.name());
-        return hasPermission(idUsuario, permissionNeeded, permissions);
     }
 
     /**

@@ -18,6 +18,8 @@ package org.opensingular.requirement.module.spring.security;
 
 import org.apache.commons.lang3.StringUtils;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -44,8 +46,8 @@ public class SingularPermission implements Serializable {
     public SingularPermission() {
     }
 
-    public SingularPermission(String singularId, Serializable internalId) {
-        this.singularId = singularId;
+    public SingularPermission(@Nonnull String singularId, @Nullable Serializable internalId) {
+        this.singularId = singularId.toUpperCase();
         this.internalId = internalId;
 
         String[] values = this.singularId.split(Pattern.quote(SEPARATOR));

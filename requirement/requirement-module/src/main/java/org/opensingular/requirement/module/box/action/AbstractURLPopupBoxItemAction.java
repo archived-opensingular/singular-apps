@@ -23,8 +23,8 @@ import org.opensingular.requirement.module.service.dto.BoxItemAction;
 import org.opensingular.requirement.module.service.dto.ItemActionType;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ACTION_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_KEY;
 
 public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
 
@@ -34,7 +34,7 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
     }
 
     public AbstractURLPopupBoxItemAction(String name, String label, Icon icon, FormAction formAction, BoxItemData line) {
-        this(name, label, icon, formAction, getEndpointPopUp(line, formAction));
+        this(name, label, icon, formAction, getEndpointPopUp(line, formAction, name));
     }
 
     public AbstractURLPopupBoxItemAction(String name, String label, Icon icon, String endpoint) {
@@ -43,12 +43,13 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
 
 
     protected static String getEndpointPopUp(BoxItemData line,
-                                             FormAction formAction) {
+                                             FormAction formAction, String name) {
         return DispatcherPageUtil
                 .baseURL("")
                 .formAction(formAction.getId())
                 .requirementId(line.getRequirementId())
                 .param(FORM_NAME, line.getType())
+                .param(ACTION_NAME, name)
                 .build();
 
     }

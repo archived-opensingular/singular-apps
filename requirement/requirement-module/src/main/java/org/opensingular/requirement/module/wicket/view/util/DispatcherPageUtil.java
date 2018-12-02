@@ -73,7 +73,7 @@ public class DispatcherPageUtil {
     }
 
     public DispatcherPageUrlBuilder formAction(Object formAction) {
-        return new DispatcherPageUrlBuilder(this.url + "?dispatch=true&" + ActionContext.ACTION + "=" + encodeParameter(formAction));
+        return new DispatcherPageUrlBuilder(this.url + "?dispatch=true&" + ActionContext.FORM_ACTION + "=" + encodeParameter(formAction));
     }
 
     public static class DispatcherPageUrlBuilder {

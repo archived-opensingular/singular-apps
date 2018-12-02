@@ -64,7 +64,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
     public void accessDenied() {
         tester = new SingularWicketTester(singularApplication);
         PageParameters pageParameters = new PageParameters();
-        pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
+        pageParameters.add(FORM_ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
         pageParameters.add(REQUIREMENT_DEFINITION_KEY, getRequirementDefinitionKey());
         tester.startPage(DispatcherPage.class, pageParameters);
@@ -77,7 +77,7 @@ public class DispatcherPageTest extends SingularCommonsBaseTest {
         when(authorizationService.hasPermission(any(), any(), any(), any(), any(), any(), anyBoolean())).thenReturn(true);
         tester = new SingularWicketTester(singularApplication);
         PageParameters pageParameters = new PageParameters();
-        pageParameters.add(ACTION, FormAction.FORM_ANALYSIS.getId());
+        pageParameters.add(FORM_ACTION, FormAction.FORM_ANALYSIS.getId());
         pageParameters.add(FORM_NAME, "foooooo.STypeFoo");
         pageParameters.add(REQUIREMENT_DEFINITION_KEY, getRequirementDefinitionKey());
         tester.startPage(DispatcherPage.class, pageParameters);

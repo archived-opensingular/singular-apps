@@ -83,8 +83,6 @@ public class BoxFilterFactory {
                 }
             }
         }
-        return mainForms.stream()
-                .filter(formDTO -> authorizationService.hasPermissionToForm(formDTO.getAbbreviation(), getIdUsuario()))
-                .collect(Collectors.toList());
+        return mainForms;
     }
 }

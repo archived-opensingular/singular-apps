@@ -54,6 +54,4 @@ public interface AuthorizationService extends Loggable {
      * @return
      */
     boolean hasPermission(Long requirementId, String formType, String userId, @Nullable String applicantId, String action, IServerContext context, boolean readonly);
-
-    boolean hasPermissionToForm(String formName, String idUsuario);
 }
