@@ -61,29 +61,11 @@ public class FilterTokenTest {
         assertThat(filter.getOnlyNumbersAndLetters(), Matchers.equalTo("%danilo123%"));
     }
 
-    @Test
-    public void testGetExact() throws Exception {
-        FilterToken filter = new FilterToken("filter");
-        assertThat(filter.get(), Matchers.equalTo("filter"));
-    }
-
-    @Test
-    public void testGetOnlyNumbersAndLettersExact() throws Exception {
-        FilterToken filter = new FilterToken("###danilo-$123");
-        assertThat(filter.getOnlyNumbersAndLetters(), Matchers.equalTo("danilo123"));
-    }
 
     @Test
     public void testGetAllPossibleMatches() throws Exception {
         FilterToken filterToken = new FilterToken("teste");
-        assertThat(filterToken.getAllPossibleMatches(), containsInAnyOrder(filterToken.get(), filterToken.getOnlyNumbersAndLetters()));
-    }
-
-    @Test
-    public void testGetAllPossibleMatchesExact() throws Exception {
-        FilterToken filterToken = new FilterToken("teste");
         assertThat(filterToken.getAllPossibleMatches(), containsInAnyOrder(filterToken.get()));
     }
-
 
 }

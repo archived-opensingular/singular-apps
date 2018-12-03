@@ -18,9 +18,9 @@ package org.opensingular.requirement.module.persistence.filter;
 
 
 import javax.annotation.Nonnull;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 public class FilterToken {
 
@@ -30,9 +30,9 @@ public class FilterToken {
         this.token = token;
     }
 
-    public List<String> getAllPossibleMatches() {
+    public Set<String> getAllPossibleMatches() {
 
-        List<String> matches = new ArrayList<>();
+        Set<String> matches = new HashSet<>();
         matches.add(get());
         matches.add(getOnlyNumbersAndLetters());
         return matches;
