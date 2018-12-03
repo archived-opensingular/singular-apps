@@ -37,7 +37,6 @@ public class DefaultH2DataSource extends DelegatingDataSource implements Loggabl
         addToInit("CREATE SCHEMA if not exists DBSINGULAR;");
         setAutoServer(true);
         setCacheSize(4096);
-        setCloseOnExit(true);
         setMultiThreaded(true);
         setMode("ORACLE");
         setLockTimeout(15000);
