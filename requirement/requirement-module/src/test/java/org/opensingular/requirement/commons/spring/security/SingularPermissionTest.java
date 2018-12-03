@@ -32,7 +32,7 @@ public class SingularPermissionTest {
         SingularPermission permission = new SingularPermission();
         permission.setSingularId("singularId");
 
-        Assert.assertEquals("singularId", permission.getSingularId());
+        Assert.assertEquals("SINGULARID", permission.getSingularId());
         Assert.assertNull(permission.getInternalId());
     }
 

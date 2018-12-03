@@ -47,14 +47,8 @@ public class SingularPermission implements Serializable {
     }
 
     public SingularPermission(@Nonnull String singularId, @Nullable Serializable internalId) {
-        this.singularId = singularId.toUpperCase();
-        this.internalId = internalId;
-
-        String[] values = this.singularId.split(Pattern.quote(SEPARATOR));
-        action = getField(values, 0);
-        formType = getField(values, 1);
-        flowDefintionKey = getField(values, 2);
-        taskAbbreviation = getField(values, 3);
+        setSingularId(singularId);
+        setInternalId(internalId);
     }
 
     public SingularPermission(String action, String formSimpleName, String definitionKey, String currentTaskAbbreviation) {
@@ -102,7 +96,12 @@ public class SingularPermission implements Serializable {
     }
 
     public void setSingularId(String singularId) {
-        this.singularId = singularId;
+        this.singularId = singularId.toUpperCase();
+        String[] values = this.singularId.split(Pattern.quote(SEPARATOR));
+        action = getField(values, 0);
+        formType = getField(values, 1);
+        flowDefintionKey = getField(values, 2);
+        taskAbbreviation = getField(values, 3);
     }
 
     public Serializable getInternalId() {
