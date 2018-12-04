@@ -29,9 +29,6 @@ public class BoxFilterFactory {
     private SFormConfig<String> singularFormConfig;
 
     @Inject
-    private AuthorizationService authorizationService;
-
-    @Inject
     private RequirementDefinitionService requirementDefinitionService;
 
     private List<FormDTO> mainForms;
