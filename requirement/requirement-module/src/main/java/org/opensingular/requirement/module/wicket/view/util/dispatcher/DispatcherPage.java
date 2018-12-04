@@ -228,7 +228,6 @@ public class DispatcherPage extends WebPage implements Loggable {
         Long    requirementId = context.getRequirementId().orElse(null);
         String  formType      = context.getFormName().orElse(null);
         String  actionName    = context.getActionName();
-        String  formAction    = context.getFormAction().map(FormAction::name).orElse(null);
         boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
         String  idUsuario     = null;
         String  idApplicant   = null;
