@@ -44,7 +44,7 @@ public class EmbeddedHistoryDTO implements Serializable {
     }
 
     public EmbeddedHistoryDTO(RequirementEntity r, FormVersionEntity formVersionEntity) {
-        name = r.getDescription();
+        name = formVersionEntity.getFormEntity().getFormType().getLabel();
         actor = Optional.ofNullable(r.getApplicant()).map(ApplicantEntity::getName).orElse(null);
         date = formVersionEntity.getInclusionDate();
         typeFormVersions = new ArrayList<>();
@@ -54,6 +54,7 @@ public class EmbeddedHistoryDTO implements Serializable {
                         .getFormEntity()
                         .getFormType()
                         .getLabel()));
+        executedTransition = "Enviar";
     }
 
     public EmbeddedHistoryDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
