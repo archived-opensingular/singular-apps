@@ -66,7 +66,9 @@ public class EmbeddedHistoryPanel extends Panel {
                 final EmbeddedHistoryDTO embeddedHistoryDTO = item.getModelObject();
                 item.add(new Label("nomeAnalise", Model.of(embeddedHistoryDTO.getName())));
                 item.add(new Label("responsavel", Model.of(embeddedHistoryDTO.getActor())));
+                item.add(new Label("executedTransition", Model.of(embeddedHistoryDTO.getExecutedTransition())));
                 item.add(new Label("data", Model.of(embeddedHistoryDTO.getDate())));
+
                 item.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
                     @Override
                     protected void populateItem(ListItem<EmbeddedHistoryDTO.TypeFormVersion> item) {

@@ -36,6 +36,7 @@ public class EmbeddedHistoryDTO implements Serializable {
 
     private String                name;
     private String                actor;
+    private String                executedTransition;
     private Date                  date;
     private List<TypeFormVersion> typeFormVersions;
 
@@ -70,6 +71,12 @@ public class EmbeddedHistoryDTO implements Serializable {
         date = historyEntity
                 .map(RequirementContentHistoryEntity::getHistoryDate)
                 .orElse(null);
+
+        executedTransition = historyEntity
+                .map(i -> i.getTaskInstanceEntity())
+                .map(i -> i.getExecutedTransition())
+                .map(i -> i.getName())
+                .orElse(StringUtils.EMPTY);
 
         typeFormVersions = new ArrayList<>();
 
@@ -116,6 +123,14 @@ public class EmbeddedHistoryDTO implements Serializable {
 
     public void setTypeFormVersions(List<TypeFormVersion> typeFormVersions) {
         this.typeFormVersions = typeFormVersions;
+    }
+
+    public String getExecutedTransition() {
+        return executedTransition;
+    }
+
+    public void setExecutedTransition(String executedTransition) {
+        this.executedTransition = executedTransition;
     }
 
     public static class TypeFormVersion implements Serializable {
