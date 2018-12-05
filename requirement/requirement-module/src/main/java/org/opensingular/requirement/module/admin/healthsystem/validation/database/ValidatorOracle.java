@@ -20,7 +20,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import javax.inject.Named;
 
-import org.hibernate.SQLQuery;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.transform.ResultTransformer;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.ColumnInfoDTO;
 import org.opensingular.requirement.module.persistence.dto.healthsystem.SequenceInfoDTO;
@@ -34,7 +34,7 @@ public class ValidatorOracle extends AbstractValidator {
 				+ " FROM SYS.ALL_TAB_COLS "
 				+ " WHERE TABLE_NAME = :nome_tabela";
 
-		SQLQuery querySQL = getSession().createSQLQuery(query);
+        NativeQuery<ColumnInfoDTO> querySQL = getSession().createNativeQuery(query);
 		querySQL.setParameter("nome_tabela", table);
 
 		querySQL.setResultTransformer(new ResultTransformer() {
@@ -81,7 +81,7 @@ public class ValidatorOracle extends AbstractValidator {
 				+ " FROM SYS.ALL_TAB_PRIVS_RECD"
 				+ " WHERE TABLE_NAME = :nome_tabela";
 
-		SQLQuery querySQL = getSession().createSQLQuery(query);
+        NativeQuery<String> querySQL = getSession().createNativeQuery(query);
 		querySQL.setParameter("nome_tabela", table);
 
 		return querySQL.list();
@@ -94,7 +94,7 @@ public class ValidatorOracle extends AbstractValidator {
 				+ " FROM SYS.ALL_SEQUENCES seq  "
 				+ " WHERE seq.SEQUENCE_NAME = :sequence_name";
 
-		SQLQuery querySQL = getSession().createSQLQuery(query);
+        NativeQuery<SequenceInfoDTO> querySQL = getSession().createNativeQuery(query);
 		querySQL.setParameter("sequence_name", sequenceName);
 
 		querySQL.setResultTransformer(new ResultTransformer() {
