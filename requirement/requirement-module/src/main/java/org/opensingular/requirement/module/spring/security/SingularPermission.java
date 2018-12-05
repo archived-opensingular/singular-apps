@@ -32,9 +32,9 @@ import java.util.regex.Pattern;
  */
 public class SingularPermission implements Serializable {
 
-    public static String SEPARATOR = "|$|";
-    public static String WILDCARD  = "*";
-    private       String singularId;
+    public static final String SEPARATOR = "|$|";
+    public static final String WILDCARD  = "*";
+    private             String singularId;
 
     private Serializable internalId;
 

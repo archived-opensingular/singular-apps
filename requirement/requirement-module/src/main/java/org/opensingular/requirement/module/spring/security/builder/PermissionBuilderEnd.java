@@ -38,6 +38,7 @@ public class PermissionBuilderEnd {
         this.taskDefinitions = taskDefinitions;
     }
 
+    @SuppressWarnings("squid:S134")
     public List<SingularPermission> list() {
         List<SingularPermission> permissions = new ArrayList<>();
         for (String action : actions) {
