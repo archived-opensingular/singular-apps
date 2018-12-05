@@ -18,7 +18,7 @@ package org.opensingular.requirement.module.persistence.dao.form;
 
 import com.querydsl.jpa.JPAExpressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.opensingular.flow.persistence.entity.QTaskInstanceEntity;
 import org.opensingular.form.SType;
 import org.opensingular.lib.support.persistence.BaseDAO;
