@@ -20,10 +20,14 @@ package org.opensingular.requirement.module.wicket.view.form;
 import java.io.Serializable;
 import java.util.Map;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.util.visit.IVisit;
+import org.apache.wicket.util.visit.IVisitor;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 
@@ -41,6 +45,10 @@ public interface TransitionController<T extends SType<?>> extends Serializable {
     default void onTransition(SIComposite pageIserienstance, SInstance transitionInstance) {}
 
     default boolean onShow(SIComposite pageInstance, SInstance transitionInstance, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
+        return true;
+    }
+
+    default boolean isShowSaveButton() {
         return true;
     }
 

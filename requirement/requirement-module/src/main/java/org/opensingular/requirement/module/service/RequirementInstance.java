@@ -157,7 +157,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     @Deprecated
     public RequirementEntity getEntity() {
         if (getCod() != null) {
-            requirementEntity = (RequirementEntity) ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
+            requirementEntity = ApplicationContextProvider.get().getBean(SessionFactory.class).getCurrentSession().load(RequirementEntity.class, getCod());
         }
         return requirementEntity;
     }
@@ -166,21 +166,10 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return getEntity().getApplicant();
     }
 
-    //TODO REFACTOR
-    public String getIdPessoaSeForPessoaJuridica() {
-        if (PersonType.JURIDICA == getApplicant().getPersonType()) {
-            return getApplicant().getIdPessoa();
-        }
-        return null;
-    }
-
     public FormVersionEntity getMainFormCurrentFormVersion() {
         return getEntity().getMainForm().getCurrentFormVersionEntity();
     }
 
-    public Long getMainFormCurrentFormVersionCod() {
-        return getMainFormCurrentFormVersion().getCod();
-    }
 
     @Deprecated
     public String getMainFormTypeName() {

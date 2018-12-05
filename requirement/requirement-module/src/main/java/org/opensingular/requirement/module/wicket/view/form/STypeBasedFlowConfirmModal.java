@@ -124,14 +124,16 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     }
 
     private void addSaveButton(BSModalBorder modalBorder) {
-        modalBorder.addButton(BSModalBorder.ButtonStyle.DEFAULT, "label.button.save", "Salvar", new SingularSaveButton("id", $m.get(() -> singularFormPanel.getInstanceModel().getObject()), false) {
-            @Override
-            protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                getRequirement().saveForm(instanceModel.getObject());
-                new SingularToastrHelper(this.getPage()).
-                        addToastrMessage(ToastrType.SUCCESS, "message.data.success", null);
-            }
-        });
+        if (transitionController.isShowSaveButton()) {
+            modalBorder.addButton(BSModalBorder.ButtonStyle.DEFAULT, "label.button.save", "Salvar", new SingularSaveButton("id", $m.get(() -> singularFormPanel.getInstanceModel().getObject()), false) {
+                @Override
+                protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                    getRequirement().saveForm(instanceModel.getObject());
+                    new SingularToastrHelper(this.getPage()).
+                            addToastrMessage(ToastrType.SUCCESS, "message.data.success", null);
+                }
+            });
+        }
     }
 
     /**
