@@ -20,11 +20,11 @@ import org.hibernate.SessionFactory;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.form.SFormUtil;
-import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.form.document.RefType;
@@ -34,8 +34,6 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.flow.ProcessServiceSetup;
-import org.opensingular.requirement.module.persistence.entity.enums.PersonType;
-import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
@@ -209,6 +207,17 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     /**
+     * Return the given form type last version for the given taskDefinition
+     *
+     * @param formName
+     * @return
+     */
+    public Optional<SInstance> getForm(@Nonnull String formName, ITaskDefinition taskDefinition) {
+        return flowInstance.getFinishedTask(taskDefinition)
+                .map(ti -> requirementService.findLastFormInstanceByTypeAndTask(this, formName, ti).orElse(null));
+    }
+
+    /**
      * Return the given form type last version
      *
      * @param form
@@ -263,11 +272,15 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return SDocumentConsumer.of(new ProcessServiceSetup(getCod()));
     }
 
-    public List<RequirementInstance<?,?>> getChildrenRequirements() {
+    public List<RequirementInstance<?, ?>> getChildrenRequirements() {
         return requirementService.findRequirementInstancesByRootRequirement(getCod());
     }
 
     public SInstance resolveForm(String formName) {
         return getDraft(formName).orElse(getForm(formName).orElse(newForm(formName)));
+    }
+
+    public SInstance resolveForm(String formName, ITaskDefinition taskDefinition) {
+        return getDraft(formName).orElse(getForm(formName, taskDefinition).orElse(newForm(formName)));
     }
 }

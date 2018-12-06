@@ -28,6 +28,7 @@ import org.opensingular.flow.core.TransitionCall;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -535,15 +536,21 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
-        return findLastFormEntityByTypeAndTask(requirement, typeClass, taskInstance)
+    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
+        return findLastFormEntityByTypeAndTask(requirement, typeName, taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
 
     @Nonnull
-    public Optional<FormVersionEntity> findLastFormEntityByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+        return findLastFormEntityByTypeAndTask(requirement, SFormUtil.getTypeName(typeClass), taskInstance)
+                .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
+    }
+
+    @Nonnull
+    private Optional<FormVersionEntity> findLastFormEntityByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
         Objects.requireNonNull(requirement);
-        return requirementContentHistoryDAO.findLastByCodRequirementCodTaskInstanceAndType(typeClass, requirement.getCod(), (Integer) taskInstance.getId())
+        return requirementContentHistoryDAO.findLastByCodRequirementCodTaskInstanceAndType(typeName, requirement.getCod(), (Integer) taskInstance.getId())
                 .map(FormVersionHistoryEntity::getFormVersion);
     }
 

@@ -22,6 +22,8 @@ import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.opensingular.flow.core.ITaskDefinition;
+import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SFormUtil;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.component.SingularSaveButton;
@@ -99,8 +101,9 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     }
 
     private SInstance createInstance() {
-        SInstance instance;
-        instance = getRequirement().resolveForm(SFormUtil.getTypeName(transitionController.getType()));
+        SInstance    instance;
+        TaskInstance taskInstance = getRequirement().getFlowInstance().getCurrentTaskOrException();
+        instance = getRequirement().resolveForm(SFormUtil.getTypeName(transitionController.getType()), ITaskDefinition.of(taskInstance.getName(), taskInstance.getAbbreviation()));
         transitionController.onCreateInstance(getFormPage().getInstance(), instance);
         return instance;
     }
