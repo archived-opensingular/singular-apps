@@ -24,6 +24,7 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfProcedimentoRelacionado;
+import org.opensingular.requirement.connector.sei30.ws.Cargo;
 import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
@@ -416,5 +417,11 @@ public interface SEIPortType {
      * @return returns Contato with CPF
      */
     public Contato findContatoByCPF(@Nullable UnidadeSei unidade, String idTipoContato, String cpf);
+
+    /**
+     * Lista de contatos
+     *
+     */
+    List<Cargo> listarCargos();
 
 }

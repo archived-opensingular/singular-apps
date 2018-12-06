@@ -24,6 +24,7 @@ import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
 import org.opensingular.requirement.connector.sei30.model.UnidadeSei;
 import org.opensingular.requirement.connector.sei30.ws.ArquivoExtensao;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfArquivoExtensao;
+import org.opensingular.requirement.connector.sei30.ws.ArrayOfCargo;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
@@ -32,6 +33,7 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfSerie;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfString;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfTipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfUsuario;
+import org.opensingular.requirement.connector.sei30.ws.Cargo;
 import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
@@ -600,5 +602,19 @@ public class SEIWS implements SEIPortType, Loggable {
         return null;
     }
 
+
+    /**
+     * Listar tipos cargo.
+     *
+     * @return o valor de array of tipo cargo
+     */
+    @Override
+    public List<Cargo> listarCargos() {
+        ArrayOfCargo arrayOfCargo = seiPortType.listarCargos(siglaSistema, identificacaoServico, "", "");
+        if (arrayOfCargo == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfCargo.getItem();
+    }
 
 }
