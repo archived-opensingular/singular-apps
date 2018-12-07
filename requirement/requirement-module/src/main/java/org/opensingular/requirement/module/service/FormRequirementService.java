@@ -151,7 +151,7 @@ public class FormRequirementService {
 
     /** Na petição, encontra o formulário mais recente do tipo indicado. */
     public Optional<FormRequirementEntity> findLastFormRequirementEntityByType(@Nonnull RequirementInstance requirement, @Nonnull String typeName) {
-        return formRequirementDAO.findLastFormRequirementEntityByTypeName(requirement.getCod(), typeName);
+        return Optional.ofNullable(requirement.getCod()).map(cod -> formRequirementDAO.findLastFormRequirementEntityByTypeName(cod, typeName).orElse(null));
     }
 
 
