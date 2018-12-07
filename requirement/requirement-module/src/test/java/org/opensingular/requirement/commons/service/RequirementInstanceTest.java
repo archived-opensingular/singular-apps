@@ -37,6 +37,7 @@ import org.springframework.test.context.TestExecutionListeners;
 
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class RequirementInstanceTest extends SingularCommonsBaseTest {
@@ -82,7 +83,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
-        requirementService.executeTransition("No more bar", requirementInstance, null, null);
+        requirementService.executeTransition("No more bar", requirementInstance, new ArrayList<>(), new ArrayList<>());
     }
 
 }

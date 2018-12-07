@@ -42,6 +42,8 @@ import org.opensingular.singular.pet.module.foobar.stuff.STypeFoo;
 import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.context.TestExecutionListeners;
 
+import java.util.ArrayList;
+
 @TestExecutionListeners(listeners = {SingularServletContextTestExecutionListener.class}, mergeMode = TestExecutionListeners.MergeMode.MERGE_WITH_DEFAULTS)
 public class DiffFormTest extends SingularCommonsBaseTest {
 
@@ -93,7 +95,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
-        requirementService.executeTransition("Transition bar", requirementInstance, null, null);
+        requirementService.executeTransition("Transition bar", requirementInstance, new ArrayList<>(), new ArrayList<>());
         return requirementInstance;
     }
 
@@ -102,7 +104,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         mainFormAsInstance.getField(0).setValue("new value");
         requirementService.saveOrUpdate(requirement, mainFormAsInstance, true);
 
-        requirementService.executeTransition("End bar", requirement, null, null);
+        requirementService.executeTransition("End bar", requirement, new ArrayList<>(), new ArrayList<>());
     }
 
 }
