@@ -73,7 +73,6 @@ import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
 import org.opensingular.requirement.module.service.SingularRequirementService;
-import org.opensingular.requirement.module.service.Variable;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -840,7 +839,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return button.add(visibleOnlyInEditionBehaviour());
     }
 
-    private void eventOnSaveAction(AjaxRequestTarget target) {
+    protected final void eventOnSaveAction(AjaxRequestTarget target) {
         saveForm(getFormInstance().getObject());
         atualizarContentWorklist(target);
     }
