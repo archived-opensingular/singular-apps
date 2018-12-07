@@ -42,6 +42,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
 import java.io.Serializable;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -87,8 +88,6 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return getEntity().getFlowInstanceEntity() != null;
     }
 
-
-    @Nonnull
     public void saveForm(@Nonnull SInstance instance) {
         boolean mainForm = getRequirementDefinition().getMainForm().equals(instance.getType().getClass());//TODO reqdef idetificar isso de uma maneira melhor
         requirementService.saveOrUpdate(this, instance, mainForm);
@@ -282,5 +281,18 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     public SInstance resolveForm(String formName, ITaskDefinition taskDefinition) {
         return getDraft(formName).orElse(getForm(formName, taskDefinition).orElse(newForm(formName)));
+    }
+
+    public final void executeTransition(String transition) {
+        executeTransition(transition, Collections.emptyList(), Collections.emptyList());
+    }
+
+    /**
+     * @param transition
+     * @param flowVariables      Set variable values for flow scoped variables
+     * @param transitionVariable Set variable values for transition scoped variables
+     */
+    public void executeTransition(String transition, List<Variable> flowVariables, List<Variable> transitionVariable) {
+        requirementService.executeTransition(transition, this, flowVariables, transitionVariable);
     }
 }

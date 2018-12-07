@@ -73,6 +73,7 @@ import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
 import org.opensingular.requirement.module.service.SingularRequirementService;
+import org.opensingular.requirement.module.service.Variable;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -654,16 +655,11 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
         saveForm(mi.getObject());
 
-        //busca os parametros do FLOW
-        Map<String, String> flowParameters = getFlowParameters(tn);
-
-        //busca os parametros da transicao atual
-        Map<String, String> currentTransitionParameters = getCurrentTransitionParameters(tn);
-
         //Executa em bloco try, executa rollback da petição caso exista erro
         try {
             //executa a transicao informada
-            requirementService.executeTransition(tn, requirement, this::onTransition, flowParameters, currentTransitionParameters);
+            //busca os parametros da transicao atual
+            requirement.executeTransition(tn);
 
             //executa chamada, abrindo janela de oportunidade de executar ações apos execução da transicao
             onTransitionExecuted(ajxrt, tn);
@@ -676,36 +672,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         }
     }
 
-    protected Map<String, String> getCurrentTransitionParameters(String currentTransition) {
-        return new HashMap<>();
-    }
-
-    /**
-     * Permite a configuração de parametros de instancia do flow durante a transição.
-     *
-     * @param transition a transicao sendo executada
-     * @return Mapa de parametros
-     */
-    protected Map<String, String> getFlowParameters(String transition) {
-        Map<String, String>           params           = new HashMap<>();
-        TransitionController<?>       controller       = getTransitionControllerMap().get(transition);
-        STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transition);
-        if (controller != null && flowConfirmModal != null) {
-            Map<String, String> moreParams = controller.getFlowParameters(getInstance(), flowConfirmModal.getInstanceModel().getObject());
-            if (moreParams != null) {
-                params.putAll(moreParams);
-            }
-        }
-        return params;
-    }
-
-    protected void onTransition(RequirementInstance pe, String transitionName) {
-        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
-        if (controller != null) {
-            STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-            controller.onTransition(getInstance(), flowConfirmModal.getInstanceModel().getObject());
-        }
-    }
 
     protected void onTransitionExecuted(AjaxRequestTarget ajaxRequestTarget, String transitionName) {
         atualizarContentWorklist(ajaxRequestTarget);

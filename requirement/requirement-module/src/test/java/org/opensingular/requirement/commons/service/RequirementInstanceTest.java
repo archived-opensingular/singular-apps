@@ -82,7 +82,7 @@ public class RequirementInstanceTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
-        requirementService.executeTransition("No more bar", requirementInstance, null, null, null);
+        requirementService.executeTransition("No more bar", requirementInstance, null, null);
     }
 
 }

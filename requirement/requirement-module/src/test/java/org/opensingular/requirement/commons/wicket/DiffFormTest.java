@@ -93,7 +93,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         RequirementInstance requirementInstance = getRequirementDefinition().newRequirement("user");
         requirementInstance.saveForm(instance);
         requirementInstance.send("vinicius.nunes");
-        requirementService.executeTransition("Transition bar", requirementInstance, this::onTransition, null, null);
+        requirementService.executeTransition("Transition bar", requirementInstance, null, null);
         return requirementInstance;
     }
 
@@ -102,9 +102,7 @@ public class DiffFormTest extends SingularCommonsBaseTest {
         mainFormAsInstance.getField(0).setValue("new value");
         requirementService.saveOrUpdate(requirement, mainFormAsInstance, true);
 
-        requirementService.executeTransition("End bar", requirement, this::onTransition, null, null);
+        requirementService.executeTransition("End bar", requirement, null, null);
     }
 
-    private void onTransition(RequirementInstance requirementInstance, String s) {
-    }
 }
