@@ -18,6 +18,8 @@
 
 package org.opensingular.requirement.module;
 
+import org.apache.commons.lang3.builder.EqualsBuilder;
+import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
@@ -153,4 +155,24 @@ public abstract class RequirementDefinition<RI extends RequirementInstance> impl
         return requirementConfiguration.getName();
     }
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+
+        if (!(o instanceof RequirementDefinition)) return false;
+
+        RequirementDefinition<?> that = (RequirementDefinition<?>) o;
+
+        return new EqualsBuilder()
+                .append(key, that.key)
+                .isEquals();
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder(17, 37)
+                .append(key)
+                .toHashCode();
+    }
 }
