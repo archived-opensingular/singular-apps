@@ -19,6 +19,10 @@ public class Serie implements Serializable {
         this.aplicabilidade = aplicabilidade;
     }
 
+    public Serie(String id, String nome) {
+        this(id, nome, null);
+    }
+
     public String getNome() {
         return nome;
     }

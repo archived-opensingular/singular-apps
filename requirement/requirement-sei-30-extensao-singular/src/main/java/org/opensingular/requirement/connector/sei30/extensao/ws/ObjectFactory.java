@@ -46,14 +46,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ArrayOfIdDocumento }
-     * 
-     */
-    public ArrayOfIdDocumento createArrayOfIdDocumento() {
-        return new ArrayOfIdDocumento();
-    }
-
-    /**
      * Create an instance of {@link RetornoConsultaDocumento }
      * 
      */
@@ -126,6 +118,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ArrayOfProtocoloDocumento }
+     * 
+     */
+    public ArrayOfProtocoloDocumento createArrayOfProtocoloDocumento() {
+        return new ArrayOfProtocoloDocumento();
+    }
+
+    /**
      * Create an instance of {@link Campo }
      * 
      */
@@ -139,14 +139,6 @@ public class ObjectFactory {
      */
     public ArrayOfAssunto createArrayOfAssunto() {
         return new ArrayOfAssunto();
-    }
-
-    /**
-     * Create an instance of {@link DadosUsuarioExterno }
-     * 
-     */
-    public DadosUsuarioExterno createDadosUsuarioExterno() {
-        return new DadosUsuarioExterno();
     }
 
     /**

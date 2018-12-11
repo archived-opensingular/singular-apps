@@ -16,9 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.panel;
 
-import java.util.List;
-import javax.inject.Inject;
-
+import com.google.common.collect.Lists;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -27,8 +25,12 @@ import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.Model;
 import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.service.EmbeddedHistoryService;
+import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.EmbeddedHistoryDTO;
 import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
+
+import javax.inject.Inject;
+import java.util.List;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 
@@ -41,9 +43,15 @@ public class EmbeddedHistoryPanel extends Panel {
     @Inject
     private EmbeddedHistoryService analiseAnteriorService;
 
-    public EmbeddedHistoryPanel(String id, Long requirementEntityPK) {
+    public EmbeddedHistoryPanel(String id, RequirementInstance<?, ?> requirement) {
         super(id);
-        buildTable(analiseAnteriorService.buscarAnalisesAnteriores(requirementEntityPK));
+        buildTable(getEmbeddedHistoryDTOS(requirement));
+    }
+
+    private List<EmbeddedHistoryDTO> getEmbeddedHistoryDTOS(RequirementInstance<?, ?> requirementInstance) {
+        List<EmbeddedHistoryDTO> hists = Lists.newArrayList(analiseAnteriorService.buscarAnalisesAnteriores(requirementInstance.getCod()));
+        hists.add(0, analiseAnteriorService.findMainFormFirstVersion(requirementInstance.getCod()));
+        return hists;
     }
 
     /**
@@ -58,7 +66,9 @@ public class EmbeddedHistoryPanel extends Panel {
                 final EmbeddedHistoryDTO embeddedHistoryDTO = item.getModelObject();
                 item.add(new Label("nomeAnalise", Model.of(embeddedHistoryDTO.getName())));
                 item.add(new Label("responsavel", Model.of(embeddedHistoryDTO.getActor())));
+                item.add(new Label("executedTransition", Model.of(embeddedHistoryDTO.getExecutedTransition())));
                 item.add(new Label("data", Model.of(embeddedHistoryDTO.getDate())));
+
                 item.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
                     @Override
                     protected void populateItem(ListItem<EmbeddedHistoryDTO.TypeFormVersion> item) {

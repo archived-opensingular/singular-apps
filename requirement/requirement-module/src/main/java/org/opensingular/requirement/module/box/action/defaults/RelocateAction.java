@@ -28,9 +28,10 @@ public class RelocateAction extends AbstractExecuteItemAction {
 
 
     private static final ItemActionConfirmation CONFIRMATION_RELOCATE = new ItemActionConfirmation("Realocar", "Usuário:", "Cancelar", "Realocar", USERS);
+    public static final  String                 NAME                  = "relocate";
 
 
     public RelocateAction(BoxItemData line) {
-        super("relocate", "Realocar", DefaultIcons.SHARE_SQUARE, DefaultAssignController.class, CONFIRMATION_RELOCATE, line);
+        super(NAME, "Realocar", DefaultIcons.SHARE_SQUARE, DefaultAssignController.class, CONFIRMATION_RELOCATE, line);
     }
 }

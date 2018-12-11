@@ -22,8 +22,8 @@ import java.util.Objects;
 import java.util.Optional;
 import javax.annotation.Nonnull;
 
-import org.hibernate.Query;
-import org.hibernate.SQLQuery;
+import org.hibernate.query.Query;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
@@ -50,7 +50,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
             return null;
         }
 
-        Query query = getSession().createSQLQuery(
+        Query query = getSession().createNativeQuery(
                 "select a.CO_ATOR as \"cod\", a.CO_USUARIO as \"codUsuario\", a.NO_ATOR as \"nome\", a.DS_EMAIL as \"email\" " +
                         " FROM " + Constants.SCHEMA + ".VW_ATOR a " +
                         " WHERE UPPER(rtrim(ltrim(a.CO_USUARIO))) = :codUsuario");
@@ -125,7 +125,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         sql.append("   a.DS_EMAIL              AS \"email\"");
         sql.append(" FROM " + Constants.SCHEMA + " .VW_ATOR a");
         sql.append(" ORDER BY UPPER(a.NO_ATOR)");
-        SQLQuery query = getSession().createSQLQuery(sql.toString());
+        NativeQuery<Actor> query = getSession().createNativeQuery(sql.toString());
         query.addScalar("cod", StandardBasicTypes.INTEGER);
         query.addScalar("codUsuario", StandardBasicTypes.STRING);
         query.addScalar("nome", StandardBasicTypes.STRING);

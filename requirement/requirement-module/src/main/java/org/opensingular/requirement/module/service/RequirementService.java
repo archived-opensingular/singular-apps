@@ -63,7 +63,6 @@ import org.opensingular.requirement.module.persistence.entity.form.ApplicantEnti
 import org.opensingular.requirement.module.persistence.entity.form.FormRequirementEntity;
 import org.opensingular.requirement.module.persistence.entity.form.FormVersionHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicant;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementApplicantImpl;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementDefinitionEntity;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
@@ -92,7 +91,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 
 import static org.opensingular.flow.core.TaskInstance.TASK_VISUALIZATION;
@@ -125,7 +123,7 @@ public abstract class RequirementService implements Loggable {
     private RequirementDefinitionDAO<RequirementDefinitionEntity> requirementDefinitionDAO;
 
     @Inject
-    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
+    private UserDetailsProvider singularUserDetails;
 
     @Inject
     private FormTypeService formTypeService;
@@ -144,7 +142,7 @@ public abstract class RequirementService implements Loggable {
      * @return
      */
     protected SingularRequirementUserDetails getSingularUserDetails() {
-        return singularUserDetails.get();
+        return singularUserDetails.getTyped();
     }
 
     /**
@@ -196,7 +194,6 @@ public abstract class RequirementService implements Loggable {
 
     /**
      * Find applicant or create a new one
-     *
      */
     public ApplicantEntity getApplicant(String codSubmitterActor) {
         ApplicantEntity p;
@@ -262,26 +259,10 @@ public abstract class RequirementService implements Loggable {
         Objects.requireNonNull(cod);
         return requirementDAO.findByFlowCodOrException(cod);
     }
+
     public void deleteRequirement(@Nonnull Long idRequirement) {
         requirementDAO.find(idRequirement).ifPresent(re -> requirementDAO.delete(re));
     }
-
-    public Long countQuickSearch(BoxFilter filter) {
-        return countQuickSearch(filter, Collections.emptyList());
-    }
-
-    public Long countQuickSearch(BoxFilter filter, List<RequirementSearchExtender> extenders) {
-        return requirementDAO.countQuickSearch(filter, extenders);
-    }
-
-    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter) {
-        return quickSearchMap(filter, Collections.emptyList());
-    }
-
-    public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter, List<RequirementSearchExtender> extenders) {
-        return requirementDAO.quickSearchMap(filter, extenders);
-    }
-
 
     @Nonnull
     public <RI extends RequirementInstance> FormKey saveOrUpdate(@Nonnull RI requirement, @Nonnull SInstance instance, boolean mainForm) {
@@ -356,49 +337,48 @@ public abstract class RequirementService implements Loggable {
      * Executa a transição informada, consolidando todos os rascunhos, este metodo não salva a petição
      */
     @SuppressWarnings({"unchecked", "rawtypes"})
-    public <RI extends RequirementInstance> void executeTransition(String transitionName,
-                                                                   RI requirement,
-                                                                   BiConsumer<RI, String> transitionListener,
-                                                                   Map<String, String> processParameters,
-                                                                   Map<String, String> transitionParameters) {
+    public <RI extends RequirementInstance> void executeTransition(@Nonnull String transitionName,
+                                                                   @Nonnull RI requirement,
+                                                                   @Nonnull List<Variable> flowVariables,
+                                                                   @Nonnull List<Variable> transitionVariables) {
         try {
-            if (transitionListener != null) {
-                transitionListener.accept(requirement, transitionName);
-            }
 
             List<FormEntity> formEntities = formRequirementService.consolidateDrafts(requirement);
             FlowInstance     flowInstance = requirement.getFlowInstance();
 
-            if (processParameters != null && !processParameters.isEmpty()) {
-                for (Map.Entry<String, String> entry : processParameters.entrySet()) {
-                    flowInstance.getVariables().addValueString(entry.getKey(), entry.getValue());
-                }
+
+            for (Variable v : flowVariables) {
+                flowInstance.getVariables().addValueString(v.getKey(), v.getValue());
             }
 
+
             TransitionCall transitionCall = flowInstance.prepareTransition(transitionName);
-            if (transitionParameters != null && !transitionParameters.isEmpty()) {
-                for (Map.Entry<String, String> transitionParameter : transitionParameters.entrySet()) {
-                    transitionCall.addValueString(transitionParameter.getKey(), transitionParameter.getValue());
-                }
+
+            for (Variable v : transitionVariables) {
+                transitionCall.addValueString(v.getKey(), v.getValue());
             }
+
             transitionCall.go();
 
             saveRequirementHistory(requirement, formEntities);
-        } catch (SingularException e) {
+        } catch (
+                SingularException e) {
             getLogger().error(e.getMessage(), e);
             throw e;
-        } catch (Exception e) {
+        } catch (
+                Exception e) {
             getLogger().error(e.getMessage(), e);
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
+
     }
 
-    public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<SingularPermission> permissions) {
-        return listTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
+    public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<RequirementSearchExtender> extenders) {
+        return listTasks(filter, authorizationService.filterListTaskPermissions(Collections.emptyList()), extenders);
     }
 
-    public Long countTasks(BoxFilter filter, List<SingularPermission> permissions) {
-        return countTasks(filter, authorizationService.filterListTaskPermissions(permissions), Collections.emptyList());
+    public Long countTasks(BoxFilter filter, List<RequirementSearchExtender> extenders) {
+        return countTasks(filter, authorizationService.filterListTaskPermissions(Collections.emptyList()), extenders);
     }
 
     public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<SingularPermission> permissions, List<RequirementSearchExtender> extenders) {
@@ -554,15 +534,21 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
-        return findLastFormEntityByTypeAndTask(requirement, typeClass, taskInstance)
+    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
+        return findLastFormEntityByTypeAndTask(requirement, typeName, taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
 
     @Nonnull
-    public Optional<FormVersionEntity> findLastFormEntityByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+        return findLastFormEntityByTypeAndTask(requirement, SFormUtil.getTypeName(typeClass), taskInstance)
+                .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
+    }
+
+    @Nonnull
+    private Optional<FormVersionEntity> findLastFormEntityByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
         Objects.requireNonNull(requirement);
-        return requirementContentHistoryDAO.findLastByCodRequirementCodTaskInstanceAndType(typeClass, requirement.getCod(), (Integer) taskInstance.getId())
+        return requirementContentHistoryDAO.findLastByCodRequirementCodTaskInstanceAndType(typeName, requirement.getCod(), (Integer) taskInstance.getId())
                 .map(FormVersionHistoryEntity::getFormVersion);
     }
 
@@ -717,9 +703,9 @@ public abstract class RequirementService implements Loggable {
      * @return
      */
     public <RI extends RequirementInstance, RSR extends RequirementSubmissionResponse> RSR sendRequirement(RI requirementInstance, String codSubmitterActor, RequirementSendInterceptor<RI, RSR> listener, Class<? extends FlowDefinition> flowDefinition) {
-        RSR                  response        = listener.newInstanceSubmissionResponse();
-        RequirementApplicant applicant       = listener.configureApplicant(requirementInstance.getApplicant());
-        requirementInstance.getEntity().setApplicant(((ApplicantEntity)requirementInstance.getApplicant()).copyFrom(applicant));
+        RSR                  response  = listener.newInstanceSubmissionResponse();
+        RequirementApplicant applicant = listener.configureApplicant(requirementInstance.getApplicant());
+        requirementInstance.getEntity().setApplicant(((ApplicantEntity) requirementInstance.getApplicant()).copyFrom(applicant));
 
         listener.onBeforeSend(requirementInstance, applicant, response);
 
@@ -737,8 +723,8 @@ public abstract class RequirementService implements Loggable {
         return response;
     }
 
-    public List<RequirementInstance<?,?>> findRequirementInstancesByRootRequirement(Long cod) {
-        List<RequirementInstance<?,?>> result = new ArrayList<>();
+    public List<RequirementInstance<?, ?>> findRequirementInstancesByRootRequirement(Long cod) {
+        List<RequirementInstance<?, ?>> result = new ArrayList<>();
         for (RequirementEntity requirementEntity : requirementDAO.findByRootRequirement(cod)) {
             result.add(loadRequirementInstance(requirementEntity.getCod()));
 

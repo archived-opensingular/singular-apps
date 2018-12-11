@@ -47,11 +47,11 @@ public interface ExtensaoPortType {
      * @param siglaSistema
      * @param dadosAssinatura
      * @return
-     *     returns java.lang.String
+     *     returns boolean
      */
     @WebMethod(action = "extensaons/assinarDocumento")
     @WebResult(name = "retorno", partName = "retorno")
-    public String assinarDocumento(
+    public boolean assinarDocumento(
             @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
                     String siglaSistema,
             @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
@@ -86,7 +86,7 @@ public interface ExtensaoPortType {
      * @param identificacaoServico
      * @param idUnidade
      * @param siglaSistema
-     * @param idProcedimento
+     * @param protocoloProcedimento
      * @return
      *     returns org.opensingular.requirement.connector.sei30.extensao.ws.ArrayOfRetornoConsultaDocumento
      */
@@ -99,8 +99,8 @@ public interface ExtensaoPortType {
                     String identificacaoServico,
             @WebParam(name = "IdUnidade", partName = "IdUnidade")
                     String idUnidade,
-            @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
-                    String idProcedimento);
+            @WebParam(name = "ProtocoloProcedimento", partName = "ProtocoloProcedimento")
+                    String protocoloProcedimento);
 
     /**
      * Autentica um usuario externo. true: autenticado, false: nao autenticado
@@ -131,35 +131,13 @@ public interface ExtensaoPortType {
                     boolean permitePendente);
 
     /**
-     * Busca informações do usuário externo.
-     * 
-     * @param identificacaoServico
-     * @param idUnidade
-     * @param siglaSistema
-     * @param login
-     * @return
-     *     returns org.opensingular.requirement.connector.sei30.extensao.ws.DadosUsuarioExterno
-     */
-    @WebMethod(action = "extensaons/buscarDadosUsuarioExterno")
-    @WebResult(name = "dadosUsuarioExterno", partName = "dadosUsuarioExterno")
-    public DadosUsuarioExterno buscarDadosUsuarioExterno(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdUnidade", partName = "IdUnidade")
-                    String idUnidade,
-            @WebParam(name = "Login", partName = "Login")
-                    String login);
-
-    /**
      * Consultar conteúdo de documento.
      * 
      * @param modeloDocumento
      * @param identificacaoServico
-     * @param idDocumento
      * @param idUnidade
      * @param siglaSistema
+     * @param protocoloDocumento
      * @return
      *     returns org.opensingular.requirement.connector.sei30.extensao.ws.RetornoConsultarConteudoDocumento
      */
@@ -172,8 +150,8 @@ public interface ExtensaoPortType {
                     String identificacaoServico,
             @WebParam(name = "IdUnidade", partName = "IdUnidade")
                     String idUnidade,
-            @WebParam(name = "IdDocumento", partName = "IdDocumento")
-                    String idDocumento,
+            @WebParam(name = "ProtocoloDocumento", partName = "ProtocoloDocumento")
+                    String protocoloDocumento,
             @WebParam(name = "ModeloDocumento", partName = "ModeloDocumento")
                     boolean modeloDocumento);
 
@@ -195,44 +173,6 @@ public interface ExtensaoPortType {
                     String identificacaoServico,
             @WebParam(name = "strPalavrasPesquisa", partName = "strPalavrasPesquisa")
                     String strPalavrasPesquisa);
-
-    /**
-     * Busca o link externo para a página do procedimento (processo).
-     * 
-     * @param identificacaoServico
-     * @param siglaSistema
-     * @param idProcedimento
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod(action = "extensaons/consultarLinkExternoProcedimento")
-    @WebResult(name = "linkExterno", partName = "linkExterno")
-    public String consultarLinkExternoProcedimento(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "IdProcedimento", partName = "IdProcedimento")
-                    String idProcedimento);
-
-    /**
-     * Retorna o id de um documento ou procedimento(processo) com base em seu número de protocolo.
-     * 
-     * @param protocolo
-     * @param identificacaoServico
-     * @param siglaSistema
-     * @return
-     *     returns java.lang.String
-     */
-    @WebMethod(action = "extensaons/consultarIdProtocolo")
-    @WebResult(name = "IdProtocolo", partName = "IdProtocolo")
-    public String consultarIdProtocolo(
-            @WebParam(name = "SiglaSistema", partName = "SiglaSistema")
-                    String siglaSistema,
-            @WebParam(name = "IdentificacaoServico", partName = "IdentificacaoServico")
-                    String identificacaoServico,
-            @WebParam(name = "Protocolo", partName = "Protocolo")
-                    String protocolo);
 
     /**
      * Retorna os links externos para uma lista de procedimentos.

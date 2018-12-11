@@ -14,18 +14,32 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.box.action.defaults;
+package org.opensingular.requirement.module.spring.security.builder;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.box.BoxItemData;
-import org.opensingular.requirement.module.box.action.AbstractExecuteItemAction;
-import org.opensingular.requirement.module.flow.controllers.DefaultAssignController;
+import com.google.common.collect.Lists;
 
-public class AssignAction extends AbstractExecuteItemAction {
+import java.util.ArrayList;
+import java.util.List;
 
-    public static final String NAME = "assign";
+public class PermissionBuilder {
 
-    public AssignAction(BoxItemData line) {
-        super(NAME, "Atribuir", DefaultIcons.ARROW_DOWN, DefaultAssignController.class, line);
+    private List<String> actions = new ArrayList<>();
+
+
+    public PermissionBuilder() {
+
     }
+
+
+    public FormPermissionBuilder action(String... action) {
+        actions.addAll(Lists.newArrayList(action));
+        return new FormPermissionBuilder(actions);
+    }
+
+    public FormPermissionBuilder anyAction() {
+        actions.add(null);
+        return new FormPermissionBuilder(actions);
+    }
+
 }
+

@@ -16,7 +16,6 @@
 
 package org.opensingular.requirement.module.spring.security;
 
-import com.google.common.base.Joiner;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
@@ -25,7 +24,6 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.form.FormAction;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
@@ -64,7 +62,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     @Override
     public boolean hasPermission(String idUsuario, String permissionKey) {
         List<SingularPermission> permissions = searchPermissions(idUsuario);
-        return hasPermission(idUsuario, permissionKey, permissions);
+        return hasPermission(idUsuario, new SingularPermission(permissionKey, null), permissions);
     }
 
     @Override
@@ -80,15 +78,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             requirementAuthMetadataDTO = requirementService.findRequirementAuthMetadata(requirementId);
         }
         for (Iterator<BoxItemAction> it = actions.iterator(); it.hasNext(); ) {
-            BoxItemAction action = it.next();
-            String permissionsNeeded;
-            String typeAbbreviation = getFormSimpleName(formType);
-            if (action.getFormAction() != null) {
-                permissionsNeeded = buildPermissionKey(
-                        requirementAuthMetadataDTO, typeAbbreviation, action.getFormAction().name());
-            } else {
-                permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getName());
-            }
+            BoxItemAction      action           = it.next();
+            SingularPermission permissionsNeeded;
+            String             typeAbbreviation = getFormSimpleName(formType);
+            permissionsNeeded = buildPermissionKey(requirementAuthMetadataDTO, typeAbbreviation, action.getName());
             if (!hasPermission(idUsuario, permissionsNeeded, permissions)) {
                 it.remove();
             }
@@ -115,13 +108,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return permissionResolverService.searchPermissions(userPermissionKey);
     }
 
-    @Override
-    public boolean hasPermissionToForm(String formName, String idUsuario) {
-        List<SingularPermission> permissions = searchPermissions(idUsuario);
-        String permissionNeeded = buildPermissionKey(null, formName, FormAction.FORM_FILL.name());
-        return hasPermission(idUsuario, permissionNeeded, permissions);
-    }
-
     /**
      * Monta a chave de permissão do singular, não deve ser utilizado diretamente.
      *
@@ -130,18 +116,10 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @param action
      * @return
      */
-    private String buildPermissionKey(RequirementAuthMetadataDTO requirementAuthMetadataDTO, String formSimpleName, String action) {
-        String permission = Joiner.on(SEPARATOR)
-                .skipNulls()
-                .join(
-                        upperCaseOrNull(action),
-                        upperCaseOrNull(formSimpleName),
-                        getDefinitionKey(requirementAuthMetadataDTO),
-                        getCurrentTaskAbbreviation(requirementAuthMetadataDTO)
-                )
-                .toUpperCase();
+    private SingularPermission buildPermissionKey(RequirementAuthMetadataDTO requirementAuthMetadataDTO, String formSimpleName, String action) {
+        SingularPermission permission = new SingularPermission(action, formSimpleName, getDefinitionKey(requirementAuthMetadataDTO), getCurrentTaskAbbreviation(requirementAuthMetadataDTO));
         if (getLogger().isTraceEnabled()) {
-            getLogger().debug(String.format("Nome de permissão computada %s", permission));
+            getLogger().debug(String.format("Nome de permissão computada %s", permissionResolverService.toString()));
         }
         return permission;
     }
@@ -182,32 +160,18 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         if (requirementAuthMetadataDTO != null) {
             formSimpleName = getFormSimpleName(requirementAuthMetadataDTO.getFormTypeAbbreviation());
         }
-        return hasPermission(idUsuario, buildPermissionKey(requirementAuthMetadataDTO, formSimpleName, action));
-    }
-
-    private String removeTask(String permissionId) {
-        int idx = permissionId.lastIndexOf(SEPARATOR);
-        if (idx > -1) {
-            return permissionId.substring(0, idx);
-        }
-        return permissionId;
+        return hasPermission(idUsuario, buildPermissionKey(requirementAuthMetadataDTO, formSimpleName, action).getSingularId());
     }
 
 
-    private boolean hasPermission(String idUsuario, String permissionNeeded, List<SingularPermission> permissions) {
+    private boolean hasPermission(String idUsuario, SingularPermission permissionNeeded, List<SingularPermission> permissions) {
         if (SingularProperties.get().isTrue(SingularProperties.DISABLE_AUTHORIZATION)) {
             return true;
         }
 
-        if (permissions.stream().anyMatch(ps -> ps.getSingularId().equals(permissionNeeded))) {
+        if (permissions.stream().anyMatch(ps -> ps.matchesPermission(permissionNeeded))) {
             return true;
         }
-
-        String definitionPermission = removeTask(permissionNeeded);
-        if (permissions.stream().anyMatch(ps -> ps.getSingularId().equals(definitionPermission))) {
-            return true;
-        }
-
         getLogger().info(" Usuário logado {} não possui a permissão {} ", idUsuario, permissionNeeded);
         return false;
     }
@@ -233,7 +197,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
                 action
         );
 
-        boolean isOwner = false;
+        boolean isOwner       = false;
         boolean isAllowedUser = requirementId == null;
 
         if (requirementId != null) {
@@ -260,7 +224,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
         RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
-        boolean truth = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
+        boolean             truth       = Objects.equals(requirement.getApplicant().getIdPessoa(), applicantId);
         if (!truth) {
             getLogger()
                     .info("User {} (SingularRequirementUserDetails::getApplicantId={}) is not owner of Requirement with id={}. Expected owner id={} ",

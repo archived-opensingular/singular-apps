@@ -38,4 +38,11 @@ public class FeaturePermissionEntity extends BaseEntity<FeaturePermissionEntityP
     public void setCod(FeaturePermissionEntityPK cod) {
         this.cod = cod;
     }
+
+    public FeaturePermissionEntity(FeaturePermissionEntityPK cod) {
+        this.cod = cod;
+    }
+
+    public FeaturePermissionEntity() {
+    }
 }

@@ -16,8 +16,13 @@
 
 package org.opensingular.requirement.module.spring.security;
 
+import org.apache.commons.lang3.StringUtils;
+
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Objects;
+import java.util.regex.Pattern;
 
 /**
  * Classe que representa uma permissão do Singular.
@@ -27,16 +32,63 @@ import java.util.Objects;
  */
 public class SingularPermission implements Serializable {
 
-    private String singularId;
+    public static final String SEPARATOR = "|$|";
+    public static final String WILDCARD  = "*";
+    private             String singularId;
 
     private Serializable internalId;
+
+    private String action;
+    private String formType;
+    private String flowDefintionKey;
+    private String taskAbbreviation;
 
     public SingularPermission() {
     }
 
-    public SingularPermission(String singularId, Serializable internalId) {
-        this.singularId = singularId;
-        this.internalId = internalId;
+    public SingularPermission(@Nonnull String singularId, @Nullable Serializable internalId) {
+        setSingularId(singularId);
+        setInternalId(internalId);
+    }
+
+    public SingularPermission(String action, String formSimpleName, String definitionKey, String currentTaskAbbreviation) {
+        this(
+                StringUtils.defaultString(action, WILDCARD)
+                        + SEPARATOR
+                        + StringUtils.defaultString(formSimpleName, WILDCARD)
+                        + SEPARATOR
+                        + StringUtils.defaultString(definitionKey, WILDCARD)
+                        + SEPARATOR
+                        + StringUtils.defaultString(currentTaskAbbreviation, WILDCARD),
+                null);
+    }
+
+
+    private String getField(String[] values, int i) {
+        if (values.length > i) {
+            return values[i];
+        }
+        return null;
+    }
+
+
+    /**
+     * @param s Permission to be matched
+     * @return true if this permission matches the permission parameter {@param s} .
+     */
+    public boolean matchesPermission(SingularPermission s) {
+        boolean match = true;
+        match &= isEqual(this.action, s.action);
+        match &= isEqual(this.formType, s.formType);
+        match &= isEqual(this.flowDefintionKey, s.flowDefintionKey);
+        match &= isEqual(this.taskAbbreviation, s.taskAbbreviation);
+        return match;
+    }
+
+    private boolean isEqual(String candidate, String target) {
+        return WILDCARD.equals(candidate)
+                || WILDCARD.equals(target)
+                || Objects.equals(candidate, target);
     }
 
     public String getSingularId() {
@@ -44,7 +96,12 @@ public class SingularPermission implements Serializable {
     }
 
     public void setSingularId(String singularId) {
-        this.singularId = singularId;
+        this.singularId = singularId.toUpperCase();
+        String[] values = this.singularId.split(Pattern.quote(SEPARATOR));
+        action = getField(values, 0);
+        formType = getField(values, 1);
+        flowDefintionKey = getField(values, 2);
+        taskAbbreviation = getField(values, 3);
     }
 
     public Serializable getInternalId() {

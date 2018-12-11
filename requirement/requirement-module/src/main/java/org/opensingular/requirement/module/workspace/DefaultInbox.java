@@ -41,7 +41,6 @@ public class DefaultInbox extends AbstractRequirementBoxDefinition {
                 .addAssignAction()
                 .addAnalyseAction()
                 .addRelocateAction()
-                .addViewAction()
                 .addHistoryAction();
     }
 

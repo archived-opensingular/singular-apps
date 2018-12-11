@@ -23,6 +23,7 @@ import javax.xml.ws.WebEndpoint;
 import javax.xml.ws.WebServiceClient;
 import javax.xml.ws.WebServiceException;
 import javax.xml.ws.WebServiceFeature;
+import java.net.MalformedURLException;
 import java.net.URL;
 
 
@@ -32,7 +33,7 @@ import java.net.URL;
  * Generated source version: 2.2
  * 
  */
-@WebServiceClient(name = "extensaoService", targetNamespace = "extensaons", wsdlLocation = "wsextensao.wsdl")
+@WebServiceClient(name = "extensaoService", targetNamespace = "extensaons", wsdlLocation = "http://10.0.0.143/sei/controlador_ws.php?servico=wsextensao")
 public class ExtensaoService
     extends Service
 {
@@ -45,8 +46,8 @@ public class ExtensaoService
         URL url = null;
         WebServiceException e = null;
         try {
-            url = ExtensaoService.class.getResource("wsextensao.wsdl");
-        } catch (Exception ex) {
+            url = new URL("http://10.0.0.143/sei/controlador_ws.php?servico=wsextensao");
+        } catch (MalformedURLException ex) {
             e = new WebServiceException(ex);
         }
         EXTENSAOSERVICE_WSDL_LOCATION = url;

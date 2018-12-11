@@ -17,32 +17,34 @@
 package org.opensingular.requirement.module.wicket.view.form;
 
 
-import java.io.Serializable;
-import java.util.Map;
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
+import org.opensingular.requirement.module.service.Variable;
+
+import java.io.Serializable;
+import java.util.Collections;
+import java.util.List;
 
 public interface TransitionController<T extends SType<?>> extends Serializable {
     Class<T> getType();
 
     boolean isValidatePageForm();
 
-    default Map<String, String> getFlowParameters(SIComposite pageInstance, SInstance transitionInstance) {
-        return null;
+    default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {
     }
-
-    default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {}
-
-    default void onTransition(SIComposite pageIserienstance, SInstance transitionInstance) {}
 
     default boolean onShow(SIComposite pageInstance, SInstance transitionInstance, BSModalBorder modal, AjaxRequestTarget ajaxRequestTarget) {
         return true;
     }
 
-    default void appendExtraContent(BSContainer extraContainer) {}
+    default boolean isShowSaveButton() {
+        return true;
+    }
+
+    default void appendExtraContent(BSContainer extraContainer) {
+    }
 }

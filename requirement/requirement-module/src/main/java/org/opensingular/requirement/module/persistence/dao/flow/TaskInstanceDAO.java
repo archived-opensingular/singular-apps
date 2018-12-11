@@ -16,7 +16,7 @@
 
 package org.opensingular.requirement.module.persistence.dao.flow;
 
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;

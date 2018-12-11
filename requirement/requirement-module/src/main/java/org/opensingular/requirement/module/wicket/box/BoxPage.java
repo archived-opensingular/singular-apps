@@ -52,7 +52,7 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
     private IServerContext serverContext;
 
     @Inject
-    private UserDetailsProvider<SingularRequirementUserDetails> singularUserDetails;
+    private UserDetailsProvider singularUserDetails;
 
     private IModel<WorkspaceMenuItem> workspaceMenuItem;
 
@@ -102,7 +102,7 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
                 .filter(i -> !i.getWorkspaceMenuItens().isEmpty())
                 .findFirst().ifPresent(category -> {
             pageParameters.add(CATEGORY_PARAM_NAME, category.getName());
-            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().findFirst().map(WorkspaceMenuItem::getName).orElse("null"));
+            pageParameters.add(ITEM_PARAM_NAME, category.getWorkspaceMenuItens().stream().filter(WorkspaceMenuItem::isVisible).findFirst().map(WorkspaceMenuItem::getName).orElse("null"));
         });
     }
 
@@ -154,13 +154,13 @@ public class BoxPage extends ServerBoxTemplate implements Loggable {
     }
 
     protected String getIdUsuario() {
-        return singularUserDetails.getOptional()
+        return singularUserDetails.getOpt(SingularRequirementUserDetails.class)
                 .map(SingularRequirementUserDetails::getUsername)
                 .orElse(null);
     }
 
     protected String getIdPessoa() {
-        return singularUserDetails.getOptional()
+        return singularUserDetails.getOpt(SingularRequirementUserDetails.class)
                 .map(SingularRequirementUserDetails::getApplicantId)
                 .orElse(null);
     }

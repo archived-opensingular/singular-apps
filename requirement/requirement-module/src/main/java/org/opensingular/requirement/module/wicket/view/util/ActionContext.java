@@ -34,7 +34,9 @@ import java.util.Optional;
  */
 public class ActionContext implements Serializable, Loggable {
 
-    public static final String ACTION = "a";
+    public static final String ACTION_NAME = "n";
+
+    public static final String FORM_ACTION = "a";
 
     public static final String REQUIREMENT_ID = "k";
 
@@ -86,11 +88,11 @@ public class ActionContext implements Serializable, Loggable {
     }
 
     public Optional<FormAction> getFormAction() {
-        return Optional.ofNullable(this.params.get(ACTION)).flatMap(s -> Optional.of(FormAction.getById(Integer.valueOf(s))));
+        return Optional.ofNullable(this.params.get(FORM_ACTION)).flatMap(s -> Optional.of(FormAction.getById(Integer.valueOf(s))));
     }
 
     public ActionContext setFormAction(FormAction formAction) {
-        this.params.put(ACTION, String.valueOf(formAction.getId()));
+        this.params.put(FORM_ACTION, String.valueOf(formAction.getId()));
         return this;
     }
 
@@ -118,6 +120,17 @@ public class ActionContext implements Serializable, Loggable {
     public Optional<String> getFormName() {
         return Optional.ofNullable(this.params.get(FORM_NAME));
 
+    }
+
+    public String getActionName() {
+        return this.params.get(ACTION_NAME);
+
+    }
+
+
+    public ActionContext setActionName(String actionName) {
+        this.params.put(ACTION_NAME, actionName);
+        return this;
     }
 
     public ActionContext setFormName(String formName) {

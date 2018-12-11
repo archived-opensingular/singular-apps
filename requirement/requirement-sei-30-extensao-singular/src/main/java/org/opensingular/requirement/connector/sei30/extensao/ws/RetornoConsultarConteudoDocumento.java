@@ -26,14 +26,14 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for RetornoConsultarConteudoDocumento complex type.
  * 
- * <p>The following schema fragment specifies the expected         content contained within this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="RetornoConsultarConteudoDocumento"&gt;
  *   &lt;complexContent&gt;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType"&gt;
  *       &lt;all&gt;
- *         &lt;element name="IdDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
+ *         &lt;element name="ProtocoloDocumento" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="Conteudo" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *       &lt;/all&gt;
  *     &lt;/restriction&gt;
@@ -49,33 +49,33 @@ import javax.xml.bind.annotation.XmlType;
 })
 public class RetornoConsultarConteudoDocumento {
 
-    @XmlElement(name = "IdDocumento", required = true)
-    protected String idDocumento;
+    @XmlElement(name = "ProtocoloDocumento", required = true)
+    protected String protocoloDocumento;
     @XmlElement(name = "Conteudo", required = true)
     protected String conteudo;
 
     /**
-     * Gets the value of the idDocumento property.
+     * Gets the value of the protocoloDocumento property.
      * 
      * @return
      *     possible object is
      *     {@link String }
      *     
      */
-    public String getIdDocumento() {
-        return idDocumento;
+    public String getProtocoloDocumento() {
+        return protocoloDocumento;
     }
 
     /**
-     * Sets the value of the idDocumento property.
+     * Sets the value of the protocoloDocumento property.
      * 
      * @param value
      *     allowed object is
      *     {@link String }
      *     
      */
-    public void setIdDocumento(String value) {
-        this.idDocumento = value;
+    public void setProtocoloDocumento(String value) {
+        this.protocoloDocumento = value;
     }
 
     /**

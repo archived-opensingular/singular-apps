@@ -23,7 +23,7 @@ import org.opensingular.requirement.module.box.action.AbstractURLPopupBoxItemAct
 
 public class ExtratoAction extends AbstractURLPopupBoxItemAction {
 
-    public static final String EXTRATO = "extrato";
+    public static final String NAME = "extrato";
 
     /**
      * Method respinble for add button for open the requirement extrato in other tab in PDF format.
@@ -31,7 +31,7 @@ public class ExtratoAction extends AbstractURLPopupBoxItemAction {
      * @param requirmentId    the id of requirement.
      */
     public ExtratoAction(Serializable requirmentId) {
-        super(EXTRATO,
+        super(NAME,
                 "Extrato",
                 DefaultIcons.FILE_PDF,
                 "/printmf/" + requirmentId);

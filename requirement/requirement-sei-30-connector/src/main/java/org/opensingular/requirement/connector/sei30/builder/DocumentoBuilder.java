@@ -16,19 +16,11 @@
 
 package org.opensingular.requirement.connector.sei30.builder;
 
-import java.io.File;
-import java.io.InputStream;
-import java.io.Serializable;
-import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import javax.activation.DataHandler;
-
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.requirement.connector.sei30.model.NivelAcesso;
+import org.opensingular.requirement.connector.sei30.model.Serie;
 import org.opensingular.requirement.connector.sei30.model.SerieEnum;
 import org.opensingular.requirement.connector.sei30.model.TipoDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDestinatario;
@@ -37,6 +29,15 @@ import org.opensingular.requirement.connector.sei30.ws.Destinatario;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Interessado;
 import org.opensingular.requirement.connector.sei30.ws.Remetente;
+
+import javax.activation.DataHandler;
+import java.io.File;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.nio.charset.Charset;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.List;
 
 /**
  * Classe DocumentoBuilder.
@@ -96,6 +97,18 @@ public class DocumentoBuilder implements Serializable, Loggable {
      */
     public DocumentoBuilder setSerie(SerieEnum value) {
         this.documento.setIdSerie(value.getId());
+        return this;
+    }
+
+    /**
+     * Atualiza o novo valor de tipo serie.
+     *
+     * @param serie
+     *            o(a) serie.
+     * @return o valor de documento builder
+     */
+    public DocumentoBuilder setSerie(Serie serie) {
+        this.documento.setIdSerie(serie.getId());
         return this;
     }
 

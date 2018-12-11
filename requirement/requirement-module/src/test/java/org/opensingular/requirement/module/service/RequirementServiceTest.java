@@ -181,16 +181,16 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
         }
 
         BoxFilter                       f1    = new BoxFilter();
-        List<Map<String, Serializable>> maps1 = requirementService.quickSearchMap(f1);
+        List<Map<String, Serializable>> maps1 = requirementService.listTasks(f1, Collections.emptyList());
         assertEquals(qtdEnviada, maps1.size());
 
         BoxFilter f2 = new BoxFilter();
         f2.showDraft(true).sortProperty("description");
-        List<Map<String, Serializable>> maps2 = requirementService.quickSearchMap(f2);
+        List<Map<String, Serializable>> maps2 = requirementService.listTasks(f2, Collections.emptyList());
         assertEquals(qtdRascunho, maps2.size());
 
         BoxFilter f3    = new BoxFilter();
-        Long      count = requirementService.countQuickSearch(f3);
+        Long      count = requirementService.countTasks(f3, Collections.emptyList());
         assertTrue(count == qtdEnviada);
     }
 
@@ -203,7 +203,7 @@ public class RequirementServiceTest extends SingularCommonsBaseTest {
 
         SingularPermission permission = new SingularPermission("singularId", "internalId");
 
-        Assert.assertEquals(new Long(0), requirementService.countTasks(filter, Arrays.asList(permission)));
+        Assert.assertEquals(new Long(0), requirementService.countTasks(filter, Arrays.asList(permission), Collections.emptyList()));
     }
 
     @Test

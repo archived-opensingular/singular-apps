@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * <p>Java class for DadosAssinatura complex type.
  * 
- * <p>The following schema fragment specifies the expected         content contained within this class.
+ * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
  * &lt;complexType name="DadosAssinatura"&gt;
@@ -38,7 +38,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="SiglaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="SenhaUsuario" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
  *         &lt;element name="CargoFuncao" type="{http://www.w3.org/2001/XMLSchema}string"/&gt;
- *         &lt;element name="IdsDocumento" type="{extensaons}ArrayOfIdDocumento"/&gt;
+ *         &lt;element name="ProtocolosDocumento" type="{extensaons}ArrayOfProtocoloDocumento"/&gt;
  *       &lt;/all&gt;
  *     &lt;/restriction&gt;
  *   &lt;/complexContent&gt;
@@ -63,8 +63,8 @@ public class DadosAssinatura {
     protected String senhaUsuario;
     @XmlElement(name = "CargoFuncao", required = true)
     protected String cargoFuncao;
-    @XmlElement(name = "IdsDocumento", required = true)
-    protected ArrayOfIdDocumento idsDocumento;
+    @XmlElement(name = "ProtocolosDocumento", required = true)
+    protected ArrayOfProtocoloDocumento protocolosDocumento;
 
     /**
      * Gets the value of the idOrgaoUsuario property.
@@ -171,27 +171,27 @@ public class DadosAssinatura {
     }
 
     /**
-     * Gets the value of the idsDocumento property.
+     * Gets the value of the protocolosDocumento property.
      * 
      * @return
      *     possible object is
-     *     {@link ArrayOfIdDocumento }
+     *     {@link ArrayOfProtocoloDocumento }
      *     
      */
-    public ArrayOfIdDocumento getIdsDocumento() {
-        return idsDocumento;
+    public ArrayOfProtocoloDocumento getProtocolosDocumento() {
+        return protocolosDocumento;
     }
 
     /**
-     * Sets the value of the idsDocumento property.
+     * Sets the value of the protocolosDocumento property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ArrayOfIdDocumento }
+     *     {@link ArrayOfProtocoloDocumento }
      *     
      */
-    public void setIdsDocumento(ArrayOfIdDocumento value) {
-        this.idsDocumento = value;
+    public void setProtocolosDocumento(ArrayOfProtocoloDocumento value) {
+        this.protocolosDocumento = value;
     }
 
 }

@@ -227,7 +227,7 @@ public class DispatcherPage extends WebPage implements Loggable {
     private void dispatch(ActionContext context) {
         Long    requirementId = context.getRequirementId().orElse(null);
         String  formType      = context.getFormName().orElse(null);
-        String  action        = context.getFormAction().map(FormAction::name).orElse(null);
+        String  actionName    = context.getActionName();
         boolean readonly      = !(isViewModeEdit(context) || isAnnotationModeEdit(context));
         String  idUsuario     = null;
         String  idApplicant   = null;
@@ -235,7 +235,7 @@ public class DispatcherPage extends WebPage implements Loggable {
             idUsuario = SingularSession.get().getUserDetails().getUsername();
             idApplicant = SingularSession.get().getUserDetails().getApplicantId();
         }
-        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, action, serverContext, readonly)) {
+        if (!authorizationService.hasPermission(requirementId, formType, idUsuario, idApplicant, actionName, serverContext, readonly)) {
             redirectForbidden();
         } else {
             dispatchForDestination(context, retrieveDestination(context));

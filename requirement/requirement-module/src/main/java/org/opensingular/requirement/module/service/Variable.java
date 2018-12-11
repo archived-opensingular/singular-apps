@@ -14,18 +14,29 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.box.action.defaults;
+package org.opensingular.requirement.module.service;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
-import org.opensingular.requirement.module.box.BoxItemData;
-import org.opensingular.requirement.module.box.action.AbstractExecuteItemAction;
-import org.opensingular.requirement.module.flow.controllers.DefaultAssignController;
+import java.io.Serializable;
 
-public class AssignAction extends AbstractExecuteItemAction {
+/**
+ * Flow variable
+ * It can be transition or flow instance scoped
+ */
+public class Variable implements Serializable {
 
-    public static final String NAME = "assign";
+    private final String key;
+    private final String value;
 
-    public AssignAction(BoxItemData line) {
-        super(NAME, "Atribuir", DefaultIcons.ARROW_DOWN, DefaultAssignController.class, line);
+    public Variable(String key, String value) {
+        this.key = key;
+        this.value = value;
+    }
+
+    String getKey() {
+        return key;
+    }
+
+    String getValue() {
+        return value;
     }
 }

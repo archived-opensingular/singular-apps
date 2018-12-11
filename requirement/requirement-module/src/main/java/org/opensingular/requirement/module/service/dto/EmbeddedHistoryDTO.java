@@ -17,24 +17,45 @@
 package org.opensingular.requirement.module.service.dto;
 
 
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.flow.persistence.entity.Actor;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
+import org.opensingular.flow.persistence.entity.TaskVersionEntity;
+import org.opensingular.form.persistence.entity.FormVersionEntity;
+import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
+import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
-import org.opensingular.flow.persistence.entity.Actor;
-import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
-import org.opensingular.flow.persistence.entity.TaskVersionEntity;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
-
 public class EmbeddedHistoryDTO implements Serializable {
 
     private String                name;
     private String                actor;
+    private String                executedTransition;
     private Date                  date;
     private List<TypeFormVersion> typeFormVersions;
+
+    public EmbeddedHistoryDTO() {
+    }
+
+    public EmbeddedHistoryDTO(RequirementEntity r, FormVersionEntity formVersionEntity) {
+        name = formVersionEntity.getFormEntity().getFormType().getLabel();
+        actor = Optional.ofNullable(r.getApplicant()).map(ApplicantEntity::getName).orElse(null);
+        date = formVersionEntity.getInclusionDate();
+        typeFormVersions = new ArrayList<>();
+        typeFormVersions.add(new TypeFormVersion(
+                formVersionEntity.getCod(),
+                formVersionEntity
+                        .getFormEntity()
+                        .getFormType()
+                        .getLabel()));
+        executedTransition = "Enviar";
+    }
 
     public EmbeddedHistoryDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
         final Optional<RequirementContentHistoryEntity> historyEntity = Optional.ofNullable(nullableHistoryEntity);
@@ -51,6 +72,12 @@ public class EmbeddedHistoryDTO implements Serializable {
         date = historyEntity
                 .map(RequirementContentHistoryEntity::getHistoryDate)
                 .orElse(null);
+
+        executedTransition = historyEntity
+                .map(i -> i.getTaskInstanceEntity())
+                .map(i -> i.getExecutedTransition())
+                .map(i -> i.getName())
+                .orElse(StringUtils.EMPTY);
 
         typeFormVersions = new ArrayList<>();
 
@@ -97,6 +124,14 @@ public class EmbeddedHistoryDTO implements Serializable {
 
     public void setTypeFormVersions(List<TypeFormVersion> typeFormVersions) {
         this.typeFormVersions = typeFormVersions;
+    }
+
+    public String getExecutedTransition() {
+        return executedTransition;
+    }
+
+    public void setExecutedTransition(String executedTransition) {
+        this.executedTransition = executedTransition;
     }
 
     public static class TypeFormVersion implements Serializable {

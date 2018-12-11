@@ -37,7 +37,6 @@ public class DefaultDonebox extends AbstractRequirementBoxDefinition {
     @Override
     protected void addActions(ActionProviderBuilder builder) {
         builder
-                .addViewAction()
                 .addHistoryAction();
     }
 

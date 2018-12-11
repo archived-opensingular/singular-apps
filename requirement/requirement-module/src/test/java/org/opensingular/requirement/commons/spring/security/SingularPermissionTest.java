@@ -22,20 +22,23 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
+import static org.opensingular.requirement.module.spring.security.SingularPermission.SEPARATOR;
+import static org.opensingular.requirement.module.spring.security.SingularPermission.WILDCARD;
+
 public class SingularPermissionTest {
 
     @Test
-    public void testGetSetInternalId(){
+    public void testGetSetInternalId() {
         SingularPermission permission = new SingularPermission();
         permission.setSingularId("singularId");
 
-        Assert.assertEquals("singularId", permission.getSingularId());
+        Assert.assertEquals("SINGULARID", permission.getSingularId());
         Assert.assertNull(permission.getInternalId());
     }
 
     @Test
-    public void equalsTest(){
-        SingularPermission permission = new SingularPermission("singularId", "internalId");
+    public void equalsTest() {
+        SingularPermission permission  = new SingularPermission("singularId", "internalId");
         SingularPermission permission2 = new SingularPermission();
 
         Assert.assertFalse(permission.equals(null));
@@ -46,5 +49,40 @@ public class SingularPermissionTest {
         permission2.setInternalId("internalId");
         Assert.assertTrue(permission.equals(permission2));
         Assert.assertTrue(permission.equals(permission));
+    }
+
+
+    @Test
+    public void parseTest() {
+        SingularPermission singularPermission = new SingularPermission("action" + SingularPermission.SEPARATOR + "form" + SingularPermission.SEPARATOR + "flow" + SingularPermission.SEPARATOR + "task", null);
+        System.out.println(singularPermission.toString());
+
+        SingularPermission boxActionPermission = new SingularPermission("box_action", null);
+        System.out.println(boxActionPermission.toString());
+
+        SingularPermission nullPermission = new SingularPermission(SEPARATOR + SEPARATOR + SEPARATOR + SEPARATOR + SEPARATOR, null);
+
+        SingularPermission whatever = new SingularPermission(WILDCARD + SEPARATOR + WILDCARD + SEPARATOR + WILDCARD + SEPARATOR + WILDCARD, null);
+        System.out.println(whatever.toString());
+        SingularPermission onlyAction = new SingularPermission("action" + SEPARATOR + SEPARATOR + SEPARATOR + WILDCARD, null);
+        System.out.println(onlyAction.toString());
+    }
+
+    @Test
+    public void matchTest() {
+        SingularPermission singularPermission = new SingularPermission("action" + SingularPermission.SEPARATOR + "form" + SingularPermission.SEPARATOR + "flow" + SingularPermission.SEPARATOR + "task", null);
+        SingularPermission nullPermission     = new SingularPermission(SEPARATOR + SEPARATOR + SEPARATOR + SEPARATOR + SEPARATOR, null);
+        SingularPermission whatever           = new SingularPermission(WILDCARD + SEPARATOR + WILDCARD + SEPARATOR + WILDCARD + SEPARATOR + WILDCARD, null);
+
+        Assert.assertTrue(whatever.matchesPermission(singularPermission));
+        Assert.assertTrue(singularPermission.matchesPermission(singularPermission));
+        Assert.assertTrue(singularPermission.matchesPermission(whatever));
+        Assert.assertTrue(whatever.matchesPermission(nullPermission));
+        Assert.assertTrue(nullPermission.matchesPermission(nullPermission));
+        Assert.assertTrue(whatever.matchesPermission(whatever));
+
+        Assert.assertTrue(whatever.matchesPermission(nullPermission));
+        Assert.assertFalse(singularPermission.matchesPermission(nullPermission));
+        Assert.assertFalse(nullPermission.matchesPermission(singularPermission));
     }
 }

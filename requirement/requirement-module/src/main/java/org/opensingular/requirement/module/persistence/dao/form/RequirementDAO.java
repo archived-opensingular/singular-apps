@@ -21,7 +21,7 @@ import com.querydsl.core.BooleanBuilder;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.hibernate.Criteria;
-import org.hibernate.Query;
+import org.hibernate.query.Query;
 import org.hibernate.criterion.Restrictions;
 import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.form.persistence.entity.FormAttachmentEntity;

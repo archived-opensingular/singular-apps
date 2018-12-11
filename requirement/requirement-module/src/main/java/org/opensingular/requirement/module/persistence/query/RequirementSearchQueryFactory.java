@@ -29,12 +29,16 @@ import org.opensingular.flow.core.CurrentInstanceStatus;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskType;
 import org.opensingular.form.SInstance;
+import org.opensingular.internal.lib.commons.injection.SingularInjector;
+import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.support.persistence.enums.SimNao;
+import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.FilterToken;
 
 import javax.annotation.Nonnull;
+import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -120,7 +124,14 @@ public class RequirementSearchQueryFactory {
     }
 
     private void applyExtenders() {
-        ctx.getExtenders().forEach(i -> i.extend(ctx));
+        SingularInjector injector = ApplicationContextProvider
+                .getBeanOpt(SpringServiceRegistry.class)
+                .map(SpringServiceRegistry::lookupSingularInjector)
+                .orElse(SingularInjector.getEmptyInjector());
+        for (RequirementSearchExtender i : ctx.getExtenders()) {
+            injector.inject(i);
+            i.extend(ctx);
+        }
     }
 
     private void applyDefaultOrderBy() {
@@ -273,7 +284,7 @@ public class RequirementSearchQueryFactory {
             advancedFilterInstance.getChildren().stream()
                     .filter(SInstance::isNotEmptyOfData)
                     .filter(i -> expressionMap.containsKey(i.getName()))
-                    .forEach(childSinstance -> new FilterToken((String) childSinstance.getValue(), false)
+                    .forEach(childSinstance -> new FilterToken((String) childSinstance.getValue())
                             .getAllPossibleMatches()
                             .stream()
                             .map(token -> expressionMap.get(childSinstance.getName()).apply(token))
