@@ -425,6 +425,18 @@ public class DocumentoBuilder implements Serializable, Loggable {
     }
 
     /**
+     * Atualiza o novo valor de protocolo procedimento.
+     *
+     * @param protocoloProcedimento
+     *            o(a) protocolo do rocedimento.
+     * @return o valor de documento builder
+     */
+    public DocumentoBuilder setProtocoloProcedimento(String protocoloProcedimento) {
+        this.documento.setProtocoloProcedimento(protocoloProcedimento);
+        return this;
+    }
+
+    /**
      * Cria o documento.
      * 
      * @return o valor de documento
