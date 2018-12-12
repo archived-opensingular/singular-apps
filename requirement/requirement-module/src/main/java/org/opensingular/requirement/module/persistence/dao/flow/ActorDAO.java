@@ -40,8 +40,23 @@ import org.opensingular.requirement.module.persistence.transformer.FindActorByUs
 
 public class ActorDAO extends BaseDAO<Actor, Integer> {
 
+    private Generator generator;
+
     public ActorDAO() {
         super(Actor.class);
+    }
+
+    public static enum Generator {
+        SEQUENCE,
+        IDENTITY
+    }
+
+    /**
+     * @param generator Force usage of specific generator
+     */
+    public ActorDAO(Generator generator) {
+        super(Actor.class);
+        this.generator = generator;
     }
 
     public Actor retrieveByUserCod(String userName) {
@@ -89,7 +104,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
         if (result == null && cod == null) {
             Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
-            if (!dialect.getIdentityColumnSupport().supportsIdentityColumns()) {
+            if (generator == Generator.SEQUENCE || !dialect.getIdentityColumnSupport().supportsIdentityColumns()) {
                 getSession().doWork(connection -> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into "
                             + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES ("
