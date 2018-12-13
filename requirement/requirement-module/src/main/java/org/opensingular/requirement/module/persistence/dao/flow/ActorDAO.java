@@ -32,6 +32,7 @@ import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.transformer.FindActorByUserCodResultTransformer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.sql.PreparedStatement;
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +72,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         Integer cod        = sUser.getCod();
         String  codUsuario = sUser.getCodUsuario();
 
-        return saveUserIfNeeded(cod, codUsuario).orElse(null);
+        return saveUserIfNeeded(cod, codUsuario, sUser.getSimpleName(), sUser.getEmail()).orElse(null);
     }
 
     public Optional<SUser> saveUserIfNeeded(@Nonnull String codUsuario) {
@@ -79,6 +80,10 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
     }
 
     private Optional<SUser> saveUserIfNeeded(Integer cod, String codUsuario) {
+        return saveUserIfNeeded(cod, codUsuario, codUsuario, null);
+    }
+
+    private Optional<SUser> saveUserIfNeeded(Integer cod, String codUsuario, @Nullable String name, @Nullable String email) {
         SUser result = null;
         if (cod != null) {
             result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("cod", cod)).uniqueResult();
@@ -94,17 +99,21 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
                 dialect.getSequenceNextValString("nada");
                 getSession().doWork(connection -> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into "
-                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (("
-                            + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ? )");
+                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (("
+                            + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ?,?,? )");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
+                    ps.setString(2, name);
+                    ps.setString(3, email);
                     ps.executeUpdate();
                 });
             } else {
                 getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
+                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (?)");
                     PreparedStatement ps  = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
+                    ps.setString(2, name);
+                    ps.setString(3, email);
                     ps.executeUpdate();
                 });
             }

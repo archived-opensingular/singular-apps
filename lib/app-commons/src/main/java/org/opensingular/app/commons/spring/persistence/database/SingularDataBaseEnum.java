@@ -23,8 +23,10 @@ import org.hibernate.dialect.Dialect;
 import org.hibernate.dialect.H2Dialect;
 import org.hibernate.dialect.Oracle8iDialect;
 import org.hibernate.dialect.PostgreSQL9Dialect;
+import org.hibernate.dialect.SQLServer2008Dialect;
 import org.hibernate.dialect.SQLServerDialect;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.support.persistence.SingularOracle10gDialect;
 
 /**
  * A Enum responsible to contain the insert's scripts to especific Dialect.
@@ -33,8 +35,8 @@ import org.opensingular.lib.commons.base.SingularException;
 public enum SingularDataBaseEnum implements SingularDataBaseSuport {
 
 
-    ORACLE(Oracle8iDialect.class, "db/ddl/oracle/create-table-actor.sql", "db/ddl/oracle/create-quartz.sql", "db/ddl/oracle/create-function.sql"),
-    MSSQL(SQLServerDialect.class, "db/ddl/sqlserver/create-table-actor.sql", "db/ddl/sqlserver/create-quartz.sql", "db/ddl/sqlserver/create-function.sql"),
+    ORACLE(SingularOracle10gDialect.class, "db/ddl/oracle/create-table-actor.sql", "db/ddl/oracle/create-quartz.sql", "db/ddl/oracle/create-function.sql"),
+    MSSQL(SQLServer2008Dialect.class, "db/ddl/sqlserver/create-table-actor.sql", "db/ddl/sqlserver/create-quartz.sql", "db/ddl/sqlserver/create-function.sql"),
     H2(H2Dialect.class, "db/ddl/h2/create-table-actor.sql", "db/ddl/h2/create-quartz.sql", "db/ddl/h2/create-function.sql"),
     PGSQL(PostgreSQL9Dialect.class, "db/ddl/postgres/create-table-actor.sql", "db/ddl/postgres/create-quartz.sql", "db/ddl/postgres/create-function.sql");
 
