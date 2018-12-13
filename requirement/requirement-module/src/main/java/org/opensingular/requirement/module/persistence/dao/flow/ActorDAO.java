@@ -16,17 +16,11 @@
 
 package org.opensingular.requirement.module.persistence.dao.flow;
 
-import java.sql.PreparedStatement;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
-import javax.annotation.Nonnull;
-
-import org.hibernate.query.Query;
-import org.hibernate.query.NativeQuery;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.dialect.Dialect;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.query.NativeQuery;
+import org.hibernate.query.Query;
 import org.hibernate.transform.Transformers;
 import org.hibernate.type.StandardBasicTypes;
 import org.opensingular.flow.core.SUser;
@@ -37,27 +31,19 @@ import org.opensingular.lib.support.persistence.util.SqlUtil;
 import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.persistence.transformer.FindActorByUserCodResultTransformer;
 
+import javax.annotation.Nonnull;
+import java.sql.PreparedStatement;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
+
 
 public class ActorDAO extends BaseDAO<Actor, Integer> {
-
-    private Generator generator;
 
     public ActorDAO() {
         super(Actor.class);
     }
 
-    public static enum Generator {
-        SEQUENCE,
-        IDENTITY
-    }
-
-    /**
-     * @param generator Force usage of specific generator
-     */
-    public ActorDAO(Generator generator) {
-        super(Actor.class);
-        this.generator = generator;
-    }
 
     public Actor retrieveByUserCod(String userName) {
 
@@ -82,8 +68,8 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
             return null;
         }
 
-        Integer cod = sUser.getCod();
-        String codUsuario = sUser.getCodUsuario();
+        Integer cod        = sUser.getCod();
+        String  codUsuario = sUser.getCodUsuario();
 
         return saveUserIfNeeded(cod, codUsuario).orElse(null);
     }
@@ -104,19 +90,20 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
         if (result == null && cod == null) {
             Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
-            if (generator == Generator.SEQUENCE || !dialect.getIdentityColumnSupport().supportsIdentityColumns()) {
+            if (dialect.getNativeIdentifierGeneratorStrategy().equals("sequence") && dialect.supportsSequences()) {
+                dialect.getSequenceNextValString("nada");
                 getSession().doWork(connection -> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into "
-                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES ("
-                            + Constants.SCHEMA + ".SQ_CO_ATOR.NEXTVAL, ? )");
+                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO) VALUES (("
+                            + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ? )");
                     PreparedStatement ps = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
                     ps.executeUpdate();
                 });
             } else {
                 getSession().doWork(connection -> {
-                    String sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
-                    PreparedStatement ps = connection.prepareStatement(sql);
+                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO) VALUES (?)");
+                    PreparedStatement ps  = connection.prepareStatement(sql);
                     ps.setString(1, codUsuario);
                     ps.executeUpdate();
                 });
