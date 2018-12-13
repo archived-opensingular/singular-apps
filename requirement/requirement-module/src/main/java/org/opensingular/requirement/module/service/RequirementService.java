@@ -49,6 +49,7 @@ import org.opensingular.requirement.module.RequirementSendInterceptor;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.RequirementTransitionContext;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -346,6 +347,10 @@ public abstract class RequirementService implements Loggable {
             List<FormEntity> formEntities = formRequirementService.consolidateDrafts(requirement);
             FlowInstance     flowInstance = requirement.getFlowInstance();
 
+            RequirementTransitionContext requirementTransitionContext = new RequirementTransitionContext(requirement,
+                    transitionName, flowVariables, transitionVariables);
+            STransition transition = flowInstance.getCurrentTaskOrException().findTransition(transitionName);
+            transition.notifyBeforeTransition(requirementTransitionContext);
 
             for (Variable v : flowVariables) {
                 flowInstance.getVariables().addValueString(v.getKey(), v.getValue());
