@@ -93,4 +93,9 @@ public class FeaturePermissionEntityPK implements Serializable {
         result = 31 * result + module.hashCode();
         return result;
     }
+
+    @Override
+    public String toString() {
+        return String.format("FeaturePermissionEntityPK[feature = '%s', permission = '%s', module = '%s']", feature, permission, module);
+    }
 }

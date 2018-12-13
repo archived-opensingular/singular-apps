@@ -16,18 +16,16 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
-
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.model.IModel;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.requirement.module.service.Variable;
+import org.opensingular.requirement.module.service.RequirementInstance;
 
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.List;
 
 public interface TransitionController<T extends SType<?>> extends Serializable {
     Class<T> getType();
@@ -46,5 +44,9 @@ public interface TransitionController<T extends SType<?>> extends Serializable {
     }
 
     default void appendExtraContent(BSContainer extraContainer) {
+    }
+
+    default void onConfirmTransition(RequirementInstance<?, ?> requirementInstance, String transitionName, IModel<? extends SInstance> instanceModel) {
+
     }
 }

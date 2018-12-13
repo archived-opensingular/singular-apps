@@ -127,7 +127,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     @Nonnull
-    public RequirementInstance getParentRequirementOrException() {
+    public RequirementInstance<?, ?> getParentRequirementOrException() {
         return getParentRequirement().orElseThrow(
                 () -> new SingularRequirementException("A petição pai está null para esse requerimento", this));
     }

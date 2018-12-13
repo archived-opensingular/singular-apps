@@ -60,6 +60,7 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
             @Override
             protected void onValidationSuccess(AjaxRequestTarget ajaxRequestTarget, Form<?> form, IModel<? extends SInstance> model) {
                 getRequirement().saveForm(singularFormPanel.getInstance());
+                onConfirm(tn, singularFormPanel.getInstanceModel());
                 super.onValidationSuccess(ajaxRequestTarget, form, model);
             }
         };
@@ -108,7 +109,6 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         return instance;
     }
 
-    @SuppressWarnings("unchecked")
     public IModel<? extends SInstance> getInstanceModel() {
         return singularFormPanel.getInstanceModel();
     }
@@ -116,6 +116,7 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
     @Override
     protected void onConfirm(String tn, IModel<? extends SInstance> im) {
         super.onConfirm(tn, im);
+        transitionController.onConfirmTransition(requirementInstanceModel.getObject(), tn, im);
     }
 
     @Override

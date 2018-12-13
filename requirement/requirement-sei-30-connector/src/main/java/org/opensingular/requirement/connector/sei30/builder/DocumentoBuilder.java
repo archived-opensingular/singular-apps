@@ -23,6 +23,7 @@ import org.opensingular.requirement.connector.sei30.model.NivelAcesso;
 import org.opensingular.requirement.connector.sei30.model.Serie;
 import org.opensingular.requirement.connector.sei30.model.SerieEnum;
 import org.opensingular.requirement.connector.sei30.model.TipoDocumento;
+import org.opensingular.requirement.connector.sei30.util.EncodeUtil;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDestinatario;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfInteressado;
 import org.opensingular.requirement.connector.sei30.ws.Destinatario;
@@ -467,4 +468,8 @@ public class DocumentoBuilder implements Serializable, Loggable {
         }
     }
 
+    public DocumentoBuilder setConteudoBase64(String conteudo) {
+        documento.setConteudo(EncodeUtil.encodeToBase64(conteudo));
+        return this;
+    }
 }
