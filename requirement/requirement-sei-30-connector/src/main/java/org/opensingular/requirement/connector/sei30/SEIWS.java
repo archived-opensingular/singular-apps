@@ -422,9 +422,6 @@ public class SEIWS implements SEIPortType, Loggable {
      */
     @Override
     public RetornoInclusaoDocumento incluirDocumento(UnidadeSei unidade, Documento documento) {
-        //TODO delfino.filho remover quando estiver ok
-        documento.setNivelAcesso("1");
-        documento.setIdHipoteseLegal("34");
         return seiPortType.incluirDocumento(siglaSistema, identificacaoServico, unidade.getId(), documento);
     }
 
