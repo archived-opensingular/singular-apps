@@ -107,9 +107,9 @@ public class PersistenceConfigurationProvider implements Loggable {
         } else {
             scripts.addAll(persistenceConfiguration.getDatabaseSupport().getScripts());
         }
-        persistenceConfiguration.configureInitSQLScripts(scripts);
         scripts.add(persistenceConfiguration.getActorTableScript());
         scripts.add(persistenceConfiguration.getDatabaseSupport().getQuartzScript());
+        persistenceConfiguration.configureInitSQLScripts(scripts);
         return scripts;
     }
 
