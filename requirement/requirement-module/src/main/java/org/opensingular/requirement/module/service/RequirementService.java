@@ -539,13 +539,13 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
+    public Optional<SInstance> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
         return findLastFormEntityByTypeAndTask(requirement, typeName, taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+    public Optional<SInstance> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
         return findLastFormEntityByTypeAndTask(requirement, SFormUtil.getTypeName(typeClass), taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }

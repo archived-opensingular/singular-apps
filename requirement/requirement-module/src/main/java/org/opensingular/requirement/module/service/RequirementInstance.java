@@ -211,9 +211,29 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public Optional<SInstance> getForm(@Nonnull String formName, ITaskDefinition taskDefinition) {
+    public final Optional<SInstance> getForm(@Nonnull String formName, ITaskDefinition taskDefinition) {
         return flowInstance.getFinishedTask(taskDefinition)
-                .map(ti -> requirementService.findLastFormInstanceByTypeAndTask(this, formName, ti).orElse(null));
+                .map(ti -> getForm(formName, ti).orElse(null));
+    }
+
+    /**
+     * Return the given form type last version for the given taskInstnace
+     *
+     * @param form
+     * @return
+     */
+    public final <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form, TaskInstance taskInstance) {
+        return (Optional<SI>) getForm(SFormUtil.getTypeName(form), taskInstance);
+    }
+
+    /**
+     * Return the given form type last version for the given taskInstnace
+     *
+     * @param formName
+     * @return
+     */
+    public final Optional<SInstance> getForm(@Nonnull String formName, TaskInstance taskInstance) {
+        return requirementService.findLastFormInstanceByTypeAndTask(this, formName, taskInstance);
     }
 
     /**
