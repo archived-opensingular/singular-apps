@@ -267,8 +267,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return requirementService.findCurrentDraftForType(this, formName);
     }
 
-    public final Optional<SInstance> getDraft(@Nonnull Class<? extends SType<?>> form) {
-        return getDraft(RequirementUtil.getTypeName(form));
+    public final <SI extends SInstance> Optional<SI> getDraft(@Nonnull Class<? extends SType<SI>> form) {
+        return (Optional<SI>) getDraft(RequirementUtil.getTypeName(form));
     }
 
     public final SInstance newForm() {
@@ -297,6 +297,10 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
 
     public SInstance resolveForm(String formName) {
         return getDraft(formName).orElse(getForm(formName).orElse(newForm(formName)));
+    }
+
+    public <SI extends SInstance> SI resolveForm(@Nonnull Class<? extends SType<SI>> form) {
+        return (SI) resolveForm(RequirementUtil.getTypeName(form));
     }
 
     public SInstance resolveForm(String formName, ITaskDefinition taskDefinition) {

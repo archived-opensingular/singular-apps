@@ -8,5 +8,11 @@ import org.opensingular.flow.core.ITransitionListener;
 public interface RequirementTransitionListener extends ITransitionListener<RequirementTransitionContext> {
 
     @Override
-    void beforeTransition(RequirementTransitionContext requirementTransitionContext);
+    default void beforeTransition(RequirementTransitionContext requirementTransitionContext){
+
+    }
+
+    default void beforeConsolidateDrafts(RequirementTransitionContext requirementTransitionContext) {
+
+    }
 }
