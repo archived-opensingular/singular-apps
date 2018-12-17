@@ -296,7 +296,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     public SInstance resolveForm(String formName) {
-        return getDraft(formName).orElse(getForm(formName).orElse(newForm(formName)));
+        return getDraft(formName).orElseGet(() -> getForm(formName).orElseGet(() -> newForm(formName)));
     }
 
     public <SI extends SInstance> SI resolveForm(@Nonnull Class<? extends SType<SI>> form) {
@@ -304,7 +304,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     public SInstance resolveForm(String formName, ITaskDefinition taskDefinition) {
-        return getDraft(formName).orElse(getForm(formName, taskDefinition).orElse(newForm(formName)));
+        return getDraft(formName).orElseGet(() -> getForm(formName, taskDefinition).orElseGet(() -> newForm(formName)));
     }
 
     public final void executeTransition(String transition) {
