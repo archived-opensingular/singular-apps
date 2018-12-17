@@ -41,6 +41,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
@@ -136,6 +137,9 @@ public abstract class RequirementService implements Loggable {
 
     @Inject
     private ModuleService moduleService;
+
+    @Inject
+    private SpringServiceRegistry springServiceRegistry;
 
 
     /**
@@ -387,6 +391,7 @@ public abstract class RequirementService implements Loggable {
         for (ITransitionListener transitionListener : transitionListeners) {
             if (transitionListener instanceof RequirementTransitionListener) {
                 RequirementTransitionListener requirementTransitionListener = (RequirementTransitionListener) transitionListener;
+                springServiceRegistry.lookupSingularInjector().inject(requirementTransitionListener);
                 requirementTransitionListener.beforeConsolidateDrafts(requirementTransitionContext);
             }
         }
