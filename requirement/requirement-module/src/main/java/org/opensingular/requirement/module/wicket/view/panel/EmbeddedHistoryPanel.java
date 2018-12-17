@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.wicket.view.panel;
 
 import com.google.common.collect.Lists;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -69,12 +70,17 @@ public class EmbeddedHistoryPanel extends Panel {
                 item.add(new Label("executedTransition", Model.of(embeddedHistoryDTO.getExecutedTransition())));
                 item.add(new Label("data", Model.of(embeddedHistoryDTO.getDate())));
 
-                item.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
+                WebMarkupContainer formulariosBtn = new WebMarkupContainer("formulariosBtn");
+                formulariosBtn.setVisible(!item.getModelObject().getTypeFormVersions().isEmpty());
+
+                formulariosBtn.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
                     @Override
                     protected void populateItem(ListItem<EmbeddedHistoryDTO.TypeFormVersion> item) {
                         item.add(appendViewFormButton("button", item.getModelObject().getFormVersionPK(), item.getModelObject().getLabel()));
                     }
                 });
+
+                item.add(formulariosBtn);
             }
         });
     }
