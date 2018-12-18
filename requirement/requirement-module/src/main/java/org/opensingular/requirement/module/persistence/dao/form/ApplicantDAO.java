@@ -16,30 +16,29 @@
 
 package org.opensingular.requirement.module.persistence.dao.form;
 
-import org.hibernate.criterion.Restrictions;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.opensingular.lib.support.persistence.BaseDAO;
 import org.opensingular.requirement.module.persistence.entity.form.ApplicantEntity;
+import org.opensingular.requirement.module.persistence.entity.form.QApplicantEntity;
 
 public class ApplicantDAO<T extends ApplicantEntity> extends BaseDAO<T, Long> {
-
     public ApplicantDAO() {
         super((Class<T>) ApplicantEntity.class);
     }
 
     public ApplicantEntity findApplicantByExternalId(String externalId) {
-        return (ApplicantEntity) getSession()
-                .createCriteria(ApplicantEntity.class)
-                .add(Restrictions.eq("idPessoa", externalId))
-                .setMaxResults(1)
-                .uniqueResult();
+        return new JPAQueryFactory(getSession())
+                .from(QApplicantEntity.applicantEntity)
+                .where(QApplicantEntity.applicantEntity.idPessoa.eq(externalId))
+                .select(QApplicantEntity.applicantEntity)
+                .fetchFirst();
     }
 
     public ApplicantEntity findApplicantByCpfCnpj(String cpfCnpj) {
-        return (ApplicantEntity) getSession()
-                .createCriteria(ApplicantEntity.class)
-                .add(Restrictions.eq("cpfCNPJ", cpfCnpj))
-                .setMaxResults(1)
-                .uniqueResult();
+        return new JPAQueryFactory(getSession())
+                .from(QApplicantEntity.applicantEntity)
+                .where(QApplicantEntity.applicantEntity.cpfCNPJ.eq(cpfCnpj))
+                .select(QApplicantEntity.applicantEntity)
+                .fetchFirst();
     }
-
 }

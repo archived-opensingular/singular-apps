@@ -15,21 +15,16 @@
  */
 package org.opensingular.app.commons.mail.persistence.dao;
 
-import org.hibernate.Criteria;
-import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projections;
-import org.hibernate.criterion.Restrictions;
 import org.opensingular.app.commons.mail.persistence.entity.email.EmailAddresseeEntity;
 import org.opensingular.lib.support.persistence.BaseDAO;
 
 import javax.transaction.Transactional;
 import java.util.List;
-import java.util.Optional;
 
 @SuppressWarnings("unchecked")
 @Transactional(Transactional.TxType.MANDATORY)
-public class EmailAddresseeDao<T extends EmailAddresseeEntity> extends BaseDAO<T, Long>{
-    
+public class EmailAddresseeDao<T extends EmailAddresseeEntity> extends BaseDAO<T, Long> {
+
     public EmailAddresseeDao() {
         super((Class<T>) EmailAddresseeEntity.class);
     }
@@ -39,18 +34,16 @@ public class EmailAddresseeDao<T extends EmailAddresseeEntity> extends BaseDAO<T
     }
 
     public int countPending() {
-        Criteria c = getSession().createCriteria(entityClass);
-        c.add(Restrictions.isNull("sentDate"));
-        c.setProjection(Projections.rowCount());
-        return Optional.ofNullable((Number)c.uniqueResult()).map(Number::intValue).orElse(0);
+        return ((Long) getSession()
+                .createQuery("select count(e.cod) from " + entityClass.getName() + " e where e.sentDate is null ")
+                .uniqueResult()).intValue();
     }
-    
-    public List<T> listPending(int firstResult, int maxResults){
-        Criteria c = getSession().createCriteria(entityClass);
-        c.add(Restrictions.isNull("sentDate"));
-        c.addOrder(Order.asc("cod"));
-        c.setFirstResult(firstResult);
-        c.setMaxResults(maxResults);
-        return c.list();
+
+    public List<T> listPending(int firstResult, int maxResults) {
+        return (List<T>) getSession()
+                .createQuery("select e from " + entityClass.getName() + " e where e.sentDate is null order by e.cod asc")
+                .setFirstResult(firstResult)
+                .setMaxResults(maxResults)
+                .list();
     }
 }
