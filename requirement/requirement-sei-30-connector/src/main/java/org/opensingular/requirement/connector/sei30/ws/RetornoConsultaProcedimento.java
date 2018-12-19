@@ -60,7 +60,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "RetornoConsultaProcedimento", propOrder = {
 
 })
-public class RetornoConsultaProcedimento {
+public class RetornoConsultaProcedimento extends RetornoFlexivel {
 
     @XmlElement(name = "IdProcedimento", required = true)
     protected String idProcedimento;

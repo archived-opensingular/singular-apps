@@ -48,7 +48,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "RetornoInclusaoDocumento", propOrder = {
 
 })
-public class RetornoInclusaoDocumento {
+public class RetornoInclusaoDocumento extends RetornoFlexivel {
 
     @XmlElement(name = "IdDocumento", required = true)
     protected String idDocumento;
