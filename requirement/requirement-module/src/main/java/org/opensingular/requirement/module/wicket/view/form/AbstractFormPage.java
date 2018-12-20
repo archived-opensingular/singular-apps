@@ -98,9 +98,7 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.button;
-import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.div;
-import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.span;
+import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.*;
 
 public abstract class AbstractFormPage<RI extends RequirementInstance> extends ServerTemplate implements Loggable {
 
@@ -168,6 +166,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
         singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
+        singularFormPanel.setInstanceInitializer(this::onCreateInstance);
         singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");
@@ -187,6 +186,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         form.add(buildExtraContent("extra-content"));
         add(form);
         addSaveCallBackUrl();
+    }
+
+    protected void onCreateInstance(SInstance instance) {
+
     }
 
 
