@@ -29,4 +29,13 @@ public class EncodeUtil {
         return StringUtils.isNotEmpty(value) ? Base64.encodeBase64String(value.getBytes(StandardCharsets.UTF_8)) : null;
     }
 
+    public static String decodeFromBase64(String value) {
+        if (StringUtils.isNotEmpty(value)) {
+            byte[] decodedBytes = Base64.decodeBase64(value);
+            return new String(decodedBytes, StandardCharsets.UTF_8);
+        } else {
+            return "";
+        }
+    }
+
 }

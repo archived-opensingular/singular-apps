@@ -41,7 +41,7 @@ import javax.persistence.UniqueConstraint;
 @SequenceGenerator(name = RequirementDefinitionEntity.PK_GENERATOR_NAME, sequenceName = Constants.SCHEMA + ".SQ_CO_DEFINICAO_REQUISICAO", schema = Constants.SCHEMA)
 @Table(schema = Constants.SCHEMA, name = "TB_DEFINICAO_REQUISICAO", uniqueConstraints = @UniqueConstraint(name = "UK_DEFINICAO_REQUISICAO",
         columnNames = {"CO_MODULO", "SG_DEFINICAO_REQUISICAO"}),
-        indexes = {@Index(columnList = "CO_MODULO ASC, SG_DEFINICAO_REQUISICAO ASC", name = "TB_DEFINICAO_REQUISICAO"),
+        indexes = {@Index(columnList = "CO_MODULO ASC, SG_DEFINICAO_REQUISICAO ASC", name = "IX_DEFINICAO_REQUISICAO"),
         })
 public class RequirementDefinitionEntity extends BaseEntity<Long> {
 

@@ -936,7 +936,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return new Model<>();
     }
 
-    protected Map<String, TransitionController<?>> getTransitionControllerMap() {
+    private Map<String, TransitionController<?>> getTransitionControllerMap() {
         return transitionControllerMap;
     }
 

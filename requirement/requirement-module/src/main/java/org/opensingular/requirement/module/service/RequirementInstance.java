@@ -127,7 +127,7 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     @Nonnull
-    public RequirementInstance getParentRequirementOrException() {
+    public RequirementInstance<?, ?> getParentRequirementOrException() {
         return getParentRequirement().orElseThrow(
                 () -> new SingularRequirementException("A petição pai está null para esse requerimento", this));
     }
@@ -211,9 +211,29 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
      * @param formName
      * @return
      */
-    public Optional<SInstance> getForm(@Nonnull String formName, ITaskDefinition taskDefinition) {
+    public final Optional<SInstance> getForm(@Nonnull String formName, ITaskDefinition taskDefinition) {
         return flowInstance.getFinishedTask(taskDefinition)
-                .map(ti -> requirementService.findLastFormInstanceByTypeAndTask(this, formName, ti).orElse(null));
+                .map(ti -> getForm(formName, ti).orElse(null));
+    }
+
+    /**
+     * Return the given form type last version for the given taskInstnace
+     *
+     * @param form
+     * @return
+     */
+    public final <SI extends SInstance> Optional<SI> getForm(@Nonnull Class<? extends SType<SI>> form, TaskInstance taskInstance) {
+        return (Optional<SI>) getForm(SFormUtil.getTypeName(form), taskInstance);
+    }
+
+    /**
+     * Return the given form type last version for the given taskInstnace
+     *
+     * @param formName
+     * @return
+     */
+    public final Optional<SInstance> getForm(@Nonnull String formName, TaskInstance taskInstance) {
+        return requirementService.findLastFormInstanceByTypeAndTask(this, formName, taskInstance);
     }
 
     /**
@@ -247,8 +267,8 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
         return requirementService.findCurrentDraftForType(this, formName);
     }
 
-    public final Optional<SInstance> getDraft(@Nonnull Class<? extends SType<?>> form) {
-        return getDraft(RequirementUtil.getTypeName(form));
+    public final <SI extends SInstance> Optional<SI> getDraft(@Nonnull Class<? extends SType<SI>> form) {
+        return (Optional<SI>) getDraft(RequirementUtil.getTypeName(form));
     }
 
     public final SInstance newForm() {
@@ -276,11 +296,15 @@ public class RequirementInstance<SELF extends RequirementInstance<SELF, RD>, RD 
     }
 
     public SInstance resolveForm(String formName) {
-        return getDraft(formName).orElse(getForm(formName).orElse(newForm(formName)));
+        return getDraft(formName).orElseGet(() -> getForm(formName).orElseGet(() -> newForm(formName)));
+    }
+
+    public <SI extends SInstance> SI resolveForm(@Nonnull Class<? extends SType<SI>> form) {
+        return (SI) resolveForm(RequirementUtil.getTypeName(form));
     }
 
     public SInstance resolveForm(String formName, ITaskDefinition taskDefinition) {
-        return getDraft(formName).orElse(getForm(formName, taskDefinition).orElse(newForm(formName)));
+        return getDraft(formName).orElseGet(() -> getForm(formName, taskDefinition).orElseGet(() -> newForm(formName)));
     }
 
     public final void executeTransition(String transition) {

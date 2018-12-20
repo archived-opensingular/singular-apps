@@ -37,6 +37,7 @@ import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.SessionLocator;
 import org.opensingular.lib.support.persistence.SingularEntityInterceptor;
+import org.opensingular.lib.support.persistence.SingularOracle10gDialect;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.schedule.IScheduleService;
 import org.opensingular.schedule.ScheduleDataBuilder;
@@ -98,7 +99,7 @@ public class ApplicationContextConfiguration implements Loggable {
 
     protected Properties hibernateProperties() {
         final Properties hibernateProperties = new Properties();
-        hibernateProperties.setProperty("hibernate.dialect", "org.hibernate.dialect.Oracle10gDialect");
+        hibernateProperties.setProperty("hibernate.dialect", SingularOracle10gDialect.class.getName());
         hibernateProperties.setProperty("hibernate.connection.isolation", "2");
         hibernateProperties.setProperty("hibernate.jdbc.batch_size", "30");
         hibernateProperties.setProperty("hibernate.show_sql", "false");

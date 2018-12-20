@@ -2252,7 +2252,7 @@
 
   <wsdl:service name="SeiService">
     <wsdl:port name="SeiPortService" binding="tns:SeiBinding">
-      <soap:address location="http://seriserver/sei/ws/SeiWS.php"/>
+        <soap:address location="[servidor]/sei/ws/SeiWS.php"/>
     </wsdl:port>
   </wsdl:service>
 

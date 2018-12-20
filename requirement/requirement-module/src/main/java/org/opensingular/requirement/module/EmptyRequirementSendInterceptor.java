@@ -22,7 +22,7 @@ import org.opensingular.requirement.module.persistence.entity.form.RequirementAp
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 
-public class EmptyRequirementSendInterceptor implements RequirementSendInterceptor<RequirementInstance, RequirementSubmissionResponse> {
+public class EmptyRequirementSendInterceptor implements RequirementSendInterceptor<RequirementInstance<?,?>, RequirementSubmissionResponse> {
 
 
     @Override
@@ -36,22 +36,22 @@ public class EmptyRequirementSendInterceptor implements RequirementSendIntercept
     }
 
     @Override
-    public void onBeforeSend(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
+    public void onBeforeSend(RequirementInstance<?,?> requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onAfterStartFlow(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
+    public void onAfterStartFlow(RequirementInstance<?,?> requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onBeforeStartFlow(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
+    public void onBeforeStartFlow(RequirementInstance<?,?> requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 
     @Override
-    public void onAfterSend(RequirementInstance requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
+    public void onAfterSend(RequirementInstance<?,?> requirement, RequirementApplicant applicant, RequirementSubmissionResponse response) {
 
     }
 

@@ -21,6 +21,7 @@ import org.apache.wicket.Application;
 import org.opensingular.flow.core.Flow;
 import org.opensingular.flow.core.FlowDefinition;
 import org.opensingular.flow.core.FlowInstance;
+import org.opensingular.flow.core.ITransitionListener;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
@@ -40,6 +41,7 @@ import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.context.spring.SpringServiceRegistry;
 import org.opensingular.lib.commons.util.FormatUtil;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
@@ -49,6 +51,8 @@ import org.opensingular.requirement.module.RequirementSendInterceptor;
 import org.opensingular.requirement.module.connector.ModuleService;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.flow.RequirementTransitionContext;
+import org.opensingular.requirement.module.flow.RequirementTransitionListener;
 import org.opensingular.requirement.module.flow.builder.RequirementFlowDefinition;
 import org.opensingular.requirement.module.form.SingularServerSpringTypeLoader;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
@@ -133,6 +137,9 @@ public abstract class RequirementService implements Loggable {
 
     @Inject
     private ModuleService moduleService;
+
+    @Inject
+    private SpringServiceRegistry springServiceRegistry;
 
 
     /**
@@ -343,9 +350,15 @@ public abstract class RequirementService implements Loggable {
                                                                    @Nonnull List<Variable> transitionVariables) {
         try {
 
-            List<FormEntity> formEntities = formRequirementService.consolidateDrafts(requirement);
             FlowInstance     flowInstance = requirement.getFlowInstance();
+            RequirementTransitionContext requirementTransitionContext = new RequirementTransitionContext(requirement,
+                    transitionName, flowVariables, transitionVariables);
+            STransition transition = flowInstance.getCurrentTaskOrException().findTransition(transitionName);
+            notifyBeforeConsolidateDrafts(transition, requirementTransitionContext);
 
+            List<FormEntity> formEntities = formRequirementService.consolidateDrafts(requirement);
+
+            transition.notifyBeforeTransition(requirementTransitionContext);
 
             for (Variable v : flowVariables) {
                 flowInstance.getVariables().addValueString(v.getKey(), v.getValue());
@@ -371,6 +384,17 @@ public abstract class RequirementService implements Loggable {
             throw SingularServerException.rethrow(e.getMessage(), e);
         }
 
+    }
+
+    protected void notifyBeforeConsolidateDrafts(STransition transition, RequirementTransitionContext requirementTransitionContext) {
+        List<ITransitionListener> transitionListeners = transition.getTransitionListeners();
+        for (ITransitionListener transitionListener : transitionListeners) {
+            if (transitionListener instanceof RequirementTransitionListener) {
+                RequirementTransitionListener requirementTransitionListener = (RequirementTransitionListener) transitionListener;
+                springServiceRegistry.lookupSingularInjector().inject(requirementTransitionListener);
+                requirementTransitionListener.beforeConsolidateDrafts(requirementTransitionContext);
+            }
+        }
     }
 
     public List<Map<String, Serializable>> listTasks(BoxFilter filter, List<RequirementSearchExtender> extenders) {
@@ -534,13 +558,13 @@ public abstract class RequirementService implements Loggable {
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
+    public Optional<SInstance> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull String typeName, TaskInstance taskInstance) {
         return findLastFormEntityByTypeAndTask(requirement, typeName, taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }
 
     @Nonnull
-    public Optional<SIComposite> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
+    public Optional<SInstance> findLastFormInstanceByTypeAndTask(@Nonnull RequirementInstance requirement, @Nonnull Class<? extends SType<?>> typeClass, TaskInstance taskInstance) {
         return findLastFormEntityByTypeAndTask(requirement, SFormUtil.getTypeName(typeClass), taskInstance)
                 .map(version -> (SIComposite) getFormRequirementService().getSInstance(version));
     }

@@ -23,6 +23,7 @@ import org.hibernate.dialect.Oracle10gDialect;
 import org.opensingular.app.commons.spring.persistence.database.DefaultH2DataSource;
 import org.opensingular.app.commons.spring.persistence.database.PackageScanConfiguration;
 import org.opensingular.app.commons.spring.persistence.database.SingularPersistenceConfiguration;
+import org.opensingular.lib.support.persistence.SingularOracle10gDialect;
 
 import java.util.List;
 import java.util.Properties;
@@ -56,7 +57,7 @@ public class CommonsPersistenceConfiguration implements SingularPersistenceConfi
 
     @Override
     public Class<? extends Dialect> getHibernateDialect() {
-        return Oracle10gDialect.class;
+        return SingularOracle10gDialect.class;
     }
 
 }

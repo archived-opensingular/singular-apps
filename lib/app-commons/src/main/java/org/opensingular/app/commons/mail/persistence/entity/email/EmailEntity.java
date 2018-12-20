@@ -16,6 +16,7 @@
 package org.opensingular.app.commons.mail.persistence.entity.email;
 
 
+import org.hibernate.annotations.Type;
 import org.opensingular.form.persistence.entity.AttachmentEntity;
 import org.opensingular.lib.support.persistence.entity.BaseEntity;
 import org.opensingular.lib.support.persistence.util.Constants;
@@ -59,6 +60,7 @@ public class EmailEntity extends BaseEntity<Long> {
     private String subject;
 
     @Lob
+    @Type(type = "org.hibernate.type.TextType")
     @Column(name = "TX_CONTEUDO", nullable = false)
     private String content;
 
