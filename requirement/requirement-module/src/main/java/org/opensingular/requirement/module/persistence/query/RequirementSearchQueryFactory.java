@@ -38,7 +38,6 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.FilterToken;
 
 import javax.annotation.Nonnull;
-import javax.inject.Inject;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.function.Function;
@@ -58,6 +57,7 @@ import static org.opensingular.requirement.module.persistence.query.RequirementS
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_NAME;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.PROCESS_TYPE;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.REQUIREMENT_DEFINITION_ID;
+import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.REQUIREMENT_DEFINITION_KEY;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.ROOT_REQUIREMENT;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SITUATION;
 import static org.opensingular.requirement.module.persistence.query.RequirementSearchAliases.SITUATION_BEGIN_DATE;
@@ -175,7 +175,8 @@ public class RequirementSearchQueryFactory {
                 .addToSelect($.allocatedUser.nome.as(NOME_USUARIO_ALOCADO))
                 .addToSelect($.module.cod.as(MODULE_COD))
                 .addToSelect($.module.connectionURL.as(MODULE_CONTEXT))
-                .addToSelect($.requirementDefinition.cod.as(REQUIREMENT_DEFINITION_ID));
+                .addToSelect($.requirementDefinition.cod.as(REQUIREMENT_DEFINITION_ID))
+                .addToSelect($.requirementDefinition.key.as(REQUIREMENT_DEFINITION_KEY));
 
         query
                 .from($.requirement)
