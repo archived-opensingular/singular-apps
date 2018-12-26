@@ -38,4 +38,13 @@ public class EncodeUtil {
         }
     }
 
+    public static String decodeFromBase64Iso(String value) {
+        if (StringUtils.isNotEmpty(value)) {
+            byte[] decodedBytes = Base64.decodeBase64(value);
+            return new String(decodedBytes, StandardCharsets.ISO_8859_1);
+        } else {
+            return "";
+        }
+    }
+
 }
