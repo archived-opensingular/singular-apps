@@ -50,14 +50,16 @@ public class RequirementSearchAliases {
     public static final String PROCESS_BEGIN_DATE = "processBeginDate";
     public static final String EDITION_DATE = "editionDate";
     public static final String FLOW_INSTANCE_ID = "flowInstanceId";
-    public static final String ROOT_REQUIREMENT = "rootRequirement";
-    public static final String PARENT_REQUIREMENT = "parentRequirement";
-    public static final String VERSION_STAMP = "versionStamp";
-    public static final String COD_USUARIO_ALOCADO = "codUsuarioAlocado";
-    public static final String NOME_USUARIO_ALOCADO = "nomeUsuarioAlocado";
-    public static final String MODULE_COD = "moduleCod";
-    public static final String MODULE_CONTEXT = "moduleContext";
-    public static final String REQUIREMENT_DEFINITION_ID = "requirementDefinitionId";
+    public static final String ROOT_REQUIREMENT           = "rootRequirement";
+    public static final String PARENT_REQUIREMENT         = "parentRequirement";
+    public static final String VERSION_STAMP              = "versionStamp";
+    public static final String COD_USUARIO_ALOCADO        = "codUsuarioAlocado";
+    public static final String NOME_USUARIO_ALOCADO       = "nomeUsuarioAlocado";
+    public static final String MODULE_COD                 = "moduleCod";
+    public static final String MODULE_CONTEXT             = "moduleContext";
+    public static final String REQUIREMENT_DEFINITION_ID  = "requirementDefinitionId";
+    public static final String REQUIREMENT_DEFINITION_KEY = "requirementDefinitionKey";
+
     public static final String TASK_ID = "taskId";
 
     public QRequirementEntity     requirement                   = new QRequirementEntity("requirement");

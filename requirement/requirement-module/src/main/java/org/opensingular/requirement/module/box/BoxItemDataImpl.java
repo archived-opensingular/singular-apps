@@ -100,6 +100,11 @@ public class BoxItemDataImpl implements BoxItemData {
         return rawMap.get("requirementDefinitionId");
     }
 
+    @Override
+    public Serializable getRequirementDefinitionKey() {
+        return rawMap.get("requirementDefinitionKey");
+    }
+
     public void setRawMap(Map<String, Serializable> rawMap) {
         this.rawMap = rawMap;
     }
