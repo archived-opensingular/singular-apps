@@ -406,4 +406,12 @@ public interface SEIPortType {
             String sigla);
 
 
+    /**
+     * Lista contatos com base no cpf.
+     *
+     * @param idTipoContato
+     * @param cpf
+     * @return
+     */
+    List<Contato> listarContatosPorCPF(String idTipoContato, String cpf);
 }

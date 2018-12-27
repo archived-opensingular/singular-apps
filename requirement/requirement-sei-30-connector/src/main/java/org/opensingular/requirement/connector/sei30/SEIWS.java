@@ -658,5 +658,10 @@ public class SEIWS implements SEIPortType, Loggable {
             return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
     }
 
+    @Override
+    public List<Contato> listarContatosPorCPF(String idTipoContato, String cpf) {
+        return seiPortType.listarContatos(siglaSistema, identificacaoServico, "", idTipoContato, "", "", "", "", cpf, "", "", new ArrayOfString()).getItem();
+    }
+
 
 }
