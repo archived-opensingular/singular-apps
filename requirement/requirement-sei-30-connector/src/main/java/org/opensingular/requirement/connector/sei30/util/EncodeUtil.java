@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class EncodeUtil {
 
     private EncodeUtil() {
+        throw new UnsupportedOperationException("No " + EncodeUtil.class.getSimpleName() + " instances for you!");
     }
 
     public static String encodeToBase64(File file) throws IOException {
