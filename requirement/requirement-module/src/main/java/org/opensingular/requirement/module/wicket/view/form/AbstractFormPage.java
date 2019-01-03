@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -98,7 +99,9 @@ import java.util.Optional;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
-import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.*;
+import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.button;
+import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.div;
+import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.span;
 
 public abstract class AbstractFormPage<RI extends RequirementInstance> extends ServerTemplate implements Loggable {
 
@@ -192,6 +195,13 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     }
 
+
+    @Override
+    protected List<String> getInitializerJavascripts() {
+        List<String> list = Lists.newArrayList("FlowButtonsConfigurer.configure();");
+        list.addAll(super.getInitializerJavascripts());
+        return list;
+    }
 
     protected void fillTransitionControllerMap(Map<String, TransitionController<?>> transitionControllerMap) {
 
@@ -300,7 +310,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 .toString(2) + "); "
                 + "\n });";
     }
-
 
     /**
      * Panel that will show behind the Singular panel.
@@ -455,6 +464,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                     buttonsCount++;
                     buildFlowTransitionButton(
                             btnId,
+                            t.getName(),
                             buttonContainer,
                             modalContainer,
                             t.getName(),
@@ -525,9 +535,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return transition.getAccessFor(t);
     }
 
-    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
+    protected void buildFlowTransitionButton(String buttonId, String buttonLabel, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
         final FlowConfirmPanel modalType = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
-        buildFlowButton(buttonId, buttonContainer, transitionName, modalType, transitionButtonEnabled);
+        buildFlowButton(buttonId, buttonLabel, buttonContainer, transitionName, modalType, transitionButtonEnabled);
     }
 
     public void atualizarContentWorklist(AjaxRequestTarget target) {
@@ -690,6 +700,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void buildFlowButton(String buttonId,
+                                 String buttonLabel,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
                                  FlowConfirmPanel confirmActionFlowModal, TransitionAccess access) {
@@ -714,7 +725,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 }
             }
         };
-        singularButton.add(new Label("flowButtonLabel", transitionName).setRenderBodyOnly(true));
+        singularButton.add(new Label("flowButtonLabel", buttonLabel).setRenderBodyOnly(true));
         tp.add(singularButton);
     }
 
