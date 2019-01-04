@@ -970,7 +970,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
             protected void populateItem(ListItem<Pair<String, String>> item) {
-                item.add(new NotificationPanel("notificacao", item.getModel(), getRequirementModel()));
+                item.add(new NotificationPanel("notificacao", item.getModel()));
             }
         };
 

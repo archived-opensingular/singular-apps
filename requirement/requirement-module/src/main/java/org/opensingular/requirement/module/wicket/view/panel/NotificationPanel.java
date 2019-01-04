@@ -16,48 +16,79 @@
 
 package org.opensingular.requirement.module.wicket.view.panel;
 
-import java.io.File;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.form.HiddenField;
+import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
+import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.request.resource.ContentDisposition;
 import org.opensingular.form.wicket.link.FileDownloadLink;
 import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
 import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
-import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
-import org.opensingular.requirement.module.service.RequirementInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.lib.wicket.util.util.Shortcuts;
+
+import javax.inject.Inject;
+import java.io.File;
+import java.util.UUID;
 
 
-public class NotificationPanel<RI extends RequirementInstance> extends Panel {
-
+public class NotificationPanel extends GenericPanel<Pair<String, String>> {
     @Inject
     private HtmlToPdfConverter htmlToPdfConverter;
 
-    protected static final Logger LOGGER = LoggerFactory.getLogger(NotificationPanel.class);
+    private WebMarkupContainer  contentWrapper;
+    private HiddenField<String> content;
 
-    public NotificationPanel(String id, IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
-
-        super(id);
-        add(new Label("title", model.getObject().getKey()));
-        add(new FileDownloadLink("export-to-pdf",
-                getPdfModel(model, requirementModel),
-                ContentDisposition.INLINE,
-                model.getObject().getValue() + ".pdf")
-        );
-        add(new Label("content", model.getObject().getValue()).setEscapeModelStrings(false));
+    public NotificationPanel(String id, IModel<Pair<String, String>> model) {
+        super(id, model);
+        add(createLabel());
+        add(createExportLink());
+        add(createContentHiddenField());
+        add(createContentWrapper());
     }
 
-    protected IModel<File> getPdfModel(IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
-        return new IReadOnlyModel<File>() {
+    private FileDownloadLink createExportLink() {
+        return new FileDownloadLink("export-to-pdf", getPdfModel(), ContentDisposition.INLINE, getModelObject() + ".pdf");
+    }
+
+    private Label createLabel() {
+        return new Label("title", getModelObject().getKey());
+    }
+
+    private HiddenField<String> createContentHiddenField() {
+        content = new HiddenField<>("content", Shortcuts.$m.map(getModel(), Pair::getValue));
+        return content;
+    }
+
+    private WebMarkupContainer createContentWrapper() {
+        contentWrapper = new WebMarkupContainer("contentWrapper");
+        contentWrapper.add(Shortcuts.$b.onReadyScript(this::loadContentSanboxedScript));
+        return contentWrapper;
+    }
+
+    private String loadContentSanboxedScript() {
+        UUID   frameId = UUID.randomUUID();
+        String script  = "(function(){";
+        script += "$('#" + contentWrapper.getMarkupId(true) + "').html(\"<iframe ";
+        script += " id=\\\"" + frameId + "\\\" style=\\\"height: 100%; width: 100%;\\\" frameborder=\\\"0\\\"></iframe>\");";
+        script += " var frame = $('#" + frameId + "')[0].contentWindow";
+        script += " || $('#" + frameId + "')[0].contentDocument.document";
+        script += " || $('#" + frameId + "')[0].contentDocument;";
+        script += " frame.document.open();";
+        script += " frame.document.write( $(\"#" + content.getMarkupId(true) + "\").val());";
+        script += " frame.document.close();";
+        script += "}());";
+        return script;
+    }
+
+    private IModel<File> getPdfModel() {
+        return new LoadableDetachableModel<File>() {
             @Override
-            public File getObject() {
+            protected File load() {
                 HtmlToPdfDTO dto = new HtmlToPdfDTO();
-                dto.setBody(model.getObject().getValue());
+                dto.setBody(getModelObject().getValue());
                 return htmlToPdfConverter.convert(dto).orElse(null);
             }
         };
