@@ -974,17 +974,16 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
             }
         };
 
-        final AjaxButton closeButton = new AjaxButton("close-button") {
+        final AjaxLink<Void> closeButton = new AjaxLink<Void>("close-button") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
+            public void onClick(AjaxRequestTarget target) {
                 notificacoesModal.hide(target);
             }
         };
 
         notificacoesModal = new BSModalBorder("modal-panel");
         notificacoesModal.setTitleText(Model.of("Notificações"));
-        notificacoesModal.addButton(BSModalBorder.ButtonStyle.DEFAULT, Shortcuts.$m.ofValue("Fechar"), closeButton);
+        notificacoesModal.addLink(BSModalBorder.ButtonStyle.DEFAULT, Shortcuts.$m.ofValue("Fechar"), closeButton);
         notificacoesModal.setSize(BSModalBorder.Size.NORMAL);
 
         return modalPanel.add(notificacoesModal.add(listView));
@@ -997,10 +996,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 );
 
         final TemplatePanel buttonPanel = container.newTemplateTag(tt -> markup);
-        final AjaxButton viewButton = new AjaxButton("notificacoes") {
+        final AjaxLink<Void> viewButton = new AjaxLink<Void>("notificacoes") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
+            public void onClick(AjaxRequestTarget target) {
                 notificacoesModal.show(target);
             }
         };
