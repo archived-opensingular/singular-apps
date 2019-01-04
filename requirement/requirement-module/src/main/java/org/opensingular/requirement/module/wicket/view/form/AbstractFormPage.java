@@ -25,7 +25,6 @@ import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
@@ -551,9 +550,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                         + "</div>\n");
         BSModalBorder enviarModal = new BSModalBorder("send-modal", getMessage("label.title.send"));
         enviarModal
-                .addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.close", new AjaxButton("cancel-btn") {
+                .addLink(BSModalBorder.ButtonStyle.CANCEL, "label.button.close", new AjaxLink<Void>("cancel-btn") {
                     @Override
-                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    public void onClick(AjaxRequestTarget target) {
                         enviarModal.hide(target);
                     }
                 })
@@ -894,17 +893,16 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected BSModalBorder construirCloseModal() {
         BSModalBorder closeModal = new BSModalBorder("close-modal", getMessage("label.title.close.draft"));
-        closeModal.addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxButton("cancel-close-btn") {
+        closeModal.addLink(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxLink<Void>("cancel-close-btn") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            public void onClick(AjaxRequestTarget target) {
                 closeModal.hide(target);
             }
         });
-        closeModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.confirm", new AjaxButton("close-btn") {
+        closeModal.addLink(BSModalBorder.ButtonStyle.CONFIRM, "label.button.confirm", new AjaxLink<Void>("close-btn") {
             @Override
-            protected String getOnClickScript() {
-                return " Singular.atualizarContentWorklist();"
-                        + "window.close();";
+            public void onClick(AjaxRequestTarget target) {
+                target.appendJavaScript("Singular.atualizarContentWorklist();window.close();");
             }
         });
 
