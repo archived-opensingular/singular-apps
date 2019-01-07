@@ -37,7 +37,10 @@ public class RequirementSearchAliases {
 
     public static final String COD_REQUIREMENT = "codRequirement";
     public static final String DESCRIPTION = "description";
+
+    @Deprecated /*SITUATION will be removed in a future version. USE TASK_NAME */
     public static final String SITUATION = "situation";
+
     public static final String SOLICITANTE = "solicitante";
     public static final String TASK_NAME = "taskName";
     public static final String TASK_TYPE = "taskType";
