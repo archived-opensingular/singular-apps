@@ -30,6 +30,11 @@ import java.io.Serializable;
 public interface TransitionController<T extends SType<?>> extends Serializable {
     Class<T> getType();
 
+    /**
+     * This method tells the transition controller to consider or not
+     * the form page validation during the transition.
+     * @return true by default to validate the form page
+     */
     boolean isValidatePageForm();
 
     default void onCreateInstance(SIComposite pageInstance, SInstance transitionInstance) {
