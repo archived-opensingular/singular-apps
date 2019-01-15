@@ -16,11 +16,16 @@
 
 package org.opensingular.requirement.module.persistence.entity.form;
 
-import java.util.Collections;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedSet;
-import java.util.TreeSet;
+import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
+import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
+import org.opensingular.form.SType;
+import org.opensingular.form.persistence.entity.FormEntity;
+import org.opensingular.lib.support.persistence.entity.BaseEntity;
+import org.opensingular.lib.support.persistence.enums.SimNao;
+import org.opensingular.lib.support.persistence.util.Constants;
+import org.opensingular.requirement.module.exception.SingularServerException;
+import org.opensingular.requirement.module.service.RequirementUtil;
+
 import javax.annotation.Nonnull;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -36,16 +41,11 @@ import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-
-import org.opensingular.flow.persistence.entity.FlowDefinitionEntity;
-import org.opensingular.flow.persistence.entity.FlowInstanceEntity;
-import org.opensingular.form.SType;
-import org.opensingular.form.persistence.entity.FormEntity;
-import org.opensingular.lib.support.persistence.entity.BaseEntity;
-import org.opensingular.lib.support.persistence.enums.SimNao;
-import org.opensingular.lib.support.persistence.util.Constants;
-import org.opensingular.requirement.module.exception.SingularServerException;
-import org.opensingular.requirement.module.service.RequirementUtil;
+import java.util.Collections;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 
 @Entity
@@ -72,7 +72,7 @@ public class RequirementEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_REQUISITANTE", foreignKey = @ForeignKey(name = "FK_REQ_REQUISITANTE"))
     private ApplicantEntity applicant;
 
-    @Column(name = "DS_REQUISICAO", length = 200)
+    @Column(name = "DS_REQUISICAO", length = 300)
     private String description;
 
     @OneToMany(mappedBy = "requirement", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
