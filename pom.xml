@@ -186,6 +186,9 @@
                 <configuration>
                     <tagNameFormat>@{project.version}</tagNameFormat>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
+                    <useReleaseProfile>false</useReleaseProfile>
+                    <releaseProfiles>release</releaseProfiles>
+                    <goals>deploy</goals>
                 </configuration>
             </plugin>
         </plugins>
@@ -424,7 +427,7 @@
         <jdk.version>1.8</jdk.version>
         <skipTests>false</skipTests>
         <wicket.version>7.3.0</wicket.version>
-        <singular.version>1.6.9.6-SNAPSHOT</singular.version>
+        <singular.version>1.6.9.6-RC1</singular.version>
         <spring.security.version>4.0.4.RELEASE</spring.security.version>
         <slf4j.version>1.7.12</slf4j.version>
         <cas.version>4.0.4</cas.version>
