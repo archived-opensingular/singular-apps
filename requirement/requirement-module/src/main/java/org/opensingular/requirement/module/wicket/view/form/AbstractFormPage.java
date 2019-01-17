@@ -167,6 +167,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
+        singularFormPanel.setAnnotationClassifier(getAnnotationClassifier());
         singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
         singularFormPanel.setInstanceInitializer(this::onCreateInstance);
         singularFormPanel.setModalContainer(modalContainer);
@@ -812,6 +813,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected AnnotationMode getAnnotationMode(FormPageExecutionContext formPageConfig) {
         return formPageConfig.getAnnotationMode();
+    }
+
+    protected Object getAnnotationClassifier() {
+        return null;
     }
 
     private IReadOnlyModel<SInstance> getInstanceModel() {
