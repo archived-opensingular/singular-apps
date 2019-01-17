@@ -7,7 +7,7 @@
     <groupId>org.opensingular</groupId>
     <artifactId>singular-apps</artifactId>
 
-    <version>1.8.0.4-SNAPSHOT</version>
+    <version>1.8.0.4</version>
     <name>[singular-apps]</name>
     <description>Singular Apps</description>
     <url>http://opensingular.org</url>
@@ -183,7 +183,7 @@
             <dependency>
                 <groupId>org.opensingular</groupId>
                 <artifactId>bom</artifactId>
-                <version>1.8.0.4-SNAPSHOT</version>
+                <version>1.8.0.4</version>
                 <scope>import</scope>
                 <type>pom</type>
             </dependency>
