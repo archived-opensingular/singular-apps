@@ -128,10 +128,16 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         if (result != null
                 && (!Objects.equals(result.getSimpleName(), name)
                     || !Objects.equals(result.getEmail(), email))) {
+            String finalName;
+            if (Objects.equals(name, codUsuario)) {
+                finalName = result.getSimpleName();
+            } else {
+                finalName = name;
+            }
             getSession().doWork(connection -> {
                 String            sql = SqlUtil.replaceSingularSchemaName("UPDATE " + Constants.SCHEMA + ".TB_ATOR SET NO_ATOR = ?, DS_EMAIL = ? WHERE CO_USUARIO = ?");
                 PreparedStatement ps  = connection.prepareStatement(sql);
-                ps.setString(1, name);
+                ps.setString(1, finalName);
                 ps.setString(2, email);
                 ps.setString(3, codUsuario);
                 ps.executeUpdate();
