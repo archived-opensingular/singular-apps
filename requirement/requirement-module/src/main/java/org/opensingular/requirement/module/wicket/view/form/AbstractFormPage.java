@@ -865,8 +865,19 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void saveForm(SInstance instance) {
+        validateUserAllocatedAndUserAction();
         getRequirement().saveForm(instance);
         requirementIdModel.setObject(getRequirement().getCod());
+    }
+
+    private void validateUserAllocatedAndUserAction() {
+        String username = SingularSession.get().getUsername();
+        TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
+        if (taskInstance != null
+                && taskInstance.getAllocatedUser() != null
+                && !username.equals(taskInstance.getAllocatedUser().getCodUsuario())) {
+            throw new SingularServerException("O requerimento não pertence mais a este usuário.");
+        }
     }
 
     private void addSaveCallBackUrl() {
