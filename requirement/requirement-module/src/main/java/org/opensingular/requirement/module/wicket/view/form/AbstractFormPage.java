@@ -47,6 +47,8 @@ import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.type.core.annotation.AnnotationClassifier;
+import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
@@ -815,8 +817,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return formPageConfig.getAnnotationMode();
     }
 
-    protected Object getAnnotationClassifier() {
-        return null;
+    protected AnnotationClassifier getAnnotationClassifier() {
+        return AtrAnnotation.DefaultAnnotationClassifier.DEFAULT_ANNOTATION;
     }
 
     private IReadOnlyModel<SInstance> getInstanceModel() {
