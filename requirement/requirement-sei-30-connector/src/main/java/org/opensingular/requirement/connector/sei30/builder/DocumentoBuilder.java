@@ -472,4 +472,9 @@ public class DocumentoBuilder implements Serializable, Loggable {
         documento.setConteudo(EncodeUtil.encodeToBase64(conteudo));
         return this;
     }
+
+    public DocumentoBuilder setIdHipoteseLegal(String idHipoteseLegal) {
+        documento.setIdHipoteseLegal(idHipoteseLegal);
+        return this;
+    }
 }
