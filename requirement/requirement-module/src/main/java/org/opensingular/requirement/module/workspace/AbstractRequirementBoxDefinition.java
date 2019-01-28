@@ -21,7 +21,7 @@ import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvid
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
-import org.opensingular.requirement.module.wicket.box.DescriptionFilter;
+import org.opensingular.requirement.module.wicket.box.OverflowFilter;
 
 import javax.inject.Inject;
 
@@ -73,7 +73,7 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
      * @param requirementBoxItemDataProvider The RequirementBoxItemDataProvider.
      */
     protected void addDescriptionFilter(RequirementBoxItemDataProvider requirementBoxItemDataProvider) {
-        requirementBoxItemDataProvider.addFilter(new DescriptionFilter());
+        requirementBoxItemDataProvider.addFilter(new OverflowFilter());
     }
 
     /**
