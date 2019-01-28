@@ -285,12 +285,8 @@ public abstract class RequirementService implements Loggable {
         return formRequirementService.saveFormRequirement(requirement, instance, mainForm);
     }
 
+    public <RI extends RequirementInstance> void saveRequirementHistory(RI requirement, TaskInstance taskInstance, List<FormEntity> newEntities) {
 
-    public <RI extends RequirementInstance> void saveRequirementHistory(RI requirement, List<FormEntity> newEntities) {
-
-        Optional<TaskInstance> taskInstance = requirement.getFlowInstance().getTasksNewerFirstAsStream()
-                .filter(i -> i.isFinished() && !i.getFlowTaskOrException().isEnd())
-                .findFirst();
 
         FormEntity formEntity = requirement.getEntity().getMainForm();
 
@@ -300,11 +296,11 @@ public abstract class RequirementService implements Loggable {
 
         contentHistoryEntity.setRequirementEntity(requirement.getEntity());
 
-        if (taskInstance.isPresent()) {
-            Actor actor = getActorOfAction(taskInstance.get());
+        if (taskInstance != null) {
+            Actor actor = getActorOfAction(taskInstance);
 
             contentHistoryEntity.setActor(actor);
-            contentHistoryEntity.setTaskInstanceEntity(taskInstance.get().getEntityTaskInstance());
+            contentHistoryEntity.setTaskInstanceEntity(taskInstance.getEntityTaskInstance());
         }
 
         if (CollectionUtils.isNotEmpty(formEntity.getCurrentFormVersionEntity().getFormAnnotations())) {
@@ -324,6 +320,10 @@ public abstract class RequirementService implements Loggable {
                         .map(f -> formRequirementService.createFormVersionHistory(contentHistoryEntity, f))
                         .collect(Collectors.toList())
         );
+    }
+
+    public <RI extends RequirementInstance> void saveRequirementHistory(RI requirement, List<FormEntity> newEntities) {
+        saveRequirementHistory(requirement, null, newEntities);
     }
 
     /**
@@ -350,7 +350,7 @@ public abstract class RequirementService implements Loggable {
                                                                    @Nonnull List<Variable> transitionVariables) {
         try {
 
-            FlowInstance     flowInstance = requirement.getFlowInstance();
+            FlowInstance flowInstance = requirement.getFlowInstance();
             RequirementTransitionContext requirementTransitionContext = new RequirementTransitionContext(requirement,
                     transitionName, flowVariables, transitionVariables);
             STransition transition = flowInstance.getCurrentTaskOrException().findTransition(transitionName);
@@ -373,7 +373,12 @@ public abstract class RequirementService implements Loggable {
 
             transitionCall.go();
 
-            saveRequirementHistory(requirement, formEntities);
+            TaskInstance taskInstance = requirement.getFlowInstance().getTasksNewerFirstAsStream()
+                    .filter(i -> i.isAtTask(transition.getOrigin().getAbbreviation()) && i.isFinished() && !i.getFlowTaskOrException().isEnd())
+                    .findFirst()
+                    .orElse(null);
+
+            saveRequirementHistory(requirement, taskInstance, formEntities);
         } catch (
                 SingularException e) {
             getLogger().error(e.getMessage(), e);
