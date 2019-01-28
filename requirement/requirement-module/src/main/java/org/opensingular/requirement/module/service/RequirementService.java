@@ -678,9 +678,9 @@ public abstract class RequirementService implements Loggable {
     public <RI extends RequirementInstance> void updateRequirementDescription(SInstance currentInstance, RI requirement) {
         if (currentInstance.getType().getClass().equals(requirement.getRequirementDefinition().getMainForm())) {
             String description = currentInstance.toStringDisplay();
-            if (description != null && description.length() > 200) {
+            if (description != null && description.length() > RequirementEntity.LENGTH_REQUIREMENT_DESCRIPTION) {
                 getLogger().error("Descrição do formulário muito extensa. A descrição foi cortada.");
-                description = description.substring(0, 197) + "...";
+                description = description.substring(0, RequirementEntity.LENGTH_REQUIREMENT_DESCRIPTION - 3) + "...";
             }
             requirement.setDescription(description);
         }

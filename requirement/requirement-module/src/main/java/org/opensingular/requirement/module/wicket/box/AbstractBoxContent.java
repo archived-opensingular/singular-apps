@@ -18,10 +18,13 @@ package org.opensingular.requirement.module.wicket.box;
 
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
+import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.form.TextField;
@@ -30,6 +33,7 @@ import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
+import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
@@ -162,6 +166,14 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
     }
 
     @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(AbstractBoxContent.class, "AbstractBoxContent.js")));
+    }
+
+    private AbstractDefaultAjaxBehavior updateAjaxBehavior;
+
+    @Override
     protected void onInitialize() {
         super.onInitialize();
 
@@ -169,6 +181,13 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
         builder.setStripedRows(false).setBorderedTable(false);
         table = createTable(builder);
         table.add($b.classAppender("worklist"));
+
+        updateAjaxBehavior = new AbstractDefaultAjaxBehavior() {
+            @Override
+            protected void respond(AjaxRequestTarget target) {
+
+            }
+        };
 
         queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
 

@@ -96,7 +96,7 @@ public class BoxContent extends AbstractBoxContent implements Loggable {
     @Override
     protected void appendPropertyColumns(BSDataTableBuilder<BoxItemDataMap, String, IColumn<BoxItemDataMap, String>> builder) {
         for (DatatableField entry : getFieldsDatatable()) {
-            builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getLabel(), entry.getLabel());
+            builder.appendPropertyColumn($m.ofValue(entry.getKey()), entry.getLabel(), entry.getLabel(), "update-description");
         }
     }
 

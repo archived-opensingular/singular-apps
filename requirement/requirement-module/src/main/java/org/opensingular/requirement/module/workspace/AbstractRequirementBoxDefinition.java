@@ -21,6 +21,7 @@ import org.opensingular.requirement.module.provider.RequirementBoxItemDataProvid
 import org.opensingular.requirement.module.provider.RequirementBoxItemDataProviderFactory;
 import org.opensingular.requirement.module.service.dto.ItemBox;
 import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
+import org.opensingular.requirement.module.wicket.box.DescriptionFilter;
 
 import javax.inject.Inject;
 
@@ -55,8 +56,24 @@ public abstract class AbstractRequirementBoxDefinition implements BoxDefinition 
         ActionProviderBuilder builder = new ActionProviderBuilder();
         addActions(builder);
         RequirementBoxItemDataProvider requirementBoxItemDataProvider = requirementBoxItemDataProviderFactory.create(getItemBox().isEvalPermission(), builder);
-        addDateFilters(requirementBoxItemDataProvider);
+        addFilters(requirementBoxItemDataProvider);
         return requirementBoxItemDataProvider;
+    }
+
+    private void addFilters(RequirementBoxItemDataProvider requirementBoxItemDataProvider) {
+        addDateFilters(requirementBoxItemDataProvider);
+        addDescriptionFilter(requirementBoxItemDataProvider);
+    }
+
+    /**
+     * This method is use for include the default description formatter.
+     * <p>
+     * Note: This method could be overriding for change the description format.
+     *
+     * @param requirementBoxItemDataProvider The RequirementBoxItemDataProvider.
+     */
+    protected void addDescriptionFilter(RequirementBoxItemDataProvider requirementBoxItemDataProvider) {
+        requirementBoxItemDataProvider.addFilter(new DescriptionFilter());
     }
 
     /**

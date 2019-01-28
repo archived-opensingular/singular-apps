@@ -55,6 +55,8 @@ public class RequirementEntity extends BaseEntity<Long> {
 
     public static final String PK_GENERATOR_NAME = "GENERATED_CO_REQUISICAO";
 
+    public static final int LENGTH_REQUIREMENT_DESCRIPTION = 500;
+
     @Id
     @Column(name = "CO_REQUISICAO")
     @GeneratedValue(generator = PK_GENERATOR_NAME, strategy = GenerationType.AUTO)
@@ -72,7 +74,7 @@ public class RequirementEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_REQUISITANTE", foreignKey = @ForeignKey(name = "FK_REQ_REQUISITANTE"))
     private ApplicantEntity applicant;
 
-    @Column(name = "DS_REQUISICAO", length = 300)
+    @Column(name = "DS_REQUISICAO", length = LENGTH_REQUIREMENT_DESCRIPTION)
     private String description;
 
     @OneToMany(mappedBy = "requirement", fetch = FetchType.EAGER, cascade = CascadeType.ALL)
