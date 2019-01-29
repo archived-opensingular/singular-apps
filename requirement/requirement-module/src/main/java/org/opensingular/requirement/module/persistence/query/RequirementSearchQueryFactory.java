@@ -21,6 +21,7 @@ import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.Path;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.core.types.dsl.Expressions;
+import com.querydsl.core.types.dsl.StringExpression;
 import com.querydsl.core.types.dsl.StringTemplate;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -36,6 +37,7 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.persistence.context.RequirementSearchContext;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.filter.FilterToken;
+import org.opensingular.requirement.module.persistence.query.config.RequirementSearchQueryConfig;
 
 import javax.annotation.Nonnull;
 import java.util.LinkedHashMap;
@@ -76,12 +78,14 @@ public class RequirementSearchQueryFactory {
     private final RequirementSearchAliases $;
 
     private RequirementSearchQuery query;
+    private RequirementSearchQueryConfig queryConfig;
 
     private static final String TO_CHAR_DATE = "TO_CHAR({0}, 'DD/MM/YYYY HH24:MI')";
     private static final String TO_CHAR_DATE_SHORT = "TO_CHAR({0}, 'DD/MM/YY HH24:MI')";
 
-    public RequirementSearchQueryFactory(RequirementSearchContext ctx) {
+    public RequirementSearchQueryFactory(RequirementSearchContext ctx, RequirementSearchQueryConfig queryConfig) {
         this.ctx = ctx;
+        this.queryConfig = queryConfig;
         this.$ = ctx.getAliases();
     }
 
@@ -209,7 +213,7 @@ public class RequirementSearchQueryFactory {
             appendFilterByRequirementsWithFlowInstance();
             appendFilterByCurrentTask();
         }
-        appendFilterByQickFilter();
+        appendFilterByQuickFilter();
     }
 
     private void appendFilterByCurrentTask() {
@@ -261,13 +265,14 @@ public class RequirementSearchQueryFactory {
         }
     }
 
-    private void appendFilterByQickFilter() {
+    private void appendFilterByQuickFilter() {
         Map<String, Function<String, BooleanExpression>> expressionMap = new LinkedHashMap<>();
-        expressionMap.put(NOME_USUARIO_ALOCADO, filter -> $.allocatedUser.nome.likeIgnoreCase(filter));
-        expressionMap.put(SOLICITANTE, filter -> $.applicantEntity.name.likeIgnoreCase(filter));
-        expressionMap.put(DESCRIPTION, filter -> $.requirement.description.likeIgnoreCase(filter));
-        expressionMap.put(PROCESS_NAME, filter -> $.flowDefinitionEntity.name.likeIgnoreCase(filter));
-        expressionMap.put(TASK_NAME, filter -> $.taskVersion.name.likeIgnoreCase(filter));
+
+        expressionMap.put(NOME_USUARIO_ALOCADO, filter -> getStringTemplate($.allocatedUser.nome).likeIgnoreCase(getStringTemplate(filter)));
+        expressionMap.put(SOLICITANTE, filter -> getStringTemplate($.applicantEntity.name).likeIgnoreCase(getStringTemplate(filter)));
+        expressionMap.put(DESCRIPTION, filter -> getStringTemplate($.requirement.description).likeIgnoreCase(getStringTemplate(filter)));
+        expressionMap.put(PROCESS_NAME, filter -> getStringTemplate($.flowDefinitionEntity.name).likeIgnoreCase(getStringTemplate(filter)));
+        expressionMap.put(TASK_NAME, filter -> getStringTemplate($.taskVersion.name).likeIgnoreCase(getStringTemplate(filter)));
         expressionMap.put(COD_REQUIREMENT, filter -> $.requirement.cod.like(filter));
         expressionMap.put(CREATION_DATE, filter -> likeDate($.currentFormVersion.inclusionDate, filter).or(likeDate($.currentFormDraftVersionEntity.inclusionDate, filter)));
         expressionMap.put(EDITION_DATE, filter -> likeDate($.currentDraftEntity.editionDate, filter));
@@ -292,6 +297,14 @@ public class RequirementSearchQueryFactory {
                             .reduce(BooleanExpression::or)
                             .ifPresent(query::where));
         }
+    }
+
+    private StringTemplate getStringTemplate(StringExpression stringExpression) {
+        return Expressions.stringTemplate(queryConfig.stringReplacementTemplate(), stringExpression);
+    }
+
+    private StringTemplate getStringTemplate(String str) {
+        return getStringTemplate(Expressions.asString(str));
     }
 
     @Nonnull
