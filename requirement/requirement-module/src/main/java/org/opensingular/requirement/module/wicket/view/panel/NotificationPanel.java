@@ -16,51 +16,79 @@
 
 package org.opensingular.requirement.module.wicket.view.panel;
 
-import java.io.File;
-import javax.inject.Inject;
-
 import org.apache.commons.lang3.tuple.Pair;
+import org.apache.wicket.Component;
+import org.apache.wicket.RestartResponseException;
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
-import org.apache.wicket.markup.html.panel.Panel;
+import org.apache.wicket.markup.html.form.HiddenField;
+import org.apache.wicket.markup.html.link.Link;
+import org.apache.wicket.markup.html.panel.GenericPanel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.request.resource.ContentDisposition;
-import org.opensingular.form.wicket.link.FileDownloadLink;
-import org.opensingular.lib.commons.dto.HtmlToPdfDTO;
-import org.opensingular.lib.commons.pdf.HtmlToPdfConverter;
-import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
-import org.opensingular.requirement.module.service.RequirementInstance;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.opensingular.lib.wicket.util.util.Shortcuts;
+
+import java.util.UUID;
 
 
-public class NotificationPanel<RI extends RequirementInstance> extends Panel {
+public class NotificationPanel extends GenericPanel<Pair<String, String>> {
+    private WebMarkupContainer  contentWrapper;
+    private HiddenField<String> content;
 
-    @Inject
-    private HtmlToPdfConverter htmlToPdfConverter;
-
-    protected static final Logger LOGGER = LoggerFactory.getLogger(NotificationPanel.class);
-
-    public NotificationPanel(String id, IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
-
-        super(id);
-        add(new Label("title", model.getObject().getKey()));
-        add(new FileDownloadLink("export-to-pdf",
-                getPdfModel(model, requirementModel),
-                ContentDisposition.INLINE,
-                model.getObject().getValue() + ".pdf")
-        );
-        add(new Label("content", model.getObject().getValue()).setEscapeModelStrings(false));
+    public NotificationPanel(String id, IModel<Pair<String, String>> model) {
+        super(id, model);
+        add(createLabel());
+        add(createViewButton());
+        add(createContentHiddenField());
+        add(createContentWrapper());
     }
 
-    protected IModel<File> getPdfModel(IModel<Pair<String, String>> model, IModel<RI> requirementModel) {
-        return new IReadOnlyModel<File>() {
+    private Component createViewButton() {
+        return new Link<String>("viewContent", getContentModel()) {
             @Override
-            public File getObject() {
-                HtmlToPdfDTO dto = new HtmlToPdfDTO();
-                dto.setBody(model.getObject().getValue());
-                return htmlToPdfConverter.convert(dto).orElse(null);
+            public void onClick() {
+                throw new RestartResponseException(new ViewNotificationPage(getContentModel()));
+            }
+
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                tag.put("target", "_blank");
             }
         };
     }
 
+    private Label createLabel() {
+        return new Label("title", getModelObject().getKey());
+    }
+
+    private HiddenField<String> createContentHiddenField() {
+        content = new HiddenField<>("content", getContentModel());
+        return content;
+    }
+
+    private IModel<String> getContentModel() {
+        return Shortcuts.$m.map(getModel(), Pair::getValue);
+    }
+
+    private WebMarkupContainer createContentWrapper() {
+        contentWrapper = new WebMarkupContainer("contentWrapper");
+        contentWrapper.add(Shortcuts.$b.onReadyScript(this::loadSanboxedContentScript));
+        return contentWrapper;
+    }
+
+    private String loadSanboxedContentScript() {
+        UUID   frameId = UUID.randomUUID();
+        String script  = "(function(){";
+        script += "$('#" + contentWrapper.getMarkupId(true) + "').html(\"<iframe ";
+        script += " id=\\\"" + frameId + "\\\" style=\\\"height: 100%; width: 100%;\\\" frameborder=\\\"0\\\"></iframe>\");";
+        script += " var frame = $('#" + frameId + "')[0].contentWindow";
+        script += " || $('#" + frameId + "')[0].contentDocument.document";
+        script += " || $('#" + frameId + "')[0].contentDocument;";
+        script += " frame.document.open();";
+        script += " frame.document.write( $(\"#" + content.getMarkupId(true) + "\").val());";
+        script += " frame.document.close();";
+        script += "}());";
+        return script;
+    }
 }

@@ -56,6 +56,7 @@ public class PServerFreeMarkerUtil implements Loggable {
 
     private final Configuration cfg = new Configuration(VERSION);
     private final Logger LOGGER = LoggerFactory.getLogger(PServerFreeMarkerUtil.class);
+    private boolean escapeStr = true;
 
     public void buildConfiguration(Consumer<Configuration> configurationConsumer) {
         cfg.setTemplateLoader(new ClassTemplateLoader(Thread.currentThread().getContextClassLoader(), "templates"));//NOSONAR
@@ -82,7 +83,13 @@ public class PServerFreeMarkerUtil implements Loggable {
     }
 
     public static String mergeWithFreemarker(String templateName, Map<String, Object> model) {
-        return getInstance().doMergeWithFreemarker(templateName, model);
+        return mergeWithFreemarker(templateName, model, true);
+    }
+
+    public static String mergeWithFreemarker(String templateName, Map<String, Object> model, boolean escapeStr) {
+        PServerFreeMarkerUtil i = getInstance();
+        i.setEscapeStr(escapeStr);
+        return i.doMergeWithFreemarker(templateName, model);
     }
 
     public String doMergeWithFreemarker(String templateName, Map<String, Object> model) {
@@ -126,7 +133,7 @@ public class PServerFreeMarkerUtil implements Loggable {
         final Map map = new ObjectMapper().convertValue(pojos, Map.class);
 
         map.putAll(instances);
-        template.process(encode(map), sw, new FormObjectWrapper(false));
+        template.process(escapeStr? encode(map): map, sw, new FormObjectWrapper(false));
         return sw.toString();
     }
 
@@ -145,4 +152,10 @@ public class PServerFreeMarkerUtil implements Loggable {
         }
         return m;
     }
+
+    public void setEscapeStr(boolean escapeStr) {
+        this.escapeStr = escapeStr;
+    }
+
+
 }

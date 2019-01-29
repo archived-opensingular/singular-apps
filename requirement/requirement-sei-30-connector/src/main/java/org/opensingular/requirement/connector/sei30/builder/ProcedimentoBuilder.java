@@ -19,6 +19,7 @@ package org.opensingular.requirement.connector.sei30.builder;
 import org.opensingular.requirement.connector.sei30.model.AssuntoSei;
 import org.opensingular.requirement.connector.sei30.model.NivelAcesso;
 import org.opensingular.requirement.connector.sei30.model.TipoProcedimento;
+import org.opensingular.requirement.connector.sei30.util.SEIUtil;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfAssunto;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfInteressado;
 import org.opensingular.requirement.connector.sei30.ws.Interessado;
@@ -56,13 +57,13 @@ public class ProcedimentoBuilder {
     }
 
     /**
-     * Atualiza o novo valor de especificacao.
+     * Atualiza o novo valor de especificacao, limitando seu tamanho a 100 caracteres
      *
      * @param value o(a) value.
      * @return o valor de procedimento builder
      */
     public ProcedimentoBuilder setEspecificacao(String value) {
-        procedimento.setEspecificacao(value);
+        procedimento.setEspecificacao(SEIUtil.truncate(value, 100));
         return this;
     }
 

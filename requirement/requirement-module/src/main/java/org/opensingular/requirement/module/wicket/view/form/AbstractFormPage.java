@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.form;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
@@ -24,7 +25,6 @@ import org.apache.wicket.ajax.AbstractDefaultAjaxBehavior;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.json.JSONObject;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
-import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.behavior.Behavior;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
@@ -47,6 +47,8 @@ import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.type.core.annotation.AnnotationClassifier;
+import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
@@ -167,7 +169,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
+        singularFormPanel.setAnnotationClassifier(getAnnotationClassifier());
         singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
+        singularFormPanel.setInstanceInitializer(this::onCreateInstance);
         singularFormPanel.setModalContainer(modalContainer);
 
         Form<?> form = new Form<>("save-form");
@@ -189,6 +193,17 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         addSaveCallBackUrl();
     }
 
+    protected void onCreateInstance(SInstance instance) {
+
+    }
+
+
+    @Override
+    protected List<String> getInitializerJavascripts() {
+        List<String> list = Lists.newArrayList("FlowButtonsConfigurer.configure();");
+        list.addAll(super.getInitializerJavascripts());
+        return list;
+    }
 
     protected void fillTransitionControllerMap(Map<String, TransitionController<?>> transitionControllerMap) {
 
@@ -297,7 +312,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 .toString(2) + "); "
                 + "\n });";
     }
-
 
     /**
      * Panel that will show behind the Singular panel.
@@ -452,6 +466,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                     buttonsCount++;
                     buildFlowTransitionButton(
                             btnId,
+                            t.getName(),
                             buttonContainer,
                             modalContainer,
                             t.getName(),
@@ -522,9 +537,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return transition.getAccessFor(t);
     }
 
-    protected void buildFlowTransitionButton(String buttonId, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
+    protected void buildFlowTransitionButton(String buttonId, String buttonLabel, BSContainer<?> buttonContainer, BSContainer<?> modalContainer, String transitionName, IModel<? extends SInstance> instanceModel, TransitionAccess transitionButtonEnabled) {
         final FlowConfirmPanel modalType = buildFlowConfirmationModal(buttonId, modalContainer, transitionName, instanceModel);
-        buildFlowButton(buttonId, buttonContainer, transitionName, modalType, transitionButtonEnabled);
+        buildFlowButton(buttonId, buttonLabel, buttonContainer, transitionName, modalType, transitionButtonEnabled);
     }
 
     public void atualizarContentWorklist(AjaxRequestTarget target) {
@@ -538,9 +553,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                         + "</div>\n");
         BSModalBorder enviarModal = new BSModalBorder("send-modal", getMessage("label.title.send"));
         enviarModal
-                .addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.close", new AjaxButton("cancel-btn") {
+                .addLink(BSModalBorder.ButtonStyle.CANCEL, "label.button.close", new AjaxLink<Void>("cancel-btn") {
                     @Override
-                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                    public void onClick(AjaxRequestTarget target) {
                         enviarModal.hide(target);
                     }
                 })
@@ -687,6 +702,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void buildFlowButton(String buttonId,
+                                 String buttonLabel,
                                  BSContainer<?> buttonContainer,
                                  String transitionName,
                                  FlowConfirmPanel confirmActionFlowModal, TransitionAccess access) {
@@ -711,7 +727,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 }
             }
         };
-        singularButton.add(new Label("flowButtonLabel", transitionName).setRenderBodyOnly(true));
+        singularButton.add(new Label("flowButtonLabel", buttonLabel).setRenderBodyOnly(true));
         tp.add(singularButton);
     }
 
@@ -801,6 +817,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return formPageConfig.getAnnotationMode();
     }
 
+    protected AnnotationClassifier getAnnotationClassifier() {
+        return AtrAnnotation.DefaultAnnotationClassifier.DEFAULT_ANNOTATION;
+    }
+
     private IReadOnlyModel<SInstance> getInstanceModel() {
         return (IReadOnlyModel<SInstance>) singularFormPanel::getInstance;
     }
@@ -845,8 +865,19 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void saveForm(SInstance instance) {
+        validateUserAllocatedAndUserAction();
         getRequirement().saveForm(instance);
         requirementIdModel.setObject(getRequirement().getCod());
+    }
+
+    private void validateUserAllocatedAndUserAction() {
+        String username = SingularSession.get().getUsername();
+        TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
+        if (taskInstance != null
+                && taskInstance.getAllocatedUser() != null
+                && !username.equals(taskInstance.getAllocatedUser().getCodUsuario())) {
+            throw new SingularServerException("O requerimento não pertence mais a este usuário.");
+        }
     }
 
     private void addSaveCallBackUrl() {
@@ -880,17 +911,16 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected BSModalBorder construirCloseModal() {
         BSModalBorder closeModal = new BSModalBorder("close-modal", getMessage("label.title.close.draft"));
-        closeModal.addButton(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxButton("cancel-close-btn") {
+        closeModal.addLink(BSModalBorder.ButtonStyle.CANCEL, "label.button.cancel", new AjaxLink<Void>("cancel-close-btn") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+            public void onClick(AjaxRequestTarget target) {
                 closeModal.hide(target);
             }
         });
-        closeModal.addButton(BSModalBorder.ButtonStyle.CONFIRM, "label.button.confirm", new AjaxButton("close-btn") {
+        closeModal.addLink(BSModalBorder.ButtonStyle.CONFIRM, "label.button.confirm", new AjaxLink<Void>("close-btn") {
             @Override
-            protected String getOnClickScript() {
-                return " Singular.atualizarContentWorklist();"
-                        + "window.close();";
+            public void onClick(AjaxRequestTarget target) {
+                target.appendJavaScript("Singular.atualizarContentWorklist();window.close();");
             }
         });
 
@@ -956,21 +986,20 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
             protected void populateItem(ListItem<Pair<String, String>> item) {
-                item.add(new NotificationPanel("notificacao", item.getModel(), getRequirementModel()));
+                item.add(new NotificationPanel("notificacao", item.getModel()));
             }
         };
 
-        final AjaxButton closeButton = new AjaxButton("close-button") {
+        final AjaxLink<Void> closeButton = new AjaxLink<Void>("close-button") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
+            public void onClick(AjaxRequestTarget target) {
                 notificacoesModal.hide(target);
             }
         };
 
         notificacoesModal = new BSModalBorder("modal-panel");
         notificacoesModal.setTitleText(Model.of("Notificações"));
-        notificacoesModal.addButton(BSModalBorder.ButtonStyle.DEFAULT, Shortcuts.$m.ofValue("Fechar"), closeButton);
+        notificacoesModal.addLink(BSModalBorder.ButtonStyle.DEFAULT, Shortcuts.$m.ofValue("Fechar"), closeButton);
         notificacoesModal.setSize(BSModalBorder.Size.NORMAL);
 
         return modalPanel.add(notificacoesModal.add(listView));
@@ -983,10 +1012,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 );
 
         final TemplatePanel buttonPanel = container.newTemplateTag(tt -> markup);
-        final AjaxButton viewButton = new AjaxButton("notificacoes") {
+        final AjaxLink<Void> viewButton = new AjaxLink<Void>("notificacoes") {
             @Override
-            protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                super.onSubmit(target, form);
+            public void onClick(AjaxRequestTarget target) {
                 notificacoesModal.show(target);
             }
         };

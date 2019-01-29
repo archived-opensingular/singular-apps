@@ -6,14 +6,15 @@
                 <span class="caption-subject bold uppercase"> <span wicket:id="title"></span></span>
             </div>
             <div class="actions">
-                <a type="button" wicket:id="export-to-pdf" class="btn btn-default">
-                    <i class="fa fa-file-pdf-o"></i> PDF
+                <a type="button" wicket:id="viewContent" class="btn btn-default">
+                    <i class="fa fa-eye"></i> Visualizar
                 </a>
             </div>
         </div>
         <div class="portlet-body">
             <div style="overflow: auto; width: auto; max-height: 200px;">
-                <label wicket:id="content"></label>
+                <input type="hidden" wicket:id="content">
+                <div wicket:id="contentWrapper"></div>
             </div>
         </div>
     </div>

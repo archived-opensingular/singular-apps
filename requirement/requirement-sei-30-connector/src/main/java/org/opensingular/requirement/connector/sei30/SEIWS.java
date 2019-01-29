@@ -602,6 +602,11 @@ public class SEIWS implements SEIPortType, Loggable {
         return null;
     }
 
+    @Override
+    public List<Contato> listarContatosPorCPF(String idTipoContato, String cpf) {
+        return seiPortType.listarContatos(siglaSistema, identificacaoServico, "", idTipoContato, "", "", "", "", cpf, "", "", new ArrayOfString()).getItem();
+    }
+
 
     /**
      * Listar tipos cargo.

@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 public class EncodeUtil {
 
     private EncodeUtil() {
+        throw new UnsupportedOperationException("No " + EncodeUtil.class.getSimpleName() + " instances for you!");
     }
 
     public static String encodeToBase64(File file) throws IOException {
@@ -33,6 +34,15 @@ public class EncodeUtil {
         if (StringUtils.isNotEmpty(value)) {
             byte[] decodedBytes = Base64.decodeBase64(value);
             return new String(decodedBytes, StandardCharsets.UTF_8);
+        } else {
+            return "";
+        }
+    }
+
+    public static String decodeFromBase64Iso(String value) {
+        if (StringUtils.isNotEmpty(value)) {
+            byte[] decodedBytes = Base64.decodeBase64(value);
+            return new String(decodedBytes, StandardCharsets.ISO_8859_1);
         } else {
             return "";
         }

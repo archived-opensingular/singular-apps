@@ -15,18 +15,6 @@
  */
 package org.opensingular.app.commons.mail.service.email;
 
-import java.util.Date;
-import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import javax.activation.DataHandler;
-import javax.annotation.PostConstruct;
-import javax.mail.Message;
-import javax.mail.Multipart;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeBodyPart;
-import javax.mail.internet.MimeMessage;
-import javax.mail.internet.MimeMultipart;
-
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
 import org.apache.commons.lang3.BooleanUtils;
@@ -35,6 +23,18 @@ import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
+
+import javax.activation.DataHandler;
+import javax.annotation.PostConstruct;
+import javax.mail.Message;
+import javax.mail.Multipart;
+import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
+import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
+import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_EMAIL_TEST_RECPT;
 
@@ -104,9 +104,12 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 if (SingularProperties.get().isTrue(SingularProperties.SINGULAR_SEND_EMAIL)) {
                     msg.addRecipient(recipientType, new InternetAddress(addressee.getAddress()));
                 } else {
-                    msg.addRecipient(recipientType, new InternetAddress(SingularProperties.get().getProperty(SINGULAR_EMAIL_TEST_RECPT, EMAIL_DEVELOPMENT)));
-                }
+                    String[] values = SingularProperties.get().getProperty(SINGULAR_EMAIL_TEST_RECPT, EMAIL_DEVELOPMENT).split(",");
+                    for (String email : values) {
+                        msg.addRecipient(recipientType, new InternetAddress(email.trim()));
 
+                    }
+                }
                 // Cria o "contêiner" das várias partes do e-mail
                 final Multipart content = new MimeMultipart("related");
 

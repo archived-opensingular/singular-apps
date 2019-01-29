@@ -53,7 +53,7 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "RetornoConsultaBloco", propOrder = {
 
 })
-public class RetornoConsultaBloco {
+public class RetornoConsultaBloco extends RetornoFlexivel {
 
     @XmlElement(name = "IdBloco", required = true)
     protected String idBloco;

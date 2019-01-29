@@ -25,6 +25,7 @@ import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.ACTION_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.REQUIREMENT_DEFINITION_KEY;
 
 public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
 
@@ -48,6 +49,7 @@ public abstract class AbstractURLPopupBoxItemAction extends BoxItemAction {
                 .baseURL("")
                 .formAction(formAction.getId())
                 .requirementId(line.getRequirementId())
+                .param(REQUIREMENT_DEFINITION_KEY, line.getRequirementDefinitionKey())
                 .param(FORM_NAME, line.getType())
                 .param(ACTION_NAME, name)
                 .build();
