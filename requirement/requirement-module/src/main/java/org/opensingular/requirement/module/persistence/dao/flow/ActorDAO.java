@@ -95,7 +95,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
         if (result == null && cod == null) {
             Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
-            if (dialect.getNativeIdentifierGeneratorStrategy().equals("sequence") && dialect.supportsSequences()) {
+            if ("sequence".equals(dialect.getNativeIdentifierGeneratorStrategy()) && dialect.supportsSequences()) {
                 dialect.getSequenceNextValString("nada");
                 getSession().doWork(connection -> {
                     String sql = SqlUtil.replaceSingularSchemaName("insert into "
