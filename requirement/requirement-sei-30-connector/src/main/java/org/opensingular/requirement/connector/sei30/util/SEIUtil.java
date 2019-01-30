@@ -17,7 +17,7 @@ public class SEIUtil {
      * @return o valor trucado e concatenado com "..." se o seu tamanho for maior que maxLenght
      */
     public static String truncate(String value, int maxLenght) {
-        if (value.length() > maxLenght) {
+        if (value != null && value.length() > maxLenght) {
             return value.substring(0, maxLenght - 3).concat("...");
         }
         return value;
