@@ -16,20 +16,22 @@
 
 package org.opensingular.requirement.connector.sei30.model;
 
+import javax.annotation.Nullable;
 import java.io.Serializable;
 import java.util.Objects;
 
 public class UnidadeSei implements Serializable {
 
     private final String id;
-    private final String nome;
+    private final String nome; // Essa variavel não é utilizada pelo serviço do SEI.
 
-    public UnidadeSei(String id, String nome) {
+    public UnidadeSei(String id, @Nullable String nome) {
         this.id = id;
         this.nome = nome;
 
     }
 
+    @Nullable
     public String getNome() {
         return nome;
     }
