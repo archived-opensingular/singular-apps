@@ -16,7 +16,6 @@
 
 package org.opensingular.requirement.studio.spring;
 
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.requirement.module.spring.SingularDefaultBeanFactory;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.opensingular.studio.core.menu.StudioMenu;

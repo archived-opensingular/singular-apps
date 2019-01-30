@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.wicket.view.panel;
 
 import com.google.common.collect.Lists;
+import org.apache.commons.collections.CollectionUtils;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Button;
@@ -71,7 +72,7 @@ public class EmbeddedHistoryPanel extends Panel {
                 item.add(new Label("data", Model.of(embeddedHistoryDTO.getDate())));
 
                 WebMarkupContainer formulariosBtn = new WebMarkupContainer("formulariosBtn");
-                formulariosBtn.setVisible(!item.getModelObject().getTypeFormVersions().isEmpty());
+                formulariosBtn.setVisible(CollectionUtils.isNotEmpty(item.getModelObject().getTypeFormVersions()));
 
                 formulariosBtn.add(new ListView<EmbeddedHistoryDTO.TypeFormVersion>("botoes", embeddedHistoryDTO.getTypeFormVersions()) {
                     @Override

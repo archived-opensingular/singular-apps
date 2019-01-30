@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.service;
 
 import org.hibernate.SessionFactory;
+import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.form.persistence.entity.FormVersionEntity;
 import org.opensingular.lib.support.persistence.enums.SimNao;
 import org.opensingular.requirement.module.persistence.entity.form.RequirementContentHistoryEntity;
@@ -55,14 +56,20 @@ public class EmbeddedHistoryService {
 
     public List<EmbeddedHistoryDTO> buscarAnalisesAnteriores(Long requirementEntityPK) {
         String hql = "";
-        hql += " select new " + EmbeddedHistoryDTO.class.getName() + " (p) from ";
-        hql += RequirementContentHistoryEntity.class.getName() + " p ";
-        hql += " where p.requirementEntity.cod = :requirementEntityPK  ";
-        hql += " and p.taskInstanceEntity is not null  ";
-        hql += " order by p.historyDate ASC  ";
+        hql += " select new " + EmbeddedHistoryDTO.class.getName() + " (t, p) from ";
+        hql += TaskInstanceEntity.class.getName() + " t ";
+        hql += " INNER JOIN t.flowInstance  process ";
+        hql += " INNER JOIN " + RequirementEntity.class.getName() + " req ";
+        hql += " ON req.flowInstanceEntity = process";
+        hql += " LEFT JOIN " + RequirementContentHistoryEntity.class.getName() + " p ";
+        hql += " ON p.taskInstanceEntity = t";
+        hql += " where req.cod = :requirementEntityPK  ";
+        hql += " AND t.endDate is not null  ";
+        hql += " order by t.endDate ASC  ";
         return sessionFactory.getCurrentSession()
                 .createQuery(hql)
                 .setParameter("requirementEntityPK", requirementEntityPK)
                 .list();
     }
+
 }

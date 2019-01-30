@@ -80,8 +80,9 @@ import org.opensingular.requirement.module.persistence.dao.form.FormRequirementD
 import org.opensingular.requirement.module.persistence.dao.form.RequirementContentHistoryDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDAO;
 import org.opensingular.requirement.module.persistence.dao.form.RequirementDefinitionDAO;
-import org.opensingular.requirement.module.persistence.entity.form.RequirementEntity;
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
+import org.opensingular.requirement.module.persistence.query.config.DefaultRequirementSearchQueryConfig;
+import org.opensingular.requirement.module.persistence.query.config.RequirementSearchQueryConfig;
 import org.opensingular.requirement.module.service.AttachmentGCJob;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
@@ -98,7 +99,6 @@ import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.AuthorizationServiceImpl;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetailService;
 import org.opensingular.requirement.module.spring.security.PermissionResolverService;
-import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularUserDetailsService;
 import org.opensingular.requirement.module.workspace.WorkspaceRegistry;
 import org.opensingular.schedule.IScheduleService;
@@ -518,6 +518,11 @@ public class SingularDefaultBeanFactory {
     @Bean
     public SessionLocator sessionProvider(SessionFactory sessionFactory) {
         return () -> sessionFactory.getCurrentSession();
+    }
+
+    @Bean
+    public RequirementSearchQueryConfig requirementSearchQueryConfig() {
+        return new DefaultRequirementSearchQueryConfig();
     }
 
 }

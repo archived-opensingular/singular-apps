@@ -27,6 +27,7 @@ import org.opensingular.requirement.module.spring.security.PermissionResolverSer
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.wicket.box.BoxItemDataFilter;
 import org.opensingular.requirement.module.wicket.box.DateBoxItemDataFilter;
+import org.opensingular.requirement.module.wicket.box.OverflowFilter;
 
 import javax.annotation.Nonnull;
 import java.io.Serializable;
@@ -128,6 +129,19 @@ public class RequirementBoxItemDataProvider implements BoxItemDataProvider {
      */
     public RequirementBoxItemDataProvider addDateFilters(String dateFormatter, String... alias) {
         filters.add(new DateBoxItemDataFilter(dateFormatter, alias));
+        return this;
+    }
+
+    /**
+     * Method for include a Overflow filter in the filters.
+     * This method should be used to include a overflow hide to columns who has a bigger description.
+     *
+     * @param sizeOverflowCharacters The max size of the characters until hide the text.
+     * @param alias         The alias of the date columns that the formatter must changed.
+     * @return <code>this</code>
+     */
+    public RequirementBoxItemDataProvider addOverflowFilter(int sizeOverflowCharacters, String... alias) {
+        filters.add(new OverflowFilter(sizeOverflowCharacters, alias));
         return this;
     }
 
