@@ -82,6 +82,7 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                 .build();
     }
 
+    @SuppressWarnings("squid:S134")
     public boolean send(Email.Addressee addressee) {
         if (getHost() == null) {
             getLogger().info("SMTP mail sender Disabled.");
@@ -107,7 +108,6 @@ public class EmailSender extends JavaMailSenderImpl implements Loggable {
                     String[] values = SingularProperties.get().getProperty(SINGULAR_EMAIL_TEST_RECPT, EMAIL_DEVELOPMENT).split(",");
                     for (String email : values) {
                         msg.addRecipient(recipientType, new InternetAddress(email.trim()));
-
                     }
                 }
                 // Cria o "contêiner" das várias partes do e-mail
