@@ -78,7 +78,7 @@ public class PropertiesPanel extends Panel implements Loggable {
         };
     }
 
-    @SuppressWarnings("squid:S1067 ")
+    @SuppressWarnings("squid:S1067")
     private List<String> listAllProperties() {
         StringBuilder sb = new StringBuilder();
         SingularProperties.get().debugContent(sb);
