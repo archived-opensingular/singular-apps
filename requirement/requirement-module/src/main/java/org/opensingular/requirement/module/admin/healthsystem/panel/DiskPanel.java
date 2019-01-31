@@ -50,7 +50,6 @@ public class DiskPanel extends Panel implements Loggable {
         for (File file : f) {
             disk.getObject().add("<b>Drive: " + file + "</b>");
             disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Display name: " + fsv.getSystemDisplayName(file));
-            ;
             disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Total space: " + Bytes.bytes(file.getTotalSpace()));
             disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Usable space: " + Bytes.bytes(file.getUsableSpace()));
         }

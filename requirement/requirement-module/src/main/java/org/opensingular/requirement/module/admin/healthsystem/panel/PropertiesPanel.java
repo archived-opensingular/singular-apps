@@ -35,7 +35,7 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 public class PropertiesPanel extends Panel implements Loggable {
 
 
-    protected BSDataTable<String, String> listTable;
+    private BSDataTable<String, String> listTable;
 
     public PropertiesPanel(String id) {
         super(id);
@@ -48,7 +48,7 @@ public class PropertiesPanel extends Panel implements Loggable {
         queue(listTable);
     }
 
-    protected BSDataTable<String, String> setupDataTable() {
+    private BSDataTable<String, String> setupDataTable() {
         return new BSDataTableBuilder<>(createDataProvider())
                 .appendPropertyColumn($m.ofValue("Debug"), s -> s)
                 .setRowsPerPage(Long.MAX_VALUE)
@@ -78,7 +78,8 @@ public class PropertiesPanel extends Panel implements Loggable {
         };
     }
 
-    public List<String> listAllProperties() {
+    @SuppressWarnings("squid:S1067 ")
+    private List<String> listAllProperties() {
         StringBuilder sb = new StringBuilder();
         SingularProperties.get().debugContent(sb);
         String[]     values      = sb.toString().split("\n");
@@ -99,7 +100,7 @@ public class PropertiesPanel extends Panel implements Loggable {
                                 || permission.contains(".pwd")
                                 || permission.contains(".senha")
             )) {
-                permission = permission.substring(0, permission.indexOf("=")) + "=*****";
+                permission = permission.substring(0, permission.indexOf('=')) + "=*****";
 
             }
             finalList.add(permission);
