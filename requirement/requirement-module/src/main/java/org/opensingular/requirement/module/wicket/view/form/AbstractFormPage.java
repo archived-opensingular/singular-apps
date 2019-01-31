@@ -870,7 +870,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         requirementIdModel.setObject(getRequirement().getCod());
     }
 
-    private void validateUserAllocatedAndUserAction() {
+    protected void validateUserAllocatedAndUserAction() {
         String username = SingularSession.get().getUsername();
         TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
         if (taskInstance != null
