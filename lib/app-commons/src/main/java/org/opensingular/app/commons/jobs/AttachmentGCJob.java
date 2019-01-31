@@ -14,11 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.service;
-
-import java.util.List;
-import javax.inject.Inject;
-import javax.inject.Named;
+package org.opensingular.app.commons.jobs;
 
 import org.opensingular.form.document.SDocument;
 import org.opensingular.form.persistence.entity.AttachmentContentEntity;
@@ -28,17 +24,22 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.schedule.IScheduleData;
 import org.opensingular.schedule.IScheduledJob;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.List;
+
 /**
  * Job responsável por fazer a coleta de lixo da tabela de anexos
  * do singular, removendo os arquivos que não tenha sido vinculados
  * a nada em um prazo posterior a 24 horas da sua inclusão.
- *
+ * <p>
  * Isso pode acontecer quando, por exemplo, um usuário faz um upload
  * e sai do formulário descartando suas alterações.
  */
 public class AttachmentGCJob implements IScheduledJob, Loggable {
 
-    @Inject @Named(SDocument.FILE_PERSISTENCE_SERVICE)
+    @Inject
+    @Named(SDocument.FILE_PERSISTENCE_SERVICE)
     private AttachmentPersistenceService<AttachmentEntity, AttachmentContentEntity> persistenceHandler;
 
     private IScheduleData scheduleData;
