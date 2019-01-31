@@ -24,6 +24,7 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfProcedimentoRelacionado;
+import org.opensingular.requirement.connector.sei30.ws.Cargo;
 import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
@@ -37,6 +38,7 @@ import org.opensingular.requirement.connector.sei30.ws.TipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.Unidade;
 import org.opensingular.requirement.connector.sei30.ws.Usuario;
 
+import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -405,6 +407,22 @@ public interface SEIPortType {
             String idTipoContato,
             String sigla);
 
+
+    /**
+     * Lista de contatos
+     *
+     * @param cpf
+     * @param idTipoContato
+     * @param unidade
+     * @return returns Contato with CPF
+     */
+    public Contato findContatoByCPF(@Nullable UnidadeSei unidade, String idTipoContato, String cpf);
+
+    /**
+     * Lista de contatos
+     *
+     */
+    List<Cargo> listarCargos();
 
     /**
      * Lista contatos com base no cpf.

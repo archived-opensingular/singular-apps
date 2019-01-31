@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.connector.sei30;
 
+import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.WSClientSafeWrapper;
 import org.opensingular.requirement.connector.sei30.model.SimNao;
@@ -23,6 +24,7 @@ import org.opensingular.requirement.connector.sei30.model.TipoBlocoEnum;
 import org.opensingular.requirement.connector.sei30.model.UnidadeSei;
 import org.opensingular.requirement.connector.sei30.ws.ArquivoExtensao;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfArquivoExtensao;
+import org.opensingular.requirement.connector.sei30.ws.ArrayOfCargo;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfDocumentoFormatado;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfIdUnidade;
@@ -31,6 +33,7 @@ import org.opensingular.requirement.connector.sei30.ws.ArrayOfSerie;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfString;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfTipoProcedimento;
 import org.opensingular.requirement.connector.sei30.ws.ArrayOfUsuario;
+import org.opensingular.requirement.connector.sei30.ws.Cargo;
 import org.opensingular.requirement.connector.sei30.ws.Contato;
 import org.opensingular.requirement.connector.sei30.ws.Documento;
 import org.opensingular.requirement.connector.sei30.ws.Procedimento;
@@ -62,18 +65,15 @@ import java.util.Optional;
 public class SEIWS implements SEIPortType, Loggable {
 
     private final SeiPortType seiPortType;
-    private final String      siglaSistema;
-    private final String      identificacaoServico;
+    private final String siglaSistema;
+    private final String identificacaoServico;
 
     /**
      * Instancia um novo objeto SEIWS delegate.
      *
-     * @param siglaSistema
-     *            o(a) sigla sistema.
-     * @param identificacaoServico
-     *            o(a) identificacao servico.
-     * @param wsAddress
-     *            o(a) ws address.
+     * @param siglaSistema         o(a) sigla sistema.
+     * @param identificacaoServico o(a) identificacao servico.
+     * @param wsAddress            o(a) ws address.
      */
     public SEIWS(String siglaSistema, String identificacaoServico, String wsAddress) {
         this.seiPortType = getSeiService(wsAddress);
@@ -107,24 +107,15 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Gerar procedimento.
      *
-     * @param procedimento
-     *            o(a) procedimento.
-     * @param documentos
-     *            o(a) documentos.
-     * @param procedimentosRelacionados
-     *            o(a) procedimentos relacionados.
-     * @param unidadesEnvio
-     *            o(a) unidades envio.
-     * @param sinManterAbertoUnidade
-     *            o(a) sinalizador para manter aberto unidade.
-     * @param sinEnviarEmailNotificacao
-     *            o(a) sinalizador para enviar email notificacao.
-     * @param dataRetornoProgramado
-     *            o(a) data retorno programado.
-     * @param idMarcador
-     *            o id do marcador
-     * @param textoMarcador
-     *            o texto do marcador
+     * @param procedimento              o(a) procedimento.
+     * @param documentos                o(a) documentos.
+     * @param procedimentosRelacionados o(a) procedimentos relacionados.
+     * @param unidadesEnvio             o(a) unidades envio.
+     * @param sinManterAbertoUnidade    o(a) sinalizador para manter aberto unidade.
+     * @param sinEnviarEmailNotificacao o(a) sinalizador para enviar email notificacao.
+     * @param dataRetornoProgramado     o(a) data retorno programado.
+     * @param idMarcador                o id do marcador
+     * @param textoMarcador             o texto do marcador
      * @return o valor de retorno geracao procedimento
      */
     @Override
@@ -143,8 +134,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Reabrir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     @Override
@@ -156,8 +146,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Listar usuarios.
      *
-     * @param idUsuario
-     *            o(a) id usuario.
+     * @param idUsuario o(a) id usuario.
      * @return o valor de array of usuario
      */
     @Override
@@ -174,8 +163,7 @@ public class SEIWS implements SEIPortType, Loggable {
      * básicos. Para uma pesquisa mais abrangente utilizar
      * {@link #consultarProcedimento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao, SimNao)}
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de retorno consulta procedimento
      */
     @Override
@@ -186,26 +174,16 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Consultar procedimento.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param sinRetornarAssuntos
-     *            o(a) sin retornar assuntos.
-     * @param sinRetornarInteressados
-     *            o(a) sin retornar interessados.
-     * @param sinRetornarObservacoes
-     *            o(a) sin retornar observacoes.
-     * @param sinRetornarAndamentoGeracao
-     *            o(a) sin retornar andamento geracao.
-     * @param sinRetornarAndamentoConclusao
-     *            o(a) sin retornar andamento conclusao.
-     * @param sinRetornarUltimoAndamento
-     *            o(a) sin retornar ultimo andamento.
-     * @param sinRetornarUnidadesProcedimentoAberto
-     *            o(a) sin retornar unidades procedimento aberto.
-     * @param sinRetornarProcedimentosRelacionados
-     *            o(a) sin retornar procedimentos relacionados.
-     * @param sinRetornarProcedimentosAnexados
-     *            o(a) sin retornar procedimentos anexados.
+     * @param protocoloProcedimento                 o(a) protocolo procedimento.
+     * @param sinRetornarAssuntos                   o(a) sin retornar assuntos.
+     * @param sinRetornarInteressados               o(a) sin retornar interessados.
+     * @param sinRetornarObservacoes                o(a) sin retornar observacoes.
+     * @param sinRetornarAndamentoGeracao           o(a) sin retornar andamento geracao.
+     * @param sinRetornarAndamentoConclusao         o(a) sin retornar andamento conclusao.
+     * @param sinRetornarUltimoAndamento            o(a) sin retornar ultimo andamento.
+     * @param sinRetornarUnidadesProcedimentoAberto o(a) sin retornar unidades procedimento aberto.
+     * @param sinRetornarProcedimentosRelacionados  o(a) sin retornar procedimentos relacionados.
+     * @param sinRetornarProcedimentosAnexados      o(a) sin retornar procedimentos anexados.
      * @return o valor de retorno consulta procedimento
      */
     @Override
@@ -224,26 +202,16 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Consultar procedimento.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param sinRetornarAssuntos
-     *            o(a) sin retornar assuntos.
-     * @param sinRetornarInteressados
-     *            o(a) sin retornar interessados.
-     * @param sinRetornarObservacoes
-     *            o(a) sin retornar observacoes.
-     * @param sinRetornarAndamentoGeracao
-     *            o(a) sin retornar andamento geracao.
-     * @param sinRetornarAndamentoConclusao
-     *            o(a) sin retornar andamento conclusao.
-     * @param sinRetornarUltimoAndamento
-     *            o(a) sin retornar ultimo andamento.
-     * @param sinRetornarUnidadesProcedimentoAberto
-     *            o(a) sin retornar unidades procedimento aberto.
-     * @param sinRetornarProcedimentosRelacionados
-     *            o(a) sin retornar procedimentos relacionados.
-     * @param sinRetornarProcedimentosAnexados
-     *            o(a) sin retornar procedimentos anexados.
+     * @param protocoloProcedimento                 o(a) protocolo procedimento.
+     * @param sinRetornarAssuntos                   o(a) sin retornar assuntos.
+     * @param sinRetornarInteressados               o(a) sin retornar interessados.
+     * @param sinRetornarObservacoes                o(a) sin retornar observacoes.
+     * @param sinRetornarAndamentoGeracao           o(a) sin retornar andamento geracao.
+     * @param sinRetornarAndamentoConclusao         o(a) sin retornar andamento conclusao.
+     * @param sinRetornarUltimoAndamento            o(a) sin retornar ultimo andamento.
+     * @param sinRetornarUnidadesProcedimentoAberto o(a) sin retornar unidades procedimento aberto.
+     * @param sinRetornarProcedimentosRelacionados  o(a) sin retornar procedimentos relacionados.
+     * @param sinRetornarProcedimentosAnexados      o(a) sin retornar procedimentos anexados.
      * @return o valor de retorno consulta procedimento
      */
     @Override
@@ -262,12 +230,9 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Atribuir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param idUsuario
-     *            o(a) id usuario.
-     * @param sinReabrir
-     *            o(a) sin reabrir.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
+     * @param idUsuario             o(a) id usuario.
+     * @param sinReabrir            o(a) sin reabrir.
      * @return o valor de boolean
      */
     @Override
@@ -280,10 +245,8 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Incluir documento bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param idBloco            o(a) id bloco.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de boolean
      */
     @Override
@@ -295,8 +258,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Concluir processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     @Override
@@ -308,8 +270,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Cancelar disponibilizacao bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     @Override
@@ -321,10 +282,8 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Listar unidades.
      *
-     * @param idTipoProcedimento
-     *            o(a) id tipo procedimento.
-     * @param idSerie
-     *            o(a) id serie.
+     * @param idTipoProcedimento o(a) id tipo procedimento.
+     * @param idSerie            o(a) id serie.
      * @return o valor de array of unidade
      */
     @Override
@@ -346,8 +305,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Listar series.
      *
-     * @param idTipoProcedimento
-     *            o(a) id tipo procedimento.
+     * @param idTipoProcedimento o(a) id tipo procedimento.
      * @return o valor de array of serie
      */
     @Override
@@ -358,6 +316,7 @@ public class SEIWS implements SEIPortType, Loggable {
         }
         return arrayOfSerie.getItem();
     }
+
     /**
      * Listar series.
      *
@@ -375,8 +334,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Excluir bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     @Override
@@ -388,8 +346,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Disponibilizar bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
+     * @param idBloco o(a) id bloco.
      * @return o valor de boolean
      */
     @Override
@@ -401,10 +358,8 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Incluir processo bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param idBloco               o(a) id bloco.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     @Override
@@ -416,8 +371,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Incluir documento.
      *
-     * @param documento
-     *            o(a) documento.
+     * @param documento o(a) documento.
      * @return o valor de retorno inclusao documento
      */
     @Override
@@ -433,16 +387,11 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Gerar bloco.
      *
-     * @param tipoBlocoEnum
-     *            o(a) tipo bloco enum.
-     * @param descricao
-     *            o(a) descricao.
-     * @param unidadesDisponibilizacao
-     *            o(a) unidades disponibilizacao.
-     * @param documentos
-     *            o(a) documentos.
-     * @param sinDisponibilizar
-     *            o(a) sin disponibilizar.
+     * @param tipoBlocoEnum            o(a) tipo bloco enum.
+     * @param descricao                o(a) descricao.
+     * @param unidadesDisponibilizacao o(a) unidades disponibilizacao.
+     * @param documentos               o(a) documentos.
+     * @param sinDisponibilizar        o(a) sin disponibilizar.
      * @return o valor de string
      */
     @Override
@@ -456,10 +405,8 @@ public class SEIWS implements SEIPortType, Loggable {
      * Gerar bloco, utiliza dados padrão nos campos opcionais.
      * Não faz a disponibilização de bloco.
      *
-     * @param tipoBlocoEnum
-     *            o(a) tipo bloco enum.
-     * @param descricao
-     *            o(a) descricao.
+     * @param tipoBlocoEnum o(a) tipo bloco enum.
+     * @param descricao     o(a) descricao.
      * @return o valor de string
      */
     @Override
@@ -472,16 +419,11 @@ public class SEIWS implements SEIPortType, Loggable {
      * para realizar uma consulta com mais informações a respeito
      * do documento.
      *
-     * @param protocoloDocumento
-     *            o(a) protocolo documento {@link RetornoInclusaoDocumento#getDocumentoFormatado()}.
-     * @param sinRetornarAndamentoGeracao
-     *            o(a) sin retornar andamento geracao.
-     * @param sinRetornarAssinaturas
-     *            o(a) sin retornar assinaturas.
-     * @param sinRetornarPublicacao
-     *            o(a) sin retornar publicacao.
-     * @param sinRetornarCampos
-     *            o(a) sin retornar campos.
+     * @param protocoloDocumento          o(a) protocolo documento {@link RetornoInclusaoDocumento#getDocumentoFormatado()}.
+     * @param sinRetornarAndamentoGeracao o(a) sin retornar andamento geracao.
+     * @param sinRetornarAssinaturas      o(a) sin retornar assinaturas.
+     * @param sinRetornarPublicacao       o(a) sin retornar publicacao.
+     * @param sinRetornarCampos           o(a) sin retornar campos.
      * @return o valor de retorno consulta documento
      */
     @Override
@@ -496,8 +438,7 @@ public class SEIWS implements SEIPortType, Loggable {
      * Consultar documento da forma mais simples, caso seja necessária
      * uma consulta mais completa utilizar {@link #consultarDocumento(UnidadeSei, String, SimNao, SimNao, SimNao, SimNao)} .
      *
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de retorno consulta documento
      */
     @Override
@@ -524,18 +465,12 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Enviar processo.
      *
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
-     * @param unidadesDestino
-     *            o(a) unidades destino.
-     * @param sinManterAbertoUnidade
-     *            o(a) sin manter aberto unidade.
-     * @param sinRemoverAnotacao
-     *            o(a) sin remover anotacao.
-     * @param sinEnviarEmailNotificacao
-     *            o(a) sin enviar email notificacao.
-     * @param dataRetornoProgramado
-     *            o(a) data retorno programado.
+     * @param protocoloProcedimento     o(a) protocolo procedimento.
+     * @param unidadesDestino           o(a) unidades destino.
+     * @param sinManterAbertoUnidade    o(a) sin manter aberto unidade.
+     * @param sinRemoverAnotacao        o(a) sin remover anotacao.
+     * @param sinEnviarEmailNotificacao o(a) sin enviar email notificacao.
+     * @param dataRetornoProgramado     o(a) data retorno programado.
      * @return o valor de boolean
      */
     @Override
@@ -551,10 +486,8 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Retirar documento bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloDocumento
-     *            o(a) protocolo documento.
+     * @param idBloco            o(a) id bloco.
+     * @param protocoloDocumento o(a) protocolo documento.
      * @return o valor de boolean
      */
     @Override
@@ -567,10 +500,8 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Retirar processo bloco.
      *
-     * @param idBloco
-     *            o(a) id bloco.
-     * @param protocoloProcedimento
-     *            o(a) protocolo procedimento.
+     * @param idBloco               o(a) id bloco.
+     * @param protocoloProcedimento o(a) protocolo procedimento.
      * @return o valor de boolean
      */
     @Override
@@ -583,8 +514,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Listar extensoes permitidas.
      *
-     * @param idArquivoExtensao
-     *            o(a) id arquivo extensao.
+     * @param idArquivoExtensao o(a) id arquivo extensao.
      * @return o valor de array of arquivo extensao
      */
     @Override
@@ -599,8 +529,7 @@ public class SEIWS implements SEIPortType, Loggable {
     /**
      * Listar tipos procedimento.
      *
-     * @param idSerie
-     *            o(a) id serie.
+     * @param idSerie o(a) id serie.
      * @return o valor de array of tipo procedimento
      */
     @Override
@@ -643,19 +572,34 @@ public class SEIWS implements SEIPortType, Loggable {
     }
 
     @Override
-	public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco) {
+    public RetornoConsultaBloco consultarBloco(UnidadeSei unidade, String idBloco) {
         return seiPortType.consultarBloco(siglaSistema, identificacaoServico, unidade.getId(), idBloco, SimNao.SIM.getCodigo());
-	}
+    }
 
-	@Override
-	public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo) {
-		return seiPortType.cancelarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento, motivo);
+    @Override
+    public String cancelarDocumento(UnidadeSei unidade, String protocoloDocumento, String motivo) {
+        return seiPortType.cancelarDocumento(siglaSistema, identificacaoServico, unidade.getId(), protocoloDocumento, motivo);
 
-	}
+    }
 
     @Override
     public List<Contato> listarContatos(@Nullable UnidadeSei unidade, String idTipoContato, String sigla) {
-            return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
+        return seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade).map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", sigla, "", "", "", "", new ArrayOfString()).getItem();
+    }
+
+
+    @Override
+    public Contato findContatoByCPF(@Nullable UnidadeSei unidade, String idTipoContato, String cpf) {
+        List<Contato> contatoList = seiPortType.listarContatos(siglaSistema, identificacaoServico, Optional.ofNullable(unidade)
+                        .map(UnidadeSei::getId).orElse(""), idTipoContato, "", "", "", "", cpf, "", "",
+                new ArrayOfString()).getItem();
+        if (CollectionUtils.isNotEmpty(contatoList)) {
+            if (contatoList.size() > 1) {
+                getLogger().warn("Was found more than one contact with the same CPF: {}", cpf);
+            }
+            return contatoList.get(0);
+        }
+        return null;
     }
 
     @Override
@@ -663,5 +607,19 @@ public class SEIWS implements SEIPortType, Loggable {
         return seiPortType.listarContatos(siglaSistema, identificacaoServico, "", idTipoContato, "", "", "", "", cpf, "", "", new ArrayOfString()).getItem();
     }
 
+
+    /**
+     * Listar tipos cargo.
+     *
+     * @return o valor de array of tipo cargo
+     */
+    @Override
+    public List<Cargo> listarCargos() {
+        ArrayOfCargo arrayOfCargo = seiPortType.listarCargos(siglaSistema, identificacaoServico, "", "");
+        if (arrayOfCargo == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfCargo.getItem();
+    }
 
 }
