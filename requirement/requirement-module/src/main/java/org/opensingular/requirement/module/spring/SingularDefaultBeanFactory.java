@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.spring;
 
 import org.hibernate.SessionFactory;
+import org.opensingular.app.commons.jobs.AttachmentGCJob;
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
 import org.opensingular.app.commons.mail.schedule.SingularSchedulerBean;
@@ -27,7 +28,6 @@ import org.opensingular.app.commons.mail.service.email.EmailSender;
 import org.opensingular.app.commons.mail.service.email.EmailSenderScheduledJob;
 import org.opensingular.app.commons.mail.service.email.IEmailService;
 import org.opensingular.app.commons.mail.service.email.IMailSenderREST;
-import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.flow.core.FlowDefinitionCache;
 import org.opensingular.flow.core.SingularFlowConfigurationBean;
 import org.opensingular.flow.core.service.IUserService;
@@ -48,6 +48,7 @@ import org.opensingular.form.service.FormService;
 import org.opensingular.form.service.FormTypeService;
 import org.opensingular.form.service.IFormService;
 import org.opensingular.form.spring.SpringFormConfig;
+import org.opensingular.form.spring.UserDetailsProvider;
 import org.opensingular.form.type.core.attachment.IAttachmentPersistenceHandler;
 import org.opensingular.form.type.core.attachment.IAttachmentRef;
 import org.opensingular.form.type.core.attachment.helper.IAttachmentPersistenceHelper;
@@ -83,7 +84,6 @@ import org.opensingular.requirement.module.persistence.dao.form.RequirementDefin
 import org.opensingular.requirement.module.persistence.filter.BoxFilterFactory;
 import org.opensingular.requirement.module.persistence.query.config.DefaultRequirementSearchQueryConfig;
 import org.opensingular.requirement.module.persistence.query.config.RequirementSearchQueryConfig;
-import org.opensingular.requirement.module.service.AttachmentGCJob;
 import org.opensingular.requirement.module.service.DefaultRequirementService;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.ParameterService;
