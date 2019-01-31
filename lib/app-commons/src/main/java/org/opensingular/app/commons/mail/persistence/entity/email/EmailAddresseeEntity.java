@@ -52,7 +52,7 @@ public class EmailAddresseeEntity extends BaseEntity<Long> {
     @JoinColumn(name = "CO_EMAIL", nullable = false , foreignKey = @ForeignKey(name = "FK_DESTINATARIO_EMAIL_CO_EMAIL"))
     private EmailEntity email;
 
-    @Column(name = "TX_ENDERECO", nullable = false, length = 100)
+    @Column(name = "TX_ENDERECO", nullable = false, length = 500)
     private String address;
 
     @Type(type = GenericEnumUserType.CLASS_NAME, parameters = { 
