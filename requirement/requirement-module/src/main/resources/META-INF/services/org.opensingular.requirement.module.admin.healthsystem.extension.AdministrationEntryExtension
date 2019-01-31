@@ -29,3 +29,4 @@ org.opensingular.requirement.module.admin.healthsystem.extension.MemoryAdminEntr
 org.opensingular.requirement.module.admin.healthsystem.extension.DiskAdminEntry
 org.opensingular.requirement.module.admin.healthsystem.extension.HtmlToPdfAdminEntry
 org.opensingular.requirement.module.admin.healthsystem.extension.RequirementTransitionEntry
+org.opensingular.requirement.module.admin.healthsystem.extension.PropertiesAdminEntry
