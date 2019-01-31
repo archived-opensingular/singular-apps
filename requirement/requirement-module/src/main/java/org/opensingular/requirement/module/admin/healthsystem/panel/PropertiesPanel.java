@@ -25,10 +25,8 @@ import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
@@ -68,12 +66,7 @@ public class PropertiesPanel extends Panel implements Loggable {
 
             @Override
             public Iterator<String> iterator(int first, int count, String sortProperty, boolean ascending) {
-                List<String> properties = listAllProperties();
-                if (properties != null) {
-                    return properties.iterator();
-                } else {
-                    return Collections.EMPTY_LIST.iterator();
-                }
+                return listAllProperties().iterator();
             }
         };
     }
