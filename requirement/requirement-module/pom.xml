@@ -170,6 +170,12 @@
             <artifactId>singular-studio-core</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>net.bull.javamelody</groupId>
+            <artifactId>javamelody-core</artifactId>
+        </dependency>
+
+
     </dependencies>
 
 

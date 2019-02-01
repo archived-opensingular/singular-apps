@@ -21,6 +21,7 @@ import org.opensingular.form.wicket.mapper.attachment.upload.servlet.FileUploadS
 import org.opensingular.form.wicket.mapper.attachment.upload.servlet.strategy.SimplePostFilesStrategy;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.SessionTimeoutHttpSessionListener;
+import org.opensingular.requirement.module.config.melody.MelodyFilter;
 import org.springframework.orm.hibernate5.support.OpenSessionInViewFilter;
 import org.springframework.web.context.ContextLoaderListener;
 import org.springframework.web.context.request.RequestContextListener;
@@ -59,6 +60,8 @@ public class ServletContextSetupSingularWebAppInitializerListener implements Sin
         servletContext
                 .addFilter("opensessioninview", OpenSessionInViewFilter.class)
                 .addMappingForUrlPatterns(EnumSet.allOf(DispatcherType.class), false, "/*");
+
+        MelodyFilter.getInstance().addJavaMelodyFilter(servletContext);
 
         servletContext
                 .addServlet(SimplePostFilesStrategy.class.getName(), FileUploadServlet.class)
