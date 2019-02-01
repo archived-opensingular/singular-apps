@@ -47,7 +47,7 @@ import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Optional;
 
-import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_MONITORING_PASSWORD;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_MONITORING_SECURITY_KEY;
 import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_MONITORING_USERNAME;
 
 public interface SecurityConfigs {
@@ -199,7 +199,7 @@ public interface SecurityConfigs {
                     final String rawUsername = authentication.getPrincipal().toString();
                     final String rawPassword = authentication.getCredentials().toString();
                     final String encodedUserName = SingularProperties.get(SINGULAR_MONITORING_USERNAME);
-                    final String encodedPassword = SingularProperties.get(SINGULAR_MONITORING_PASSWORD);
+                    final String encodedPassword = SingularProperties.get(SINGULAR_MONITORING_SECURITY_KEY);
 
                     if (SingularCryptUtil.getInstance().matches(rawUsername, encodedUserName)
                             && SingularCryptUtil.getInstance().matches(rawPassword, encodedPassword)) {
