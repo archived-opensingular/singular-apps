@@ -38,25 +38,21 @@ import javax.servlet.http.HttpServletRequest;
 public class LoginPage extends SingularAdminTemplate implements Loggable {
 
     private String messageError;
-    private boolean hasError = false;
-
-    public LoginPage() {
-        this(null);
-    }
+    private boolean hasError;
 
     public LoginPage(PageParameters parameters) {
         super(parameters);
-        hasError = parameters != null && parameters.get("error") != null;
+        hasError = parameters != null && !parameters.isEmpty() && parameters.get("error") != null;
         populateSpringErrorMessage();
         createContainerFormLogin();
     }
 
-    protected Component createExtraButtonsContainer(String id){
-       return new WebMarkupContainer(id).setVisible(false);
+    protected Component createExtraButtonsContainer(String id) {
+        return new WebMarkupContainer(id).setVisible(false);
     }
 
-    protected Component createLoginTitle(String id){
-       return new Label(id, "Login");
+    protected Component createLoginTitle(String id) {
+        return new Label(id, "Login");
     }
 
     private void createContainerFormLogin() {
@@ -72,7 +68,7 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
         return new WebMarkupContainer(id);
     }
 
-    protected LoginForm createLoginForm(String id) {
+    private LoginForm createLoginForm(String id) {
         return new LoginForm(id);
     }
 
@@ -108,10 +104,10 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
     }
 
     private void populateSpringErrorMessage() {
-        HttpServletRequest httpRequest  = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
+        HttpServletRequest httpRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
         Object springSecurityLastException = httpRequest.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
-        if(springSecurityLastException != null) {
-            messageError = ((AuthenticationException) httpRequest.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION")).getMessage();
+        if (springSecurityLastException != null) {
+            messageError = ((AuthenticationException) springSecurityLastException).getMessage();
         }
     }
 
