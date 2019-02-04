@@ -16,9 +16,6 @@
 
 package org.opensingular.requirement.module.wicket.error;
 
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.base.Throwables;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
@@ -26,11 +23,14 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.joda.time.DateTime;
 import org.opensingular.lib.commons.util.Loggable;
-import org.opensingular.requirement.module.exception.SingularServerIntegrationException;
+import org.opensingular.lib.commons.util.SingularIntegrationException;
 import org.opensingular.requirement.module.service.SendEmailToSupportService;
 import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.springframework.transaction.UnexpectedRollbackException;
 import org.wicketstuff.annotation.mount.MountPath;
+
+import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 import static java.lang.String.format;
 
@@ -68,7 +68,7 @@ public class Page500 extends ServerTemplate implements Loggable {
         add(detail);
         detail.setVisible(false);
         detail.add(new WebMarkupContainer("message"));
-        if (exception instanceof SingularServerIntegrationException) {
+        if (exception instanceof SingularIntegrationException) {
             detail.setVisible(true);
             detail.replace(new Label("message", Model.of(exception.getMessage())));
         }

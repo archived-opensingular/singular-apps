@@ -17,19 +17,16 @@
 package org.opensingular.requirement.module.exception;
 
 import org.opensingular.flow.core.FlowDefinition;
-import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.util.SingularIntegrationException;
 import org.opensingular.requirement.module.service.RequirementInstance;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-import org.opensingular.lib.commons.base.SingularException;
-import org.opensingular.requirement.module.service.RequirementInstance;
-
 /**
  * Exceções do Singular server e seus módulos
  */
-public class SingularServerException extends SingularException {
+public class SingularServerException extends SingularIntegrationException {
 
     public SingularServerException(@Nonnull String msg) {
         super(msg);
