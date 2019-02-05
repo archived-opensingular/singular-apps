@@ -744,7 +744,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                     modal.getModalBorder().updateWarnings(retrieveWarningErrors);
                 }
             }
-            show = controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal.getModalBorder(), ajaxRequestTarget);
+            SInstance transitionControllerInstance = Optional.ofNullable(flowConfirmModal).map(STypeBasedFlowConfirmModal::getInstanceModel).map(IModel::getObject).orElse(null);
+            show = controller.onShow(getInstance(), transitionControllerInstance, modal.getModalBorder(), ajaxRequestTarget);
         }
         if (show) {
             modal.onShowUpdate(ajaxRequestTarget);
@@ -871,7 +872,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected void validateUserAllocatedAndUserAction() {
-        String username = SingularSession.get().getUsername();
+        String       username     = SingularSession.get().getUsername();
         TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
         if (taskInstance != null
                 && taskInstance.getAllocatedUser() != null
