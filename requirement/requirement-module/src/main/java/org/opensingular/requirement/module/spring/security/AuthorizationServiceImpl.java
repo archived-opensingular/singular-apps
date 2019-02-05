@@ -23,7 +23,6 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.requirement.module.box.action.BoxItemActionList;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.dto.BoxItemAction;
@@ -207,7 +206,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             } else {
                 // Qualquer modo de edição o usuário deve ter permissão e estar alocado na tarefa,
                 // para os modos de visualização basta a permissão.
-                isAllowedUser = readonly || !isTaskAssignedToAnotherUser(requirementId, userId);
+                isAllowedUser = readonly || isUserAllowedToEdit(requirementId, userId, action);
             }
         }
 
@@ -216,11 +215,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
 
     /**
      * Utility method used by {@link #hasPermission(Long, String, String, String, String, IServerContext, boolean)}
-     *
-     * @param requirementId
-     * @param userId
-     * @param applicantId
-     * @return
      */
     protected boolean isOwner(Long requirementId, String userId, String applicantId) {
         RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
@@ -233,6 +227,12 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         return truth;
     }
 
+    /**
+     * Utility method used by {@link #hasPermission(Long, String, String, String, String, IServerContext, boolean)}
+     */
+    protected boolean isUserAllowedToEdit(Long requirementId, String idUsuario, String action) {
+        return !isTaskAssignedToAnotherUser(requirementId, idUsuario);
+    }
 
     /**
      * Utility method used by {@link #hasPermission(Long, String, String, String, String, IServerContext, boolean)}
@@ -241,7 +241,6 @@ public class AuthorizationServiceImpl implements AuthorizationService {
      * @param idUsuario
      * @return
      */
-    @SuppressWarnings("OptionalIsPresent")
     protected boolean isTaskAssignedToAnotherUser(Long requirementId, String idUsuario) {
         if (requirementId != null && idUsuario != null) {
             return requirementService.findCurrentTaskEntityByRequirementId(requirementId)
