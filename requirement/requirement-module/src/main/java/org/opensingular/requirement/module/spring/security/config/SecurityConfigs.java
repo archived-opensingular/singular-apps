@@ -18,21 +18,27 @@ package org.opensingular.requirement.module.spring.security.config;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
 import org.opensingular.requirement.module.auth.AdminCredentialChecker;
 import org.opensingular.requirement.module.auth.AdministrationAuthenticationProvider;
 import org.opensingular.requirement.module.spring.security.AbstractSingularSpringSecurityAdapter;
 import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
+import org.opensingular.requirement.module.spring.security.SingularPermission;
+import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.authentication.dao.AbstractUserDetailsAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
@@ -40,6 +46,9 @@ import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 import javax.inject.Inject;
 import java.util.Collections;
 import java.util.Optional;
+
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_MONITORING_SECURITY_KEY;
+import static org.opensingular.lib.commons.base.SingularProperties.SINGULAR_MONITORING_USERNAME;
 
 public interface SecurityConfigs {
 
@@ -166,5 +175,49 @@ public interface SecurityConfigs {
             };
         }
     }
+
+
+    @Configuration
+    @Order(108)
+    class JavaMelodySecurity extends WebSecurityConfigurerAdapter {
+
+        @Override
+        protected void configure(HttpSecurity http) throws Exception {
+            http.antMatcher("/monitoring/**")
+                    .authorizeRequests()
+                    .anyRequest()
+                    .hasRole("PROFILE_USER")
+                    .and()
+                    .httpBasic();
+        }
+
+        @Override
+        public void configure(AuthenticationManagerBuilder auth) {
+            auth.authenticationProvider(new AuthenticationProvider() {
+                @Override
+                public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+                    final String rawUsername = authentication.getPrincipal().toString();
+                    final String rawPassword = authentication.getCredentials().toString();
+                    final String encodedUserName = SingularProperties.get(SINGULAR_MONITORING_USERNAME);
+                    final String encodedPassword = SingularProperties.get(SINGULAR_MONITORING_SECURITY_KEY);
+
+                    if (SingularCryptUtil.getInstance().matches(rawUsername, encodedUserName)
+                            && SingularCryptUtil.getInstance().matches(rawPassword, encodedPassword)) {
+                        final SingularRequirementUserDetails user = new DefaultUserDetails(rawUsername, rawPassword,
+                                Collections.singletonList(new SingularPermission("PROFILE_USER", null)), null);
+                        return new UsernamePasswordAuthenticationToken(user, rawPassword, user.getAuthorities());
+                    }
+
+                    throw new BadCredentialsException("Credenciais inválidas");
+                }
+
+                @Override
+                public boolean supports(Class<?> authentication) {
+                    return (UsernamePasswordAuthenticationToken.class.isAssignableFrom(authentication));
+                }
+            });
+        }
+    }
+
 
 }

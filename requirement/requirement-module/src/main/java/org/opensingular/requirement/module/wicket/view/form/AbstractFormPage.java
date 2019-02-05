@@ -47,6 +47,8 @@ import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.type.core.annotation.AnnotationClassifier;
+import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
@@ -167,6 +169,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
         singularFormPanel.setViewMode(getViewMode(config));
         singularFormPanel.setAnnotationMode(getAnnotationMode(config));
+        singularFormPanel.setAnnotationClassifier(getAnnotationClassifier());
         singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
         singularFormPanel.setInstanceInitializer(this::onCreateInstance);
         singularFormPanel.setModalContainer(modalContainer);
@@ -741,7 +744,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                     modal.getModalBorder().updateWarnings(retrieveWarningErrors);
                 }
             }
-            show = controller.onShow(getInstance(), flowConfirmModal.getInstanceModel().getObject(), modal.getModalBorder(), ajaxRequestTarget);
+            SInstance transitionControllerInstance = Optional.ofNullable(flowConfirmModal).map(STypeBasedFlowConfirmModal::getInstanceModel).map(IModel::getObject).orElse(null);
+            show = controller.onShow(getInstance(), transitionControllerInstance, modal.getModalBorder(), ajaxRequestTarget);
         }
         if (show) {
             modal.onShowUpdate(ajaxRequestTarget);
@@ -814,6 +818,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return formPageConfig.getAnnotationMode();
     }
 
+    protected AnnotationClassifier getAnnotationClassifier() {
+        return AtrAnnotation.DefaultAnnotationClassifier.DEFAULT_ANNOTATION;
+    }
+
     private IReadOnlyModel<SInstance> getInstanceModel() {
         return (IReadOnlyModel<SInstance>) singularFormPanel::getInstance;
     }
@@ -858,8 +866,19 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void saveForm(SInstance instance) {
+        validateUserAllocatedAndUserAction();
         getRequirement().saveForm(instance);
         requirementIdModel.setObject(getRequirement().getCod());
+    }
+
+    protected void validateUserAllocatedAndUserAction() {
+        String       username     = SingularSession.get().getUsername();
+        TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
+        if (taskInstance != null
+                && taskInstance.getAllocatedUser() != null
+                && !username.equals(taskInstance.getAllocatedUser().getCodUsuario())) {
+            throw new SingularServerException("O requerimento não pertence mais a este usuário.");
+        }
     }
 
     private void addSaveCallBackUrl() {

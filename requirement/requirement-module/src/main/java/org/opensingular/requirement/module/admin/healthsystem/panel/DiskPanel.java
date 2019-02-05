@@ -16,14 +16,6 @@
 
 package org.opensingular.requirement.module.admin.healthsystem.panel;
 
-import java.io.IOException;
-import java.nio.file.FileStore;
-import java.nio.file.FileSystems;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Iterator;
-
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.markup.repeater.Item;
@@ -32,6 +24,11 @@ import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.util.ListModel;
 import org.apache.wicket.util.lang.Bytes;
 import org.opensingular.lib.commons.util.Loggable;
+
+import javax.swing.filechooser.FileSystemView;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Iterator;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
@@ -47,19 +44,14 @@ public class DiskPanel extends Panel implements Loggable {
     @Override
     protected void onConfigure() {
         super.onConfigure();
-
         disk.getObject().clear();
-        for (Path root : FileSystems.getDefault().getRootDirectories()) {
-
-            disk.getObject().add("<b>Disk Root: "+ root+"</b>");
-            try {
-                FileStore store = Files.getFileStore(root);
-                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Available: " + Bytes.bytes(store.getUsableSpace()));
-                disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp; Total: " + Bytes.bytes(store.getTotalSpace()));
-            } catch (IOException e) {
-                disk.getObject().add("error querying space: " + e);
-                getLogger().error("Error querying disk space", e);
-            }
+        FileSystemView fsv = FileSystemView.getFileSystemView();
+        File[]         f   = File.listRoots();
+        for (File file : f) {
+            disk.getObject().add("<b>Drive: " + file + "</b>");
+            disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Display name: " + fsv.getSystemDisplayName(file));
+            disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Total space: " + Bytes.bytes(file.getTotalSpace()));
+            disk.getObject().add("&nbsp;&nbsp;&nbsp;&nbsp;Usable space: " + Bytes.bytes(file.getUsableSpace()));
         }
     }
 

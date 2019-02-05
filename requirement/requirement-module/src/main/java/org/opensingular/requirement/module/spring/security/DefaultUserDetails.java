@@ -21,6 +21,7 @@ import org.opensingular.requirement.module.config.IServerContext;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
+import javax.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -35,11 +36,13 @@ public class DefaultUserDetails implements SingularRequirementUserDetails {
     private final List<Class<? extends IServerContext>> allowedContexts = new ArrayList<>();
 
     public DefaultUserDetails(String username, String displayName, List<SingularPermission> permissions,
-                              List<Class<? extends IServerContext>> allowedContexts) {
+                              @Nullable List<Class<? extends IServerContext>> allowedContexts) {
         this.username = username;
         this.displayName = displayName;
         this.permissions.addAll(permissions);
-        this.allowedContexts.addAll(allowedContexts);
+        if(allowedContexts != null) {
+            this.allowedContexts.addAll(allowedContexts);
+        }
     }
 
     @Override

@@ -23,7 +23,7 @@ public class EncodeUtil {
     public static String encodeToBase64(InputStream fis, int size) throws IOException {
         byte[] bytes = IOUtils.toByteArray(fis);
         fis.close();
-        return new String(Base64.encodeBase64(bytes));
+        return new String(Base64.encodeBase64(bytes), StandardCharsets.UTF_8);
     }
 
     public static String encodeToBase64(String value) {

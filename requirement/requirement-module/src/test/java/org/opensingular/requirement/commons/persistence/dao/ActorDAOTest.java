@@ -18,22 +18,18 @@
 
 package org.opensingular.requirement.commons.persistence.dao;
 
-import java.util.List;
-import java.util.Optional;
-import javax.inject.Inject;
-import javax.transaction.Transactional;
-
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Test;
 import org.opensingular.flow.core.SUser;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.internal.lib.commons.util.RandomUtil;
-import org.opensingular.lib.commons.context.SingularContextSetup;
-import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.commons.SingularCommonsBaseTest;
 import org.opensingular.requirement.module.persistence.dao.flow.ActorDAO;
-import org.springframework.context.ApplicationContext;
+
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+import java.util.List;
+import java.util.Optional;
 
 public class ActorDAOTest extends SingularCommonsBaseTest {
 
@@ -50,10 +46,10 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
     @Transactional
     public void saveUserIfNeededTest(){
         SUser user = new Actor(13, "codUser", "name", "email@email.com");
-        Assert.assertNull(actorDAO.saveUserIfNeeded(user));
+        Assert.assertNull(actorDAO.saveOrUpdateUserIfNeeded(user));
 
 
-        Optional<SUser> sUser = actorDAO.saveUserIfNeeded("codUsuario");
+        Optional<SUser> sUser = actorDAO.saveOrUpdateUserIfNeeded("codUsuario");
         Assert.assertEquals("codUsuario", sUser.get().getCodUsuario());
     }
 
@@ -63,8 +59,8 @@ public class ActorDAOTest extends SingularCommonsBaseTest {
         List<Actor> actors = actorDAO.listAllowedUsers(0);
         int initialSize = actors.size();
 
-        actorDAO.saveUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
-        actorDAO.saveUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
+        actorDAO.saveOrUpdateUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
+        actorDAO.saveOrUpdateUserIfNeeded("codUsuario" + RandomUtil.generateRandomPassword(3));
 
         actors = actorDAO.listAllowedUsers(0);
         Assert.assertEquals(initialSize + 2, actors.size());

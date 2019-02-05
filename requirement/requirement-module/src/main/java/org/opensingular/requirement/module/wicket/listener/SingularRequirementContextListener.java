@@ -27,10 +27,10 @@ import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.http.WebRequest;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.commons.util.SingularIntegrationException;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
 import org.opensingular.requirement.module.config.IServerContext;
-import org.opensingular.requirement.module.exception.SingularServerException;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
@@ -75,7 +75,7 @@ public class SingularRequirementContextListener extends SingularCsrfPreventionRe
     @Override
     public IRequestHandler onException(RequestCycle cycle, Exception ex) {
         SingularException singularException = getFirstSingularException(ex);
-        if (singularException instanceof SingularServerException
+        if (singularException instanceof SingularIntegrationException
                 && ((WebRequest) RequestCycle.get().getRequest()).isAjax()) {
             return new AjaxErrorRequestHandler(singularException);
         } else if (ex instanceof PageExpiredException || causeIsPageExpiredException(ex)) {

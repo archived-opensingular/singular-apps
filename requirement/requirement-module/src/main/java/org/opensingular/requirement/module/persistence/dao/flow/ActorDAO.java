@@ -64,7 +64,7 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
 
     }
 
-    public SUser saveUserIfNeeded(SUser sUser) {
+    public SUser saveOrUpdateUserIfNeeded(SUser sUser) {
         if (sUser == null) {
             return null;
         }
@@ -72,18 +72,18 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         Integer cod        = sUser.getCod();
         String  codUsuario = sUser.getCodUsuario();
 
-        return saveUserIfNeeded(cod, codUsuario, sUser.getSimpleName(), sUser.getEmail()).orElse(null);
+        return saveOrUpdateUserIfNeeded(cod, codUsuario, sUser.getSimpleName(), sUser.getEmail()).orElse(null);
     }
 
-    public Optional<SUser> saveUserIfNeeded(@Nonnull String codUsuario) {
-        return saveUserIfNeeded(null, Objects.requireNonNull(codUsuario));
+    public Optional<SUser> saveOrUpdateUserIfNeeded(@Nonnull String codUsuario) {
+        return saveOrUpdateUserIfNeeded(null, Objects.requireNonNull(codUsuario));
     }
 
-    private Optional<SUser> saveUserIfNeeded(Integer cod, String codUsuario) {
-        return saveUserIfNeeded(cod, codUsuario, codUsuario, null);
+    private Optional<SUser> saveOrUpdateUserIfNeeded(Integer cod, String codUsuario) {
+        return saveOrUpdateUserIfNeeded(cod, codUsuario, codUsuario, null);
     }
 
-    private Optional<SUser> saveUserIfNeeded(Integer cod, String codUsuario, @Nullable String name, @Nullable String email) {
+    private Optional<SUser> saveOrUpdateUserIfNeeded(Integer cod, String codUsuario, @Nullable String name, @Nullable String email) {
         SUser result = null;
         if (cod != null) {
             result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("cod", cod)).uniqueResult();
@@ -94,37 +94,69 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         }
 
         if (result == null && cod == null) {
-            Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
-            if (dialect.getNativeIdentifierGeneratorStrategy().equals("sequence") && dialect.supportsSequences()) {
-                dialect.getSequenceNextValString("nada");
-                getSession().doWork(connection -> {
-                    String sql = SqlUtil.replaceSingularSchemaName("insert into "
-                            + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (("
-                            + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ?,?,? )");
-                    PreparedStatement ps = connection.prepareStatement(sql);
-                    ps.setString(1, codUsuario);
-                    ps.setString(2, name);
-                    ps.setString(3, email);
-                    ps.executeUpdate();
-                });
-            } else {
-                getSession().doWork(connection -> {
-                    String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (?)");
-                    PreparedStatement ps  = connection.prepareStatement(sql);
-                    ps.setString(1, codUsuario);
-                    ps.setString(2, name);
-                    ps.setString(3, email);
-                    ps.executeUpdate();
-                });
-            }
-            getSession().flush();
-            result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("codUsuario", codUsuario)).uniqueResult();
-
-            if (result == null) {
-                throw SingularServerException.rethrow("Usuário que deveria ter sido criado não pode ser recuperado.");
-            }
+            result = saveNewUser(codUsuario, name, email);
         }
+
+        if (result != null
+                && (!Objects.equals(result.getSimpleName(), name)
+                            || !Objects.equals(result.getEmail(), email))) {
+            updateUser(codUsuario, name, email, result);
+        }
+
         return Optional.ofNullable(result);
+    }
+
+    private void updateUser(String codUsuario, @Nullable String name, @Nullable String email, SUser result) {
+        String finalName;
+        if (Objects.equals(name, codUsuario)) {
+            finalName = result.getSimpleName();
+        } else {
+            finalName = name;
+        }
+        getSession().doWork(connection -> {
+            String            sql = SqlUtil.replaceSingularSchemaName("UPDATE " + Constants.SCHEMA + ".TB_ATOR SET NO_ATOR = ?, DS_EMAIL = ? WHERE CO_USUARIO = ?");
+            PreparedStatement ps  = connection.prepareStatement(sql);
+            ps.setString(1, finalName);
+            ps.setString(2, email);
+            ps.setString(3, codUsuario);
+            ps.executeUpdate();
+        });
+        getSession().flush();
+        getSession().refresh(result);
+    }
+
+    private SUser saveNewUser(String codUsuario, @Nullable String name, @Nullable String email) {
+        SUser   result;
+        Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
+        if ("sequence".equals(dialect.getNativeIdentifierGeneratorStrategy()) && dialect.supportsSequences()) {
+            dialect.getSequenceNextValString("nada");
+            getSession().doWork(connection -> {
+                String sql = SqlUtil.replaceSingularSchemaName("insert into "
+                        + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (("
+                        + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ?,?,? )");
+                PreparedStatement ps = connection.prepareStatement(sql);
+                ps.setString(1, codUsuario);
+                ps.setString(2, name);
+                ps.setString(3, email);
+                ps.executeUpdate();
+            });
+        } else {
+            getSession().doWork(connection -> {
+                String            sql = SqlUtil.replaceSingularSchemaName("insert into " + Constants.SCHEMA + ".TB_ATOR (CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (?)");
+                PreparedStatement ps  = connection.prepareStatement(sql);
+                ps.setString(1, codUsuario);
+                ps.setString(2, name);
+                ps.setString(3, email);
+                ps.executeUpdate();
+            });
+        }
+        getSession().flush();
+        result = (SUser) getSession().createCriteria(Actor.class).add(Restrictions.eq("codUsuario", codUsuario)).uniqueResult();
+
+        if (result == null) {
+            throw SingularServerException.rethrow("Usuário que deveria ter sido criado não pode ser recuperado.");
+        }
+        return result;
     }
 
     @SuppressWarnings("unchecked")

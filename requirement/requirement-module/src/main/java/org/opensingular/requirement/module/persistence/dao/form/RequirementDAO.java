@@ -43,9 +43,11 @@ import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchExtender;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQuery;
 import org.opensingular.requirement.module.persistence.query.RequirementSearchQueryFactory;
+import org.opensingular.requirement.module.persistence.query.config.RequirementSearchQueryConfig;
 import org.opensingular.requirement.module.spring.security.RequirementAuthMetadataDTO;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 
+import javax.inject.Inject;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
@@ -54,6 +56,9 @@ import java.util.Optional;
 
 
 public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
+
+    @Inject
+    private RequirementSearchQueryConfig requirementSearchQueryConfig;
 
     public RequirementDAO() {
         super(RequirementEntity.class);
@@ -91,7 +96,7 @@ public class RequirementDAO extends BaseDAO<RequirementEntity, Long> {
     }
 
     private RequirementSearchQuery buildRequirementSearchQuery(RequirementSearchContext ctx) {
-        return new RequirementSearchQueryFactory(ctx).build(getSession());
+        return new RequirementSearchQueryFactory(ctx, requirementSearchQueryConfig).build(getSession());
     }
 
     public List<Map<String, Serializable>> quickSearchMap(BoxFilter filter,

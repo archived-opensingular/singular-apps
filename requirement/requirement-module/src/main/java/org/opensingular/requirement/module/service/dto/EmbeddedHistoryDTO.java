@@ -18,6 +18,8 @@ package org.opensingular.requirement.module.service.dto;
 
 
 import org.apache.commons.lang3.StringUtils;
+import org.opensingular.flow.persistence.entity.AbstractTaskInstanceEntity;
+import org.opensingular.flow.persistence.entity.AbstractTaskTransitionVersionEntity;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.TaskInstanceEntity;
 import org.opensingular.flow.persistence.entity.TaskVersionEntity;
@@ -57,6 +59,34 @@ public class EmbeddedHistoryDTO implements Serializable {
         executedTransition = "Enviar";
     }
 
+    public EmbeddedHistoryDTO(TaskInstanceEntity taskInstanceEntity, RequirementContentHistoryEntity nullableHistoryEntity) {
+        this(nullableHistoryEntity);
+        if(nullableHistoryEntity == null) {
+            final Optional<TaskInstanceEntity> taskInstanceEntityOptional = Optional.ofNullable(taskInstanceEntity);
+
+            name = taskInstanceEntityOptional
+                    .map(AbstractTaskInstanceEntity::getTaskVersion)
+                    .map(TaskVersionEntity::getName)
+                    .orElse(StringUtils.EMPTY);
+
+            actor = taskInstanceEntityOptional
+                    .map(AbstractTaskInstanceEntity::getAllocatedUser)
+                    .map(Actor::getNome)
+                    .orElse(StringUtils.EMPTY);
+
+            date = taskInstanceEntityOptional
+                    .map(AbstractTaskInstanceEntity::getEndDate)
+                    .orElse(null);
+
+            executedTransition = taskInstanceEntityOptional
+                    .map(AbstractTaskInstanceEntity::getExecutedTransition)
+                    .map(AbstractTaskTransitionVersionEntity::getName)
+                    .orElse(StringUtils.EMPTY);
+            typeFormVersions = new ArrayList<>();
+
+        }
+    }
+
     public EmbeddedHistoryDTO(RequirementContentHistoryEntity nullableHistoryEntity) {
         final Optional<RequirementContentHistoryEntity> historyEntity = Optional.ofNullable(nullableHistoryEntity);
 
@@ -74,9 +104,9 @@ public class EmbeddedHistoryDTO implements Serializable {
                 .orElse(null);
 
         executedTransition = historyEntity
-                .map(i -> i.getTaskInstanceEntity())
-                .map(i -> i.getExecutedTransition())
-                .map(i -> i.getName())
+                .map(RequirementContentHistoryEntity::getTaskInstanceEntity)
+                .map(AbstractTaskInstanceEntity::getExecutedTransition)
+                .map(AbstractTaskTransitionVersionEntity::getName)
                 .orElse(StringUtils.EMPTY);
 
         typeFormVersions = new ArrayList<>();

@@ -53,7 +53,7 @@
 
             <xsd:complexType name="ArrayOfPermissoes">
                 <xsd:sequence>
-                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="Permissao" nillable="true"
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" nillable="true"
                                  type="tns:Permissao"/>
                 </xsd:sequence>
             </xsd:complexType>
@@ -221,6 +221,21 @@
         <wsdl:part name="returnLogin" type="tns:RetornoValidarLogin"/>
     </wsdl:message>
 
+    <wsdl:message name="listarPermissaoRequest">
+        <wsdl:part name="IdSistema" type="xsd:string"/>
+        <wsdl:part name="IdOrgaoUsuario" type="xsd:string"/>
+        <wsdl:part name="IdUsuario" type="xsd:string"/>
+        <wsdl:part name="IdOrigemUsuario" type="xsd:string"/>
+        <wsdl:part name="IdOrgaoUnidade" type="xsd:string"/>
+        <wsdl:part name="IdUnidade" type="xsd:string"/>
+        <wsdl:part name="IdOrigemUnidade" type="xsd:string"/>
+        <wsdl:part name="IdPerfil" type="xsd:string"/>
+    </wsdl:message>
+
+
+    <wsdl:message name="listarPermissaoResponse">
+        <wsdl:part name="parametros" type="tns:ArrayOfPermissoes"/>
+    </wsdl:message>
 
     <wsdl:portType name="sipPortType">
         <wsdl:operation name="autenticar">
@@ -234,6 +249,10 @@
         <wsdl:operation name="validarLogin">
             <wsdl:input message="tns:validarLoginRequest"/>
             <wsdl:output message="tns:validarLoginResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="listarPermissao">
+            <wsdl:input message="tns:listarPermissaoRequest"/>
+            <wsdl:output message="tns:listarPermissaoResponse"/>
         </wsdl:operation>
     </wsdl:portType>
 
@@ -258,6 +277,15 @@
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="validarLogin">
+            <soap:operation soapAction="sipnsAction"/>
+            <wsdl:input>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarPermissao">
             <soap:operation soapAction="sipnsAction"/>
             <wsdl:input>
                 <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
