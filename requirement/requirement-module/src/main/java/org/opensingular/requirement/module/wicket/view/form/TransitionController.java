@@ -33,7 +33,8 @@ public interface TransitionController<T extends SType<?>> extends Serializable {
     /**
      * This method tells the transition controller to consider or not
      * the form page validation during the transition.
-     * @return true by default to validate the form page
+     *
+     * @return true to validate the form page.
      */
     boolean isValidatePageForm();
 
