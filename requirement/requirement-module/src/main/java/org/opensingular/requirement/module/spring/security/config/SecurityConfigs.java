@@ -181,12 +181,14 @@ public interface SecurityConfigs {
     @Order(108)
     class JavaMelodySecurity extends WebSecurityConfigurerAdapter {
 
+        public static final String MONITORING_USER = "MONITORING_USER";
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
             http.antMatcher("/monitoring/**")
                     .authorizeRequests()
                     .anyRequest()
-                    .hasRole("PROFILE_USER")
+                    .hasRole(MONITORING_USER)
                     .and()
                     .httpBasic();
         }
@@ -204,7 +206,7 @@ public interface SecurityConfigs {
                     if (SingularCryptUtil.getInstance().matches(rawUsername, encodedUserName)
                             && SingularCryptUtil.getInstance().matches(rawPassword, encodedPassword)) {
                         final SingularRequirementUserDetails user = new DefaultUserDetails(rawUsername, rawPassword,
-                                Collections.singletonList(new SingularPermission("PROFILE_USER", null)), null);
+                                Collections.singletonList(new SingularPermission("MONITORING_USER", null)), null);
                         return new UsernamePasswordAuthenticationToken(user, rawPassword, user.getAuthorities());
                     }
 
