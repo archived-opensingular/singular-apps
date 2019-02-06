@@ -170,7 +170,7 @@ public interface SecurityConfigs {
                     if (StringUtils.isNotBlank(username)) {
                         return new DefaultUserDetails(username, username, Collections.emptyList(), Collections.singletonList(getContext().getClass()));
                     }
-                    throw new BadCredentialsException("Não foi possivel autenticar o usuario informado");
+                    throw new BadCredentialsException("Não foi possivel autenticar o usuário informado");
                 }
             };
         }
@@ -190,7 +190,13 @@ public interface SecurityConfigs {
                     .anyRequest()
                     .hasRole(MONITORING_USER)
                     .and()
-                    .httpBasic();
+                    .exceptionHandling().accessDeniedPage("/public/error/403")
+                    .and()
+                    .httpBasic()
+                    .and()
+                    .logout()
+                    .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
+                    .logoutSuccessUrl("/");
         }
 
         @Override
