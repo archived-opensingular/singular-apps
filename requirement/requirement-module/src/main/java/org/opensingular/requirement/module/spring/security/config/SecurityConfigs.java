@@ -206,7 +206,7 @@ public interface SecurityConfigs {
                     if (SingularCryptUtil.getInstance().matches(rawUsername, encodedUserName)
                             && SingularCryptUtil.getInstance().matches(rawPassword, encodedPassword)) {
                         final SingularRequirementUserDetails user = new DefaultUserDetails(rawUsername, rawPassword,
-                                Collections.singletonList(new SingularPermission("MONITORING_USER", null)), null);
+                                Collections.singletonList(new SingularPermission(MONITORING_USER, null)), null);
                         return new UsernamePasswordAuthenticationToken(user, rawPassword, user.getAuthorities());
                     }
 
