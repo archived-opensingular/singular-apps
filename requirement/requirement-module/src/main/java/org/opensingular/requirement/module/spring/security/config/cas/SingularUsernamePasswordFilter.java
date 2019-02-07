@@ -37,6 +37,7 @@ public class SingularUsernamePasswordFilter extends UsernamePasswordAuthenticati
             this.loginPage = loginPage;
         }
 
+        @SuppressWarnings("findsecbugs:UNVALIDATED_REDIRECT")
         @Override
         public void onAuthenticationFailure(HttpServletRequest request, HttpServletResponse response, AuthenticationException exception) throws IOException {
             request.getSession().setAttribute(SINGULAR_AUTHENTICATION_MESSAGE_EXCEPTION, exception.getMessage());
