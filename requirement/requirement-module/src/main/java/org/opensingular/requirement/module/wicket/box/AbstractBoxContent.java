@@ -19,6 +19,7 @@ package org.opensingular.requirement.module.wicket.box;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
@@ -180,9 +181,27 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
         queue(buildAfterTableContainer("afterTableContainer"));
         queue(confirmModalWrapper.add(new WebMarkupContainer("confirmationModal")));
 
+        WebMarkupContainer advancedFilterContainer = new WebMarkupContainer("advancedFilterContainer");
+        createAdvancedFilter();
+        advancedFilterContainer.add(createClearFilterButton());
+        advancedFilterContainer.add(advancedFilter);
+        queue(advancedFilterContainer);
+    }
+
+    private Component createClearFilterButton() {
+        return new AjaxLink<Void>("filter") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                advancedFilter.getInstance().clearInstance();
+                target.add(this.getParent());
+            }
+        };
+
+    }
+
+    private void createAdvancedFilter() {
         advancedFilter = new SingularFormPanel("advancedFilter", this::createDynamicAdvancedFilterInstance);
         advancedFilter.setNested(true);
-        queue(advancedFilter);
     }
 
     private SInstance createDynamicAdvancedFilterInstance(){

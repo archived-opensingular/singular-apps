@@ -53,7 +53,11 @@
             </div>
             <div class="portlet-body form">
                 <div id="filtroAvancado" class="collapse ">
-                    <div class="box-advanced-filter" wicket:id="advancedFilter"></div>
+                    <div class="box-advanced-filter" wicket:id="advancedFilterContainer">
+                        <div wicket:id="advancedFilter"></div>
+                        <button wicket:id="filter" class="btn btn-default" style="float: right"><i class="fa fa-trash"></i>Limpar</button>
+                        <div style="clear:both;"></div>
+                    </div>
                 </div>
                 <div wicket:id="beforeTableContainer"></div>
                 <div class="dataTables_wrapper no-footer table-responsive">
