@@ -27,6 +27,7 @@ import org.opensingular.requirement.module.spring.security.DefaultUserDetails;
 import org.opensingular.requirement.module.spring.security.SingularPermission;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.spring.security.config.cas.SingularCASSpringSecurityConfig;
+import org.opensingular.requirement.module.spring.security.config.cas.SingularUsernamePasswordFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpMethod;
@@ -41,9 +42,11 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
 import javax.inject.Inject;
+import javax.servlet.Filter;
 import java.util.Collections;
 import java.util.Optional;
 
@@ -119,13 +122,16 @@ public interface SecurityConfigs {
     }
 
     abstract class AllowAllSecurity extends AbstractSingularSpringSecurityAdapter {
+
         @Override
         protected void configure(HttpSecurity http) throws Exception {
+
             http.regexMatcher(getContext().getSettings().getPathRegex())
                     .requiresChannel()
                     .anyRequest()
                     .requiresSecure()
                     .and()
+                    .addFilterBefore(customUsernamePasswordAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                     .headers()
                     .frameOptions()
                     .sameOrigin()
@@ -174,6 +180,14 @@ public interface SecurityConfigs {
                 }
             };
         }
+
+        public Filter customUsernamePasswordAuthenticationFilter() throws Exception {
+            String loginPage = getContext().getSettings().getUrlPath() + getLoginPagePath();
+            SingularUsernamePasswordFilter singularUsernamePasswordFilter = new SingularUsernamePasswordFilter(loginPage);
+            singularUsernamePasswordFilter.setAuthenticationManager(authenticationManagerBean());
+            return singularUsernamePasswordFilter;
+        }
+
     }
 
 

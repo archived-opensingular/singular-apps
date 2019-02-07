@@ -28,7 +28,7 @@ import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
-import org.springframework.security.core.AuthenticationException;
+import org.opensingular.requirement.module.spring.security.config.cas.SingularUsernamePasswordFilter;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -37,12 +37,11 @@ import javax.servlet.http.HttpServletRequest;
  */
 public class LoginPage extends SingularAdminTemplate implements Loggable {
 
-    private String messageError;
-    private boolean hasError;
+    private Model<String> usernameModel = new Model<>();
+    private Model<String> messageErrorModel = new Model<>();
 
     public LoginPage(PageParameters parameters) {
         super(parameters);
-        hasError = parameters != null && !parameters.isEmpty() && parameters.get("error") != null;
         populateSpringErrorMessage();
         createContainerFormLogin();
     }
@@ -92,22 +91,24 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
         LoginForm(String id) {
             super(id);
             WebMarkupContainer feedBackMessage = new WebMarkupContainer("feedback");
-            feedBackMessage.add(new Label("messageError", messageError));
-            feedBackMessage.setVisible(hasError);
+            feedBackMessage.add(new Label("messageError", messageErrorModel));
+            feedBackMessage.setVisible(messageErrorModel.getObject() != null);
             add(feedBackMessage);
 
-            Model<String> username = new Model<>();
             Model<String> password = new Model<>();
-            add(new RequiredTextField<>("username", username).setLabel(new Model<>("Login")));
+            add(new RequiredTextField<>("username", usernameModel).setLabel(new Model<>("Login")));
             add(new PasswordTextField("password", password).setLabel(new Model<>("Senha")));
         }
     }
 
     private void populateSpringErrorMessage() {
         HttpServletRequest httpRequest = (HttpServletRequest) RequestCycle.get().getRequest().getContainerRequest();
-        Object springSecurityLastException = httpRequest.getSession().getAttribute("SPRING_SECURITY_LAST_EXCEPTION");
+        String springSecurityLastException = (String) httpRequest.getSession().getAttribute(SingularUsernamePasswordFilter.SINGULAR_AUTHENTICATION_MESSAGE_EXCEPTION);
+        usernameModel.setObject((String) httpRequest.getSession().getAttribute(SingularUsernamePasswordFilter.SINGULAR_USERNAME_KEY));
+        httpRequest.getSession().removeAttribute(SingularUsernamePasswordFilter.SINGULAR_AUTHENTICATION_MESSAGE_EXCEPTION);
+        httpRequest.getSession().removeAttribute(SingularUsernamePasswordFilter.SINGULAR_USERNAME_KEY);
         if (springSecurityLastException != null) {
-            messageError = ((AuthenticationException) springSecurityLastException).getMessage();
+            messageErrorModel.setObject(springSecurityLastException);
         }
     }
 
