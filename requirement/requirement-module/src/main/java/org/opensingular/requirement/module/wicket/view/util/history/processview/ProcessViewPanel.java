@@ -29,7 +29,6 @@ import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.OnDomReadyHeaderItem;
 import org.apache.wicket.markup.html.WebComponent;
 import org.apache.wicket.markup.html.WebMarkupContainer;
-import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.image.Image;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -155,7 +154,7 @@ public class ProcessViewPanel extends Panel {
         Objects.requireNonNull(requirement);
         historyPanel.addOrReplace(newFlowPanel(requirement));
         historyPanel.addOrReplace(new EmbeddedHistoryPanel("historico", requirement));
-        historyPanel.addOrReplace(newDadosRequerimento(requirement));
+        historyPanel.addOrReplace(createInfoHistoryPanel("dadosRequerimento", requirement));
 
         historyPanel.add(new Behavior() {
             @Override
@@ -273,14 +272,8 @@ public class ProcessViewPanel extends Panel {
 
     }
 
-    private WebMarkupContainer newDadosRequerimento(RequirementInstance r) {
-        WebMarkupContainer dadosRequerimento = new WebMarkupContainer("dadosRequerimento");
-        dadosRequerimento.add(new Label("descricao", Model.of(r.getDescription())));
-        dadosRequerimento.add(new Label("protocolo", Model.of(r.getCod())));
-        dadosRequerimento.add(new Label("dataEntrada", Model.of(r.getFlowInstance().getBeginDate())));
-        dadosRequerimento.add(new Label("situacaoAtual", Model.of(r.getCurrentTaskNameOrException())));
-        dadosRequerimento.add(new Label("solicitante", Model.of(r.getApplicantName())));
-        return dadosRequerimento;
+    protected Panel createInfoHistoryPanel(String id, RequirementInstance<?,?> requirement) {
+        return new InfoHistoryPanel(id, requirement);
     }
 
 }

@@ -16,6 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.util.history;
 
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.model.ResourceModel;
@@ -34,6 +35,7 @@ public class HistoryPage extends ServerTemplate {
     private static final long serialVersionUID = -3344810189307767761L;
 
     public HistoryPage() {
+        //TODO verificar se esse construtor deve existir.
     }
 
     public HistoryPage(PageParameters parameters) {
@@ -45,7 +47,11 @@ public class HistoryPage extends ServerTemplate {
         super.onInitialize();
         Long requirementPK     = getPage().getPageParameters().get(REQUIREMENT_ID).toOptionalLong();
         Long rootRequirementPK = getPage().getPageParameters().get(ROOT_REQUIREMENT_ID).toLong(requirementPK);
-        add(new ProcessViewPanel("visaoProcesso", rootRequirementPK, requirementPK));
+        add(createProcessViewPanel("visaoProcesso", requirementPK, rootRequirementPK));
+    }
+
+    protected Panel createProcessViewPanel(String id, Long requirementPK, Long rootRequirementPK) {
+        return new ProcessViewPanel(id, rootRequirementPK, requirementPK);
     }
 
     @Override
