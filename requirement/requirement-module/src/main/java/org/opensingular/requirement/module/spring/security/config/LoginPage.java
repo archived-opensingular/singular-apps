@@ -54,7 +54,12 @@ public class LoginPage extends SingularAdminTemplate implements Loggable {
         return new Label(id, "Login");
     }
 
+    protected Component createLogoSubtitle(String id) {
+        return new Label(id, "");
+    }
+
     private void createContainerFormLogin() {
+        add(createLogoSubtitle("logo-subtitle"));
         WebMarkupContainer container = createContainerLogin("container-login");
         LoginForm loginForm = createLoginForm("loginForm");
         loginForm.add(createExtraButtonsContainer("extraButtons"));
