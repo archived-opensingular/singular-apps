@@ -178,7 +178,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         form.add(buildSendButton(enviarModal));
         form.add(buildSaveButton("save-btn"));
         form.add(buildFlowButtons(modalContainer));
-        form.add(buildValidateButton());
+        form.add(buildValidateButton("validate-btn"));
         form.add(buildExtensionButtons());
         form.add(buildCloseButton());
         form.add(closeModal);
@@ -459,7 +459,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private void configureDiffButton(Long requirementId, BSContainer<?> buttonContainer, IModel<? extends SInstance> currentInstance) {
         if (hasMultipleVersionsAndIsMainForm(requirementId)) {
-            appendButtonViewDiff(buttonContainer, requirementId, currentInstance);
+            buttonContainer.appendComponent(id -> buildDiffButton(id));
         }
     }
 
@@ -524,17 +524,13 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     /**
-     * Adiciona o botão para visualizar o diff na barra de botões.
-     *
-     * @param buttonContainer
+     * Cria o botão para visualizar o diff na barra de botões.
+     *  @param buttonContainer
      * @param requirementId
-     * @param currentInstance
      */
-    protected void appendButtonViewDiff(BSContainer<?> buttonContainer, Long requirementId, IModel<? extends SInstance> currentInstance) {
-        buttonContainer.appendComponent(id ->
-                new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
-                        .getDiffButton(id)
-        );
+    protected Component buildDiffButton(String id) {
+        return new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
+                .getDiffButton(id);
     }
 
     protected Map<String, String> getAdditionalParams() {
@@ -937,8 +933,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return closeModal;
     }
 
-    protected Component buildValidateButton() {
-        final SingularValidationButton button = new SingularValidationButton("validate-btn", getInstanceModel()) {
+    protected Component buildValidateButton(final String id) {
+        final SingularValidationButton button = new SingularValidationButton(id, getInstanceModel()) {
 
             @Override
             protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
