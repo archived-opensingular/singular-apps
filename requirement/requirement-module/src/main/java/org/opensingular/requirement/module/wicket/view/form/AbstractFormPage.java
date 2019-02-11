@@ -874,7 +874,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private void saveForm(SInstance instance) {
         validateUserAllocatedAndUserAction();
-        getRequirement().saveForm(instance);
+        if (instance != null) {
+            getRequirement().saveForm(instance);
+        }
         requirementIdModel.setObject(getRequirement().getCod());
     }
 
