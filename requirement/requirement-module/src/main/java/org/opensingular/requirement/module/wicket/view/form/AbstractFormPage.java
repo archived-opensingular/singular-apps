@@ -55,15 +55,17 @@ import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
+import org.opensingular.form.wicket.model.ISInstanceAwareModel;
+import org.opensingular.form.wicket.model.SInstanceRootModel;
 import org.opensingular.form.wicket.panel.SFormModalEventListenerBehavior;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
+import org.opensingular.lib.wicket.util.bootstrap.layout.IBSComponentFactory;
 import org.opensingular.lib.wicket.util.bootstrap.layout.TemplatePanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.lib.wicket.util.util.Shortcuts;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.exception.SingularRequirementException;
@@ -108,11 +110,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected final String                   typeName;
     protected final FormPageExecutionContext config;
-    protected final SingularFormPanel        singularFormPanel;
     protected       Component                containerBehindSingularPanel;
     protected final IModel<Boolean>          inheritParentFormData;
-    protected final BSContainer<?>           modalContainer = new BSContainer<>("modals");
-    protected final BSModalBorder            closeModal     = construirCloseModal();
+    protected final BSModalBorder            closeModal = construirCloseModal();
 
     private final Map<String, TransitionController<?>>       transitionControllerMap   = new HashMap<>();
     private       Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
@@ -128,6 +128,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     @Inject
     private FormRequirementService      formRequirementService;
     private AbstractDefaultAjaxBehavior saveFormAjaxBehavior;
+    private Form<?>                     form;
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -144,14 +145,14 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         this.config = new FormPageExecutionContext(Objects.requireNonNull(context), formName);
         this.inheritParentFormData = $m.ofValue();
         this.typeName = config.getFormName();
-        this.singularFormPanel = new SingularFormPanel("singular-panel");
-        onBuildSingularFormPanel(singularFormPanel);
 
         context.getInheritParentFormData().ifPresent(inheritParentFormData::setObject);
 
         if (this.config.getFormName() == null) {
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
+
+        this.setDefaultModel(new SInstanceRootModel());
     }
 
 
@@ -165,25 +166,18 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         SingularSpringInjector.get().injectAll(transitionControllerMap.values());
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
 
-        modalContainer.setOutputMarkupId(true);
-        modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
-        singularFormPanel.setViewMode(getViewMode(config));
-        singularFormPanel.setAnnotationMode(getAnnotationMode(config));
-        singularFormPanel.setAnnotationClassifier(getAnnotationClassifier());
-        singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
-        singularFormPanel.setInstanceInitializer(this::onCreateInstance);
-        singularFormPanel.setModalContainer(modalContainer);
 
-        Form<?> form = new Form<>("save-form");
+        form = new Form<>("save-form");
         form.setMultiPart(true);
-        form.add(singularFormPanel);
+        BSContainer<?> modalContainer = buildModalContainer();
+        form.add(buildFormPanel("singular-panel", modalContainer, this::buildPreFormPanelContent));
         this.containerBehindSingularPanel = buildBehindSingularPanelContent("container-panel");
         form.add(containerBehindSingularPanel);
         form.add(modalContainer);
         BSModalBorder enviarModal = buildConfirmationModal(modalContainer, getInstanceModel());
         form.add(buildSendButton(enviarModal));
         form.add(buildSaveButton("save-btn"));
-        form.add(buildFlowButtons());
+        form.add(buildFlowButtons(modalContainer));
         form.add(buildValidateButton());
         form.add(buildExtensionButtons());
         form.add(buildCloseButton());
@@ -191,6 +185,34 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         form.add(buildExtraContent("extra-content"));
         add(form);
         addSaveCallBackUrl();
+    }
+
+    public Form<?> getForm() {
+        return form;
+    }
+
+    @Nonnull
+    public final IModel<SInstance> getInstanceModel() {
+        return (IModel<SInstance>) getDefaultModel();
+    }
+
+    protected BSContainer<?> buildModalContainer() {
+        BSContainer<?> modalContainer = new BSContainer<>("modals");
+        modalContainer.setOutputMarkupId(true);
+        modalContainer.add(new SFormModalEventListenerBehavior(modalContainer));
+        return modalContainer;
+    }
+
+    protected WebMarkupContainer buildFormPanel(String id, BSContainer<?> modalContainer, IBSComponentFactory<Component> beforeFormContent) {
+        SingularFormPanel singularFormPanel = new SingularFormPanel(id, (ISInstanceAwareModel<SInstance>) getDefaultModel());
+        singularFormPanel.setViewMode(getViewMode(config));
+        singularFormPanel.setAnnotationMode(getAnnotationMode(config));
+        singularFormPanel.setAnnotationClassifier(getAnnotationClassifier());
+        singularFormPanel.setInstanceCreator(() -> getRequirement().resolveForm(config.getFormName()));
+        singularFormPanel.setInstanceInitializer(this::onCreateInstance);
+        singularFormPanel.setModalContainer(modalContainer);
+        singularFormPanel.setPreFormPanelFactory(beforeFormContent);
+        return singularFormPanel;
     }
 
     protected void onCreateInstance(SInstance instance) {
@@ -269,15 +291,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     /**
-     * Retorna a instância sendo editada no momento (ou dispara exception senão tiver sido inicializada).
-     */
-    @Nonnull
-    protected final SIComposite getInstance() {
-        return (SIComposite) getSingularFormPanel().getInstance();
-    }
-
-
-    /**
      * Retorna as configurações da página de edição de formulário.
      */
     @Nonnull
@@ -325,7 +338,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
 
     private Component buildExtensionButtons() {
-        return new ExtensionButtonsPanel<>("extensions-buttons", requirementInstanceModel, singularFormPanel.getInstanceModel())
+        return new ExtensionButtonsPanel<>("extensions-buttons", requirementInstanceModel, getInstanceModel())
                 .setRenderBodyOnly(true);
     }
 
@@ -415,10 +428,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     protected FeedbackAposEnvioPanel buildFeedbackAposEnvioPanel(String id) {
         return null;
-    }
-
-    private void onBuildSingularFormPanel(SingularFormPanel singularFormPanel) {
-        singularFormPanel.setPreFormPanelFactory(this::buildPreFormPanelContent);
     }
 
     protected void appendBeforeFormContent(BSContainer container) {
@@ -667,7 +676,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         //petição atual, qualuer alteracao deve ser feita em onBeforeExecuteTransition
         RI requirement = getRequirement();
 
-        saveForm(mi.getObject());
+        if (mi.getObject() != null) {
+            saveForm(mi.getObject());
+        }
 
         //Executa em bloco try, executa rollback da petição caso exista erro
         try {
@@ -745,7 +756,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 }
             }
             SInstance transitionControllerInstance = Optional.ofNullable(flowConfirmModal).map(STypeBasedFlowConfirmModal::getInstanceModel).map(IModel::getObject).orElse(null);
-            show = controller.onShow(getInstance(), transitionControllerInstance, modal.getModalBorder(), ajaxRequestTarget);
+            show = controller.onShow((SIComposite) getInstanceModel().getObject(), transitionControllerInstance, modal.getModalBorder(), ajaxRequestTarget);
         }
         if (show) {
             modal.onShowUpdate(ajaxRequestTarget);
@@ -822,11 +833,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         return AtrAnnotation.DefaultAnnotationClassifier.DEFAULT_ANNOTATION;
     }
 
-    private IReadOnlyModel<SInstance> getInstanceModel() {
-        return (IReadOnlyModel<SInstance>) singularFormPanel::getInstance;
-    }
-
-    private Component buildFlowButtons() {
+    private Component buildFlowButtons(BSContainer<?> modalContainer) {
         BSContainer<?> buttonContainer = new BSContainer<>("custom-buttons");
         buttonContainer.setVisible(true);
 
@@ -929,7 +936,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected Component buildValidateButton() {
-        final SingularValidationButton button = new SingularValidationButton("validate-btn", singularFormPanel.getInstanceModel()) {
+        final SingularValidationButton button = new SingularValidationButton("validate-btn", getInstanceModel()) {
 
             @Override
             protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
@@ -955,11 +962,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected IModel<? extends SInstance> getFormInstance() {
-        return singularFormPanel.getInstanceModel();
-    }
-
-    public final SingularFormPanel getSingularFormPanel() {
-        return singularFormPanel;
+        return getInstanceModel();
     }
 
     @Override

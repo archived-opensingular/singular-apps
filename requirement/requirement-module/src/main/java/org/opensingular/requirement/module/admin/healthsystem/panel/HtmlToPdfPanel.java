@@ -57,18 +57,18 @@ public class HtmlToPdfPanel extends Panel implements Loggable {
         Form form = new Form("formExport");
         form.setMultiPart(true);
         SingularFormPanel singularFormPanel = new SingularFormPanel("htmlExport", STypePdfHealth.class);
-        form.add(new PDFDownloadLink("exportRest", form ,(IModel<SIPdfHealth>) singularFormPanel.getInstanceModel()) {
+        form.add(new PDFDownloadLink("exportRest", form, (IModel<SIPdfHealth>) (IModel) singularFormPanel.getInstanceModel()) {
             @Override
             File getConvertedFile(SIPdfHealth instance) {
-                final HtmlToPdfConverter converter = new RestfulHtmlToPdfConverter(instance.getEndpoint());
-                final HtmlToPdfDTO htmlToPdfDTO = new HtmlToPdfDTO(instance.getHtmlToExport());
+                final HtmlToPdfConverter converter    = new RestfulHtmlToPdfConverter(instance.getEndpoint());
+                final HtmlToPdfDTO       htmlToPdfDTO = new HtmlToPdfDTO(instance.getHtmlToExport());
                 htmlToPdfDTO.addParam("--title");
                 htmlToPdfDTO.addParam("PDF de Teste");
                 final Optional<File> convert = converter.convert(htmlToPdfDTO);
                 return convert.orElse(null);
             }
         });
-        form.add(new PDFDownloadLink("exportLocal", form, (IModel<SIPdfHealth>) singularFormPanel.getInstanceModel()) {
+        form.add(new PDFDownloadLink("exportLocal", form, (IModel<SIPdfHealth>) (IModel) singularFormPanel.getInstanceModel()) {
             @Override
             File getConvertedFile(SIPdfHealth instance) {
                 final Optional<File> convert = htmlToPdfConverter.convert(new HtmlToPdfDTO(instance.getHtmlToExport()));

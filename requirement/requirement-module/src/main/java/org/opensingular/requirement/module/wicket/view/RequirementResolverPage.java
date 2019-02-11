@@ -101,7 +101,7 @@ public class RequirementResolverPage<RE extends RequirementEntity, RI extends Re
 
     @Override
     protected IModel<String> getContentTitle() {
-        return $m.get(() -> getSingularFormPanel().getRootTypeSubtitle());
+        return $m.get(() -> getInstanceModel().getObject().asAtr().getSubtitle());
     }
 
     @Override

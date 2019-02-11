@@ -25,6 +25,7 @@ import org.apache.wicket.model.Model;
 import org.opensingular.flow.core.ITaskDefinition;
 import org.opensingular.flow.core.TaskInstance;
 import org.opensingular.form.SFormUtil;
+import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.wicket.component.SingularSaveButton;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -105,7 +106,7 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
         SInstance    instance;
         TaskInstance taskInstance = getRequirement().getFlowInstance().getCurrentTaskOrException();
         instance = getRequirement().resolveForm(SFormUtil.getTypeName(transitionController.getType()), ITaskDefinition.of(taskInstance.getName(), taskInstance.getAbbreviation()));
-        transitionController.onCreateInstance(getFormPage().getInstance(), instance);
+        transitionController.onCreateInstance((SIComposite) getFormPage().getInstanceModel().getObject(), instance);
         return instance;
     }
 
