@@ -29,6 +29,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.model.AbstractReadOnlyModel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.apache.wicket.request.flow.RedirectToUrlException;
@@ -121,7 +122,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     private BSModalBorder notificacoesModal;
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
     private IModel<RI> currentModel;
-    private TaskInstance currentTaskInstance;
+
+    private IModel<TaskInstance> currentTaskInstanceModel;
 
     @Inject
     private RequirementService<RE, RI> requirementService;
@@ -157,7 +159,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
             throw new SingularServerException("Tipo do formulário da página nao foi definido");
         }
 
-        currentTaskInstance = loadCurrentTask();
+        this.currentTaskInstanceModel = createCurrentTaskInstanceModel();
     }
 
     private TaskInstance loadCurrentTask() {
@@ -179,7 +181,7 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        return Optional.ofNullable(currentTaskInstance);
+        return Optional.ofNullable(currentTaskInstanceModel.getObject());
     }
 
     private String getTypeName(@Nullable Class<? extends SType<?>> formType) {
@@ -598,7 +600,8 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     }
 
     protected void assertSameTask() {
-        if (currentTaskInstance != null && !currentTaskInstance.getEntityTaskInstance()
+        Optional<TaskInstance> currentTaskInstance = getCurrentTaskInstance();
+        if (currentTaskInstance.isPresent() && !currentTaskInstance.get().getEntityTaskInstance()
                 .equals(loadCurrentTask().getEntityTaskInstance())) {
             throw new SingularServerException(getString("message.save.concurrent_error"));
         }
@@ -1086,4 +1089,26 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     public void onConfirmTransition(String transitionName, IModel<? extends SInstance> instanceModel) {
 
     }
+
+    @Override
+    public void detachModels() {
+        super.detachModels();
+        if(currentTaskInstanceModel != null){
+            currentTaskInstanceModel.detach();
+        }
+    }
+
+    protected AbstractReadOnlyModel<TaskInstance> createCurrentTaskInstanceModel() {
+        return new AbstractReadOnlyModel<TaskInstance>() {
+            private TaskInstance ti;
+            @Override
+            public TaskInstance getObject() {
+                if (ti == null) {
+                    ti = loadCurrentTask();
+                }
+                return ti;
+            }
+        };
+    }
+
 }
