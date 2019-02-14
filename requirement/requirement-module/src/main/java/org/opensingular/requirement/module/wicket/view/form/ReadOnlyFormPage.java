@@ -32,6 +32,7 @@ import org.opensingular.requirement.module.wicket.view.template.ServerTemplate;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
 import javax.inject.Inject;
+import java.util.Optional;
 
 import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.CURRENT_FORM_VERSION_ID;
 import static org.opensingular.requirement.module.wicket.view.form.DiffFormPage.PREVIOUS_FORM_VERSION_ID;
@@ -44,11 +45,15 @@ public class ReadOnlyFormPage extends ServerTemplate {
     protected final IModel<Long> formVersionEntityPK;
     protected final IModel<Boolean> showAnnotations;
     private final boolean showCompareLastVersionButton;
+    private Model<String> formNameModel;
 
-    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations, boolean showCompareLastVersionButton) {
+    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations, boolean showCompareLastVersionButton, Optional<String> formName) {
         this.formVersionEntityPK = formVersionEntityPK;
         this.showAnnotations = showAnnotations;
         this.showCompareLastVersionButton = showCompareLastVersionButton;
+        if(formNameModel != null && formName.isPresent()){
+            this.formNameModel.setObject(formName.get());
+        }
     }
 
     @Override
@@ -79,7 +84,8 @@ public class ReadOnlyFormPage extends ServerTemplate {
 
     @Override
     protected IModel<String> getContentTitle() {
-        return new Model<>();
+        formNameModel = new Model<>();
+        return formNameModel;
     }
 
     @Override

@@ -173,6 +173,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         showAnnotations = isAnnotationModeReadOnly(context);
 
         Optional<Long> formVersionId = context.getFormVersionId();
+        Optional<String> formName = context.getFormName();
         Optional<Long> requirementId = context.getRequirementId();
 
         if (formVersionId.isPresent()) {
@@ -185,7 +186,7 @@ public class DispatcherPage extends WebPage implements Loggable {
         }
 
         if (formVersionPK != null) {
-            return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations), showCompareLastVersionButton());
+            return new ReadOnlyFormPage($m.ofValue(formVersionPK), $m.ofValue(showAnnotations), showCompareLastVersionButton(), formName);
         }
 
         throw new SingularServerException("Não foi possivel identificar qual é o formulário a ser exibido");

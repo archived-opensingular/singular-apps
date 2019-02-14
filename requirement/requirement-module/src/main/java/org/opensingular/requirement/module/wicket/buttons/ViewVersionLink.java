@@ -24,6 +24,8 @@ import org.opensingular.requirement.module.form.FormAction;
 import org.opensingular.requirement.module.wicket.view.form.ReadOnlyFormPage;
 import org.opensingular.requirement.module.wicket.view.util.ActionContext;
 
+import java.util.Optional;
+
 public class ViewVersionLink extends Panel {
     public ViewVersionLink(String id, IModel<String> labelModel, ActionContext context) {
         super(id);
@@ -32,7 +34,7 @@ public class ViewVersionLink extends Panel {
         Long formVersionCod = newContext.getFormVersionId().orElse(null);
         if (formVersionCod != null) {
             NewTabPageLink link = new NewTabPageLink("oldVersionLink", () ->
-                    new ReadOnlyFormPage(new Model<>(formVersionCod), new Model<>(Boolean.TRUE), true));
+                    new ReadOnlyFormPage(new Model<>(formVersionCod), new Model<>(Boolean.TRUE), true, Optional.empty()));
             link.setTarget(String.format("version%s", formVersionCod));
             link.setBody(labelModel);
             this.add(link);
