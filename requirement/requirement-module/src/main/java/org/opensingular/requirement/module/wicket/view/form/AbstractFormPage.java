@@ -52,6 +52,7 @@ import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
+import org.opensingular.form.wicket.component.SingularUpdateAjaxLink;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -108,27 +109,27 @@ import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.s
 
 public abstract class AbstractFormPage<RI extends RequirementInstance> extends ServerTemplate implements Loggable {
 
-    protected final String                   typeName;
+    protected final String typeName;
     protected final FormPageExecutionContext config;
-    protected       Component                containerBehindSingularPanel;
-    protected final IModel<Boolean>          inheritParentFormData;
-    protected final BSModalBorder            closeModal = construirCloseModal();
+    protected Component containerBehindSingularPanel;
+    protected final IModel<Boolean> inheritParentFormData;
+    protected final BSModalBorder closeModal = construirCloseModal();
 
-    private final Map<String, TransitionController<?>>       transitionControllerMap   = new HashMap<>();
-    private       Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
-    private       BSModalBorder                              notificacoesModal;
-    private       FeedbackAposEnvioPanel                     feedbackAposEnvioPanel    = null;
-    private       IModel<RI>                                 requirementInstanceModel;
-    private       IModel<Long>                               requirementIdModel        = new Model<>();
+    private final Map<String, TransitionController<?>> transitionControllerMap = new HashMap<>();
+    private Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
+    private BSModalBorder notificacoesModal;
+    private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
+    private IModel<RI> requirementInstanceModel;
+    private IModel<Long> requirementIdModel = new Model<>();
 
 
     @Inject
     private RequirementService requirementService;
 
     @Inject
-    private FormRequirementService      formRequirementService;
+    private FormRequirementService formRequirementService;
     private AbstractDefaultAjaxBehavior saveFormAjaxBehavior;
-    private Form<?>                     form;
+    private Form<?> form;
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -343,8 +344,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private RI loadRequirement() {
-        RI               requirement;
-        Optional<Long>   requirementId            = Optional.ofNullable(config.getRequirementId().orElse(requirementIdModel.getObject()));
+        RI requirement;
+        Optional<Long> requirementId = Optional.ofNullable(config.getRequirementId().orElse(requirementIdModel.getObject()));
         Optional<String> requirementDefinitionKey = config.getRequirementDefinitionKey();
         if (requirementId.isPresent()) {
             if (requirementDefinitionKey.isPresent()) {
@@ -353,7 +354,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 requirement = requirementService.loadRequirementInstance(requirementId.get());
             }
         } else {
-            RI             parentRequirement   = null;
+            RI parentRequirement = null;
             Optional<Long> parentRequirementId = config.getParentRequirementId();
             if (parentRequirementId.isPresent()) {
                 parentRequirement = requirementService.loadRequirementInstance(parentRequirementId.get());
@@ -394,8 +395,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private Component buildExtraContent(String id) {
-        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer   extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendExtraContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -403,8 +404,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private Component buildPreFormPanelContent(String id) {
-        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer   extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendBeforeFormContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -441,6 +442,15 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 .map(Object::toString);
     }
 
+    /**
+     * If uses this method to create more buttons, be careful, if the button changes Sintance,
+     * the button have to be a {@link SingularUpdateAjaxLink}.
+     *
+     * @param buttonContainer
+     * @param modalContainer
+     * @param transitionButtonsVisible
+     * @param currentInstance
+     */
     protected void configureCustomButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisible, IModel<? extends SInstance> currentInstance) {
         Optional<Long> requirementId = config.getRequirementId();
         if (requirementId.isPresent()) {
@@ -464,8 +474,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisibility, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
-        int               buttonsCount = 0;
-        List<STransition> transitions  = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
+        int buttonsCount = 0;
+        List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
         if (transitionButtonsVisibility && CollectionUtils.isNotEmpty(transitions)) {
             int index = 0;
             for (STransition t : transitions) {
@@ -507,7 +517,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
             // Verifica se existe rascunho
             RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
-            String              typeName    = RequirementUtil.getTypeName(requirement);
+            String typeName = RequirementUtil.getTypeName(requirement);
             if (requirement.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -525,7 +535,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     /**
      * Cria o botão para visualizar o diff na barra de botões.
-     *  @param buttonContainer
+     *
+     * @param buttonContainer
      * @param requirementId
      */
     protected Component buildDiffButton(String id) {
@@ -741,9 +752,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget,
                                   IModel<? extends SInstance> formInstance) {
-        TransitionController<?>       controller       = getTransitionControllerMap().get(transitionName);
+        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean                       show             = true;
+        boolean show = true;
         if (controller != null) {
             if (controller.isValidatePageForm()) {
                 List<ValidationError> retrieveWarningErrors = WicketFormProcessing.retrieveWarningErrors(formInstance.getObject());
@@ -877,7 +888,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected void validateUserAllocatedAndUserAction() {
-        String       username     = SingularSession.get().getUsername();
+        String username = SingularSession.get().getUsername();
         TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
         if (taskInstance != null
                 && taskInstance.getAllocatedUser() != null
@@ -982,8 +993,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private Component buildNotificacoesModal(String id) {
 
-        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
-        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
+        final String modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel = new TemplatePanel(id, modalPanelMarkup);
 
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
