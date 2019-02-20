@@ -52,7 +52,7 @@ import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
-import org.opensingular.form.wicket.component.SingularUpdateAjaxLink;
+import org.opensingular.form.wicket.component.SIntanceUpdateAjaxLink;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
 import org.opensingular.form.wicket.enums.ViewMode;
@@ -444,7 +444,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     /**
      * If uses this method to create more buttons, be careful, if the button changes Sintance,
-     * the button have to be a {@link SingularUpdateAjaxLink}.
+     * the button have to be a {@link SIntanceUpdateAjaxLink}.
      *
      * @param buttonContainer
      * @param modalContainer
