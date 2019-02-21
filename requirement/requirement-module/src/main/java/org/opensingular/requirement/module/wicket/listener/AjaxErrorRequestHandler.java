@@ -22,9 +22,10 @@ import org.apache.wicket.request.IRequestCycle;
 import org.apache.wicket.request.IRequestHandler;
 import org.apache.wicket.request.http.WebResponse;
 import org.opensingular.lib.commons.base.SingularException;
+import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.toastr.ToastrHelper;
 
-public class AjaxErrorRequestHandler implements IRequestHandler {
+public class AjaxErrorRequestHandler implements IRequestHandler, Loggable {
 
     private SingularException singularException;
 
@@ -34,6 +35,7 @@ public class AjaxErrorRequestHandler implements IRequestHandler {
 
     @Override
     public void respond(IRequestCycle requestCycle) {
+        getLogger().error(singularException.getMessage(), singularException);
         String script = ToastrHelper.generateJs(singularException, ToastrType.ERROR, false);
 
         WebResponse response = (WebResponse)requestCycle.getResponse();
