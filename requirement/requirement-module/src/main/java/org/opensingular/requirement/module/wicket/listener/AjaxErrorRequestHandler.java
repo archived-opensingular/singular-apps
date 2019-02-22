@@ -35,7 +35,6 @@ public class AjaxErrorRequestHandler implements IRequestHandler, Loggable {
 
     @Override
     public void respond(IRequestCycle requestCycle) {
-        getLogger().error(singularException.getMessage(), singularException);
         String script = ToastrHelper.generateJs(singularException, ToastrType.ERROR, false);
 
         WebResponse response = (WebResponse)requestCycle.getResponse();
@@ -56,6 +55,7 @@ public class AjaxErrorRequestHandler implements IRequestHandler, Loggable {
         response.write("<evaluate><![CDATA[" + script + "]]></evaluate>");
         response.write("</ajax-response>");
 
+        getLogger().error(singularException.getMessage(), singularException);
     }
 
     @Override
