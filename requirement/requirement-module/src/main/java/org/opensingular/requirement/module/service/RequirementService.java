@@ -436,7 +436,7 @@ public abstract class RequirementService implements Loggable {
 
 
     @Nonnull
-    public void configureParentRequirement(@Nonnull RequirementInstance<?, ?> requirementInstance, @Nonnull RequirementInstance<?, ?> parentRequirement) {
+    public void configureParentRequirement(@Nonnull RequirementInstance<?, ?> requirementInstance, RequirementInstance<?, ?> parentRequirement) {
         RequirementEntity requirementEntity = requirementInstance.getEntity();
         if (parentRequirement != null) {
             RequirementEntity parentRequirementEntity = parentRequirement.getEntity();
