@@ -246,6 +246,10 @@ public class CrudListContent extends CrudShellContent {
 
         String getLabel();
 
+        default String getTitle() {
+            return getLabel();
+        }
+
         String getIcon();
 
         default boolean isVisible() {
@@ -283,6 +287,12 @@ public class CrudListContent extends CrudShellContent {
             @Override
             protected void onAction(AjaxRequestTarget target) {
                 headerRightButton.onAction(target);
+            }
+
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                tag.put("title", headerRightButton.getTitle());
             }
 
             @Override
@@ -388,6 +398,11 @@ public class CrudListContent extends CrudShellContent {
         @Override
         public String getLabel() {
             return "Novo";
+        }
+
+        @Override
+        public String getTitle() {
+            return getCrudShellManager().getCrudShellContent().getDefinition().getTitle();
         }
 
         @Override
