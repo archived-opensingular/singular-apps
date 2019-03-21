@@ -16,13 +16,6 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Properties;
-import java.util.Set;
-import javax.sql.DataSource;
-
 import com.google.common.base.Joiner;
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.commons.base.SingularException;
@@ -31,6 +24,13 @@ import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
 import org.opensingular.lib.support.persistence.JTDSHibernateDataSourceWrapper;
 import org.opensingular.lib.support.persistence.util.SqlUtil;
+
+import javax.sql.DataSource;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Properties;
+import java.util.Set;
 
 public class PersistenceConfigurationProvider implements Loggable {
 
@@ -77,7 +77,7 @@ public class PersistenceConfigurationProvider implements Loggable {
         } else {
             packages = packageScanConfiguration.getPackagesToScan();
         }
-        return packages.toArray(new String[packages.size()]);
+        return packages.toArray(new String[0]);
     }
 
     public Properties getHibernateProperties() {
@@ -141,5 +141,11 @@ public class PersistenceConfigurationProvider implements Loggable {
 
     public boolean isCreateDrop() {
         return SqlUtil.isDropCreateDatabase();
+    }
+
+    public String[] getMappingResources() {
+        List<String> mappings = new ArrayList<>();
+        persistenceConfiguration.configuregetMappingResources(mappings);
+        return mappings.toArray(new String[0]);
     }
 }

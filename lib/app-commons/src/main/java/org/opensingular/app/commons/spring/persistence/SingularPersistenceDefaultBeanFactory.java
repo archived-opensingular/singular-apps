@@ -68,6 +68,7 @@ public class SingularPersistenceDefaultBeanFactory implements Loggable {
         sessionFactoryBean.setHibernateProperties(getPersistenceConfiguration().getHibernateProperties());
         sessionFactoryBean.setPackagesToScan(getPersistenceConfiguration().getPackagesToScan(true));
         sessionFactoryBean.setEntityInterceptor(new SingularEntityInterceptor(getPersistenceConfiguration().getSchemaReplacements()));
+        sessionFactoryBean.setMappingResources(getPersistenceConfiguration().getMappingResources());
         return sessionFactoryBean;
     }
 
