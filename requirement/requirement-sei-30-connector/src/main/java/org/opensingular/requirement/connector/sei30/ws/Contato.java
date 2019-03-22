@@ -102,6 +102,12 @@ public class Contato {
     protected String nome;
     @XmlElement(name = "StaNatureza", required = true)
     protected String staNatureza;
+    @XmlElement(name = "NumeroPassaporte", required = true)
+    protected String numeroPassaporte;
+    @XmlElement(name = "IdPaisPassaporte", required = true)
+    protected String idPaisPassaporte;
+    @XmlElement(name = "NomePaisPassaporte", required = true)
+    protected String nomePaisPassaporte;
     @XmlElement(name = "IdContatoAssociado", required = true, nillable = true)
     protected String idContatoAssociado;
     @XmlElementRef(name = "NomeContatoAssociado", type = JAXBElement.class, required = false)
