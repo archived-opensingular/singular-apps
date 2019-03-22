@@ -19,6 +19,10 @@
         <module>requirement-sei-30-connector</module>
         <module>requirement-sei-30-extensao-singular</module>
         <module>requirement-sei-30-features-lib</module>
+        <module>requirement-sip-31-connector</module>
+        <module>requirement-sei-31-connector</module>
+        <module>requirement-sei-31-extensao-singular</module>
+        <module>requirement-sei-31-features-lib</module>
         <module>requirement-studio-app</module>
     </modules>
 

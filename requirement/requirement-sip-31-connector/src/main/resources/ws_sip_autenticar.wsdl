@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!-- 
+
+ Este Wsdl foi modificado.
+
+- troquei o use="encoded" por use="literal" nas operações.
+- retirei todas as operações e messages pois não estava com os tipos de retorno. Deixei apenas a operação autenticar que utilizamos.
+
+ -->
+<wsdl:definitions name="SipWS"
+                  targetNamespace="sipns"
+                  xmlns="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"
+                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                  xmlns:tns="sipns">
+
+    <wsdl:types>
+        <xsd:schema targetNamespace="sipns">
+
+            <xsd:complexType name="Usuario">
+                <xsd:all>
+                    <xsd:element name="StaOperacao" type="xsd:string"/>
+                    <xsd:element name="IdOrigem" type="xsd:string"/>
+                    <xsd:element name="IdOrgao" type="xsd:string"/>
+                    <xsd:element name="Sigla" type="xsd:string"/>
+                    <xsd:element name="Nome" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfUsuarios">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="Usuario" nillable="true" type="tns:Usuario"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="Permissao">
+                <xsd:all>
+                    <xsd:element name="StaOperacao" type="xsd:string" minOccurs="0"/>
+                    <xsd:element name="IdSistema" type="xsd:string"/>
+                    <xsd:element name="IdOrgaoUsuario" type="xsd:string"/>
+                    <xsd:element name="IdUsuario" type="xsd:string"/>
+                    <xsd:element name="IdOrigemUsuario" type="xsd:string"/>
+                    <xsd:element name="IdOrgaoUnidade" type="xsd:string"/>
+                    <xsd:element name="IdUnidade" type="xsd:string"/>
+                    <xsd:element name="IdOrigemUnidade" type="xsd:string"/>
+                    <xsd:element name="IdPerfil" type="xsd:string"/>
+                    <xsd:element name="DataInicial" type="xsd:string"/>
+                    <xsd:element name="DataFinal" type="xsd:string"/>
+                    <xsd:element name="SinSubunidades" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ArrayOfPermissoes">
+                <xsd:sequence>
+                    <xsd:element minOccurs="0" maxOccurs="unbounded" name="item" nillable="true"
+                                 type="tns:Permissao"/>
+                </xsd:sequence>
+            </xsd:complexType>
+
+            <xsd:complexType name="RetornoAutenticarCompleto">
+                <xsd:all>
+                    <xsd:element name="IdSistema" type="xsd:long"/>
+                    <xsd:element name="IdContexto" type="xsd:long"/>
+                    <xsd:element name="IdUsuario" type="xsd:long"/>
+                    <xsd:element name="IdLogin" type="xsd:string"/>
+                    <xsd:element name="HashAgente" type="xsd:string"/>
+                </xsd:all>
+            </xsd:complexType>
+
+            <xsd:complexType name="ValueItem">
+                    <xsd:sequence>
+                        <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType mixed="true">
+                                <xsd:sequence>
+                                    <xsd:element type="xsd:string"
+                                                 name="item"
+                                                 maxOccurs="unbounded"
+                                                 minOccurs="0"/>
+                                    <xsd:element type="xsd:string"
+                                                 name="key" minOccurs="0"/>
+                                    <xsd:element name="value" minOccurs="0">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:element
+                                                        type="xsd:string"
+                                                        name="item"
+                                                        maxOccurs="unbounded"
+                                                        minOccurs="0"/>
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
+            </xsd:complexType>
+
+            <!--<xsd:complexType name="item">-->
+
+            <!--</xsd:complexType>-->
+
+            <xsd:complexType name="RetornoValidarLogin">
+                <xsd:all>
+                    <xsd:element type="xsd:string" name="strSiglaOrgaoSistema"/>
+                    <xsd:element type="xsd:byte" name="numIdOrgaoSistema"/>
+                    <xsd:element type="xsd:string" name="strDescricaoOrgaoSistema"/>
+                    <xsd:element type="xsd:string" name="strSiglaSistema"/>
+                    <xsd:element type="xsd:int" name="numIdSistema"/>
+                    <xsd:element type="xsd:string" name="strSiglaOrgaoUsuario"/>
+                    <xsd:element type="xsd:string" name="strDescricaoOrgaoUsuario"/>
+                    <xsd:element type="xsd:byte" name="numIdOrgaoUsuario"/>
+                    <xsd:element type="xsd:string" name="numIdContextoUsuario" nillable="true"/>
+                    <xsd:element type="xsd:int" name="numIdUsuario"/>
+                    <xsd:element type="xsd:string" name="strSiglaUsuario"/>
+                    <xsd:element type="xsd:string" name="strNomeUsuario"/>
+                    <xsd:element type="xsd:string" name="strHashInterno"/>
+                    <xsd:element type="xsd:string" name="strHashUsuario"/>
+                    <xsd:element name="arrUnidadesPadrao">
+                        <xsd:complexType>
+                            <xsd:simpleContent>
+                                <xsd:extension base="xsd:string">
+                                </xsd:extension>
+                            </xsd:simpleContent>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element type="xsd:string" name="numTimestampLogin" nillable="true"/>
+                    <xsd:element name="arrPropriedades">
+                        <xsd:complexType>
+                            <xsd:simpleContent>
+                                <xsd:extension base="xsd:string">
+                                </xsd:extension>
+                            </xsd:simpleContent>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element name="arrPermissoes">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="item">
+                                    <xsd:complexType>
+                                        <xsd:sequence>
+                                            <xsd:element type="xsd:int" name="key"/>
+                                            <xsd:element name="value">
+                                                <xsd:complexType>
+                                                    <xsd:sequence>
+                                                        <xsd:element name="item" maxOccurs="unbounded" minOccurs="0" type="tns:ValueItem"/>
+                                                    </xsd:sequence>
+                                                </xsd:complexType>
+                                            </xsd:element>
+                                        </xsd:sequence>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element type="xsd:string" name="numIdUnidadeAtual" nillable="true"/>
+                    <xsd:element type="xsd:anyURI" name="strPaginaInicial"/>
+                    <xsd:element type="xsd:string" name="strUltimaPagina" nillable="true"/>
+                    <xsd:element type="xsd:string" name="strIdOrigemUsuario"/>
+                    <xsd:element type="xsd:string" name="numVersaoSip"/>
+                    <xsd:element type="xsd:float" name="numVersaoInfraSip"/>
+                    <xsd:element type="xsd:string" name="strSiglaOrgaoUsuarioEmulador" nillable="true"/>
+                    <xsd:element type="xsd:string" name="strDescricaoOrgaoUsuarioEmulador" nillable="true"/>
+                    <xsd:element type="xsd:string" name="numIdOrgaoUsuarioEmulador" nillable="true"/>
+                    <xsd:element type="xsd:string" name="numIdUsuarioEmulador" nillable="true"/>
+                    <xsd:element type="xsd:string" name="strSiglaUsuarioEmulador" nillable="true"/>
+                    <xsd:element type="xsd:string" name="strNomeUsuarioEmulador" nillable="true"/>
+                    <xsd:element name="arrOrgaos">
+                        <xsd:complexType>
+                            <xsd:sequence>
+                                <xsd:element name="item">
+                                    <xsd:complexType>
+                                        <xsd:sequence>
+                                            <xsd:element type="xsd:string" name="item" maxOccurs="unbounded"
+                                                         minOccurs="0"/>
+                                        </xsd:sequence>
+                                    </xsd:complexType>
+                                </xsd:element>
+                            </xsd:sequence>
+                        </xsd:complexType>
+                    </xsd:element>
+                    <xsd:element type="xsd:string" name="arrUnidades" nillable="true"/>
+                    <xsd:element type="xsd:string" name="strDnUsuario"/>
+                </xsd:all>
+            </xsd:complexType>
+        </xsd:schema>
+    </wsdl:types>
+
+
+    <wsdl:message name="autenticarRequest">
+        <wsdl:part name="IdOrgao" type="xsd:string"/>
+        <wsdl:part name="IdContexto" type="xsd:string"/>
+        <wsdl:part name="Sigla" type="xsd:string"/>
+        <wsdl:part name="Senha" type="xsd:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="autenticarResponse">
+        <wsdl:part name="returnAutenticar" type="xsd:boolean"/>
+    </wsdl:message>
+
+    <wsdl:message name="autenticarCompletoRequest">
+        <wsdl:part name="IdOrgao" type="xsd:string"/>
+        <wsdl:part name="Sigla" type="xsd:string"/>
+        <wsdl:part name="Senha" type="xsd:string"/>
+        <wsdl:part name="SiglaSistema" type="xsd:string"/>
+        <wsdl:part name="SiglaOrgaoSistema" type="xsd:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="autenticarCompletoResponse">
+        <wsdl:part name="returnAutenticarCompleto" type="tns:RetornoAutenticarCompleto"/>
+    </wsdl:message>
+
+    <wsdl:message name="validarLoginRequest">
+        <wsdl:part name="IdLogin" type="xsd:string"/>
+        <wsdl:part name="IdSistema" type="xsd:long"/>
+        <wsdl:part name="IdUsuario" type="xsd:long"/>
+        <wsdl:part name="HashAgente" type="xsd:string"/>
+    </wsdl:message>
+
+    <wsdl:message name="validarLoginResponse">
+        <wsdl:part name="returnLogin" type="tns:RetornoValidarLogin"/>
+    </wsdl:message>
+
+    <wsdl:message name="listarPermissaoRequest">
+        <wsdl:part name="IdSistema" type="xsd:string"/>
+        <wsdl:part name="IdOrgaoUsuario" type="xsd:string"/>
+        <wsdl:part name="IdUsuario" type="xsd:string"/>
+        <wsdl:part name="IdOrigemUsuario" type="xsd:string"/>
+        <wsdl:part name="IdOrgaoUnidade" type="xsd:string"/>
+        <wsdl:part name="IdUnidade" type="xsd:string"/>
+        <wsdl:part name="IdOrigemUnidade" type="xsd:string"/>
+        <wsdl:part name="IdPerfil" type="xsd:string"/>
+    </wsdl:message>
+
+
+    <wsdl:message name="listarPermissaoResponse">
+        <wsdl:part name="parametros" type="tns:ArrayOfPermissoes"/>
+    </wsdl:message>
+
+    <wsdl:portType name="sipPortType">
+        <wsdl:operation name="autenticar">
+            <wsdl:input message="tns:autenticarRequest"/>
+            <wsdl:output message="tns:autenticarResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="autenticarCompleto">
+            <wsdl:input message="tns:autenticarCompletoRequest"/>
+            <wsdl:output message="tns:autenticarCompletoResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="validarLogin">
+            <wsdl:input message="tns:validarLoginRequest"/>
+            <wsdl:output message="tns:validarLoginResponse"/>
+        </wsdl:operation>
+        <wsdl:operation name="listarPermissao">
+            <wsdl:input message="tns:listarPermissaoRequest"/>
+            <wsdl:output message="tns:listarPermissaoResponse"/>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="sipBinding" type="tns:sipPortType">
+        <soap:binding style="rpc" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="autenticar">
+            <soap:operation soapAction="sipnsAction"/>
+            <wsdl:input>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="autenticarCompleto">
+            <soap:operation soapAction="sipnsAction"/>
+            <wsdl:input>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="validarLogin">
+            <soap:operation soapAction="sipnsAction"/>
+            <wsdl:input>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarPermissao">
+            <soap:operation soapAction="sipnsAction"/>
+            <wsdl:input>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:input>
+            <wsdl:output>
+                <soap:body namespace="sipns" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="sipService">
+        <wsdl:port name="sipPortType" binding="tns:sipBinding">
+            <soap:address location="http://sei/sip/ws/SipWS.php"/>
+        </wsdl:port>
+
+    </wsdl:service>
+</wsdl:definitions>
