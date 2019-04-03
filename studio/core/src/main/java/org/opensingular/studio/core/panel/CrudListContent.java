@@ -18,6 +18,7 @@ package org.opensingular.studio.core.panel;
 
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
@@ -25,6 +26,8 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
+import org.apache.wicket.markup.html.link.AbstractLink;
+import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
@@ -38,7 +41,6 @@ import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.FormStateUtil;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.lib.wicket.util.ajax.ActionAjaxLink;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
@@ -49,7 +51,6 @@ import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -153,7 +154,7 @@ public class CrudListContent extends CrudShellContent {
         return config;
     }
 
-    private StudioTableDefinition getConfiguredStudioTable() {
+    public StudioTableDefinition getConfiguredStudioTable() {
         StudioTableDefinition studioDataTable = new StudioTableDefinition(getDefinition(), getCrudShellManager());
         getDefinition().configureStudioDataTable(studioDataTable);
         return studioDataTable;
@@ -241,28 +242,6 @@ public class CrudListContent extends CrudShellContent {
         return getCrudShellManager().getStudioDefinition().getFilterType() != null;
     }
 
-    public interface HeaderRightButton extends Serializable {
-        void onAction(AjaxRequestTarget target);
-
-        String getLabel();
-
-        default String getTitle() {
-            return getLabel();
-        }
-
-        String getIcon();
-
-        default boolean isVisible() {
-            return true;
-        }
-    }
-
-    public interface ListAction extends Serializable {
-        void configure(BSActionPanel.ActionConfig<SInstance> config);
-
-        void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager);
-    }
-
     private static class HeaderRightActions extends ListView<HeaderRightButton> {
 
         private HeaderRightActions(List<HeaderRightButton> list) {
@@ -272,21 +251,22 @@ public class CrudListContent extends CrudShellContent {
         @Override
         protected void populateItem(ListItem<HeaderRightButton> item) {
             item.setRenderBodyOnly(true);
-            item.add(new HeaderRightActionActionAjaxLink(item.getModelObject()));
+            if (item.getModelObject() instanceof AbstractLink) {
+//                $b.onComponentTag((component, tag) -> tag.put("title",  item.getModelObject().getTitle()));
+//                item.add((Component) item.getModelObject());
+                item.add(new HeaderRightActionLink(item.getModelObject()));
+            } else {
+                item.add(new HeaderRightActionAjaxLink(item.getModelObject()));
+            }
         }
 
-        private static class HeaderRightActionActionAjaxLink extends ActionAjaxLink<Void> {
+        private static class HeaderRightActionAjaxLink extends AjaxLink<Void> {
 
-            private final HeaderRightButton headerRightButton;
+            protected final HeaderRightButton headerRightButton;
 
-            HeaderRightActionActionAjaxLink(HeaderRightButton headerRightButton) {
+            HeaderRightActionAjaxLink(HeaderRightButton headerRightButton) {
                 super("headerRightAction");
                 this.headerRightButton = headerRightButton;
-            }
-
-            @Override
-            protected void onAction(AjaxRequestTarget target) {
-                headerRightButton.onAction(target);
             }
 
             @Override
@@ -311,6 +291,51 @@ public class CrudListContent extends CrudShellContent {
                 this.add(btnLabel);
                 this.add(btnIcon);
                 this.setVisible(headerRightButton.isVisible());
+            }
+
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                headerRightButton.onAction(target);
+            }
+
+        }
+
+        private static class HeaderRightActionLink extends Link<Void> {
+
+            protected final HeaderRightButton headerRightButton;
+
+            HeaderRightActionLink(HeaderRightButton headerRightButton) {
+                super("headerRightAction");
+                this.headerRightButton = headerRightButton;
+            }
+
+            @Override
+            protected void onComponentTag(ComponentTag tag) {
+                super.onComponentTag(tag);
+                tag.put("title", headerRightButton.getTitle());
+            }
+
+            @Override
+            protected void onInitialize() {
+                super.onInitialize();
+                Label btnLabel = new Label("headerRightActionLabel", headerRightButton.getLabel());
+
+                WebMarkupContainer btnIcon = new WebMarkupContainer("headerRigthActionIcon") {
+                    @Override
+                    protected void onComponentTag(ComponentTag tag) {
+                        super.onComponentTag(tag);
+                        tag.put("class", headerRightButton.getIcon());
+                    }
+                };
+
+                this.add(btnLabel);
+                this.add(btnIcon);
+                this.setVisible(headerRightButton.isVisible());
+            }
+
+            @Override
+            public void onClick() {
+                headerRightButton.onAction(null);
             }
 
         }
