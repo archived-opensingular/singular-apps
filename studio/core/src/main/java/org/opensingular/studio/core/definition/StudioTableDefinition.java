@@ -17,9 +17,11 @@
 package org.opensingular.studio.core.definition;
 
 import org.opensingular.form.studio.StudioCRUDPermissionStrategy;
-import org.opensingular.studio.core.panel.CrudListContent;
 import org.opensingular.studio.core.panel.CrudShellManager;
-import org.opensingular.studio.core.panel.ListAction;
+import org.opensingular.studio.core.panel.action.DeleteAction;
+import org.opensingular.studio.core.panel.action.EditAction;
+import org.opensingular.studio.core.panel.action.ListAction;
+import org.opensingular.studio.core.panel.action.ViewAction;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -36,13 +38,13 @@ public class StudioTableDefinition implements Serializable {
     public StudioTableDefinition(StudioDefinition studioDefinition, CrudShellManager crudShellManager) {
         StudioCRUDPermissionStrategy permissionStrategy = studioDefinition.getPermissionStrategy();
         if (permissionStrategy.canEdit()) {
-            actions.add(new CrudListContent.EditAction(crudShellManager));
+            actions.add(new EditAction(crudShellManager));
         }
         if (permissionStrategy.canView()) {
-            actions.add(new CrudListContent.ViewAction(crudShellManager));
+            actions.add(new ViewAction(crudShellManager));
         }
         if (permissionStrategy.canRemove()) {
-            actions.add(new CrudListContent.DeleteAction(studioDefinition, crudShellManager));
+            actions.add(new DeleteAction(studioDefinition, crudShellManager));
         }
     }
 

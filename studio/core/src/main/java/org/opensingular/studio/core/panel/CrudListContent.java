@@ -16,27 +16,19 @@
 
 package org.opensingular.studio.core.panel;
 
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
-import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
-import org.apache.wicket.markup.html.link.AbstractLink;
-import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.component.BFModalWindow;
 import org.opensingular.form.wicket.component.SingularValidationButton;
-import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.FormStateUtil;
 import org.opensingular.lib.commons.base.SingularException;
@@ -44,13 +36,12 @@ import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.util.WicketUtils;
 import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
-import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -251,168 +242,12 @@ public class CrudListContent extends CrudShellContent {
         @Override
         protected void populateItem(ListItem<HeaderRightButton> item) {
             item.setRenderBodyOnly(true);
-            if (item.getModelObject() instanceof AbstractLink) {
-//                $b.onComponentTag((component, tag) -> tag.put("title",  item.getModelObject().getTitle()));
-//                item.add((Component) item.getModelObject());
-                item.add(new HeaderRightActionLink(item.getModelObject()));
-            } else {
-                item.add(new HeaderRightActionAjaxLink(item.getModelObject()));
-            }
-        }
-
-        private static class HeaderRightActionAjaxLink extends AjaxLink<Void> {
-
-            protected final HeaderRightButton headerRightButton;
-
-            HeaderRightActionAjaxLink(HeaderRightButton headerRightButton) {
-                super("headerRightAction");
-                this.headerRightButton = headerRightButton;
-            }
-
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                tag.put("title", headerRightButton.getTitle());
-            }
-
-            @Override
-            protected void onInitialize() {
-                super.onInitialize();
-                Label btnLabel = new Label("headerRightActionLabel", headerRightButton.getLabel());
-
-                WebMarkupContainer btnIcon = new WebMarkupContainer("headerRigthActionIcon") {
-                    @Override
-                    protected void onComponentTag(ComponentTag tag) {
-                        super.onComponentTag(tag);
-                        tag.put("class", headerRightButton.getIcon());
-                    }
-                };
-
-                this.add(btnLabel);
-                this.add(btnIcon);
-                this.setVisible(headerRightButton.isVisible());
-            }
-
-            @Override
-            public void onClick(AjaxRequestTarget target) {
-                headerRightButton.onAction(target);
-            }
-
-        }
-
-        private static class HeaderRightActionLink extends Link<Void> {
-
-            protected final HeaderRightButton headerRightButton;
-
-            HeaderRightActionLink(HeaderRightButton headerRightButton) {
-                super("headerRightAction");
-                this.headerRightButton = headerRightButton;
-            }
-
-            @Override
-            protected void onComponentTag(ComponentTag tag) {
-                super.onComponentTag(tag);
-                tag.put("title", headerRightButton.getTitle());
-            }
-
-            @Override
-            protected void onInitialize() {
-                super.onInitialize();
-                Label btnLabel = new Label("headerRightActionLabel", headerRightButton.getLabel());
-
-                WebMarkupContainer btnIcon = new WebMarkupContainer("headerRigthActionIcon") {
-                    @Override
-                    protected void onComponentTag(ComponentTag tag) {
-                        super.onComponentTag(tag);
-                        tag.put("class", headerRightButton.getIcon());
-                    }
-                };
-
-                this.add(btnLabel);
-                this.add(btnIcon);
-                this.setVisible(headerRightButton.isVisible());
-            }
-
-            @Override
-            public void onClick() {
-                headerRightButton.onAction(null);
-            }
-
+            item.add(new HeadRightButtonPanel(item.getModelObject()));
         }
     }
 
-    public static class EditAction implements ListAction {
+    private class CreateNewHeaderRightButton extends HeaderRightAjaxLink {
 
-        private final CrudShellManager crudShellManager;
-
-        public EditAction(CrudShellManager crudShellManager) {
-            this.crudShellManager = crudShellManager;
-        }
-
-        @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.PENCIL));
-            config.labelModel(Model.of("Editar"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            CrudEditContent crudEditContent = this.crudShellManager.makeEditContent(this.crudShellManager.getCrudShellContent(), model);
-            this.crudShellManager.replaceContent(target, crudEditContent);
-        }
-    }
-
-    public static class ViewAction implements ListAction {
-
-        private final CrudShellManager crudShellManager;
-
-        public ViewAction(CrudShellManager crudShellManager) {
-            this.crudShellManager = crudShellManager;
-        }
-
-        @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.EYE));
-            config.labelModel(Model.of("Visualizar"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            CrudEditContent crudEditContent = this.crudShellManager
-                    .makeEditContent(this.crudShellManager.getCrudShellContent(), model);
-            crudEditContent.setViewMode(ViewMode.READ_ONLY);
-            this.crudShellManager.replaceContent(target, crudEditContent);
-        }
-    }
-
-    public static class DeleteAction implements ListAction {
-
-        private final StudioDefinition studioDefinition;
-        private final CrudShellManager crudShellManager;
-
-        public DeleteAction(StudioDefinition studioDefinition, CrudShellManager crudShellManager) {
-            this.studioDefinition = studioDefinition;
-            this.crudShellManager = crudShellManager;
-        }
-
-        @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.TRASH));
-            config.labelModel(Model.of("Remover"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            this.crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
-                studioDefinition.getRepository().delete(FormKey.from(model.getObject()));
-                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluído com sucesso.");
-                this.crudShellManager.update(ajaxRequestTarget);
-            });
-        }
-
-    }
-
-    private class CreateNewHeaderRightButton implements HeaderRightButton {
         @Override
         public void onAction(AjaxRequestTarget target) {
             CrudEditContent crudEditContent = getCrudShellManager()
@@ -437,7 +272,7 @@ public class CrudListContent extends CrudShellContent {
     }
 
     private void createFilterHeaderRigthButton() {
-        HeaderRightButton btnFilter = new HeaderRightButton() {
+        HeaderRightButton btnFilter = new HeaderRightAjaxLink() {
             @Override
             public void onAction(AjaxRequestTarget target) {
                 saveFilterState();
@@ -489,4 +324,19 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
+    interface HeaderRightButton extends Serializable {
+
+        String getLabel();
+
+        default String getTitle() {
+            return getLabel();
+        }
+
+        String getIcon();
+
+        default boolean isVisible() {
+            return true;
+        }
+
+    }
 }
