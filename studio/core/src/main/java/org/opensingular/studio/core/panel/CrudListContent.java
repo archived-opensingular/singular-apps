@@ -40,8 +40,9 @@ import org.opensingular.lib.wicket.util.util.WicketUtils;
 import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
+import org.opensingular.studio.core.panel.button.HeaderRightButtonAjax;
+import org.opensingular.studio.core.panel.button.IHeaderRightButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -49,12 +50,12 @@ import java.util.Optional;
 
 public class CrudListContent extends CrudShellContent {
 
-    private IModel<Icon> iconModel = new Model<>();
-    private IModel<String> titleModel = new Model<>();
-    private List<HeaderRightButton> headerRightButtons = new ArrayList<>();
+    private IModel<Icon>             iconModel          = new Model<>();
+    private IModel<String>           titleModel         = new Model<>();
+    private List<IHeaderRightButton> headerRightButtons = new ArrayList<>();
 
-    private BFModalWindow modalFilter;
-    private SingularFormPanel filterPanel;
+    private   BFModalWindow           modalFilter;
+    private   SingularFormPanel       filterPanel;
     protected FormStateUtil.FormState filterState;
 
     private final CrudListConfig crudListConfig;
@@ -71,7 +72,7 @@ public class CrudListContent extends CrudShellContent {
 
     private void addDefaultHeaderRightActions() {
         if (getDefinition().getPermissionStrategy().canCreate()) {
-            headerRightButtons.add(new CreateNewHeaderRightButton());
+            headerRightButtons.add(new CreateNewIHeaderRightButton());
         }
     }
 
@@ -173,7 +174,7 @@ public class CrudListContent extends CrudShellContent {
         return this;
     }
 
-    public CrudListContent addPorletHeaderRightAction(HeaderRightButton headerRightButton) {
+    public CrudListContent addPorletHeaderRightAction(IHeaderRightButton headerRightButton) {
         headerRightButtons.add(headerRightButton);
         return this;
     }
@@ -233,27 +234,20 @@ public class CrudListContent extends CrudShellContent {
         return getCrudShellManager().getStudioDefinition().getFilterType() != null;
     }
 
-    private static class HeaderRightActions extends ListView<HeaderRightButton> {
+    private static class HeaderRightActions extends ListView<IHeaderRightButton> {
 
-        private HeaderRightActions(List<HeaderRightButton> list) {
+        private HeaderRightActions(List<IHeaderRightButton> list) {
             super("headerRightActions", list);
         }
 
         @Override
-        protected void populateItem(ListItem<HeaderRightButton> item) {
+        protected void populateItem(ListItem<IHeaderRightButton> item) {
             item.setRenderBodyOnly(true);
             item.add(new HeadRightButtonPanel(item.getModelObject()));
         }
     }
 
-    private class CreateNewHeaderRightButton extends HeaderRightAjaxLink {
-
-        @Override
-        public void onAction(AjaxRequestTarget target) {
-            CrudEditContent crudEditContent = getCrudShellManager()
-                    .makeEditContent(getCrudShellManager().getCrudShellContent(), null);
-            getCrudShellManager().replaceContent(target, crudEditContent);
-        }
+    private class CreateNewIHeaderRightButton extends HeaderRightButtonAjax {
 
         @Override
         public String getLabel() {
@@ -269,13 +263,20 @@ public class CrudListContent extends CrudShellContent {
         public String getIcon() {
             return "fa fa-plus";
         }
+
+        @Override
+        public void onAction(AjaxRequestTarget target) {
+            CrudEditContent crudEditContent = getCrudShellManager()
+                    .makeEditContent(getCrudShellManager().getCrudShellContent(), null);
+            getCrudShellManager().replaceContent(target, crudEditContent);
+        }
     }
 
     private void createFilterHeaderRigthButton() {
-        HeaderRightButton btnFilter = new HeaderRightAjaxLink() {
+        IHeaderRightButton btnFilter = new HeaderRightButtonAjax() {
             @Override
             public void onAction(AjaxRequestTarget target) {
-                saveFilterState();
+//                saveFilterState();
                 modalFilter.show(target);
             }
 
@@ -324,19 +325,4 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
-    interface HeaderRightButton extends Serializable {
-
-        String getLabel();
-
-        default String getTitle() {
-            return getLabel();
-        }
-
-        String getIcon();
-
-        default boolean isVisible() {
-            return true;
-        }
-
-    }
 }
