@@ -9,6 +9,8 @@ import org.apache.wicket.markup.html.link.AbstractLink;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 
+import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
+
 public class HeadRightButtonPanel extends Panel {
 
     private final CrudListContent.HeaderRightButton headerRightButton;
@@ -16,12 +18,6 @@ public class HeadRightButtonPanel extends Panel {
     HeadRightButtonPanel(CrudListContent.HeaderRightButton headerRightButton) {
         super("headerRightButtonPanel");
         this.headerRightButton = headerRightButton;
-    }
-
-    @Override
-    protected void onComponentTag(ComponentTag tag) {
-        super.onComponentTag(tag);
-        tag.put("title", headerRightButton.getTitle());
     }
 
     @Override
@@ -33,19 +29,20 @@ public class HeadRightButtonPanel extends Panel {
             link = new Link<Void>("headerRightAction") {
                 @Override
                 public void onClick() {
-                    ((HeaderRightDownloadLink)headerRightButton).onClick();
+                    ((HeaderRightDownloadLink) headerRightButton).onClick();
                 }
             };
         } else if (headerRightButton instanceof HeaderRightAjaxLink) {
             link = new AjaxLink<Void>("headerRightAction") {
                 @Override
                 public void onClick(AjaxRequestTarget target) {
-                    ((HeaderRightAjaxLink)headerRightButton).onAction(target);
+                    ((HeaderRightAjaxLink) headerRightButton).onAction(target);
                 }
             };
         }
 
         if (link != null) {
+            link.add($b.onComponentTag((c, tag) -> tag.put("title", headerRightButton.getTitle())));
             Label btnLabel = new Label("headerRightActionLabel", headerRightButton.getLabel());
 
             WebMarkupContainer btnIcon = new WebMarkupContainer("headerRigthActionIcon") {
