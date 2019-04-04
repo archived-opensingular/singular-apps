@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.opensingular</groupId>
         <artifactId>singular-sso</artifactId>
-        <version>1.9.1-SNAPSHOT</version>
+        <version>1.9.0</version>
     </parent>
 
     <name>[singular-apps :: sso :: sso-requirement ]</name>
