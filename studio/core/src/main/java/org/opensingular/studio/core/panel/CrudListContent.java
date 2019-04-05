@@ -24,6 +24,7 @@ import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
 import org.opensingular.form.SInstance;
@@ -41,6 +42,7 @@ import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
 import org.opensingular.studio.core.panel.button.HeaderRightButtonAjax;
+import org.opensingular.studio.core.panel.button.HeaderRightModalButton;
 import org.opensingular.studio.core.panel.button.IHeaderRightButton;
 
 import java.util.ArrayList;
@@ -54,8 +56,7 @@ public class CrudListContent extends CrudShellContent {
     private IModel<String>           titleModel         = new Model<>();
     private List<IHeaderRightButton> headerRightButtons = new ArrayList<>();
 
-    private   BFModalWindow           modalFilter;
-    private   SingularFormPanel       filterPanel;
+    private   HeaderFilterAction      headerFilterAction;
     protected FormStateUtil.FormState filterState;
 
     private final CrudListConfig crudListConfig;
@@ -83,7 +84,6 @@ public class CrudListContent extends CrudShellContent {
         addTitle();
         addPortletHeaderRightButtons();
         setTitle(getDefinition().getTitle());
-        createModalFilter();
         createFilterHeaderRigthButton();
         addTable();
     }
@@ -135,7 +135,7 @@ public class CrudListContent extends CrudShellContent {
     private SortableDataProvider<SInstance, String> resolveProvider() {
         StudioTableDataProvider dataProvider = Optional.ofNullable(getConfiguredStudioTable().getDataProvider()).orElse(new DefaultStudioTableDataProvider());
         if (isFilterDefined()) {
-            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), filterPanel.getInstanceModel());
+            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), headerFilterAction.getInstanceModel());
         }
         return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), null);
     }
@@ -154,6 +154,7 @@ public class CrudListContent extends CrudShellContent {
 
     private void addPortletHeaderRightButtons() {
         add(new HeaderRightActions(headerRightButtons));
+        add(new ModalActions(headerRightButtons));
     }
 
     private void addTitle() {
@@ -179,57 +180,6 @@ public class CrudListContent extends CrudShellContent {
         return this;
     }
 
-    private void createModalFilter() {
-        modalFilter = new BFModalWindow("modalFilter");
-        modalFilter.setTitleText(Model.of("Pesquisar"));
-        modalFilter.setSize(BSModalBorder.Size.LARGE);
-
-        if (isFilterDefined()) {
-            filterPanel = new SingularFormPanel("filterPanel", getCrudShellManager().getStudioDefinition().getFilterType());
-            filterPanel.setNested(true);
-            modalFilter.setBody(filterPanel);
-
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", filterPanel.getInstanceModel()) {
-                @Override
-                protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                    target.add(CrudListContent.this);
-                    modalFilter.hide(target);
-                }
-
-                @Override
-                protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                    super.onValidationError(target, form, instanceModel);
-                    modalFilter.hide(target);
-                    modalFilter.show(target);
-                }
-            });
-
-            AjaxButton limparButton = new AjaxButton("btnLimpar") {
-                @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    filterPanel.getInstanceModel().getObject().clearInstance();
-                    form.clearInput();
-//                    filterPanel.getInstanceModel().getObject().init();
-                    target.add(filterPanel);
-                }
-            };
-            limparButton.setDefaultFormProcessing(false);
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
-
-            AjaxButton cancelButton = new AjaxButton("btnCancelar") {
-                @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    rollbackFilterState();
-                    modalFilter.hide(target);
-                }
-            };
-            cancelButton.setDefaultFormProcessing(false);
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Cancelar"), cancelButton);
-        }
-
-        add(modalFilter);
-    }
-
     private boolean isFilterDefined() {
         return getCrudShellManager().getStudioDefinition().getFilterType() != null;
     }
@@ -244,6 +194,18 @@ public class CrudListContent extends CrudShellContent {
         protected void populateItem(ListItem<IHeaderRightButton> item) {
             item.setRenderBodyOnly(true);
             item.add(new HeadRightButtonPanel(item.getModelObject()));
+        }
+    }
+
+    private static class ModalActions extends ListView<IHeaderRightButton> {
+
+        private ModalActions(List<IHeaderRightButton> list) {
+            super("headerRightModalContainers", list);
+        }
+
+        @Override
+        protected void populateItem(ListItem<IHeaderRightButton> item) {
+            item.add(item.getModelObject().modalComponent("modalComponent"));
         }
     }
 
@@ -273,29 +235,8 @@ public class CrudListContent extends CrudShellContent {
     }
 
     private void createFilterHeaderRigthButton() {
-        IHeaderRightButton btnFilter = new HeaderRightButtonAjax() {
-            @Override
-            public void onAction(AjaxRequestTarget target) {
-//                saveFilterState();
-                modalFilter.show(target);
-            }
-
-            @Override
-            public String getLabel() {
-                return "Filtrar";
-            }
-
-            @Override
-            public boolean isVisible() {
-                return isFilterDefined();
-            }
-
-            @Override
-            public String getIcon() {
-                return "fa fa-search";
-            }
-        };
-        addPorletHeaderRightAction(btnFilter);
+        headerFilterAction = new HeaderFilterAction();
+        addPorletHeaderRightAction(headerFilterAction);
     }
 
     private class DefaultStudioTableDataProvider implements BasicStudioTableDataProvider<SInstance> {
@@ -311,17 +252,117 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
-    private void saveFilterState() {
-        filterState = FormStateUtil.keepState(filterPanel.getInstance());
-    }
 
-    private void rollbackFilterState() {
-        try {
-            if (filterState != null && filterPanel != null && filterPanel.getInstanceModel().getObject() != null) {
-                FormStateUtil.restoreState(filterPanel.getInstanceModel().getObject(), filterState);
+    private class HeaderFilterAction extends HeaderRightModalButton {
+
+        private BFModalWindow     modalFilter;
+        private SingularFormPanel filterPanel;
+
+
+        public HeaderFilterAction(){
+            createFilterPanel();
+        }
+
+        @Override
+        public void onAction(AjaxRequestTarget target) {
+            saveFilterState();
+            modalFilter.show(target);
+        }
+
+        @Override
+        public Panel modalComponent(String id) {
+            if (modalFilter == null) {
+                modalFilter = createModalFilter(id);
             }
-        } catch (Exception e) {
-            throw SingularException.rethrow(e.getMessage(), e);
+            return modalFilter;
+        }
+
+        @Override
+        public String getLabel() {
+            return "Filtrar";
+        }
+
+        @Override
+        public boolean isVisible() {
+            return isFilterDefined();
+        }
+
+        @Override
+        public String getIcon() {
+            return "fa fa-search";
+        }
+
+
+        private BFModalWindow createModalFilter(String id) {
+            BFModalWindow modalFilter = new BFModalWindow(id);
+            modalFilter.setTitleText(Model.of("Pesquisar"));
+            modalFilter.setSize(BSModalBorder.Size.LARGE);
+            modalFilter.setBody(filterPanel);
+            if (isFilterDefined()) {
+
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", getInstanceModel()) {
+                    @Override
+                    protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                        target.add(CrudListContent.this);
+                        modalFilter.hide(target);
+                    }
+
+                    @Override
+                    protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                        super.onValidationError(target, form, instanceModel);
+                        modalFilter.hide(target);
+                        modalFilter.show(target);
+                    }
+                });
+
+                AjaxButton limparButton = new AjaxButton("btnLimpar") {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        getInstanceModel().getObject().clearInstance();
+                        form.clearInput();
+//                    filterPanel.getInstanceModel().getObject().init();
+                        target.add(filterPanel);
+                    }
+                };
+                limparButton.setDefaultFormProcessing(false);
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
+
+                AjaxButton cancelButton = new AjaxButton("btnCancelar") {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        rollbackFilterState();
+                        modalFilter.hide(target);
+                    }
+                };
+                cancelButton.setDefaultFormProcessing(false);
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Cancelar"), cancelButton);
+            }
+
+            return modalFilter;
+        }
+
+        private void createFilterPanel() {
+            filterPanel = new SingularFormPanel("filterPanel", getCrudShellManager().getStudioDefinition().getFilterType());
+            filterPanel.setNested(true);;
+
+        }
+
+        private void saveFilterState() {
+            filterState = FormStateUtil.keepState(filterPanel.getInstance());
+        }
+
+        private void rollbackFilterState() {
+            try {
+                if (filterState != null && filterPanel != null && filterPanel.getInstanceModel().getObject() != null) {
+                    FormStateUtil.restoreState(filterPanel.getInstanceModel().getObject(), filterState);
+                }
+            } catch (Exception e) {
+                throw SingularException.rethrow(e.getMessage(), e);
+            }
+        }
+
+        public IModel<SInstance> getInstanceModel() {
+            return filterPanel.getInstanceModel();
         }
     }
 
