@@ -16,6 +16,7 @@
 
 package org.opensingular.studio.core.panel;
 
+import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.opensingular.studio.core.definition.StudioDefinition;
 
@@ -34,4 +35,11 @@ public class CrudShell extends Panel {
         super.onInitialize();
         add(crudShellManager.getCrudShellContent());
     }
+
+
+    public void addToastrMessage(ToastrType type, String message) {
+        crudShellManager.addToastrMessage(type, message);
+    }
+
+
 }
