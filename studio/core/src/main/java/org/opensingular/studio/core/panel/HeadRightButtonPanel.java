@@ -19,12 +19,6 @@ public class HeadRightButtonPanel extends Panel {
     }
 
     @Override
-    protected void onComponentTag(ComponentTag tag) {
-        super.onComponentTag(tag);
-        tag.put("title", headerRightButton.getTitle());
-    }
-
-    @Override
     protected void onInitialize() {
         super.onInitialize();
 
