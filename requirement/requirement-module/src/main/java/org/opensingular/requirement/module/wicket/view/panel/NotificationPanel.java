@@ -16,9 +16,7 @@
 
 package org.opensingular.requirement.module.wicket.view.panel;
 
-import java.io.File;
-import javax.inject.Inject;
-
+import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.panel.Panel;
@@ -31,6 +29,9 @@ import org.opensingular.lib.wicket.util.model.IReadOnlyModel;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.inject.Inject;
+import java.io.File;
 
 
 public class NotificationPanel<RI extends RequirementInstance> extends Panel {
@@ -57,7 +58,7 @@ public class NotificationPanel<RI extends RequirementInstance> extends Panel {
             @Override
             public File getObject() {
                 HtmlToPdfDTO dto = new HtmlToPdfDTO();
-                dto.setBody(model.getObject().getValue());
+                dto.setBody(StringEscapeUtils.escapeHtml4(model.getObject().getValue()));
                 return htmlToPdfConverter.convert(dto).orElse(null);
             }
         };
