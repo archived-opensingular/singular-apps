@@ -70,7 +70,7 @@ public class Header extends Panel {
     }
 
 
-    protected TopMenu configureTopMenu(String id) {
+    protected WebMarkupContainer configureTopMenu(String id) {
         return new TopMenu(id, option);
     }
 }
