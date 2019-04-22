@@ -19,7 +19,7 @@ public class Serie implements Serializable {
     }
 
     public static SerieType[] getAplicabilidadeWithModelo() {
-        return new SerieType[] {SerieType.DOC_INTERNO, SerieType.DOC_INTERNO};
+        return new SerieType[] {SerieType.DOC_INTERNO_EXTERNO, SerieType.DOC_INTERNO};
     }
 
     public String getNome() {
