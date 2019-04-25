@@ -14,7 +14,8 @@
  *  * See the License for the specific language governing permissions and
  *  * limitations under the License.
  *
- */
+ *//*
+
 
 package org.opensingular.singular.pet.module.foobar.stuff;
 
@@ -75,4 +76,4 @@ public class FooSingularModule implements SingularModule {
                             .addBox(DefaultOngoingbox.class));
         }
     }
-}
+}*/
