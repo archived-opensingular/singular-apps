@@ -46,6 +46,8 @@ public class ActionContext implements Serializable, Loggable {
 
     public static final String FORM_NAME = "f";
 
+    public static final String FORM_TITLE_NAME = "ft";
+
     public static final String INSTANCE_ID = "i";
 
     public static final String ITEM_PARAM_NAME = "t";
@@ -119,7 +121,10 @@ public class ActionContext implements Serializable, Loggable {
 
     public Optional<String> getFormName() {
         return Optional.ofNullable(this.params.get(FORM_NAME));
+    }
 
+    public Optional<String> getFormTitleName() {
+        return Optional.ofNullable(this.params.get(FORM_TITLE_NAME));
     }
 
     public String getActionName() {
