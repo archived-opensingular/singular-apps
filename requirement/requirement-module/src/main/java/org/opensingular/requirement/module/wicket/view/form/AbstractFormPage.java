@@ -50,11 +50,12 @@ import org.opensingular.form.SType;
 import org.opensingular.form.type.core.annotation.AnnotationClassifier;
 import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
+import org.opensingular.form.wicket.component.SIntanceUpdateAjaxLink;
 import org.opensingular.form.wicket.component.SingularButton;
 import org.opensingular.form.wicket.component.SingularSaveButton;
-import org.opensingular.form.wicket.component.SIntanceUpdateAjaxLink;
 import org.opensingular.form.wicket.component.SingularValidationButton;
 import org.opensingular.form.wicket.enums.AnnotationMode;
+import org.opensingular.form.wicket.enums.PageState;
 import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.model.ISInstanceAwareModel;
 import org.opensingular.form.wicket.model.SInstanceRootModel;
@@ -121,6 +122,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
     private IModel<RI> requirementInstanceModel;
     private IModel<Long> requirementIdModel = new Model<>();
+
+    private IModel<PageState> pageStateModel = new Model<>(PageState.NOT_SEND);
 
 
     @Inject
@@ -536,8 +539,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     /**
      * Cria o botão para visualizar o diff na barra de botões.
      *
-     * @param buttonContainer
-     * @param requirementId
+     * @param id
      */
     protected Component buildDiffButton(String id) {
         return new ModuleButtonFactory(ActionContext.fromFormConfig(config), getAdditionalParams())
@@ -615,6 +617,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
             //executa o envio, iniciando o fluxo informado
             RequirementSubmissionResponse sendedFeedback = requirement.send(username);
+            ajxrt.add(getForm());
+            pageStateModel.setObject(PageState.SEND);
             //janela de oportunidade para executar ações apos o envio, normalmente utilizado para mostrar mensagens
             onAfterSend(ajxrt, sm, sendedFeedback);
         } catch (Exception ex) {
@@ -881,7 +885,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private void saveForm(SInstance instance) {
         validateUserAllocatedAndUserAction();
-        if (instance != null) {
+        if (instance != null && !isRequerimentSend()) {
             getRequirement().saveForm(instance);
         }
         requirementIdModel.setObject(getRequirement().getCod());
@@ -963,7 +967,12 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected Behavior visibleOnlyInEditionBehaviour() {
-        return $b.visibleIf(() -> getViewMode(config).isEdition() || getAnnotationMode(config).editable());
+        return $b.visibleIf(() -> !isRequerimentSend()
+                && (getViewMode(config).isEdition() || getAnnotationMode(config).editable()));
+    }
+
+    private boolean isRequerimentSend() {
+        return pageStateModel.getObject().isSend();
     }
 
     protected Behavior visibleOnlyIfDraftInEditionBehaviour() {
