@@ -23,7 +23,6 @@ import org.opensingular.flow.persistence.dao.ModuleDAO;
 import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.form.persistence.entity.FormTypeEntity;
-import org.opensingular.form.service.FormTypeService;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import org.opensingular.requirement.module.ActionProvider;
@@ -86,8 +85,8 @@ public class DefaultModuleService implements ModuleService, Loggable {
     private ObjectFactory<IServerContext> serverContextObjectFactory;
 
     @Override
-    public String countAll(BoxDefinition box) {
-        return String.valueOf(count(box, boxFilterFactory.create(box)));
+    public String countAllCounters(BoxDefinition box) {
+        return String.valueOf(countFiltered(box, boxFilterFactory.create(box).countersFilterEnabled(true)));
     }
 
     @Override

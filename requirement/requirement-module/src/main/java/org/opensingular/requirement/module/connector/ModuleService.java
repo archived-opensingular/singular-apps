@@ -35,9 +35,9 @@ import java.util.Map;
 public interface ModuleService {
 
     /**
-     * Count all elements inside a box
+     * Count all counters of box
      */
-    String countAll(BoxDefinition box);
+    String countAllCounters(BoxDefinition box);
 
     /**
      * Count elements inside a box, applying the filter
