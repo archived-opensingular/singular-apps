@@ -79,7 +79,7 @@ public class DispatcherPage extends WebPage implements Loggable {
 
     public DispatcherPage() {
         buildPage();
-        dispatch(setFormNameActionContext(new ActionContext(getRequest().getOriginalUrl().getQueryString())));
+        dispatch(setFormNameActionContext(new ActionContext(getRequest().getUrl().getQueryString())));
     }
 
     /**
