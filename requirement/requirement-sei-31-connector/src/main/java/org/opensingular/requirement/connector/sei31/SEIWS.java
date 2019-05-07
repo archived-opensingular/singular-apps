@@ -27,6 +27,7 @@ import org.opensingular.requirement.connector.sei31.ws.ArrayOfArquivoExtensao;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfCargo;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfDocumentoFormatado;
+import org.opensingular.requirement.connector.sei31.ws.ArrayOfHipoteseLegal;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfIdContatos;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfProcedimentoRelacionado;
@@ -607,6 +608,11 @@ public class SEIWS implements SEIPortType, Loggable {
     @Override
     public List<Contato> listarContatosPorCPF(String idTipoContato, String cpf) {
         return seiPortType.listarContatos(siglaSistema, identificacaoServico, "", idTipoContato, "", "", "", "", cpf, "", "", new ArrayOfIdContatos()).getItem();
+    }
+
+    @Override
+    public ArrayOfHipoteseLegal listarHipotesesLegais(String idUnidade, String nivelAcesso) {
+        return seiPortType.listarHipotesesLegais(siglaSistema, identificacaoServico, idUnidade, nivelAcesso);
     }
 
 

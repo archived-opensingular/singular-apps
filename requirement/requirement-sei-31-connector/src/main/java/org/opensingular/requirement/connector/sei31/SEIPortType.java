@@ -22,6 +22,7 @@ import org.opensingular.requirement.connector.sei31.model.UnidadeSei;
 import org.opensingular.requirement.connector.sei31.ws.ArquivoExtensao;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfDocumento;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfDocumentoFormatado;
+import org.opensingular.requirement.connector.sei31.ws.ArrayOfHipoteseLegal;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfProcedimentoRelacionado;
 import org.opensingular.requirement.connector.sei31.ws.Cargo;
@@ -432,4 +433,6 @@ public interface SEIPortType {
      * @return
      */
     List<Contato> listarContatosPorCPF(String idTipoContato, String cpf);
+
+    ArrayOfHipoteseLegal listarHipotesesLegais(String idUnidade, String nivelAcesso);
 }
