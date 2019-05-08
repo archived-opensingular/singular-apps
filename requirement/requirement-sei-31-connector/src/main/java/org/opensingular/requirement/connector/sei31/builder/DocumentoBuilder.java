@@ -32,6 +32,7 @@ import org.opensingular.requirement.connector.sei31.ws.Interessado;
 import org.opensingular.requirement.connector.sei31.ws.Remetente;
 
 import javax.activation.DataHandler;
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.InputStream;
 import java.io.Serializable;
@@ -405,8 +406,10 @@ public class DocumentoBuilder implements Serializable, Loggable {
      *            o(a) nivel acesso.
      * @return o valor de documento builder
      */
-    public DocumentoBuilder setNivelAcesso(NivelAcesso nivelAcesso) {
-        this.documento.setNivelAcesso(nivelAcesso.getCodigo());
+    public DocumentoBuilder setNivelAcesso(@Nullable NivelAcesso nivelAcesso) {
+        if(nivelAcesso != null) {
+            this.documento.setNivelAcesso(nivelAcesso.getCodigo());
+        }
         return this;
     }
 
