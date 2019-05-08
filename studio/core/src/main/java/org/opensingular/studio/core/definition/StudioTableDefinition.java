@@ -17,8 +17,11 @@
 package org.opensingular.studio.core.definition;
 
 import org.opensingular.form.studio.StudioCRUDPermissionStrategy;
-import org.opensingular.studio.core.panel.CrudListContent;
 import org.opensingular.studio.core.panel.CrudShellManager;
+import org.opensingular.studio.core.panel.action.DeleteAction;
+import org.opensingular.studio.core.panel.action.EditAction;
+import org.opensingular.studio.core.panel.action.ListAction;
+import org.opensingular.studio.core.panel.action.ViewAction;
 
 import javax.annotation.Nullable;
 import java.io.Serializable;
@@ -29,19 +32,19 @@ import java.util.List;
 public class StudioTableDefinition implements Serializable {
 
     private LinkedHashMap<String, String>    columns                 = new LinkedHashMap<>();
-    private List<CrudListContent.ListAction> actions                 = new ArrayList<>();
+    private List<ListAction> actions                 = new ArrayList<>();
     private StudioTableDataProvider          studioTableDataProvider = null;
 
     public StudioTableDefinition(StudioDefinition studioDefinition, CrudShellManager crudShellManager) {
         StudioCRUDPermissionStrategy permissionStrategy = studioDefinition.getPermissionStrategy();
         if (permissionStrategy.canEdit()) {
-            actions.add(new CrudListContent.EditAction(crudShellManager));
+            actions.add(new EditAction(crudShellManager));
         }
         if (permissionStrategy.canView()) {
-            actions.add(new CrudListContent.ViewAction(crudShellManager));
+            actions.add(new ViewAction(crudShellManager));
         }
         if (permissionStrategy.canRemove()) {
-            actions.add(new CrudListContent.DeleteAction(studioDefinition, crudShellManager));
+            actions.add(new DeleteAction(studioDefinition, crudShellManager));
         }
     }
 
@@ -49,7 +52,7 @@ public class StudioTableDefinition implements Serializable {
         columns.put(columnName, path);
     }
 
-    public void add(CrudListContent.ListAction listAction) {
+    public void add(ListAction listAction) {
         actions.add(listAction);
     }
 
@@ -75,7 +78,7 @@ public class StudioTableDefinition implements Serializable {
         return columns;
     }
 
-    public List<CrudListContent.ListAction> getActions() {
+    public List<ListAction> getActions() {
         return actions;
     }
 

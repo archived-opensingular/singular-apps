@@ -16,40 +16,38 @@
 
 package org.opensingular.studio.core.panel;
 
-import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.html.WebMarkupContainer;
+import org.apache.wicket.markup.head.IHeaderResponse;
+import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
 import org.apache.wicket.markup.html.list.ListView;
+import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.Model;
+import org.apache.wicket.resource.JQueryPluginResourceReference;
 import org.opensingular.form.SInstance;
-import org.opensingular.form.persistence.FormKey;
 import org.opensingular.form.wicket.component.BFModalWindow;
 import org.opensingular.form.wicket.component.SingularValidationButton;
-import org.opensingular.form.wicket.enums.ViewMode;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.FormStateUtil;
 import org.opensingular.lib.commons.base.SingularException;
 import org.opensingular.lib.commons.ui.Icon;
-import org.opensingular.lib.wicket.util.ajax.ActionAjaxLink;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
-import org.opensingular.lib.wicket.util.resource.DefaultIcons;
 import org.opensingular.lib.wicket.util.util.WicketUtils;
 import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
-import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
+import org.opensingular.studio.core.panel.button.HeaderRightButtonAjax;
+import org.opensingular.studio.core.panel.button.HeaderRightModalButton;
+import org.opensingular.studio.core.panel.button.IHeaderRightButton;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -57,18 +55,27 @@ import java.util.Optional;
 
 public class CrudListContent extends CrudShellContent {
 
-    private IModel<Icon> iconModel = new Model<>();
-    private IModel<String> titleModel = new Model<>();
-    private List<HeaderRightButton> headerRightButtons = new ArrayList<>();
+    private IModel<Icon>             iconModel          = new Model<>();
+    private IModel<String>           titleModel         = new Model<>();
+    private List<IHeaderRightButton> headerRightButtons = new ArrayList<>();
 
-    private BFModalWindow modalFilter;
-    private SingularFormPanel filterPanel;
+    private   HeaderFilterAction      headerFilterAction;
     protected FormStateUtil.FormState filterState;
 
     private final CrudListConfig crudListConfig;
 
     public CrudListContent(CrudShellManager crudShellManager) {
         this(crudShellManager, new CrudListConfig());
+    }
+
+
+    @Override
+    public void renderHead(IHeaderResponse response) {
+        super.renderHead(response);
+        /*É necessário carregar o script do SingularFormPanel, pois como ele está dentro da modal,
+         o renderHead do panel ainda não foi chamado, o que estava gerando ao abrir a modal.*/
+        response.render(JavaScriptHeaderItem
+                .forReference(new JQueryPluginResourceReference(SingularFormPanel.class, "SingularFormPanel.js")));
     }
 
     public CrudListContent(CrudShellManager crudShellManager, CrudListConfig crudListConfig) {
@@ -79,7 +86,7 @@ public class CrudListContent extends CrudShellContent {
 
     private void addDefaultHeaderRightActions() {
         if (getDefinition().getPermissionStrategy().canCreate()) {
-            headerRightButtons.add(new CreateNewHeaderRightButton());
+            headerRightButtons.add(new CreateNewIHeaderRightButton());
         }
     }
 
@@ -90,7 +97,6 @@ public class CrudListContent extends CrudShellContent {
         addTitle();
         addPortletHeaderRightButtons();
         setTitle(getDefinition().getTitle());
-        createModalFilter();
         createFilterHeaderRigthButton();
         addTable();
     }
@@ -142,7 +148,7 @@ public class CrudListContent extends CrudShellContent {
     private SortableDataProvider<SInstance, String> resolveProvider() {
         StudioTableDataProvider dataProvider = Optional.ofNullable(getConfiguredStudioTable().getDataProvider()).orElse(new DefaultStudioTableDataProvider());
         if (isFilterDefined()) {
-            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), filterPanel.getInstanceModel());
+            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), headerFilterAction.getInstanceModel());
         }
         return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), null);
     }
@@ -153,7 +159,7 @@ public class CrudListContent extends CrudShellContent {
         return config;
     }
 
-    private StudioTableDefinition getConfiguredStudioTable() {
+    public StudioTableDefinition getConfiguredStudioTable() {
         StudioTableDefinition studioDataTable = new StudioTableDefinition(getDefinition(), getCrudShellManager());
         getDefinition().configureStudioDataTable(studioDataTable);
         return studioDataTable;
@@ -161,6 +167,7 @@ public class CrudListContent extends CrudShellContent {
 
     private void addPortletHeaderRightButtons() {
         add(new HeaderRightActions(headerRightButtons));
+        add(new ModalActions(headerRightButtons));
     }
 
     private void addTitle() {
@@ -181,209 +188,41 @@ public class CrudListContent extends CrudShellContent {
         return this;
     }
 
-    public CrudListContent addPorletHeaderRightAction(HeaderRightButton headerRightButton) {
+    public CrudListContent addPorletHeaderRightAction(IHeaderRightButton headerRightButton) {
         headerRightButtons.add(headerRightButton);
         return this;
-    }
-
-    private void createModalFilter() {
-        modalFilter = new BFModalWindow("modalFilter");
-        modalFilter.setTitleText(Model.of("Pesquisar"));
-        modalFilter.setSize(BSModalBorder.Size.LARGE);
-
-        if (isFilterDefined()) {
-            filterPanel = new SingularFormPanel("filterPanel", getCrudShellManager().getStudioDefinition().getFilterType());
-            filterPanel.setNested(true);
-            modalFilter.setBody(filterPanel);
-
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", filterPanel.getInstanceModel()) {
-                @Override
-                protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                    target.add(CrudListContent.this);
-                    modalFilter.hide(target);
-                }
-
-                @Override
-                protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                    super.onValidationError(target, form, instanceModel);
-                    modalFilter.hide(target);
-                    modalFilter.show(target);
-                }
-            });
-
-            AjaxButton limparButton = new AjaxButton("btnLimpar") {
-                @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    filterPanel.getInstanceModel().getObject().clearInstance();
-                    form.clearInput();
-//                    filterPanel.getInstanceModel().getObject().init();
-                    target.add(filterPanel);
-                }
-            };
-            limparButton.setDefaultFormProcessing(false);
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
-
-            AjaxButton cancelButton = new AjaxButton("btnCancelar") {
-                @Override
-                protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
-                    rollbackFilterState();
-                    modalFilter.hide(target);
-                }
-            };
-            cancelButton.setDefaultFormProcessing(false);
-            modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Cancelar"), cancelButton);
-        }
-
-        add(modalFilter);
     }
 
     private boolean isFilterDefined() {
         return getCrudShellManager().getStudioDefinition().getFilterType() != null;
     }
 
-    public interface HeaderRightButton extends Serializable {
-        void onAction(AjaxRequestTarget target);
+    private static class HeaderRightActions extends ListView<IHeaderRightButton> {
 
-        String getLabel();
-
-        String getIcon();
-
-        default boolean isVisible() {
-            return true;
-        }
-    }
-
-    public interface ListAction extends Serializable {
-        void configure(BSActionPanel.ActionConfig<SInstance> config);
-
-        void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager);
-    }
-
-    private static class HeaderRightActions extends ListView<HeaderRightButton> {
-
-        private HeaderRightActions(List<HeaderRightButton> list) {
+        private HeaderRightActions(List<IHeaderRightButton> list) {
             super("headerRightActions", list);
         }
 
         @Override
-        protected void populateItem(ListItem<HeaderRightButton> item) {
+        protected void populateItem(ListItem<IHeaderRightButton> item) {
             item.setRenderBodyOnly(true);
-            item.add(new HeaderRightActionActionAjaxLink(item.getModelObject()));
-        }
-
-        private static class HeaderRightActionActionAjaxLink extends ActionAjaxLink<Void> {
-
-            private final HeaderRightButton headerRightButton;
-
-            HeaderRightActionActionAjaxLink(HeaderRightButton headerRightButton) {
-                super("headerRightAction");
-                this.headerRightButton = headerRightButton;
-            }
-
-            @Override
-            protected void onAction(AjaxRequestTarget target) {
-                headerRightButton.onAction(target);
-            }
-
-            @Override
-            protected void onInitialize() {
-                super.onInitialize();
-                Label btnLabel = new Label("headerRightActionLabel", headerRightButton.getLabel());
-
-                WebMarkupContainer btnIcon = new WebMarkupContainer("headerRigthActionIcon") {
-                    @Override
-                    protected void onComponentTag(ComponentTag tag) {
-                        super.onComponentTag(tag);
-                        tag.put("class", headerRightButton.getIcon());
-                    }
-                };
-
-                this.add(btnLabel);
-                this.add(btnIcon);
-                this.setVisible(headerRightButton.isVisible());
-            }
-
+            item.add(new HeadRightButtonPanel(item.getModelObject()));
         }
     }
 
-    public static class EditAction implements ListAction {
+    private static class ModalActions extends ListView<IHeaderRightButton> {
 
-        private final CrudShellManager crudShellManager;
-
-        public EditAction(CrudShellManager crudShellManager) {
-            this.crudShellManager = crudShellManager;
+        private ModalActions(List<IHeaderRightButton> list) {
+            super("headerRightModalContainers", list);
         }
 
         @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.PENCIL));
-            config.labelModel(Model.of("Editar"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            CrudEditContent crudEditContent = this.crudShellManager.makeEditContent(this.crudShellManager.getCrudShellContent(), model);
-            this.crudShellManager.replaceContent(target, crudEditContent);
+        protected void populateItem(ListItem<IHeaderRightButton> item) {
+            item.add(item.getModelObject().modalComponent("modalComponent"));
         }
     }
 
-    public static class ViewAction implements ListAction {
-
-        private final CrudShellManager crudShellManager;
-
-        public ViewAction(CrudShellManager crudShellManager) {
-            this.crudShellManager = crudShellManager;
-        }
-
-        @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.EYE));
-            config.labelModel(Model.of("Visualizar"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            CrudEditContent crudEditContent = this.crudShellManager
-                    .makeEditContent(this.crudShellManager.getCrudShellContent(), model);
-            crudEditContent.setViewMode(ViewMode.READ_ONLY);
-            this.crudShellManager.replaceContent(target, crudEditContent);
-        }
-    }
-
-    public static class DeleteAction implements ListAction {
-
-        private final StudioDefinition studioDefinition;
-        private final CrudShellManager crudShellManager;
-
-        public DeleteAction(StudioDefinition studioDefinition, CrudShellManager crudShellManager) {
-            this.studioDefinition = studioDefinition;
-            this.crudShellManager = crudShellManager;
-        }
-
-        @Override
-        public void configure(BSActionPanel.ActionConfig<SInstance> config) {
-            config.iconeModel(Model.of(DefaultIcons.TRASH));
-            config.labelModel(Model.of("Remover"));
-        }
-
-        @Override
-        public void onAction(AjaxRequestTarget target, IModel<SInstance> model, CrudShellManager crudShellManager) {
-            this.crudShellManager.addConfirm("Tem certeza que deseja excluir?", target, (ajaxRequestTarget) -> {
-                studioDefinition.getRepository().delete(FormKey.from(model.getObject()));
-                this.crudShellManager.addToastrMessage(ToastrType.INFO, "Item excluído com sucesso.");
-                this.crudShellManager.update(ajaxRequestTarget);
-            });
-        }
-
-    }
-
-    private class CreateNewHeaderRightButton implements HeaderRightButton {
-        @Override
-        public void onAction(AjaxRequestTarget target) {
-            CrudEditContent crudEditContent = getCrudShellManager()
-                    .makeEditContent(getCrudShellManager().getCrudShellContent(), null);
-            getCrudShellManager().replaceContent(target, crudEditContent);
-        }
+    private class CreateNewIHeaderRightButton extends HeaderRightButtonAjax {
 
         @Override
         public String getLabel() {
@@ -391,35 +230,26 @@ public class CrudListContent extends CrudShellContent {
         }
 
         @Override
+        public String getTitle() {
+            return getCrudShellManager().getCrudShellContent().getDefinition().getTitle();
+        }
+
+        @Override
         public String getIcon() {
             return "fa fa-plus";
+        }
+
+        @Override
+        public void onAction(AjaxRequestTarget target) {
+            CrudEditContent crudEditContent = getCrudShellManager()
+                    .makeEditContent(getCrudShellManager().getCrudShellContent(), null);
+            getCrudShellManager().replaceContent(target, crudEditContent);
         }
     }
 
     private void createFilterHeaderRigthButton() {
-        HeaderRightButton btnFilter = new HeaderRightButton() {
-            @Override
-            public void onAction(AjaxRequestTarget target) {
-                saveFilterState();
-                modalFilter.show(target);
-            }
-
-            @Override
-            public String getLabel() {
-                return "Filtrar";
-            }
-
-            @Override
-            public boolean isVisible() {
-                return isFilterDefined();
-            }
-
-            @Override
-            public String getIcon() {
-                return "fa fa-search";
-            }
-        };
-        addPorletHeaderRightAction(btnFilter);
+        headerFilterAction = new HeaderFilterAction();
+        addPorletHeaderRightAction(headerFilterAction);
     }
 
     private class DefaultStudioTableDataProvider implements BasicStudioTableDataProvider<SInstance> {
@@ -435,17 +265,117 @@ public class CrudListContent extends CrudShellContent {
         }
     }
 
-    private void saveFilterState() {
-        filterState = FormStateUtil.keepState(filterPanel.getInstance());
-    }
 
-    private void rollbackFilterState() {
-        try {
-            if (filterState != null && filterPanel != null && filterPanel.getInstanceModel().getObject() != null) {
-                FormStateUtil.restoreState(filterPanel.getInstanceModel().getObject(), filterState);
+    private class HeaderFilterAction extends HeaderRightModalButton {
+
+        private BFModalWindow     modalFilter;
+        private SingularFormPanel filterPanel;
+
+
+        public HeaderFilterAction() {
+            createFilterPanel();
+        }
+
+        @Override
+        public void onAction(AjaxRequestTarget target) {
+            saveFilterState();
+            modalFilter.show(target);
+        }
+
+        @Override
+        public Panel modalComponent(String id) {
+            if (modalFilter == null) {
+                modalFilter = createModalFilter(id);
             }
-        } catch (Exception e) {
-            throw SingularException.rethrow(e.getMessage(), e);
+            return modalFilter;
+        }
+
+        @Override
+        public String getLabel() {
+            return "Filtrar";
+        }
+
+        @Override
+        public boolean isVisible() {
+            return isFilterDefined();
+        }
+
+        @Override
+        public String getIcon() {
+            return "fa fa-search";
+        }
+
+
+        private BFModalWindow createModalFilter(String id) {
+            BFModalWindow modalFilter = new BFModalWindow(id);
+            modalFilter.setTitleText(Model.of("Pesquisar"));
+            modalFilter.setSize(BSModalBorder.Size.LARGE);
+            modalFilter.setBody(filterPanel);
+            if (isFilterDefined()) {
+
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CONFIRM, Model.of("Pesquisar"), new SingularValidationButton("btnPesquisar", getInstanceModel()) {
+                    @Override
+                    protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                        target.add(CrudListContent.this);
+                        modalFilter.hide(target);
+                    }
+
+                    @Override
+                    protected void onValidationError(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
+                        super.onValidationError(target, form, instanceModel);
+                        modalFilter.hide(target);
+                        modalFilter.show(target);
+                    }
+                });
+
+                AjaxButton limparButton = new AjaxButton("btnLimpar") {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        getInstanceModel().getObject().clearInstance();
+                        form.clearInput();
+//                    filterPanel.getInstanceModel().getObject().init();
+                        target.add(filterPanel);
+                    }
+                };
+                limparButton.setDefaultFormProcessing(false);
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Limpar"), limparButton);
+
+                AjaxButton cancelButton = new AjaxButton("btnCancelar") {
+                    @Override
+                    protected void onSubmit(AjaxRequestTarget target, Form<?> form) {
+                        rollbackFilterState();
+                        modalFilter.hide(target);
+                    }
+                };
+                cancelButton.setDefaultFormProcessing(false);
+                modalFilter.addButton(BSModalBorder.ButtonStyle.CANCEL, Model.of("Cancelar"), cancelButton);
+            }
+
+            return modalFilter;
+        }
+
+        private void createFilterPanel() {
+            filterPanel = new SingularFormPanel("filterPanel", getCrudShellManager().getStudioDefinition().getFilterType());
+            filterPanel.setNested(true);
+
+        }
+
+        private void saveFilterState() {
+            filterState = FormStateUtil.keepState(filterPanel.getInstance());
+        }
+
+        private void rollbackFilterState() {
+            try {
+                if (filterState != null && filterPanel != null && filterPanel.getInstanceModel().getObject() != null) {
+                    FormStateUtil.restoreState(filterPanel.getInstanceModel().getObject(), filterState);
+                }
+            } catch (Exception e) {
+                throw SingularException.rethrow(e.getMessage(), e);
+            }
+        }
+
+        public IModel<SInstance> getInstanceModel() {
+            return filterPanel.getInstanceModel();
         }
     }
 

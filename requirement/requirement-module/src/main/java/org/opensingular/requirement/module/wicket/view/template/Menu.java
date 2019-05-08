@@ -112,7 +112,7 @@ public class Menu extends Panel implements Loggable {
     }
 
     protected ISupplier<String> createCountSupplier(BoxDefinition boxDefinition) {
-        return () -> moduleService.countAll(boxDefinition);
+        return () -> moduleService.countAllCounters(boxDefinition);
     }
 
     protected static class AddContadoresBehaviour extends AbstractDefaultAjaxBehavior {

@@ -16,12 +16,12 @@
 
 package org.opensingular.app.commons.spring.persistence.database;
 
-import java.util.List;
-import java.util.Properties;
-import javax.sql.DataSource;
-
 import org.hibernate.dialect.Dialect;
 import org.opensingular.lib.support.persistence.DatabaseObjectNameReplacement;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Properties;
 
 /**
  * Interface responsible for configuration of the Persistence.
@@ -35,7 +35,7 @@ public interface SingularPersistenceConfiguration {
      * is already configured by the platform.
      *
      * @param packagesConfig A configuration class that contains a pre-populated list with singular default packages,
-     *                                  cleaning or removing pre-populated data in this list would led to platform malfunction.
+     *                       cleaning or removing pre-populated data in this list would led to platform malfunction.
      */
     void configureHibernatePackagesToScan(PackageScanConfiguration packagesConfig);
 
@@ -110,4 +110,7 @@ public interface SingularPersistenceConfiguration {
         return SingularDataBaseEnum.getForDialect(getHibernateDialect());
     }
 
+    default void configuregetMappingResources(List<String> mappings) {
+
+    }
 }

@@ -143,8 +143,7 @@
                                             <xsd:element name="value">
                                                 <xsd:complexType>
                                                     <xsd:sequence>
-                                                        <xsd:element name="item" maxOccurs="unbounded" minOccurs="0"
-                                                                     type="tns:ValueItem"/>
+                                                        <xsd:element name="item" maxOccurs="unbounded" minOccurs="0" type="tns:ValueItem"/>
                                                     </xsd:sequence>
                                                 </xsd:complexType>
                                             </xsd:element>

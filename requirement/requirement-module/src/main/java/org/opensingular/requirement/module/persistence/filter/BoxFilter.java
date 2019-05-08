@@ -36,6 +36,7 @@ public class BoxFilter {
     private List<String>          processesAbbreviation;
     private List<String>          typesNames;
     private boolean               checkApplicant = false;
+    private boolean               countersFilterEnabled = false;
     private SInstance             advancedFilterInstance;
 
 
@@ -98,6 +99,16 @@ public class BoxFilter {
     public BoxFilter count(int count) {
         this.count = count;
         return this;
+    }
+
+
+    public BoxFilter countersFilterEnabled(boolean countersFilterEnabled) {
+        this.countersFilterEnabled = countersFilterEnabled;
+        return this;
+    }
+
+    public boolean isCountersFilterEnabled() {
+        return countersFilterEnabled;
     }
 
     public String getSortProperty() {

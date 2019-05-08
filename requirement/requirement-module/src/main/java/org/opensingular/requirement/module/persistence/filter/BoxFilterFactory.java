@@ -8,7 +8,6 @@ import org.opensingular.form.context.SFormConfig;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.service.dto.FormDTO;
-import org.opensingular.requirement.module.spring.security.AuthorizationService;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
 import org.opensingular.requirement.module.wicket.SingularSession;
 import org.opensingular.requirement.module.workspace.BoxDefinition;
@@ -71,11 +70,11 @@ public class BoxFilterFactory {
             mainForms = new ArrayList<>();
             List<RequirementDefinition<?>> requirements = requirementDefinitionService.getRequirements();
             for (RequirementDefinition<?> requirement : requirements) {
-                String name = SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
+                String             name          = SFormUtil.getTypeName((Class<? extends SType<?>>) requirement.getMainForm());
                 Optional<SType<?>> sTypeOptional = singularFormConfig.getTypeLoader().loadType(name);
                 if (sTypeOptional.isPresent()) {
                     SType<?> sType = sTypeOptional.get();
-                    String label = sType.asAtr().getLabel();
+                    String   label = sType.asAtr().getLabel();
                     mainForms.add(new FormDTO(name, sType.getNameSimple(), label));
                 }
             }

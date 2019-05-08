@@ -45,7 +45,8 @@ public class Header extends Panel {
     @Override
     protected void onInitialize() {
         super.onInitialize();
-        add(new WebMarkupContainer("togglerButton").setVisible(withTogglerButton));
+        add(new WebMarkupContainer("togglerButtonResize").setVisible(withTogglerButton));
+        add(new WebMarkupContainer("togglerButtonResponsive").setVisible(withTogglerButton));
         add(new WebMarkupContainer("_TopAction")
                 .add($b.classAppender("hide")));
         add(configureTopMenu("_TopMenu"));
@@ -70,7 +71,7 @@ public class Header extends Panel {
     }
 
 
-    protected TopMenu configureTopMenu(String id) {
+    protected WebMarkupContainer configureTopMenu(String id) {
         return new TopMenu(id, option);
     }
 }

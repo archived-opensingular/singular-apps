@@ -47,12 +47,13 @@ public class ReadOnlyFormPage extends ServerTemplate {
     private final boolean showCompareLastVersionButton;
     private Model<String> formNameModel;
 
-    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations, boolean showCompareLastVersionButton, Optional<String> formName) {
+    public ReadOnlyFormPage(IModel<Long> formVersionEntityPK, IModel<Boolean> showAnnotations,
+                            boolean showCompareLastVersionButton, Optional<String> formTitleName) {
         this.formVersionEntityPK = formVersionEntityPK;
         this.showAnnotations = showAnnotations;
         this.showCompareLastVersionButton = showCompareLastVersionButton;
-        if(formNameModel != null && formName.isPresent()){
-            this.formNameModel.setObject(formName.get());
+        if(formNameModel != null && formTitleName.isPresent()){
+            this.formNameModel.setObject(formTitleName.get());
         }
     }
 
