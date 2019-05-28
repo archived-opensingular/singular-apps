@@ -32,6 +32,12 @@
             </div>
         </div>
         <div class="portlet-body">
+            <div class="box-advanced-filter" wicket:id="filter">
+                <div wicket:id="sForm"></div>
+                <button wicket:id="search" style="float: right;margin-left: 5px;" class="btn confirm-btn"><i class="fa fa-search"></i>Pesquisar</button>
+                <button wicket:id="clear" style="float: right" class="btn btn-default"><i class="fa fa-trash"></i>Limpar</button>
+                <div style="clear:both;"></div>
+            </div>
             <div class="dataTables_wrapper no-footer table-responsive">
                 <table class="worklist" wicket:id="table"></table>
             </div>

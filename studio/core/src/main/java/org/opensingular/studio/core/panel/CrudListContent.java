@@ -16,12 +16,15 @@
 
 package org.opensingular.studio.core.panel;
 
+import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
+import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.extensions.markup.html.repeater.util.SortableDataProvider;
 import org.apache.wicket.markup.head.IHeaderResponse;
 import org.apache.wicket.markup.head.JavaScriptHeaderItem;
+import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.form.Form;
 import org.apache.wicket.markup.html.list.ListItem;
@@ -42,6 +45,7 @@ import org.opensingular.lib.wicket.util.datatable.column.BSActionPanel;
 import org.opensingular.lib.wicket.util.modal.BSModalBorder;
 import org.opensingular.lib.wicket.util.util.WicketUtils;
 import org.opensingular.studio.core.definition.BasicStudioTableDataProvider;
+import org.opensingular.studio.core.definition.StudioDefinition;
 import org.opensingular.studio.core.definition.StudioTableDataProvider;
 import org.opensingular.studio.core.definition.StudioTableDefinition;
 import org.opensingular.studio.core.panel.button.HeaderRightButtonAjax;
@@ -62,7 +66,9 @@ public class CrudListContent extends CrudShellContent {
     private   HeaderFilterAction      headerFilterAction;
     protected FormStateUtil.FormState filterState;
 
-    private final CrudListConfig crudListConfig;
+    private final CrudListConfig      crudListConfig;
+
+    private SingularFormPanel         filterSForm;
 
     public CrudListContent(CrudShellManager crudShellManager) {
         this(crudShellManager, new CrudListConfig());
@@ -98,7 +104,48 @@ public class CrudListContent extends CrudShellContent {
         addPortletHeaderRightButtons();
         setTitle(getDefinition().getTitle());
         createFilterHeaderRigthButton();
+        createFilter();
         addTable();
+    }
+
+    private void createFilter() {
+        final WebMarkupContainer filter = new WebMarkupContainer("filter");
+        StudioDefinition         studioDefinition = getCrudShellManager().getStudioDefinition();
+        if (studioDefinition.getFilterType() != null
+                && !studioDefinition.isShowFilterAsModal()) {
+            filter.add(createFilterSForm());
+            filter.add(createClearFilterButton());
+            filter.add(createSearchFilterButton());
+        } else {
+            filter.setVisible(false);
+        }
+        add(filter);
+    }
+
+    private SingularFormPanel createFilterSForm() {
+        filterSForm = new SingularFormPanel("sForm", getCrudShellManager().getStudioDefinition().getFilterType());
+        filterSForm.setNested(true);
+        filterSForm.setFirstFieldFocusEnabled(false);
+        return filterSForm;
+    }
+
+    private Component createSearchFilterButton() {
+        return new AjaxLink<Void>("search") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                target.add(CrudListContent.this);
+            }
+        };
+    }
+
+    private Component createClearFilterButton() {
+        return new AjaxLink<Void>("clear") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                filterSForm.getInstance().clearInstance();
+                target.add(filterSForm);
+            }
+        };
     }
 
     private void addTable() {
@@ -148,9 +195,17 @@ public class CrudListContent extends CrudShellContent {
     private SortableDataProvider<SInstance, String> resolveProvider() {
         StudioTableDataProvider dataProvider = Optional.ofNullable(getConfiguredStudioTable().getDataProvider()).orElse(new DefaultStudioTableDataProvider());
         if (isFilterDefined()) {
-            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), headerFilterAction.getInstanceModel());
+            return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), getFilterInstance());
         }
         return new StudioDataProviderAdapter(dataProvider, formKey -> getFormPersistence().load(formKey), null);
+    }
+
+    private IModel<SInstance> getFilterInstance() {
+        if (getCrudShellManager().getStudioDefinition().isShowFilterAsModal()) {
+            return headerFilterAction.getInstanceModel();
+        } else {
+            return filterSForm.getInstanceModel();
+        }
     }
 
     private BSActionPanel.ActionConfig<SInstance> newConfig() {
@@ -248,8 +303,10 @@ public class CrudListContent extends CrudShellContent {
     }
 
     private void createFilterHeaderRigthButton() {
-        headerFilterAction = new HeaderFilterAction();
-        addPorletHeaderRightAction(headerFilterAction);
+        if (getCrudShellManager().getStudioDefinition().isShowFilterAsModal()) {
+            headerFilterAction = new HeaderFilterAction();
+            addPorletHeaderRightAction(headerFilterAction);
+        }
     }
 
     private class DefaultStudioTableDataProvider implements BasicStudioTableDataProvider<SInstance> {
