@@ -41,10 +41,7 @@ public class SingularToastrHelper extends ToastrHelper {
         String options = toStringJson(settings);
         String mensagem = getString(messageKey, args);
         AjaxRequestTarget target = RequestCycle.get().find(AjaxRequestTarget.class);
-        String js =
-                " $(document).ready(function() { "
-                        + "     Singular.exibirMensagemWorklist('%s', %s); "
-                        + " }); ";
+        String js = "Singular.exibirMensagemWorklist('%s', %s); ";
         target.appendJavaScript(String.format(js, mensagem, options));
     }
 
