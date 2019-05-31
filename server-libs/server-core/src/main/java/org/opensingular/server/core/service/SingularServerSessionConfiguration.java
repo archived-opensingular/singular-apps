@@ -20,6 +20,7 @@ package org.opensingular.server.core.service;
 
 import org.fest.util.VisibleForTesting;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
 import org.opensingular.server.commons.config.IServerContext;
@@ -38,6 +39,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -79,12 +81,17 @@ public class SingularServerSessionConfiguration implements Loggable {
     }
 
     public List<ModuleEntity> buscarCategorias() {
-        return requirementService.listAllModules();
+        String moduleCod = SingularProperties.get().getProperty(SingularProperties.SINGULAR_MODULE_COD);
+        if (moduleCod != null) {
+            return Collections.singletonList(requirementService.findByModuleCod(moduleCod));
+        } else {
+            return requirementService.listAllModules();
+        }
     }
 
     public IServerContext getMenuContext() {
         ServletRequestAttributes sra = (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
-        HttpServletRequest req = sra.getRequest();
+        HttpServletRequest       req = sra.getRequest();
         return IServerContext.getContextFromRequest(req, singularServerConfiguration.getContexts());
     }
 
@@ -97,11 +104,11 @@ public class SingularServerSessionConfiguration implements Loggable {
     }
 
     public LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> getModuleBoxConfigurationMap() {
-        LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> map = new LinkedHashMap<>();
-        List<ModuleEntity> categorias = buscarCategorias();
+        LinkedHashMap<ModuleEntity, List<BoxConfigurationData>> map        = new LinkedHashMap<>();
+        List<ModuleEntity>                                      categorias = buscarCategorias();
         for (ModuleEntity categoria : categorias) {
             final List<BoxConfigurationData> boxConfigurationMetadataDTOs = listMenus(categoria);
-            if(!boxConfigurationMetadataDTOs.isEmpty()) {
+            if (!boxConfigurationMetadataDTOs.isEmpty()) {
                 map.put(categoria, boxConfigurationMetadataDTOs);
             }
         }

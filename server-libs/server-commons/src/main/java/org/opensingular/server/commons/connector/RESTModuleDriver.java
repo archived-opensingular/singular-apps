@@ -28,6 +28,7 @@ import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionRequest;
 import org.opensingular.server.commons.box.action.ActionResponse;
 import org.opensingular.server.commons.config.IServerContext;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.opensingular.server.commons.persistence.filter.QuickFilter;
 import org.opensingular.server.commons.service.dto.BoxItemAction;
 import org.opensingular.server.commons.service.dto.ItemActionConfirmation;
@@ -43,7 +44,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.opensingular.server.commons.RESTPaths.*;
+import static org.opensingular.server.commons.RESTPaths.MENU_CONTEXT;
+import static org.opensingular.server.commons.RESTPaths.PATH_BOX_SEARCH;
+import static org.opensingular.server.commons.RESTPaths.USER;
+import static org.opensingular.server.commons.RESTPaths.WORKSPACE_CONFIGURATION;
 
 public class RESTModuleDriver implements ModuleDriver, Loggable {
 
@@ -56,27 +60,24 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        RestTemplate restTemplate = new RestTemplate();
-        String url = module.getConnectionURL() + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
-        SingularUserDetails userDetails = getUserDetails();
+        RestTemplate        restTemplate = new RestTemplate();
+        String              url          = module.getConnectionURL() + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
+        SingularUserDetails userDetails  = getUserDetails();
         if (userDetails != null) {
             url += "&" + USER + "=" + userDetails.getUserPermissionKey();
         }
         try {
             return restTemplate.getForObject(url, WorkspaceConfigurationMetadata.class);
         } catch (Exception ex) {
-            /*Modulos com versões de runtime superiores a 1.7.X não responderão este endpoint, retornando null*/
-            getLogger().debug(ex.getMessage(), ex);
-            getLogger().warn("Não foi possível recuperar informações do modulo {}", module.getName());
-            return null;
+            throw SingularServerException.rethrow("Não foi possível recuperar informações do modulo " + module.getCod(), ex);
         }
     }
 
     @Override
     public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getCountEndpoint();
-        long qtd;
+        final String url           = connectionURL + box.getCountEndpoint();
+        long         qtd;
         try {
             QuickFilter filter = new QuickFilter()
                     .withProcessesAbbreviation(flowNames)
@@ -95,7 +96,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
     @Override
     public long countFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getCountEndpoint();
+        final String url           = connectionURL + box.getCountEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
@@ -107,7 +108,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
     @Override
     public List<BoxItemDataMap> searchFiltered(ModuleEntity module, ItemBox box, QuickFilter filter) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + box.getSearchEndpoint();
+        final String url           = connectionURL + box.getSearchEndpoint();
         try {
             return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
                     .getBoxItemDataList()
@@ -123,7 +124,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
     @Override
     public List<Actor> findEligibleUsers(ModuleEntity module, BoxItemDataMap rowItemData, ItemActionConfirmation confirmAction) {
         final String connectionURL = module.getConnectionURL();
-        final String url = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
+        final String url           = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
 
         try {
             return Arrays.asList(new RestTemplate().postForObject(url, rowItemData, Actor[].class));
@@ -144,8 +145,8 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public String buildUrlToBeRedirected(BoxItemDataMap rowItemData, BoxItemAction rowAction, Map<String, String> params, String baseURI) {
-        final BoxItemAction action = rowItemData.getActionByName(rowAction.getName());
-        final String endpoint = StringUtils.trimToEmpty(action.getEndpoint());
+        final BoxItemAction action   = rowItemData.getActionByName(rowAction.getName());
+        final String        endpoint = StringUtils.trimToEmpty(action.getEndpoint());
         if (endpoint.startsWith("http")) {
             return endpoint;
         } else {
