@@ -183,20 +183,30 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
 
         WebMarkupContainer advancedFilterContainer = new WebMarkupContainer("advancedFilterContainer");
         createAdvancedFilter();
-        advancedFilterContainer.add(createClearFilterButton());
+        advancedFilterContainer.add(createClearAdvancedFilterButton());
+        advancedFilterContainer.add(createApllyAdvancedFilterButton());
         advancedFilterContainer.add(advancedFilter);
         queue(advancedFilterContainer);
     }
 
-    private Component createClearFilterButton() {
-        return new AjaxLink<Void>("filter") {
+    private Component createClearAdvancedFilterButton() {
+        return new AjaxLink<Void>("clear") {
             @Override
             public void onClick(AjaxRequestTarget target) {
                 advancedFilter.getInstance().clearInstance();
+                target.add(table);
                 target.add(this.getParent());
             }
         };
+    }
 
+    private Component createApllyAdvancedFilterButton() {
+        return new AjaxLink<Void>("filter") {
+            @Override
+            public void onClick(AjaxRequestTarget target) {
+                target.add(table);
+            }
+        };
     }
 
     private void createAdvancedFilter() {
