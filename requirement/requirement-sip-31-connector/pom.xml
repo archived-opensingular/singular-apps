@@ -9,7 +9,7 @@
         <artifactId>singular-requirement</artifactId>
         <version>1.9.1-SNAPSHOT</version>
     </parent>
-    
+
     <artifactId>requirement-sip-31-connector</artifactId>
     <name>[singular-apps :: requirement :: sip-3.1.0-connector]</name>
     <packaging>jar</packaging>
@@ -30,9 +30,6 @@
             </resource>
         </resources>
     </build>
-
-
-
 
 
 </project>

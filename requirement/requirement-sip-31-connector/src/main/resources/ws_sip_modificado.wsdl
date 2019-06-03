@@ -9,7 +9,7 @@ eplicarUsuarioRequest
 
 
  -->
-<wsdl:definitions name="SipWS" 
+<wsdl:definitions name="SipWS"
 			 targetNamespace="sipns"
              xmlns="http://schemas.xmlsoap.org/wsdl/"
              xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
