@@ -86,7 +86,7 @@ public class DefaultModuleService implements ModuleService, Loggable {
 
     @Override
     public String countAllCounters(BoxDefinition box) {
-        return String.valueOf(countFiltered(box, boxFilterFactory.create(box).countersFilterEnabled(true)));
+        return String.valueOf(countFiltered(box, boxFilterFactory.create(box).setBoxCountQuery(true)));
     }
 
     @Override

@@ -35,9 +35,10 @@ public class BoxFilter {
     private List<ITaskDefinition> tasks;
     private List<String>          processesAbbreviation;
     private List<String>          typesNames;
-    private boolean               checkApplicant = false;
-    private boolean               countersFilterEnabled = false;
     private SInstance             advancedFilterInstance;
+
+    private boolean checkApplicant = false;
+    private boolean boxCountQuery  = false;
 
 
     public List<FilterToken> listFilterTokens() {
@@ -101,14 +102,13 @@ public class BoxFilter {
         return this;
     }
 
-
-    public BoxFilter countersFilterEnabled(boolean countersFilterEnabled) {
-        this.countersFilterEnabled = countersFilterEnabled;
+    public BoxFilter setBoxCountQuery(boolean boxCountQuery) {
+        this.boxCountQuery = boxCountQuery;
         return this;
     }
 
-    public boolean isCountersFilterEnabled() {
-        return countersFilterEnabled;
+    public boolean isBoxCountQuery() {
+        return boxCountQuery;
     }
 
     public String getSortProperty() {
