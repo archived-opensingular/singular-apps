@@ -17,12 +17,12 @@
 
             <xsd:complexType name="DadosAssinatura">
                 <xsd:all>
-                    <xsd:element name="IdOrgaoUsuario" type="xsd:long" />
-                    <xsd:element name="IdContextoUsuario" type="xsd:long" />
-                    <xsd:element name="SiglaUsuario" type="xsd:string" />
-                    <xsd:element name="SenhaUsuario" type="xsd:string" />
-                    <xsd:element name="CargoFuncao" type="xsd:string" />
-                    <xsd:element name="ProtocolosDocumento" type="tns:ArrayOfProtocoloDocumento" />
+                    <xsd:element name="IdOrgaoUsuario" type="xsd:long"/>
+                    <xsd:element name="IdContextoUsuario" type="xsd:long"/>
+                    <xsd:element name="SiglaUsuario" type="xsd:string"/>
+                    <xsd:element name="SenhaUsuario" type="xsd:string"/>
+                    <xsd:element name="CargoFuncao" type="xsd:string"/>
+                    <xsd:element name="ProtocolosDocumento" type="tns:ArrayOfProtocoloDocumento"/>
                 </xsd:all>
             </xsd:complexType>
 
@@ -82,8 +82,8 @@
 
             <xsd:complexType name="RetornoConsultarConteudoDocumento">
                 <xsd:all>
-                    <xsd:element name="ProtocoloDocumento" type="xsd:string" />
-                    <xsd:element name="Conteudo" type="xsd:string" />
+                    <xsd:element name="ProtocoloDocumento" type="xsd:string"/>
+                    <xsd:element name="Conteudo" type="xsd:string"/>
                 </xsd:all>
             </xsd:complexType>
 
@@ -102,8 +102,8 @@
 
             <xsd:complexType name="LinkExterno">
                 <xsd:all>
-                    <xsd:element name="ProtocoloProcedimento" type="xsd:string" />
-                    <xsd:element name="LinkExternoProcedimento" type="xsd:string" />
+                    <xsd:element name="ProtocoloProcedimento" type="xsd:string"/>
+                    <xsd:element name="LinkExternoProcedimento" type="xsd:string"/>
                 </xsd:all>
             </xsd:complexType>
 
@@ -126,11 +126,11 @@
         <wsdl:part name="SiglaSistema" type="xsd:string"/>
         <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
         <wsdl:part name="IdUnidade" type="xsd:string"/>
-        <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura"/>
+        <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura" />
     </wsdl:message>
 
     <wsdl:message name="assinarDocumentoResponse">
-        <wsdl:part name="retorno" type="xsd:boolean"/>
+        <wsdl:part name="retorno" type="xsd:boolean" />
     </wsdl:message>
 
     <wsdl:message name="listarAssinantesPorUnidadeRequest">
@@ -140,7 +140,7 @@
     </wsdl:message>
 
     <wsdl:message name="listarAssinantesPorUnidadeResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfAssinante" />
+        <wsdl:part name="retorno" type="tns:ArrayOfAssinante"/>
     </wsdl:message>
 
     <wsdl:message name="listarDocumentosPorProcedimentoRequest">
@@ -151,7 +151,7 @@
     </wsdl:message>
 
     <wsdl:message name="listarDocumentosPorProcedimentoResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfRetornoConsultaDocumento" />
+        <wsdl:part name="retorno" type="tns:ArrayOfRetornoConsultaDocumento"/>
     </wsdl:message>
 
     <wsdl:message name="autenticarUsuarioExternoRequest">
@@ -172,7 +172,7 @@
         <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
         <wsdl:part name="IdUnidade" type="xsd:string"/>
         <wsdl:part name="ProtocoloDocumento" type="xsd:string"/>
-        <wsdl:part name="ModeloDocumento" type="xsd:boolean" />
+        <wsdl:part name="ModeloDocumento" type="xsd:boolean"/>
     </wsdl:message>
 
     <wsdl:message name="consultarConteudoDocumentoResponse">
@@ -185,8 +185,8 @@
         <wsdl:part name="strPalavrasPesquisa" type="xsd:string"/>
     </wsdl:message>
 
-    <wsdl:message name="listarAssuntosResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfAssunto"/>
+     <wsdl:message name="listarAssuntosResponse">
+        <wsdl:part name="retorno" type="tns:ArrayOfAssunto" />
     </wsdl:message>
 
     <wsdl:message name="consultarLinksExternosProcedimentoRequest">
@@ -196,7 +196,7 @@
     </wsdl:message>
 
     <wsdl:message name="consultarLinksExternosProcedimentoResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfLinkExterno" />
+        <wsdl:part name="retorno" type="tns:ArrayOfLinkExterno"/>
     </wsdl:message>
 
 
@@ -221,7 +221,8 @@
         </wsdl:operation>
 
         <wsdl:operation name="autenticarUsuarioExterno">
-            <wsdl:documentation>Autentica um usuario externo. true: autenticado, false: nao autenticado</wsdl:documentation>
+            <wsdl:documentation>Autentica um usuario externo. true: autenticado, false: nao autenticado
+            </wsdl:documentation>
             <wsdl:input message="tns:autenticarUsuarioExternoRequest"/>
             <wsdl:output message="tns:autenticarUsuarioExternoResponse"/>
         </wsdl:operation>
@@ -255,8 +256,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -266,8 +266,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -277,8 +276,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -288,8 +286,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -299,8 +296,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -310,8 +306,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
@@ -321,8 +316,7 @@
                 <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>
