@@ -23,6 +23,7 @@ import org.opensingular.flow.persistence.entity.Actor;
 import org.opensingular.flow.persistence.entity.ModuleEntity;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.server.commons.WorkspaceConfigurationMetadata;
+import org.opensingular.server.commons.auth.SingularRestTemplateFactory;
 import org.opensingular.server.commons.box.BoxItemDataList;
 import org.opensingular.server.commons.box.BoxItemDataMap;
 import org.opensingular.server.commons.box.action.ActionRequest;
@@ -60,7 +61,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
 
     @Override
     public WorkspaceConfigurationMetadata retrieveModuleWorkspace(ModuleEntity module, IServerContext serverContext) {
-        RestTemplate        restTemplate = new RestTemplate();
+        RestTemplate        restTemplate = SingularRestTemplateFactory.getInstance().newRestTemplate();
         String              url          = module.getConnectionURL() + WORKSPACE_CONFIGURATION + "?" + MENU_CONTEXT + "=" + serverContext.getName();
         SingularUserDetails userDetails  = getUserDetails();
         if (userDetails != null) {
@@ -72,6 +73,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
             throw SingularServerException.rethrow("Não foi possível recuperar informações do modulo " + module.getCod(), ex);
         }
     }
+
 
     @Override
     public String countAll(ModuleEntity module, ItemBox box, List<String> flowNames, String loggedUser) {
@@ -85,7 +87,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
                     .withEndedTasks(box.getEndedTasks())
                     .withIdUsuarioLogado(loggedUser)
                     .withIdPessoa(SingularSession.get().getUserDetails().getUserId());
-            qtd = new RestTemplate().postForObject(url, filter, Long.class);
+            qtd = SingularRestTemplateFactory.getInstance().newRestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
             qtd = 0;
@@ -98,7 +100,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         final String connectionURL = module.getConnectionURL();
         final String url           = connectionURL + box.getCountEndpoint();
         try {
-            return new RestTemplate().postForObject(url, filter, Long.class);
+            return SingularRestTemplateFactory.getInstance().newRestTemplate().postForObject(url, filter, Long.class);
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
             return 0;
@@ -110,7 +112,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         final String connectionURL = module.getConnectionURL();
         final String url           = connectionURL + box.getSearchEndpoint();
         try {
-            return new RestTemplate().postForObject(url, filter, BoxItemDataList.class)
+            return SingularRestTemplateFactory.getInstance().newRestTemplate().postForObject(url, filter, BoxItemDataList.class)
                     .getBoxItemDataList()
                     .stream()
                     .map(BoxItemDataMap::new)
@@ -127,7 +129,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         final String url           = connectionURL + PATH_BOX_SEARCH + confirmAction.getSelectEndpoint();
 
         try {
-            return Arrays.asList(new RestTemplate().postForObject(url, rowItemData, Actor[].class));
+            return Arrays.asList(SingularRestTemplateFactory.getInstance().newRestTemplate().postForObject(url, rowItemData, Actor[].class));
         } catch (Exception e) {
             getLogger().error("Erro ao acessar serviço: " + url, e);
             return Collections.emptyList();
@@ -140,7 +142,7 @@ public class RESTModuleDriver implements ModuleDriver, Loggable {
         String url = moduleEntity.getConnectionURL()
                 + itemAction.getEndpoint()
                 + appendParameters(params);
-        return new RestTemplate().postForObject(url, actionRequest, ActionResponse.class);
+        return SingularRestTemplateFactory.getInstance().newRestTemplate().postForObject(url, actionRequest, ActionResponse.class);
     }
 
     @Override

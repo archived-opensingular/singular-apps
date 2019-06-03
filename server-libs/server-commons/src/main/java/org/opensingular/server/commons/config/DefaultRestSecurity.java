@@ -18,38 +18,48 @@
 
 package org.opensingular.server.commons.config;
 
+import org.apache.commons.lang3.StringUtils;
+import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.AutoScanDisabled;
-import org.opensingular.server.commons.spring.security.RestUserDetailsService;
+import org.opensingular.server.commons.exception.SingularServerException;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
-
-import javax.inject.Inject;
 
 @EnableWebMvc
 @Configuration
 @AutoScanDisabled
 public class DefaultRestSecurity extends WebSecurityConfigurerAdapter {
-
-    @Inject
-    private RestUserDetailsService restUserDetailsService;
-
     public static final String REST_ANT_PATTERN = "/rest/**";
+
+    public static final String SINGULAR_MODULE_USERNAME = "singular.module.username";
+    public static final String SINGULAR_MODULE_PASSWORD = "singular.module.password";
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.antMatcher(REST_ANT_PATTERN)
-                .authorizeRequests().anyRequest().authenticated()
-                .and()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
                 .csrf().disable()
-                .x509()
-                .subjectPrincipalRegex(restUserDetailsService.getSubjectPrincipalRegex())
-                .userDetailsService(restUserDetailsService);
-
+                .authorizeRequests()
+                .anyRequest()
+                .hasRole("REST")
+                .and()
+                .httpBasic();
     }
 
+    @Override
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+        final String u = SingularProperties.get().getProperty(SINGULAR_MODULE_USERNAME);
+        final String p = SingularProperties.get().getProperty(SINGULAR_MODULE_PASSWORD);
+        if (StringUtils.isAnyBlank(u, p)) {
+            throw new SingularServerException("Não foi definido a senha ou o password da segurança rest");
+        }
+        auth.inMemoryAuthentication()
+                .passwordEncoder(NoOpPasswordEncoder.getInstance())
+                .withUser(u)
+                .password(p)
+                .roles("USER", "REST");
+    }
 }
