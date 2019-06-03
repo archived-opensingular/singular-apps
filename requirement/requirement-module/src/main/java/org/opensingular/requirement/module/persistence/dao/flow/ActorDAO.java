@@ -129,11 +129,10 @@ public class ActorDAO extends BaseDAO<Actor, Integer> {
         SUser   result;
         Dialect dialect = ((SessionFactoryImplementor) getSession().getSessionFactory()).getDialect();
         if ("sequence".equals(dialect.getNativeIdentifierGeneratorStrategy()) && dialect.supportsSequences()) {
-            dialect.getSequenceNextValString("nada");
             getSession().doWork(connection -> {
                 String sql = SqlUtil.replaceSingularSchemaName("insert into "
-                        + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES (("
-                        + dialect.getSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ")" + ", ?,?,? )");
+                        + Constants.SCHEMA + ".TB_ATOR (CO_ATOR, CO_USUARIO, NO_ATOR, DS_EMAIL) VALUES ("
+                        + dialect.getSelectSequenceNextValString(Constants.SCHEMA + ".SQ_CO_ATOR") + ", ?,?,? )");
                 PreparedStatement ps = connection.prepareStatement(sql);
                 ps.setString(1, codUsuario);
                 ps.setString(2, name);
