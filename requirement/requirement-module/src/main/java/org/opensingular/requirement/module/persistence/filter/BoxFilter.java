@@ -39,6 +39,7 @@ public class BoxFilter {
 
     private boolean checkApplicant = false;
     private boolean boxCountQuery  = false;
+    private boolean exportDataQuery = false;
 
 
     public List<FilterToken> listFilterTokens() {
@@ -180,6 +181,15 @@ public class BoxFilter {
 
     public BoxFilter advancedFilterInstance(SInstance advancedFilterInstance) {
         this.advancedFilterInstance = advancedFilterInstance;
+        return this;
+    }
+
+    public boolean isExportDataQuery() {
+        return exportDataQuery;
+    }
+
+    public BoxFilter setExportDataQuery(boolean exportDataQuery) {
+        this.exportDataQuery = exportDataQuery;
         return this;
     }
 }

@@ -31,11 +31,12 @@ public class ItemBox implements Serializable {
     private String                                         helpText;
     private Icon                                           icon;
     private List<DatatableField>                           fieldsDatatable;
-    private boolean                                        showQuickFilter = true;
+    private boolean                                        showQuickFilter       = true;
     private Class<? extends BoxDefinition>                 boxDefinitionClass;
-    private Set<Class<? extends RequirementDefinition<?>>> requirements    = new LinkedHashSet<>();
-    private boolean                                        displayCounters = true;
-    private boolean                                        evalPermission  = false;
+    private Set<Class<? extends RequirementDefinition<?>>> requirements          = new LinkedHashSet<>();
+    private boolean                                        displayCounters       = true;
+    private boolean                                        evalPermission        = false;
+    private boolean                                        showExportExcelButton = false;
 
     public ItemBox newFor(Class<? extends RequirementDefinition<?>> requirement) {
         getRequirements().add(requirement);
@@ -129,6 +130,15 @@ public class ItemBox implements Serializable {
 
     public ItemBox evalPermission(boolean evalPermission) {
         this.evalPermission = evalPermission;
+        return this;
+    }
+
+    public boolean isShowExportExcelButton() {
+        return showExportExcelButton;
+    }
+
+    public ItemBox setShowExportExcelButton(boolean showExportExcelButton) {
+        this.showExportExcelButton = showExportExcelButton;
         return this;
     }
 }
