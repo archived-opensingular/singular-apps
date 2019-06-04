@@ -39,7 +39,6 @@ import org.apache.wicket.model.Model;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.flow.RedirectToUrlException;
 import org.apache.wicket.request.resource.PackageResourceReference;
-import org.opensingular.flow.core.FlowInstance;
 import org.opensingular.flow.core.STask;
 import org.opensingular.flow.core.STransition;
 import org.opensingular.flow.core.TaskInstance;
@@ -47,6 +46,7 @@ import org.opensingular.flow.core.TransitionAccess;
 import org.opensingular.form.SIComposite;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.SType;
+import org.opensingular.form.document.SDocument;
 import org.opensingular.form.type.core.annotation.AnnotationClassifier;
 import org.opensingular.form.type.core.annotation.AtrAnnotation;
 import org.opensingular.form.validation.ValidationError;
@@ -63,6 +63,8 @@ import org.opensingular.form.wicket.panel.SFormModalEventListenerBehavior;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.form.wicket.util.WicketFormProcessing;
 import org.opensingular.internal.lib.support.spring.injection.SingularSpringInjector;
+import org.opensingular.lib.commons.context.RefService;
+import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.wicket.util.bootstrap.layout.BSContainer;
 import org.opensingular.lib.wicket.util.bootstrap.layout.IBSComponentFactory;
@@ -78,6 +80,7 @@ import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementInstance;
 import org.opensingular.requirement.module.service.RequirementService;
 import org.opensingular.requirement.module.service.RequirementUtil;
+import org.opensingular.requirement.module.service.ServerSInstanceFlowAwareService;
 import org.opensingular.requirement.module.service.SingularRequirementService;
 import org.opensingular.requirement.module.service.dto.RequirementSubmissionResponse;
 import org.opensingular.requirement.module.spring.security.SingularRequirementUserDetails;
@@ -110,18 +113,18 @@ import static org.opensingular.requirement.module.wicket.builder.MarkupCreator.s
 
 public abstract class AbstractFormPage<RI extends RequirementInstance> extends ServerTemplate implements Loggable {
 
-    protected final String typeName;
+    protected final String                   typeName;
     protected final FormPageExecutionContext config;
-    protected Component containerBehindSingularPanel;
-    protected final IModel<Boolean> inheritParentFormData;
-    protected final BSModalBorder closeModal = construirCloseModal();
+    protected       Component                containerBehindSingularPanel;
+    protected final IModel<Boolean>          inheritParentFormData;
+    protected final BSModalBorder            closeModal = construirCloseModal();
 
-    private final Map<String, TransitionController<?>> transitionControllerMap = new HashMap<>();
-    private Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
-    private BSModalBorder notificacoesModal;
-    private FeedbackAposEnvioPanel feedbackAposEnvioPanel = null;
-    private IModel<RI> requirementInstanceModel;
-    private IModel<Long> requirementIdModel = new Model<>();
+    private final Map<String, TransitionController<?>>       transitionControllerMap   = new HashMap<>();
+    private       Map<String, STypeBasedFlowConfirmModal<?>> transitionConfirmModalMap = new HashMap<>();
+    private       BSModalBorder                              notificacoesModal;
+    private       FeedbackAposEnvioPanel                     feedbackAposEnvioPanel    = null;
+    private       IModel<RI>                                 requirementInstanceModel;
+    private       IModel<Long>                               requirementIdModel        = new Model<>();
 
     private IModel<PageState> pageStateModel = new Model<>(PageState.NOT_SEND);
 
@@ -130,9 +133,11 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     private RequirementService requirementService;
 
     @Inject
-    private FormRequirementService formRequirementService;
+    private FormRequirementService      formRequirementService;
     private AbstractDefaultAjaxBehavior saveFormAjaxBehavior;
-    private Form<?> form;
+    private Form<?>                     form;
+    private TaskInstance                currentTaskInstance;
+
 
     public AbstractFormPage(@Nullable ActionContext context) {
         this(context, null);
@@ -157,6 +162,22 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         }
 
         this.setDefaultModel(new SInstanceRootModel());
+
+        currentTaskInstance = loadCurrentTask();
+    }
+
+    @Nullable
+    private TaskInstance loadCurrentTask() {
+        return config
+                .getRequirementId()
+                .flatMap(id -> requirementService.findCurrentTaskInstanceByRequirementId(id))
+                .orElse(null);
+    }
+
+    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends RequirementInstance> requirementModel) {
+        //É um método estático para garantir que nada inesperado vai ser serializado junto
+        return document -> document.bindLocalService("processService", ServerSInstanceFlowAwareService.class,
+                RefService.of((ServerSInstanceFlowAwareService) () -> requirementModel.getObject().getFlowInstance()));
     }
 
 
@@ -236,7 +257,10 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     protected Optional<TaskInstance> getCurrentTaskInstance() {
-        return Optional.ofNullable(getRequirement().getFlowInstance()).map(FlowInstance::getCurrentTask).map(Optional::get);
+        if (currentTaskInstance == null) {
+            return Optional.empty();
+        }
+        return Optional.of(currentTaskInstance);
     }
 
 
@@ -347,8 +371,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private RI loadRequirement() {
-        RI requirement;
-        Optional<Long> requirementId = Optional.ofNullable(config.getRequirementId().orElse(requirementIdModel.getObject()));
+        RI               requirement;
+        Optional<Long>   requirementId            = Optional.ofNullable(config.getRequirementId().orElse(requirementIdModel.getObject()));
         Optional<String> requirementDefinitionKey = config.getRequirementDefinitionKey();
         if (requirementId.isPresent()) {
             if (requirementDefinitionKey.isPresent()) {
@@ -357,7 +381,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 requirement = requirementService.loadRequirementInstance(requirementId.get());
             }
         } else {
-            RI parentRequirement = null;
+            RI             parentRequirement   = null;
             Optional<Long> parentRequirementId = config.getParentRequirementId();
             if (parentRequirementId.isPresent()) {
                 parentRequirement = requirementService.loadRequirementInstance(parentRequirementId.get());
@@ -398,8 +422,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private Component buildExtraContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendExtraContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -407,8 +431,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private Component buildPreFormPanelContent(String id) {
-        final TemplatePanel extraPanel = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
-        final BSContainer extraContainer = new BSContainer("extraContainer");
+        final TemplatePanel extraPanel     = new TemplatePanel(id, MarkupCreator.div("extraContainer"));
+        final BSContainer   extraContainer = new BSContainer("extraContainer");
         extraPanel.add(extraContainer);
         appendBeforeFormContent(extraContainer);
         extraPanel.add($b.visibleIf(() -> extraContainer.visitChildren((object, visit) -> visit.stop("found!")) != null));
@@ -477,8 +501,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void configureTransitionButtons(BSContainer<?> buttonContainer, BSContainer<?> modalContainer, boolean transitionButtonsVisibility, IModel<? extends SInstance> currentInstance, TaskInstance taskInstance) {
-        int buttonsCount = 0;
-        List<STransition> transitions = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
+        int               buttonsCount = 0;
+        List<STransition> transitions  = getCurrentTaskInstance().flatMap(TaskInstance::getFlowTask).map(STask::getTransitions).orElse(Collections.emptyList());
         if (transitionButtonsVisibility && CollectionUtils.isNotEmpty(transitions)) {
             int index = 0;
             for (STransition t : transitions) {
@@ -520,7 +544,7 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
             // Verifica se existe rascunho
             RequirementInstance requirement = requirementService.loadRequirementInstance(requirementId);
-            String typeName = RequirementUtil.getTypeName(requirement);
+            String              typeName    = RequirementUtil.getTypeName(requirement);
             if (requirement.getEntity().currentEntityDraftByType(typeName).isPresent()) {
                 totalVersoes++;
             }
@@ -756,9 +780,9 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private void showConfirmModal(String transitionName, FlowConfirmPanel modal, AjaxRequestTarget ajaxRequestTarget,
                                   IModel<? extends SInstance> formInstance) {
-        TransitionController<?> controller = getTransitionControllerMap().get(transitionName);
+        TransitionController<?>       controller       = getTransitionControllerMap().get(transitionName);
         STypeBasedFlowConfirmModal<?> flowConfirmModal = transitionConfirmModalMap.get(transitionName);
-        boolean show = true;
+        boolean                       show             = true;
         if (controller != null) {
             if (controller.isValidatePageForm()) {
                 List<ValidationError> retrieveWarningErrors = WicketFormProcessing.retrieveWarningErrors(formInstance.getObject());
@@ -803,7 +827,12 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 transitionName,
                 this,
                 requirementInstanceModel,
-                controller);
+                controller) {
+            @Override
+            public void saveForm(SInstance instance) {
+                AbstractFormPage.this.saveForm(instance);
+            }
+        };
         transitionConfirmModalMap.put(transitionName, modal);
         return modal;
     }
@@ -884,20 +913,30 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
     }
 
     private void saveForm(SInstance instance) {
-        validateUserAllocatedAndUserAction();
+        assertSameTask();
+        assertUserAllocatedAndUserAction();
         if (instance != null && !isRequerimentSend()) {
             getRequirement().saveForm(instance);
         }
         requirementIdModel.setObject(getRequirement().getCod());
     }
 
-    protected void validateUserAllocatedAndUserAction() {
-        String username = SingularSession.get().getUsername();
-        TaskInstance taskInstance = getCurrentTaskInstance().orElse(null);
+
+    protected void assertSameTask() {
+        getCurrentTaskInstance().ifPresent(currentTaskInstance -> {
+            if (!currentTaskInstance.equals(loadCurrentTask())) {
+                throw new SingularServerException(getString("message.save.concurrent_error"));
+            }
+        });
+    }
+
+    protected void assertUserAllocatedAndUserAction() {
+        String       username     = SingularSession.get().getUsername();
+        TaskInstance taskInstance = loadCurrentTask();
         if (taskInstance != null
                 && taskInstance.getAllocatedUser() != null
                 && !username.equals(taskInstance.getAllocatedUser().getCodUsuario())) {
-            throw new SingularServerException("O requerimento não pertence mais a este usuário.");
+            throw new SingularServerException(getString("message.save.concurrent_user.error"));
         }
     }
 
@@ -1002,8 +1041,8 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
 
     private Component buildNotificacoesModal(String id) {
 
-        final String modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
-        final TemplatePanel modalPanel = new TemplatePanel(id, modalPanelMarkup);
+        final String        modalPanelMarkup = div("modal-panel", null, div("list-view", null, div("notificacao")));
+        final TemplatePanel modalPanel       = new TemplatePanel(id, modalPanelMarkup);
 
         final ListView<Pair<String, String>> listView = new ListView<Pair<String, String>>("list-view", getNotificacoes()) {
             @Override
