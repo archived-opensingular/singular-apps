@@ -70,7 +70,6 @@ import java.util.List;
 import java.util.Map;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
-import static org.opensingular.lib.wicket.util.util.WicketUtils.nullOrEmpty;
 
 /**
  * Classe base para construição de caixas do servidor de petições
@@ -218,7 +217,7 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
             protected File load() {
                 return boxDataToXLSX();
             }
-        });
+        }, boxDefinition.getObject().getItemBox().getName() + ".xlsx");
         exportExcel.setCacheDuration(Duration.NONE);
         exportExcel.setDeleteAfterDownload(true);
         exportExcel.setVisible(boxDefinition.getObject().getItemBox().isShowExportExcelButton());
@@ -253,8 +252,8 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
                 rowCount += 1;
                 row = sheet.createRow(rowCount);
                 for (int i = 0; i < fields.size(); i++) {
-                    final Serializable val = dataMap.get(fields.get(i).getLabel());
-                    final Cell cell = row.createCell(i);
+                    final Serializable val  = dataMap.get(fields.get(i).getLabel());
+                    final Cell         cell = row.createCell(i);
                     if (val == null) {
                         continue;
                     }
