@@ -174,13 +174,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
                 .orElse(null);
     }
 
-    private static IConsumer<SDocument> getDocumentExtraSetuper(IModel<? extends RequirementInstance> requirementModel) {
-        //É um método estático para garantir que nada inesperado vai ser serializado junto
-        return document -> document.bindLocalService("processService", ServerSInstanceFlowAwareService.class,
-                RefService.of((ServerSInstanceFlowAwareService) () -> requirementModel.getObject().getFlowInstance()));
-    }
-
-
     @Override
     protected void onInitialize() {
         super.onInitialize();
@@ -190,7 +183,6 @@ public abstract class AbstractFormPage<RI extends RequirementInstance> extends S
         fillTransitionControllerMap(transitionControllerMap);
         SingularSpringInjector.get().injectAll(transitionControllerMap.values());
         SingularSpringInjector.get().injectAll(transitionConfirmModalMap.values());
-
 
         form = new Form<>("save-form");
         form.setMultiPart(true);
