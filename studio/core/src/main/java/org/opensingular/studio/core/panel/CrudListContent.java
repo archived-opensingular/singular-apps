@@ -303,7 +303,8 @@ public class CrudListContent extends CrudShellContent {
     }
 
     private void createFilterHeaderRigthButton() {
-        if (getCrudShellManager().getStudioDefinition().isShowFilterAsModal()) {
+        StudioDefinition studioDefinition = getCrudShellManager().getStudioDefinition();
+        if (studioDefinition.getFilterType() != null && studioDefinition.isShowFilterAsModal()) {
             headerFilterAction = new HeaderFilterAction();
             addPorletHeaderRightAction(headerFilterAction);
         }
