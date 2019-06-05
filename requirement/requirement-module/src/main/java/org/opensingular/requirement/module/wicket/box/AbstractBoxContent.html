@@ -24,8 +24,9 @@
     <form wicket:id="form">
         <div class="portlet light">
             <div class="portlet-title">
-                <div class="caption">
-                    <div wicket:id="newButtonArea"></div>
+                <div class="caption" style="display: flex">
+                    <div wicket:id="newButtonArea" style="margin-right: 5px;"></div>
+                    <a wicket:id="exportExcel" class="btn btn-default" style="float: left"><i class="fa fa-download"></i>Exportar Excel</a>
                 </div>
                 <div class="actions">
                     <div class="portlet-input input-inline input-xlarge">
@@ -55,7 +56,8 @@
                 <div id="filtroAvancado" class="collapse ">
                     <div class="box-advanced-filter" wicket:id="advancedFilterContainer">
                         <div wicket:id="advancedFilter"></div>
-                        <button wicket:id="filter" class="btn btn-default" style="float: right"><i class="fa fa-trash"></i>Limpar</button>
+                        <button wicket:id="filter" class="btn btn-confirm" style="float: right;margin-left: 5px;"><i class="fa fa-search"></i>Pesquisar</button>
+                        <button wicket:id="clear" class="btn btn-default" style="float: right"><i class="fa fa-trash"></i>Limpar</button>
                         <div style="clear:both;"></div>
                     </div>
                 </div>

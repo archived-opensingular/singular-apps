@@ -39,7 +39,7 @@ import javax.annotation.Nonnull;
 
 import static org.opensingular.lib.wicket.util.util.Shortcuts.$m;
 
-public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
+public abstract class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends AbstractFlowConfirmModal<RI> {
 
     private final IModel<RI>              requirementInstanceModel;
     private final TransitionController<?> transitionController;
@@ -133,13 +133,15 @@ public class STypeBasedFlowConfirmModal<RI extends RequirementInstance> extends 
             modalBorder.addButton(BSModalBorder.ButtonStyle.DEFAULT, "label.button.save", "Salvar", new SingularSaveButton("id", $m.get(() -> singularFormPanel.getInstanceModel().getObject()), false) {
                 @Override
                 protected void onValidationSuccess(AjaxRequestTarget target, Form<?> form, IModel<? extends SInstance> instanceModel) {
-                    getRequirement().saveForm(instanceModel.getObject());
+                    saveForm(instanceModel.getObject());
                     new SingularToastrHelper(this.getPage()).
                             addToastrMessage(ToastrType.SUCCESS, "message.data.success", null);
                 }
             });
         }
     }
+
+    public abstract void saveForm(SInstance instance);
 
     /**
      * This method is responsible for update the container of the modal, and show.

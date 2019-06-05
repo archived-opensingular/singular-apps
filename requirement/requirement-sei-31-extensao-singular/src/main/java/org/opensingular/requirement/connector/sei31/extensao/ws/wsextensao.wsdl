@@ -11,7 +11,7 @@
 
             <xsd:complexType name="ArrayOfProtocoloDocumento">
                 <xsd:sequence>
-                    <xsd:element name="ProtocoloDocumento" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="ProtocoloDocumento" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -35,7 +35,7 @@
 
             <xsd:complexType name="ArrayOfAssinante">
                 <xsd:sequence>
-                    <xsd:element name="Assinante" type="tns:Assinante" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="Assinante" type="tns:Assinante" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -48,7 +48,7 @@
 
             <xsd:complexType name="ArrayOfCampo">
                 <xsd:sequence>
-                    <xsd:element name="Campo" type="tns:Campo" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="Campo" type="tns:Campo" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -76,8 +76,7 @@
 
             <xsd:complexType name="ArrayOfRetornoConsultaDocumento">
                 <xsd:sequence>
-                    <xsd:element name="RetornoConsultaDocumento" type="tns:RetornoConsultaDocumento" minOccurs="0"
-                                 maxOccurs="unbounded"/>
+                    <xsd:element name="RetornoConsultaDocumento" type="tns:RetornoConsultaDocumento" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -97,7 +96,7 @@
 
             <xsd:complexType name="ArrayOfAssunto">
                 <xsd:sequence>
-                    <xsd:element name="Assunto" type="tns:Assunto" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="Assunto" type="tns:Assunto" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -110,13 +109,13 @@
 
             <xsd:complexType name="ArrayOfLinkExterno">
                 <xsd:sequence>
-                    <xsd:element name="LinkExterno" type="tns:LinkExterno" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="LinkExterno" type="tns:LinkExterno" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
             <xsd:complexType name="ArrayOfProtocoloProcedimento">
                 <xsd:sequence>
-                    <xsd:element name="ProtocoloProcedimento" type="xsd:string" minOccurs="0" maxOccurs="unbounded"/>
+                    <xsd:element name="ProtocoloProcedimento" type="xsd:string" minOccurs="0" maxOccurs="unbounded" />
                 </xsd:sequence>
             </xsd:complexType>
 
@@ -127,11 +126,11 @@
         <wsdl:part name="SiglaSistema" type="xsd:string"/>
         <wsdl:part name="IdentificacaoServico" type="xsd:string"/>
         <wsdl:part name="IdUnidade" type="xsd:string"/>
-        <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura"/>
+        <wsdl:part name="DadosAssinatura" type="tns:DadosAssinatura" />
     </wsdl:message>
 
     <wsdl:message name="assinarDocumentoResponse">
-        <wsdl:part name="retorno" type="xsd:boolean"/>
+        <wsdl:part name="retorno" type="xsd:boolean" />
     </wsdl:message>
 
     <wsdl:message name="listarAssinantesPorUnidadeRequest">
@@ -186,8 +185,8 @@
         <wsdl:part name="strPalavrasPesquisa" type="xsd:string"/>
     </wsdl:message>
 
-    <wsdl:message name="listarAssuntosResponse">
-        <wsdl:part name="retorno" type="tns:ArrayOfAssunto"/>
+     <wsdl:message name="listarAssuntosResponse">
+        <wsdl:part name="retorno" type="tns:ArrayOfAssunto" />
     </wsdl:message>
 
     <wsdl:message name="consultarLinksExternosProcedimentoRequest">
@@ -254,84 +253,70 @@
         <wsdl:operation name="assinarDocumento">
             <soap:operation soapAction="extensaons/assinarDocumento"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="listarAssinantesPorUnidade">
             <soap:operation soapAction="extensaons/listarAssinantesPorUnidade"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="listarDocumentosPorProcedimento">
             <soap:operation soapAction="extensaons/listarDocumentosPorProcedimento"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="autenticarUsuarioExterno">
             <soap:operation soapAction="extensaons/autenticarUsuarioExterno"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="consultarConteudoDocumento">
             <soap:operation soapAction="extensaons/consultarConteudoDocumento"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="listarAssuntos">
             <soap:operation soapAction="extensaons/listarAssuntos"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
 
         <wsdl:operation name="consultarLinksExternosProcedimento">
             <soap:operation soapAction="extensaons/consultarLinksExternosProcedimento"/>
             <wsdl:input>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:input>
             <wsdl:output>
-                <soap:body namespace="extensaons" use="literal"
-                           encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
+                <soap:body namespace="extensaons" use="literal" encodingStyle="http://schemas.xmlsoap.org/soap/encoding/"/>
             </wsdl:output>
         </wsdl:operation>
     </wsdl:binding>

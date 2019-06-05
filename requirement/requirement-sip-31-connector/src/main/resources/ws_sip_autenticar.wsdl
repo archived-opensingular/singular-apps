@@ -69,31 +69,31 @@
             </xsd:complexType>
 
             <xsd:complexType name="ValueItem">
-                <xsd:sequence>
-                    <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
-                        <xsd:complexType mixed="true">
-                            <xsd:sequence>
-                                <xsd:element type="xsd:string"
-                                             name="item"
-                                             maxOccurs="unbounded"
-                                             minOccurs="0"/>
-                                <xsd:element type="xsd:string"
-                                             name="key" minOccurs="0"/>
-                                <xsd:element name="value" minOccurs="0">
-                                    <xsd:complexType>
-                                        <xsd:sequence>
-                                            <xsd:element
-                                                    type="xsd:string"
-                                                    name="item"
-                                                    maxOccurs="unbounded"
-                                                    minOccurs="0"/>
-                                        </xsd:sequence>
-                                    </xsd:complexType>
-                                </xsd:element>
-                            </xsd:sequence>
-                        </xsd:complexType>
-                    </xsd:element>
-                </xsd:sequence>
+                    <xsd:sequence>
+                        <xsd:element name="item" minOccurs="0" maxOccurs="unbounded">
+                            <xsd:complexType mixed="true">
+                                <xsd:sequence>
+                                    <xsd:element type="xsd:string"
+                                                 name="item"
+                                                 maxOccurs="unbounded"
+                                                 minOccurs="0"/>
+                                    <xsd:element type="xsd:string"
+                                                 name="key" minOccurs="0"/>
+                                    <xsd:element name="value" minOccurs="0">
+                                        <xsd:complexType>
+                                            <xsd:sequence>
+                                                <xsd:element
+                                                        type="xsd:string"
+                                                        name="item"
+                                                        maxOccurs="unbounded"
+                                                        minOccurs="0"/>
+                                            </xsd:sequence>
+                                        </xsd:complexType>
+                                    </xsd:element>
+                                </xsd:sequence>
+                            </xsd:complexType>
+                        </xsd:element>
+                    </xsd:sequence>
             </xsd:complexType>
 
             <!--<xsd:complexType name="item">-->
@@ -143,8 +143,7 @@
                                             <xsd:element name="value">
                                                 <xsd:complexType>
                                                     <xsd:sequence>
-                                                        <xsd:element name="item" maxOccurs="unbounded" minOccurs="0"
-                                                                     type="tns:ValueItem"/>
+                                                        <xsd:element name="item" maxOccurs="unbounded" minOccurs="0" type="tns:ValueItem"/>
                                                     </xsd:sequence>
                                                 </xsd:complexType>
                                             </xsd:element>

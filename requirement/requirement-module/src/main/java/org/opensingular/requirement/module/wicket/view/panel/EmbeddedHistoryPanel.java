@@ -34,7 +34,7 @@ import org.opensingular.requirement.module.wicket.view.util.DispatcherPageUtil;
 import javax.inject.Inject;
 import java.util.List;
 
-import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_NAME;
+import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_TITLE_NAME;
 import static org.opensingular.requirement.module.wicket.view.util.ActionContext.FORM_VERSION_KEY;
 
 /**
@@ -93,7 +93,7 @@ public class EmbeddedHistoryPanel extends Panel {
                 .baseURL(DispatcherPageUtil.getBaseURL())
                 .formAction(FormAction.FORM_ANALYSIS_VIEW.getId())
                 .requirementId(null)
-                .param(FORM_NAME, label)
+                .param(FORM_TITLE_NAME, label)
                 .param(FORM_VERSION_KEY, versionPK)
                 .build();
 

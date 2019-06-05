@@ -1,0 +1,6 @@
+#FileLock
+#Tue Jun 04 14:36:50 BRT 2019
+hostName=localhost
+id=16b2390a540aaeeff4af01fc4a087b55df6f777ef7b
+method=file
+server=localhost\:44715

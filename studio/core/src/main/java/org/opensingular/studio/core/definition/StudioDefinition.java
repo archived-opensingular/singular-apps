@@ -62,5 +62,8 @@ public interface StudioDefinition extends Serializable {
         return new CrudListContent(shellManager);
     }
 
+    default boolean isShowFilterAsModal() {
+        return true;
+    }
 
 }
