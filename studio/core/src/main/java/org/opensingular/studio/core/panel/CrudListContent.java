@@ -210,7 +210,7 @@ public class CrudListContent extends CrudShellContent {
 
     private BSActionPanel.ActionConfig<SInstance> newConfig() {
         BSActionPanel.ActionConfig<SInstance> config = new BSActionPanel.ActionConfig<>();
-        config.styleClasses(WicketUtils.$m.ofValue("btn btn-link btn-xs black md-skip studio-action"));
+        config.styleClasses(WicketUtils.$m.ofValue("btn btn-link btn-xs black studio-action"));
         return config;
     }
 
