@@ -45,12 +45,12 @@ import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.commons.util.SingularIntegrationException;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
 import org.opensingular.lib.wicket.util.datatable.BSDataTableBuilder;
 import org.opensingular.lib.wicket.util.datatable.BaseDataProvider;
 import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.form.STypeDynamicAdvancedFilter;
-import org.opensingular.requirement.module.exception.SingularRequirementException;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.FormRequirementService;
 import org.opensingular.requirement.module.service.RequirementService;
@@ -252,8 +252,9 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
                 rowCount += 1;
                 row = sheet.createRow(rowCount);
                 for (int i = 0; i < fields.size(); i++) {
-                    final Serializable val  = dataMap.get(fields.get(i).getLabel());
+                    final String       key  = fields.get(i).getLabel();
                     final Cell         cell = row.createCell(i);
+                    final Serializable val  = dataMap.get(key);
                     if (val == null) {
                         continue;
                     }
@@ -273,7 +274,7 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
             return xlsx;
 
         } catch (Exception ex) {
-            throw new SingularRequirementException("Não foi possível exportar o conteudo para Excel");
+            throw SingularIntegrationException.rethrow("Não foi possível exportar o conteudo para Excel", ex);
         }
     }
 
