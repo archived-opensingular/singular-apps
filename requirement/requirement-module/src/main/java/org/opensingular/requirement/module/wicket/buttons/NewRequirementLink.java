@@ -16,13 +16,12 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
-import org.apache.wicket.markup.ComponentTag;
-import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
+import org.opensingular.lib.commons.ui.Icon;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.requirement.module.RequirementDefinition;
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
@@ -41,10 +40,10 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class NewRequirementLink extends Panel {
 
-    private final String url;
-    private final Map<String, String> params;
-    private IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements;
-    private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
+    private final String                                                        url;
+    private final Map<String, String>                                           params;
+    private       IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements;
+    private       IModel<String>                                                labelModel = new StringResourceModel("label.button.insert", this, null);
 
     @Inject
     private RequirementDefinitionService requirementDefinitionService;
@@ -57,9 +56,9 @@ public class NewRequirementLink extends Panel {
     public NewRequirementLink(String id, IModel<String> labelModel, String url,
                               Map<String, String> params, IModel<LinkedHashSet<Class<? extends RequirementDefinition>>> requirements) {
         super(id);
-        this.url = url;
-        this.labelModel = labelModel == null ? this.labelModel : labelModel;
-        this.params = params;
+        this.url          = url;
+        this.labelModel   = labelModel == null ? this.labelModel : labelModel;
+        this.params       = params;
         this.requirements = requirements;
         buildButtons();
     }
@@ -86,23 +85,18 @@ public class NewRequirementLink extends Panel {
                 super.onConfigure();
                 this.add($b.attr("href", url));
                 this.add($b.attr("target", "_blank"));
+                this.setBody(labelModel);
             }
 
             @Override
             public void onClick() {
                 //DO NOTHING
             }
-
-            @Override
-            public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
-                replaceComponentTagBody(markupStream, openTag,
-                        "<i class='fa fa-file'></i> " + labelModel.getObject());
-            }
         };
     }
 
     protected void addDropdownButton(ISupplier<Boolean> visibleSupplier) {
-        DropdownMenu dropdownMenu = new DropdownMenu("_novos");
+        final DropdownMenu dropdownMenu = new DropdownMenu("_novos", "Novo", Icon.of("fa fa-file"));
         dropdownMenu.add($b.visibleIf(visibleSupplier));
         dropdownMenu.add($b.onConfigure(c -> {
             if (visibleSupplier.get()) {
