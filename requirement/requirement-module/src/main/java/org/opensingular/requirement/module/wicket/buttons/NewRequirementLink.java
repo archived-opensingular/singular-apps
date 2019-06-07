@@ -16,15 +16,15 @@
 
 package org.opensingular.requirement.module.wicket.buttons;
 
+import org.apache.wicket.markup.ComponentTag;
+import org.apache.wicket.markup.MarkupStream;
 import org.apache.wicket.markup.html.link.Link;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.model.IModel;
-import org.apache.wicket.model.Model;
 import org.apache.wicket.model.StringResourceModel;
 import org.opensingular.lib.commons.lambda.ISupplier;
 import org.opensingular.lib.wicket.util.metronic.menu.DropdownMenu;
 import org.opensingular.requirement.module.RequirementDefinition;
-
 import org.opensingular.requirement.module.service.RequirementDefinitionService;
 import org.opensingular.requirement.module.wicket.NewRequirementUrlBuilder;
 
@@ -86,12 +86,17 @@ public class NewRequirementLink extends Panel {
                 super.onConfigure();
                 this.add($b.attr("href", url));
                 this.add($b.attr("target", "_blank"));
-                this.setBody(labelModel);
             }
 
             @Override
             public void onClick() {
                 //DO NOTHING
+            }
+
+            @Override
+            public void onComponentTagBody(MarkupStream markupStream, ComponentTag openTag) {
+                replaceComponentTagBody(markupStream, openTag,
+                        "<i class='fa fa-file'></i> " + labelModel.getObject());
             }
         };
     }
