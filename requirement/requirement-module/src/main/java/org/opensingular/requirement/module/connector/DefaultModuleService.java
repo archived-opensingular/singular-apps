@@ -225,6 +225,11 @@ public class DefaultModuleService implements ModuleService, Loggable {
         }
     }
 
+    @Override
+    public String getBoxRowStyleClass(BoxDefinition boxDefinition, BoxItemDataMap boxItemDataMap) {
+        return boxDefinition.getRowStyleClass(boxItemDataMap);
+    }
+
     protected BoxItemDataList searchCheckingActionPermissions(BoxDefinition boxDefinition, BoxFilter filter) {
         List<Map<String, Serializable>> itens = boxDefinition.getDataProvider().search(filter);
         BoxItemDataList result = new BoxItemDataList();

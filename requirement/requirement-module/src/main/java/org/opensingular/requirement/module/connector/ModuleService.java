@@ -84,4 +84,8 @@ public interface ModuleService {
      */
     String getModuleContext();
 
+    /**
+     *
+     */
+    String getBoxRowStyleClass(BoxDefinition boxDefinition, BoxItemDataMap boxItemDataMap);
 }

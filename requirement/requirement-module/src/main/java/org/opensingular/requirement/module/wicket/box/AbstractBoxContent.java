@@ -28,6 +28,7 @@ import org.apache.wicket.Component;
 import org.apache.wicket.ajax.AjaxRequestTarget;
 import org.apache.wicket.ajax.markup.html.AjaxLink;
 import org.apache.wicket.ajax.markup.html.form.AjaxButton;
+import org.apache.wicket.behavior.AttributeAppender;
 import org.apache.wicket.extensions.markup.html.repeater.data.sort.SortOrder;
 import org.apache.wicket.extensions.markup.html.repeater.data.table.IColumn;
 import org.apache.wicket.markup.html.WebMarkupContainer;
@@ -36,6 +37,7 @@ import org.apache.wicket.markup.html.form.TextField;
 import org.apache.wicket.markup.html.link.DownloadLink;
 import org.apache.wicket.markup.html.panel.EmptyPanel;
 import org.apache.wicket.markup.html.panel.GenericPanel;
+import org.apache.wicket.markup.repeater.Item;
 import org.apache.wicket.model.IModel;
 import org.apache.wicket.model.LoadableDetachableModel;
 import org.apache.wicket.model.Model;
@@ -44,6 +46,7 @@ import org.apache.wicket.util.time.Duration;
 import org.opensingular.form.SInstance;
 import org.opensingular.form.document.RefType;
 import org.opensingular.form.wicket.panel.SingularFormPanel;
+import org.opensingular.lib.commons.lambda.IConsumer;
 import org.opensingular.lib.commons.util.Loggable;
 import org.opensingular.lib.commons.util.SingularIntegrationException;
 import org.opensingular.lib.wicket.util.datatable.BSDataTable;
@@ -191,7 +194,15 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
         builder.setStripedRows(false).setBorderedTable(false);
         table = createTable(builder);
         table.add($b.classAppender("worklist"));
-
+        table.setOnNewRowItem(new IConsumer<Item<BoxItemDataMap>>() {
+            @Override
+            public void accept(Item<BoxItemDataMap> components) {
+                final String rowStyleClass = getRowStyleClass(components.getModelObject());
+                if (rowStyleClass != null) {
+                    components.add(AttributeAppender.append("class", rowStyleClass));
+                }
+            }
+        });
         queue(form.add(filtroRapido, pesquisarButton, buildNewRequirementButton("newButtonArea")));
 
         form.add(new HelpFilterBoxPanel("help")
@@ -354,6 +365,10 @@ public abstract class AbstractBoxContent extends GenericPanel<BoxItemDataMap> im
 
     protected BoxFilter newFilter() {
         return newFilterBasic().advancedFilterInstance(advancedFilter.getInstance());
+    }
+
+    protected String getRowStyleClass(BoxItemDataMap boxItemDataMap){
+        return null;
     }
 
     protected abstract BoxFilter newFilterBasic();
