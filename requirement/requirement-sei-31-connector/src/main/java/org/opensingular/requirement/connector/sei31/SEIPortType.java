@@ -40,6 +40,7 @@ import org.opensingular.requirement.connector.sei31.ws.Unidade;
 import org.opensingular.requirement.connector.sei31.ws.Usuario;
 
 import javax.annotation.Nullable;
+import java.io.File;
 import java.util.List;
 
 /**
@@ -280,6 +281,20 @@ public interface SEIPortType {
      * @return
      */
     String adicionarConteudoArquivo(UnidadeSei unidade, String idArquivo, String conteudo);
+
+    /**
+     * Faz a inserção do arquivo quebrando-o em diversos envios para o SEI, caso o mesmo
+     * seja maior que o tamanho máximo para cada parte.
+     * No caso do {@link SEIWS} esse limite é definido no construtor
+     *
+     * @param unidade
+     * @param nome
+     * @param tamanho
+     * @param hash
+     * @param base64Conteudo
+     * @return
+     */
+    String adicionarArquivoMultipart(UnidadeSei unidade, String nome, String tamanho, String hash, File base64Conteudo);
 
     /**
      * Gerar bloco.

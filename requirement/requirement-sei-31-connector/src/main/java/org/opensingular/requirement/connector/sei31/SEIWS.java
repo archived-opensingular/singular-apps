@@ -18,6 +18,8 @@ package org.opensingular.requirement.connector.sei31;
 
 import org.apache.commons.collections.CollectionUtils;
 import org.opensingular.lib.commons.util.Loggable;
+import org.opensingular.lib.commons.util.SingularIntegrationException;
+import org.opensingular.lib.commons.util.TempFileUtils;
 import org.opensingular.lib.commons.util.WSClientSafeWrapper;
 import org.opensingular.requirement.connector.sei31.model.SimNao;
 import org.opensingular.requirement.connector.sei31.model.TipoBlocoEnum;
@@ -52,6 +54,8 @@ import org.opensingular.requirement.connector.sei31.ws.Usuario;
 
 import javax.annotation.Nullable;
 import javax.xml.ws.BindingProvider;
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -65,9 +69,12 @@ import java.util.Optional;
  */
 public class SEIWS implements SEIPortType, Loggable {
 
+    private static final int DEFAULT_TAMANHO_MULTIPART = 10_485_760;
+
     private final SeiPortType seiPortType;
     private final String      siglaSistema;
     private final String      identificacaoServico;
+    private final Integer     tamanhoMultiPart;
 
     /**
      * Instancia um novo objeto SEIWS delegate.
@@ -77,9 +84,21 @@ public class SEIWS implements SEIPortType, Loggable {
      * @param wsAddress            o(a) ws address.
      */
     public SEIWS(String siglaSistema, String identificacaoServico, String wsAddress) {
+        this(siglaSistema, identificacaoServico, wsAddress, DEFAULT_TAMANHO_MULTIPART);
+    }
+
+    /**
+     * Instancia um novo objeto SEIWS delegate.
+     *
+     * @param siglaSistema         o(a) sigla sistema.
+     * @param identificacaoServico o(a) identificacao servico.
+     * @param wsAddress            o(a) ws address.
+     */
+    public SEIWS(String siglaSistema, String identificacaoServico, String wsAddress, Integer tamanhoMultiPart) {
         this.seiPortType = getSeiService(wsAddress);
         this.siglaSistema = siglaSistema;
         this.identificacaoServico = identificacaoServico;
+        this.tamanhoMultiPart = tamanhoMultiPart != null ? tamanhoMultiPart : DEFAULT_TAMANHO_MULTIPART;
     }
 
     private SeiPortType getSeiService(String wsAddress) {
@@ -389,6 +408,31 @@ public class SEIWS implements SEIPortType, Loggable {
     @Override
     public String adicionarConteudoArquivo(UnidadeSei unidade, String idArquivo, String conteudo) {
         return seiPortType.adicionarConteudoArquivo(siglaSistema, identificacaoServico, unidade.getId(), idArquivo, conteudo);
+    }
+
+    @Override
+    public String adicionarArquivoMultipart(UnidadeSei unidade, String nome, String tamanho, String hash, File base64Conteudo) {
+        int offset = 0;
+        int tam = 0;
+        String idArquivo = null;
+        String conteudoParcial = null;
+
+        try {
+            while (offset < base64Conteudo.length()) {
+                tam = (int) Math.min(tamanhoMultiPart, base64Conteudo.length() - offset);
+                conteudoParcial = TempFileUtils.readPartOfFileToString(base64Conteudo, offset, tam);
+                if (offset == 0) {
+                    idArquivo = this.adicionarArquivo(unidade, nome, tamanho, hash, conteudoParcial);
+                } else {
+                    adicionarConteudoArquivo(unidade, idArquivo, conteudoParcial);
+                }
+                offset += tam;
+            }
+        } catch (IOException e) {
+            SingularIntegrationException.rethrow("Não foi possível ler o arquivo a ser adicionado no SEI.", e);
+        }
+
+        return idArquivo;
     }
 
     /**
