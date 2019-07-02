@@ -254,7 +254,32 @@ public interface SEIPortType {
      */
     RetornoInclusaoDocumento incluirDocumento(UnidadeSei unidade, Documento documento);
 
+    /**
+     * Adiciona um arquivo sem vincular com nenhum documento,
+     * o conteudo pode ser particionado, chamando-se o método
+     * {@link #adicionarConteudoArquivo(UnidadeSei, String, String)}
+     * passando como parâmetro o mesmo id
+     *
+     * @param unidade
+     * @param nome
+     * @param tamanho
+     * @param hash
+     * @param conteudo
+     * @return
+     */
     String adicionarArquivo(UnidadeSei unidade, String nome, String tamanho, String hash, String conteudo);
+
+    /**
+     * O sistema identificará automaticamente quando o conteúdo foi completado validando o tamanho
+     * em bytes e o hash do conteúdo. Quando as condições forem satisfeitas o arquivo será ativado
+     * e poderá ser utilizado nas chamadas de inclusão de documento.
+     *
+     * @param unidade
+     * @param idArquivo
+     * @param conteudo
+     * @return
+     */
+    String adicionarConteudoArquivo(UnidadeSei unidade, String idArquivo, String conteudo);
 
     /**
      * Gerar bloco.

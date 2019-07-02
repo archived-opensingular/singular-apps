@@ -386,6 +386,11 @@ public class SEIWS implements SEIPortType, Loggable {
         return seiPortType.adicionarArquivo(siglaSistema, identificacaoServico, unidade.getId(), nome, tamanho, hash, conteudo);
     }
 
+    @Override
+    public String adicionarConteudoArquivo(UnidadeSei unidade, String idArquivo, String conteudo) {
+        return seiPortType.adicionarConteudoArquivo(siglaSistema, identificacaoServico, unidade.getId(), idArquivo, conteudo);
+    }
+
     /**
      * Gerar bloco.
      *
