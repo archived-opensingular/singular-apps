@@ -309,12 +309,10 @@ public abstract class AbstractFormPage<RE extends RequirementEntity, RI extends 
     @Override
     protected void onInitialize() {
         super.onInitialize();
+        final RI requirement = loadRequirement();
 
-        currentModel = $m.loadable(() -> {
-            RI requirement = loadRequirement();
-            return requirement != null && requirement.getCod() != null ? requirementService.getRequirement(requirement.getCod()) : requirement;
-        });
-        currentModel.setObject(loadRequirement());
+        currentModel = $m.loadable(() -> requirement != null && requirement.getCod() != null ? requirementService.getRequirement(requirement.getCod()) : requirement);
+        currentModel.setObject(requirement);
 
         fillTransitionControllerMap(transitionControllerMap);
         SingularSpringInjector.get().injectAll(transitionControllerMap.values());
