@@ -34,6 +34,7 @@ import org.opensingular.requirement.connector.sei31.ws.ArrayOfIdContatos;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfIdUnidade;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfProcedimentoRelacionado;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfSerie;
+import org.opensingular.requirement.connector.sei31.ws.ArrayOfTipoConferencia;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfTipoProcedimento;
 import org.opensingular.requirement.connector.sei31.ws.ArrayOfUsuario;
 import org.opensingular.requirement.connector.sei31.ws.Cargo;
@@ -48,6 +49,7 @@ import org.opensingular.requirement.connector.sei31.ws.RetornoInclusaoDocumento;
 import org.opensingular.requirement.connector.sei31.ws.SeiPortType;
 import org.opensingular.requirement.connector.sei31.ws.SeiService;
 import org.opensingular.requirement.connector.sei31.ws.Serie;
+import org.opensingular.requirement.connector.sei31.ws.TipoConferencia;
 import org.opensingular.requirement.connector.sei31.ws.TipoProcedimento;
 import org.opensingular.requirement.connector.sei31.ws.Unidade;
 import org.opensingular.requirement.connector.sei31.ws.Usuario;
@@ -677,6 +679,32 @@ public class SEIWS implements SEIPortType, Loggable {
             return Collections.emptyList();
         }
         return arrayOfCargo.getItem();
+    }
+
+    /**
+     * Listar tipos de conferência.
+     *
+     * @return o valor de array of tipo de conferência
+     */
+    @Override
+    public List<TipoConferencia> listarTiposConferencia() {
+        return listarTiposConferencia(null);
+    }
+
+    /**
+     * Listar tipos de conferência.
+     *
+     * @param unidadeSei unidadeSei
+     * @return o valor de array of tipo de conferência
+     */
+    @Override
+    public List<TipoConferencia> listarTiposConferencia(@Nullable UnidadeSei unidadeSei) {
+        String idUnidadeSei = Optional.ofNullable(unidadeSei).map(UnidadeSei::getId).orElse("");
+        ArrayOfTipoConferencia arrayOfTipoConferencia = seiPortType.listarTiposConferencia(siglaSistema, identificacaoServico, idUnidadeSei);
+        if (arrayOfTipoConferencia == null) {
+            return Collections.emptyList();
+        }
+        return arrayOfTipoConferencia.getItem();
     }
 
 }

@@ -35,6 +35,7 @@ import org.opensingular.requirement.connector.sei31.ws.RetornoConsultaProcedimen
 import org.opensingular.requirement.connector.sei31.ws.RetornoGeracaoProcedimento;
 import org.opensingular.requirement.connector.sei31.ws.RetornoInclusaoDocumento;
 import org.opensingular.requirement.connector.sei31.ws.Serie;
+import org.opensingular.requirement.connector.sei31.ws.TipoConferencia;
 import org.opensingular.requirement.connector.sei31.ws.TipoProcedimento;
 import org.opensingular.requirement.connector.sei31.ws.Unidade;
 import org.opensingular.requirement.connector.sei31.ws.Usuario;
@@ -475,4 +476,8 @@ public interface SEIPortType {
     List<Contato> listarContatosPorCPF(String idTipoContato, String cpf);
 
     ArrayOfHipoteseLegal listarHipotesesLegais(String idUnidade, String nivelAcesso);
+
+    List<TipoConferencia> listarTiposConferencia();
+
+    List<TipoConferencia> listarTiposConferencia(@Nullable UnidadeSei unidadeSei);
 }

@@ -22,18 +22,20 @@ package org.opensingular.requirement.connector.sei31.model;
 public enum NivelAcesso {
 
     /** O campo publico. */
-    PUBLICO ("0"),
+    PUBLICO ("0", "Público"),
 
     /** O campo restrito. */
-    RESTRITO("1"),
+    RESTRITO("1", "Restrito"),
 
     /** O campo sigiloso. */
-    SIGILOSO("2");
+    SIGILOSO("2", "Sigiloso");
 
     private String codigo;
+    private String descricao;
 
-    private NivelAcesso(String codigo) {
+    private NivelAcesso(String codigo, String descricao) {
         this.codigo = codigo;
+        this.descricao = descricao;
     }
 
     /**
@@ -43,5 +45,9 @@ public enum NivelAcesso {
      */
     public String getCodigo() {
         return codigo;
+    }
+
+    public String getDescricao() {
+        return descricao;
     }
 }
