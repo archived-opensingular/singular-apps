@@ -48,7 +48,7 @@ public class NotificationPanel<RI extends RequirementInstance> extends Panel {
         add(new FileDownloadLink("export-to-pdf",
                 getPdfModel(model, requirementModel),
                 ContentDisposition.INLINE,
-                model.getObject().getValue() + ".pdf")
+                model.getObject().getKey() + ".pdf")
         );
         add(new Label("content", model.getObject().getValue()).setEscapeModelStrings(false));
     }

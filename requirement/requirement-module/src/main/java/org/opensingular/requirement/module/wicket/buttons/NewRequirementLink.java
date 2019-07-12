@@ -38,10 +38,11 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class NewRequirementLink extends Panel {
 
+    public static final String LABEL_BUTTON_INSERT = "label.button.insert";
     private final String url;
     private final Map<String, String> params;
     private IModel<Set<Class<? extends SingularRequirement>>> requirements;
-    private IModel<String> labelModel = new StringResourceModel("label.button.insert", this, null);
+    private IModel<String> labelModel = new StringResourceModel(LABEL_BUTTON_INSERT, this, null);
 
     @Inject
     private SingularModuleConfiguration singularModuleConfiguration;
@@ -92,7 +93,8 @@ public class NewRequirementLink extends Panel {
     }
 
     protected void addDropdownButton(ISupplier<Boolean> visibleSupplier) {
-        DropdownMenu dropdownMenu = new DropdownMenu("_novos");
+
+        DropdownMenu dropdownMenu = new DropdownMenu("_novos", getString(LABEL_BUTTON_INSERT));
         dropdownMenu.add($b.visibleIf(visibleSupplier));
         dropdownMenu.add($b.onConfigure(c -> {
             if (visibleSupplier.get()) {
