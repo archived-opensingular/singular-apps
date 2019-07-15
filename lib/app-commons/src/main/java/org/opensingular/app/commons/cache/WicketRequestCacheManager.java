@@ -14,23 +14,25 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.cache;
+package org.opensingular.app.commons.cache;
 
-import java.util.Arrays;
-import java.util.Collection;
-import javax.inject.Inject;
-import javax.inject.Named;
-
-import org.apache.wicket.Session;
+import org.apache.wicket.request.cycle.RequestCycle;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import javax.inject.Inject;
+import javax.inject.Named;
+import java.util.Arrays;
+import java.util.Collection;
+
 /**
  * Cache manager proxy para que o cache dure apenas a sessão http do usuário
- * Se o cache for utilizado fora de uma sessão http seus valores não serão cacheados.
+ * Se o cache for utilizado fora de uma request http seus valores serão cacheados no cache default.
  */
-@Named("wicketSessionCacheManager")
-public class WicketSessionCacheManager implements CacheManager {
+@Named(WicketRequestCacheManager.WICKET_REQUEST_CACHE_MANAGER)
+public class WicketRequestCacheManager implements CacheManager {
+
+    public static final String WICKET_REQUEST_CACHE_MANAGER = "wicketRequestCacheManager";
 
     @Inject
     private CacheManager cacheManager;
@@ -38,22 +40,22 @@ public class WicketSessionCacheManager implements CacheManager {
     @Override
     public Cache getCache(String name) {
         if (cacheEnabled()) {
-            return cacheManager.getCache(SingularSessionCache.SINGULAR_CACHE_SESSION_CACHE);
+            return cacheManager.getCache(SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE);
         } else {
             return cacheManager.getCache(SingularCache.SINGULAR_CACHE_NAME);
         }
     }
 
     private boolean cacheEnabled() {
-        return Session.exists();
+        return RequestCycle.get() != null;
     }
 
     @Override
     public Collection<String> getCacheNames() {
-        return Arrays.asList(new String[]{SingularSessionCache.SINGULAR_CACHE_SESSION_CACHE});
+        return Arrays.asList(new String[]{SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE});
     }
 
     public void clearCache() {
-        cacheManager.getCache(SingularSessionCache.SINGULAR_CACHE_SESSION_CACHE).clear();
+        cacheManager.getCache(SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE).clear();
     }
 }

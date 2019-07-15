@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.cache;
+package org.opensingular.app.commons.cache;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -25,7 +25,9 @@ import java.lang.annotation.Target;
 
 import org.springframework.cache.annotation.Cacheable;
 
-@Cacheable(cacheNames = "forever", unless="T(org.opensingular.requirement.module.cache.UnlessChecker).check(#result)", keyGenerator = "singularKeyGenerator")
+import static org.opensingular.app.commons.cache.SingularKeyGenerator.SINGULAR_KEY_GENERATOR;
+
+@Cacheable(cacheNames = "forever", unless = "T(org.opensingular.app.commons.cache.UnlessChecker).check(#result)", keyGenerator = SINGULAR_KEY_GENERATOR)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited

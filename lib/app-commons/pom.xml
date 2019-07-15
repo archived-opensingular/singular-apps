@@ -22,6 +22,10 @@
         </dependency>
         <dependency>
             <groupId>org.opensingular</groupId>
+            <artifactId>singular-wicket-utils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.opensingular</groupId>
             <artifactId>singular-schedule</artifactId>
         </dependency>
         <!-- JAVA MAIL -->

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.cache;
+package org.opensingular.app.commons.cache;
 
 import java.util.List;
 

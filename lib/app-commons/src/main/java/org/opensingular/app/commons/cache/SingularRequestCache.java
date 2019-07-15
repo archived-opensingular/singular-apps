@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.cache;
+package org.opensingular.app.commons.cache;
+
+import org.springframework.cache.annotation.Cacheable;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -23,14 +25,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.cache.annotation.Cacheable;
+import static org.opensingular.app.commons.cache.SingularKeyGenerator.SINGULAR_KEY_GENERATOR;
 
-@Cacheable(cacheNames = SingularCache.SINGULAR_CACHE_NAME, unless="T(org.opensingular.requirement.module.cache.UnlessChecker).check(#result)", keyGenerator = "singularKeyGenerator")
+/**
+ * Caches data  per wicket http session as long as the session is active.
+ * if there is no wicket session it defaults to @SingularCache to cache and lookup
+ */
+@Cacheable(cacheNames = SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE, unless = "#result == null", keyGenerator = SINGULAR_KEY_GENERATOR, cacheManager = WicketRequestCacheManager.WICKET_REQUEST_CACHE_MANAGER)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
-public @interface SingularCache {
-
-    public static final String SINGULAR_CACHE_NAME = "defaultCache";
+public @interface SingularRequestCache {
+    public static final String SINGULAR_CACHE_REQUEST_CACHE = "wicketRequest";
 }

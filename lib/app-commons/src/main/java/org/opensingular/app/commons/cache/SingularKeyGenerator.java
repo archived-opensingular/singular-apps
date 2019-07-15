@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package org.opensingular.requirement.module.cache;
+package org.opensingular.app.commons.cache;
+
+import org.springframework.cache.interceptor.SimpleKeyGenerator;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Parameter;
@@ -23,17 +25,17 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.springframework.cache.interceptor.SimpleKeyGenerator;
-
 
 public class SingularKeyGenerator extends SimpleKeyGenerator {
 
+    public static final String SINGULAR_KEY_GENERATOR = "singularKeyGenerator";
+
     @Override
     public Object generate(Object target, Method method, Object... params) {
-        String methodName = method.getName();
-        String methodReturnType = method.getReturnType().getName();
+        String      methodName       = method.getName();
+        String      methodReturnType = method.getReturnType().getName();
         Parameter[] methodParameters = method.getParameters();
-        String[] parameters = Stream.of(methodParameters).map(Parameter::getName).collect(Collectors.toList()).toArray(new String[]{});
+        String[]    parameters       = Stream.of(methodParameters).map(Parameter::getName).collect(Collectors.toList()).toArray(new String[]{});
         return internalGenerateKey(methodName, methodReturnType, parameters, params);
     }
 
