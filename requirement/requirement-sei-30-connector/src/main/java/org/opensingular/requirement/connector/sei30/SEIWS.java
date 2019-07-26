@@ -51,8 +51,12 @@ import org.opensingular.requirement.connector.sei30.ws.Usuario;
 
 import javax.annotation.Nullable;
 import javax.xml.ws.BindingProvider;
+import javax.xml.ws.handler.MessageContext;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 
@@ -82,8 +86,11 @@ public class SEIWS implements SEIPortType, Loggable {
     }
 
     private SeiPortType getSeiService(String wsAddress) {
-        SeiPortType seiServicePortType = new SeiService().getSeiPortService();
-        BindingProvider bp = (BindingProvider) seiServicePortType;
+        SeiPortType               seiServicePortType = new SeiService().getSeiPortService();
+        BindingProvider           bp                 = (BindingProvider) seiServicePortType;
+        Map<String, List<String>> requestHeaders     = new HashMap<>();
+        requestHeaders.put("Cache-Control", Arrays.asList("private"));
+        bp.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, requestHeaders);
         bp.getRequestContext().put(
                 BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
                 WSClientSafeWrapper.getAdressWithoutWsdl(
