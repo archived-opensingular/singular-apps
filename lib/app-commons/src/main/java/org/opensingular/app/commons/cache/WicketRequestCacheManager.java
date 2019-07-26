@@ -56,6 +56,9 @@ public class WicketRequestCacheManager implements CacheManager {
     }
 
     public void clearCache() {
-        cacheManager.getCache(SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE).clear();
+        Cache cache = cacheManager.getCache(SingularRequestCache.SINGULAR_CACHE_REQUEST_CACHE);
+        if(cache != null) {
+            cache.clear();
+        }
     }
 }
