@@ -23,6 +23,7 @@ import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
 import javax.servlet.ServletRequestEvent;
 import javax.servlet.ServletRequestListener;
 import javax.servlet.annotation.WebListener;
+import java.util.Map;
 
 @WebListener
 public class WicketRequestCacheRequestListener implements ServletRequestListener, Loggable {
@@ -36,7 +37,10 @@ public class WicketRequestCacheRequestListener implements ServletRequestListener
     public void requestInitialized(ServletRequestEvent sre) {
         if (ApplicationContextProvider.isConfigured()) {
             try {
-                ApplicationContextProvider.get().getBean(WicketRequestCacheManager.class).clearCache();
+                ApplicationContextProvider.get()
+                        .getBeansOfType(WicketRequestCacheManager.class)
+                        .values()
+                        .forEach(WicketRequestCacheManager::clearCache);
             } catch (org.springframework.beans.factory.NoSuchBeanDefinitionException e) {
                 getLogger().warn(e.getMessage(), e);
             }

@@ -26,16 +26,16 @@ import org.apache.wicket.markup.html.WebPage;
 import org.apache.wicket.protocol.http.WebApplication;
 import org.apache.wicket.request.Request;
 import org.apache.wicket.request.Response;
-import org.apache.wicket.serialize.java.JavaSerializer;
+import org.apache.wicket.request.resource.caching.NoOpResourceCachingStrategy;
+import org.apache.wicket.resource.CssUrlReplacer;
 import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.apache.wicket.util.lang.Bytes;
 import org.apache.wicket.util.time.Duration;
 import org.opensingular.internal.lib.wicket.test.WicketSerializationDebugUtil;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.support.spring.util.ApplicationContextProvider;
-import org.opensingular.lib.wicket.util.application.FSTSerializer;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
+import org.opensingular.lib.wicket.SingularWebResourcesFactory;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.config.IServerContext;
@@ -53,11 +53,11 @@ import org.springframework.context.ApplicationContext;
 import java.nio.charset.StandardCharsets;
 import java.util.Locale;
 
+import static org.opensingular.lib.wicket.util.template.SingularTemplate.JAVASCRIPT_DECORATOR;
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public abstract class SingularRequirementApplication extends AuthenticatedWebApplication
-        implements SkinnableApplication, SingularAdminApp {
-
+        implements SingularAdminApp {
     public static SingularRequirementApplication get() {
         return (SingularRequirementApplication) WebApplication.get();
     }
@@ -99,6 +99,16 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
             getDebugSettings().setComponentPathAttributeName("wicketdebug");
             WicketSerializationDebugUtil.configurePageSerializationDebug(this, this.getClass());
         }
+
+        setHeaderResponseDecorator(JAVASCRIPT_DECORATOR);
+
+        final SingularWebResourcesFactory singularWebResourcesFactory
+                = getApplicationContext().getBean(SingularWebResourcesFactory.class);
+        getSharedResources().add("logo", singularWebResourcesFactory.getLogo());
+        getSharedResources().add("favicon", singularWebResourcesFactory.getFavicon());
+        getResourceSettings().setCssCompressor(new CssUrlReplacer());
+        getResourceSettings().setCachingStrategy(new NoOpResourceCachingStrategy());
+        getJavaScriptLibrarySettings().setJQueryReference(singularWebResourcesFactory.getJQuery());
     }
 
     /**
@@ -209,6 +219,6 @@ public abstract class SingularRequirementApplication extends AuthenticatedWebApp
 
     @Override
     public MarkupContainer buildPageHeader(String id, boolean withMenu, SingularAdminTemplate adminTemplate) {
-        return new Header(id, withMenu, adminTemplate.skinOptions);
+        return new Header(id, withMenu);
     }
 }
