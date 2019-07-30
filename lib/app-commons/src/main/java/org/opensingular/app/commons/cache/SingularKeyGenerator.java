@@ -39,7 +39,7 @@ public class SingularKeyGenerator extends SimpleKeyGenerator {
         return internalGenerateKey(methodName, methodReturnType, parameters, params);
     }
 
-    public static String internalGenerateKey(String methodName, String methodReturnType, String[] parameters, Object[] params) {
+    protected String internalGenerateKey(String methodName, String methodReturnType, String[] parameters, Object[] params) {
         int paramsHashCode = 0;
         if (params != null) {
             paramsHashCode = Arrays.hashCode(params);
