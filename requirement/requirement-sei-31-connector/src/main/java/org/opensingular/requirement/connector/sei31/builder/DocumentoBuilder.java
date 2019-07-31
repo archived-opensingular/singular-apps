@@ -307,6 +307,12 @@ public class DocumentoBuilder implements Serializable, Loggable {
         }
         return this;
     }
+
+    public DocumentoBuilder setConteudoString(String value) {
+        this.documento.setConteudo(value);
+        return this;
+    }
+
     /**
      * Atualiza o novo valor de conteudo.
      * 
