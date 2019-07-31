@@ -23,6 +23,7 @@ import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 public class TransactionalQuartzScheduledService extends QuartzScheduleService implements Loggable {
@@ -68,6 +69,25 @@ public class TransactionalQuartzScheduledService extends QuartzScheduleService i
     private void internalSchedule(IScheduledJob scheduledJob) {
         super.schedule(new TransactionalScheduledJobProxy(scheduledJob));
         getLogger().info("Job({}) scheduled.", scheduledJob);
+    }
+
+    @Override
+    public synchronized void deleteJob(IScheduledJob scheduledJob) {
+        if (contextRefreshed) {
+            internalDeleteJob(scheduledJob);
+        } else {
+            for (Iterator<IScheduledJob> it = toBeScheduled.iterator(); it.hasNext(); ) {
+                IScheduledJob job = it.next();
+                if (job.getId().equalsIgnoreCase(scheduledJob.getId())) {
+                    it.remove();
+                }
+            }
+        }
+    }
+
+    private void internalDeleteJob(IScheduledJob scheduledJob) {
+        super.deleteJob(scheduledJob);
+        getLogger().info("Job({}) deleted.", scheduledJob);
     }
 
 }
