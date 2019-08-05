@@ -23,23 +23,20 @@ import org.apache.wicket.markup.ComponentTag;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.protocol.http.WebApplication;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
 
 import static org.opensingular.lib.wicket.util.util.WicketUtils.$b;
 
 public class Header extends Panel {
 
     protected boolean withTogglerButton;
-    protected SkinOptions option;
 
     public Header(String id) {
-        this(id, false, null);
+        this(id, false);
     }
 
-    public Header(String id, boolean withTogglerButton, SkinOptions option) {
+    public Header(String id, boolean withTogglerButton) {
         super(id);
         this.withTogglerButton = withTogglerButton;
-        this.option = option;
     }
 
     @Override
@@ -72,6 +69,6 @@ public class Header extends Panel {
 
 
     protected WebMarkupContainer configureTopMenu(String id) {
-        return new TopMenu(id, option);
+        return new TopMenu(id);
     }
 }

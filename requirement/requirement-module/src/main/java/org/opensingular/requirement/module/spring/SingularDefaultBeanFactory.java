@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.spring;
 
 import org.hibernate.SessionFactory;
+import org.opensingular.app.commons.cache.SingularKeyGenerator;
 import org.opensingular.app.commons.jobs.AttachmentGCJob;
 import org.opensingular.app.commons.mail.persistence.dao.EmailAddresseeDao;
 import org.opensingular.app.commons.mail.persistence.dao.EmailDao;
@@ -59,7 +60,6 @@ import org.opensingular.lib.commons.scan.SingularClassPathScanner;
 import org.opensingular.lib.support.persistence.SessionLocator;
 import org.opensingular.lib.support.spring.security.DefaultRestUserDetailsService;
 import org.opensingular.lib.support.spring.security.RestUserDetailsService;
-import org.opensingular.app.commons.cache.SingularKeyGenerator;
 import org.opensingular.requirement.module.config.IServerContext;
 import org.opensingular.requirement.module.config.ServerStartExecutorBean;
 import org.opensingular.requirement.module.connector.DefaultModuleService;
@@ -526,5 +526,4 @@ public class SingularDefaultBeanFactory {
     public RequirementSearchQueryConfig requirementSearchQueryConfig() {
         return new DefaultRequirementSearchQueryConfig();
     }
-
 }

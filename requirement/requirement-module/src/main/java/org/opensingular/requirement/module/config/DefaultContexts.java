@@ -48,7 +48,7 @@ public interface DefaultContexts {
                     .contextPath("/worklist/*")
                     .propertiesBaseKey("singular.worklist")
                     .wicketApplicationClass(WorklistWicketApplication.class)
-                    .springSecurityConfigClass(SecurityConfigs.CASAnalise.class);
+                    .springSecurityConfigClass(SecurityConfigs.WorklistSecurity.class);
         }
 
         @Override
@@ -75,7 +75,7 @@ public interface DefaultContexts {
                     .contextPath("/requirement/*")
                     .propertiesBaseKey("singular.requirement")
                     .wicketApplicationClass(RequirementWicketApplication.class)
-                    .springSecurityConfigClass(SecurityConfigs.CASPeticionamento.class)
+                    .springSecurityConfigClass(SecurityConfigs.RequirementSecurity.class)
                     .checkOwner(true);
         }
 
