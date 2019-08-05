@@ -104,10 +104,12 @@ public class EmailPersistenceService implements IEmailService<Email> {
         addressee.setSentDate(entity.getSentDate());
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public int countPendingRecipients() {
         return emailAddresseeDao.countPending();
     }
 
+    @org.springframework.transaction.annotation.Transactional(readOnly = true)
     public List<Email.Addressee> listPendingRecipients(int firstResult, int maxResults, @Nullable String codModule) {
         return emailAddresseeDao.listPending(firstResult, maxResults)
                 .stream()
