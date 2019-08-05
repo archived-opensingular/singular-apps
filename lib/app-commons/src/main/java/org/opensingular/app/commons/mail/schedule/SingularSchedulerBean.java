@@ -773,4 +773,9 @@ public class SingularSchedulerBean extends SingularSchedulerAccessor implements 
     public Set<JobKey> getAllJobKeys() throws SchedulerException {
         return getScheduler().getJobKeys(GroupMatcher.anyGroup());
     }
+
+    @Override
+    public boolean deleteJob(JobKey jobKey) throws SchedulerException {
+        return getScheduler().deleteJob(jobKey);
+    }
 }

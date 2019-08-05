@@ -19,20 +19,23 @@ package org.opensingular.requirement.module.wicket.view.template;
 import de.alpharogroup.wicket.js.addon.toastr.ToastrType;
 import org.apache.wicket.markup.head.CssHeaderItem;
 import org.apache.wicket.markup.head.IHeaderResponse;
-import org.apache.wicket.markup.head.JavaScriptHeaderItem;
 import org.apache.wicket.markup.head.JavaScriptReferenceHeaderItem;
 import org.apache.wicket.model.StringResourceModel;
 import org.apache.wicket.request.mapper.parameter.PageParameters;
 import org.apache.wicket.request.resource.PackageResourceReference;
 import org.opensingular.lib.commons.base.SingularProperties;
+import org.opensingular.lib.wicket.SingularWebResourcesFactory;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
 import org.opensingular.requirement.module.wicket.view.SingularToastrHelper;
 
+import javax.inject.Inject;
+
 public abstract class ServerTemplate extends SingularAdminTemplate {
+    @Inject
+    private SingularWebResourcesFactory singularWebResourcesFactory;
 
     public ServerTemplate() {
     }
-
 
     public ServerTemplate(PageParameters parameters) {
         super(parameters);
@@ -41,11 +44,10 @@ public abstract class ServerTemplate extends SingularAdminTemplate {
     @Override
     public void renderHead(IHeaderResponse response) {
         super.renderHead(response);
-        response.render(CssHeaderItem.forUrl("/singular-static/resources/singular/fonts/google/open-sans.css"));
         response.render(JavaScriptReferenceHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "singular.js")));
         response.render(CssHeaderItem.forReference(new PackageResourceReference(ServerTemplate.class, "ServerTemplate.css")));
         if (SingularProperties.get().isTrue(SingularProperties.ANALYTICS_ENABLED)) {
-            response.render(JavaScriptHeaderItem.forUrl(skinnableResource("/layout4/scripts/analytics.js")));
+            response.render(singularWebResourcesFactory.newJavaScriptHeader("layout4/scripts/analytics.js"));
         }
     }
 

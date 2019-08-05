@@ -42,6 +42,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.RegexRequestMatcher;
 
@@ -143,8 +144,8 @@ public interface SecurityConfigs {
                     .anyRequest()
                     .authenticated()
                     .and()
-                    .formLogin().loginPage(getContext().getSettings().getUrlPath() + getLoginPagePath())
-                    .successForwardUrl(getContext().getSettings().getUrlPath())
+                    .exceptionHandling()
+                    .authenticationEntryPoint(new LoginUrlAuthenticationEntryPoint(getContext().getSettings().getUrlPath() + "/login"))
                     .and()
                     .logout()
                     .logoutRequestMatcher(new RegexRequestMatcher("/.*logout\\?{0,1}.*", HttpMethod.GET.name()))
@@ -182,7 +183,7 @@ public interface SecurityConfigs {
         }
 
         public Filter customUsernamePasswordAuthenticationFilter() throws Exception {
-            String loginPage = getContext().getSettings().getUrlPath() + getLoginPagePath();
+            String                         loginPage                      = getContext().getSettings().getUrlPath() + getLoginPagePath();
             SingularUsernamePasswordFilter singularUsernamePasswordFilter = new SingularUsernamePasswordFilter(loginPage);
             singularUsernamePasswordFilter.setAuthenticationManager(authenticationManagerBean());
             return singularUsernamePasswordFilter;
@@ -218,8 +219,8 @@ public interface SecurityConfigs {
             auth.authenticationProvider(new AuthenticationProvider() {
                 @Override
                 public Authentication authenticate(Authentication authentication) throws AuthenticationException {
-                    final String rawUsername = authentication.getPrincipal().toString();
-                    final String rawPassword = authentication.getCredentials().toString();
+                    final String rawUsername     = authentication.getPrincipal().toString();
+                    final String rawPassword     = authentication.getCredentials().toString();
                     final String encodedUserName = SingularProperties.get(SINGULAR_MONITORING_USERNAME);
                     final String encodedPassword = SingularProperties.get(SINGULAR_MONITORING_SECURITY_KEY);
 

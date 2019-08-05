@@ -526,5 +526,4 @@ public class SingularDefaultBeanFactory {
     public RequirementSearchQueryConfig requirementSearchQueryConfig() {
         return new DefaultRequirementSearchQueryConfig();
     }
-
 }

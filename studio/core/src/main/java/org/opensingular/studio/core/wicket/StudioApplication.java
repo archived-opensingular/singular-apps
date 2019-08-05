@@ -30,7 +30,6 @@ import org.apache.wicket.spring.injection.annot.SpringComponentInjector;
 import org.opensingular.lib.commons.base.SingularProperties;
 import org.opensingular.lib.wicket.util.application.SingularAnnotatedMountScanner;
 import org.opensingular.lib.wicket.util.application.SingularCsrfPreventionRequestCycleListener;
-import org.opensingular.lib.wicket.util.application.SkinnableApplication;
 import org.opensingular.lib.wicket.util.template.SingularTemplate;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminApp;
 import org.opensingular.lib.wicket.util.template.admin.SingularAdminTemplate;
@@ -43,7 +42,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Locale;
 
-public class StudioApplication extends WebApplication implements SingularAdminApp, SkinnableApplication {
+public class StudioApplication extends WebApplication implements SingularAdminApp {
     private final StudioConfig appConfig;
 
     public StudioApplication(StudioConfig appConfig) {
