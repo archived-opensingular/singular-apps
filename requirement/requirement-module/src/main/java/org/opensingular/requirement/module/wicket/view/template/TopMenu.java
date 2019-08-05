@@ -19,14 +19,9 @@ package org.opensingular.requirement.module.wicket.view.template;
 import org.apache.wicket.markup.html.WebMarkupContainer;
 import org.apache.wicket.markup.html.basic.Label;
 import org.apache.wicket.markup.html.link.Link;
-import org.apache.wicket.markup.html.link.StatelessLink;
-import org.apache.wicket.markup.html.list.ListItem;
-import org.apache.wicket.markup.html.list.ListView;
 import org.apache.wicket.markup.html.panel.Panel;
 import org.apache.wicket.request.cycle.RequestCycle;
 import org.apache.wicket.request.flow.RedirectToUrlException;
-import org.opensingular.lib.wicket.util.template.SkinOptions;
-import org.opensingular.lib.wicket.util.template.SkinOptions.Skin;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPaths;
 import org.opensingular.requirement.module.spring.security.SecurityAuthPathsFactory;
 import org.opensingular.requirement.module.wicket.SingularSession;
@@ -38,11 +33,8 @@ import static org.opensingular.lib.wicket.util.util.WicketUtils.$m;
 
 public class TopMenu extends Panel {
 
-    protected SkinOptions option;
-
-    public TopMenu(String id, SkinOptions option) {
+    public TopMenu(String id) {
         super(id);
-        this.option = option;
     }
 
     @Override
@@ -54,8 +46,8 @@ public class TopMenu extends Panel {
     protected void buildContent() {
         queue(new Label("nome", $m.ofValue(SingularSession.get().getName())));
 
-        WebMarkupContainer avatar = new WebMarkupContainer("codrh");
-        Optional<String> avatarSrc = Optional.ofNullable(null);
+        WebMarkupContainer avatar    = new WebMarkupContainer("codrh");
+        Optional<String>   avatarSrc = Optional.ofNullable(null);
         avatarSrc.ifPresent(src -> avatar.add($b.attr("src", src)));
         queue(avatar);
         avatar.setVisible(avatarSrc.isPresent());
@@ -75,28 +67,4 @@ public class TopMenu extends Panel {
         this.setVisible(SingularSession.get().getUserDetails() != null);
     }
 
-    protected ListView buildSkinOptions() {
-        return new ListView<Skin>("skin_options", option.options()) {
-            @Override
-            protected void populateItem(ListItem item) {
-                final Skin skin = (Skin) item.getModel().getObject();
-                item.add(buildSelectSkinLink(skin));
-                item.queue(new Label("label", skin.getName()));
-            }
-        };
-    }
-
-    private StatelessLink buildSelectSkinLink(final Skin skin) {
-        return new StatelessLink("change_action") {
-            @Override
-            public void onClick() {
-                option.selectSkin(skin);
-                refreshPage();
-            }
-        };
-    }
-
-    private void refreshPage() {
-        setResponsePage(getPage());
-    }
 }

@@ -25,18 +25,17 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import static org.opensingular.app.commons.cache.SingularKeyGenerator.SINGULAR_KEY_GENERATOR;
-
 /**
  * Caches data  per wicket http session as long as the session is active.
  * if there is no wicket session it defaults to @SingularCache to cache and lookup
  */
-@Cacheable(cacheNames = SingularSessionCache.SINGULAR_CACHE_SESSION_CACHE, unless = "#result == null", keyGenerator = SINGULAR_KEY_GENERATOR, cacheManager = WicketSessionCacheManager.WICKET_SESSION_CACHE_MANAGER)
+@Cacheable(cacheNames = SingularSessionCache.SINGULAR_CACHE_SESSION_CACHE
+        , unless = "#result == null"
+        , keyGenerator = SingularSessionKeyGenerator.SINGULAR_SESSION_KEY_GENERATOR)
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 public @interface SingularSessionCache {
-    public static final String SINGULAR_CACHE_SESSION_CACHE = "wicketSession";
-
+    String SINGULAR_CACHE_SESSION_CACHE = "wicketSession";
 }
