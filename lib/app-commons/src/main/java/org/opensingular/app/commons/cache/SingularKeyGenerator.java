@@ -27,7 +27,6 @@ import java.util.stream.Stream;
 
 
 public class SingularKeyGenerator extends SimpleKeyGenerator {
-
     public static final String SINGULAR_KEY_GENERATOR = "singularKeyGenerator";
 
     @Override
@@ -51,5 +50,4 @@ public class SingularKeyGenerator extends SimpleKeyGenerator {
         big = big.add(BigInteger.valueOf(paramsHashCode));
         return methodName + big.hashCode();
     }
-
 }
