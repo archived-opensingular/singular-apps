@@ -32,6 +32,7 @@ public class SingularSessionKeyGenerator extends SingularKeyGenerator {
         return Optional.ofNullable((Set<String>) session.getAttribute(SingularSessionKeyGenerator.CACHE_KEYS_ATTRIBUTE_NAME));
     }
 
+    @Override
     protected String internalGenerateKey(String methodName, String methodReturnType, String[] parameters, Object[] params) {
         String generatedKey = super.internalGenerateKey(methodName, methodReturnType, parameters, params);
         if (RequestCycle.get() != null) {
