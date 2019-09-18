@@ -17,6 +17,7 @@
 package org.opensingular.requirement.module.workspace;
 
 import org.opensingular.requirement.module.BoxItemDataProvider;
+import org.opensingular.requirement.module.box.BoxItemDataMap;
 import org.opensingular.requirement.module.box.form.STypeDynamicAdvancedFilter;
 import org.opensingular.requirement.module.persistence.filter.BoxFilter;
 import org.opensingular.requirement.module.service.dto.DatatableField;
@@ -75,5 +76,9 @@ public interface BoxDefinition extends Serializable {
                     .label(datatableField.getKey())
                     .asAtrBootstrap().colPreference(2);
         }
+    }
+
+    default String getRowStyleClass(BoxItemDataMap boxItemDataMap) {
+        return null;
     }
 }

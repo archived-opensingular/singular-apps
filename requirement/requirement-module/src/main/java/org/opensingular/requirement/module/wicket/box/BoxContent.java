@@ -78,6 +78,11 @@ public class BoxContent extends AbstractBoxContent implements Loggable {
         configureQuickFilter();
     }
 
+    @Override
+    protected String getRowStyleClass(BoxItemDataMap boxItemDataMap) {
+        return moduleService.getBoxRowStyleClass(boxDefinition.getObject(), boxItemDataMap);
+    }
+
     private void configureQuickFilter() {
         getFiltroRapido().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
         getPesquisarButton().setVisible(getBoxDefinitionObject().getItemBox().isShowQuickFilter());
