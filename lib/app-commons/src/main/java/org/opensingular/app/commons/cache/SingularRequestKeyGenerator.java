@@ -54,7 +54,7 @@ public class SingularRequestKeyGenerator extends SingularKeyGenerator implements
                     .map(ServletRequestAttributes::getRequest)
                     .orElse(null);
         } catch (IllegalStateException e) {
-            getLogger().error(e.getMessage(), e);
+            getLogger().debug(e.getMessage(), e);
         }
         return null;
     }
